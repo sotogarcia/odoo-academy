@@ -135,7 +135,7 @@ class AcademyTrainingModule(models.Model):
     )
 
     module_code = fields.Char(
-        string='Module code',
+        string='Code',
         required=False,
         readonly=False,
         index=False,

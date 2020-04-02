@@ -106,7 +106,7 @@ attended.
 
     # pylint: disable=locally-disabled, W0212
     code = fields.Char(
-        string='Code',
+        string='Lesson ID',
         required=True,
         readonly=True,
         index=True,

@@ -186,7 +186,8 @@
                 <xpath expr="//notebook/page" position="after">
                    <page string="Training units" class="oe_page_training_units" accesskey="U">
                         <field name="training_unit_ids" class="oe_field_training_unit_ids"
-                            placeholder="Choose or create module training units" />
+                            placeholder="Choose or create module training units"
+                            context="{'form_view_ref':'academy_base.view_academy_training_module_unit_form', 'default_training_module_id': id}" />
                     </page>
                 </xpath>
                 <xpath expr="//field[@name='module_code']" position="after">
@@ -308,6 +309,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//sheet/group/field[1]" position="after">
                     <field name="training_module_id" class="oe_field_training_module_id"
+                        attrs="{'invisible': [('training_module_id', '&lt;&gt;', False)]}"
                         placeholder="Choose related training module" />
                 </xpath>
                  <xpath expr="//field[@name='module_code']" position="after">

@@ -48,7 +48,7 @@
                             <label for="code" class="oe_edit_only" />
                             <h1>
                                 <field name="code" class="oe_field_code"
-                                    placeholder="code" />
+                                    placeholder="Code" />
                             </h1>
                         </div>
 

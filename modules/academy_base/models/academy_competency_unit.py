@@ -82,7 +82,7 @@ class AcademyCompetencyUnit(models.Model):
         default=None,
         help='Training module associated with this competency unit',
         comodel_name='academy.training.module',
-        domain=[],
+        domain=[('training_module_id', '=', False)],
         context={},
         ondelete='cascade',
         auto_join=False

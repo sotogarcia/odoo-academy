@@ -99,7 +99,7 @@ msgstr "<strong>Nivel: </strong>"
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_kanban
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_module_kanban
 msgid "<strong>Lifespan: </strong>"
-msgstr "<strong>Esperanza de vida: </strong>"
+msgstr "<strong>Duración: </strong>"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_resource_kanban
@@ -1098,13 +1098,6 @@ msgstr "Haga clic para agregar un nuevo módulo de formación"
 #: model:academy.training.methodology,name:academy_base.academy_training_methodology_coaching
 msgid "Coaching"
 msgstr "Formación"
-
-#. module: academy_base
-#: model:ir.model.fields,field_description:academy_base.field_academy_knowledge_area__knowle_code
-#: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment__code
-#: model:ir.model.fields,field_description:academy_base.field_academy_training_lesson__code
-msgid "Code"
-msgstr "Código"
 
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_teacher__color
@@ -2721,8 +2714,18 @@ msgstr "Historia moderna"
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_lesson__module_code
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_module__module_code
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_session_wizard_line__module_code
-msgid "Module code"
-msgstr "Código del módulo"
+#: model:ir.model.fields,field_description:academy_base.field_academy_knowledge_area__knowle_code
+#: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment__code
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_enrolment_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_lesson_form
+msgid "Code"
+msgstr "Código"
+
+#. module: academy_base
+#: model:ir.model.fields,field_description:academy_base.field_academy_training_lesson__code
+msgid "Lesson ID"
+msgstr "ID de lección"
+
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_session_wizard_line__own_sequence
@@ -4594,12 +4597,6 @@ msgstr "academy_training_resource_tree"
 #: model_terms:ir.ui.view,arch_db:academy_base.view_res_partner_student_search
 msgid "academy_training_student_search"
 msgstr "academy_training_student_search"
-
-#. module: academy_base
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_enrolment_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_lesson_form
-msgid "code"
-msgstr "código"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_teacher_form
