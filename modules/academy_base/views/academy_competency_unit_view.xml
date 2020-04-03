@@ -173,7 +173,7 @@
             <field name="sequence" eval="15" />
             <field name="action" ref="action_competency_unit_act_window" />
             <field name="parent_id" ref="academy_base.menu_academy_catalog" />
-            <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
+            <field name="groups_id" eval="[(4, ref('academy_base.academy_group_manager'))]"/>
         </record>
 
         <!-- Tree view for "academy.competency.unit" -->

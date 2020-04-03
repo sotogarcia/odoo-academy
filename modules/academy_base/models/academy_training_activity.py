@@ -112,7 +112,7 @@ class AcademyTrainingActivity(models.Model):
         index=False,
         default=None,
         help='Reference code that identifies the activity',
-        size=10,
+        size=30,
         translate=True
     )
 

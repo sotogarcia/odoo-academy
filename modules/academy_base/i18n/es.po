@@ -1383,6 +1383,13 @@ msgstr "Descripción"
 msgid "Description of the professional sector/s to which this activity is oriented"
 msgstr "Descripción del/de los sector(es) profesional(es) a los cuales pertenece esta actividad"
 
+
+#. module: academy_base
+#: model:ir.model.fields,help:academy_base.field_academy_training_activity__professional_field
+msgid "Description of the professional field to which this activity is oriented"
+msgstr "Descripción del campo profesional al que se orienta esta actividad"
+
+
 #. module: academy_base
 #: model:academy.training.methodology,name:academy_base.academy_training_methodology_direct
 msgid "Direct teaching"

@@ -204,7 +204,7 @@ class AcademyTrainingAction(models.Model):
         index=False,
         default=None,
         help='Enter new internal code',
-        size=12,
+        size=30,
         translate=False
     )
 

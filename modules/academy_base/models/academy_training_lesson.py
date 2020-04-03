@@ -112,7 +112,7 @@ attended.
         index=True,
         default=lambda self: self._default_code(),
         help='Enter new name',
-        size=12,
+        size=30,
         translate=True,
     )
 

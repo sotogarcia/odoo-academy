@@ -63,7 +63,7 @@ class AcademyKnowledgeArea(models.Model):
         index=False,
         default=None,
         help='Enter new code',
-        size=10,
+        size=30,
         translate=False
     )
 

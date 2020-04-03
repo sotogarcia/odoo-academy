@@ -80,7 +80,7 @@
                             </page>
                             <page string="Competency units" class="oe_page_compentency_units" accesskey="C">
                                 <field name="competency_unit_ids" class="oe_field_competency_unit_ids"
-                                    placeholder="Choose related competency units" widget="many2many"
+                                    placeholder="Choose related competency units"
                                     context="{'tree_view_ref' : 'academy_base.view_academy_competency_unit_embed_tree'}" />
                             </page>
                             <page string="Actions" class="oe_page_actions" accesskey="A">

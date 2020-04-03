@@ -141,7 +141,7 @@ class AcademyTrainingModule(models.Model):
         index=False,
         default=None,
         help='Enter code for training module',
-        size=12,
+        size=30,
         translate=True,
         old_name='code'
     )
