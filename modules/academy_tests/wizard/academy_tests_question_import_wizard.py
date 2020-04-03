@@ -460,7 +460,7 @@ class AcademyTestsQuestionImport(models.TransientModel):
         # STEP 2: Try to find attachment by `name` field
         if not record:
             record = self.attachment_ids.filtered( \
-                lambda item: self._equal(item.datas_fname, uri))
+                lambda item: self._equal(item.name, uri))
 
         # STEP 3: Raise error if number of found items is not equal to one
         if not record:
