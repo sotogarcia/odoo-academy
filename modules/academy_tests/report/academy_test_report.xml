@@ -73,7 +73,7 @@
                         <t t-set="display_image_ids" t-value="question_id.ir_attachment_image_ids" />
                         <!-- Prevent the same image was displayed in consecutive questions -->
                         <t t-if="test_ids_index and test_ids_index &gt; 0">
-                            <t t-set="display_image_ids" t-value="display_image_ids - test.question_ids[test_ids_index - 1].question_id.ir_attachment_image_ids" />
+                            <t t-set="display_image_ids" t-value="display_image_ids - o.question_ids[test_ids_index - 1].question_id.ir_attachment_image_ids" />
                         </t>
                         <t t-foreach="display_image_ids" t-as="ir_attachment_image_id">
                             <t t-call="academy_tests.academy_post_test_question_image" />
@@ -116,12 +116,12 @@
 
                             <div class="row">
                                 <section class="academy-post-test-test posted-test-body col-xs-12">
-                                    <t t-if="test.preamble">
-                                        <p class="academy-test-preamble"><t t-esc="test.preamble" /></p>
+                                    <t t-if="o.preamble">
+                                        <p class="academy-test-preamble"><t t-esc="o.preamble" /></p>
                                     </t>
 
                                     <ol class="academy-question-ids">
-                                        <t t-foreach="test.question_ids" t-as="academy_question_rel_id">
+                                        <t t-foreach="o.question_ids" t-as="academy_question_rel_id">
 
                                         <t t-set="question_id" t-value="academy_question_rel_id.question_id" />
                                         <li class="academy-question academy-question-swap-content" t-attf-id="academy-question-{{ question_id.id }}" t-attf-data-question-id="{{ question_id.id }}">
@@ -166,7 +166,7 @@
             <field name="arch" type="xml">
                 <t t-name="academy_tests.view_academy_tests_qweb">
                     <t t-call="web.html_container">
-                        <t t-foreach="docs" t-as="test">
+                        <t t-foreach="docs" t-as="o">
                             <t t-call="academy_tests.view_academy_tests_document_qweb" />
                         </t>
                     </t>
