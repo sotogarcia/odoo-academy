@@ -61,9 +61,14 @@ msgstr "El argumento dado in_dt ({}) no es un valor de fecha y hora válido"
 
 #. module: academy_tests_gift
 #: model_terms:ir.actions.report,help:academy_tests_gift.action_report_question_as_gift
+msgid "View question as GIFT format, a valid content to import from a Moodle platform"
+msgstr "Visualizar la pregunta como formato GIFT, un contenido válido para importar desde una plataforma Moodle"
+
+
+#. module: academy_tests_gift
 #: model_terms:ir.actions.report,help:academy_tests_gift.action_report_test_as_gift
-msgid "Printable test in PDF"
-msgstr "Test imprimible in PDF"
+msgid "View test as GIFT format, a valid content to import from a Moodle platform"
+msgstr "Visualizar la pregunta como formato GIFT, un contenido válido para importar desde una plataforma Moodle"
 
 #. module: academy_tests_gift
 #: model:ir.actions.report,name:academy_tests_gift.action_report_question_as_gift

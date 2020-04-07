@@ -25,9 +25,10 @@
             <field name="report_type">qweb-text</field>
             <field name="report_name">academy_tests_gift.view_academy_test_question_gift_qweb</field>
             <field name="attachment_use" eval="False" />
-            <field name="attachment">(object.name+'.pdf')</field>
+            <field name="attachment">(object.name+'.txt')</field>
+            <field name="print_report_name">'QID%s - GIFT' % object.id</field>
             <field name="paperformat_id" ref="base.paperformat_euro" />
-            <field name="help">Printable test in PDF</field>
+            <field name="help">View question as GIFT format, a valid content to import from a Moodle platform</field>
             <!-- Following line adds print dropdown menú -->
             <field name="binding_model_id" ref="academy_tests.model_academy_tests_question" />
         </record>
