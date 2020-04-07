@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="view_academy_tests_question_form_gift" model="ir.ui.view">
+            <field name="name">Academy Tests Question GIFT extension</field>
+            <field name="model">academy.tests.question</field>
+            <field name="type">form</field>
+            <field name="mode">extension</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="academy_tests.view_academy_question_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="inside">
+                    <page string="GIFT" class="oe_page_gift" accesskey="G">
+                        <field name="gift" string="Gift" invisible="0" class="text-monospace" />
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>

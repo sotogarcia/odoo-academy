@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="view_academy_test_test_question_gift_qweb" model="ir.ui.view">
+            <field name="name">Academy Test Question GIFT report</field>
+            <field name="model">academy.test.question</field>
+            <field name="type">qweb</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+<t t-name="academy_tests_gift.view_academy_test_test_question_gift_qweb">
+<t t-foreach="docs" t-as="o"><t t-foreach="o.question_ids" t-as="academy_question_rel_id" ><t t-set="question_id" t-value="academy_question_rel_id.question_id" /><t t-esc="question_id.gift" /></t>
+</t>
+</t>
+            </field>
+        </record>
+
+
+        <!-- Report action to show: "Printable test" -->
+        <record id="action_report_test_as_gift" model="ir.actions.report">
+            <field name="name">View as GIFT</field>
+            <field name="model">academy.tests.test</field>
+            <field name="report_type">qweb-text</field>
+            <field name="report_name">academy_tests_gift.view_academy_test_test_question_gift_qweb</field>
+            <field name="attachment_use" eval="False" />
+            <field name="attachment">(object.name+'.pdf')</field>
+            <field name="paperformat_id" ref="base.paperformat_euro" />
+            <field name="help">Printable test in PDF</field>
+            <!-- Following line adds print dropdown menú -->
+            <field name="binding_model_id" ref="academy_tests.model_academy_tests_test" />
+        </record>
+
+
+
+    </data>
+</openerp>

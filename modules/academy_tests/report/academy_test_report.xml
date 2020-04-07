@@ -128,7 +128,7 @@
                                             <t t-call="academy_tests.view_academy_question_qweb" />
                                         </li>
 
-                                        </t><!-- test_ids -->
+                                        </t><!-- question_ids -->
                                     </ol>
                                 </section>
 

@@ -26,6 +26,7 @@
                 <tree string="academy_answer_tree" create="1" delete="1" edit="1">
                     <field name="is_correct" class="oe_field_is_correct" />
                     <field name="name" class="oe_field_name" />
+                    <field name="description" class="oe_field_description" />
                 </tree>
             </field>
         </record>
@@ -44,6 +45,8 @@
                     <field name="is_correct" class="oe_field_is_correct" string="C" />
                     <field name="name" class="oe_field_name"
                         placeholder="Enter new text for name" />
+                    <field name="description" class="oe_field_description"
+                        placeholder="Enter new value for description" />
                     <button name="cmd_open_in_form" string="Open in form view" icon="fa-external-link"
                          type="object" help="Open in form view" />
                 </tree>
