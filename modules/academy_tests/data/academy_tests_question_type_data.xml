@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <openerp>
-    <data noupdate="0">
+    <data noupdate="1">
 
         <record id="academy_tests_question_type_1" model="academy.tests.question.type">
             <field name="name">Theoretical</field>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <openerp>
-    <data noupdate="0">
+    <data noupdate="1">
 
         <record id="academy_public_tendering_exam_type_exam" model="academy.public.tendering.exam.type">
             <field name="name">Open exam</field>

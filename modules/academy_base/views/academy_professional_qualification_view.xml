@@ -46,7 +46,7 @@
                         <div class="oe_button_box" name="button_box"/>
                         <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
 
-                        <field name="image_128" widget='image' class="oe_avatar" options='{"preview_image": "image_medium"}'/>
+                        <field name="image_1920" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}'/>
 
                         <div class="oe_title">
                             <field name="active" invisible="1"/>
@@ -107,11 +107,10 @@
                         <t t-name="kanban-box">
                              <div class="oe_kanban_global_click oe_kanban_academy_training_module">
                                 <div class="o_kanban_image">
-                                    <!-- <t t-if="record.image_128.raw_value">
-                                        <img t-att-src="kanban_image('academy.professional.qualification', 'image_small', record.id.value)" alt="Professional qualification photo" />
-                                    </t> -->
-                                    <img t-if="record.image_128.raw_value" t-att-src="'data:image/png;base64,'+record.image_128.raw_value" alt="Professional qualification photo" />
-                                    <t t-if="!record.image_128.raw_value">
+                                    <t t-if="record.image_128.raw_value">
+                                        <field name="image_128" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}' />
+                                    </t>
+                                    <t t-else="">
                                         <img t-att-src="_s + &quot;/academy_base/static/src/img/professional-qualification.png&quot;" class="o_kanban_image" alt="Professional qualification photo" />
                                     </t>
                                 </div>

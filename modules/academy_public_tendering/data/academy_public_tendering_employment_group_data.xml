@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <openerp>
-    <data noupdate="0">
+    <data noupdate="1">
 
         <record id="academy_public_tendering_employment_group_a1" model="academy.public.tendering.employment.group">
             <field name="name">A1</field>

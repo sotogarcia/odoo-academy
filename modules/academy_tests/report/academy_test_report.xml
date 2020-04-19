@@ -15,17 +15,15 @@
             <field name="active" eval="True" />
             <field name="arch" type="xml">
                 <t t-name="academy_tests.academy_post_test_question_image">
-                    <div class="ir-attachment-image-ids row">
-                        <div class="col-xs-12">
-                            <figure class="ir-attachment-image">
-                                <img t-attf-src="/web/image/{{ ir_attachment_image_id.id }}" alt="Image" class="o_attachment_image"/>
-                                <figcaption class="figure-caption ir-attachment-image-name"
-                                    t-attf-title="{{ ir_attachment_image_id.name }}">
-                                    <t t-esc="ir_attachment_image_id.name" />
-                                </figcaption>
-                            </figure>
-                        </div>
-                    </div>
+                    
+                    <figure class="figure ir-attachment-image">
+                        <img t-attf-src="/web/image/{{ ir_attachment_image_id.id }}" alt="Image" class="figure-img img-fluid rounded o_attachment_image"/>
+                        <figcaption class="figure-caption text-center ir-attachment-image-name"
+                            t-attf-title="{{ ir_attachment_image_id.name }}">
+                            <t t-esc="ir_attachment_image_id.name" />
+                        </figcaption>
+                    </figure>
+
                 </t>
             </field>
         </record>
@@ -73,7 +71,11 @@
                         <t t-set="display_image_ids" t-value="question_id.ir_attachment_image_ids" />
                         <!-- Prevent the same image was displayed in consecutive questions -->
                         <t t-if="test_ids_index and test_ids_index &gt; 0">
-                            <t t-set="display_image_ids" t-value="display_image_ids - o.question_ids[test_ids_index - 1].question_id.ir_attachment_image_ids" />
+                            <div class="ir-attachment-image-ids row">
+                                <div class="col-12">
+                                    <t t-set="display_image_ids" t-value="display_image_ids - o.question_ids[test_ids_index - 1].question_id.ir_attachment_image_ids" />
+                                </div>
+                            </div>
                         </t>
                         <t t-foreach="display_image_ids" t-as="ir_attachment_image_id">
                             <t t-call="academy_tests.academy_post_test_question_image" />
@@ -109,13 +111,12 @@
             <field name="active" eval="True" />
             <field name="arch" type="xml">
                 <t t-name="academy_tests.view_academy_tests_document_qweb">
-                    <t t-call="web.external_layout">
 
                         <div class="page">
                             <div class="oe_structure"/>
 
                             <div class="row">
-                                <section class="academy-post-test-test posted-test-body col-xs-12">
+                                <section class="academy-post-test-test posted-test-body col-12">
                                     <t t-if="o.preamble">
                                         <p class="academy-test-preamble"><t t-esc="o.preamble" /></p>
                                     </t>
@@ -138,7 +139,7 @@
 
                             <!-- <div class="row">
 
-                                <section class="col-xs-12">
+                                <section class="col-12">
                                     <t t-call="academy_tests.view_academy_answers_table_qweb" />
                                 </section>
                             </div>  --><!-- row -->
@@ -146,7 +147,6 @@
 
                         </div> <!-- page -->
 
-                    </t> <!-- t-call -->
                 </t> <!-- t-name -->
 
             </field>
@@ -167,9 +167,11 @@
                 <t t-name="academy_tests.view_academy_tests_qweb">
                     <t t-call="web.html_container">
                         <t t-foreach="docs" t-as="o">
-                            <t t-call="academy_tests.view_academy_tests_document_qweb" />
-                        </t>
-                    </t>
+                            <t t-call="web.basic_layout">
+                                <t t-call="academy_tests.view_academy_tests_document_qweb" />
+                            </t>
+                        </t> 
+                    </t> <!-- t-html_container -->
                 </t>
             </field>
         </record>

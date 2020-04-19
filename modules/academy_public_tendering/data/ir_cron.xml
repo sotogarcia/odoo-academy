@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<odoo>
+<odoo noupdate="1">
+
     <record id="ir_cron_academy_public_tendering_update_states_daily" model="ir.cron">
         <field name="name">Academy public tendering: Update states daily</field>
         <field name="interval_number">1</field>
@@ -12,5 +13,6 @@
         <field name="code">model.update_states()</field>
         <field name="state">code</field>
     </record>
+    
 </odoo>
 

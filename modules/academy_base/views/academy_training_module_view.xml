@@ -47,7 +47,7 @@
                         <div class="oe_button_box" name="button_box"/>
                         <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
 
-                        <field name="image_128" widget='image' class="oe_avatar" options='{"preview_image": "image_medium"}'/>
+                        <field name="image_1920" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}'/>
 
                         <div class="oe_title">
                             <field name="active" invisible="1"/>
@@ -129,8 +129,10 @@
                         <t t-name="kanban-box">
                             <div class="oe_kanban_global_click oe_kanban_academy_training_module">
                                 <div class="o_kanban_image">
-                                    <img t-if="record.image_128.raw_value" t-att-src="'data:image/png;base64,'+record.image_128.raw_value" alt="Training module photo" />
-                                    <t t-if="!record.image_128.raw_value">
+                                    <t t-if="record.image_128.raw_value">
+                                        <field name="image_128" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}' />
+                                    </t>
+                                    <t t-else="">
                                         <img t-att-src="_s + &quot;/academy_base/static/src/img/training-module.png&quot;" class="o_kanban_image" alt="Training module photo" />
                                     </t>
                                 </div>
@@ -387,7 +389,7 @@
             <field name="sequence" eval="20" />
             <field name="action" ref="action_training_module_units_act_window" />
             <field name="parent_id" ref="academy_base.menu_academy_catalog" />
-            <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
+            <field name="groups_id" eval="[(4, ref('academy_base.academy_group_manager'))]"/>
         </record>
 
 

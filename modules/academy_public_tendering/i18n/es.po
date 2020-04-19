@@ -6,24 +6,26 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-01 16:20+0000\n"
-"PO-Revision-Date: 2020-04-01 16:20+0000\n"
+"POT-Creation-Date: 2020-04-11 19:02+0000\n"
+"PO-Revision-Date: 2020-04-11 21:06+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: \n"
+"Language: es\n"
+"X-Generator: Poedit 2.3\n"
 
 #. module: academy_public_tendering
 #: model:academy.public.tendering.employment.group,name:academy_public_tendering.academy_public_tendering_employment_group_a1
 msgid "A1"
-msgstr ""
+msgstr "A1"
 
 #. module: academy_public_tendering
 #: model:academy.public.tendering.employment.group,name:academy_public_tendering.academy_public_tendering_employment_group_a2
 msgid "A2"
-msgstr ""
+msgstr "A2"
 
 #. module: academy_public_tendering
 #: model:ir.actions.act_window,name:academy_public_tendering.action_academy_public_tendering_vacancy_position_type_act_window
@@ -67,6 +69,16 @@ msgstr "Agregar puestos vacantes ofrecidos"
 #: model_terms:ir.ui.view,arch_db:academy_public_tendering.view_academy_public_tendering_process_search
 msgid "Administration"
 msgstr "Administración"
+
+#. module: academy_public_tendering
+#: model:academy.public.tendering.vacancy.position,name:academy_public_tendering.academy_public_tendering_vacancy_position_1
+msgid "Administrative"
+msgstr "Administrativo"
+
+#. module: academy_public_tendering
+#: model:academy.public.tendering.vacancy.position,name:academy_public_tendering.academy_public_tendering_vacancy_position_2
+msgid "Administrative assistant"
+msgstr "Auxiliar administrativo"
 
 #. module: academy_public_tendering
 #: code:addons/academy_public_tendering/models/academy_public_tendering_process.py:0
@@ -134,12 +146,12 @@ msgstr "Tablón de anuncios"
 #. module: academy_public_tendering
 #: model:academy.public.tendering.employment.group,name:academy_public_tendering.academy_public_tendering_employment_group_c1
 msgid "C1"
-msgstr ""
+msgstr "C1"
 
 #. module: academy_public_tendering
 #: model:academy.public.tendering.employment.group,name:academy_public_tendering.academy_public_tendering_employment_group_c2
 msgid "C2"
-msgstr ""
+msgstr "C2"
 
 #. module: academy_public_tendering
 #: model:academy.public.tendering.hiring.type,name:academy_public_tendering.academy_public_tendering_hiring_type_career
@@ -164,7 +176,7 @@ msgstr "Elija el tipo de contratación para este puesto vacante"
 #. module: academy_public_tendering
 #: model_terms:ir.ui.view,arch_db:academy_public_tendering.view_academy_training_action_public_tendering_form
 msgid "Choose related public tendering"
-msgstr "Elegir licitaciones públicas relacionadas"
+msgstr "Elegir oposiciones relacionadas"
 
 #. module: academy_public_tendering
 #: model_terms:ir.ui.view,arch_db:academy_public_tendering.view_academy_public_tendering_process_form
@@ -179,7 +191,7 @@ msgstr "Elija la fecha de convocatoria"
 #. module: academy_public_tendering
 #: model:ir.model.fields,help:academy_public_tendering.field_academy_public_tendering_process__administration_id
 msgid "Choose the administration related with tendering"
-msgstr "Elija la administración relacionada con la licitación"
+msgstr "Elija la administración relacionada con la oposición"
 
 #. module: academy_public_tendering
 #: model:ir.model.fields,help:academy_public_tendering.field_academy_public_tendering_process__approval
@@ -446,7 +458,7 @@ msgstr "Tipo de contratación"
 #: model:ir.model.fields,field_description:academy_public_tendering.field_academy_public_tendering_vacancy_position__id
 #: model:ir.model.fields,field_description:academy_public_tendering.field_academy_public_tendering_vacancy_position_type__id
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #. module: academy_public_tendering
 #: model:ir.model.fields,help:academy_public_tendering.field_academy_public_tendering_process__message_needaction
@@ -456,7 +468,6 @@ msgstr "Si está marcado, los nuevos mensajes requieren su atención."
 
 #. module: academy_public_tendering
 #: model:ir.model.fields,help:academy_public_tendering.field_academy_public_tendering_process__message_has_error
-#: model:ir.model.fields,help:academy_public_tendering.field_academy_public_tendering_process__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
 msgstr "Si está marcado, algunos mensajes tienen un error de entrega."
 
@@ -512,7 +523,7 @@ msgstr "Funcionarios interinos"
 #. module: academy_public_tendering
 #: model_terms:ir.ui.view,arch_db:academy_public_tendering.view_academy_public_tendering_process_form
 msgid "Internet"
-msgstr ""
+msgstr "Internet"
 
 #. module: academy_public_tendering
 #: model:ir.model.fields,field_description:academy_public_tendering.field_academy_public_tendering_process__message_is_follower
@@ -640,11 +651,11 @@ msgstr "Examen abierto"
 #. module: academy_public_tendering
 #: model:ir.model.fields,help:academy_public_tendering.field_academy_public_tendering_vacancy_position__sequence
 msgid ""
-"Order in which this vacancy position will be displayed in the tender process"
-" view"
+"Order in which this vacancy position will be displayed in the tender "
+"process view"
 msgstr ""
-"Orden en el que se mostrará esta posición vacante en la vista del proceso de"
-" licitación"
+"Orden en el que se mostrará esta posición vacante en la vista del proceso "
+"de oposición"
 
 #. module: academy_public_tendering
 #: model:ir.actions.act_window,name:academy_public_tendering.action_academy_public_tendering_act_window
@@ -652,16 +663,20 @@ msgid "Public Tendering"
 msgstr "Oposición"
 
 #. module: academy_public_tendering
+#: model:academy.public.tendering.process,description:academy_public_tendering.academy_public_tendering_process_1
+msgid ""
+"Public offer of employment for the year 2020 in the municipality of Saint "
+"Saturnine"
+msgstr ""
+"Oferta pública de empleo para el año 2020 en el municipio de San Sadurniño"
+
+#. module: academy_public_tendering
 #: model:ir.model,name:academy_public_tendering.model_academy_public_tendering_process
 #: model:ir.model.fields,field_description:academy_public_tendering.field_academy_public_tendering_vacancy_position__academy_public_tendering_process_id
+#: model:ir.ui.menu,name:academy_public_tendering.menu_academy_public_tendering
 #: model_terms:ir.ui.view,arch_db:academy_public_tendering.view_academy_training_action_public_tendering_form
 msgid "Public tendering"
 msgstr "Oposición"
-
-#. module: academy_public_tendering
-#: model:ir.ui.menu,name:academy_public_tendering.menu_academy_public_tendering
-msgid "Public tendering"
-msgstr "Oposiciones"
 
 #. module: academy_public_tendering
 #: model:ir.model.fields,field_description:academy_public_tendering.field_academy_training_action__public_tendering_process_ids
@@ -673,27 +688,27 @@ msgstr "Proceso de oposición"
 #. module: academy_public_tendering
 #: model:ir.model,name:academy_public_tendering.model_academy_public_tendering_employment_group
 msgid "Public tendering, employment group of vacancy position"
-msgstr ""
+msgstr "Oposición, grupo de empleo de vacante"
 
 #. module: academy_public_tendering
 #: model:ir.model,name:academy_public_tendering.model_academy_public_tendering_hiring_type
 msgid "Public tendering, hiring type of public employee"
-msgstr ""
+msgstr "Oposición, tipo de contratación de empleado público"
 
 #. module: academy_public_tendering
 #: model:ir.model,name:academy_public_tendering.model_academy_public_tendering_exam_type
 msgid "Public tendering, kind of vacancy position"
-msgstr ""
+msgstr "Oposición, tipo de puesto vacante"
 
 #. module: academy_public_tendering
 #: model:ir.model,name:academy_public_tendering.model_academy_public_tendering_vacancy_position
 msgid "Public tendering, vacancy position"
-msgstr ""
+msgstr "Oposición, puesto vacante"
 
 #. module: academy_public_tendering
 #: model:ir.model,name:academy_public_tendering.model_academy_public_tendering_vacancy_position_type
 msgid "Public tendering, vacancy position type"
-msgstr ""
+msgstr "Oposición, tipo de puesto vacante"
 
 #. module: academy_public_tendering
 #: model:ir.model.fields,field_description:academy_public_tendering.field_academy_public_tendering_vacancy_position__quantity
@@ -701,9 +716,9 @@ msgid "Quantity"
 msgstr "Cantidad"
 
 #. module: academy_public_tendering
-#: model:ir.model.fields,field_description:academy_public_tendering.field_academy_public_tendering_process__message_has_sms_error
-msgid "SMS Delivery error"
-msgstr ""
+#: model:academy.public.tendering.process,name:academy_public_tendering.academy_public_tendering_process_1
+msgid "Saint Saturnine, 2000"
+msgstr "San Sadurniño, 2000"
 
 #. module: academy_public_tendering
 #: model:academy.public.tendering.vacancy.position.type,description:academy_public_tendering.academy_public_tendering_vacancy_position_type_disabilities_consolidation
@@ -712,7 +727,7 @@ msgid ""
 "structural positions"
 msgstr ""
 "Proceso de selección mediante el cual las posiciones temporales se "
-"transforman en posiciones estructurales."
+"transforman en posiciones estructurales"
 
 #. module: academy_public_tendering
 #: model:academy.public.tendering.vacancy.position.type,description:academy_public_tendering.academy_public_tendering_vacancy_position_type_general_consolidation
@@ -722,8 +737,8 @@ msgid ""
 "disabilities"
 msgstr ""
 "Proceso de selección mediante el cual los puestos temporales se transforman "
-"en puestos estructurales, los candidatos deben cumplir ciertos requisitos de"
-" discapacidad"
+"en puestos estructurales, los candidatos deben cumplir ciertos requisitos "
+"de discapacidad"
 
 #. module: academy_public_tendering
 #: model:academy.public.tendering.vacancy.position.type,description:academy_public_tendering.academy_public_tendering_vacancy_position_type_general_internal_promotion
@@ -834,7 +849,16 @@ msgstr "Personal temporal"
 #. module: academy_public_tendering
 #: model:ir.ui.menu,name:academy_public_tendering.menu_tendering_settings_top
 msgid "Tendering"
-msgstr "Licitación"
+msgstr "Oposición"
+
+#. module: academy_public_tendering
+#: model:academy.public.tendering.vacancy.position,description:academy_public_tendering.academy_public_tendering_vacancy_position_1
+msgid ""
+"Their task is to order, organize and arrange different matters that are "
+"under their responsibility "
+msgstr ""
+"Su tarea es ordenar, organizar y organizar diferentes asuntos que están "
+"bajo su responsabilidad "
 
 #. module: academy_public_tendering
 #: model_terms:ir.actions.act_window,help:academy_public_tendering.action_academy_public_tendering_act_window
@@ -842,7 +866,7 @@ msgstr "Licitación"
 #: model_terms:ir.actions.act_window,help:academy_public_tendering.action_vacancy_position_group_act_window
 #: model_terms:ir.actions.act_window,help:academy_public_tendering.action_vacancy_position_kind_act_window
 msgid "There is not any academy public tendering yet"
-msgstr "Todavía no hay licitaciones públicas de academias"
+msgstr "Todavía no hay oposiciones de academias"
 
 #. module: academy_public_tendering
 #: model_terms:ir.actions.act_window,help:academy_public_tendering.action_vacancy_positions_act_window
@@ -933,6 +957,11 @@ msgstr "Nombre del tipo de puesto vacante"
 #: model:ir.model.fields,field_description:academy_public_tendering.field_academy_public_tendering_process__vacancy_position_ids
 msgid "Vacancy positions"
 msgstr "Puestos vacantes"
+
+#. module: academy_public_tendering
+#: model:academy.public.tendering.vacancy.position,description:academy_public_tendering.academy_public_tendering_vacancy_position_2
+msgid "Your task is to help administrators in their work"
+msgstr "Su tarea es ayudar a los administrativos en su trabajo"
 
 #. module: academy_public_tendering
 #: model_terms:ir.ui.view,arch_db:academy_public_tendering.view_academy_public_tendering_employment_group_form

@@ -1163,7 +1163,7 @@ msgstr "Adjuntos importados"
 #: model:ir.ui.menu,name:academy_tests.menu_question_impugnment
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_question_impugnment_graph
 msgid "Impugnments"
-msgstr "Reclamaciones"
+msgstr "Impugnaciones"
 
 #. module: academy_tests
 #: code:addons/academy_tests/wizard/academy_tests_question_import_wizard.py:0
@@ -1477,7 +1477,6 @@ msgstr "Cantidad de archivos adjuntos"
 
 #. module: academy_tests
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_question__category_count
-#: model:ir.model.fields,field_description:academy_tests.field_academy_tests_random_wizard_line__category_count
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_test_question_rel__category_count
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_topic__category_count
 #: model:ir.model.fields,help:academy_tests.field_academy_tests_question__category_count
@@ -1485,6 +1484,11 @@ msgstr "Cantidad de archivos adjuntos"
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_tests_question_kanban
 msgid "Number of categories"
 msgstr "Cantidad de categorías"
+
+#. module: academy_tests
+#: model:ir.model.fields,field_description:academy_tests.field_academy_tests_random_wizard_line__category_count
+msgid "Number of categories"
+msgstr "Categorías"
 
 #. module: academy_tests
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_answer__message_has_error_counter
@@ -1498,7 +1502,7 @@ msgstr "Cantidad de errores"
 #. module: academy_tests
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_random_wizard_line__level_count
 msgid "Number of levels"
-msgstr "Cantidad de niveles"
+msgstr "Niveles"
 
 #. module: academy_tests
 #: model:ir.model.fields,help:academy_tests.field_academy_tests_answer__message_needaction_counter
@@ -1519,10 +1523,14 @@ msgid "Number of messages with delivery error"
 msgstr "Cantidad de mensajes con error de entrega"
 
 #. module: academy_tests
-#: model:ir.model.fields,field_description:academy_tests.field_academy_tests_random_wizard_line__question_count
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_test__question_count
 msgid "Number of questions"
 msgstr "Cantidad de preguntas"
+
+#. module: academy_tests
+#: model:ir.model.fields,field_description:academy_tests.field_academy_tests_random_wizard_line__question_count
+msgid "Number of questions"
+msgstr "Preguntas"
 
 #. module: academy_tests
 #: model:ir.model.fields,help:academy_tests.field_academy_tests_test__question_count
@@ -1532,23 +1540,27 @@ msgstr "Cantidad de preguntas en el examen"
 #. module: academy_tests
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_random_wizard_line__tag_count
 msgid "Number of tags"
-msgstr "Cantidad de etiquetas"
+msgstr "Etiquetas"
 
 #. module: academy_tests
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_random_wizard_line__test_count
 msgid "Number of tests"
-msgstr "Cantidad de tests"
+msgstr "Tests"
 
 #. module: academy_tests
-#: model:ir.model.fields,field_description:academy_tests.field_academy_tests_random_wizard_line__topic_count
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_test__topic_count
 msgid "Number of topics"
 msgstr "Cantidad de temas"
 
 #. module: academy_tests
+#: model:ir.model.fields,field_description:academy_tests.field_academy_tests_random_wizard_line__topic_count
+msgid "Number of topics"
+msgstr "Temas"
+
+#. module: academy_tests
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_random_wizard_line__type_count
 msgid "Number of types"
-msgstr "Cantidad de tipos"
+msgstr "Tipos"
 
 #. module: academy_tests
 #: model:ir.model.fields,help:academy_tests.field_academy_tests_answer__message_unread_counter

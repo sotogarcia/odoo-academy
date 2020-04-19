@@ -50,7 +50,8 @@
                             <field name="active" invisible="1"/>
                         <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
                         
-                    <field name="image_128" widget="image" class="oe_avatar" options="{&quot;preview_image&quot;: &quot;image_medium&quot;, &quot;size&quot;: [90, 90]}"/>
+                    <field name="image_1920" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}'/>
+                    
                     <div class="oe_title">
                         <h1>
                             <field name="name" default_focus="1" placeholder="Name" attrs="{'required' : [('type', '=', 'contact')]}"/>
@@ -124,9 +125,10 @@
                         <t t-name="kanban-box">
                             <div class="oe_kanban_global_click oe_kanban_academy_student">
                                 <div class="o_kanban_image">
-                                    <img t-if="record.image_128.raw_value" t-att-src="'data:image/png;base64,'+record.image_128.raw_value" alt="Student photo" />
-
-                                    <t t-if="!record.image_128.raw_value">
+                                    <t t-if="record.image_128.raw_value">
+                                        <field name="image_128" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}' />
+                                    </t>
+                                    <t t-else="">
                                         <img t-att-src="_s + &quot;/academy_base/static/src/img/student.png&quot;" class="o_kanban_image" alt="Student photo" />
                                     </t>
                                 </div>

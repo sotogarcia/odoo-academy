@@ -81,7 +81,8 @@
                             <field name="category_ids" class="oe_field_category_ids"
                                 widget="many2many_tags" colspan="4"
                                 attrs="{'readonly': [('topic_id', '=', False)]}"
-                                domain="[('topic_id', '=', topic_id)]" />
+                                domain="[('topic_id', '=', topic_id)]" 
+                                context="{'default_topic_id': topic_id}" />
                             <field name="tag_ids" class="oe_field_tag_ids"
                                 widget="many2many_tags"  colspan="4" />
                         </group>

@@ -130,9 +130,10 @@
                         <t t-name="kanban-box">
                             <div class="oe_kanban_global_click oe_kanban_academy_training_action_enrolment">
                                 <div class="o_kanban_image">
-                                    <img t-if="record.image_128.raw_value" t-att-src="'data:image/png;base64,'+record.image_128.raw_value" alt="Training action enrolment photo" />
-
-                                    <t t-if="!record.image_128.raw_value">
+                                    <t t-if="record.image_128.raw_value">
+                                        <field name="image_128" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}' />
+                                    </t>
+                                    <t t-else="">
                                         <img t-att-src="_s + &quot;/academy_base/static/src/img/training-action.png&quot;" class="o_kanban_image" alt="Training action enrolment photo" />
                                     </t>
                                 </div>

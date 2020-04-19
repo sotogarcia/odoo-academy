@@ -121,10 +121,10 @@
                         <t t-name="kanban-box">
                             <div class="oe_kanban_global_click oe_kanban_academy_public_tendering_process">
                                 <div class="o_kanban_image">
-
-                                    <img alt="" t-if="record.image_128.raw_value" t-att-src="kanban_image('academy.public.tendering.process', 'image_128', record.id.raw_value)"/>
-
-                                    <t t-if="!record.image_128.raw_value">
+                                    <t t-if="record.image_128.raw_value">
+                                        <field name="image_128" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}' />
+                                    </t>
+                                    <t t-else="">
                                         <img t-att-src="_s + &quot;/academy_public_tendering/static/src/img/public_tendering.png&quot;" class="o_kanban_image" alt="Image for public tendering"/>
                                     </t>
                                 </div>
@@ -212,6 +212,7 @@
             <field name="sequence" eval="10" />
             <field name="action" ref="action_academy_public_tendering_act_window" />
             <field name="parent_id" ref="academy_base.menu_academy_monitoring" />
+            <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical')), (4, ref('academy_base.academy_group_teacher'))]" />
         </record>
 
     </data>

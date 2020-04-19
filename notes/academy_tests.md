@@ -2,21 +2,25 @@
 
 ## FIX
 
-- [ ] Remove public training Settings menu from teachers view
-- [ ] Change translation «Reclamaciones» to «Impugnaciones»
-- [ ] Allow managers to change owner
-  - Tests
-  - Questions (with related answers)
-- [ ] CHECK OVER: link between training.module and test.topic
+- [x] Remove public tendering Settings menu from teachers view
+- [x] Change translation «Reclamaciones» to «Impugnaciones»
+- [x] CHECK OVER: link between training.module and test.topic
 - [ ] CHECK OVER: ir.attachment import on import wizard
 - [ ] CHECK OVER: random wizard templates
-- [ ] Change noupdate="0" to noupdate="1" in data/____.xml
-- [ ] Topics and levels should be visible to all users
-- [ ] Check image can be edited in all modules and views
-- [ ] Change jorge.soto@postal3.es password
+- [x] Change noupdate="0" to noupdate="1" in data/____.xml
+- [x] Topics and levels should be visible to all users
+- [x] Check image can be edited in all modules and views
+- [x] Change jorge.soto@postal3.es password
+- [x] KeyError: 'sms.composer' accesing students view
+- [x] Hide training unit menu for non managers
+- [x] Default value when category is created from topic or from question
+
 
 ## TODO
 
+- [ ] Allow managers to change owner
+  - Tests
+  - Questions (with related answers)
 - [ ] When an answer is written, write_date and write_uid should be updated in
 related questions
 - [ ] When a question is written, write_date and write_uid should be updated in
@@ -32,6 +36,7 @@ related tests
 		- student_id = fields.Integer
 		- trainig_action_id = field.Integer
 - [ ] impugnmets must be anwered by teachers
+- [ ] Lessons should check (contraint) if the module belongs to the choosen answer
 
 ## FRONTEND
 
@@ -43,34 +48,3 @@ related tests
 - [ ] Save student tests, students could repeat them later
 
 
-## EXPORT TO MOODLE
-
-### General
-
-- Codificación UTF-8 (no indica si es con BOM o sin el)
-- Dos líneas vacías al principio
-- Línea ``$CATEGORY: $system$/`` seguida del nombre de la oposición o código Alias
-- Otra línea vacía
-- Preguntas
-
-### Pregunta
-
-- Título de la pregunta
-- Respuestas entre llaves
-```
-Título de la pregunta. { 
-	~ Opción incorrecta 
-	= Opción correcta
-}
-```
-
-### Respuestas
-
-- La opción correcta se marca con = 
-- Ñas incorrectas con ~
-
-> Pueden ir en cualquier orden
-
-
-
-// texto	Commentario hasta el final de la línea (opcional)

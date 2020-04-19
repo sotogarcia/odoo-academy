@@ -10,10 +10,8 @@
             <field name="employment_group_id" ref="academy_public_tendering.academy_public_tendering_employment_group_c1" />
             <field name="exam_type_id" ref="academy_public_tendering_exam_type_exam" />
             <field name="hiring_type_id" ref="academy_public_tendering_hiring_type_career" />
-            <field name="general_public_access">8</field>
-            <field name="general_internal_promotion">2</field>
-            <field name="disabilities_public_access">2</field>
-            <field name="disabilities_internal_promotion">1</field>
+            <field name="academy_public_tendering_vacancy_position_type_id" ref="academy_public_tendering_vacancy_position_type_general_public_access" />
+            <field name="quantity">18</field>
             <field name="academy_public_tendering_process_id" ref="academy_public_tendering.academy_public_tendering_process_1" />
         </record>
 
@@ -24,10 +22,8 @@
             <field name="employment_group_id" ref="academy_public_tendering.academy_public_tendering_employment_group_c1" />
             <field name="exam_type_id" ref="academy_public_tendering_exam_type_exam" />
             <field name="hiring_type_id" ref="academy_public_tendering_hiring_type_career" />
-            <field name="general_public_access">18</field>
-            <field name="general_internal_promotion">7</field>
-            <field name="disabilities_public_access">4</field>
-            <field name="disabilities_internal_promotion">1</field>
+            <field name="academy_public_tendering_vacancy_position_type_id" ref="academy_public_tendering_vacancy_position_type_disabilities_public_access" />
+            <field name="quantity">2</field>
             <field name="academy_public_tendering_process_id" ref="academy_public_tendering.academy_public_tendering_process_1" />
         </record>
 

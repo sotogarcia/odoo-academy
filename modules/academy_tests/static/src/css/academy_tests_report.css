@@ -1,16 +1,4 @@
 
-/*-- Test
-Styles applied over the test global area, its header and other related items
------------------------------------------------------------------------------*/
-/*section.academy-post-test-test .academy-test-header {
-    margin-bottom: 3px;
-    text-align: justify;
-}
-
-section.academy-post-test-test .academy-test-opcions-row {
-    text-align: right;
-}
-*/
 
 /*-- Question list
 Styles applied over the group of questions (main OL and LI tags)
@@ -72,51 +60,6 @@ article.academy-post-test-question p.academy-question-preamble {
 }
 
 
-
-/*-- Question edit mode
------------------------------------------------------------------------------*/
-/*
-article.academy-post-test-question-edit img.ir-attachment-image-datas {
-    max-height: 120px;
-    margin-left: auto;
-    margin-right: auto;
-}
-*/
-
-
-/*-- Answer item in edit mode
-Styles applied over each one of the answers and items inside
------------------------------------------------------------------------------*/
-/*
-article.academy-post-test-question-edit li.academy-answer {
-    position: relative;
-    vertical-align: middle;
-    height: 34px;
-    margin-top: 6px;
-}
-
-article.academy-post-test-question-edit textarea {
-    margin: 6px 0;
-}
-
-article.academy-post-test-question-edit div.academy-answer-name-disposition {
-    position: absolute;
-    left: 57px;
-    right: 0px;
-    top: 0px;
-}
-
-article.academy-post-test-question-edit .academy-answer-is_correct-disposition {
-    position: absolute;
-    left: 25px;
-    width: 25px;
-    top: -5px;
-}
-
-article.academy-post-test-question-edit .academy-question-edit-footer {
-    text-align: right;
-}
-*/
 /*-- Answer list
 Styles applied over the group of answers
 -----------------------------------------------------------------------------*/
@@ -139,30 +82,6 @@ article.academy-post-test-question ol.academy-answer-ids > li::before {
 }
 
 
-
-/*-- Question options toolbar
-Styles applied over area, buttons and other related items
------------------------------------------------------------------------------*/
-/*
-section.posted-test-body .academy-question-options {
-    margin-top: 12px;
-    vertical-align: bottom;
-}
-
-section.posted-test-body .academy-question-options:first-child {
-    margin-top: 0pt;
-}
-
-section.posted-test-body .academy-question-options > button {
-    min-width: 24px;
-}
-
-section.posted-test-body .popover-content {
-    white-space: pre-line;
-}
-
-*/
-
 /*-- Image attachments subtemplate
 Styles applied over images, figure, figcaption and other related items
 -----------------------------------------------------------------------------*/
@@ -184,26 +103,57 @@ div.ir-attachment-image-ids img {
     margin-right: auto;
 }
 
-/*-- Style for print
-Styles applied when document is printed
------------------------------------------------------------------------------*/
-/*
 
-*/
-/*
-.popover-content {
-    overflow: auto;
-    white-space: pre-line;
-}*/
-/*
-.footer > div.text-center,
-.header > .row {
-    display: none;
+/*-- Answers table
+Styles required to be used in answers table
+-----------------------------------------------------------------------------*/
+.answers-table {
+    width: 100%
+}
+
+.answers-table td,
+.answers-table th {
+    line-height: 1em;
+    vertical-align: middle;
+    font-size: 0.75em;
+}
+
+.answers-table td ul {
+    margin: 0px;
+}
+
+.answers-table-question {
+    width: 5%;
+}
+
+.answers-table-answer {
+    width: 10%;
+}
+
+.answers-table-description {
+    width: 45%;
+}
+
+.answers-table-topic {
+    width: 20%;
+}
+
+.answers-table-category {
+    width: 20%;
 }
 
 
+/*-- Test
+Styles applied over the test global area, its header and other related items
+-----------------------------------------------------------------------------*/
+/*section.academy-post-test-test .academy-test-header {
+    margin-bottom: 3px;
+    text-align: justify;
+}
 
-*/
+section.academy-post-test-test .academy-test-opcions-row {
+    text-align: right;
+}
 
 
 
@@ -283,6 +233,4 @@ Styles applied when document is printed
     }
 }
 
-.answers-table {
-        width: 100%
-}
+*/
