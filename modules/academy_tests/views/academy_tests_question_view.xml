@@ -33,6 +33,7 @@
                     <field name="level_id" class="oe_field_level_id" />
                     <field name="answer_count" class="oe_field_answer_count" />
                     <field name="attachment_count" class="oe_field_attachment_count" />
+                    <field name="owner_id" class="oe_field_owner_id" />
                </tree>
             </field>
         </record>
@@ -84,7 +85,16 @@
                                 domain="[('topic_id', '=', topic_id)]" 
                                 context="{'default_topic_id': topic_id}" />
                             <field name="tag_ids" class="oe_field_tag_ids"
-                                widget="many2many_tags"  colspan="4" />
+                                widget="many2many_tags" colspan="4" />
+                        </group>
+                        
+                        <!-- IMPORTAN: This group is hidden because it's not needed but can be 
+                        interesting in a future. Allows technicals to change the test owner -->
+                        <group col="2" class="text-danger oe_edit_only" invisible="1"
+                            groups="academy_base.academy_group_technical">
+                            <field name="owner_id" class="oe_field_owner_id"
+                                placeholder="Choose a different owner" 
+                                groups="academy_base.academy_group_technical" />
                         </group>
 
                         <notebook>
@@ -246,7 +256,7 @@
 
                     <filter string="My questions"
                         name="my_questions"
-                        domain="[('create_uid', '=', uid)]"
+                        domain="[('owner_id', '=', uid)]"
                         context="{}"
                         help="List only the own questions" />
                 </search>

@@ -236,6 +236,21 @@ class AcademyTestsQuestion(models.Model):
         limit=None,
     )
 
+    owner_id = fields.Many2one(
+        string='Owner',
+        required=True,
+        readonly=False,
+        index=False,
+        default=lambda self: self._default_owner_id(),
+        help='Current question owner',
+        comodel_name='res.users',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False,
+        groups='academy_base.academy_group_technical'
+    )
+
 
     # -------------------------- MANAGEMENT FIELDS ----------------------------
 
@@ -337,6 +352,14 @@ class AcademyTestsQuestion(models.Model):
 
     # --------------- ONCHANGE EVENTS AND OTHER FIELD METHODS -----------------
 
+    def _default_owner_id(self):
+        uid = 1
+        if 'uid' in self.env.context:
+            uid = self.env.context['uid']
+
+        return uid
+
+
     def default_level_id(self):
         """ Computes the level_id default value
         """
@@ -412,16 +435,15 @@ class AcademyTestsQuestion(models.Model):
 
 
     def write(self, values):
-        """
-            When a question is added to a test, active field is set to True
+        """ When a question is added to a test, active field is set to True
             IMPORTANT: I don't know why Odoo performs this action
-            This method allows to users who have no access rights to link questions to tests
-
+            This method allows to users who have no access rights to link
+            questions to tests
         """
-    
+
         if len(values.keys()) == 1 and 'active' in values.keys():
             result = super(AcademyTestsQuestion, self.sudo()).write(values)
         else:
             result = super(AcademyTestsQuestion, self).write(values)
-    
+
         return result

@@ -71,6 +71,7 @@
         'wizard/academy_tests_question_import_wizard_view.xml',
         'wizard/academy_tests_random_wizard_line_view.xml',
         'wizard/academy_tests_random_wizard_view.xml',
+        'wizard/academy_tests_change_owner_wizard_view.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

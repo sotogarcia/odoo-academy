@@ -142,6 +142,21 @@ class AcademyTestsTest(models.Model):
         auto_join=False
     )
 
+    owner_id = fields.Many2one(
+        string='Owner',
+        required=True,
+        readonly=False,
+        index=False,
+        default=lambda self: self._default_owner_id(),
+        help='Current test owner',
+        comodel_name='res.users',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False,
+        groups='academy_base.academy_group_technical'
+    )
+
 
     # -------------------------- MANAGEMENT FIELDS ----------------------------
 
@@ -248,7 +263,14 @@ class AcademyTestsTest(models.Model):
 
     # ----------------------- AUXILIARY FIELD METHODS -------------------------
 
-    # @api.multi
+    def _default_owner_id(self):
+        uid = 1
+        if 'uid' in self.env.context:
+            uid = self.env.context['uid']
+
+        return uid
+
+
     @api.depends('name')
     def _compute_lang(self):
         """ Gets the language used by the current user and sets it as `lang`
@@ -261,7 +283,6 @@ class AcademyTestsTest(models.Model):
             record.lang = user_id.lang
 
 
-    # @api.multi
     def import_questions(self):
         """ Runs a wizard to import questions from plain text
         @note: actually this method is not used

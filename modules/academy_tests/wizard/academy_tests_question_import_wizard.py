@@ -232,6 +232,20 @@ class AcademyTestsQuestionImport(models.TransientModel):
         limit=None
     )
 
+    owner_id = fields.Many2one(
+        string='Owner',
+        required=True,
+        readonly=False,
+        index=False,
+        default=lambda self: self.default_owner_id(),
+        help='Choose new owner',
+        comodel_name='res.users',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False,
+        groups='academy_base.academy_group_technical'
+    )
 
     # ----------------- EVENTS AND AUXILIARY FIELD METHODS --------------------
 
@@ -263,6 +277,10 @@ class AcademyTestsQuestionImport(models.TransientModel):
         return self._most_frecuent('level_id')
 
 
+    def default_owner_id(self):
+        return self.env.context.get('uid', None)
+
+
     @api.onchange('topic_id')
     def _onchange_topid_id(self):
         """ Updates domain form category_ids, this shoud allow categories
@@ -287,7 +305,8 @@ class AcademyTestsQuestionImport(models.TransientModel):
             return {
                 'warning': {
                     'title': _('Required'),
-                    'message': _('Topic and categories are required before continue')
+                    'message': _('Topic and categories are '
+                                 'required before continue')
                 }
             }
 
@@ -310,6 +329,13 @@ class AcademyTestsQuestionImport(models.TransientModel):
 
         self._create_questions(value_set)
 
+        act_xid = 'academy_tests.action_questions_act_window'
+        values = self.env.ref(act_xid).read()[0]
+
+        values['target'] = 'main'
+
+        return values
+
 
     # -------------------------------------------------------------------------
 
@@ -319,7 +345,7 @@ class AcademyTestsQuestionImport(models.TransientModel):
             - Replace extra simbols after lists elements
         """
         content = (self.content or '').strip()
-        flags = MULTILINE|UNICODE
+        flags = MULTILINE | UNICODE
 
         # STEP 1: Remove tabs and extra spaces
         content = replace(r'[ \t]+', r' ', content, flags=flags)
@@ -333,8 +359,10 @@ class AcademyTestsQuestionImport(models.TransientModel):
         content = replace(r'[\n]{2,}', r'\n\n', content, flags=flags)
 
         # STEP 2: Update questions and answers numbering formats
-        content = replace(r'^([0-9]{1,10})[.\-)]+[ \t]+', r'\1. ', content, flags=flags)
-        content = replace(r'^([a-zñA-ZÑ])[.\-)]+[ \t]+', r'\1) ', content, flags=flags)
+        pattern = r'^([0-9]{1,10})[.\-)]+[ \t]+'
+        content = replace(pattern, r'\1. ', content, flags=flags)
+        pattern = r'^([a-zñA-ZÑ])[.\-)]+[ \t]+'
+        content = replace(pattern, r'\1) ', content, flags=flags)
 
         return content
 
@@ -387,14 +415,41 @@ class AcademyTestsQuestionImport(models.TransientModel):
             return default
 
 
+    @staticmethod
+    def _fname_to_title(target, capitalize=True):
+        """ Removes file extension and changes underlines to spaces
+        """
+
+        target = replace(r'^(.+)(\.[^.]*)$', r'\1', target, flags=UNICODE)
+        target = replace(r'[ _]+', r' ', target, flags=UNICODE)
+
+        return target.title() if capitalize else target
+
+
+    def _can_current_user_change_the_owner(self):
+        """ If current user is allowed to access to the owner_id field then
+        field should be returned by `fields_get` method
+        """
+
+        # Check field access in the current wizard
+        bret = self.fields_get().get('owner_id', False)
+
+        if bret:
+            # Check field access in question model
+            question_model = self.env['academy.tests.question']
+            bret = question_model.fields_get().get('owner_id', False)
+
+        return bret
+
+
     def _process_line_group(self, line_group):
         """ Gets description, image, preamble, statement, and answers
         from a given group of lines
         """
-        
+
         sequence = 0
-        regex = r'((^[0-9]+\. )|(((^[a-wy-z])|(^x))\) )|(^> )|(^\!\[([^]]+)\]\(([^)]+)))?(.+)'
-        flags = UNICODE|IGNORECASE
+        regex = r'((^[0-9]+\. )|(((^[a-wy-z])|(^x))\) )|(^> )|(^\!\[([^]]+)\]\(([^)]+)))?(.+)'  # noqa: E501
+        flags = UNICODE | IGNORECASE
 
         # pylint: disable=locally-disabled, E1101
         catops = [(4, ID, None) for ID in self.category_ids.mapped('id')]
@@ -402,16 +457,19 @@ class AcademyTestsQuestionImport(models.TransientModel):
 
         values = {
             'description': '',
-            'preamble' : '',
-            'name' : None,
-            'answer_ids' : [],
-            'ir_attachment_ids' : [],
-            'topic_id' : self.topic_id.id,
-            'category_ids' : catops,
-            'type_id' : self.type_id.id,
-            'tag_ids' : tagops,
-            'level_id' : self.level_id.id
+            'preamble': '',
+            'name': None,
+            'answer_ids': [],
+            'ir_attachment_ids': [],
+            'topic_id': self.topic_id.id,
+            'category_ids': catops,
+            'type_id': self.type_id.id,
+            'tag_ids': tagops,
+            'level_id': self.level_id.id
         }
+
+        if self._can_current_user_change_the_owner():
+            values['owner_id'] = self.owner_id.id
 
         for line in line_group:
             found = search(regex, line, flags)
@@ -424,8 +482,8 @@ class AcademyTestsQuestionImport(models.TransientModel):
                 elif groups[Mi.ANSWER.value]:
                     sequence = sequence + 1
                     ansvalues = {
-                        'name' : groups[Mi.CONTENT.value],
-                        'is_correct' : (groups[Mi.TRUE.value] is not None),
+                        'name': groups[Mi.CONTENT.value],
+                        'is_correct': (groups[Mi.TRUE.value] is not None),
                         'sequence': sequence
                     }
                     values['answer_ids'].append((0, None, ansvalues))
@@ -454,13 +512,17 @@ class AcademyTestsQuestionImport(models.TransientModel):
         # STEP 1: Try to find attachment by `id` field
         numericURI = self.safe_cast(uri, int, 0)
         if numericURI:
-            record = self.attachment_ids.filtered( \
+            record = self.attachment_ids.filtered(
                 lambda item: item.id == numericURI)
 
-        # STEP 2: Try to find attachment by `name` field
+        # STEP 2: Try to find attachment by `name` field, with (`uri`) or
+        # without `title` extension
         if not record:
-            record = self.attachment_ids.filtered( \
-                lambda item: self._equal(item.name, uri))
+            uri = groups[Mi.URI.value]
+            title = self._fname_to_title(uri)
+
+            record = self.attachment_ids.filtered(
+                lambda item: self._equal(item.name, uri) or self._equal(item.name, title)) # noqa: 501
 
         # STEP 3: Raise error if number of found items is not equal to one
         if not record:
@@ -494,17 +556,18 @@ class AcademyTestsQuestionImport(models.TransientModel):
     def _create_questions(self, value_set):
         question_obj = self.env['academy.tests.question']
         sequence = 0
-        
+
         # pylint: disable=locally-disabled, W0703
         try:
             for values in value_set:
+                pprint(values)
                 question_set = question_obj.create(values)
                 if self.test_id:
                     sequence = sequence + 1
                     tvalues = {
-                        'question_ids' : [(0, None, {
-                            'test_id' : self.test_id.id,
-                            'question_id' : question_set.id,
+                        'question_ids': [(0, None, {
+                            'test_id': self.test_id.id,
+                            'question_id': question_set.id,
                             'sequence': sequence
                         })]
                     }
@@ -525,10 +588,7 @@ class AcademyTestsQuestionImport(models.TransientModel):
         """
 
         for record in self.imported_attachment_ids:
-            name = record.name
-            name = replace(r'^(.+)(\.[^.]*)$', r'\1', name, flags=UNICODE)
-            name = replace(r'[ \-_]+', r' ', name, flags=UNICODE)
-            record.write({'name' : name.title()})
+            record.name = self._fname_to_title(record.name)
 
 
     def _move_imported_attachments(self):
@@ -547,7 +607,7 @@ class AcademyTestsQuestionImport(models.TransientModel):
         mode = False
         domain = domain or []
 
-        domain.append(('create_uid', '=', uid))
+        domain.append(('owner_id', '=', uid))
         order = 'create_date DESC'
         question_obj = self.env['academy.tests.question']
         question_set = question_obj.search(domain, limit=100, order=order)
@@ -563,4 +623,3 @@ class AcademyTestsQuestionImport(models.TransientModel):
                 mode = result[0][0]
 
         return mode
-

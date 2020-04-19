@@ -80,6 +80,15 @@
                             </div>
                         </div>
 
+                        <!-- IMPORTAN: This group is hidden because it's not needed but can be 
+                        interesting in a future. Allows technicals to change the test owner -->
+                        <group col="2" class="text-danger oe_edit_only" invisible="1"
+                            groups="academy_base.academy_group_technical" >
+                            <field name="owner_id" class="oe_field_owner_id"
+                                placeholder="Choose a different owner" 
+                                groups="academy_base.academy_group_technical" />
+                        </group>
+
                         <notebook>
                             <page string="Description" class="oe_page_description" accesskey="D">
                                 <field name="description" class="oe_field_desription"
@@ -183,7 +192,7 @@
 
                     <filter string="My tests"
                         name="my_tests"
-                        domain="[('create_uid', '=', uid)]"
+                        domain="[('owner_id', '=', uid)]"
                         context="{}"
                         help="List only the own tests" />
                 </search>

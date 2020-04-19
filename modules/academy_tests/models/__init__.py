@@ -19,3 +19,4 @@ from . import academy_tests_question_impugnment
 
 from . import academy_tests_topic_training_module_link
 from . import academy_training_module
+

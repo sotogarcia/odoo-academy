@@ -133,5 +133,3 @@ class AcademyTestsAnswer(models.Model):
             'target': 'current',
             'state': 'paid'
         }
-
-

@@ -41,6 +41,13 @@
                             placeholder="Choose test (optional)" />
                     </group>
 
+                    <group col="2" class="text-danger oe_edit_only" states="step1"
+                        groups="academy_base.academy_group_technical" >
+                        <field name="owner_id" class="oe_field_owner_id"
+                            placeholder="Choose a different owner" 
+                            groups="academy_base.academy_group_technical" />
+                    </group>
+
                     <group string="Attachments"  states="step1">
                         <field name="imported_attachment_ids" class="oe_field_imported_attachment_ids"
                             placeholder="Choose files to import as attachments" colspan="4"
