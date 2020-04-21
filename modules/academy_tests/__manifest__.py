@@ -43,8 +43,8 @@
         'security/academy_tests_test_question_rel.xml',
         'security/academy_tests_question_type.xml',
         'security/academy_tests_topic.xml',
-        'security/academy_tests_random_wizard_line.xml',
-        'security/academy_tests_random_wizard_set.xml',
+        'security/academy_tests_random_line.xml',
+        'security/academy_tests_random_template.xml',
         'security/academy_tests_topic_training_module_link.xml',
 
         'views/academy_tests.xml',
@@ -58,6 +58,8 @@
         'views/academy_tests_tets_view.xml',
         'views/academy_tests_topic_view.xml',
         'views/ir_attachment_view.xml',
+        'views/academy_tests_random_line_view.xml',
+        'views/academy_tests_random_template_view.xml',
 
         'views/academy_tests_topic_training_module_link_view.xml',
         'views/academy_training_module_view.xml',
@@ -69,7 +71,7 @@
         'wizard/academy_tests_question_categorize_wizard_view.xml',
         'wizard/academy_tests_question_append_wizard_view.xml',
         'wizard/academy_tests_question_import_wizard_view.xml',
-        'wizard/academy_tests_random_wizard_line_view.xml',
+
         'wizard/academy_tests_random_wizard_view.xml',
         'wizard/academy_tests_change_owner_wizard_view.xml',
     ],

@@ -62,7 +62,7 @@
                             </h1>
                         </div>
 
-                        <div>
+                        <div class="academy-tests-question-data">
                             <separator />
                             <label for="preamble" class="oe_edit_only" />
                             <div>
@@ -73,14 +73,16 @@
 
                         <group col="4">
                             <field name="type_id" class="oe_field_type_id"
+                                options="{'no_create': True}"
                                 placeholder="Choose the type for this question" />
                             <field name="active" class="oe_field_active"
                                 placeholder="Check it to activate" />
-                            <field name="topic_id" class="oe_field_topic_id" />
+                            <field name="topic_id" class="oe_field_topic_id"
+                                options="{'no_create': True}" />
                             <field name="level_id" class="oe_field_level_id"
-                                placeholder="Enter new value for level" />
+                                placeholder="Enter new value for level" options="{'no_create': True}" />
                             <field name="category_ids" class="oe_field_category_ids"
-                                widget="many2many_tags" colspan="4"
+                                widget="many2many_tags" colspan="4" options="{'no_create': True}"
                                 attrs="{'readonly': [('topic_id', '=', False)]}"
                                 domain="[('topic_id', '=', topic_id)]" 
                                 context="{'default_topic_id': topic_id}" />
@@ -93,11 +95,12 @@
                         <group col="2" class="text-danger oe_edit_only" invisible="1"
                             groups="academy_base.academy_group_technical">
                             <field name="owner_id" class="oe_field_owner_id"
+                                options="{'no_create': True}"
                                 placeholder="Choose a different owner" 
                                 groups="academy_base.academy_group_technical" />
                         </group>
 
-                        <notebook>
+                        <notebook class="academy-tests-question-data">
                             <page string="Answers" class="oe_page_answers" accesskey="A">
                                 <field name="answer_ids" class="oe_field_answer_ids"
                                     context="{'tree_view_ref' : 'academy_tests.view_academy_answer_tree_x2many'}" />
@@ -198,22 +201,20 @@
                                     </ol>
                                 </div>
 
-                                <table class="o_question_kanban_status_bar" onclick="event.preventDefault();">
-                                    <tr>
-                                    <td class="o_question_kanban_status_topic" title="Topic"><field name="topic_id" /></td>
-                                    <td class="o_question_kanban_status_category" title="Number of categories"><field name="category_count" /></td>
-                                    <td class="o_question_kanban_status_level" title="Level"><field name="level_id" /></td>
-                                    <td class="o_question_kanban_status_attachment" title="Number of attachments"><field name="attachment_count" /></td>
-                                    <td class="o_question_kanban_status_preamble" title="Has preamble">
+                                <div class="d-flex flex-row o_question_kanban_status_bar" onclick="event.preventDefault();">
+                                    <div class="p-2 flex-grow-1 o_question_kanban_status_topic" title="Topic"><field name="topic_id" /></div>
+                                    <div class="p-2 o_question_kanban_status_category" title="Number of categories"><field name="category_count" /></div>
+                                    <div class="p-2 o_question_kanban_status_level" title="Level"><field name="level_id" /></div>
+                                    <div class="p-2 o_question_kanban_status_attachment" title="Number of attachments"><field name="attachment_count" /></div>
+                                    <div class="p-2 o_question_kanban_status_preamble" title="Has preamble">
                                         <tag t-if="record.preamble.raw_value">P</tag>
                                         <tag t-else="">&#160;</tag>
-                                    </td>
-                                    <td class="o_question_kanban_status_description" title="Has description">
+                                    </div>
+                                    <div class="p-2 o_question_kanban_status_description" title="Has description">
                                         <tag t-if="record.description.raw_value">D</tag>
                                         <tag t-else="">&#160;</tag>
-                                    </td>
-
-                                    <td class="o_question_kanban_status_menu" id="question_kanban_status_menu">
+                                    </div>
+                                    <div class="p-0 o_question_kanban_status_menu" id="question_kanban_status_menu">
                                         <div class="dropdown">
                                             <a class="btn btn-sm btn-outline-light dropdown-toggle" type="button" 
                                                id="question_kanban_status_menu_button" data-toggle="dropdown" 
@@ -226,10 +227,8 @@
                                                 </a>
                                             </div>
                                         </div>
-                                    </td>
-                                </tr>
-
-                                </table>
+                                    </div>
+                                </div>
 
                             </div>
                         </t>

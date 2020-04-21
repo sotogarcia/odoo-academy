@@ -57,7 +57,7 @@
 
                         <notebook>
                             <page string="Categories" class="oe_page_categories" accesskey="C">
-                                <field name="category_ids" class="oe_field_category_ids"
+                                <field name="category_ids" class="oe_field_category_ids" options="{'no_create': True}"
                                     context="{'tree_view_ref': 'academy_tests.view_academy_category_tree_x2many', 'default_topic_id': id}" />
                             </page>
                         </notebook>

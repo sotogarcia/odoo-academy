@@ -43,58 +43,61 @@
                 <form string="academy_tests_form" create="1" delete="1" edit="1">
                     <sheet>
                         <div class="oe_button_box" name="button_box">
-                                <button name="show_questions" type="object"
-                                    class="oe_stat_button oe_read_only" icon="fa-list-ol">
-                                    <field name="question_count" widget="statinfo" />
-                                </button>
                                 <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
                                 <button name="import_questions" type="object"
                                     class="oe_stat_button oe_read_only" icon="fa-upload">
                                     <span>Import</span>
                                 </button>
-                                <button name="random_questions" type="object"
+                                <button name="shuffle" type="object"
                                     class="oe_stat_button oe_read_only" icon="fa-random">
-                                    <span attrs="{'invisible': [('random_wizard_id', '!=', False)]}">Random</span>
+                                    <!-- <span attrs="{'invisible': [('random_wizard_id', '!=', False)]}">Random</span>
                                     <field name="random_wizard_id" class="oe_field_random_wizard_id"
-                                        placeholder="Enter new value for random wizard" />
+                                        placeholder="Enter new value for random wizard" /> -->
+                                    Shuffle
+                                </button>
+                                <button name="show_questions" type="object"
+                                    class="oe_stat_button oe_read_only" icon="fa-list-ol">
+                                    <field name="question_count" widget="statinfo" />
                                 </button>
                         </div>
 
-                        <field name="image_1920" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}' />
+                        <div class="row academy-tests-test-data">
+                            <div class="col-10">
+                                <div class="oe_title">
+                                    <field name="active" invisible="1"/>
+                                    <label for="name" class="oe_edit_only" />
+                                    <h1>
+                                        <field name="name" class="oe_field_name"
+                                            placeholder="Name" />
+                                    </h1>
+                                </div>
+                                <div>
+                                    <separator class="oe_edit_only" />
+                                    <label for="preamble" class="oe_edit_only" />
+                                    <div>
+                                        <field name="preamble" class="oe_field_preamble" widget="text"
+                                            placeholder="Enter new text for preamble" />
+                                    </div>
 
-                        <div class="oe_title">
-                            <field name="active" invisible="1"/>
-                            <label for="name" class="oe_edit_only" />
-                            <h1>
-                                <field name="name" class="oe_field_name"
-                                    placeholder="Name" />
-                            </h1>
-                        </div>
-
-                        <div>
-                            <separator />
-                            <label for="preamble" class="oe_edit_only" />
-                            <div>
-                                <field name="preamble" class="oe_field_preamble" widget="text"
-                                    placeholder="Enter new text for preamble" />
+                                </div>
                             </div>
-                        </div>
+                            <div class="col-2">
+                                <field name="image_1920" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}' />
+                            </div>
+                        </div><!-- row -->
+
+
 
                         <!-- IMPORTAN: This group is hidden because it's not needed but can be 
                         interesting in a future. Allows technicals to change the test owner -->
                         <group col="2" class="text-danger oe_edit_only" invisible="1"
                             groups="academy_base.academy_group_technical" >
                             <field name="owner_id" class="oe_field_owner_id"
-                                placeholder="Choose a different owner" 
+                                placeholder="Choose a different owner"  options="{'no_create': True}"
                                 groups="academy_base.academy_group_technical" />
                         </group>
 
-                        <notebook>
-                            <page string="Description" class="oe_page_description" accesskey="D">
-                                <field name="description" class="oe_field_desription"
-                                    placeholder="Enter new text for description" />
-                            </page>
-
+                        <notebook class="academy-tests-test-data">
                             <!-- options="{'no_create': 1}" -->
                             <page string="Questions" class="oe_page_questions" accesskey="Q">
                                 <field name="question_ids" class="oe_field_question_ids">
@@ -108,8 +111,12 @@
                                     </tree>
                                 </field>
                             </page>
+                            <page string="Description" class="oe_page_description" accesskey="D">
+                                <field name="description" class="oe_field_description"
+                                    placeholder="Enter new text for description" />
+                            </page>
                             <page string="Topics" class="oe_page_topics" accesskey="T">
-                                <field name="topic_ids" class="oe_field_topic_ids" />
+                                <field name="topic_ids" class="oe_field_topic_ids" options="{'no_create': True}" />
                             </page>
 
                         </notebook>

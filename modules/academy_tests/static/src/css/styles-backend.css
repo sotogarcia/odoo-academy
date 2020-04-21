@@ -32,49 +32,27 @@
     bottom: 0px;
     left: 0px;
     height: 2em;
-/*    display: flex;
-    flex-flow: row;
-    justify-content: space-between;
-    align-items: center;*/
-    border-collapse: collapse;
-    border-style: none;
-}
-
-.o_question_kanban_status_bar td {
-    font-size: 90%;
-    font-variant: monospace;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
     background-color: #F0F0F0;
-    padding: 0px 6px;
+    font-size: 90%;
+    font-variant: monospace; 
     cursor: auto;
 }
 
-.o_question_kanban_status_bar td + td {
+.o_question_kanban_status_bar > div {
+    border-top: 1px solid white;
+    font-size: 90%;
+    font-variant: monospace;
+    cursor: auto;
+}
+
+.o_question_kanban_status_bar div + div {
     border-left: 1px solid white;
 }
 
 .o_question_kanban_status_topic {
-    text-align: left;
-    font-weight: bold;
-    width: 60%;
-}
-
-
-.o_question_kanban_status_level {
-    text-align: center;
-    width: 40%;
-}
-
-.o_question_kanban_status_category,
-.o_question_kanban_status_attachment,
-.o_question_kanban_status_preamble,
-.o_question_kanban_status_description,
-.o_question_kanban_status_menu {
-    text-align: center;
-    width: 20px;
-    min-width: 20px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 .o_question_kanban_status_menu,
@@ -114,3 +92,13 @@ code but I have not found where I should make the change */
 .o_main_content > .o_breadcrumb_full > .breadcrumb > li {
     max-width: 300px;
 }
+
+
+
+.academy-tests-test-data textarea.oe_field_preamble,
+.academy-tests-test-data textarea.oe_field_description,
+.academy-tests-question-data textarea.oe_field_preamble,
+.academy-tests-question-data textarea.oe_field_description {
+    resize: vertical!important;
+}
+

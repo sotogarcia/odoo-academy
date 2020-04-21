@@ -78,7 +78,7 @@ class Nameofmodel(models.TransientModel):
         """
 
         uid = self.env.context.get('uid', -1)
-        domain = ['|', ('owner_id', '=', uid)]
+        domain = ['|', ('create_uid', '=', uid), ('write_uid', '=', uid)]
         order = 'write_date desc, create_date desc, id desc'
 
         wizard_set = self.search(domain, limit=1, order=order)

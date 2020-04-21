@@ -5,7 +5,7 @@
 This module contains the academy.tests.random.wizard.Set an unique Odoo model
 which contains all Academy Tests Random Wizard Set attributes and behavior.
 
-This model is the representation of the real life academy tests random wizard set
+This model is the representation of the real life academy tests random template
 
 Classes:
     AcademyTestsRandomWizardSet: This is the unique model class in this module
@@ -43,7 +43,7 @@ _logger = getLogger(__name__)
 
 # pylint: disable=locally-disabled, R0903
 class AcademyTestsRandomWizardSet(models.Model):
-    """ This model is the representation of the academy tests random wizard set
+    """ This model is the representation of the academy tests random template
 
     Fields:
       name (Char)       : Human readable name which will identify each record
@@ -55,9 +55,11 @@ class AcademyTestsRandomWizardSet(models.Model):
     """
 
 
-    _name = 'academy.tests.random.wizard.set'
+    _name = 'academy.tests.random.template'
     _description = u'Academy Tests Random Wizard Set'
 
+    _inherit = ['image.mixin', 'mail.thread']
+    
     _rec_name = 'name'
     _order = 'name ASC'
 
@@ -87,18 +89,18 @@ class AcademyTestsRandomWizardSet(models.Model):
         required=False,
         readonly=False,
         index=False,
-        default=False,
+        default=True,
         help='Enables/disables the record'
     )
 
-    random_wizard_line_ids = fields.One2many(
+    random_line_ids = fields.One2many(
         string='Random lines',
         required=True,
         readonly=False,
         index=False,
         default=None,
         help=False,
-        comodel_name='academy.tests.random.wizard.line',
+        comodel_name='academy.tests.random.line',
         inverse_name='random_wizard_id',
         domain=[],
         context={},

@@ -2,10 +2,10 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 """ Academy Tests Random Wizard Line
 
-This module contains the academy.tests.random.wizard.line. an unique Odoo model
+This module contains the academy.tests.random.line. an unique Odoo model
 which contains all Academy Tests Random Wizard Line  attributes and behavior.
 
-This model is the representation of the real life academy tests random wizard line
+This model is the representation of the real life academy tests random line
 
 Classes:
     AcademyTestsRandomWizardLine: This is the unique model class in this module
@@ -62,7 +62,7 @@ FIELD_MAPPING = [
 
 # pylint: disable=locally-disabled, R0903, W0212
 class AcademyTestsRandomWizardLine(models.Model):
-    """ This model is the representation of the academy tests random wizard line
+    """ This model is the representation of the academy tests random line
 
     Fields:
       name (Char)       : Human readable name which will identify each record
@@ -74,8 +74,8 @@ class AcademyTestsRandomWizardLine(models.Model):
     """
 
 
-    _name = 'academy.tests.random.wizard.line'
-    _description = u'Academy tests, random wizard line'
+    _name = 'academy.tests.random.line'
+    _description = u'Academy tests, random line'
 
 
     _rec_name = 'name'
@@ -124,14 +124,23 @@ class AcademyTestsRandomWizardLine(models.Model):
               'hide record without removing it')
     )
 
+    sequence = fields.Integer(
+        string='Sequence',
+        required=True,
+        readonly=False,
+        index=False,
+        default=10,
+        help=('Place of this line in the order of the lines from parent')
+    )
+
     random_wizard_id = fields.Many2one(
-        string=' ',
+        string='Template',
         required=False,
         readonly=False,
         index=False,
         default=None,
         help=False,
-        comodel_name='academy.tests.random.wizard.set',
+        comodel_name='academy.tests.random.template',
         domain=[],
         context={},
         ondelete='cascade',
@@ -155,8 +164,8 @@ class AcademyTestsRandomWizardLine(models.Model):
         default=None,
         help=False,
         comodel_name='academy.tests.question.type',
-        relation='academy_tests_random_wizard_line_question_type_rel',
-        column1='random_wizard_line_id',
+        relation='academy_tests_random_line_question_type_rel',
+        column1='random_line_id',
         column2='type_id',
         domain=[],
         context={},
@@ -189,8 +198,8 @@ class AcademyTestsRandomWizardLine(models.Model):
         default=None,
         help='Choose allowed tests or leave empty to allow all',
         comodel_name='academy.tests.test',
-        relation='academy_tests_random_wizard_line_test_rel',
-        column1='random_wizard_line_id',
+        relation='academy_tests_random_line_test_rel',
+        column1='random_line_id',
         column2='test_id',
         domain=[],
         context={},
@@ -214,8 +223,8 @@ class AcademyTestsRandomWizardLine(models.Model):
         default=None,
         help='Choose allowed topics or leave empty to allow all',
         comodel_name='academy.tests.topic',
-        relation='academy_tests_random_wizard_line_topic_rel',
-        column1='random_wizard_line_id',
+        relation='academy_tests_random_line_topic_rel',
+        column1='random_line_id',
         column2='topic_id',
         domain=[],
         context={},
@@ -239,8 +248,8 @@ class AcademyTestsRandomWizardLine(models.Model):
         default=None,
         help='Choose allowed categories or leave empty to allow all',
         comodel_name='academy.tests.category',
-        relation='academy_tests_random_wizard_line_category_rel',
-        column1='random_wizard_line_id',
+        relation='academy_tests_random_line_category_rel',
+        column1='random_line_id',
         column2='category_id',
         domain=[],
         context={},
@@ -264,8 +273,8 @@ class AcademyTestsRandomWizardLine(models.Model):
         default=None,
         help='Choose allowed tags or leave empty to allow all',
         comodel_name='academy.tests.tag',
-        relation='academy_tests_random_wizard_line_tag_rel',
-        column1='random_wizard_line_id',
+        relation='academy_tests_random_line_tag_rel',
+        column1='random_line_id',
         column2='tag_id',
         domain=[],
         context={},
@@ -289,8 +298,8 @@ class AcademyTestsRandomWizardLine(models.Model):
         default=None,
         help='Choose allowed levels or leave empty to allow all',
         comodel_name='academy.tests.level',
-        relation='academy_tests_random_wizard_line_level_rel',
-        column1='random_wizard_line_id',
+        relation='academy_tests_random_line_level_rel',
+        column1='random_line_id',
         column2='level_id',
         domain=[],
         context={},
@@ -314,8 +323,8 @@ class AcademyTestsRandomWizardLine(models.Model):
         default=None,
         help='Choose allowed questions or leave empty to allow all',
         comodel_name='academy.tests.question',
-        relation='academy_tests_random_wizard_line_question_rel',
-        column1='random_wizard_line_id',
+        relation='academy_tests_random_line_question_rel',
+        column1='random_line_id',
         column2='question_id',
         domain=[],
         context={},
@@ -488,7 +497,7 @@ class AcademyTestsRandomWizardLine(models.Model):
 
         return {
             'type': 'ir.actions.act_window',
-            'res_model': 'academy.tests.random.wizard.line',
+            'res_model': 'academy.tests.random.line',
             'view_mode': 'form',
             # 'view_type': 'form',
             'res_id': self.id,

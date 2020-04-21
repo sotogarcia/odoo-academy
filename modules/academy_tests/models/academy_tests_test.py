@@ -26,6 +26,7 @@ to create inherited question)
 
 from logging import getLogger
 from operator import itemgetter
+from random import shuffle as random_shuffle
 
 # pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
@@ -135,7 +136,7 @@ class AcademyTestsTest(models.Model):
         index=False,
         default=None,
         help=False,
-        comodel_name='academy.tests.random.wizard.set',
+        comodel_name='academy.tests.random.template',
         domain=[],
         context={},
         ondelete='cascade',
@@ -396,9 +397,18 @@ class AcademyTestsTest(models.Model):
 
             index = 1
             for rel_item in rel_set:
-                rel_item.write({'sequence' : index})
+                rel_item.write({'sequence': index})
                 index = index + 1
 
+    def shuffle(self):
+        qpositions = list(range(0, len(self.question_ids)))
+        sequence = 1
 
+        random_shuffle(qpositions)
 
+        for qposition in qpositions:
+            self.question_ids[qposition].sequence = sequence
+            sequence += 1
 
+        for question in self.question_ids:
+            print(question.id, question.sequence)

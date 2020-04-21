@@ -17,10 +17,10 @@
                         <button name="append_questions" type="object"
                             string="Append" class="btn btn-primary pull-right"
                             style="margin-right: 36px;"
-                            attrs="{'readonly': [('random_wizard_line_ids', '=', [])]}"/>
+                            attrs="{'readonly': [('random_line_ids', '=', [])]}"/>
                     </header>
 
-                    <field name="random_wizard_set_id" invisible="1" required="1" />
+                    <field name="random_template_id" invisible="1" required="1" />
 
                     <group col="8">
                         <field name="test_id" class="oe_field_test_id" colspan="6" />
@@ -31,8 +31,8 @@
                         </group>
 
                     <group>
-                        <field name="random_wizard_line_ids" colspan="8"
-                            class="oe_field_random_wizard_line_ids" nolabel="1"
+                        <field name="random_line_ids" colspan="8"
+                            class="oe_field_random_line_ids" nolabel="1"
                             placeholder="Add or manage lines" widget="one2many" />
                     </group>
 
@@ -54,27 +54,32 @@
                                     widget="date" colspan="2"
                                     attrs="{'invisible': [('random_wizard_template_id', '=', False)]}"/>
 
-                                <separator colspan="8" />
-
-                                <field name="name" class="oe_field_name" colspan="6"
-                                    placeholder="Enter new value for name"
-                                    attrs="{'required': [('save', '!=', False)]}"/>
-
-                                <field name="save" class="oe_field_save"
-                                    colspan="2" />
-
-                                <field name="description" class="oe_field_description"
-                                    placeholder="Enter new value for description"
-                                    colspan="8"/>
                             </group>
 
-                            </div>
+                        </div>
                     </div>
+
                     <footer />
 
                 </form>
             </field>
         </record>
+
+
+
+        <!-- Main window action for model.name -->
+        <record id="action_random_wizard_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Pupulate</field>
+            <field name="res_model">academy.tests.random.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="binding_model_id" ref="academy_tests.model_academy_tests_test" />
+            <field name="binding_view_types">form</field>
+        </record>
+
 
     </data>
 </openerp>

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <!-- VIEWS: "Templates"
+        
+            - Model·········: academy.tests.random.template
+            - _rec_name·····: name
+            - Domain········: []
+            - Context·······: {}
+            - Parent menu ··: academy_tests.menu_questions_top
+            - View priority·: 16    Sequence····: 10
+            - Action help···: Templates make it possible to create new tests automatically
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        
+        <!-- Tree view for "academy.tests.random.template" -->
+        <record id="view_academy_tests_random_template_tree" model="ir.ui.view">
+            <field name="name">view.academy.tests.random.template.tree</field>
+            <field name="model">academy.tests.random.template</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <tree string="academy_tests_random_template_tree" create="1" delete="1" edit="1">
+                    <field name="name" />
+                    <field name="description" />
+                </tree>
+            </field>
+        </record>
+        
+        <!-- Form view for "academy.tests.random.template" -->
+        <record id="view_academy_tests_random_template_form" model="ir.ui.view">
+            <field name="name">view.academy.tests.random.template.form</field>
+            <field name="model">academy.tests.random.template</field>
+            <field name="type">form</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <form string="academy_tests_random_template_form" create="1" delete="1" edit="1">
+                    <sheet>
+                        <div class="oe_button_box" name="button_box"/>
+                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+
+                        <field name="image_1920" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}' />
+
+                        <div class="oe_title">
+                            <field name="active" invisible="1"/>
+                            <label for="name" class="oe_edit_only" />
+                            <h1>
+                                <field name="name" class="oe_field_name"
+                                    placeholder="Name" />
+                            </h1>
+                        </div>
+
+                        <group col="2">
+                            <field name="description" class="oe_field_description"
+                                placeholder="Enter new description to this template" />
+                        </group>
+
+                        <group>
+                            <field name="random_line_ids" colspan="8"
+                                class="oe_field_random_line_ids" nolabel="1"
+                                placeholder="Add or manage lines" widget="one2many" />
+                        </group>
+
+                    </sheet>
+
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                    
+                </form>
+            </field>
+        </record>
+
+
+        <record id="view_academy_tests_random_template_kanban" model="ir.ui.view">
+            <field name="name">view.academy.tests.random.template.kanban</field>
+            <field name="model">academy.tests.random.template</field>
+            <field name="type">kanban</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <kanban string="academy_tests_kanban" create="1" delete="1" edit="1"
+                    quick_create="0" class="o_kanban_mobile">
+
+                    <field name="image_128"/>
+                    <field name="name" />
+
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click">
+                                <div class="o_kanban_image">
+                                    <t t-if="record.image_128.raw_value">
+                                        <field name="image_128" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}' />
+                                    </t>
+                                    <t t-else="">
+                                        <img t-att-src="_s + &quot;/academy_tests/static/src/img/document-gear.png&quot;" class="o_kanban_image" alt="Image for this test" />
+                                    </t>
+                                </div>
+
+                                <div class="oe_kanban_details">
+                                    <h4 class="o_ellipsis" t-att-title="record.name.raw_value"><field name="name"/></h4>
+                                    <p>
+                                        <t t-if="description"><t t-esc="description" /></t>
+                                        <t t-if="!description">- No description -</t>
+                                    </p>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+
+                </kanban>
+            </field>
+        </record>
+
+        
+        <!-- Search view for "academy.tests.random.template" -->
+        <record id="view_academy_tests_random_template_search" model="ir.ui.view">
+            <field name="name">view.academy.tests.random.template.search</field>
+            <field name="model">academy.tests.random.template</field>
+            <field name="type">search</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <search string="academy_tests_random_template_search">
+                    <field name="name" />
+                    <!-- ··· -->
+                </search>
+            </field>
+        </record>
+        
+        <!-- Main window action for model.name -->
+        <record id="action_templates_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Templates</field>
+            <field name="res_model">academy.tests.random.template</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="target">current</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="search_view_id" ref="view_academy_tests_random_template_search" />
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to add new templates
+                </p><p>
+                    Templates make it possible to create new tests automatically
+                </p>
+            </field>
+        </record>
+        
+        <!-- Main menu for model.name -->
+        <record id="menu_templates" model="ir.ui.menu" >
+            <field name="name">Templates</field>
+            <field name="sequence" eval="10" />
+            <field name="action" ref="action_templates_act_window" />
+            <field name="parent_id" ref="menu_test_settings_top" />
+            <field name="groups_id" eval="[(4, ref('academy_base.academy_group_teacher')), (4, ref('academy_base.academy_group_technical'))]" />
+        </record>
+
+    </data>
+</openerp>
