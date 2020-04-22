@@ -192,6 +192,21 @@
             <field name="binding_model_id" ref="academy_tests.model_academy_tests_test" />
         </record>
 
+
+        <!-- Report action to show: "Printable test" -->
+        <record id="action_report_preview_test" model="ir.actions.report">
+            <field name="name">Preview of the test</field>
+            <field name="model">academy.tests.test</field>
+            <field name="report_type">qweb-html</field>
+            <field name="report_name">academy_tests.view_academy_tests_qweb</field>
+            <field name="attachment_use" eval="False" />
+            <field name="attachment">(object.name+'.html')</field>
+            <field name="paperformat_id" ref="base.paperformat_euro" />
+            <field name="help">Show a test preview as Web page</field>
+            <!-- Following line adds print dropdown menú -->
+            <field name="binding_model_id" ref="academy_tests.model_academy_tests_test" />
+        </record>
+
     </data>
 </openerp>
 

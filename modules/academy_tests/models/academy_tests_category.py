@@ -50,7 +50,7 @@ class AcademyTestsCategory(models.Model):
         index=True,
         default=None,
         help='Name for this category',
-        size=50,
+        size=255,
         translate=True
     )
 

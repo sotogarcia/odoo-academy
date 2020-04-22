@@ -73,7 +73,16 @@ class AcademyTestsRandomWizard(models.TransientModel):
         readonly=False,
         index=False,
         default=False,
-        help='Check this to unlink existing questions before append new'
+        help='Check it to unlink existing questions before append new'
+    )
+
+    shuffle = fields.Boolean(
+        string='Shuffle',
+        required=False,
+        readonly=False,
+        index=False,
+        default=False,
+        help='Check it to sort the questions randomly'
     )
 
     test_id = fields.Many2one(
@@ -91,7 +100,7 @@ class AcademyTestsRandomWizard(models.TransientModel):
     )
 
     random_template_id = fields.Many2one(
-        string='Template',
+        string='Base template',
         required=True,
         readonly=False,
         index=False,
@@ -109,13 +118,13 @@ class AcademyTestsRandomWizard(models.TransientModel):
         required=False,
         readonly=False,
         index=False,
-        default=None,
+        default=lambda self: self.default_random_wizard_template_id(),
         help=False,
         comodel_name='academy.tests.random.template',
         domain=[],
         context={},
         ondelete='cascade',
-        auto_join=False
+        auto_join=False,
     )
 
     save = fields.Boolean(
@@ -124,20 +133,8 @@ class AcademyTestsRandomWizard(models.TransientModel):
         readonly=False,
         index=False,
         default=False,
-        help='Check to save wizard data as template'
+        help='Check it to save wizard data as template'
     )
-
-
-    last_update = fields.Datetime(
-        string='Last update',
-        required=False,
-        readonly=True,
-        index=False,
-        default=None,
-        help='Last template update',
-        compute=lambda self: self.compute_last_update()
-    )
-
 
     # ----------------- AUXILIARY FIELDS METHODS AND EVENTS -------------------
 
@@ -156,7 +153,7 @@ class AcademyTestsRandomWizard(models.TransientModel):
 
 
     def default_random_template_id(self):
-        """ Creates a new set of lines will be used in inherited field. This
+        """ Create a new set of lines will be used in inherited field. This
         uses name of the current user and timestamp to make record name and
         it sets active to False.
         """
@@ -166,7 +163,8 @@ class AcademyTestsRandomWizard(models.TransientModel):
 
         name = '{} - {}'.format(
             user_set.name,
-            fields.Datetime.context_timestamp(self, timestamp=datetime.now())
+            fields.Datetime.context_timestamp(
+                self, timestamp=datetime.now())
         )
         values = {'active': False, 'name': name}
 
@@ -176,46 +174,30 @@ class AcademyTestsRandomWizard(models.TransientModel):
         return lineset_item.id
 
 
-    # @api.multi
-    @api.depends('random_wizard_template_id')
-    def compute_last_update(self):
-        """ Change value to last_update field to show choosen template
-        write_date
-        """
+    def default_random_wizard_template_id(self):
+        active_model = self.env.context.get('active_model', False)
+        active_ids = self.env.context.get('active_ids', False)
 
-        for record in self:
-            record.last_update = self.random_wizard_template_id.write_date
+        if (active_model == 'academy.tests.random.template' and active_ids):
+            return active_ids[0]
 
+        return None
+        # template_obj = self.env['academy.tests.random.template']
+        # self.random_wizard_template_id = template_obj.browse(active_ids[0])
+        # self._onchange_random_wizard_template_id()
 
     @api.onchange('random_wizard_template_id')
     def _onchange_random_wizard_template_id(self):
-        # print('hola')
-
-        # if self.random_wizard_template_id:
-
-        #     ids = []
-        #     parent_id = self.random_template_id.id
-        #     for line_item in self.random_wizard_template_id.random_line_ids:
-        #         new_line = line_item.copy({'random_wizard_id': parent_id})
-        #         ids.append(new_line.id)
-
-        #     self.random_template_id.random_line_ids = [(6, None, ids)]
-
-        #     self.name = self.random_wizard_template_id.name
-        #     self.description = self.random_wizard_template_id.description
 
         self.ensure_one()
-
-        self.last_update = self.random_wizard_template_id.write_date
 
         if self.random_wizard_template_id:
 
             ids = []
             parent_id = self.random_template_id.id
             for line_item in self.random_wizard_template_id.random_line_ids:
-                new_line = line_item.copy({'random_wizard_id': parent_id})
+                new_line = line_item.copy({'random_template_id': parent_id})
                 ids.append(new_line.id)
-                print(new_line)
 
             self.random_line_ids = [(6, None, ids)]
 
@@ -234,6 +216,9 @@ class AcademyTestsRandomWizard(models.TransientModel):
             @return: True on success, False otherwise
         """
 
+        message = 'Garbage collector: removing random template {}'
+        _logger.info(message.format(message))
+
         if self._inherited_line_set_is_no_longer_needed():
             self._remove_inherited_line_set()
 
@@ -242,96 +227,7 @@ class AcademyTestsRandomWizard(models.TransientModel):
         return result
 
 
-    # ---------------------------- PUBIC METHODS ------------------------------
-
-    # @api.multi
-    def append_questions(self):
-        """ Calls action by each related line
-        """
-
-        self.ensure_one()
-
-        self._overwrite_pre_requirements()
-
-        values = self._get_base_values()
-        current_leaf = self._leaf_to_exclude_current_questions()
-        question_set = self.random_line_ids.perform_search(current_leaf)
-        leafs = self._make_insert_leafs(question_set, values)
-        self._write_leafs(leafs)
-
-        self._update_template()
-
-        self._collect_garbage()
-
-
     # -------------------------- AUXILIARY METHODS ----------------------------
-
-    def _leaf_to_exclude_current_questions(self):
-        current_leaf = None
-
-        if not self.overwrite and self.test_id and self.test_id.question_ids:
-            question_ids = self.test_id.question_ids.mapped('question_id')
-            current_ids = question_ids.mapped('id')
-            current_leaf = [('id', 'not in', current_ids)]
-
-        return current_leaf
-
-    def _overwrite_pre_requirements(self):
-        if self.overwrite:
-            self.test_id.write({
-                'question_ids': [(5, 0, 0)]
-            })
-
-        return self.test_id.question_ids
-
-
-    def _compute_base_sequence_value(self):
-        sequences = self.test_id.question_ids.mapped('sequence') or [0]
-        return (max(sequences)) + 0 if not self.overwrite else 0
-
-
-    def _get_base_values(self):
-        return {
-            'test_id': self.test_id.id,
-            'question_id': None,
-            'sequence': self._compute_base_sequence_value(),
-            'active': True
-        }
-
-
-    def _update_template(self):
-        result = self.random_template_id
-
-        if self.save:
-            if self.random_wizard_template_id:
-                self.active = False
-                self._update_template_with(self)
-                result = self.random_wizard_template_id
-            else:
-                self.active = True
-        else:
-            self.active = False
-
-        return result
-
-
-    @staticmethod
-    def _make_insert_leafs(question_set, base_values):
-        leafs = []
-        values = base_values.copy()
-        for question in question_set:
-            values['question_id'] = question.id
-            values['sequence'] = values['sequence'] + 1
-
-            leafs.append((0, None, values.copy()))
-
-        return leafs
-
-
-    def _write_leafs(self, leafs):
-        return self.test_id.write({
-            'question_ids': leafs
-        })
 
 
     def _collect_garbage(self):
@@ -344,15 +240,15 @@ class AcademyTestsRandomWizard(models.TransientModel):
 
         lineset_domain = [('active', '=', False)]
         lineset_obj = self.env['academy.tests.random.template']
-        lineset_set = lineset_obj.search(lineset_domain, \
-            offset=0, limit=None, order=None, count=False)
+        lineset_set = lineset_obj.search(
+            lineset_domain, offset=0, limit=None, order=None, count=False)
 
         lineset_ids = lineset_set.mapped('id')
 
-        line_domain = [('random_wizard_id', 'in', lineset_ids)]
+        line_domain = [('random_template_id', 'in', lineset_ids)]
         line_obj = self.env['academy.tests.random.line']
-        line_set = line_obj.search(line_domain, \
-            offset=0, limit=None, order=None, count=False)
+        line_set = line_obj.search(
+            line_domain, offset=0, limit=None, order=None, count=False)
 
         line_set.unlink()
         lineset_set.unlink()
@@ -377,20 +273,17 @@ class AcademyTestsRandomWizard(models.TransientModel):
         source.random_line_ids = actions
 
 
-    @staticmethod
-    def _link_lines_to_set(target, source_ids):
-        """ Link lines with given ids (source_ids) to an other line set.
-        Lines and sets are related by a Many2one field, so when lines are
-        linked to a new set also are unlinked from previous parent set.
-
-        @target (academy.tests.random.template): line set to which lines
-        will be attached
-        @source_ids (list): list of line identifiers (`id`) will be used
-        to perform action
+    def append_questions(self):
+        """ Calls action by each related line
         """
 
-        actions = [(4, ID, None) for ID in source_ids]
-        target.random_line_ids = actions
+        self.ensure_one()
+
+        template = self.random_template_id
+        template.append_questions(self.test_id, self.overwrite)
+
+        if self.shuffle:
+            self.test_id.shuffle()
 
 
     def _remove_inherited_line_set(self):
@@ -399,24 +292,3 @@ class AcademyTestsRandomWizard(models.TransientModel):
         """
         self._remove_lines_from_set(self.random_template_id)
         self.random_template_id.unlink()
-
-
-    def _update_template_with(self, source=None):
-        """ The related pre-existing template will be updated with the
-        current wizard values.
-        """
-
-        # STEP 1: Updating set attributes
-        template_item = source.random_wizard_template_id
-        template_item.name = source.name
-        template_item.description = source.description
-        # -- Not proceed --> template_item.active = source.active
-
-        # STEP 2: Replacing old lines with the new updated copies
-        # pylint: disable=locally-disabled, E1101, W0201
-        ids = [item.id for item in source.random_line_ids]
-        self._remove_lines_from_set(template_item)
-        self._link_lines_to_set(template_item, ids)
-
-        return template_item
-

@@ -26,14 +26,8 @@
                 <tree string="academy_tests_random_line_tree" create="1" delete="1" edit="1">
                     <field name="sequence" widget="handle" />
                     <field name="name" class="oe_field_name" />
+                    <field name="description" class="oe_field_description" />
                     <field name="quantity" class="oe_field_quantity" />
-                    <field name="type_count" class="oe_field_type_count" />
-                    <field name="test_count" class="oe_field_test_count" />
-                    <field name="topic_count" class="oe_field_topic_count" />
-                    <field name="category_count" class="oe_field_category_count" />
-                    <field name="tag_count" class="oe_field_tag_count" />
-                    <field name="level_count" class="oe_field_level_count" />
-                    <field name="question_count" class="oe_field_question_count" />
                     <field name="disallow_attachments" string="No attach" class="oe_field_disallow_attachments" />
                 </tree>
             </field>
@@ -65,7 +59,7 @@
                             placeholder="Enter new value for quantity" colspan="2" />
                         <field name="disallow_attachments"
                             class="oe_field_disallow_attachments"
-                            placeholder="Check to exclude all attachments"
+                            placeholder="Check it to exclude all attachments"
                             string="No attachments" colspan="2" />
 
                         <separator colspan="8" />
@@ -79,20 +73,20 @@
                             widget="many2many_tags" colspan="6"
                             placeholder="Choose types to include/exclude" />
                         <field name="exclude_types" class="oe_field_exclude_types"
-                            placeholder="Check to include or uncheck to exclude"
+                            placeholder="Check it to include or uncheck to exclude"
                             string="Exclude selected" colspan="2" />
 
                         <field name="level_ids" class="oe_field_level_ids"
                             widget="many2many_tags" colspan="6"
                             placeholder="Choose levels to include/exclude" />
                         <field name="exclude_levels" class="oe_field_exclude_levels"
-                            placeholder="Check to include or uncheck to exclude"
+                            placeholder="Check it to include or uncheck to exclude"
                             string="Exclude selected" colspan="2" />
                         <field name="tag_ids" class="oe_field_tag_ids"
                             widget="many2many_tags" colspan="6"
                             placeholder="Choose tags to include/exclude" />
                         <field name="exclude_tags" class="oe_field_exclude_tags"
-                            placeholder="Check to include or uncheck to exclude"
+                            placeholder="Check it to include or uncheck to exclude"
                             string="Exclude selected" colspan="2" />
 
                     </group>
@@ -102,14 +96,14 @@
                             widget="many2many_tags"
                             placeholder="Choose topics to include/exclude" />
                         <field name="exclude_topics" class="oe_field_exclude_topics"
-                            placeholder="Check to include or uncheck to exclude"
+                            placeholder="Check it to include or uncheck to exclude"
                             string="Exclude selected" />
 
                         <field name="category_ids" class="oe_field_category_ids"
                             widget="many2many_tags" domain="[('topic_id', 'in', topic_ids)]"
                             placeholder="Choose categories to include/exclude" />
                         <field name="exclude_categories" class="oe_field_exclude_categories"
-                            placeholder="Check to include or uncheck to exclude"
+                            placeholder="Check it to include or uncheck to exclude"
                             string="Exclude selected" />
                     </group>
 
@@ -117,7 +111,7 @@
                         <field name="test_ids" class="oe_field_test_ids"
                             placeholder="Choose tests include/exclude" />
                         <field name="exclude_tests" class="oe_field_exclude_tests"
-                            placeholder="Check to include or uncheck to exclude"
+                            placeholder="Check it to include or uncheck to exclude"
                             string="Exclude selected" />
                     </group>
 
@@ -125,7 +119,7 @@
                         <field name="question_ids" class="oe_field_question_ids"
                             placeholder="Choose questions to include/exclude" />
                         <field name="exclude_questions" class="oe_field_exclude_questions"
-                            placeholder="Check to include or uncheck to exclude"
+                            placeholder="Check it to include or uncheck to exclude"
                             string="Exclude selected" />
                     </group>
 

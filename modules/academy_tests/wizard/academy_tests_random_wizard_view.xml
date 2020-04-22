@@ -24,40 +24,23 @@
 
                     <group col="8">
                         <field name="test_id" class="oe_field_test_id" colspan="6" />
-
+                        <field name="shuffle" class="oe_field_overwrite"
+                            attrs="{'readonly': [('test_id', '=', False)]}"
+                            placeholder="Check it to overwrite" />
+                        <field name="random_wizard_template_id"  colspan="6"
+                            class="oe_field_random_wizard_id"
+                            options="{'no_open': True, 'no_create': True, 'no_quick_create': True, 'no_create_edit': True }"
+                            placeholder="Choose template for random wizard" />
                         <field name="overwrite" class="oe_field_overwrite"
                             attrs="{'readonly': [('test_id', '=', False)]}"
                             placeholder="Check it to overwrite" />
-                        </group>
-
+                    </group>
+                    
                     <group>
                         <field name="random_line_ids" colspan="8"
                             class="oe_field_random_line_ids" nolabel="1"
                             placeholder="Add or manage lines" widget="one2many" />
                     </group>
-
-                    <p>
-                        <a class="btn btn-success btn-sm" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
-                            <b>More&#160;&#160;&gt;&gt;</b>
-                        </a>
-                    </p>
-                    <div class="collapse" id="collapseExample">
-                        <div class="card card-body">
-
-                            <group col="8">
-                                <field name="random_wizard_template_id"
-                                    class="oe_field_random_wizard_id" colspan="6"
-                                    options="{'no_open': True, 'no_create': True, 'no_quick_create': True, 'no_create_edit': True }"
-                                    placeholder="Enter new value for random wizard" />
-
-                                <field name="last_update" class="oe_field_last_update"
-                                    widget="date" colspan="2"
-                                    attrs="{'invisible': [('random_wizard_template_id', '=', False)]}"/>
-
-                            </group>
-
-                        </div>
-                    </div>
 
                     <footer />
 
@@ -80,6 +63,18 @@
             <field name="binding_view_types">form</field>
         </record>
 
+        <!-- Secondaty action to bind wizard to templates view -->
+        <record id="action_random_wizard_bingind_to_template_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Pupulate a test</field>
+            <field name="res_model">academy.tests.random.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="binding_model_id" ref="academy_tests.model_academy_tests_random_template" />
+            <field name="binding_view_types">form</field>
+        </record>
 
     </data>
 </openerp>

@@ -107,7 +107,7 @@
                             </page>
                             <page string="Attachments" class="oe_page_attachments" accesskey="T">
                                 <field name="ir_attachment_ids" class="oe_field_ir_attachment_ids"
-                                    context="{'tree_view_ref' : 'academy_tests.view_ir_attachment_tree'}" />
+                                    context="{'tree_view_ref' : 'academy_tests.view_ir_attachment_tree', 'search_default_my_documents_filter': 1}" />
                             </page>
                             <page string="Images" class="oe_page_images" accesskey="I">
 

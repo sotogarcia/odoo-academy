@@ -129,13 +129,13 @@ class AcademyTestsTest(models.Model):
         # oldname='academy_answers_table_ids'
     )
 
-    random_wizard_id = fields.Many2one(
-        string='Random set',
+    random_template_id = fields.Many2one(
+        string='Template',
         required=False,
-        readonly=False,
+        readonly=True,
         index=False,
         default=None,
-        help=False,
+        help='Template has been used to pupulate this tests',
         comodel_name='academy.tests.random.template',
         domain=[],
         context={},
@@ -292,10 +292,9 @@ class AcademyTestsTest(models.Model):
             'type': 'ir.actions.act_window',
             'res_model': 'academy.tests.question.import.wizard',
             'view_mode': 'form',
-            # 'view_type': 'form',
             'views': [(False, 'form')],
             'target': 'new',
-            'context': {'default_test_id' : self.id}
+            'context': {'default_test_id': self.id}
         }
 
 
@@ -409,6 +408,3 @@ class AcademyTestsTest(models.Model):
         for qposition in qpositions:
             self.question_ids[qposition].sequence = sequence
             sequence += 1
-
-        for question in self.question_ids:
-            print(question.id, question.sequence)

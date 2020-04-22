@@ -5,27 +5,6 @@
 This module contains the academy.tests.random.line. an unique Odoo model
 which contains all Academy Tests Random Wizard Line  attributes and behavior.
 
-This model is the representation of the real life academy tests random line
-
-Classes:
-    AcademyTestsRandomWizardLine: This is the unique model class in this module
-    and it defines an Odoo model with all its attributes and related behavior.
-
-    Inside this class can be, in order, the following attributes and methods:
-    * Object attributes like name, description, inheritance, etc.
-    * Entity fields with the full definition
-    * Computed fields and required computation methods
-    * Events (@api.onchange) and other field required methods like computed
-    domain, defaul values, etc.
-    * Overloaded object methods, like create, write, copy, etc.
-    * Public object methods will be called from outside
-    * Private auxiliary methods not related with the model fields, they will
-    be called from other class methods
-
-
-Todo:
-    * Complete the model attributes and behavior
-
 """
 
 
@@ -79,18 +58,8 @@ class AcademyTestsRandomWizardLine(models.Model):
 
 
     _rec_name = 'name'
-    _order = 'name ASC'
+    _order = 'sequence ASC, name ASC'
 
-
-    state = fields.Selection(
-        string='State',
-        required=True,
-        readonly=False,
-        index=False,
-        default='step1',
-        help=False,
-        selection=WIZARD_LINE_STATES
-    )
 
     name = fields.Char(
         string='Name',
@@ -133,7 +102,17 @@ class AcademyTestsRandomWizardLine(models.Model):
         help=('Place of this line in the order of the lines from parent')
     )
 
-    random_wizard_id = fields.Many2one(
+    state = fields.Selection(
+        string='State',
+        required=True,
+        readonly=False,
+        index=False,
+        default='step1',
+        help=False,
+        selection=WIZARD_LINE_STATES
+    )
+
+    random_template_id = fields.Many2one(
         string='Template',
         required=False,
         readonly=False,
@@ -178,7 +157,7 @@ class AcademyTestsRandomWizardLine(models.Model):
         readonly=False,
         index=False,
         default=False,
-        help='Check this to disallow selected records instead allow them'
+        help='Check it to disallow selected records instead allow them'
     )
 
     disallow_attachments = fields.Boolean(
@@ -187,7 +166,7 @@ class AcademyTestsRandomWizardLine(models.Model):
         readonly=False,
         index=False,
         default=False,
-        help='Check this to exclude all questions have attachments'
+        help='Check it to exclude all questions have attachments'
     )
 
     test_ids = fields.Many2many(
@@ -212,7 +191,7 @@ class AcademyTestsRandomWizardLine(models.Model):
         readonly=False,
         index=False,
         default=False,
-        help='Check this to disallow selected records instead allow them'
+        help='Check it to disallow selected records instead allow them'
     )
 
     topic_ids = fields.Many2many(
@@ -237,7 +216,7 @@ class AcademyTestsRandomWizardLine(models.Model):
         readonly=False,
         index=False,
         default=False,
-        help='Check this to disallow selected records instead allow them'
+        help='Check it to disallow selected records instead allow them'
     )
 
     category_ids = fields.Many2many(
@@ -262,7 +241,7 @@ class AcademyTestsRandomWizardLine(models.Model):
         readonly=False,
         index=False,
         default=False,
-        help='Check this to disallow selected records instead allow them'
+        help='Check it this to disallow selected records instead allow them'
     )
 
     tag_ids = fields.Many2many(
@@ -287,7 +266,7 @@ class AcademyTestsRandomWizardLine(models.Model):
         readonly=False,
         index=False,
         default=False,
-        help='Check this to disallow selected records instead allow them'
+        help='Check it to disallow selected records instead allow them'
     )
 
     level_ids = fields.Many2many(
@@ -312,7 +291,7 @@ class AcademyTestsRandomWizardLine(models.Model):
         readonly=False,
         index=False,
         default=False,
-        help='Check this to disallow selected records instead allow them'
+        help='Check it to disallow selected records instead allow them'
     )
 
     question_ids = fields.Many2many(
@@ -337,7 +316,7 @@ class AcademyTestsRandomWizardLine(models.Model):
         readonly=False,
         index=False,
         default=False,
-        help='Check this to disallow selected records instead allow them'
+        help='Check it this to disallow selected records instead allow them'
     )
 
 
@@ -353,7 +332,7 @@ class AcademyTestsRandomWizardLine(models.Model):
     # -------------------------- MANAGEMENT FIELDS ----------------------------
 
     type_count = fields.Integer(
-        string='Number of types',
+        string='Nº types',
         required=False,
         readonly=True,
         index=False,
@@ -372,7 +351,7 @@ class AcademyTestsRandomWizardLine(models.Model):
             record.type_count = len(record.type_ids) * sign
 
     test_count = fields.Integer(
-        string='Number of tests',
+        string='Nº tests',
         required=False,
         readonly=True,
         index=False,
@@ -391,7 +370,7 @@ class AcademyTestsRandomWizardLine(models.Model):
             record.test_count = len(record.test_ids) * sign
 
     topic_count = fields.Integer(
-        string='Number of topics',
+        string='Nº topics',
         required=False,
         readonly=True,
         index=False,
@@ -410,7 +389,7 @@ class AcademyTestsRandomWizardLine(models.Model):
             record.topic_count = len(record.topic_ids) * sign
 
     category_count = fields.Integer(
-        string='Number of categories',
+        string='Nº categories',
         required=False,
         readonly=True,
         index=False,
@@ -429,7 +408,7 @@ class AcademyTestsRandomWizardLine(models.Model):
             record.category_count = len(record.category_ids) * sign
 
     tag_count = fields.Integer(
-        string='Number of tags',
+        string='Nº tags',
         required=False,
         readonly=True,
         index=False,
@@ -448,7 +427,7 @@ class AcademyTestsRandomWizardLine(models.Model):
             record.tag_count = len(record.tag_ids) * sign
 
     level_count = fields.Integer(
-        string='Number of levels',
+        string='Nº levels',
         required=False,
         readonly=True,
         index=False,
@@ -467,7 +446,7 @@ class AcademyTestsRandomWizardLine(models.Model):
             record.level_count = len(record.level_ids) * sign
 
     question_count = fields.Integer(
-        string='Number of questions',
+        string='Nº questions',
         required=False,
         readonly=True,
         index=False,
@@ -499,7 +478,6 @@ class AcademyTestsRandomWizardLine(models.Model):
             'type': 'ir.actions.act_window',
             'res_model': 'academy.tests.random.line',
             'view_mode': 'form',
-            # 'view_type': 'form',
             'res_id': self.id,
             'views': [(False, 'form')],
             'target': 'new'
@@ -538,42 +516,8 @@ class AcademyTestsRandomWizardLine(models.Model):
 
         return result.mapped('id')
 
-
-    def _get_values(self):
-        """ This gets all field values from record except the Odoo MAGIC COLUMNS
-        @note: this will be used by copy_to method
-        @return (dict): returns a valid dictionary can be used in CRUD methods
-        """
-
-        self.ensure_one()
-
-        values = {}
-
-        for k, v in self._fields.items():
-
-            if k in models.MAGIC_COLUMNS or k[0] == '_':
-                continue
-
-            elif isinstance(v, fields.Many2one):
-                value = getattr(self, k)
-                values[k] = value.id if value else None
-
-            elif isinstance(v, (fields.One2many, fields.Many2many)):
-                value = [obj.id for obj in getattr(self, k)]
-                if value:
-                    values[k] = [(6, None, value)]
-                else:
-                    values[k] = [(5, None, None)]
-
-            else:
-                values[k] = getattr(self, k)
-
-        return values
-
-
     # --------------------------- PUBLIC METHODS ------------------------------
 
-    # @api.multi
     def get_leafs(self):
         """ Walk over field mapping making domain leafs for each of those that
          have been set.
@@ -601,7 +545,6 @@ class AcademyTestsRandomWizardLine(models.Model):
         return leafs
 
 
-    # @api.multi
     def get_domain(self, extra_leafs=None):
         """ Search for questions to append
         """
@@ -616,43 +559,38 @@ class AcademyTestsRandomWizardLine(models.Model):
             domain = ['&'] + domain
 
         msg = _('Domain {} will be used to append random questions')
-        _logger.warning(msg.format(domain))
+        _logger.info(msg.format(domain))
 
         return domain
 
 
-    # @api.multi
     def perform_search(self, extra_leafs=None):
-        """ Search for questions to append
-        """
-        question_obj = self.env['academy.tests.question']
+        """ Reads values from each line in recordset, performs search and
+        returns question ids
 
-        question = self.env['academy.tests.question']
+        @param extra_leafs: list with extra leafs to be append to domain
+        """
+
+        # STEP1: Create an empty question recordset with random sort context
+        ctx = {'sort_by_random': True}
+        question_set = self.env['academy.tests.question'].with_context(ctx)
+
+        # STEP2: Ensure extra_leafs is a list
+        extra_leafs = extra_leafs or []
+
         for record in self:
-            domain = record.get_domain(extra_leafs)
-            limit = record.quantity
 
-            ctx = {'sort_by_random' : True}
-            result = question_obj.with_context(ctx).search(domain, limit=limit)
-            question = question + result
+            # STEP3: Merge extra_leafs with a new leaf witch excludes current
+            # accumulate questions
+            exclusion_leafs = extra_leafs
+            if question_set:
+                qids = question_set.mapped('question_id')
+                exclusion_leafs.append(('id', 'not in', qids))
 
-        return question
+            # STEP 4: Build domain with line values and merge exclusion leafs
+            domain = record.get_domain(exclusion_leafs)
+            print(domain, record.quantity)
+            # STEP 5: Perform search and append to previouly created recordset
+            question_set += question_set.search(domain, limit=record.quantity)
 
-
-    # @api.multi
-    def copy_to(self, recordset=None):
-        """ Copy values from current record to all records in recordset
-        """
-
-        self.ensure_one()
-
-        result = self.env[self._name]
-        values = self._get_values()
-
-        if not recordset:
-            result = self.create(values)
-        else:
-            result = recordset.write(values)
-
-        return result
-
+        return question_set

@@ -18,6 +18,8 @@ class AcademyTestAnswersTableReport(models.AbstractModel):
 
     _name = 'report.academy_tests.view_academy_tests_answers_table_qweb'
 
+    _description = 'Report to print right answers for tests'
+
     _report_xid = 'academy_tests.action_report_printable_answer_table'
     _target_model = 'academy.tests.test'
 

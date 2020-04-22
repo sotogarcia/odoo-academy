@@ -51,7 +51,7 @@ class AcademyTestsTopic(models.Model):
         index=True,
         default=None,
         help="Name for this topic",
-        size=50,
+        size=255,
         translate=True,
         track_visibility='onchange'
     )

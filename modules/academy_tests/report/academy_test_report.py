@@ -18,6 +18,8 @@ class AcademyTestReport(models.AbstractModel):
 
     _name = 'report.academy_tests.view_academy_tests_qweb'
 
+    _description = 'Report to print tests'
+
     _report_xid = 'academy_tests.action_report_printable_test'
     _target_model = 'academy.tests.test'
 

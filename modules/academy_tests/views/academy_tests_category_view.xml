@@ -117,7 +117,7 @@
         <!-- Main menu for model.name -->
         <record id="menu_categories" model="ir.ui.menu" >
             <field name="name">Categories</field>
-            <field name="sequence" eval="15" />
+            <field name="sequence" eval="20" />
             <field name="action" ref="action_categories_act_window" />
             <field name="parent_id" ref="menu_test_settings_top" />
             <field name="groups_id" eval="[(4, ref('academy_base.academy_group_teacher')), (4, ref('academy_base.academy_group_technical'))]" />

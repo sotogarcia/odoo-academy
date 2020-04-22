@@ -287,9 +287,22 @@ class AcademyTestsQuestionImport(models.TransientModel):
         only in the selected topic.
         """
         topic_set = self.topic_id
-        valid_ids = topic_set.category_ids & self.category_ids
 
-        self.category_ids = [(6, None, valid_ids.mapped('id'))]
+        # Categories can have a newid, in that case id must be got from origin
+        # this is a consequence of previous on_change event
+        # @see https://stackoverflow.com/questions/36869257/
+        cur_cat_ids = []
+        for item in self.category_ids.mapped('id'):
+            if hasattr(item, 'origin'):
+                cur_cat_ids.append(getattr(item, 'origin'))
+            else:
+                cur_cat_ids.append(item)
+
+        top_cat_ids = topic_set.category_ids.mapped('id')
+
+        valid_ids = [item for item in top_cat_ids if item in cur_cat_ids]
+
+        self.category_ids = [(6, None, valid_ids)]
 
 
     @api.onchange('state')
@@ -329,10 +342,19 @@ class AcademyTestsQuestionImport(models.TransientModel):
 
         self._create_questions(value_set)
 
-        act_xid = 'academy_tests.action_questions_act_window'
-        values = self.env.ref(act_xid).read()[0]
-
-        values['target'] = 'main'
+        if self.test_id:
+            values = {
+                'type': 'ir.actions.act_window',
+                'res_model': 'academy.tests.test',
+                'view_mode': 'form',
+                'res_id': self.test_id.id,
+                'target': 'main',
+                'flags': {'form': {'action_buttons': True, 'options': {'mode': 'edit'}}}
+            }
+        else:
+            act_xid = 'academy_tests.action_questions_act_window'
+            values = self.env.ref(act_xid).read()[0]
+            values['target'] = 'main'
 
         return values
 
@@ -560,7 +582,6 @@ class AcademyTestsQuestionImport(models.TransientModel):
         # pylint: disable=locally-disabled, W0703
         try:
             for values in value_set:
-                pprint(values)
                 question_set = question_obj.create(values)
                 if self.test_id:
                     sequence = sequence + 1

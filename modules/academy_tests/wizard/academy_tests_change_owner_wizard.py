@@ -51,7 +51,7 @@ class ChangeOwnerWizard(models.TransientModel):
     )
 
     test_ids = fields.Many2many(
-        string='Questions',
+        string='Tests',
         required=False,
         readonly=False,
         index=False,

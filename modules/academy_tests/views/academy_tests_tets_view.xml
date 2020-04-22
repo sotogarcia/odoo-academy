@@ -147,6 +147,10 @@
                     <field name="description" />
                     <field name="question_count" />
 
+                    <field name="image_128"/>
+                    <field name="name" />
+                    <field name="description" />
+                    
                     <templates>
                         <t t-name="kanban-box">
                             <div class="oe_kanban_global_click">
@@ -162,9 +166,11 @@
                                 <div class="oe_kanban_details">
                                     <h4 class="o_ellipsis" t-att-title="record.name.raw_value"><field name="name"/></h4>
                                     <ul>
-                                        <li class="o_ellipsis" t-att-title="record.description.raw_value">
-                                            <t t-if="record.description.raw_value"><field name="description" /></t>
-                                            <t t-else=""><i>(No description)</i></t>
+                                        <li class="o_ellipsis">
+                                            <t t-if="record.description.raw_value">
+                                                <t t-esc="record.description.raw_value" />
+                                            </t>
+                                            <t t-if="!record.description.raw_value">- No description -</t>
                                         </li>
                                         <li class="o_ellipsis" t-att-title="record.topic_id.name"><strong>Topic:&#160;</strong>
                                             <field name="topic_id" />

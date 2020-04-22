@@ -58,6 +58,9 @@
                         <group col="2">
                             <field name="description" class="oe_field_description"
                                 placeholder="Enter new description to this template" />
+                            <field name="owner_id" class="oe_field_owner_id"
+                                placeholder="Choose a different owner"  options="{'no_create': True}"
+                                groups="academy_base.academy_group_technical" />
                         </group>
 
                         <group>
@@ -91,7 +94,8 @@
 
                     <field name="image_128"/>
                     <field name="name" />
-
+                    <field name="description" />
+                    
                     <templates>
                         <t t-name="kanban-box">
                             <div class="oe_kanban_global_click">
@@ -106,10 +110,19 @@
 
                                 <div class="oe_kanban_details">
                                     <h4 class="o_ellipsis" t-att-title="record.name.raw_value"><field name="name"/></h4>
-                                    <p>
-                                        <t t-if="description"><t t-esc="description" /></t>
-                                        <t t-if="!description">- No description -</t>
+                                    <p class="o_ellipsis">
+                                        <t t-if="record.description.raw_value">
+                                            <t t-esc="record.description.raw_value" />
+                                        </t>
+                                        <t t-if="!record.description.raw_value">- No description -</t>
                                     </p>
+                                </div>
+
+                                <div class="d-flex p-2">
+                                    <div class="p-2 font-weight-bold">Lines:</div>
+                                    <div class="p-2"><field name="lines_count" /></div>
+                                    <div class="p-2 font-weight-bold">Questions:</div>
+                                    <div class="p-2"><field name="quantity" /></div>
                                 </div>
                             </div>
                         </t>
@@ -130,8 +143,13 @@
             <field name="active" eval="True" />
             <field name="arch" type="xml">
                 <search string="academy_tests_random_template_search">
-                    <field name="name" />
-                    <!-- ··· -->
+                    <field name="name" string="Name" />
+
+                    <filter string="My templates"
+                        name="my_templates"
+                        domain="[('owner_id', '=', uid)]"
+                        context="{}"
+                        help="List only the own templates" />
                 </search>
             </field>
         </record>
@@ -144,7 +162,7 @@
             <field name="view_mode">kanban,tree,form</field>
             <field name="target">current</field>
             <field name="domain">[]</field>
-            <field name="context">{}</field>
+            <field name="context">{"search_default_my_templates":1}</field>
             <field name="search_view_id" ref="view_academy_tests_random_template_search" />
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">

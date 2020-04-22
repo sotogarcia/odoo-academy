@@ -42,7 +42,7 @@ _logger = getLogger(__name__)
 
 
 # pylint: disable=locally-disabled, R0903
-class AcademyTestsRandomWizardSet(models.Model):
+class AcademyTestsRandomTemplate(models.Model):
     """ This model is the representation of the academy tests random template
 
     Fields:
@@ -56,12 +56,13 @@ class AcademyTestsRandomWizardSet(models.Model):
 
 
     _name = 'academy.tests.random.template'
-    _description = u'Academy Tests Random Wizard Set'
+    _description = u'Academy Tests Random Template'
 
     _inherit = ['image.mixin', 'mail.thread']
-    
+
     _rec_name = 'name'
     _order = 'name ASC'
+
 
     name = fields.Char(
         string='Name',
@@ -94,14 +95,14 @@ class AcademyTestsRandomWizardSet(models.Model):
     )
 
     random_line_ids = fields.One2many(
-        string='Random lines',
+        string='Lines',
         required=True,
         readonly=False,
         index=False,
         default=None,
         help=False,
         comodel_name='academy.tests.random.line',
-        inverse_name='random_wizard_id',
+        inverse_name='random_template_id',
         domain=[],
         context={},
         auto_join=False,
@@ -116,35 +117,158 @@ class AcademyTestsRandomWizardSet(models.Model):
         default=None,
         help=False,
         comodel_name='academy.tests.test',
-        inverse_name='random_wizard_id',
+        inverse_name='random_template_id',
         domain=[],
         context={},
         auto_join=False,
         limit=None
     )
 
-    # -------------------------------- CRUD -----------------------------------
 
-    @api.model
-    def create(self, values):
-        """ Create a new record for a model AcademyTestsRandomWizardSet
-            @param values: provides a data for new record
+    owner_id = fields.Many2one(
+        string='Owner',
+        required=True,
+        readonly=False,
+        index=False,
+        default=lambda self: self.default_owner_id(),
+        help='Current test owner',
+        comodel_name='res.users',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False,
+        groups='academy_base.academy_group_technical'
+    )
 
-            @return: returns a id of new record
+    quantity = fields.Integer(
+        string='Quantity',
+        required=True,
+        readonly=False,
+        index=False,
+        default=0,
+        help='Maximum number of questions can be appended',
+        compute='compute_quantity'
+    )
+
+
+    lines_count = fields.Integer(
+        string='Nº lines',
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        help='Show number of lines',
+        store=False,
+        compute='compute_line_count'
+    )
+
+
+    # ----------------- AUXILIARY FIELDS METHODS AND EVENTS -------------------
+
+
+    def default_owner_id(self):
+        uid = 1
+        if 'uid' in self.env.context:
+            uid = self.env.context['uid']
+
+        return uid
+
+
+    @api.depends('random_line_ids')
+    def compute_quantity(self):
+        """ This computes lines_count field """
+        for record in self:
+            values = record.random_line_ids.mapped('quantity')
+            record.quantity = sum(values)
+
+
+    @api.depends('random_line_ids')
+    def compute_line_count(self):
+        """ This computes lines_count field """
+        for record in self:
+            record.lines_count = len(record.random_line_ids)
+
+
+    # -------------------------- AUXILIARY METHODS ----------------------------
+
+
+    def _compute_base_sequence_value(self, test_id):
+        """ Get the greater sequence value of the set of questions in test
+        and returns it. If there are no questions the returned value will be 0
+
+        @note: next sequence must be ``returned value + 1``
         """
 
-        result = super(AcademyTestsRandomWizardSet, self).create(values)
+        sequences = test_id.question_ids.mapped('sequence') or [0]
+        return (max(sequences)) + 0
 
-        return result
 
-    # @api.multi
-    def write(self, values):
-        """ Update all record(s) in recordset, with new value comes as {values}
-            @param values: dict of new values to be set
-
-            @return: True on success, False otherwise
+    def _get_base_values(self, test_id, sequence):
+        """ Builds a dictionary with the required values to create a new
+        ``academy.tests.test.question.rel`` record, this will act as a link
+        between given test and future question
         """
 
-        result = super(AcademyTestsRandomWizardSet, self).write(values)
+        return {
+            'test_id': test_id.id,
+            'question_id': None,
+            'sequence': sequence,
+            'active': True
+        }
 
-        return result
+
+    @staticmethod
+    def _build_many2many_write_action(question_set, base_values):
+        leafs = []
+        values = base_values.copy()
+        for question in question_set:
+            values['question_id'] = question.id
+            values['sequence'] = values['sequence'] + 1
+
+            leafs.append((0, None, values.copy()))
+
+        return leafs
+
+
+    def _perform_many2many_write_action(self, leafs, test_id):
+        return test_id.write({'question_ids': leafs})
+
+
+    # ---------------------------- PUBIC METHODS ------------------------------
+
+    def append_questions(self, test_id, overwrite=False):
+        """ Calls action by each related line
+        """
+
+        self.ensure_one()
+
+        result_set = self.env['academy.tests.question']
+
+        if overwrite:
+            test_id.write({'question_ids': [(5, 0, 0)]})
+
+        for line in self.random_line_ids:
+
+            # STEP 1: build skeeton dictionary with required values to create
+            # new ``academy.tests.test.question.rel`` records
+            sequence = self._compute_base_sequence_value(test_id)
+            values = self._get_base_values(test_id, sequence)
+
+            # STEP 2: build a domain to exclude existing questions
+            # NOTE: Questions are linked to ``academy.tests.test.question.rel``
+            exclusion_leafs = []
+            if test_id.question_ids:
+                qids = test_id.question_ids.mapped('question_id').mapped('id')
+                exclusion_leafs.append(('id', 'not in', qids))
+
+            # STEP 3: Performa search and return a set of questions
+            question_set = line.perform_search(exclusion_leafs)
+
+            # STEP 4: Link questions through many2many relation
+            leafs = self._build_many2many_write_action(question_set, values)
+            self._perform_many2many_write_action(leafs, test_id)
+
+            # STEP 5: Accumulate questions in result set
+            result_set += question_set
+
+        return result_set

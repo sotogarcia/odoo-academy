@@ -19,7 +19,7 @@
                         <field name="state" widget="statusbar" clickable="1" />
                     </header>
 
-                    <group cols="2">
+                    <group col="2">
                         <field name="owner_id" class="oe_field_owner_id"
                             placeholder="Choose new owner" />
                     </group>
