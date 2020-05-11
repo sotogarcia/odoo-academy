@@ -213,7 +213,6 @@ class AcademyTrainingSessionWizardLine(models.TransientModel):
         compute=lambda self: self._compute_imparted()   # pylint: disable=locally-disabled, W0212
     )
 
-    # @api.multi
     @api.depends('training_unit_id')
     def _compute_imparted(self):
         for record in self:

@@ -42,7 +42,7 @@ class AcademyProfessionalQualification(models.Model):
         index=True,
         default=None,
         help='Enter new name',
-        size=100,
+        size=255,
         translate=True
     )
 
@@ -149,7 +149,6 @@ class AcademyProfessionalQualification(models.Model):
     )
 
 
-    # @api.multi
     @api.depends('competency_unit_ids')
     def _compute_competency_unit_count(self):
         for record in self:

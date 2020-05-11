@@ -69,7 +69,7 @@ class AcademyTestsQuestionType(models.Model):
         index=True,
         default=None,
         help='Enter new name',
-        size=50,
+        size=255,
         translate=True,
     )
 

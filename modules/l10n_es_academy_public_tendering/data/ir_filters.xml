@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="ir_filter_autonomous_community" model="ir.filters">
+            <field name="name">Autonomic administrations</field>
+            <field name="domain" eval="[('public_administration_type_id', '=', ref('academy_public_tendering_public_administration_type_autonomic'))]" />
+            <field name="context">{'group_by': ['autonomy_id']}</field>
+            <field name="model_id">academy.public.tendering.public.administration</field>
+            <field name="is_default" eval="False" />
+            <field name="active">True</field>
+        </record>
+
+    </data>
+</openerp>

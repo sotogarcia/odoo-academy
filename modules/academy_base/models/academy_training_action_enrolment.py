@@ -139,12 +139,11 @@ class AcademyTrainingActionEnrolment(models.Model):
         index=False,
         default=None,
         help='Show the name of the related student',
-        size=50,
+        size=255,
         translate=True,
         compute=lambda self: self._compute_student_name()
     )
 
-    # @api.multi
     @api.depends('res_partner_id')
     def _compute_student_name(self):
         for record in self:
@@ -153,7 +152,6 @@ class AcademyTrainingActionEnrolment(models.Model):
 
     # ---------------------------- ONCHANGE EVENTS ----------------------------
 
-    # @api.multi
     @api.onchange('training_action_id')
     def _onchange_training_action_id(self):
         action_set = self.training_action_id

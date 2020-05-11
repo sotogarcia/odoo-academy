@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+
+        <record id="academy_public_tendering_process_1" model="academy.public.tendering.process">
+            <field name="name">Saint Saturnine, 2016</field>
+            <field name="description">Public offer of employment for the year 2020 in the municipality of Saint Saturnine</field>
+            <field name="active">True</field>
+            <field name="target_date">2017-05-23</field>
+            <field name="hiring_type_id" ref="academy_public_tendering_hiring_type_career" />
+            <field name="employment_group_id" ref="academy_public_tendering_employment_group_c1" />
+            <field name="public_corps_id" ref="academy_public_tendering_corps_administrative" />
+            <field name="access_system_id" ref="academy_public_tendering_access_system_open" />
+            <field name="exam_type_id" ref="academy_public_tendering_exam_type_exam" />
+            <field name="public_tendering_public_offer_id" ref="academy_public_tendering_public_offer_sansa_2016" />
+            <field name="bulletin_board_url">https://sede.sansadurnino.gal/opencms/es/procedimientosytramites/index.html#empleo_publico</field>
+            <field name="official_journal_url">https://www.boe.es/boe/dias/2016/11/23/pdfs/BOE-A-2016-11039.pdf</field>
+            <field name="training_action_ids" eval="[(4, ref('academy_base.academy_training_action'))]" />
+            <field name="image_128" type="base64" file="academy_public_tendering/static/src/img/res_partner_sansa_city_hall.png" />
+        </record>
+
+
+    </data>
+</openerp>

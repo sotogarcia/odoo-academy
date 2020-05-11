@@ -325,7 +325,6 @@ class AcademyTrainingSessionWizard(models.TransientModel):
         limit=None,
     )
 
-    # @api.multi
     @api.depends('training_action_id')
     def _default_training_unit_ids(self):
         unit_set = self._get_units()
@@ -452,7 +451,6 @@ class AcademyTrainingSessionWizard(models.TransientModel):
     # --------------------------- PUBLIC METHODS ------------------------------
 
 
-    # @api.multi
     def execute(self):
         """ Wizard execute button method """
 

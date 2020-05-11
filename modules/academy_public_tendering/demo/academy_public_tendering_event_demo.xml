@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="academy_public_tendering_event_offer" model="academy.public.tendering.event">
+            <field name="name">Offer</field>
+            <field name="description">New offer have been published</field>
+            <field name="active" eval="True" />
+            <field name="date">2016-10-02</field>
+            <field name="event_type_id" ref="academy_public_tendering_event_type_job_offer" />
+            <field name="academy_public_tendering_process_id" ref="academy_public_tendering_process_1" />
+        </record>
+
+        <record id="academy_public_tendering_event_announcement" model="academy.public.tendering.event">
+            <field name="name">Announcement</field>
+            <field name="description">Announcement</field>
+            <field name="active" eval="True" />
+            <field name="date">2016-11-23</field>
+            <field name="event_type_id" ref="academy_public_tendering_event_type_announcement" />
+            <field name="academy_public_tendering_process_id" ref="academy_public_tendering_process_1" />
+        </record>
+
+    </data>
+</openerp>

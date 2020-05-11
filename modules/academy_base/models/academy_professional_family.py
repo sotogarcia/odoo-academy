@@ -42,7 +42,7 @@ class AcademyProfessionalFamily(models.Model):
         index=True,
         default=None,
         help='Enter new name',
-        size=100,
+        size=255,
         translate=True
     )
 
@@ -108,8 +108,6 @@ class AcademyProfessionalFamily(models.Model):
         help='Shows the number of professional areas that belong to this family',
         compute=lambda self: self._compute_professional_area_count()
     )
-
-    # @api.multi
     @api.depends('professional_area_ids')
     def _compute_professional_area_count(self):
         for record in self:

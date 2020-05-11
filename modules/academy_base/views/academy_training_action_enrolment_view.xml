@@ -57,7 +57,7 @@
                                     placeholder="Choose student who will be enrolled" />
                             <field name="training_action_id" class="oe_field_training_action_id"
                                     placeholder="Choose action in which the student will be enrolled"
-                                    invisible="context.get('training_action_id', False)"/>
+                                    invisible="context.get('training_action_id', False)" />
                         </group>
 
                         <group col="4">

@@ -36,7 +36,7 @@ class AcademyPublicTenderingVacancyPositionType(models.Model):
         index=True,
         default=None,
         help="Vacancy position type name",
-        size=50,
+        size=255,
         translate=True
     )
 

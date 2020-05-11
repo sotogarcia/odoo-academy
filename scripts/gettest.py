@@ -86,9 +86,9 @@ class Attachment(Entity):
 
         conn_pattern = u'''
             SELECT
-                    ata.id,
-                    ata.name,
-                    ata.url
+                ata.id,
+                ata.name,
+                ata.store_fname  || regexp_replace(mimetype, '^[^/]+/', '.') as url
             FROM
                     ir_attachment AS ata
             inner join academy_tests_question_ir_attachment_rel as rel on rel.attachment_id = ata."id"
@@ -113,7 +113,8 @@ class Attachment(Entity):
     def to_markdown(self):
         name = self._name or ''
         url = self._url or ''
-        return '![' + name  + '](' + url + ')'
+        return '![' + name  + '](' + str(self._id) + ')\n'
+        # To download attachment http://server:port/web/content/{id}
 
     def __str__(self):
         return self._name
@@ -424,6 +425,7 @@ class App(object):
             self._host,
             self._password
         )
+        print(conn_string)
         conn = psycopg2.connect(conn_string)
 
         Entity.conn = conn

@@ -14,3 +14,10 @@ from . import academy_public_tendering_vacancy_position
 from . import academy_public_tendering_process
 
 from . import academy_training_action
+from . import academy_public_tendering_access_system
+from . import academy_public_tendering_public_offer
+from . import academy_public_tendering_public_administration
+from . import academy_public_tendering_public_administration_type
+from . import academy_public_tendering_corps
+from . import academy_public_tendering_event
+from . import academy_public_tendering_event_type

@@ -23,8 +23,10 @@
             <field name="priority" eval="16" />
             <field name="active" eval="True" />
             <field name="arch" type="xml">
-                <tree string="academy_category_tree" create="0" delete="1" edit="1">
+                <tree string="academy_category_tree" create="1" delete="1" edit="1">
                     <field name="name" class="oe_field_name" />
+                    <field name="keywords" class="oe_field_regex" />
+                    <field name="description" class="oe_field_description" />
                 </tree>
             </field>
         </record>
@@ -41,6 +43,8 @@
                     <field name="sequence" class="oe_field_sequence" widget="handle" />
                     <field name="name" class="oe_field_name"
                         placeholder="Enter new text for name" />
+                    <field name="keywords" class="oe_field_regex"
+                        placeholder="Enter keywords separated by commas" />
                     <field name="description" class="oe_field_description"
                         placeholder="Enter new text for description" />
                 </tree>
@@ -69,7 +73,9 @@
                         <group col="2">
                             <field name="topic_id" class="oe_field_topic_id"
                                 placeholder="Choose topic" options="{'no_create': True}"
-                                attrs="{'invisible': [('topic_id', '!=', False)]}"/>
+                                readonly="context.get('default_topic_id', False)" />
+                            <field name="keywords" class="oe_field_regex"
+                                placeholder="Enter new regular expression" />
 
                             <field name="description" class="oe_field_description"
                                 placeholder="Enter new text for description" />
@@ -100,10 +106,9 @@
             <field name="name">Categories</field>
             <field name="res_model">academy.tests.category</field>
             <field name="view_mode">tree,form</field>
-            <!-- <field name="view_type">form</field> -->
             <field name="target">current</field>
             <field name="domain">[]</field>
-            <field name="context">{}</field>
+            <field name="context">{'group_by': ['topic_id']}</field>
             <field name="search_view_id" ref="view_academy_category_search" />
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">

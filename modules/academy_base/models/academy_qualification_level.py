@@ -34,7 +34,7 @@ class AcademyQualificationLevel(models.Model):
         index=True,
         default=None,
         help='Enter new name',
-        size=100,
+        size=255,
         translate=True
     )
 

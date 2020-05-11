@@ -158,6 +158,20 @@ class AcademyTestsTest(models.Model):
         groups='academy_base.academy_group_technical'
     )
 
+    test_kind_id = fields.Many2one(
+        string='Kind of test',
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help='Choose the kind for this test',
+        comodel_name='academy.tests.test.kind',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False
+    )
+
 
     # -------------------------- MANAGEMENT FIELDS ----------------------------
 
@@ -171,7 +185,6 @@ class AcademyTestsTest(models.Model):
         compute='_compute_question_count'
     )
 
-    # @api.multi
     @api.depends('question_ids')
     def _compute_question_count(self):
         for record in self:
@@ -204,7 +217,6 @@ class AcademyTestsTest(models.Model):
         compute=lambda self: self._compute_topic_count()
     )
 
-    # @api.multi
     @api.depends('question_ids')
     def _compute_topic_count(self):
         for record in self:
@@ -229,7 +241,6 @@ class AcademyTestsTest(models.Model):
         compute=lambda self: self._compute_topic_id()
     )
 
-    # @api.multi
     @api.depends('question_ids')
     def _compute_topic_id(self):
         for record in self:
@@ -257,7 +268,7 @@ class AcademyTestsTest(models.Model):
         readonly=True,
         index=False,
         help=False,
-        size=50,
+        size=255,
         translate=False,
         compute='_compute_lang',
     )
@@ -298,7 +309,6 @@ class AcademyTestsTest(models.Model):
         }
 
 
-    # @api.multi
     def random_questions(self):
         """ Runs wizard to append random questions. This allows uses to set
         filter criteria, maximum number of questions, etc.
@@ -307,14 +317,12 @@ class AcademyTestsTest(models.Model):
             'type': 'ir.actions.act_window',
             'res_model': 'academy.tests.random.wizard',
             'view_mode': 'form',
-            # 'view_type': 'form',
             'views': [(False, 'form')],
             'target': 'new',
-            'context': {'default_test_id' : self.id}
+            'context': {'default_test_id': self.id}
         }
 
 
-    # @api.multi
     def show_questions(self):
         """ Runs default view for academy.tests.question with a filter to
         show only current test questions
@@ -335,17 +343,17 @@ class AcademyTestsTest(models.Model):
         domain.append(('id', 'in', ids))
 
         values = {
-            'type' : act_wnd['type'],
-            'name' : act_wnd['name'],
-            'res_model' : act_wnd['res_model'],
-            'view_mode' : act_wnd['view_mode'],
-            'target' : act_wnd['target'],
-            'domain' : domain,
-            'context' : self.env.context,
-            'limit' : act_wnd['limit'],
-            'help' : act_wnd['help'],
-            'view_ids' : act_wnd['view_ids'],
-            'views' : act_wnd['views']
+            'type': act_wnd['type'],
+            'name': act_wnd['name'],
+            'res_model': act_wnd['res_model'],
+            'view_mode': act_wnd['view_mode'],
+            'target': act_wnd['target'],
+            'domain': domain,
+            'context': self.env.context,
+            'limit': act_wnd['limit'],
+            'help': act_wnd['help'],
+            'view_ids': act_wnd['view_ids'],
+            'views': act_wnd['views']
         }
 
         if act_wnd.search_view_id:
@@ -367,7 +375,6 @@ class AcademyTestsTest(models.Model):
         return result
 
 
-    # @api.multi
     def write(self, values):
         """ Update all record(s) in recordset, with new value comes as {values}
             @param values: dict of new values to be set

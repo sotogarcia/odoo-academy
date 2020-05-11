@@ -11,7 +11,7 @@
             - Context·······: {}
             - Parent menu ··: academy_tests.menu_settings_top
             - View priority·: 16    Sequence····: 10
-            - Action help···: There is not any impugnment for questions
+            - Action help···: There is no any impugnment for questions
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
         <!-- Tree view for "academy.tests.question.impugnment" -->
@@ -103,7 +103,6 @@
             <field name="name">Question impugnment</field>
             <field name="res_model">academy.tests.question.impugnment</field>
             <field name="view_mode">tree,form,graph</field>
-            <!-- <field name="view_type">form</field> -->
             <field name="target">current</field>
             <field name="domain">[]</field>
             <field name="context">{}</field>

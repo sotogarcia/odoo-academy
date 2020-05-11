@@ -9,7 +9,7 @@ import argparse
 import os
 import odoorpc
 import time
-
+import base64
 
 # -------------------------- MAIN SCRIPT BEHAVIOR -----------------------------
 
@@ -37,6 +37,7 @@ class App(object):
         self._admin_pwd = None
         self._file_path = None
         self._file_name = None
+        self._do_restore = False
 
     def _argparse(self):
         """ Detines an user-friendly command-line interface and proccess its
@@ -67,6 +68,8 @@ class App(object):
                             help='file in which data will be saved',
                             default=None)
 
+        parser.add_argument('-r', '--restore', action='store_true',
+                            help='restore instead download', default=False)
 
         args = parser.parse_args()
 
@@ -84,7 +87,7 @@ class App(object):
         self._db_name = args.database
         self._admin_pwd = args.password
         self._file_path = os.path.abspath(args.directory)
-
+        self._do_restore = args.restore
 
     def _backup(self):
         """ Performs the conversion from doc to docx
@@ -104,7 +107,7 @@ class App(object):
             odoo = odoorpc.ODOO(self._server_host, port=self._server_port)
 
             timeout_backup = odoo.config['timeout']
-            odoo.config['timeout'] = 600
+            odoo.config['timeout'] = 7200
             dump = odoo.db.dump(self._admin_pwd, self._db_name)
             odoo.config['timeout'] = timeout_backup
 
@@ -116,13 +119,36 @@ class App(object):
         else:
             print(u'New file %s has been written.' % new_path)
 
+
+    def _restore(self):
+
+        new_path = os.path.join(self._file_path, self._file_name)
+
+        try:
+            odoo = odoorpc.ODOO(self._server_host, port=self._server_port)
+
+            with open(new_path, 'rb') as dump_zip:
+                timeout_backup = odoo.config['timeout']
+                odoo.config['timeout'] = 7200
+                odoo.db.restore(self._admin_pwd, self._db_name, dump_zip, True)
+                odoo.config['timeout'] = timeout_backup
+
+        except Exception as ex:
+            print(ex)
+        else:
+            print(u'File %s has been loaded.' % new_path)
+
+
     def main(self):
         """ The main application behavior, this method should be used to
         start the application.
         """
 
         self._argparse()
-        self._backup()
+        if self._do_restore:
+            self._restore()
+        else:
+            self._backup()
 
 
 # --------------------------- SCRIPT ENTRY POINT ------------------------------

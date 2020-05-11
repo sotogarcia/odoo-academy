@@ -5,28 +5,11 @@
 
         <record id="academy_public_tendering_vacancy_position_1" model="academy.public.tendering.vacancy.position">
             <field name="name">Administrative</field>
-            <field name="description">Their task is to order, organize and arrange different matters that are under their responsibility </field>
             <field name="active">True</field>
-            <field name="employment_group_id" ref="academy_public_tendering.academy_public_tendering_employment_group_c1" />
-            <field name="exam_type_id" ref="academy_public_tendering_exam_type_exam" />
-            <field name="hiring_type_id" ref="academy_public_tendering_hiring_type_career" />
+            <field name="academy_public_tendering_process_id" ref="academy_public_tendering.academy_public_tendering_process_1" />
             <field name="academy_public_tendering_vacancy_position_type_id" ref="academy_public_tendering_vacancy_position_type_general_public_access" />
-            <field name="quantity">18</field>
-            <field name="academy_public_tendering_process_id" ref="academy_public_tendering.academy_public_tendering_process_1" />
+            <field name="quantity">1</field>
         </record>
-
-        <record id="academy_public_tendering_vacancy_position_2" model="academy.public.tendering.vacancy.position">
-            <field name="name">Administrative assistant</field>
-            <field name="description">Your task is to help administrators in their work</field>
-            <field name="active">True</field>
-            <field name="employment_group_id" ref="academy_public_tendering.academy_public_tendering_employment_group_c1" />
-            <field name="exam_type_id" ref="academy_public_tendering_exam_type_exam" />
-            <field name="hiring_type_id" ref="academy_public_tendering_hiring_type_career" />
-            <field name="academy_public_tendering_vacancy_position_type_id" ref="academy_public_tendering_vacancy_position_type_disabilities_public_access" />
-            <field name="quantity">2</field>
-            <field name="academy_public_tendering_process_id" ref="academy_public_tendering.academy_public_tendering_process_1" />
-        </record>
-
 
     </data>
 </openerp>

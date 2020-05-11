@@ -262,7 +262,6 @@ class AcademyTestsQuestionCategorizeWizard(models.TransientModel):
 
     # --------------------------- PUBLIC METHODS ------------------------------
 
-    # @api.multi
     def update_targets(self):
         # pylint: disable=locally-disabled, E1101, C0325
         """ Perform the update
@@ -310,7 +309,6 @@ class AcademyTestsQuestionCategorizeWizard(models.TransientModel):
             'type': 'ir.actions.act_window',
             'res_model': 'academy.tests.question.categorize.wizard',
             'view_mode': 'form',
-            # 'view_type': 'form',
             'res_id': self.id,
             'views': [(False, 'form')],
             'target': 'new'

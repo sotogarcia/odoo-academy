@@ -11,7 +11,6 @@ perform some database record updates between related models.
 The Obserser model must have a method with this signature:
 ```
     # pylint: disable=locally-disabled, W0613
-    # @api.multi
     def update_from_external(self, crud, fieldname, recordset):
 ```
 
@@ -145,7 +144,6 @@ class AcademyObservableModel(models.AbstractModel):
         return result
 
 
-    # @api.multi
     def write(self, values):
         """ Call update method in observers
         """
@@ -161,7 +159,6 @@ class AcademyObservableModel(models.AbstractModel):
         return result
 
 
-    # @api.multi
     def unlink(self):
         """ Call update method in observers
         """

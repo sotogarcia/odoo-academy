@@ -33,7 +33,7 @@ class AptKind(models.Model):
         index=True,
         default=None,
         help='Name for this kind',
-        size=50,
+        size=255,
         translate=True
     )
 

@@ -48,7 +48,7 @@ class AcademyTestsQuestionImpugnment(models.Model):
         index=True,
         default=None,
         help='Short impugnment description',
-        size=50,
+        size=255,
         translate=True
     )
 

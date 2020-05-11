@@ -33,7 +33,7 @@ class AptClass(models.Model):
         index=True,
         default=None,
         help='Name for this class',
-        size=50,
+        size=255,
         translate=True
     )
 

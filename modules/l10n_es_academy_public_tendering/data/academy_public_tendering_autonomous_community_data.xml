@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="pais_vasco" model="academy.public.tendering.autonomous.community">
+        	<field name="name">País Vasco</field>
+        </record>
+
+        <record id="castilla_la_mancha" model="academy.public.tendering.autonomous.community">
+        	<field name="name">Castilla-La Mancha</field>
+        </record>
+
+        <record id="comunidad_valenciana" model="academy.public.tendering.autonomous.community">
+        	<field name="name">Comunidad Valenciana</field>
+        </record>
+
+        <record id="andalucia" model="academy.public.tendering.autonomous.community">
+        	<field name="name">Andalucía</field>
+        </record>
+
+        <record id="principado_de_asturias" model="academy.public.tendering.autonomous.community">
+        	<field name="name">Principado de Asturias</field>
+        </record>
+
+        <record id="castilla_y_leon" model="academy.public.tendering.autonomous.community">
+        	<field name="name">Castilla y León</field>
+        </record>
+
+        <record id="extremadura" model="academy.public.tendering.autonomous.community">
+        	<field name="name">Extremadura</field>
+        </record>
+
+        <record id="islas_baleares" model="academy.public.tendering.autonomous.community">
+        	<field name="name">Islas Baleares</field>
+        </record>
+
+        <record id="cataluna" model="academy.public.tendering.autonomous.community">
+        	<field name="name">Cataluña</field>
+        </record>
+
+        <record id="cantabria" model="academy.public.tendering.autonomous.community">
+        	<field name="name">Cantabria</field>
+        </record>
+
+        <record id="ceuta" model="academy.public.tendering.autonomous.community">
+        	<field name="name">Ceuta</field>
+        </record>
+
+        <record id="aragon" model="academy.public.tendering.autonomous.community">
+        	<field name="name">Aragón</field>
+        </record>
+
+        <record id="la_rioja" model="academy.public.tendering.autonomous.community">
+        	<field name="name">La Rioja</field>
+        </record>
+
+        <record id="canarias" model="academy.public.tendering.autonomous.community">
+        	<field name="name">Canarias</field>
+        </record>
+
+        <record id="galicia" model="academy.public.tendering.autonomous.community">
+        	<field name="name">Galicia</field>
+        </record>
+
+        <record id="comunidad_de_madrid" model="academy.public.tendering.autonomous.community">
+        	<field name="name">Comunidad de Madrid</field>
+        </record>
+
+        <record id="melilla" model="academy.public.tendering.autonomous.community">
+        	<field name="name">Melilla</field>
+        </record>
+
+        <record id="region_de_murcia" model="academy.public.tendering.autonomous.community">
+        	<field name="name">Región de Murcia</field>
+        </record>
+
+        <record id="comunidad_foral_de_navarra" model="academy.public.tendering.autonomous.community">
+        	<field name="name">Comunidad Foral de Navarra</field>
+        </record>
+
+    </data>
+</openerp>

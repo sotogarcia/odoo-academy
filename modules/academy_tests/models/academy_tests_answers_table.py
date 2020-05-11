@@ -123,7 +123,6 @@ class AcademyTestsAnswersTable(models.Model):
         compute=lambda self: self._compute_topic_id()
     )
 
-    # @api.multi
     @api.depends('question_id')
     def _compute_topic_id(self):
         for record in self:
@@ -147,7 +146,6 @@ class AcademyTestsAnswersTable(models.Model):
         compute=lambda self: self._compute_category_ids()
     )
 
-    # @api.multi
     @api.depends('question_id')
     def _compute_category_ids(self):
         for record in self:

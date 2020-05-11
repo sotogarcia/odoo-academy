@@ -2,7 +2,17 @@
 
 <openerp>
     <data noupdate="0">
+        
+        <!-- Public tendering main menu 
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
+        <record id="menu_academy_public_tendering" model="ir.ui.menu" >
+            <field name="name">Public tenderings</field>
+            <field name="sequence" eval="15" />
+            <field name="parent_id" ref="academy_base.menu_academy" />
+        </record>
 
+        <!-- Submenu inside academy settings menu
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
         <record id="menu_tendering_settings_top" model="ir.ui.menu" >
             <field name="name">Tendering</field>
             <field name="sequence" eval="10" />

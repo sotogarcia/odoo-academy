@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="academy_public_tendering_public_offer_sansa_2016" model="academy.public.tendering.public.offer">
+            <field name="name">Council of Saint Saturnine, 2016</field>
+            <field name="description">One administrative job position</field>
+            <field name="public_administration_id" ref="academy_public_tendering_public_administration_saint_saturnine_city_hall" />
+            <field name="bulletin_board_url">https://sede.sansadurnino.gal/opencms/es/procedimientosytramites/index.html#empleo_publico</field>
+            <field name="official_journal_url">https://www.boe.es/boe/dias/2016/11/23/pdfs/BOE-A-2016-11039.pdf</field>
+        </record>
+
+    </data>
+</openerp>

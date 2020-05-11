@@ -48,7 +48,7 @@ class AcademyTestsTag(models.Model):
         index=True,
         default=None,
         help='Name for this tag',
-        size=50,
+        size=255,
         translate=True
     )
 

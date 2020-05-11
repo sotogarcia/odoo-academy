@@ -33,7 +33,6 @@ the action.
 
 from logging import getLogger
 from datetime import datetime
-from pprint import pprint
 
 # pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
@@ -209,7 +208,6 @@ class AcademyTestsRandomWizard(models.TransientModel):
 
     # -------------------------------- CRUD -----------------------------------
 
-    # @api.multi
     def unlink(self):
         """ Delete all record(s) from recordset
 

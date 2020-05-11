@@ -22,3 +22,4 @@ from . import academy_training_module
 
 from . import academy_tests_random_line
 from . import academy_tests_random_template
+from . import academy_tests_test_kind

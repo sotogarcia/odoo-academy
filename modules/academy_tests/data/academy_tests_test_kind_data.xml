@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="academy_tests_test_kind_common" model="academy.tests.test.kind">
+            <field name="name">Common</field>
+            <field name="description">Exercise that has been used for the first time by an official institution </field>
+        </record>
+
+        <record id="academy_tests_test_kind_official" model="academy.tests.test.kind">
+            <field name="name">Official</field>
+            <field name="description">Exercise that has been used for the first time by an official institution </field>
+        </record>
+
+        <record id="academy_tests_test_kind_mock_exam" model="academy.tests.test.kind">
+            <field name="name">Mock exam</field>
+            <field name="description">Exercise that has been used for the first time by an official institution </field>
+        </record>
+
+    </data>
+</openerp>

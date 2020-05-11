@@ -112,7 +112,6 @@ class Nameofmodel(models.TransientModel):
         return rel_set.sequence if rel_set else 0
 
 
-    # @api.multi
     def execute(self):
         """ Performs the wizard action
         """

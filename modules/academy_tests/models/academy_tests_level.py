@@ -48,7 +48,7 @@ class AcademyTestsLevel(models.Model):
         index=True,
         default=None,
         help='Name for this level',
-        size=50,
+        size=255,
         translate=True
     )
 

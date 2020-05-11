@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <!-- VIEWS: "Offers"
+        
+            - Model·········: academy.public.tendering.public.offer
+            - _rec_name·····: name
+            - Domain········: []
+            - Context·······: {}
+            - Parent menu ··: base.menu_custom
+            - View priority·: 16    Sequence····: 10
+            - Action help···: There is no any public  offer yet
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        
+        <!-- Tree view for "academy.public.tendering.public.offer" -->
+        <record id="view_academy_public_tendering_public_offer_tree" model="ir.ui.view">
+            <field name="name">view.academy.public.tendering.public.offer.tree</field>
+            <field name="model">academy.public.tendering.public.offer</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <tree string="academy_public_tendering_public_offer_tree" create="1" delete="1" edit="1">
+                    <field name="name" />
+                    <field name="public_administration_id" />
+                    <field name="approval" class="oe_field_approval" />
+                    <field name="total_of_processes" />
+                    <field name="total_of_vacancies" />
+                    <field name="bulletin_board_url" widget="url" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_academy_public_tendering_public_offer_tree_x2many" model="ir.ui.view">
+            <field name="name">view.academy.public.tendering.public.offer.tree</field>
+            <field name="model">academy.public.tendering.public.offer</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <tree string="view_academy_public_tendering_public_offer_tree_x2many" create="1" delete="1" edit="1">
+                    <field name="name" />
+                    <field name="approval" class="oe_field_approval" />
+                    <field name="total_of_processes" />
+                    <field name="total_of_vacancies" />
+                    <field name="bulletin_board_url" widget="url" />
+                </tree>
+            </field>
+        </record>
+        
+        <!-- Form view for "academy.public.tendering.public.offer" -->
+        <record id="view_academy_public_tendering_public_offer_form" model="ir.ui.view">
+            <field name="name">view.academy.public.tendering.public.offer.form</field>
+            <field name="model">academy.public.tendering.public.offer</field>
+            <field name="type">form</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <form string="academy_public_tendering_public_offer_form" create="1" delete="1" edit="1">
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+                            
+                            <button name="update_approval" type="object"
+                                class="oe_stat_button oe_read_only" icon="fa-calendar-check-o ">
+                                <span>Approve processes</span>
+                            </button>
+
+                            <button name="show_processes" type="object"
+                                class="oe_stat_button oe_read_only" icon="fa-list-ol">
+                                <field name="total_of_processes" widget="statinfo" string="Processes" />
+                            </button>
+                        </div>
+
+                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+
+                        <div class="d-flex flex-row justify-content-between">
+                            <div class="oe_title mr-3">
+                                <field name="active" invisible="1"/>
+                                <label for="name" class="oe_edit_only" />
+                                <h1>
+                                    <field name="name" class="oe_field_name"
+                                        placeholder="Name" />
+                                </h1>
+                            </div>
+                            <div>
+                                <field name="image_1920" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}'/>
+                            </div>
+                        </div>
+
+                        <group col="2">
+                            <field name="public_administration_id" class="oe_field_administration_id"
+                                    placeholder="Choose the related public administration"
+                                    readonly="context.get('default_public_administration_id', False)" />
+                            <field name="bulletin_board_url" class="oe_field_bulletin_board_url" widget="url"  />
+                            <field name="official_journal_url" class="oe_field_official_journal_url" widget="url" />
+                            <field name="approval" class="oe_field_approval" />
+                            <field name="total_of_vacancies" class="oe_field_total_of_vacancies" />
+                        </group>
+
+                        <notebook>
+                            <page string="Processes" class="oe_page_processes" accesskey="P">
+                                <field name="tendering_process_ids" class="oe_field_tendering_process_ids"
+                                    placeholder="Choose or create new processes"
+                                    context="{'default_public_tendering_public_offer_id' : id, 
+                                    'tree_view_ref' : 'academy_public_tendering.view_academy_public_tendering_process_tree_x2many'}" 
+                                    />
+                            </page>
+                            <page string="Description" class="oe_page_description" accesskey="D">
+                                <field name="description" class="oe_field_description"
+                                    placeholder="Enter new value for description" />
+                            </page>    
+                        </notebook>
+
+                    </sheet>
+
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+        
+        <!-- kanban view for "academy.public.tendering.public.offer" -->
+        <record id="view_academy_public_tendering_public_offer_kanban" model="ir.ui.view">
+            <field name="name">view.academy.public.tendering.public.offer.kanban</field>
+            <field name="model">academy.public.tendering.public.offer</field>
+            <field name="type">kanban</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <kanban group_create="false" group_delete="false" group_edit="false" records_draggable="false" quick_create="false" archivable="true" limit="20">
+                    <field name="id" />
+                    <field name="image_128"/>
+                    <field name="name" />
+                    <field name="public_administration_id" />
+                    <field name="tendering_process_ids" />
+                    <field name="total_of_vacancies" />
+
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click oe_kanban_academy_public_tendering oe_kanban_academy_public_tendering_offer">
+                                <h4 class="oe_kanban_title"><strong class="oe_partner_heading"><field name="name"/></strong></h4>
+                                <div class="o_kanban_image">
+                                    <t t-if="record.image_128.raw_value">
+                                        <field name="image_128" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}' />
+                                    </t>
+                                    <t t-else="">
+                                        <img t-att-src="_s + &quot;/academy_public_tendering/static/src/img/public_tendering.png&quot;" class="o_kanban_image" alt="Image for public tendering"/>
+                                    </t>
+                                </div>
+                                <div class="oe_kanban_details">
+                                    <ul class="oe_kanban_properties oe_kanban_academy_public_tendering_offer_table">
+                                        <li class="oe_property_line">
+                                            <span colspan="3" class="oe_property_line">
+                                                <field name="public_administration_id" />
+                                            </span>
+                                        </li>
+                                        <li class="oe_property_line">
+                                            <strong class="oe_property_name">Approval</strong>
+                                            <span class="oe_property_value text-right">
+                                                <field name="approval" />
+                                            </span>
+                                        </li>
+                                        <li class="oe_property_line">
+                                            <strong class="oe_property_name">Procesess</strong>
+                                            <span class="oe_property_value text-right">
+                                               <field name="total_of_processes" />
+                                            </span>
+                                        </li>
+                                        <li class="oe_property_line">
+                                            <strong class="oe_property_name">Vacancies</strong>
+                                            <span class="oe_property_value text-right">
+                                                <field name="total_of_vacancies" />
+                                            </span>
+                                        </li>
+                                        <li class="oe_property_line">
+                                            <span colspan="3" class="oe-property-line">
+                                                <field name="bulletin_board_url" widget="url" />
+                                            </span>
+                                        </li>
+                                    </ul>
+
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Search view for "academy.public.tendering.public.offer" -->
+        <record id="view_academy_public_tendering_public_offer_search" model="ir.ui.view">
+            <field name="name">view.academy.public.tendering.public.offer.search</field>
+            <field name="model">academy.public.tendering.public.offer</field>
+            <field name="type">search</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <search string="academy_public_tendering_public_offer_search">
+                    <field name="name" />
+                    <field name="public_administration_id" />
+                </search>
+            </field>
+        </record>
+        
+        <!-- Main window action for model.name -->
+        <record id="action_offers_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Offers</field>
+            <field name="res_model">academy.public.tendering.public.offer</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="target">current</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="search_view_id" ref="view_academy_public_tendering_public_offer_search" />
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to add new offers
+                </p><p>
+                    There is no any public offer yet
+                </p>
+            </field>
+        </record>
+        
+        <!-- Main menu for model.name -->
+        <record id="menu_offers" model="ir.ui.menu" >
+            <field name="name">Offers</field>
+            <field name="sequence" eval="15" />
+            <field name="action" ref="action_offers_act_window" />
+            <field name="parent_id" ref="menu_academy_public_tendering" />
+            <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical')), (4, ref('academy_base.academy_group_teacher'))]" />
+        </record>
+
+    </data>
+</openerp>

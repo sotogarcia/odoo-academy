@@ -57,7 +57,7 @@
                                 </button>
                                 <button name="show_questions" type="object"
                                     class="oe_stat_button oe_read_only" icon="fa-list-ol">
-                                    <field name="question_count" widget="statinfo" />
+                                    <field name="question_count" widget="statinfo" string="Questions" />
                                 </button>
                         </div>
 
@@ -86,8 +86,6 @@
                             </div>
                         </div><!-- row -->
 
-
-
                         <!-- IMPORTAN: This group is hidden because it's not needed but can be 
                         interesting in a future. Allows technicals to change the test owner -->
                         <group col="2" class="text-danger oe_edit_only" invisible="1"
@@ -111,14 +109,15 @@
                                     </tree>
                                 </field>
                             </page>
-                            <page string="Description" class="oe_page_description" accesskey="D">
-                                <field name="description" class="oe_field_description"
-                                    placeholder="Enter new text for description" />
+                            <page string="Details" class="oe_page_description" accesskey="D">
+                                <group col="2">
+                                    <field name="test_kind_id" class="oe_field_test_kind_id"
+                                        placeholder="Choose a kind" />
+                                    <field name="description" class="oe_field_description"
+                                        placeholder="Enter new text for description" />
+                                    <field name="topic_ids" class="oe_field_topic_ids" options="{'no_create': True}" />
+                                </group>
                             </page>
-                            <page string="Topics" class="oe_page_topics" accesskey="T">
-                                <field name="topic_ids" class="oe_field_topic_ids" options="{'no_create': True}" />
-                            </page>
-
                         </notebook>
                     </sheet>
                     <div class="oe_chatter">
@@ -189,6 +188,23 @@
             </field>
         </record>
 
+        <!-- Pivot view for "academy.tests" -->
+        <record id="view_academy_tests_pivot" model="ir.ui.view">
+            <field name="name">view.academy.tests.search</field>
+            <field name="model">academy.tests.test</field>
+            <field name="type">pivot</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <pivot string="Test items">
+                    <field name="owner_id" type="row"/>
+                    <field name="id" type="__count__"/>
+                </pivot>
+            </field>
+        </record>
+
+
         <!-- Search view for "academy.tests" -->
         <record id="view_academy_tests_search" model="ir.ui.view">
             <field name="name">view.academy.tests.search</field>
@@ -217,8 +233,7 @@
             <field name="type">ir.actions.act_window</field>
             <field name="name">Tests</field>
             <field name="res_model">academy.tests.test</field>
-            <field name="view_mode">kanban,tree,form</field>
-            <!-- <field name="view_type">form</field> -->
+            <field name="view_mode">kanban,tree,form,pivot</field>
             <field name="target">current</field>
             <field name="domain">[]</field>
             <field name="context">{"search_default_my_tests":1}</field>

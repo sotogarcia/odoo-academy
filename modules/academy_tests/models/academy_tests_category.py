@@ -15,15 +15,16 @@ Classes:
 
 
 from logging import getLogger
+import re
+
 
 # pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
 from odoo.tools.translate import _
-
+from odoo.exceptions import ValidationError
 
 # pylint: disable=locally-disabled, C0103
 _logger = getLogger(__name__)
-
 
 
 # pylint: disable=locally-disabled, R0903
@@ -41,7 +42,9 @@ class AcademyTestsCategory(models.Model):
     _rec_name = 'name'
     _order = 'sequence ASC, name ASC'
 
+
     # ---------------------------- ENTITY FIEDS -------------------------------
+
 
     name = fields.Char(
         string='Name',
@@ -116,12 +119,67 @@ class AcademyTestsCategory(models.Model):
         # oldname='academy_question_ids'
     )
 
+    keywords = fields.Char(
+        string='Keywords',
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help='Comma separated keywords',
+        size=1024,
+        translate=False
+    )
+
+
     # --------------------------- SQL_CONTRAINTS ------------------------------
+
 
     _sql_constraints = [
         (
             'categoryr_by_topic_uniq',
             'UNIQUE(topic_id, name)',
-            _(u'There is already another category with the same name in this topic')
+            _(u'There is already another category with '
+              'the same name in this topic')
         )
     ]
+
+
+    # -------------------------- PYTHON_CONTRAINTS ----------------------------
+
+
+    @api.constrains('keywords')
+    def _check_keywords(self):
+        """ Regular expresiones can be used as keywords. This constraint checks
+        if given keywords can be compiled as regular expresions
+        """
+
+        message = _('Given keyword «{}» is not a valid regular expresion.\n'
+                    'See https://docs.python.org/3/library/re.html')
+
+        for record in self:
+            keywords = (record.keywords or '').split(',')
+
+            while keywords:
+                keyword = keywords.pop()
+                keyword = keyword.strip()
+
+                if not self._is_valid_regular_expression(keyword):
+                    raise ValidationError(message.format(keyword))
+
+
+    @staticmethod
+    def _is_valid_regular_expression(keyword):
+        """ This method checks if given keyword can be compiled as python
+        regular expresion. See https://docs.python.org/3/library/re.html
+
+        @return (bool): true or false
+        """
+
+        result = True
+
+        try:
+            re.compile(keyword)
+        except Exception:
+            result = False
+
+        return result

@@ -21,6 +21,7 @@ TODO:
 
 
 from logging import getLogger
+import re
 
 # pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
@@ -269,7 +270,6 @@ class AcademyTestsQuestion(models.Model):
         search='_search_ir_attachment_image_ids',
     )
 
-    # @api.multi
     @api.depends('ir_attachment_ids')
     def _compute_ir_attachment_image_ids(self):
         for record in self:
@@ -310,7 +310,6 @@ class AcademyTestsQuestion(models.Model):
         compute=lambda self: self._compute_attachment_count()
     )
 
-    # @api.multi
     @api.depends('ir_attachment_ids')
     def _compute_attachment_count(self):
         for record in self:
@@ -326,7 +325,6 @@ class AcademyTestsQuestion(models.Model):
         compute=lambda self: self._compute_answer_count()
     )
 
-    # @api.multi
     @api.depends('answer_ids')
     def _compute_answer_count(self):
         for record in self:
@@ -343,7 +341,6 @@ class AcademyTestsQuestion(models.Model):
         compute=lambda self: self._compute_category_count()
     )
 
-    # @api.multi
     @api.depends('category_ids')
     def _compute_category_count(self):
         for record in self:
@@ -353,6 +350,7 @@ class AcademyTestsQuestion(models.Model):
     # --------------- ONCHANGE EVENTS AND OTHER FIELD METHODS -----------------
 
     def _default_owner_id(self):
+
         uid = 1
         if 'uid' in self.env.context:
             uid = self.env.context['uid']
@@ -398,7 +396,9 @@ class AcademyTestsQuestion(models.Model):
         self._compute_ir_attachment_image_ids()
 
 
+
     # -------------------------- PYTHON CONSTRAINS ----------------------------
+
 
     @api.constrains('answer_ids', 'name')
     def _check_answer_ids(self):
@@ -406,15 +406,17 @@ class AcademyTestsQuestion(models.Model):
         """
 
         if self.active:
-            if not True in self.answer_ids.mapped('is_correct'):
+            if True not in self.answer_ids.mapped('is_correct'):
                 message = _(u'You must specify at least one correct answer')
                 raise ValidationError(message)
-            if not False in self.answer_ids.mapped('is_correct'):
+            if False not in self.answer_ids.mapped('is_correct'):
                 message = _(u'You must specify at least one incorrect answer')
                 raise ValidationError(message)
 
 
+
     # ------------------------- OVERWRITTEN METHODS ---------------------------
+
 
     @api.model
     def _generate_order_by(self, order_spec, query):
@@ -447,3 +449,20 @@ class AcademyTestsQuestion(models.Model):
             result = super(AcademyTestsQuestion, self).write(values)
 
         return result
+
+
+    def auto_categorize(self):
+        """ Try to append categories to each question in set using regular
+        expressions
+        """
+
+        for record in self:
+            if not record.topic_id:  # This is imposible
+                continue
+
+            # matches => {topic_id: [categorory_id1, ...]}
+            matches = record.topic_id.search_for_categories(record.name)
+            ids = matches.get(record.topic_id.id, False)
+
+            if ids:
+                record.category_ids = [(6, None, ids)]

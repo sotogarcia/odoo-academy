@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+       
+
+        <record id="academy_public_tendering_public_administration_saint_saturnine_city_hall" model="academy.public.tendering.public.administration">
+            <field name="res_partner_id" ref="res_partner_saint_saturnine_city_hall" />
+            <field name="public_administration_type_id" ref="academy_public_tendering_public_administration_type_local" />
+        </record>
+
+    </data>
+</openerp>

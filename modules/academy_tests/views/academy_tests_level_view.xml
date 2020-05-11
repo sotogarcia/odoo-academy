@@ -11,7 +11,7 @@
             - Context·······: {}
             - Parent menu ··: academy_tests.menu_settings_top
             - View priority·: 16    Sequence····: 10
-            - Action help···: There is not any record for name
+            - Action help···: There is no any record for name
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
         <!-- Tree view for "academy.tests.level" -->
@@ -93,7 +93,6 @@
             <field name="name">Levels</field>
             <field name="res_model">academy.tests.level</field>
             <field name="view_mode">tree,form</field>
-            <!-- <field name="view_type">form</field> -->
             <field name="target">current</field>
             <field name="domain">[]</field>
             <field name="context">{}</field>

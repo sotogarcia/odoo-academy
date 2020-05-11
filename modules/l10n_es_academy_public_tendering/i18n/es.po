@@ -1,0 +1,210 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* l10n_es_academy_public_tendering
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 13.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-03 16:30+0000\n"
+"PO-Revision-Date: 2020-05-03 18:34+0200\n"
+"Last-Translator: \n"
+"Language-Team: sotogarcia@gmail.com\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: es_ES\n"
+"X-Generator: Poedit 2.3\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+#. module: l10n_es_academy_public_tendering
+#: model:ir.model,name:l10n_es_academy_public_tendering.model_academy_public_tendering_public_administration
+msgid "Academy public tendering administration"
+msgstr "Academy public tendering administration"
+
+#. module: l10n_es_academy_public_tendering
+#: model:ir.model,name:l10n_es_academy_public_tendering.model_academy_public_tendering_autonomous_community
+msgid "Academy public tendering autonomous community"
+msgstr "Academy public tendering autonomous community"
+
+#. module: l10n_es_academy_public_tendering
+#: model:academy.public.tendering.autonomous.community,name:l10n_es_academy_public_tendering.andalucia
+msgid "Andalucía"
+msgstr "Andalucía"
+
+#. module: l10n_es_academy_public_tendering
+#: model:academy.public.tendering.autonomous.community,name:l10n_es_academy_public_tendering.aragon
+msgid "Aragón"
+msgstr "Aragón"
+
+#. module: l10n_es_academy_public_tendering
+#: model:academy.public.tendering.public.administration.type,name:l10n_es_academy_public_tendering.academy_public_tendering_public_administration_type_autonomic
+msgid "Autonomic"
+msgstr "Autonómica"
+
+#. module: l10n_es_academy_public_tendering
+#: model:ir.filters,name:l10n_es_academy_public_tendering.ir_filter_autonomous_community
+msgid "Autonomic administrations"
+msgstr "Administraciones autonómicas"
+
+#. module: l10n_es_academy_public_tendering
+#: model_terms:ir.ui.view,arch_db:l10n_es_academy_public_tendering.view_academy_public_tendering_public_administration_form
+msgid "Autonomous community"
+msgstr "Comunidad autónoma"
+
+#. module: l10n_es_academy_public_tendering
+#: model:ir.model.fields,field_description:l10n_es_academy_public_tendering.field_academy_public_tendering_public_administration__autonomy_id
+#: model:ir.model.fields,field_description:l10n_es_academy_public_tendering.field_res_country_state__autonomy_id
+msgid "Autonomy"
+msgstr "Autonomía"
+
+#. module: l10n_es_academy_public_tendering
+#: model:academy.public.tendering.autonomous.community,name:l10n_es_academy_public_tendering.canarias
+msgid "Canarias"
+msgstr "Canarias"
+
+#. module: l10n_es_academy_public_tendering
+#: model:academy.public.tendering.autonomous.community,name:l10n_es_academy_public_tendering.cantabria
+msgid "Cantabria"
+msgstr "Cantabria"
+
+#. module: l10n_es_academy_public_tendering
+#: model:academy.public.tendering.autonomous.community,name:l10n_es_academy_public_tendering.castilla_y_leon
+msgid "Castilla y León"
+msgstr "Castilla y León"
+
+#. module: l10n_es_academy_public_tendering
+#: model:academy.public.tendering.autonomous.community,name:l10n_es_academy_public_tendering.castilla_la_mancha
+msgid "Castilla-La Mancha"
+msgstr "Castilla-La Mancha"
+
+#. module: l10n_es_academy_public_tendering
+#: model:academy.public.tendering.autonomous.community,name:l10n_es_academy_public_tendering.cataluna
+msgid "Cataluña"
+msgstr "Cataluña"
+
+#. module: l10n_es_academy_public_tendering
+#: model:academy.public.tendering.autonomous.community,name:l10n_es_academy_public_tendering.ceuta
+msgid "Ceuta"
+msgstr "Ceuta"
+
+#. module: l10n_es_academy_public_tendering
+#: model:ir.model.fields,help:l10n_es_academy_public_tendering.field_res_country_state__autonomy_id
+msgid "Choose autonomous community to which this state belongs"
+msgstr "Elegir la comunidad autónoma a la cual pertenece la provincia"
+
+#. module: l10n_es_academy_public_tendering
+#: model:ir.model.fields,help:l10n_es_academy_public_tendering.field_academy_public_tendering_autonomous_community__res_country_state_ids
+msgid "Choose states belongs to this autonomous community"
+msgstr "Elegir las provincias que pertenecen a la comunidad autónoma"
+
+#. module: l10n_es_academy_public_tendering
+#: model:ir.model.fields,help:l10n_es_academy_public_tendering.field_academy_public_tendering_public_administration__autonomy_id
+msgid "Choose the related autonomy"
+msgstr "Elegir la autonomía relacionada"
+
+#. module: l10n_es_academy_public_tendering
+#: model:academy.public.tendering.autonomous.community,name:l10n_es_academy_public_tendering.comunidad_foral_de_navarra
+msgid "Comunidad Foral de Navarra"
+msgstr "Comunidad Foral de Navarra"
+
+#. module: l10n_es_academy_public_tendering
+#: model:academy.public.tendering.autonomous.community,name:l10n_es_academy_public_tendering.comunidad_valenciana
+msgid "Comunidad Valenciana"
+msgstr "Comunidad Valenciana"
+
+#. module: l10n_es_academy_public_tendering
+#: model:academy.public.tendering.autonomous.community,name:l10n_es_academy_public_tendering.comunidad_de_madrid
+msgid "Comunidad de Madrid"
+msgstr "Comunidad de Madrid"
+
+#. module: l10n_es_academy_public_tendering
+#: model:ir.model,name:l10n_es_academy_public_tendering.model_res_country_state
+msgid "Country state"
+msgstr "Provincia"
+
+#. module: l10n_es_academy_public_tendering
+#: model:ir.model.fields,field_description:l10n_es_academy_public_tendering.field_academy_public_tendering_autonomous_community__create_uid
+msgid "Created by"
+msgstr "Creado por"
+
+#. module: l10n_es_academy_public_tendering
+#: model:ir.model.fields,field_description:l10n_es_academy_public_tendering.field_academy_public_tendering_autonomous_community__create_date
+msgid "Created on"
+msgstr "Creado en"
+
+#. module: l10n_es_academy_public_tendering
+#: model:ir.model.fields,field_description:l10n_es_academy_public_tendering.field_academy_public_tendering_autonomous_community__display_name
+msgid "Display Name"
+msgstr "Nombre para mostrar"
+
+#. module: l10n_es_academy_public_tendering
+#: model:academy.public.tendering.autonomous.community,name:l10n_es_academy_public_tendering.extremadura
+msgid "Extremadura"
+msgstr "Extremadura"
+
+#. module: l10n_es_academy_public_tendering
+#: model:academy.public.tendering.autonomous.community,name:l10n_es_academy_public_tendering.galicia
+msgid "Galicia"
+msgstr "Galicia"
+
+#. module: l10n_es_academy_public_tendering
+#: model:ir.model.fields,field_description:l10n_es_academy_public_tendering.field_academy_public_tendering_autonomous_community__id
+msgid "ID"
+msgstr "ID"
+
+#. module: l10n_es_academy_public_tendering
+#: model:academy.public.tendering.autonomous.community,name:l10n_es_academy_public_tendering.islas_baleares
+msgid "Islas Baleares"
+msgstr "Islas Baleares"
+
+#. module: l10n_es_academy_public_tendering
+#: model:academy.public.tendering.autonomous.community,name:l10n_es_academy_public_tendering.la_rioja
+msgid "La Rioja"
+msgstr "La Rioja"
+
+#. module: l10n_es_academy_public_tendering
+#: model:ir.model.fields,field_description:l10n_es_academy_public_tendering.field_academy_public_tendering_autonomous_community____last_update
+msgid "Last Modified on"
+msgstr "Modificado en"
+
+#. module: l10n_es_academy_public_tendering
+#: model:ir.model.fields,field_description:l10n_es_academy_public_tendering.field_academy_public_tendering_autonomous_community__write_uid
+msgid "Last Updated by"
+msgstr "Actualizado por"
+
+#. module: l10n_es_academy_public_tendering
+#: model:ir.model.fields,field_description:l10n_es_academy_public_tendering.field_academy_public_tendering_autonomous_community__write_date
+msgid "Last Updated on"
+msgstr "Actualizado en"
+
+#. module: l10n_es_academy_public_tendering
+#: model:academy.public.tendering.autonomous.community,name:l10n_es_academy_public_tendering.melilla
+msgid "Melilla"
+msgstr "Melilla"
+
+#. module: l10n_es_academy_public_tendering
+#: model:ir.model.fields,field_description:l10n_es_academy_public_tendering.field_academy_public_tendering_autonomous_community__name
+msgid "Name"
+msgstr "Nombre"
+
+#. module: l10n_es_academy_public_tendering
+#: model:academy.public.tendering.autonomous.community,name:l10n_es_academy_public_tendering.pais_vasco
+msgid "País Vasco"
+msgstr "País Vasco"
+
+#. module: l10n_es_academy_public_tendering
+#: model:academy.public.tendering.autonomous.community,name:l10n_es_academy_public_tendering.principado_de_asturias
+msgid "Principado de Asturias"
+msgstr "Principado de Asturias"
+
+#. module: l10n_es_academy_public_tendering
+#: model:academy.public.tendering.autonomous.community,name:l10n_es_academy_public_tendering.region_de_murcia
+msgid "Región de Murcia"
+msgstr "Región de Murcia"
+
+#. module: l10n_es_academy_public_tendering
+#: model:ir.model.fields,field_description:l10n_es_academy_public_tendering.field_academy_public_tendering_autonomous_community__res_country_state_ids
+msgid "States"
+msgstr "Estados"

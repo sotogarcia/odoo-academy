@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="1">
+
+        <record id="academy_public_tendering_event_type_supply_forecast" model="academy.public.tendering.event.type">
+            <field name="name">Supply forecast</field>
+            <field name="sequence">1</field>
+            <field name="is_stage" eval="True" />
+        </record>
+
+        <record id="academy_public_tendering_event_type_job_offer" model="academy.public.tendering.event.type">
+            <field name="name">Offer</field>
+            <field name="sequence">2</field>
+            <field name="is_stage" eval="True" />
+            <field name="related_field_id" ref="field_academy_public_tendering_process__approval" />
+        </record>
+
+        <record id="academy_public_tendering_event_type_announcement" model="academy.public.tendering.event.type">
+            <field name="name">Announcement</field>
+            <field name="sequence">3</field>
+            <field name="is_stage" eval="True" />
+            <field name="related_field_id" ref="field_academy_public_tendering_process__announcement" />
+        </record>
+
+        <record id="academy_public_tendering_event_type_provisional_admissions_list" model="academy.public.tendering.event.type">
+            <field name="name">Provisional admitted list</field>
+            <field name="sequence">4</field>
+        </record>
+
+        <record id="academy_public_tendering_event_type_definitive_admitted_list" model="academy.public.tendering.event.type">
+            <field name="name">Definitive admitted list</field>
+            <field name="sequence">5</field>
+        </record>
+
+        <record id="academy_public_tendering_event_type_courts" model="academy.public.tendering.event.type">
+            <field name="name">Tribunal</field>
+            <field name="sequence">6</field>
+        </record>
+
+        <record id="academy_public_tendering_event_type_exam_dates_and_location" model="academy.public.tendering.event.type">
+            <field name="name">Exam dates and location</field>
+            <field name="sequence">7</field>
+            <field name="is_stage" eval="True" />
+        </record>
+
+        <record id="academy_public_tendering_event_type_publication_results_x_exam" model="academy.public.tendering.event.type">
+            <field name="name">Results by exam</field>
+            <field name="sequence">8</field>
+        </record>
+
+        <record id="academy_public_tendering_event_type_pass_list_by_exam" model="academy.public.tendering.event.type">
+            <field name="name">Pass list by exam</field>
+            <field name="sequence">9</field>
+        </record>
+
+        <record id="academy_public_tendering_event_type_definitive_pass_list" model="academy.public.tendering.event.type">
+            <field name="name">Definitive pass list</field>
+            <field name="sequence">10</field>
+            <field name="is_stage" eval="True" />
+        </record>
+
+        <record id="academy_public_tendering_event_type_documentation_delivery" model="academy.public.tendering.event.type">
+            <field name="name">Documentation delivery</field>
+            <field name="sequence">11</field>
+        </record>
+
+        <record id="academy_public_tendering_event_type_date_takeover" model="academy.public.tendering.event.type">
+            <field name="name">Takeover date</field>
+            <field name="sequence">12</field>
+            <field name="is_stage" eval="True" />
+            <field name="fold" eval="True" />
+            <field name="related_field_id" ref="field_academy_public_tendering_process__finished" />
+        </record>
+
+    </data>
+</openerp>

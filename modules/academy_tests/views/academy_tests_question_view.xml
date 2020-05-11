@@ -11,7 +11,7 @@
             - Context·······: {}
             - Parent menu ··: academy_tests.menu_academy
             - View priority·: 16    Sequence····: 10
-            - Action help···: There is not any question yet
+            - Action help···: There is no any question yet
 
             TODO: - ir.attachment kanban view used in view_academy_question_form
             should be in other file
@@ -238,6 +238,22 @@
             </field>
         </record>
 
+        <!-- Pivot view for "academy.questions" -->
+        <record id="view_academy_questions_pivot" model="ir.ui.view">
+            <field name="name">view.academy.tests.search</field>
+            <field name="model">academy.tests.question</field>
+            <field name="type">pivot</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <pivot string="Test items">
+                    <field name="topic_id" type="row"/>
+                    <field name="type_id" type="col"/>
+                    <field name="id" type="__count__"/>
+                </pivot>
+            </field>
+        </record>
 
         <!-- Search view for "academy.tests.question" -->
         <record id="view_academy_question_search" model="ir.ui.view">
@@ -268,8 +284,7 @@
             <field name="type">ir.actions.act_window</field>
             <field name="name">Questions</field>
             <field name="res_model">academy.tests.question</field>
-            <field name="view_mode">kanban,tree,form</field>
-            <!-- <field name="view_type">form</field> -->
+            <field name="view_mode">kanban,tree,form,pivot</field>
             <field name="target">current</field>
             <field name="domain">[]</field>
             <field name="context">{"search_default_my_questions":1}</field>
@@ -383,8 +398,7 @@
             <field name="type">ir.actions.act_window</field>
             <field name="name">Questions</field>
             <field name="res_model">academy.tests.question</field>
-            <field name="view_mode">kanban,tree,form</field>
-            <!-- <field name="view_type">form</field> -->
+            <field name="view_mode">kanban,tree,form,pivot</field>
             <field name="target">current</field>
             <field name="domain">[]</field>
             <field name="context">{}</field>

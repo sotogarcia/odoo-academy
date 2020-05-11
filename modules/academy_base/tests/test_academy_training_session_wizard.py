@@ -13,8 +13,8 @@ _logger = getLogger(__name__)
 
 
 # pylint: disable=locally-disabled, E0401
-from openerp.tests.common import TransactionCase
-from openerp import fields
+from odoo.tests.common import TransactionCase
+from odoo import fields
 
 
 # pylint: disable=locally-disabled, R0904, C0103, W0212, C0111

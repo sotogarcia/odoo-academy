@@ -34,7 +34,7 @@ class AptVacancyPosition(models.Model):
         index=True,
         default=None,
         help='Name for this vacancy position',
-        size=50,
+        size=255,
         translate=True
     )
 
@@ -47,14 +47,15 @@ class AptVacancyPosition(models.Model):
         help='Something about this vacancy position',
         translate=True
     )
-    
+
     sequence = fields.Integer(
         string='Sequence',
         required=False,
         readonly=False,
         index=False,
         default=1,
-        help='Order in which this vacancy position will be displayed in the tender process view'
+        help=('Order in which this vacancy position will be displayed '
+              'in the tender process view')
     )
 
     active = fields.Boolean(
@@ -67,47 +68,6 @@ class AptVacancyPosition(models.Model):
               'to hide record without removing it.')
     )
 
-    employment_group_id = fields.Many2one(
-        string='Group',
-        required=True,
-        readonly=False,
-        index=False,
-        default=lambda self: self._default_employment_group_id(),
-        help='Choose employment group for this vacancy position',
-        comodel_name='academy.public.tendering.employment.group',
-        domain=[],
-        context={},
-        ondelete='cascade',
-        auto_join=False
-    )
-
-    exam_type_id = fields.Many2one(
-        string='Exam type',
-        required=True,
-        readonly=False,
-        index=False,
-        default=lambda self: self._default_exam_type_id(),
-        help='Choose type of exam for this vacancy position',
-        comodel_name='academy.public.tendering.exam.type',
-        domain=[],
-        context={},
-        ondelete='cascade',
-        auto_join=False,
-    )
-
-    hiring_type_id = fields.Many2one(
-        string='Hiring type',
-        required=True,
-        readonly=False,
-        index=False,
-        default=lambda self: self._default_hiring_type_id(),
-        help='Choose hiring type for this vacancy position',
-        comodel_name='academy.public.tendering.hiring.type',
-        domain=[],
-        context={},
-        ondelete='cascade',
-        auto_join=False,
-    )
 
     academy_public_tendering_vacancy_position_type_id = fields.Many2one(
         string='Vacancy position type',
@@ -148,37 +108,51 @@ class AptVacancyPosition(models.Model):
 
 
 
-    # ----------------------- AUXILIAR FIELD METHODS --------------------------
-
-    @api.model
-    def _default_employment_group_id(self):
-        """ Returns the default value for group_id field.
+    def _ensure_name(self, value_dict, type_id=False):
+        """ If record name field value has not been set this method gets the
+        name of the vacancy type to assign it as record name
         """
 
-        xid = 'academy_public_tendering.academy_public_tendering_employment_group_c1'
-        record = self.env.ref(xid)
+        if not value_dict.get('name', False):
+            type_model = 'academy.public.tendering.vacancy.position.type'
+            type_obj = self.env[type_model]
+            type_set = type_obj.browse(type_id)
 
-        return record.id
+            value_dict['name'] = type_set.name
 
-    @api.model
-    def _default_exam_type_id(self):
-        """ Returns the default value for kind_id field.
+        return value_dict
+
+
+    def create(self, values):
+        """ Touches related tendering processes to ensure state_id
         """
 
-        xid = 'academy_public_tendering.academy_public_tendering_exam_type_exam'
-        record = self.env.ref(xid)
+        # STEP 0: For backward compatibility, ``values`` may be a dictionary
 
-        return record.id
+        values = values if isinstance(values, list) else [values]
+
+        # STEP 1: Use event type name as event name if it has not been set
+        for value_dict in values:
+            field_name = 'academy_public_tendering_vacancy_position_type_id'
+            type_id = value_dict.get(field_name)
+            self._ensure_name(value_dict, type_id)
 
 
-    @api.model
-    def _default_hiring_type_id(self):
-        """ Returns the default value for class_id field.
+        # STEP 2: Call parent create method to create record
+        result = super(AptVacancyPosition, self).create(values)
+
+        return result
+
+
+    def write(self, values):
+        """ Touches related tendering processes to ensure state_id
         """
 
-        xid = 'academy_public_tendering.academy_public_tendering_hiring_type_career'
-        record = self.env.ref(xid)
+        # STEP 1: Use event type name as event name if it has not been set
+        type_id = self.academy_public_tendering_vacancy_position_type_id.id
+        self._ensure_name(values, type_id)
 
-        return record
+        # STEP 2: Call parent create method to write record
+        result = super(AptVacancyPosition, self).write(values)
 
-
+        return result

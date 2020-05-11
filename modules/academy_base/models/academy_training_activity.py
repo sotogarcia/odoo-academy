@@ -40,7 +40,7 @@ class AcademyTrainingActivity(models.Model):
         index=True,
         default=None,
         help=False,
-        size=50,
+        size=255,
         translate=True
     )
 
@@ -242,7 +242,6 @@ class AcademyTrainingActivity(models.Model):
         compute=lambda self: self._compute_competency_unit_count()
     )
 
-    # @api.multi
     @api.depends('competency_unit_ids')
     def _compute_competency_unit_count(self):
         for record in self:
@@ -261,29 +260,10 @@ class AcademyTrainingActivity(models.Model):
         compute=lambda self: self._compute_training_action_count()
     )
 
-    # @api.multi
     @api.depends('training_action_ids')
     def _compute_training_action_count(self):
         for record in self:
             record.training_action_count = len(record.training_action_ids)
-
-
-    # # pylint: disable=W0212
-    # training_unit_count = fields.Integer(
-    #     string='Training units',
-    #     required=False,
-    #     readonly=True,
-    #     index=False,
-    #     default=0,
-    #     help=False,
-    #     compute=lambda self: self._compute_training_unit_count()
-    # )
-
-    # # @api.multi
-    # @api.depends('training_unit_ids')
-    # def _compute_training_unit_count(self):
-    #     for record in self:
-    #         record.training_unit_count = len(record.training_unit_ids)
 
 
     # pylint: disable=W0212
@@ -297,7 +277,6 @@ class AcademyTrainingActivity(models.Model):
         compute=lambda self: self._compute_training_resource_count()
     )
 
-    # @api.multi
     @api.depends('training_resource_ids')
     def _compute_training_resource_count(self):
         for record in self:
@@ -307,7 +286,6 @@ class AcademyTrainingActivity(models.Model):
     # ---------------------------- PUBLIC FIELDS ------------------------------
 
     # pylint: disable=locally-disabled, W0613
-    # @api.multi
     def update_from_external(self, crud, fieldname, recordset):
         """ Observer notify method, will be called by academy.professional.action
         """

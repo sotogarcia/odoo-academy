@@ -30,6 +30,8 @@
     'data': [
         'data/academy_tests_level_data.xml',
         'data/academy_tests_question_type_data.xml',
+        'data/ir_actions_server_data.xml',
+        'data/academy_tests_test_kind_data.xml',
 
         'security/academy_tests.xml',
         'security/academy_tests_answer.xml',
@@ -46,6 +48,7 @@
         'security/academy_tests_random_line.xml',
         'security/academy_tests_random_template.xml',
         'security/academy_tests_topic_training_module_link.xml',
+        'security/academy_tests_test_kind.xml',
 
         'views/academy_tests.xml',
         'views/academy_tests_answer_view.xml',
@@ -55,6 +58,7 @@
         'views/academy_tests_question_view.xml',
         'views/academy_tests_tag_view.xml',
         'views/academy_tests_test_question_rel_view.xml',
+        'views/academy_tests_test_kind_view.xml',
         'views/academy_tests_tets_view.xml',
         'views/academy_tests_topic_view.xml',
         'views/ir_attachment_view.xml',

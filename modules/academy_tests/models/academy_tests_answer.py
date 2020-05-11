@@ -121,11 +121,9 @@ class AcademyTestsAnswer(models.Model):
 
     # --------------------------- PUBLIC METHODS ------------------------------
 
-    # @api.multi
     def cmd_open_in_form(self):
         return {
             'name': 'Answers',
-            # 'view_type': 'form',
             "view_mode": 'form',
             'res_model': 'academy.tests.answer',
             'type': 'ir.actions.act_window',

@@ -82,7 +82,7 @@ class AcademyTrainingModule(models.Model):
         index=True,
         default=None,
         help='Enter new name',
-        size=100,
+        size=255,
         translate=True
     )
 
@@ -211,7 +211,6 @@ class AcademyTrainingModule(models.Model):
         compute=lambda self: self._compute_hours(), # pylint: disable=locally-disabled, W0212
     )
 
-    # @api.multi
     @api.depends('training_unit_ids', 'ownhours')
     def _compute_hours(self):
         units_obj = self.env['academy.training.module']
@@ -237,7 +236,6 @@ class AcademyTrainingModule(models.Model):
     )
 
 
-    # @api.multi
     @api.depends('training_unit_ids')
     def _compute_training_unit_count(self):
         for record in self:
@@ -257,11 +255,11 @@ class AcademyTrainingModule(models.Model):
 
     # --------------------------- PUBLIC METHODS ------------------------------
 
-    # @api.multi
+
     def get_imparted_hours_in(self, action_id):
         """ Get all hours assigned an a given action (id) for this recordset
 
-        @param action_id (recordset/int)  : academy.training.action record or id
+        @param action_id (recordset/int) : academy.training.action record or id
 
         @return (float): total time length
         """

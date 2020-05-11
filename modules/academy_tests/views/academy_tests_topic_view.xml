@@ -11,7 +11,7 @@
             - Context·······: {}
             - Parent menu ··: academy_tests.menu_questions_top
             - View priority·: 16    Sequence····: 10
-            - Action help···: There is not any record for name
+            - Action help···: There is no any record for name
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
         <!-- Tree view for "academy.tests.topic" -->
@@ -25,8 +25,8 @@
             <field name="arch" type="xml">
                 <tree string="academy_topic_tree" create="1" delete="1" edit="1">
                     <field name="name" class="oe_field_name" />
-                    <field name="description" class="oe_field_category_count" />
                     <field name="category_count" class="oe_field_category_count" />
+                    <field name="description" class="oe_field_category_count" />
                 </tree>
             </field>
         </record>
@@ -91,7 +91,6 @@
             <field name="name">Topics</field>
             <field name="res_model">academy.tests.topic</field>
             <field name="view_mode">tree,form</field>
-            <!-- <field name="view_type">form</field> -->
             <field name="target">current</field>
             <field name="domain">[]</field>
             <field name="context">{}</field>

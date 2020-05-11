@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="academy_public_tendering_public_administration_european_commission" model="academy.public.tendering.public.administration">
+            <field name="res_partner_id" ref="res_partner_european_commission" />
+            <field name="public_administration_type_id" ref="academy_public_tendering_public_administration_type_others" />
+        </record>
+
+    </data>
+</openerp>

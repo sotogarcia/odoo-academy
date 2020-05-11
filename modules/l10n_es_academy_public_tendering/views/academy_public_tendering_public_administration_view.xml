@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+
+        <!-- Add the autonomous community field to the public administration form view -->
+        <record id="view_academy_public_tendering_public_administration_form" model="ir.ui.view">
+            <field name="name">academy.public.tendering.public.administration.form</field>
+            <field name="model">academy.public.tendering.public.administration</field>
+            <field name="type">form</field>
+            <field name="mode">extension</field>
+            <field name="priority" eval="26" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="academy_public_tendering.view_academy_public_tendering_public_administration_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='country_id']" position="before">
+                    <field name="autonomy_id" class="oe_field_autonomy_id"
+                        placeholder="Autonomous community" />
+                </xpath>
+            </field>
+        </record>
+
+
+    </data>
+</openerp>

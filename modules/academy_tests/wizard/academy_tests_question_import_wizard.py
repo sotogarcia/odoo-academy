@@ -18,7 +18,6 @@ from logging import getLogger
 from enum import Enum
 from collections import Counter
 from re import match, sub as replace, search, MULTILINE, UNICODE, IGNORECASE
-from pprint import pprint
 
 # pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
@@ -247,6 +246,15 @@ class AcademyTestsQuestionImport(models.TransientModel):
         groups='academy_base.academy_group_technical'
     )
 
+    autocategorize = fields.Boolean(
+        string='Autocategorize',
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help='Check to autoset categories using keywords'
+    )
+
     # ----------------- EVENTS AND AUXILIARY FIELD METHODS --------------------
 
     def default_topic_id(self):
@@ -310,7 +318,6 @@ class AcademyTestsQuestionImport(models.TransientModel):
 
         # pylint: disable=locally-disabled, E1101
         if self.imported_attachment_ids:
-            self._update_imported_attachement_titles()
             self._move_imported_attachments()
 
         if self.state != 'step1' and not (self.topic_id and self.category_ids):
@@ -328,7 +335,6 @@ class AcademyTestsQuestionImport(models.TransientModel):
 
     # --------------------------- PUBLIC METHODS ------------------------------
 
-    # @api.multi
     def process_text(self):
         """ Perform job """
 
@@ -437,17 +443,6 @@ class AcademyTestsQuestionImport(models.TransientModel):
             return default
 
 
-    @staticmethod
-    def _fname_to_title(target, capitalize=True):
-        """ Removes file extension and changes underlines to spaces
-        """
-
-        target = replace(r'^(.+)(\.[^.]*)$', r'\1', target, flags=UNICODE)
-        target = replace(r'[ _]+', r' ', target, flags=UNICODE)
-
-        return target.title() if capitalize else target
-
-
     def _can_current_user_change_the_owner(self):
         """ If current user is allowed to access to the owner_id field then
         field should be returned by `fields_get` method
@@ -517,6 +512,7 @@ class AcademyTestsQuestionImport(models.TransientModel):
                 elif groups[Mi.IMAGE.value]:
                     ID = self._process_attachment_groups(groups)
                     if ID:
+                        self._set_attachment_title(groups, ID)
                         values['ir_attachment_ids'].append((4, ID, None))
 
                 else:
@@ -524,6 +520,18 @@ class AcademyTestsQuestionImport(models.TransientModel):
                         values['preamble'], groups[Mi.CONTENT.value])
 
         return values
+
+
+    def _set_attachment_title(self, groups, ID):
+        """ Reads title from markdown line ![title](uri) and set it to the
+        attachement with the given ID in related recordset
+        """
+
+        attach_record = self.attachment_ids.filtered(
+            lambda rec: rec.id == ID)
+        attach_record.name = groups[Mi.TITLE.value]
+
+        return attach_record
 
 
     def _process_attachment_groups(self, groups):
@@ -541,7 +549,6 @@ class AcademyTestsQuestionImport(models.TransientModel):
         # without `title` extension
         if not record:
             uri = groups[Mi.URI.value]
-            title = self._fname_to_title(uri)
 
             record = self.attachment_ids.filtered(
                 lambda item: self._equal(item.name, uri) or self._equal(item.name, title)) # noqa: 501
@@ -582,7 +589,18 @@ class AcademyTestsQuestionImport(models.TransientModel):
         # pylint: disable=locally-disabled, W0703
         try:
             for values in value_set:
+
+                if self.autocategorize:
+                    name = values['name']
+                    # matches => {topic_id: [categorory_id1, ...]}
+                    matches = self.topic_id.search_for_categories(name)
+                    ids = matches.get(self.topic_id.id, False)
+                    if ids:
+                        values['category_ids'] = [(6, False, ids)]
+
                 question_set = question_obj.create(values)
+
+
                 if self.test_id:
                     sequence = sequence + 1
                     tvalues = {
@@ -599,18 +617,6 @@ class AcademyTestsQuestionImport(models.TransientModel):
             raise UserError(message % ex)
 
         return False
-
-
-    def _update_imported_attachement_titles(self):
-        """ Builds a pretty title from filename for attachments and later
-        it saves them
-            - Removes extension
-            - Removes extra spaces
-        """
-
-        for record in self.imported_attachment_ids:
-            record.name = self._fname_to_title(record.name)
-
 
     def _move_imported_attachments(self):
         """ Appends imported files to list of available attachments and

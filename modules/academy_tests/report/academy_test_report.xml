@@ -115,27 +115,25 @@
                         <div class="page">
                             <div class="oe_structure"/>
 
-                            <div class="row">
+                            <div class="clearfix"></div>
+
+                            <div class="row mt16 mb32">
                                 <section class="academy-post-test-test posted-test-body col-12">
                                     <t t-if="o.preamble">
                                         <p class="academy-test-preamble"><t t-esc="o.preamble" /></p>
                                     </t>
 
-                                    <ol class="academy-question-ids">
-                                        <t t-foreach="o.question_ids" t-as="academy_question_rel_id">
+                                    <t t-foreach="o.question_ids" t-as="academy_question_rel_id">
 
-                                        <t t-set="question_id" t-value="academy_question_rel_id.question_id" />
-                                        <li class="academy-question academy-question-swap-content" t-attf-id="academy-question-{{ question_id.id }}" t-attf-data-question-id="{{ question_id.id }}">
-                                            <t t-call="academy_tests.view_academy_question_qweb" />
-                                        </li>
+                                    <t t-set="question_id" t-value="academy_question_rel_id.question_id" />
+                                        <t t-call="academy_tests.view_academy_question_qweb" />
 
-                                        </t><!-- question_ids -->
-                                    </ol>
+                                    </t><!-- question_ids -->
                                 </section>
 
                             </div>
 
-                            <hr class="clearfix line-between-test-and-answers" />
+                            <div class="clearfix"></div>
 
                             <!-- <div class="row">
 
@@ -167,7 +165,7 @@
                 <t t-name="academy_tests.view_academy_tests_qweb">
                     <t t-call="web.html_container">
                         <t t-foreach="docs" t-as="o">
-                            <t t-call="web.basic_layout">
+                            <t t-call="web.external_layout">
                                 <t t-call="academy_tests.view_academy_tests_document_qweb" />
                             </t>
                         </t> 
@@ -175,7 +173,6 @@
                 </t>
             </field>
         </record>
-
 
 
         <!-- Report action to show: "Printable test" -->
@@ -193,12 +190,34 @@
         </record>
 
 
+        <!-- REPORT: "Loop over test recordset"
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        <record id="view_academy_tests_preview_qweb" model="ir.ui.view">
+            <field name="name">Printable test</field>
+            <field name="model">academy.tests.test</field>
+            <field name="type">qweb</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <t t-name="academy_tests.view_academy_tests_qweb">
+                    <t t-call="web.html_container">
+                        <t t-foreach="docs" t-as="o">
+                            <t t-call="web.internal_layout">
+                                <t t-call="academy_tests.view_academy_tests_document_qweb" />
+                            </t>
+                        </t> 
+                    </t> <!-- t-html_container -->
+                </t>
+            </field>
+        </record>
+
         <!-- Report action to show: "Printable test" -->
         <record id="action_report_preview_test" model="ir.actions.report">
             <field name="name">Preview of the test</field>
             <field name="model">academy.tests.test</field>
             <field name="report_type">qweb-html</field>
-            <field name="report_name">academy_tests.view_academy_tests_qweb</field>
+            <field name="report_name">academy_tests.view_academy_tests_preview_qweb</field>
             <field name="attachment_use" eval="False" />
             <field name="attachment">(object.name+'.html')</field>
             <field name="paperformat_id" ref="base.paperformat_euro" />

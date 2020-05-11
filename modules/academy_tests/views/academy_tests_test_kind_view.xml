@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <!-- VIEWS: "Kind of test"
+        
+            - Model·········: academy.tests.test.kind
+            - _rec_name·····: name
+            - Domain········: []
+            - Context·······: {}
+            - Parent menu ··: menu_test_settings_top
+            - View priority·: 16    Sequence····: 10
+            - Action help···: There is not any kind of test
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        
+        <!-- Tree view for "academy.tests.test.kind" -->
+        <record id="view_academy_tests_test_kind_tree" model="ir.ui.view">
+            <field name="name">view.academy.tests.test.kind.tree</field>
+            <field name="model">academy.tests.test.kind</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <tree string="academy_tests_test_kind_tree" create="1" delete="1" edit="1">
+                    <field name="name" />
+                    <field name="description" />
+                </tree>
+            </field>
+        </record>
+        
+        <!-- Form view for "academy.tests.test.kind" -->
+        <record id="view_academy_tests_test_kind_form" model="ir.ui.view">
+            <field name="name">view.academy.tests.test.kind.form</field>
+            <field name="model">academy.tests.test.kind</field>
+            <field name="type">form</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <form string="academy_tests_test_kind_form" create="1" delete="1" edit="1">
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only" />
+                            <h1>
+                                <field name="name" class="oe_field_name"
+                                    placeholder="Name" />
+                            </h1>
+                        </div>
+
+                        <field name="description" class="oe_field_description"
+                            placeholder="Enter new text for description" />
+
+                        <field name="test_ids" class="oe_field_test_ids" />
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+        <!-- Search view for "academy.tests.test.kind" -->
+        <record id="view_academy_tests_test_kind_search" model="ir.ui.view">
+            <field name="name">view.academy.tests.test.kind.search</field>
+            <field name="model">academy.tests.test.kind</field>
+            <field name="type">search</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <search string="academy_tests_test_kind_search">
+                    <field name="name" />
+                    <!-- ··· -->
+                </search>
+            </field>
+        </record>
+        
+        <!-- Main window action for model.name -->
+        <record id="action_kind_of_test_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Kind of test</field>
+            <field name="res_model">academy.tests.test.kind</field>
+            <field name="view_mode">tree,form</field>
+            <field name="target">current</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="search_view_id" ref="view_academy_tests_test_kind_search" />
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to add new kind of test
+                </p><p>
+                    There is not any kind of test
+                </p>
+            </field>
+        </record>
+        
+        <!-- Main menu for model.name -->
+        <record id="menu_kind_of_test" model="ir.ui.menu" >
+            <field name="name">Kind of test</field>
+            <field name="sequence" eval="10" />
+            <field name="action" ref="action_kind_of_test_act_window" />
+            <field name="parent_id" ref="menu_test_settings_top" />
+        </record>
+
+    </data>
+</openerp>

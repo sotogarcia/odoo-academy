@@ -50,7 +50,7 @@ class AcademyTrainingAction(models.Model):
         index=True,
         default=None,
         help='Enter new name',
-        size=100,
+        size=255,
         translate=True,
     )
 
@@ -278,7 +278,6 @@ class AcademyTrainingAction(models.Model):
 
     # --------------------------- PUBLIC METHODS ------------------------------
 
-    # @api.multi
     def session_wizard(self):
         """ Launch the Session wizard.
         This wizard has a related window action, this method reads the action,
@@ -307,16 +306,15 @@ class AcademyTrainingAction(models.Model):
 
         # STEP 4: Map training action and add computed context
         action_map = {
-            'type' : action.type,
-            'name' : action.name,
-            'res_model' : action.res_model,
-            'view_mode' : action.view_mode,
-            # 'view_type' : action.view_type,
-            'target' : action.target,
-            'domain' : action.domain,
-            'context' : ctx,
-            'search_view_id' : action.search_view_id,
-            'help' : action.help,
+            'type': action.type,
+            'name': action.name,
+            'res_model': action.res_model,
+            'view_mode': action.view_mode,
+            'target': action.target,
+            'domain': action.domain,
+            'context': ctx,
+            'search_view_id': action.search_view_id,
+            'help': action.help,
         }
 
         # STEP 5: Return the action

@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="view_academy_public_tendering_public_administration_tree" model="ir.ui.view">
+            <field name="name">academy.public.tendering.public.administration.tree</field>
+            <field name="model">academy.public.tendering.public.administration</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="26" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="base.view_partner_tree" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='display_name']" position="after">
+                    <field name="public_administration_type_id" class="oe_field_administration_type_id" />
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_academy_public_tendering_public_administration_form" model="ir.ui.view">
+            <field name="name">academy.public.tendering.public.administration.form</field>
+            <field name="model">academy.public.tendering.public.administration</field>
+            <field name="type">form</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="26" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="base.view_partner_form" />
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='company_type']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='type']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='category_id']" position="after">
+                    <field name="public_administration_type_id" class="oe_field_administration_type_id" />
+                </xpath>
+
+                <xpath expr="//notebook/page[1]" position="replace" />
+
+                <xpath expr="//notebook/page[not(@name='Internal notes')]" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <xpath expr="//notebook/page[not(@name='Internal notes')]" position="before">
+                    <page string="Public offers" class="oe_page_title" autofocus="autofocus" accesskey="O">
+                        <field name="public_offer_ids" class="oe_field_public_offer_ids"
+                            context="{'tree_view_ref' : 'academy_public_tendering.view_academy_public_tendering_public_offer_tree_x2many'}" />
+                    </page>
+                </xpath>
+
+            </field>
+        </record>
+
+        <record id="view_academy_public_tendering_public_administration_kanban" model="ir.ui.view">
+            <field name="name">academy.public.tendering.public.administration.kanban</field>
+            <field name="model">academy.public.tendering.public.administration</field>
+            <field name="type">kanban</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="26" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <kanban default_group_by="public_administration_type_id" group_create="false" group_delete="false" group_edit="false" records_draggable="false" quick_create="false" archivable="false">
+                    <field name="image_128"/>
+                    <field name="name" />
+
+                    <field name="phone" />
+                    <field name="mobile" />
+                    <field name="email" />
+
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click oe_kanban_academy_administration">
+                                <div class="o_kanban_image">
+                                    <t t-if="record.image_128.raw_value">
+                                        <field name="image_128" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}' />
+                                    </t>
+                                    <t t-else="">
+                                        <img t-att-src="_s + &quot;/academy_public_tendering/static/src/img/administration.png&quot;" class="o_kanban_image" alt="Student photo" />
+                                    </t>
+                                </div>
+                                <div class="oe_kanban_details">
+                                    <h4><strong class="oe_partner_heading"><field name="name"/></strong></h4>
+                                    <ul>
+                                        <li class="o_ellipsis"><strong>Phone:&#160;</strong><field name="phone" /></li>
+                                        <li class="o_ellipsis"><strong>Website:&#160;</strong><field name="website" widget="url" /></li>
+                                        <li class="o_ellipsis"><strong>Email:&#160;</strong><field name="email" /></li>
+                                     </ul>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record id="view_academy_public_tendering_public_administration_search" model="ir.ui.view">
+            <field name="name">academy.public.tendering.public.administration.search</field>
+            <field name="model">academy.public.tendering.public.administration</field>
+            <field name="type">search</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="26" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <search string="academy_training_administration_search">
+                    <field name="name" />
+                    <field name="city" />
+                    <field name="state_id" />
+                    <field name="zip" />
+                    <field name="country_id" />
+                    <field name="category_id" />
+                    <field name="phone" />
+                    <field name="mobile" />
+                    <field name="email" />
+                    <field name="title" />
+
+                    <field name="public_administration_type_id" />
+
+                    <filter string="Non active"
+                        name="non_active_training_resources"
+                        domain="[('active', '=', False)]"
+                        context="{}"
+                        help="Show only non active training resources" />
+
+                </search>
+            </field>
+        </record>
+
+        <record id="action_administrations_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Administrations</field>
+            <field name="res_model">academy.public.tendering.public.administration</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="target">current</field>
+            <field name="domain">[]</field>
+            <field name="context">{'default_is_company': True}</field>
+            <field name="search_view_id" ref="academy_public_tendering.view_academy_public_tendering_public_administration_search" />
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to add new administrations
+                </p><p>
+                    Here are not any administration yet
+                </p>
+            </field>
+        </record>
+
+        <record id="action_administrations_act_window_kanban" model="ir.actions.act_window.view">
+            <field name="act_window_id" ref="action_administrations_act_window" />
+            <field name="view_id" ref="view_academy_public_tendering_public_administration_kanban" />
+            <field name="view_mode">kanban</field>
+            <field name="sequence" eval="1" />
+        </record>
+
+        <record id="action_administrations_act_window_tree" model="ir.actions.act_window.view">
+            <field name="act_window_id" ref="action_administrations_act_window" />
+            <field name="view_id" ref="view_academy_public_tendering_public_administration_tree" />
+            <field name="view_mode">tree</field>
+            <field name="sequence" eval="2" />
+        </record>
+
+        <record id="action_administrations_act_window_form" model="ir.actions.act_window.view">
+            <field name="act_window_id" ref="action_administrations_act_window" />
+            <field name="view_id" ref="view_academy_public_tendering_public_administration_form" />
+            <field name="view_mode">form</field>
+            <field name="sequence" eval="3" />
+        </record>
+
+        <record id="menu_administrations" model="ir.ui.menu">
+            <field name="name">Administrations</field>
+            <field name="sequence" eval="20" />
+            <field name="action" ref="action_administrations_act_window" />
+            <field name="parent_id" ref="menu_academy_public_tendering" />
+            <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical')), (4, ref('academy_base.academy_group_teacher'))]" />
+        </record>
+
+    </data>
+</openerp>
+

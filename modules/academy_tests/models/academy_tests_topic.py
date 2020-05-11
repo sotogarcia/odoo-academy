@@ -15,6 +15,7 @@ Classes:
 
 
 from logging import getLogger
+import re
 
 # pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
@@ -105,7 +106,6 @@ class AcademyTestsTopic(models.Model):
         compute=lambda self: self.compute_category_count()
     )
 
-    # @api.multi
     @api.depends('category_ids')
     def compute_category_count(self):
         """ Computes `category_count` field value, this will be the number
@@ -126,3 +126,37 @@ class AcademyTestsTopic(models.Model):
     ]
 
 
+    def search_for_categories(self, _in_string):
+        """ Search partial matches for all category keywords in given string
+        and returns that categories
+
+        Returned value wille be a dictionary {topic_id: [categorory_id1, ...]}
+        """
+
+        msg = _('Error on autocategorize. Text: {}, Keywords: {}, Error: {}')
+        result = {}
+
+        # STEP 1: Run over topic recordset
+        for record in self:
+
+            result[record.id] = []
+            cat_items = record.category_ids
+
+            # STEP 2: Run over categories with keywords in current topic
+            for catitem in cat_items.filtered(lambda x: x.keywords):
+
+                keywords = catitem.keywords.split(',')
+                keywords = ['\\b' + kw.strip() + '\\b' for kw in keywords]
+
+                # STEP 3: Run over current category keywords
+                for keyword in keywords:
+                    try:
+                        regex = re.compile(keyword, re.IGNORECASE)
+                        if regex.findall(_in_string):
+                            result[record.id].append(catitem.id)
+
+                    except Exception as ex:
+                        _logger.warning(msg.format(
+                            _in_string, catitem.keywords, str(ex)))
+
+        return result

@@ -33,7 +33,7 @@ class AptGroup(models.Model):
         index=True,
         default=None,
         help='Name for this group',
-        size=50,
+        size=255,
         translate=True
     )
 

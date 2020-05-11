@@ -1,0 +1,34 @@
+.oe_kanban_academy_public_tendering h4.oe_kanban_title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin: 0 0 6px 0;
+    padding: 6px;
+}
+
+.oe_kanban_academy_public_tendering ul.oe_kanban_properties {
+    border-spacing: 0px;
+    border-style: none;
+}
+
+.oe_kanban_academy_public_tendering ul.oe_kanban_properties li {
+    display: flex;
+    justify-content: space-between;
+}
+
+.oe_kanban_academy_public_tendering ul.oe_kanban_properties li > * {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 1px;
+    margin: 0!important;
+}
+
+
+/* VIEW: view_academy_public_tendering_public_administration_form 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
+
+a.oe_field_autonomy_id,
+span.oe_field_autonomy_id {
+    margin-left: 2%;
+}

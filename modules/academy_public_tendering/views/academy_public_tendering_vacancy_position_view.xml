@@ -11,7 +11,7 @@
             - Context·······: {}
             - Parent menu ··: academy_public_tendering.menu_tendering_top
             - View priority·: 16    Sequence····: 10
-            - Action help···: There is not any vacancy position yet
+            - Action help···: There is no any vacancy position yet
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
         <!-- Tree view for "academy.public.tendering.vacancy.position" -->
@@ -25,13 +25,25 @@
             <field name="arch" type="xml">
                 <tree string="academy_public_tendering_vacancy_position_tree" create="1" delete="1" edit="1">
                     <field name="sequence" class="od_field_sequence" widget="handle" />
-                    <field name="name" class="oe_field_name" />
-                    <field name="employment_group_id" class="oe_field_employment_group_id" />
-                    <field name="hiring_type_id" class="oe_field_hiring_type_id" />
-                    <field name="exam_type_id" class="oe_field_exam_type_id" />
                     <field name="academy_public_tendering_vacancy_position_type_id" class="oe-field-academy-public-tendering-vacancy-position-type" />
+                    <field name="name" class="oe_field_name" required="0" />
                     <field name="quantity" class="oe_field_total_of_vacancies" />
                 </tree>
+            </field>
+        </record>
+
+        <record id="view_academy_public_tendering_vacancy_position_tree_x2many" model="ir.ui.view">
+            <field name="name">view.academy.public.tendering.vacancy.position.tree</field>
+            <field name="model">academy.public.tendering.vacancy.position</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="25" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="academy_public_tendering.view_academy_public_tendering_vacancy_position_tree" />
+            <field name="arch" type="xml">
+                <xpath expr="//tree" position="attributes">
+                    <attribute name="editable">bottom</attribute>
+                </xpath>
             </field>
         </record>
 
@@ -54,18 +66,13 @@
                             </h1>
                         </div>
 
-                        <group col="4">
-                            <field name="employment_group_id" class="oe_field_employment_group_id"
-                                placeholder="Enter new value for employment group" />
-                            <field name="hiring_type_id" class="oe_field_hiring_type_id"
-                                placeholder="Enter new value for class" />
-                            <field name="academy_public_tendering_vacancy_position_type_id" class="oe-field-academy-public-tendering-vacancy-position-type" />
-                            <field name="quantity" eval="0" />
-                            <field name="exam_type_id" class="oe_field_exam_type_id_id"
-                                placeholder="Enter new value for kind" colspan="4"/>
-                        </group>
-
                         <group col="1" string="Description">
+                            <field name="academy_public_tendering_process_id" class="oe_field_academy_public_tendering_process_id"
+                                placeholder="Choose the related process" />
+                            <field name="academy_public_tendering_vacancy_position_type_id" class="oe_field_academy_public_tendering_vacancy_position_type_id"
+                                placeholder="Choose vacancy position type" />
+                            <field name="quantity" class="oe_field_quantity"
+                                placeholder="Enter new value for quantity" />
                             <field name="description" class="oe_field_description" nolabel="1"
                                 placeholder="Enter new value for description" />
                         </group>
@@ -86,10 +93,7 @@
             <field name="arch" type="xml">
                 <search string="academy_public_tendering_vacancy_position_search">
                     <field name="name" />
-                    <field name="employment_group_id" />
-                    <field name="hiring_type_id" />
                     <field name="academy_public_tendering_vacancy_position_type_id" />
-                    <field name="exam_type_id" />
                 </search>
             </field>
         </record>
@@ -100,7 +104,6 @@
             <field name="name">Vacancy positions</field>
             <field name="res_model">academy.public.tendering.vacancy.position</field>
             <field name="view_mode">tree,form</field>
-            <!-- <field name="view_type">form</field> -->
             <field name="target">current</field>
             <field name="domain">[]</field>
             <field name="context">{}</field>
@@ -115,13 +118,13 @@
         </record>
 
 
-        <!-- Main menu for model.name
+        <!-- Main menu for model.name -->
         <record id="menu_vacancy_positions" model="ir.ui.menu" >
             <field name="name">Vacancy positions</field>
             <field name="sequence" eval="10" />
             <field name="action" ref="action_vacancy_positions_act_window" />
             <field name="parent_id" ref="menu_tendering_settings_top" />
-        </record>-->
+        </record>
 
     </data>
 </openerp>

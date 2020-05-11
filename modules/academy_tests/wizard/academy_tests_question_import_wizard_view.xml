@@ -29,6 +29,7 @@
 
                         <field name="topic_id" class="oe_field_topic_id"
                             placeholder="Choose topic will be used in" />
+
                         <field name="category_ids" class="oe_field_category_ids"
                             widget="many2many_tags" domain="[('topic_id', '=', topic_id)]"
                             attrs="{'readonly': [('topic_id', '=', False)]}"
@@ -37,16 +38,27 @@
                         <field name="tag_ids" class="oe_field_tag_ids"
                             placeholder="Choose tags will be used in"
                             widget="many2many_tags" />
+
                         <field name="test_id" class="oe_field_test_id"
                             placeholder="Choose test (optional)" />
                     </group>
 
-                    <group col="2" class="text-danger oe_edit_only" states="step1"
-                        groups="academy_base.academy_group_technical" >
+                    <group states="step1" col="4" groups="academy_base.academy_group_technical">
                         <field name="owner_id" class="oe_field_owner_id"
-                            placeholder="Choose a different owner" 
+                            placeholder="Choose a different owner" colspan="4"
                             groups="academy_base.academy_group_technical" />
+
+                        <field name="autocategorize" class="oe_field_autocategorize"
+                            string="Autocategorizing"
+                            groups="academy_base.academy_group_technical" />
+
+                        <separator colspan="2" />
                     </group>
+
+                    <div class="alert alert-info" role="alert" 
+                        attrs="{'invisible': ['|', ('state', '&lt;&gt;', 'step1'), ('autocategorize', '=', False)]}">
+                        Only categories with keywords will be used in automatic categorization
+                    </div>
 
                     <group string="Attachments"  states="step1">
                         <field name="imported_attachment_ids" class="oe_field_imported_attachment_ids"
@@ -123,11 +135,9 @@
             <field name="name">Import</field>
             <field name="res_model">academy.tests.question.import.wizard</field>
             <field name="view_mode">form</field>
-            <!-- <field name="view_type">form</field> -->
             <field name="target">new</field>
             <field name="domain">[]</field>
             <field name="context">{}</field>
-            <!-- <field name="multi" eval="True" /> -->
             <field name="binding_model_id" ref="academy_tests.model_academy_tests_question" />
         </record>
 

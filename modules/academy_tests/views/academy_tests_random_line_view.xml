@@ -11,7 +11,7 @@
             - Context·······: {}
             - Parent menu ··: base.menu_custom
             - View priority·: 16    Sequence····: 10
-            - Action help···: There is not any record
+            - Action help···: There is no any record
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
         <!-- Tree view for "academy.tests.random.line" -->

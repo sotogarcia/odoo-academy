@@ -71,7 +71,7 @@ class AcademyTestsRandomTemplate(models.Model):
         index=True,
         default=None,
         help='Enter new name',
-        size=50,
+        size=255,
         translate=True,
     )
 
@@ -196,6 +196,7 @@ class AcademyTestsRandomTemplate(models.Model):
         """ Get the greater sequence value of the set of questions in test
         and returns it. If there are no questions the returned value will be 0
 
+        @note: this is not a ordinary compute method
         @note: next sequence must be ``returned value + 1``
         """
 

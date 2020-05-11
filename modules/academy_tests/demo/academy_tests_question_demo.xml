@@ -18,7 +18,7 @@
             <field name="category_ids" eval="[(4, ref('academy_tests.academy_tests_category_demo_brand'))]" />
             <field name="tag_ids" eval="[(4, ref('academy_tests.academy_tests_tag_demo_brand'))]" />
             <field name="level_id" ref="academy_tests.academy_level_12" />
-            <field name="owner_id" href="base.user_admin" />
+            <field name="owner_id" ref="base.user_admin" />
             <field name="active" eval="False" />
         </record>
 
@@ -31,7 +31,7 @@
             <field name="category_ids" eval="[(4, ref('academy_tests.academy_tests_category_demo_development'))]" />
             <field name="tag_ids" eval="[(4, ref('academy_tests.academy_tests_tag_demo_code'))]" />
             <field name="level_id" ref="academy_tests.academy_level_12" />
-            <field name="owner_id" href="base.user_admin" />
+            <field name="owner_id" ref="base.user_admin" />
             <field name="active" eval="False" />
         </record>
 
@@ -44,7 +44,7 @@
             <field name="category_ids" eval="[(4, ref('academy_tests.academy_tests_category_demo_development')), (4, ref('academy_tests.academy_tests_category_demo_brand'))]" />
             <field name="tag_ids" eval="[(4, ref('academy_tests.academy_tests_tag_demo_third_party')), (4, ref('academy_tests.academy_tests_tag_demo_code'))]" />
             <field name="level_id" ref="academy_tests.academy_level_12" />
-            <field name="owner_id" href="base.user_admin" />
+            <field name="owner_id" ref="base.user_admin" />
             <field name="active" eval="False" />
         </record>
 
@@ -58,7 +58,7 @@
             <field name="category_ids" eval="[(4, ref('academy_tests.academy_tests_category_demo_brand'))]" />
             <field name="tag_ids" eval="[(4, ref('academy_tests.academy_tests_tag_demo_brand'))]" />
             <field name="level_id" ref="academy_tests.academy_level_12" />
-            <field name="owner_id" href="base.user_admin" />
+            <field name="owner_id" ref="base.user_admin" />
             <field name="active" eval="False" />
         </record>
 
@@ -70,7 +70,7 @@
             <field name="category_ids" eval="[(4, ref('academy_tests.academy_tests_category_demo_brand'))]" />
             <field name="tag_ids" eval="[(4, ref('academy_tests.academy_tests_tag_demo_brand'))]" />
             <field name="level_id" ref="academy_tests.academy_level_12" />
-            <field name="owner_id" href="base.user_admin" />
+            <field name="owner_id" ref="base.user_admin" />
             <field name="active" eval="False" />
         </record>
 

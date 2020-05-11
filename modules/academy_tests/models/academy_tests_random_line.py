@@ -342,7 +342,6 @@ class AcademyTestsRandomWizardLine(models.Model):
         compute='compute_type_count'
     )
 
-    # @api.multi
     @api.depends('type_ids', 'exclude_types')
     def compute_type_count(self):
         """ This computes type_count field """
@@ -361,7 +360,6 @@ class AcademyTestsRandomWizardLine(models.Model):
         compute='compute_test_count'
     )
 
-    # @api.multi
     @api.depends('test_ids', 'exclude_tests')
     def compute_test_count(self):
         """ This computes test_count field """
@@ -380,7 +378,6 @@ class AcademyTestsRandomWizardLine(models.Model):
         compute='compute_topic_count'
     )
 
-    # @api.multi
     @api.depends('topic_ids', 'exclude_topics')
     def compute_topic_count(self):
         """ This computes topic_count field """
@@ -399,7 +396,6 @@ class AcademyTestsRandomWizardLine(models.Model):
         compute='compute_category_count'
     )
 
-    # @api.multi
     @api.depends('category_ids', 'exclude_categories')
     def compute_category_count(self):
         """ This computes category_count field """
@@ -418,7 +414,6 @@ class AcademyTestsRandomWizardLine(models.Model):
         compute='compute_tag_count'
     )
 
-    # @api.multi
     @api.depends('tag_ids', 'exclude_tags')
     def compute_tag_count(self):
         """ This computes tag_count field """
@@ -437,7 +432,6 @@ class AcademyTestsRandomWizardLine(models.Model):
         compute='compute_level_count'
     )
 
-    # @api.multi
     @api.depends('level_ids', 'exclude_levels')
     def compute_level_count(self):
         """ This computes level_count field """
@@ -456,7 +450,6 @@ class AcademyTestsRandomWizardLine(models.Model):
         compute='compute_question_count'
     )
 
-    # @api.multi
     @api.depends('question_ids', 'exclude_questions')
     def compute_question_count(self):
         """ This computes question_count field """
@@ -589,7 +582,7 @@ class AcademyTestsRandomWizardLine(models.Model):
 
             # STEP 4: Build domain with line values and merge exclusion leafs
             domain = record.get_domain(exclusion_leafs)
-            print(domain, record.quantity)
+
             # STEP 5: Perform search and append to previouly created recordset
             question_set += question_set.search(domain, limit=record.quantity)
 

@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+    <record id="base.state_es_vi" model="res.country.state">
+    	<field name="autonomy_id" ref="pais_vasco" />
+    </record>
+
+    <record id="base.state_es_ab" model="res.country.state">
+    	<field name="autonomy_id" ref="castilla_la_mancha" />
+    </record>
+
+    <record id="base.state_es_a" model="res.country.state">
+    	<field name="autonomy_id" ref="comunidad_valenciana" />
+    </record>
+
+    <record id="base.state_es_al" model="res.country.state">
+    	<field name="autonomy_id" ref="andalucia" />
+    </record>
+
+    <record id="base.state_es_o" model="res.country.state">
+    	<field name="autonomy_id" ref="principado_de_asturias" />
+    </record>
+
+    <record id="base.state_es_av" model="res.country.state">
+    	<field name="autonomy_id" ref="castilla_y_leon" />
+    </record>
+
+    <record id="base.state_es_ba" model="res.country.state">
+    	<field name="autonomy_id" ref="extremadura" />
+    </record>
+
+    <record id="base.state_es_pm" model="res.country.state">
+    	<field name="autonomy_id" ref="islas_baleares" />
+    </record>
+
+    <record id="base.state_es_b" model="res.country.state">
+    	<field name="autonomy_id" ref="cataluna" />
+    </record>
+
+    <record id="base.state_es_bu" model="res.country.state">
+    	<field name="autonomy_id" ref="castilla_y_leon" />
+    </record>
+
+    <record id="base.state_es_cc" model="res.country.state">
+    	<field name="autonomy_id" ref="extremadura" />
+    </record>
+
+    <record id="base.state_es_ca" model="res.country.state">
+    	<field name="autonomy_id" ref="andalucia" />
+    </record>
+
+    <record id="base.state_es_s" model="res.country.state">
+    	<field name="autonomy_id" ref="cantabria" />
+    </record>
+
+    <record id="base.state_es_cs" model="res.country.state">
+    	<field name="autonomy_id" ref="comunidad_valenciana" />
+    </record>
+
+    <record id="base.state_es_ce" model="res.country.state">
+    	<field name="autonomy_id" ref="ceuta" />
+    </record>
+
+    <record id="base.state_es_cr" model="res.country.state">
+    	<field name="autonomy_id" ref="castilla_la_mancha" />
+    </record>
+
+    <record id="base.state_es_co" model="res.country.state">
+    	<field name="autonomy_id" ref="andalucia" />
+    </record>
+
+    <record id="base.state_es_cu" model="res.country.state">
+    	<field name="autonomy_id" ref="castilla_la_mancha" />
+    </record>
+
+    <record id="base.state_es_gi" model="res.country.state">
+    	<field name="autonomy_id" ref="cataluna" />
+    </record>
+
+    <record id="base.state_es_gr" model="res.country.state">
+    	<field name="autonomy_id" ref="andalucia" />
+    </record>
+
+    <record id="base.state_es_gu" model="res.country.state">
+    	<field name="autonomy_id" ref="castilla_la_mancha" />
+    </record>
+
+    <record id="base.state_es_ss" model="res.country.state">
+    	<field name="autonomy_id" ref="pais_vasco" />
+    </record>
+
+    <record id="base.state_es_h" model="res.country.state">
+    	<field name="autonomy_id" ref="andalucia" />
+    </record>
+
+    <record id="base.state_es_hu" model="res.country.state">
+    	<field name="autonomy_id" ref="aragon" />
+    </record>
+
+    <record id="base.state_es_j" model="res.country.state">
+    	<field name="autonomy_id" ref="andalucia" />
+    </record>
+
+    <record id="base.state_es_lo" model="res.country.state">
+    	<field name="autonomy_id" ref="la_rioja" />
+    </record>
+
+    <record id="base.state_es_gc" model="res.country.state">
+    	<field name="autonomy_id" ref="canarias" />
+    </record>
+
+    <record id="base.state_es_le" model="res.country.state">
+    	<field name="autonomy_id" ref="castilla_y_leon" />
+    </record>
+
+    <record id="base.state_es_l" model="res.country.state">
+    	<field name="autonomy_id" ref="cataluna" />
+    </record>
+
+    <record id="base.state_es_lu" model="res.country.state">
+    	<field name="autonomy_id" ref="galicia" />
+    </record>
+
+    <record id="base.state_es_m" model="res.country.state">
+    	<field name="autonomy_id" ref="comunidad_de_madrid" />
+    </record>
+
+    <record id="base.state_es_ma" model="res.country.state">
+    	<field name="autonomy_id" ref="andalucia" />
+    </record>
+
+    <record id="base.state_es_ml" model="res.country.state">
+    	<field name="autonomy_id" ref="melilla" />
+    </record>
+
+    <record id="base.state_es_mu" model="res.country.state">
+    	<field name="autonomy_id" ref="region_de_murcia" />
+    </record>
+
+    <record id="base.state_es_na" model="res.country.state">
+    	<field name="autonomy_id" ref="comunidad_foral_de_navarra" />
+    </record>
+
+    <record id="base.state_es_or" model="res.country.state">
+    	<field name="autonomy_id" ref="galicia" />
+    </record>
+
+    <record id="base.state_es_p" model="res.country.state">
+    	<field name="autonomy_id" ref="castilla_y_leon" />
+    </record>
+
+    <record id="base.state_es_po" model="res.country.state">
+    	<field name="autonomy_id" ref="galicia" />
+    </record>
+
+    <record id="base.state_es_sa" model="res.country.state">
+    	<field name="autonomy_id" ref="galicia" />
+    </record>
+
+    <record id="base.state_es_tf" model="res.country.state">
+    	<field name="autonomy_id" ref="canarias" />
+    </record>
+
+    <record id="base.state_es_sg" model="res.country.state">
+    	<field name="autonomy_id" ref="castilla_y_leon" />
+    </record>
+
+    <record id="base.state_es_se" model="res.country.state">
+    	<field name="autonomy_id" ref="andalucia" />
+    </record>
+
+    <record id="base.state_es_so" model="res.country.state">
+    	<field name="autonomy_id" ref="castilla_y_leon" />
+    </record>
+
+    <record id="base.state_es_t" model="res.country.state">
+    	<field name="autonomy_id" ref="cataluna" />
+    </record>
+
+    <record id="base.state_es_te" model="res.country.state">
+    	<field name="autonomy_id" ref="aragon" />
+    </record>
+
+    <record id="base.state_es_to" model="res.country.state">
+    	<field name="autonomy_id" ref="castilla_la_mancha" />
+    </record>
+
+    <record id="base.state_es_v" model="res.country.state">
+    	<field name="autonomy_id" ref="comunidad_valenciana" />
+    </record>
+
+    <record id="base.state_es_va" model="res.country.state">
+    	<field name="autonomy_id" ref="castilla_y_leon" />
+    </record>
+
+    <record id="base.state_es_bi" model="res.country.state">
+    	<field name="autonomy_id" ref="pais_vasco" />
+    </record>
+
+    <record id="base.state_es_za" model="res.country.state">
+    	<field name="autonomy_id" ref="castilla_y_leon" />
+    </record>
+
+    <record id="base.state_es_z" model="res.country.state">
+    	<field name="autonomy_id" ref="aragon" />
+    </record>
+
+    </data>
+</openerp>

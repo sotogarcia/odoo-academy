@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="action_autocategorize_questions_server" model="ir.actions.server">
+            <field name="type">ir.actions.server</field>
+            <field name="name">Autocategorize questions</field>
+            <field name="model_id" ref="model_academy_tests_question" />
+            <field name="binding_model_id" ref="model_academy_tests_question"/>
+            <field name="binding_view_types">list</field>
+            <field name="sequence" eval="5" />
+            <field name="state">code</field>
+            <field name="code">
+if records:
+    action = records.auto_categorize()
+            </field>
+        </record>
+
+    </data>
+</openerp>

@@ -4,53 +4,29 @@
 Styles applied over the group of questions (main OL and LI tags)
 -----------------------------------------------------------------------------*/
 
-section.academy-post-test-test ol.academy-question-ids {
-    counter-reset: list;
-    padding: 0px;
-    margin: 0px;
+section.academy-post-test-test {
+    counter-reset: questionlist;
 }
 
-section.academy-post-test-test  li.academy-question {
+article.academy-post-test-question {
     list-style-type: none;
     page-break-inside: avoid;
 
-    display: block;
-    margin: 0px 0px 12px 0;
+    margin: 0px 0px 1em 0px;
 }
 
-.academy-test-preamble {
-    white-space: pre-line;
-    margin: 0px;
-    text-align: justify;
-    margin-bottom: 12px;
-}
-
-
-/*-- Question item in show mode
-Styles applied over each one of the questions and items inside
-This styles will be applied inside «academy_post_test_question_edit» and
-««academy_post_test_question_show» templates
------------------------------------------------------------------------------*/
-
-article.academy-post-test-question {
-    margin: 0;
-    padding: 0;
-}
-
-article.academy-post-test-question .panel-title,
-article.academy-post-test-question p.academy-question-name {
-    display: list-item;
-    margin: 6px 0px;
-    text-align: justify;
-}
-
-article.academy-post-test-question .panel-title::before,
-article.academy-post-test-question p.academy-question-name::before {
+article.academy-post-test-question p {
     list-style-position: inside;
-    counter-increment: list;
-    content: counter(list, decimal) ".- ";
+    margin: 0px 0px 0.25em 0px;
+    padding: 0px;
+}
 
-    margin: 6px 0px;
+article.academy-post-test-question p::before {
+    margin: 0px 0px 0px 0px;
+    padding: 0px 0.5ch 0px 0px;
+    list-style-position: inside;
+    content: counter(questionlist, decimal) ".- ";
+    counter-increment: questionlist;
 }
 
 article.academy-post-test-question p.academy-question-preamble {
@@ -59,15 +35,21 @@ article.academy-post-test-question p.academy-question-preamble {
     text-align: justify;
 }
 
+.academy-test-preamble {
+    white-space: pre-line;
+    margin: 0px;
+    text-align: justify;
+    margin-bottom: 1em;
+}
 
 /*-- Answer list
 Styles applied over the group of answers
 -----------------------------------------------------------------------------*/
 
 article.academy-post-test-question ol.academy-answer-ids {
-    counter-reset: list;
+    counter-reset: answerlist;
 
-    padding: 0px 0px 0px 6mm;
+    padding: 0px 0px 0px 0;
     margin: 0px;
 }
 
@@ -77,8 +59,8 @@ article.academy-post-test-question ol.academy-answer-ids > li.academy-answer {
 }
 
 article.academy-post-test-question ol.academy-answer-ids > li::before {
-    content: counter(list, lower-alpha) ") ";
-    counter-increment: list;
+    content: counter(answerlist, lower-alpha) ") ";
+    counter-increment: answerlist;
 }
 
 
@@ -142,95 +124,3 @@ Styles required to be used in answers table
     width: 20%;
 }
 
-
-/*-- Test
-Styles applied over the test global area, its header and other related items
------------------------------------------------------------------------------*/
-/*section.academy-post-test-test .academy-test-header {
-    margin-bottom: 3px;
-    text-align: justify;
-}
-
-section.academy-post-test-test .academy-test-opcions-row {
-    text-align: right;
-}
-
-
-
-.academy-test-report-header-title,
-.academy-test-report-header-date,
-.academy-test-report-header-category,
-.academy-test-report-header-image {
-    padding: 0px;
-}
-
-.academy-test-report-header-title h1 {
-    height: 24px;
-
-    font-family: Arial;
-    font-size: 10pt;
-    font-weight: bold;
-
-    vertical-align: bottom;
-    padding-bottom: 1px;
-    margin-bottom: 1px;
-
-    border-bottom: 5px double black;
-    text-transform: uppercase;
-}
-
-
-.academy-test-report-header-date
-.academy-test-report-header-category {
-    height: 20px;
-
-    vertical-align: top;
-    padding-top: 1px;
-}
-
-.academy-test-report-header-image {
-    height: 45px;
-
-    vertical-align: middle;
-}
-
-.academy-test-report-footer-editor,
-.academy-test-report-footer-counter {
-    border-top: 2px solid black;
-    padding-top: 1px;
-    font-family: Arial;
-    font-size: 10pt;
-    padding: 0px;
-}
-
-.academy-test-report-footer-counter .text-muted {
-    color: inherit!important;
-}
-
-.line-between-test-and-answers {
-    page-break-after: always;
-    visibility: visible;
-}
-
-@media print {
-    section.posted-test-body .ir-attachment-image-ids .figure {
-        border-style: none;
-        max-width: 25%;
-        padding: 0 5px;
-    }
-
-    img {
-        margin: 0 auto;
-        width: auto;
-        height: auto;
-        display: block;
-    }
-
-    section.academy-post-test-test  li.academy-question {
-        border-style: none!important;
-        padding: 0;
-        margin: 0;
-    }
-}
-
-*/

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="academy_public_tendering_access_system_open" model="academy.public.tendering.access.system">
+            <field name="name">Open</field>
+        </record>
+
+        <record id="academy_public_tendering_access_system_internal_promotion" model="academy.public.tendering.access.system">
+            <field name="name">Internal promotion</field>
+        </record>
+
+        <record id="academy_public_tendering_access_system_consolidation" model="academy.public.tendering.access.system">
+            <field name="name">Consolidation</field>
+        </record>
+
+    </data>
+</openerp>

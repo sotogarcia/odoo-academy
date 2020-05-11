@@ -1,25 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <openerp>
-    <data noupdate="1">
+    <data noupdate="0">
 
-            <!-- <field model="res.country.state" name="state_id" search="[('code','ilike','ca')]"/>-->
-
-        <!-- CONCELLO DE VIGO
+        <!-- EUROPEAN COMMISSION
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-        <record id="res_partner_vigo_city_hall" model="res.partner">
+        <record id="res_partner_european_commission" model="res.partner">
 
-            <field name="name">Concello de Vigo</field>
+            <field name="name">European Commission</field>
 
-            <field name="street">Praza do Rei, 1</field>
-            <field name="city">Vigo</field>
-            <field name="zip">36202</field>
+            <field name="street">Rue de la Loi / Wetstraat 170</field>
+            <field name="city">Brussels</field>
+            <field name="zip">1049</field>
             <field name="country_id" ref="base.es" />
 
 
-            <field name="email">010@vigo.org</field>
-            <field name="phone">+34986810100</field>
-            <field name="website">http://hoxe.vigo.org</field>
+            <field name="email">europamanagement@ec.europa.eu</field>
+            <field name="phone">+3222991111</field>
+            <field name="website">https://ec.europa.eu/commission/index_es</field>
             <field name="vat">ESP3605700H</field>
 
             <field name="is_company" eval="True" />
@@ -29,200 +27,9 @@
 
             <!-- <field name="lang">es_ES</field> -->
             <field name="type">contact</field>
-            <field name="tz">Europe/Madrid</field>
+            <field name="tz">Europe/Brussels</field>
 
-            <field name="image_128" type="base64" file="academy_public_tendering/static/src/img/res_partner_vigo_city_hall.png"/>
-
-        </record>
-
-
-        <!-- XUNTA DE GALICIA
-        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-        <record id="res_partner_vigo_government_of_galicia" model="res.partner">
-
-            <field name="name">Xunta de Galicia</field>
-
-            <field name="street">Edificio Administrativo San Caetano</field>
-            <field name="street2">Rúa de San Caetano, s/n</field>
-            <field name="city">Santiago de Compostela</field>
-            <field name="zip">15704</field>
-            <field name="country_id" ref="base.es" />
-
-
-            <field name="email">012@xunta.gal</field>
-            <field name="phone">+34981900643</field>
-            <field name="website">http://www.xunta.gal</field>
-            <field name="vat">ESS1511001H</field>
-
-            <field name="is_company" eval="True" />
-            <!-- <field name="supplier" eval="False" /> -->
-            <!-- <field name="customer" eval="False" /> -->
-            <field name="category_id" eval="[(4, ref('academy_public_tendering.res_partner_category_civil_service'))]" />
-
-            <!-- <field name="lang">es_ES</field> -->
-            <field name="type">contact</field>
-            <field name="tz">Europe/Madrid</field>
-
-            <field name="image_128" type="base64" file="academy_public_tendering/static/src/img/res_partner_vigo_government_of_galicia.png"/>
-
-        </record>
-
-
-        <!-- SERVIZO GALEGO DE SAUDE
-        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-        <record id="res_partner_galician_healthcare_service" model="res.partner">
-
-            <field name="name">Servizo Galego de Saúde</field>
-
-            <field name="street">Edificio Administrativo San Lázaro</field>
-            <field name="street2">Rúa San Lázaro, s/n</field>
-            <field name="city">Santiago de Compostela</field>
-            <field name="zip">15703</field>
-            <field name="country_id" ref="base.es" />
-
-
-            <field name="email">xerencia.sergas@sergas.es</field>
-            <field name="phone">+34902077333</field>
-            <field name="website">http://www.sergas.es</field>
-            <field name="vat">ESQ6550006H</field>
-
-            <field name="is_company" eval="True" />
-            <!-- <field name="supplier" eval="False" /> -->
-            <!-- <field name="customer" eval="False" /> -->
-            <field name="category_id" eval="[(4, ref('academy_public_tendering.res_partner_category_civil_service'))]" />
-
-            <!-- <field name="lang">es_ES</field> -->
-            <field name="type">contact</field>
-            <field name="tz">Europe/Madrid</field>
-
-            <field name="image_128" type="base64" file="academy_public_tendering/static/src/img/res_partner_galician_healthcare_service.png"/>
-
-        </record>
-
-
-        <!-- ADMINISTRACIÓN GENERAL DEL ESTADO
-        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-        <record id="res_partner_ministry_of_public_admon" model="res.partner">
-
-            <field name="name">Ministerio de Administraciones Públicas</field>
-
-            <field name="street">Calle Alcalá, 5</field>
-            <field name="city">Madrid</field>
-            <field name="zip">28051</field>
-            <field name="country_id" ref="base.es" />
-
-
-            <field name="email">informacion.administrativa@minhap.es</field>
-            <field name="phone">+34900567765</field>
-            <!-- <field name="fax">+34915958869</field> -->
-            <field name="website">http://www.minhap.gob.es</field>
-            <field name="vat">S2833002E</field>
-
-            <field name="is_company" eval="True" />
-            <!-- <field name="supplier" eval="False" /> -->
-            <!-- <field name="customer" eval="False" /> -->
-            <field name="category_id" eval="[(4, ref('academy_public_tendering.res_partner_category_civil_service'))]" />
-
-            <!-- <field name="lang">es_ES</field> -->
-            <field name="type">contact</field>
-            <field name="tz">Europe/Madrid</field>
-
-            <field name="image_128" type="base64" file="academy_public_tendering/static/src/img/res_partner_ministry_of_public_admon.png"/>
-
-        </record>
-
-
-        <!-- ADMINSITRACIÓN GENERAL DE JUSTICIA
-        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-        <record id="res_partner_ministry_of_justice" model="res.partner">
-
-            <field name="name">Ministerio de Justicia</field>
-
-            <field name="street">Calle San Bernardo, 45</field>
-            <field name="city">Madrid</field>
-            <field name="zip">28015</field>
-            <field name="country_id" ref="base.es" />
-
-
-            <field name="email">prensa@mjusticia.es</field>
-            <field name="phone">+34902007214</field>
-            <field name="website">http://www.mjusticia.gob.es</field>
-            <field name="vat">ESS2813001A</field>
-
-            <field name="is_company" eval="True" />
-            <!-- <field name="supplier" eval="False" /> -->
-            <!-- <field name="customer" eval="False" /> -->
-            <field name="category_id" eval="[(4, ref('academy_public_tendering.res_partner_category_civil_service'))]" />
-
-            <!-- <field name="lang">es_ES</field> -->
-            <field name="type">contact</field>
-            <field name="tz">Europe/Madrid</field>
-
-            <field name="image_128" type="base64" file="academy_public_tendering/static/src/img/res_partner_ministry_of_justice.png"/>
-
-        </record>
-
-
-
-        <!-- POLICIA
-        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-        <record id="res_partner_police" model="res.partner">
-
-            <field name="name">Dirección General de la Policia</field>
-
-            <field name="street">Calle Julian Gonzalez Segador, s/n</field>
-            <field name="city">Madrid</field>
-            <field name="zip">28043</field>
-            <field name="country_id" ref="base.es" />
-
-
-            <field name="email">webdgp@policia.es</field>
-            <field name="phone">+34915828061</field>
-            <field name="website">http://www.policia.es/</field>
-            <field name="vat">ESS2816015H</field>
-
-            <field name="is_company" eval="True" />
-            <!-- <field name="supplier" eval="False" /> -->
-            <!-- <field name="customer" eval="False" /> -->
-            <field name="category_id" eval="[(4, ref('academy_public_tendering.res_partner_category_civil_service'))]" />
-
-            <!-- <field name="lang">es_ES</field> -->
-            <field name="type">contact</field>
-            <field name="tz">Europe/Madrid</field>
-
-            <field name="image_128" type="base64" file="academy_public_tendering/static/src/img/res_partner_police.png"/>
-
-        </record>
-
-
-        <!-- ADMINSITRACIÓN GENERAL DE JUSTICIA
-        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-        <record id="res_partner_civil_guard" model="res.partner">
-
-            <field name="name">Dirección General de la Guardia Civil</field>
-
-            <field name="street">Calle Guzmán el Bueno, 110</field>
-            <field name="city">Madrid</field>
-            <field name="zip">28003</field>
-            <field name="country_id" ref="base.es" />
-
-
-            <field name="email">prensa@mjusticia.es</field>
-            <field name="phone">+34915146001</field>
-            <!-- <field name="fax">+34915146007</field> -->
-            <field name="website">http://www.interior.gob.es/</field>
-            <field name="vat">ESS2816003D</field>
-
-            <field name="is_company" eval="True" />
-            <!-- <field name="supplier" eval="False" /> -->
-            <!-- <field name="customer" eval="False" /> -->
-            <field name="category_id" eval="[(4, ref('academy_public_tendering.res_partner_category_civil_service'))]" />
-
-            <!-- <field name="lang">es_ES</field> -->
-            <field name="type">contact</field>
-            <field name="tz">Europe/Madrid</field>
-
-            <field name="image_128" type="base64" file="academy_public_tendering/static/src/img/res_partner_civil_guard.png"/>
+            <field name="image_1920" type="base64" file="academy_public_tendering/static/src/img/res_partner_european_commission.png"/>
 
         </record>
 

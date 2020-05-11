@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="academy_public_tendering_public_administration_type_state" model="academy.public.tendering.public.administration.type">
+            <field name="sequence">1</field>
+            <field name="name">State</field>            
+        </record>
+
+        <record id="academy_public_tendering_public_administration_type_local" model="academy.public.tendering.public.administration.type">
+            <field name="sequence">3</field>
+            <field name="name">Local</field>            
+        </record>
+
+        <record id="academy_public_tendering_public_administration_type_others" model="academy.public.tendering.public.administration.type">
+            <field name="sequence">4</field>
+            <field name="name">Others</field>            
+        </record>
+
+    </data>
+</openerp>

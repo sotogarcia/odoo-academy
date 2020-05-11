@@ -4,8 +4,8 @@
 #    __openerp__.py file at the root folder of this module.                   #
 ###############################################################################
 
-from openerp import models, fields, api
-from openerp.tools.translate import _
+from odoo import models, fields, api
+from odoo.tools.translate import _
 from logging import getLogger
 
 
@@ -33,6 +33,6 @@ class AcademyTestTopicTrainingModuleLinkReadonly(models.Model):
         index=True,
         default=None,
         help=False,
-        size=50,
+        size=255,
         translate=True
     )
