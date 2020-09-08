@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <!-- VIEWS: "Test availability"
+
+            - Model·········: academy.tests.test.availability
+            - _rec_name·····: test_id
+            - Domain········: []
+            - Context·······: {}
+            - Parent menu ··: None
+            - View priority·: 16    Sequence····: 10
+            - Action help···: There are no availabilities yet
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+        <!-- Tree view for "academy.tests.test.availability" -->
+        <record id="view_academy_tests_test_availability_tree" model="ir.ui.view">
+            <field name="name">view.academy.tests.test.availability.tree</field>
+            <field name="model">academy.tests.test.availability</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <tree string="academy_tests_test_availability_tree" create="0" delete="0" edit="0" editable="bottom">
+                    <field name="test_id" />
+                    <field name="model" />
+                    <field name="related_id" />
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form view for "academy.tests.test.availability" -->
+        <record id="view_academy_tests_test_availability_form" model="ir.ui.view">
+            <field name="name">view.academy.tests.test.availability.form</field>
+            <field name="model">academy.tests.test.availability</field>
+            <field name="type">form</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <form string="academy_tests_test_availability_form" create="1" delete="1" edit="1">
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="test_id" class="oe_edit_only" />
+                            <h1>
+                                <field name="test_id" class="oe_field_test_id"
+                                    placeholder="Test id" />
+                            </h1>
+                        </div>
+                        <group col="2">
+                            <field name="related_id" class="oe_field_related_id" />
+                            <field name="model" class="oe_field_model" />
+                            <field name="res_id" class="oe_field_res_id" />
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search view for "academy.tests.test.availability" -->
+        <record id="view_academy_tests_test_availability_search" model="ir.ui.view">
+            <field name="name">view.academy.tests.test.availability.search</field>
+            <field name="model">academy.tests.test.availability</field>
+            <field name="type">search</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <search string="academy_tests_test_availability_search">
+                    <field name="test_id" />
+                    <field name="model" />
+                </search>
+            </field>
+        </record>
+
+        <!-- Main window action for model.name -->
+        <record id="action_test_availability_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Test availability</field>
+            <field name="res_model">academy.tests.test.availability</field>
+            <field name="view_mode">tree,form</field>
+            <field name="target">current</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="search_view_id" ref="view_academy_tests_test_availability_search" />
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to add new availability
+                </p><p>
+                    There are no availabilities yet
+                </p>
+            </field>
+        </record>
+
+    </data>
+</openerp>

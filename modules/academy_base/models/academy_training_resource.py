@@ -19,9 +19,6 @@ from pathlib import Path
 from odoo import models, fields, api
 from odoo.tools import config
 
-from .lib.custom_model_fields import Many2manyThroughView, \
-    TRAINING_RESOURCE_IDS_SQL, TRAINING_ACTION_RESOURCE_IDS_SQL
-
 try:
     from BytesIO import BytesIO
 except ImportError:
@@ -125,22 +122,6 @@ class AcademyTrainingResource(models.Model):
         help=u'Last update'
     )
 
-    training_module_ids = fields.Many2many(
-        string='Training modules',
-        required=False,
-        readonly=False,
-        index=False,
-        default=None,
-        help=False,
-        comodel_name='academy.training.module',
-        relation='academy_training_module_training_resource_rel',
-        column1='training_resource_id',
-        column2='training_module_id',
-        domain=[],
-        context={},
-        limit=None
-    )
-
     ir_attachment_ids = fields.Many2many(
         string='Attachments',
         required=False,
@@ -183,42 +164,6 @@ class AcademyTrainingResource(models.Model):
         limit=None
     )
 
-    # Many2manyThroughView
-    training_activity_ids = Many2manyThroughView(
-        string='Training activity',
-        required=False,
-        readonly=True,
-        index=False,
-        default=None,
-        help='Choose related training activities',
-        comodel_name='academy.training.activity',
-        relation='academy_training_activity_resource_rel',
-        column1='training_resource_id', # this is the name in the SQL VIEW
-        column2='training_activity_id',   # this is the name in the SQL VIEW
-        domain=[],
-        context={},
-        limit=None,
-        sql=TRAINING_RESOURCE_IDS_SQL
-    )
-
-    # Many2manyThroughView
-    training_action_ids = Many2manyThroughView(
-        string='Training action',
-        required=False,
-        readonly=True,
-        index=False,
-        default=None,
-        help='Choose related training actions',
-        comodel_name='academy.training.action',
-        relation='academy_training_action_resource_rel',
-        column1='training_resource_id', # this is the name in the SQL VIEW
-        column2='training_action_id',   # this is the name in the SQL VIEW
-        domain=[],
-        context={},
-        limit=None,
-        sql=TRAINING_ACTION_RESOURCE_IDS_SQL
-    )
-
     training_resource_id = fields.Many2one(
         string='Current version',
         required=False,
@@ -256,6 +201,20 @@ class AcademyTrainingResource(models.Model):
         default=None,
         help=False,
         comodel_name='ir.attachment',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False
+    )
+
+    kind_id = fields.Many2one(
+        string='Kind',
+        required=True,
+        readonly=False,
+        index=False,
+        default=None,
+        help='Choose type of resource',
+        comodel_name='academy.training.resource.kind',
         domain=[],
         context={},
         ondelete='cascade',

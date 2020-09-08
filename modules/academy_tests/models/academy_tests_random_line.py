@@ -10,11 +10,13 @@ which contains all Academy Tests Random Wizard Line  attributes and behavior.
 
 from logging import getLogger
 from datetime import datetime
+import psycopg2.extensions
+from sys import maxsize, exit
 
 # pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
 from odoo.tools.translate import _
-
+from odoo.osv import expression
 
 # pylint: disable=locally-disabled, C0103
 _logger = getLogger(__name__)
@@ -24,7 +26,8 @@ WIZARD_LINE_STATES = [
     ('step1', 'General'),
     ('step2', 'Topics/Categories'),
     ('step3', 'Tests'),
-    ('step4', 'Questions')
+    ('step4', 'Questions'),
+    ('step5', 'Restrictions')
 ]
 
 # in question, in this line, exclude/include
@@ -38,6 +41,53 @@ FIELD_MAPPING = [
     ('id', 'question_ids', 'exclude_questions'),
 ]
 
+SQL_AGREGATE_FOR_NONE = '1'
+SQL_AGREGATE_FOR_ANSWERED = '1'
+SQL_AGREGATE_FOR_MISTAKEN = '(SUM ( (NOT(COALESCE ( is_correct, TRUE ))::BOOLEAN) :: INTEGER ) :: NUMERIC / COUNT ( * ))'
+SQL_AGREGATE_FOR_BLANK = '(SUM ( ( user_action = \'blank\' ) :: INTEGER ) :: NUMERIC / COUNT ( * ))'
+SQL_AGREGATE_FOR_DOUBT = '(SUM ( ( user_action = \'doubt\' ) :: INTEGER ) :: NUMERIC / COUNT ( * ))'
+SQL_AGREGATE_FOR_DOUBT_BLANK = '(SUM ( ( user_action IN ( \'doubt\', \'blank\' ) ) :: INTEGER ) :: NUMERIC / COUNT ( * ))'
+SQL_AGREGATE_FOR_MISTAKEN_BLANK = '(SUM ( ((NOT(COALESCE ( is_correct, TRUE ))::BOOLEAN) OR ( user_action = \'blank\' ))::INTEGER ) :: NUMERIC / COUNT ( * ))'
+SQL_AGREGATE_FOR_MISTAKEN_DOUBT = '(SUM ( ((NOT(COALESCE ( is_correct, TRUE ))::BOOLEAN) OR ( user_action = \'doubt\' ))::INTEGER ) :: NUMERIC / COUNT ( * ))'
+SQL_AGREGATE_FOR_MISTAKEN_DOUBT_BLANK = '(SUM ( ((NOT(COALESCE ( is_correct, TRUE ))::BOOLEAN) OR ( user_action IN ( \'doubt\', \'blank\' ) ))::INTEGER ) :: NUMERIC / COUNT ( * ))'
+
+SQL_BASE_FOR_COMPLEX_QUERY = '''
+    SELECT
+        {field}
+    FROM
+        "academy_tests_question"
+'''
+
+SQL_JOIN_ANSWERED = '''
+    INNER JOIN (
+        SELECT
+            question_id as answered_question_id,
+            {aggregate}::NUMERIC AS ratio
+        FROM
+            academy_tests_attempt_attempt_answer_rel AS rel
+        {student}
+        GROUP BY
+            question_id
+    ) AS aq ON "id" = answered_question_id
+'''
+
+SQL_JOIN_STUDENT = """
+    INNER JOIN academy_tests_attempt ON attempt_id = "id"
+    WHERE student_id in ({ids})
+"""
+
+SQL_JOIN_CIRCUNSCRIBE = '''
+    INNER JOIN (
+        SELECT DISTINCT
+            question_id AS available_question_id
+        FROM
+            {table} AS rel1
+        INNER JOIN academy_tests_test_question_rel AS rel2
+            ON rel1.test_id = rel2.test_id
+        WHERE {field} in ({ids})
+    ) as cq
+    ON "id" = available_question_id
+'''
 
 # pylint: disable=locally-disabled, R0903, W0212
 class AcademyTestsRandomWizardLine(models.Model):
@@ -60,6 +110,7 @@ class AcademyTestsRandomWizardLine(models.Model):
     _rec_name = 'name'
     _order = 'sequence ASC, name ASC'
 
+    _debug=True
 
     name = fields.Char(
         string='Name',
@@ -320,6 +371,93 @@ class AcademyTestsRandomWizardLine(models.Model):
     )
 
 
+    # ----------- SETUP REQUERIMENTS ------------
+
+    stock_by = fields.Selection(
+        string='Stock by',
+        required=True,
+        readonly=False,
+        index=False,
+        default='not',
+        help='Choose how minimum question stock will be computed',
+        selection=[
+            ('not', 'No restrict'),
+            ('pct', 'Percent')
+        ]
+    )
+
+    stock = fields.Float(
+        string='Stock',
+        required=True,
+        readonly=False,
+        index=False,
+        default=1.0,
+        digits=(16, 2),
+        help='Minimum number of questions required to make new test'
+    )
+
+    answered_by = fields.Selection(
+        string='Answered by',
+        required=True,
+        readonly=False,
+        index=False,
+        default='not',
+        help='Choose how minimum answered questions will be computed',
+        selection=[
+            ('not', 'No restrict'),
+            ('pct', 'Percent')
+        ]
+    )
+
+    answered = fields.Float(
+        string='Answered',
+        required=True,
+        readonly=False,
+        index=False,
+        default=1.0,
+        help='Minimum number of answered questions required to make new test'
+    )
+
+    restrict_by = fields.Selection(
+        string='Restrict',
+        required=True,
+        readonly=False,
+        index=False,
+        default='0',
+        help='Choose how minimum question stock will be computed',
+        selection=[
+            ('0', 'No restrict'),
+            ('1', 'Answered'),
+            ('3', 'Mistaken'),
+            ('5', 'Blank'),
+            ('9', 'Doubt'),
+            ('7', 'Mistaken/Blank'),
+            ('11', 'Mistaken/Doubt'),
+            ('13', 'Blank/Doubt'),
+            ('15', 'Mistaken/Blank/Doubt')
+        ]
+    )
+
+    supply = fields.Float(
+        string='Supply',
+        required=True,
+        readonly=False,
+        index=False,
+        default=1.0,
+        help='Minimum number of  mistakes/doubts/blanks required to make new test'
+    )
+
+    ratio = fields.Float(
+        string='Ratio',
+        required=True,
+        readonly=False,
+        index=False,
+        default=0.5,
+        digits=(16, 2),
+        help='Percentaje of mistakes/doubts/blanks required to use a question in test'
+    )
+
+
     # ----------------------- AUXILIARY FIELD METHODS -------------------------
 
     def default_name(self):
@@ -509,6 +647,459 @@ class AcademyTestsRandomWizardLine(models.Model):
 
         return result.mapped('id')
 
+
+    # --------------------- COMPUTE RESTICTIONS ------------------------
+    # Some restrictions can be setup for line, others will be read from
+    # context (resource, active_ids, active students). Perform query to
+    # get ID's with restrictions a NON ORM SQL query is needed, methods
+    # in this section reads rectrictions from lina and context and to
+    # build and execute this NON ORM query
+    # ------------------------------------------------------------------
+
+    @staticmethod
+    def _sql_base_for_complex_query(count=False):
+        """ Build the common SQL part for use in complex searches
+
+        @param count (bool): if it's set to True the search result will
+        be the number of records
+        @return (tuple) SQL query string
+        """
+
+        field = 'COUNT("id")' if count else '"id" AS question_id'
+
+        return SQL_BASE_FOR_COMPLEX_QUERY.format(field=field)
+
+
+    @staticmethod
+    def _sql_restriction_join(restriction, student_ids=None):
+        """ Create the join SQL part to apply constraints, including
+        which retrieve the answered questions
+
+        @param restriction (int): valid restriction identifier
+        @return (string) SQL query join clausule
+        """
+
+        agregate = False
+
+        if restriction == 0:
+            agregate  = SQL_AGREGATE_FOR_NONE
+        elif restriction == 1:
+            agregate = SQL_AGREGATE_FOR_ANSWERED
+        elif restriction == 3:  # 'Mistaken'
+            agregate = SQL_AGREGATE_FOR_MISTAKEN
+        elif restriction == 5:  # 'Blank'
+            agregate = SQL_AGREGATE_FOR_BLANK
+        elif restriction == 9:  # 'Doubt'
+            agregate = SQL_AGREGATE_FOR_DOUBT
+        elif restriction == 7:  # 'Mistaken/Blank'
+            agregate = SQL_AGREGATE_FOR_DOUBT_BLANK
+        elif restriction == 11:  # 'Mistaken/Doubt'
+            agregate = SQL_AGREGATE_FOR_MISTAKEN_BLANK
+        elif restriction == 13:  # 'Blank/Doubt'
+            agregate = SQL_AGREGATE_FOR_MISTAKEN_DOUBT
+        elif restriction == 15:  # 'Mistaken/Blank/Doubt
+            agregate = SQL_AGREGATE_FOR_MISTAKEN_DOUBT_BLANK
+        else:
+            msg = _('Usupported restriction {}').format(restriction)
+            assert agregate, msg
+
+        if restriction > 1 and student_ids:
+            in_str = ', '.join([str(item) for item in student_ids])
+            join_student = SQL_JOIN_STUDENT.format(ids=in_str)
+        else:
+            join_student = ''
+
+        return SQL_JOIN_ANSWERED.format(
+            aggregate=agregate, student=join_student)
+
+
+    @staticmethod
+    def _sql_circunscribe_join(res_to, res_ids):
+        """ Create the join SQL ppart to restrict the results to the
+        questions related to a given action or module
+
+        @param res_to (string): this can be `module` or `action`
+        @param res_ids (int): valid module or action ID
+
+        @return (string) SQL query join clausule
+        """
+        assert res_to in ['action', 'module'], _('Unexpected keyword')
+
+        table = 'academy_tests_test_available_in_training_{}_rel'
+        field = 'training_{}_id'
+
+        in_str = ', '.join([str(item) for item in res_ids])
+
+        return SQL_JOIN_CIRCUNSCRIBE.format(
+            table=table.format(res_to),
+            field=field.format(res_to),
+            ids=in_str
+        )
+
+
+    @api.model
+    def _encoded_sql_query(self, query, where_params):
+        """ Encode result of psycopg2.mogrify to the current cursor
+        encoding after fill it with given where params
+
+        @see https://www.compose.com/articles/formatted-sql-in-python-with-psycopgs-mogrify/
+
+        @return (string) filled and encoded SQL query string
+        """
+
+        cr = self.env.cr
+
+        encoding = psycopg2.extensions.encodings[cr.connection.encoding]
+        sql_query = self.env.cr.mogrify(query, where_params)
+
+        return sql_query.decode(encoding, 'replace')
+
+
+    @api.model
+    def _sql_where(self, domain, ratio=None):
+        """ Transform a given valid Odoo domain in a valid SQL WHERE
+        clausule and appends it IN THE END of the given query
+
+        @param domain (list): Odoo valid domain
+        @param ratio (float): ratio will be used in restriction
+
+        @note ratio should be from self.ratio field, but it's optional
+        in this method to allow use this in non restricion queries
+
+        @return (string): given query with where clausule attached
+        """
+
+        where_params = None
+        where_str = ''
+
+        domain = domain or []
+
+        qobj = self.env['academy.tests.question']
+
+        # FROM ODOO CODE:BEGIN -> See _search method in models.py
+        qobj._flush_search(domain, order=None)
+        query = qobj._where_calc(domain)
+        qobj._apply_ir_rules(query, 'read')
+
+        from_clause, where_clause, where_params = query.get_sql()
+        where_params = where_params or None
+        # FROM ODOO CODE:END
+
+        if(where_clause):
+            where_str = " WHERE {}".format(where_clause)
+
+        if(ratio):
+            if(where_str):
+                where_str += ' AND ratio >= {}'.format(ratio)
+            else:
+                where_str = " WHERE ratio >= {}".format(ratio)
+
+        if where_str:
+            where_str = self._encoded_sql_query(where_str, where_params)
+
+        return where_str
+
+
+    @staticmethod
+    def _unpack(arguments):
+        """ This will be used in _complex_search method to unpack
+        arguments. If the argument does not exist it will be set to its
+        default value.
+
+        @param arguments (dict): dictionary with arguments
+        @return (tuple) arguments in order
+        """
+        arguments = arguments or {}
+
+        domain = arguments.get('domain', [])
+        restrict = arguments.get('restriction', 0)
+        ratio =  arguments.get('ratio', 0)
+        resource = arguments.get('resource', None)
+        res_ids = arguments.get('res_ids', [-1])
+        student_ids = arguments.get('student_ids', None)
+
+        return domain, restrict, ratio, resource, res_ids, student_ids
+
+
+    @api.model
+    def _complex_search(self, args, limit=None, count=False):
+        """ Performs a complex search with for given line restriction
+
+        @param args (dict): dictionary which can contains domain,
+        restriction, ratio, resource and res_ids
+        @param limit (int): limit of records
+        @param count (bool): if it's set to True the search result will
+        be the number of records
+
+        @return (list or int) if count has been set to False then
+        returned value will be a list of question ID's, otherwise the
+        result will be the number of records
+        """
+        domain, restriction, ratio, resource, res_ids, student_ids = \
+            self._unpack(args)
+        query = self._sql_base_for_complex_query(count)
+
+        if restriction > 0:
+            query +=  self._sql_restriction_join(
+                restriction, student_ids)
+
+        if resource in ['action', 'module'] and res_ids:
+            query +=  self._sql_circunscribe_join(resource, res_ids)
+
+        if restriction > 1:
+            query += self._sql_where(domain, ratio)
+        else:
+            query += self._sql_where(domain, None)
+
+        if (limit or limit == 0) and not count:
+            query += ' limit {}'.format(limit)
+
+        result = self._execute_complex_query(query)
+
+        if(count):
+            result = result[0][0] if result and result[0] else 0
+        else:
+            result = [item[0] for item in (result or[])]
+
+        return result
+
+
+    @api.model
+    def _execute_complex_query(self, query):
+        """ Use cursor to execute raw given query and fetch result. In
+        addition, this method can send query string to global logger.
+
+        @param query (string): valid raw SQL query string
+        @return (list) recordset values [(value,), ...] where value can
+        be a question_id or count result
+        """
+
+        if self.env.cr.sql_log or self._debug:
+            query_str = query.replace("\n", " ")
+            _logger.debug("complex_query: %s", query_str)
+
+        self.env.cr.execute(query)
+
+        return self.env.cr.fetchall()
+
+
+    def _quantity_for(self, percent_field):
+        """ Computes the percentage over the quantity and rounds result
+        to an integer
+
+        @return (int) percentage over the quantity
+        """
+
+        self.ensure_one()
+
+        percent = getattr(self, percent_field, 0)
+
+        return int(round(percent * self.quantity))
+
+
+    def _get_restriction(self):
+        """ Get current line restrict_by field value (as text) and cast
+        it to an integer
+        @return (int) restriction ID as an integer
+        """
+
+        self.ensure_one()
+        return int(self.restrict_by)
+
+
+    @staticmethod
+    def _with(in_dict, update=None):
+        """ Returns an updated copy for given dictionary
+        @param update (dict): key,value pairs to update
+        @return (dict): a new updated dictionary
+        """
+        new_dict = in_dict.copy()
+
+        if update:
+            for key, value in update.items():
+                new_dict[key] = value
+
+        return new_dict
+
+
+    def _great_or_equal(self, expected, result, complement=''):
+        """ Assert result is greater or equal to result and raises
+        an exception with a message that has self name and complement
+        """
+
+        msg = _('There are not enough {} questions for the line {}')
+        assert result >= expected, msg.format('available', self.name)
+
+
+    def _from_context(self):
+        """ Gets the active model name, and related ID's from context,
+        it also gets student ID if it has been passed in context
+
+        @return (tuple) model name and a list with active ids. If there
+        is no model or active ids then return None, None
+        """
+
+        context = self.env.context
+
+        model = context.get('active_model', None)
+        active_ids = context.get('active_ids', None)
+        student_ids = context.get('student_ids', None)
+
+        if not model or not active_ids:
+            model, active_ids = None, None
+
+        if isinstance(active_ids, int):
+            active_ids = [active_ids]
+
+        return model, active_ids, student_ids
+
+
+    def _from_enrolment(self, enrolment_ids):
+        """ Check if given enrolment ID's has only one element and, if
+        it is true, it gets resource, ID's and student related with the
+        enrolment. The obtained resource will be 'action' if enrolment
+        has no modules, otherwilse resource will be 'module'.
+
+        @return (tuple) If given enrolment_ids is a single element list
+        result will be related resource, ID's and student ID, otherwise
+        result will be None, None, None
+        """
+
+        resource, ids, student_ids = None, None, None
+
+        if enrolment_ids and len(enrolment_ids) == 1:
+            enrol_obj = self.env['academy.training.action.enrolment']
+            enrol_set = enrol_obj.browse(enrolment_ids)
+
+            if(enrol_set):
+                if (enrol_set.training_module_ids):
+                    resource = 'module'
+                    ids = enrol_set.training_module_ids.mapped('id')
+                else:
+                    resource = 'action'
+                    ids = enrol_set.training_action_id.id
+
+                student_ids = [enrol_set.student_id.id]
+
+        return resource, ids, student_ids
+
+
+    def _get_from_context(self):
+        """ Get circunscription from context
+        """
+        models = ['academy.training.action', 'academy.training.module']
+
+        model, active_ids, student_ids = self._from_context()
+
+        if model in models:
+            resource = model.split('.')[2]
+        elif model == 'academy.training.action.enrolment':
+            resource, active_ids, student_ids = \
+                self._from_enrolment(active_ids)
+        else:
+            resource, active_ids, student_ids = None, None, None
+
+        return resource, active_ids, student_ids
+
+
+    def _get_restriction_arguments(self, domain=None):
+        """ Retrieve needed arguments to perform a _complex_search.
+        These arguments come from:
+          - line record (ratio, restriction)
+          - context (resource, res_ids, student_ids)
+          - given as argument (domain)
+
+        @param domain (list): valid Odoo domain
+        @return (dict) dictionary with all arguments
+        """
+
+        self.ensure_one()
+
+        resource, res_ids, student_ids = self._get_from_context()
+
+        return dict(
+            domain=domain,
+            restriction=self._get_restriction(),
+            ratio=self.ratio,
+            resource=resource,
+            res_ids=res_ids,
+            student_ids=student_ids
+        )
+
+
+    def _assert_restriction(self, in_args, found_before=0):
+        """ Assert restriction if has been set and raises
+        an exception with a message that has self name and complement
+        if assertion is false
+
+        @param in_args (dict): dictionary which can contains domain,
+        restriction, ratio, resource and res_ids
+        @param found_before (int): Number of currently known questions
+        matching the restriction
+
+        @return (int) number of found records matching the restriction
+        """
+
+        result = 0
+        expected = self._quantity_for('supply')
+        restriction = self._get_restriction()
+
+        if(restriction > 1 and expected > found_before):
+            args = self._with(in_args, dict(restriction=restriction))
+            result = self._complex_search(args, count=True)
+            self._great_or_equal(expected, result, 'matching')
+
+        return result
+
+
+    def _assert_answered(self, in_args, found_before=0):
+        """ Assert exists a minimum number of answered questions if
+        this value has been set and raises an exception with a message
+        that has self name and complement if assertion is false
+
+        @param in_args (dict): dictionary which can contains domain,
+        restriction, ratio, resource and res_ids
+        @param found_before (int): Number of currently known questions
+        matching the restriction
+
+        @return (int) number of found records matching the restriction
+        """
+
+        result = 0
+        expected = self._quantity_for('answered')
+
+        if(self.answered_by != 'not' and expected > found_before):
+            aargs = self._with(in_args, dict(restriction=1))
+            result = self._complex_search(args, count=True)
+            self._great_or_equal(expected, result, 'answered')
+
+        return result
+
+
+    def _assert_stock(self, in_args, found_before=0):
+        """ Assert exists a minimum number of questions if this value
+        has been set and raises an exception with a message that has
+        self name and complement if assertion is false
+
+        @param in_args (dict): dictionary which can contains domain,
+        restriction, ratio, resource and res_ids
+        @param found_before (int): Number of currently known questions
+        matching the restriction
+
+        @return (int) number of found records matching the restriction
+        """
+
+        result = 0
+        expected = self._quantity_for('stock')
+
+        if(self.stock_by != 'not' and expected > found_before):
+            args = self._with(in_args, dict(restriction=0))
+            result = question_set.search(args, count=True)
+            self._great_or_equal(expected, result, 'available')
+
+        return result
+
+
     # --------------------------- PUBLIC METHODS ------------------------------
 
     def get_leafs(self):
@@ -583,7 +1174,20 @@ class AcademyTestsRandomWizardLine(models.Model):
             # STEP 4: Build domain with line values and merge exclusion leafs
             domain = record.get_domain(exclusion_leafs)
 
-            # STEP 5: Perform search and append to previouly created recordset
-            question_set += question_set.search(domain, limit=record.quantity)
+            # STEP 5: Check restrictions, minimum answered and stock
+            args = record._get_restriction_arguments(domain)
+            found1 = record._assert_restriction(args, 0)
+            found2 = record._assert_answered(args, max(0, found1))
+            record._assert_stock(args, max(0, found1, found2))
+
+            # STEP 6: Perform the restricted search and overwrite line
+            # domain using the obtained IDs
+            if(args['restriction'] > 0):
+                ids = record._complex_search(args, limit=record.quantity)
+                domain = [('id', 'in', ids)]
+
+            # STEP 7: Perform search and append to previouly created recordset
+            limit = record.quantity
+            question_set += question_set.search(domain, limit=limit)
 
         return question_set

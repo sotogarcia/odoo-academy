@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="academy_tests_correction_scale_default" model="academy.tests.correction.scale">
+            <field name="name">Default</field>
+            <field name="description">This is the default correction scale</field>
+            <field name="active" eval="1" />
+            <field name="right" eval="1" />
+            <field name="wrong" eval="-1" />
+            <field name="blank" eval="0" />
+        </record>
+
+    </data>
+</openerp>

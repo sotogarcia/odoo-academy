@@ -12,7 +12,8 @@ from logging import getLogger
 # pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
 from .lib.custom_model_fields import Many2manyThroughView, \
-    TRAINING_MODULE_IDS_SQL, TRAINING_UNIT_IDS_SQL, TRAINING_RESOURCE_IDS_SQL
+    TRAINING_MODULE_IDS_SQL, TRAINING_UNIT_IDS_SQL, \
+    ACTIVITY_INHERITED_RESOURCES_REL
 
 # pylint: disable=locally-disabled, C0103
 _logger = getLogger(__name__)
@@ -121,29 +122,59 @@ class AcademyTrainingActivity(models.Model):
         required=False,
         readonly=False,
         index=False,
-        default='Descrition of general competence that will be acquired at the end of the activity',
-        help=False,
+        default=None,
+        help='Description of general competence that will be acquired at the end of the activity',
         translate=True
     )
 
-    professional_field = fields.Text(
+    # professional_field = fields.Text(
+    #     string='Professional field',
+    #     required=False,
+    #     readonly=False,
+    #     index=False,
+    #     default=None,
+    #     help='Description of the professional field to which this activity is oriented',
+    #     translate=True
+    # )
+
+    # professional_sectors = fields.Text(
+    #     string='Professional sectors',
+    #     required=False,
+    #     readonly=False,
+    #     index=False,
+    #     default=None,
+    #     help='Description of the professional sector/s to which this activity is oriented',
+    #     translate=True
+    # )
+
+    professional_field_id = fields.Many2one(
         string='Professional field',
         required=False,
         readonly=False,
         index=False,
-        default='Description of the professional field to which this activity is oriented',
-        help=False,
-        translate=True
+        default=None,
+        help='Choose related professional field',
+        comodel_name='academy.professional.field',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False
     )
 
-    professional_sectors = fields.Text(
+    professional_sector_ids = fields.Many2many(
         string='Professional sectors',
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='Description of the professional sector/s to which this activity is oriented',
-        translate=True
+        help='Choose related professional sectors',
+        comodel_name='academy.professional.sector',
+        relation='academy_training_activity_professional_sector_rel',
+        column1='training_activity_id',
+        column2='professional_sector_id',
+        domain=[],
+        context={},
+        limit=None
     )
 
     competency_unit_ids = fields.One2many(
@@ -211,7 +242,23 @@ class AcademyTrainingActivity(models.Model):
         sql=TRAINING_UNIT_IDS_SQL
     )
 
-    training_resource_ids = Many2manyThroughView(
+    activity_resource_ids = fields.Many2many(
+        string='Own resources',
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help=False,
+        comodel_name='academy.training.resource',
+        relation='academy_training_activity_training_resource_rel',
+        column1='training_activity_id',
+        column2='training_resource_id',
+        domain=[],
+        context={},
+        limit=None
+    )
+
+    available_resource_ids = Many2manyThroughView(
         string='Training resources',
         required=False,
         readonly=True,
@@ -219,17 +266,27 @@ class AcademyTrainingActivity(models.Model):
         default=None,
         help=False,
         comodel_name='academy.training.resource',
-        relation='academy_training_activity_resource_rel',
+        relation='academy_training_activity_available_resource_rel',
         column1='training_activity_id',
         column2='training_resource_id',
         domain=[],
         context={},
         limit=None,
-        sql=TRAINING_RESOURCE_IDS_SQL
+        sql=ACTIVITY_INHERITED_RESOURCES_REL
     )
 
 
     # -------------------------- MANAGEMENT FIELDS ----------------------------
+
+
+    @api.onchange('professional_field_id')
+    def _onchange_professional_field_id(self):
+        _id = self.professional_field_id.id
+        return {
+            'domain': {
+                'professional_sector_ids': [('professional_field_id', '=', _id)]
+            }
+        }
 
     # pylint: disable=W0212
     competency_unit_count = fields.Integer(

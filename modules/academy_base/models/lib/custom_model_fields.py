@@ -287,41 +287,160 @@ TRAINING_UNIT_IDS_SQL = """
         ON atm."id" = atu.training_module_id
 """
 
-TRAINING_RESOURCE_IDS_SQL = """
-    SELECT
-        atv."id" AS training_activity_id,
-        atr."id" AS training_resource_id
+MODULE_INHERITED_RESOURCES_REL = """
+    SELECT DISTINCT
+        tree.requested_module_id AS training_module_id,
+        rel.training_resource_id
     FROM
-        academy_training_activity AS atv
-    INNER JOIN academy_competency_unit AS acu
-        ON atv."id" = acu.training_activity_id
-    INNER JOIN academy_training_module AS atm
-        ON acu.training_module_id = atm."id"
-    LEFT JOIN academy_training_module AS atu
-        ON atm."id" = atu.training_module_id or atm."id" = atu."id"
+        academy_training_module_tree_readonly AS tree
     INNER JOIN academy_training_module_training_resource_rel AS rel
-        ON COALESCE (atu."id", atm."id") = rel.training_module_id
-    LEFT JOIN academy_training_resource AS atr
-        ON rel.training_resource_id = atr."id"
+        ON tree."responded_module_id" = rel.training_module_id
+"""
+
+ACTIVITY_INHERITED_RESOURCES_REL = """
+    WITH inherited_resources AS (
+        SELECT
+            atv."id" AS training_activity_id,
+            atr."id" AS training_resource_id
+        FROM
+            academy_training_activity AS atv
+        INNER JOIN academy_competency_unit AS acu
+            ON atv."id" = acu.training_activity_id
+        INNER JOIN academy_training_module AS atm
+            ON acu.training_module_id = atm."id"
+        LEFT JOIN academy_training_module AS atu
+            ON atm."id" = atu.training_module_id or atm."id" = atu."id"
+        INNER JOIN academy_training_module_training_resource_rel AS rel
+            ON COALESCE (atu."id", atm."id") = rel.training_module_id
+        LEFT JOIN academy_training_resource AS atr
+            ON rel.training_resource_id = atr."id"
+    )
+    SELECT
+        training_activity_id,
+        training_resource_id
+    FROM
+        academy_training_activity_training_resource_rel AS rel
+    UNION ALL (
+        SELECT
+            training_activity_id,
+            training_resource_id
+        FROM
+            inherited_resources
+    )
+"""
+
+ACTION_INHERITED_RESOURCES_REL = """
+    WITH module_resources AS (
+        SELECT
+                atv."id" AS training_activity_id,
+                atr."id" AS training_resource_id
+        FROM
+                academy_training_activity AS atv
+        INNER JOIN academy_competency_unit AS acu
+                ON atv."id" = acu.training_activity_id
+        INNER JOIN academy_training_module AS atm
+                ON acu.training_module_id = atm."id"
+        LEFT JOIN academy_training_module AS atu
+                ON atm."id" = atu.training_module_id or atm."id" = atu."id"
+        INNER JOIN academy_training_module_training_resource_rel AS rel
+                ON COALESCE (atu."id", atm."id") = rel.training_module_id
+        LEFT JOIN academy_training_resource AS atr
+                ON rel.training_resource_id = atr."id"
+    ), activity_resources AS (
+        SELECT
+            training_activity_id,
+            training_resource_id
+        FROM
+            academy_training_activity_training_resource_rel AS rel
+        UNION ALL (
+            SELECT
+                training_activity_id,
+                training_resource_id
+            FROM
+                module_resources
+        )
+    ), inherited_recources AS (
+        SELECT
+            atc."id" as training_action_id,
+            ars.training_resource_id
+        FROM
+            activity_resources AS ars
+        INNER JOIN academy_training_action atc
+            ON ars.training_activity_id = atc.training_activity_id
+
+    ) SELECT
+        training_action_id,
+        training_resource_id
+    FROM
+            academy_training_action_training_resource_rel AS rel
+    UNION ALL (
+        SELECT
+            training_action_id,
+            training_resource_id
+        FROM
+            inherited_recources
+    )
 """
 
 
-TRAINING_ACTION_RESOURCE_IDS_SQL = """
-    SELECT
-        ata."id" AS training_action_id,
-        atr."id" AS training_resource_id
+
+ACTION_EHROLMENT_INHERITED_RESOURCES_REL = """
+WITH module_test AS (
+    -- Tests in related modules
+    SELECT DISTINCT
+                rel2.action_enrolment_id as enrolment_id,
+        rel.training_resource_id
     FROM
-                academy_training_action as ata
-        INNER JOIN academy_training_activity AS atv
-                on ata.training_activity_id = atv."id"
-    INNER JOIN academy_competency_unit AS acu
-        ON atv."id" = acu.training_activity_id
-    INNER JOIN academy_training_module AS atm
-        ON acu.training_module_id = atm."id"
-    LEFT JOIN academy_training_module AS atu
-        ON atm."id" = atu.training_module_id or atm."id" = atu."id"
+        academy_training_module_tree_readonly AS tree
     INNER JOIN academy_training_module_training_resource_rel AS rel
-        ON COALESCE (atu."id", atm."id") = rel.training_module_id
-    LEFT JOIN academy_training_resource AS atr
-        ON rel.training_resource_id = atr."id"
+        ON tree."responded_module_id" = rel.training_module_id
+    INNER JOIN academy_action_enrolment_training_module_rel AS rel2
+        ON tree.requested_module_id = rel2.training_module_id
+), action_test AS (
+    -- Tests in action
+    SELECT
+        tae."id" as enrolment_id,
+        rel.training_resource_id
+    FROM
+        academy_training_action_training_resource_rel AS rel
+    INNER JOIN academy_training_action_enrolment AS tae
+        ON tae.training_action_id = rel.training_action_id
+), activity_test AS (
+    -- Tests in related activity
+    SELECT
+        tae."id" as enrolment_id,
+        rel.training_resource_id
+    FROM
+        academy_training_activity_training_resource_rel AS rel
+    INNER JOIN academy_training_action AS atc
+        ON rel.training_activity_id = atc.training_activity_id
+    INNER JOIN academy_training_action_enrolment AS tae
+        ON tae.training_action_id = atc."id"
+
+), all_tests AS (
+    -- All tests, this list can contains duplicated ids
+    SELECT
+        enrolment_id,
+        training_resource_id
+    FROM
+        action_test
+    UNION ALL (
+        SELECT
+            enrolment_id,
+            training_resource_id
+        FROM
+            activity_test
+    )
+    UNION ALL (
+        SELECT
+            enrolment_id,
+            training_resource_id
+        FROM
+            module_test
+    )
+) SELECT DISTINCT
+    enrolment_id,
+    training_resource_id
+FROM
+    all_tests
 """

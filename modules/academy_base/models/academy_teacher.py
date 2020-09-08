@@ -44,14 +44,6 @@ _logger = getLogger(__name__)
 # pylint: disable=locally-disabled, R0903
 class AcademyTeacher(models.Model):
     """ This model is the representation of the academy teacher
-
-    Fields:
-      name (Char)       : Human readable name which will identify each record
-      description (Text): Something about the record or other information witch
-      has not an specific defined field to store it.
-      active (Boolean)  : Checked do the record will be found by search and
-      browse model methods, unchecked hides the record.
-
     """
 
 
@@ -90,7 +82,11 @@ class AcademyTeacher(models.Model):
         relation='academy_training_module_teacher_rel',
         column1='teacher_id',
         column2='training_module_id',
-        domain=['|', ('training_module_id', '=', False), ('training_unit_ids', '=', False)],
+        domain=[
+            '|',
+            ('training_module_id', '=', False),
+            ('training_unit_ids', '=', False)
+        ],
         context={},
         limit=None
     )
@@ -109,8 +105,3 @@ class AcademyTeacher(models.Model):
         auto_join=False,
         limit=None
     )
-
-
-    # -------------------------------------------------------------------------
-
-

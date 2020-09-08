@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="academy_tests_question_written" model="mail.message.subtype">
+            <field name="name">Question has been updated</field>
+            <field name="res_model">academy.tests.question</field>
+            <field name="relation_field">write_date</field>
+            <field name="default" eval="True"/>
+            <field name="description">Question has been updated</field>
+        </record>
+
+        <!-- See account.mt_invoice_created -->
+        <record id="academy_tests_test_created" model="mail.message.subtype">
+            <field name="name">Test created</field>
+            <field name="res_model">academy.tests.test</field>
+            <field name="default" eval="False"/>
+            <field name="hidden" eval="True"/>
+            <field name="description">Test created</field>
+        </record>
+
+        <record id="academy_tests_test_written" model="mail.message.subtype">
+            <field name="name">Test has been updated</field>
+            <field name="res_model">academy.tests.test</field>
+            <field name="relation_field">write_date</field>
+            <field name="default" eval="True"/>
+            <field name="description">Test has been updated</field>
+        </record>
+
+    </data>
+</openerp>

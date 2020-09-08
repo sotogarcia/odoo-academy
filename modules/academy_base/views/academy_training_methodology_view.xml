@@ -83,7 +83,7 @@
         <!-- Main window action for model.name -->
         <record id="action_training_methodology_act_window" model="ir.actions.act_window">
             <field name="type">ir.actions.act_window</field>
-            <field name="name">Training methodology</field>
+            <field name="name">Training methodologies</field>
             <field name="res_model">academy.training.methodology</field>
             <field name="view_mode">tree,form</field>
 
@@ -93,9 +93,9 @@
             <field name="search_view_id" ref="view_academy_training_methodology_search" />
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
-                    Click to add new training methodology
+                    Click to add new training methodologies
                 </p><p>
-                    There are not any defined training methodologies
+                    There are no training methodologies yet
                 </p>
             </field>
         </record>

@@ -28,9 +28,9 @@
     'data': [
         'data/res_partner_category_data.xml',
         'data/res_partner_data.xml',
+        'data/academy_public_tendering_employment_group_data.xml',
         'data/academy_public_tendering_corps_data.xml',
         'data/academy_public_tendering_access_system_data.xml',
-        'data/academy_public_tendering_employment_group_data.xml',
         'data/academy_public_tendering_exam_type_data.xml',
         'data/academy_public_tendering_hiring_type_data.xml',
         'data/academy_public_tendering_vacancy_position_type.xml',
@@ -38,6 +38,7 @@
         'data/academy_public_tendering_public_administration_data.xml',
         'data/academy_public_tendering_event_type_data.xml',
         'data/ir_cron.xml',
+        'data/mail_message_subtype_data.xml',
 
         'security/academy_public_tendering_hiring_type.xml',
         'security/academy_public_tendering_employment_group.xml',
@@ -52,6 +53,7 @@
         'security/academy_public_tendering_public_offer.xml',
         'security/academy_public_tendering_event.xml',
         'security/academy_public_tendering_event_type.xml',
+        'security/academy_public_tendering_required_specialization.xml',
 
         'views/academy_public_tendering.xml',
 
@@ -69,6 +71,8 @@
         'views/academy_public_tendering_event_view.xml',
         'views/academy_public_tendering_event_type_view.xml',
         'views/academy_training_action_view.xml',
+        'views/academy_training_action_enrolment_view.xml',
+        'views/academy_public_tendering_required_specialization_view.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

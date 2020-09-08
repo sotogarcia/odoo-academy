@@ -14,6 +14,17 @@
             <field name="arch" type="xml">
                 <xpath expr="//notebook" position="inside">
                     <page string="Tests" class="oe_page_tests" accesskey="T">
+                        <field name="test_ids" class="oe_field_tests_ids oe_edit_only" />
+
+                        <field name="available_test_ids"
+                               class="oe_field_available_test_ids oe_read_only" />
+
+                        <separator string="Templates" />
+                        <field name="template_link_ids" class="oe_field_template_link_ids"
+                            context="{'default_training_action_id': id}"/>
+
+                    </page>
+                    <page string="Tests categories" class="oe_page_tests" accesskey="T">
                         <p groups="base.group_no_one"><label for="topic_link_ids" /></p>
                         <field name="topic_link_ids" class="oe_field_topic_ids"
                             placeholder="Choose related topics" />

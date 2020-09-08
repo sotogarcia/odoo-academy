@@ -1,0 +1,275 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* academy_sales
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 13.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-07-29 08:11+0000\n"
+"PO-Revision-Date: 2020-07-29 10:13+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"Language: es\n"
+"X-Generator: Poedit 2.3\n"
+
+#. module: academy_sales
+#: model:ir.model,name:academy_sales.model_academy_training_action
+msgid "Academy training action"
+msgstr "Acción formativa"
+
+#. module: academy_sales
+#: model:ir.model,name:academy_sales.model_academy_training_action_enrolment
+msgid "Academy training action enrolment"
+msgstr "Alta en la acción formativa"
+
+#. module: academy_sales
+#: model:ir.model,name:academy_sales.model_academy_training_module
+msgid "Academy training module"
+msgstr "Módulo formativo"
+
+#. module: academy_sales
+#: model:product.product,name:academy_sales.training_module_annual_subscription
+#: model:product.template,name:academy_sales.training_module_annual_subscription_product_template
+msgid "Annual subscription to a module"
+msgstr "Suscripción anual a un módulo"
+
+#. module: academy_sales
+#: model:product.product,name:academy_sales.training_action_annual_subscription
+#: model:product.template,name:academy_sales.training_action_annual_subscription_product_template
+msgid "Annual subscription to an action"
+msgstr "Suscripción anual a una acción"
+
+#. module: academy_sales
+#: model:product.product,name:academy_sales.public_tendering_annual_subscription
+#: model:product.template,name:academy_sales.public_tendering_annual_subscription_product_template
+msgid "Annual subscription to an opposition"
+msgstr "Suscripción anual a una oposición"
+
+#. module: academy_sales
+#: model:product.product,name:academy_sales.training_module_biannual_subscription
+#: model:product.template,name:academy_sales.training_module_biannual_subscription_product_template
+msgid "Biannual subscription to a module"
+msgstr "Suscripción semestral a un módulo"
+
+#. module: academy_sales
+#: model:product.product,name:academy_sales.training_action_biannual_subscription
+#: model:product.template,name:academy_sales.training_action_biannual_subscription_product_template
+msgid "Biannual subscription to an action"
+msgstr "Suscripción semestral a una acción"
+
+#. module: academy_sales
+#: model:product.product,name:academy_sales.public_tendering_biannual_subscription
+#: model:product.template,name:academy_sales.public_tendering_biannual_subscription_product_template
+msgid "Biannual subscription to an opposition"
+msgstr "Suscripción semestral a una oposición"
+
+#. module: academy_sales
+#: model:product.product,name:academy_sales.training_module_daily_subscription
+#: model:product.template,name:academy_sales.training_module_daily_subscription_product_template
+msgid "Daily subscription to a module"
+msgstr "Suscripción diaria a un módulo"
+
+#. module: academy_sales
+#: model:product.product,name:academy_sales.training_action_daily_subscription
+#: model:product.template,name:academy_sales.training_action_daily_subscription_product_template
+msgid "Daily subscription to an action"
+msgstr "Suscripción diaria a una acción"
+
+#. module: academy_sales
+#: model:product.product,name:academy_sales.public_tendering_daily_subscription
+#: model:product.template,name:academy_sales.public_tendering_daily_subscription_product_template
+msgid "Daily subscription to an opposition"
+msgstr "Suscripción diaria a una oposición"
+
+#. module: academy_sales
+#: model:product.product,uom_name:academy_sales.public_tendering_daily_subscription
+#: model:product.product,uom_name:academy_sales.training_action_daily_subscription
+#: model:product.product,uom_name:academy_sales.training_module_daily_subscription
+#: model:product.template,uom_name:academy_sales.public_tendering_daily_subscription_product_template
+#: model:product.template,uom_name:academy_sales.training_action_daily_subscription_product_template
+#: model:product.template,uom_name:academy_sales.training_module_daily_subscription_product_template
+msgid "Days"
+msgstr "Días"
+
+#. module: academy_sales
+#: model_terms:ir.ui.view,arch_db:academy_sales.view_academy_training_action_product_product_form
+#: model_terms:ir.ui.view,arch_db:academy_sales.view_academy_training_module_product_product_form
+msgid "Default"
+msgstr "Por defecto"
+
+#. module: academy_sales
+#: model:ir.model.fields,field_description:academy_sales.field_academy_competency_unit__default_product_id
+#: model:ir.model.fields,field_description:academy_sales.field_academy_training_action__default_product_id
+#: model:ir.model.fields,field_description:academy_sales.field_academy_training_action_enrolment__default_product_id
+#: model:ir.model.fields,field_description:academy_sales.field_academy_training_lesson__default_product_id
+#: model:ir.model.fields,field_description:academy_sales.field_academy_training_module__default_product_id
+#: model:ir.model.fields,field_description:academy_sales.field_academy_training_session_wizard_line__default_product_id
+msgid "Default product"
+msgstr "Producto predeterminado"
+
+#. module: academy_sales
+#: model:product.product,name:academy_sales.training_module_monthly_subscription
+#: model:product.template,name:academy_sales.training_module_monthly_subscription_product_template
+msgid "Monthly subscription to a module"
+msgstr "Suscripción mensual a un módulo"
+
+#. module: academy_sales
+#: model:product.product,name:academy_sales.training_action_monthly_subscription
+#: model:product.template,name:academy_sales.training_action_monthly_subscription_product_template
+msgid "Monthly subscription to an action"
+msgstr "Suscripción mensual a una acción"
+
+#. module: academy_sales
+#: model:product.product,name:academy_sales.public_tendering_monthly_subscription
+#: model:product.template,name:academy_sales.public_tendering_monthly_subscription_product_template
+msgid "Monthly subscription to an opposition"
+msgstr "Suscripción mensual a una oposición"
+
+#. module: academy_sales
+#: model:product.product,uom_name:academy_sales.public_tendering_monthly_subscription
+#: model:product.product,uom_name:academy_sales.training_action_monthly_subscription
+#: model:product.product,uom_name:academy_sales.training_module_monthly_subscription
+#: model:product.template,uom_name:academy_sales.public_tendering_monthly_subscription_product_template
+#: model:product.template,uom_name:academy_sales.training_action_monthly_subscription_product_template
+#: model:product.template,uom_name:academy_sales.training_module_monthly_subscription_product_template
+#: model:uom.uom,name:academy_sales.product_uom_month
+msgid "Months"
+msgstr "Meses"
+
+#. module: academy_sales
+#: model:product.product,description_sale:academy_sales.public_tendering_daily_subscription
+#: model:product.product,description_sale:academy_sales.training_action_daily_subscription
+#: model:product.product,description_sale:academy_sales.training_module_daily_subscription
+#: model:product.template,description_sale:academy_sales.public_tendering_daily_subscription_product_template
+#: model:product.template,description_sale:academy_sales.training_action_daily_subscription_product_template
+#: model:product.template,description_sale:academy_sales.training_module_daily_subscription_product_template
+msgid "Pay only when you use the platform"
+msgstr "Pague solo cuando use la plataforma"
+
+#. module: academy_sales
+#: model:ir.model,name:academy_sales.model_product_product
+#: model:ir.model.fields,field_description:academy_sales.field_academy_training_action_enrolment__product_id
+msgid "Product"
+msgstr "Producto"
+
+#. module: academy_sales
+#: model:ir.model.fields,field_description:academy_sales.field_academy_competency_unit__product_ids
+#: model:ir.model.fields,field_description:academy_sales.field_academy_training_action__product_ids
+#: model:ir.model.fields,field_description:academy_sales.field_academy_training_action_enrolment__product_ids
+#: model:ir.model.fields,field_description:academy_sales.field_academy_training_lesson__product_ids
+#: model:ir.model.fields,field_description:academy_sales.field_academy_training_module__product_ids
+#: model:ir.model.fields,field_description:academy_sales.field_academy_training_session_wizard_line__product_ids
+#: model_terms:ir.ui.view,arch_db:academy_sales.view_academy_training_module_product_product_form
+msgid "Products"
+msgstr "Productos"
+
+#. module: academy_sales
+#: model:product.product,name:academy_sales.training_module_quarterly_subscription
+#: model:product.template,name:academy_sales.training_module_quarterly_subscription_product_template
+msgid "Quarterly subscription to a module"
+msgstr "Suscripción trimestral a un módulo"
+
+#. module: academy_sales
+#: model:product.product,name:academy_sales.training_action_quarterly_subscription
+#: model:product.template,name:academy_sales.training_action_quarterly_subscription_product_template
+msgid "Quarterly subscription to an action"
+msgstr "Suscripción trimestral a una acción"
+
+#. module: academy_sales
+#: model:product.product,name:academy_sales.public_tendering_quarterly_subscription
+#: model:product.template,name:academy_sales.public_tendering_quarterly_subscription_product_template
+msgid "Quarterly subscription to an opposition"
+msgstr "Suscripción trimestral a una oposición"
+
+#. module: academy_sales
+#: model_terms:ir.ui.view,arch_db:academy_sales.view_academy_training_action_product_product_form
+msgid "Selling prices"
+msgstr "Precios de venta"
+
+#. module: academy_sales
+#: model:product.product,uom_name:academy_sales.public_tendering_biannual_subscription
+#: model:product.product,uom_name:academy_sales.training_action_biannual_subscription
+#: model:product.product,uom_name:academy_sales.training_module_biannual_subscription
+#: model:product.template,uom_name:academy_sales.public_tendering_biannual_subscription_product_template
+#: model:product.template,uom_name:academy_sales.training_action_biannual_subscription_product_template
+#: model:product.template,uom_name:academy_sales.training_module_biannual_subscription_product_template
+#: model:uom.uom,name:academy_sales.product_uom_semester
+msgid "Semesters"
+msgstr "Semestres"
+
+#. module: academy_sales
+#: model:product.product,description_sale:academy_sales.public_tendering_biannual_subscription
+#: model:product.product,description_sale:academy_sales.training_action_biannual_subscription
+#: model:product.product,description_sale:academy_sales.training_module_biannual_subscription
+#: model:product.template,description_sale:academy_sales.public_tendering_biannual_subscription_product_template
+#: model:product.template,description_sale:academy_sales.training_action_biannual_subscription_product_template
+#: model:product.template,description_sale:academy_sales.training_module_biannual_subscription_product_template
+msgid "Six-month subscription, one payment. Save up to 65%"
+msgstr "Suscripción de seis meses, un pago. Ahorre hasta el 65%"
+
+#. module: academy_sales
+#: model:product.product,description_sale:academy_sales.public_tendering_monthly_subscription
+#: model:product.product,description_sale:academy_sales.training_action_monthly_subscription
+#: model:product.product,description_sale:academy_sales.training_module_monthly_subscription
+#: model:product.template,description_sale:academy_sales.public_tendering_monthly_subscription_product_template
+#: model:product.template,description_sale:academy_sales.training_action_monthly_subscription_product_template
+#: model:product.template,description_sale:academy_sales.training_module_monthly_subscription_product_template
+msgid "Standard subscription, pay per month and cancel whenever you want"
+msgstr "Suscripción estándar, paga por mes y cancela cuando quieras"
+
+#. module: academy_sales
+#: model:product.product,description_sale:academy_sales.public_tendering_quarterly_subscription
+#: model:product.product,description_sale:academy_sales.training_action_quarterly_subscription
+#: model:product.product,description_sale:academy_sales.training_module_quarterly_subscription
+#: model:product.template,description_sale:academy_sales.public_tendering_quarterly_subscription_product_template
+#: model:product.template,description_sale:academy_sales.training_action_quarterly_subscription_product_template
+#: model:product.template,description_sale:academy_sales.training_module_quarterly_subscription_product_template
+msgid "Three-month subscription, one payment. Save up to 40%"
+msgstr "Tres meses de suscripción, un pago. Ahorre hasta el 40%"
+
+#. module: academy_sales
+#: model:ir.model.fields,field_description:academy_sales.field_product_product__training_action_ids
+msgid "Training actions"
+msgstr "Acciones formativas"
+
+#. module: academy_sales
+#: model:ir.model.fields,field_description:academy_sales.field_product_product__training_module_ids
+msgid "Training modules"
+msgstr "Módulo formativo"
+
+#. module: academy_sales
+#: model:product.product,uom_name:academy_sales.public_tendering_quarterly_subscription
+#: model:product.product,uom_name:academy_sales.training_action_quarterly_subscription
+#: model:product.product,uom_name:academy_sales.training_module_quarterly_subscription
+#: model:product.template,uom_name:academy_sales.public_tendering_quarterly_subscription_product_template
+#: model:product.template,uom_name:academy_sales.training_action_quarterly_subscription_product_template
+#: model:product.template,uom_name:academy_sales.training_module_quarterly_subscription_product_template
+#: model:uom.uom,name:academy_sales.product_uom_trimester
+msgid "Trimesters"
+msgstr "Trimestral"
+
+#. module: academy_sales
+#: model:product.product,description_sale:academy_sales.public_tendering_annual_subscription
+#: model:product.product,description_sale:academy_sales.training_action_annual_subscription
+#: model:product.product,description_sale:academy_sales.training_module_annual_subscription
+#: model:product.template,description_sale:academy_sales.public_tendering_annual_subscription_product_template
+#: model:product.template,description_sale:academy_sales.training_action_annual_subscription_product_template
+#: model:product.template,description_sale:academy_sales.training_module_annual_subscription_product_template
+msgid "Twelve motnhs subscription, one payment. Save up to 70%"
+msgstr "Doce meses de suscripción, un pago. Ahorre hasta el 70%"
+
+#. module: academy_sales
+#: model:product.product,uom_name:academy_sales.public_tendering_annual_subscription
+#: model:product.product,uom_name:academy_sales.training_action_annual_subscription
+#: model:product.product,uom_name:academy_sales.training_module_annual_subscription
+#: model:product.template,uom_name:academy_sales.public_tendering_annual_subscription_product_template
+#: model:product.template,uom_name:academy_sales.training_action_annual_subscription_product_template
+#: model:product.template,uom_name:academy_sales.training_module_annual_subscription_product_template
+#: model:uom.uom,name:academy_sales.product_uom_year
+msgid "Years"
+msgstr "Años"

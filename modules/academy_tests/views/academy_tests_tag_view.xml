@@ -69,7 +69,7 @@
             <field name="arch" type="xml">
                 <search string="academy_tag_search">
                     <field name="name" string="Name" />
-                    
+
                     <filter string="My tags"
                         name="my_tags"
                         domain="[('create_uid', '=', uid)]"
@@ -90,11 +90,11 @@
             <field name="context">{"search_default_my_tags":1}</field>
             <field name="search_view_id" ref="view_academy_tag_search" />
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">
-                    Click to add a new tag
+               <p class="oe_view_nocontent_create">
+                    Click to add new tags
                 </p>
                 <p>
-                Tags are used to describe, organize and search interrelated questions
+                    There are no tags yet
                 </p>
             </field>
         </record>

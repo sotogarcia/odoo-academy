@@ -5,6 +5,7 @@
 ###############################################################################
 
 
+from . import academy_public_tendering_required_specialization
 from . import academy_public_tendering_employment_group
 from . import academy_public_tendering_exam_type
 from . import academy_public_tendering_hiring_type
@@ -21,3 +22,4 @@ from . import academy_public_tendering_public_administration_type
 from . import academy_public_tendering_corps
 from . import academy_public_tendering_event
 from . import academy_public_tendering_event_type
+from . import academy_training_action_enrolment

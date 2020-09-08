@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="ir_sequence_academy_tests_test" model="ir.sequence">
+            <field name="name">Academy test sequence</field>
+            <field name="active" eval="True" />
+            <field name="code">academy.tests.test.sequence</field>
+            <field name="prefix"></field>
+            <field name="number_next" eval="1" />
+            <field name="number_increment" eval="1" />
+            <field name="padding" eval="0" />
+            <field name="suffix"></field>
+            <field name="company_id" eval="False" />
+        </record>
+
+    </data>
+</openerp>

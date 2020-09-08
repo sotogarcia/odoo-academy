@@ -24,10 +24,9 @@
             <field name="active" eval="True" />
             <field name="arch" type="xml">
                 <tree string="academy_public_tendering_employment_group_tree" editable="bottom" create="1" delete="1" edit="1">
-                    <field name="name" class="oe_field_name"
-                        placeholder="Enter new value for name" />
-                    <field name="description" class="oe_field_description"
-                        placeholder="Enter new value for description" />
+                    <field name="name" class="oe_field_name" />
+                    <field name="qualification_level_id" class="oe_field_qualification_level_id" />
+                    <field name="description" class="oe_field_description" />
                 </tree>
             </field>
         </record>
@@ -51,6 +50,7 @@
                             </h1>
                         </div>
                         <group col="2">
+                            <field name="qualification_level_id" class="oe_field_qualification_level_id" />
                             <field name="description" class="oe_field_description"
                                 placeholder="Enter new value for description" />
                         </group>
@@ -78,7 +78,7 @@
         <!-- Main window action for model.name -->
         <record id="action_vacancy_position_group_act_window" model="ir.actions.act_window">
             <field name="type">ir.actions.act_window</field>
-            <field name="name">Vacancy position group</field>
+            <field name="name">Employment groups</field>
             <field name="res_model">academy.public.tendering.employment.group</field>
             <field name="view_mode">tree,form</field>
             <field name="target">current</field>
@@ -87,16 +87,16 @@
             <field name="search_view_id" ref="view_academy_public_tendering_employment_group_search" />
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
-                    Click to add new Vacancy position group
+                    Click to add new employment groups
                 </p><p>
-                    There is not any academy public tendering yet
+                    There are no employment groups yet
                 </p>
             </field>
         </record>
 
         <!-- Main menu for model.name -->
         <record id="menu_vacancy_position_group" model="ir.ui.menu" >
-            <field name="name">Vacancy position group</field>
+            <field name="name">Employment groups</field>
             <field name="sequence" eval="10" />
             <field name="action" ref="action_vacancy_position_group_act_window" />
             <field name="parent_id" ref="menu_tendering_settings_top" />

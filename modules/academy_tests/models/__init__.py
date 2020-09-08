@@ -16,10 +16,26 @@ from . import academy_tests_test_question_rel
 from . import academy_tests_test
 from . import academy_tests_answers_table
 from . import academy_tests_question_impugnment
+from . import academy_tests_correction_scale
 
 from . import academy_tests_topic_training_module_link
 from . import academy_training_module
+from . import academy_competency_unit
 
 from . import academy_tests_random_line
 from . import academy_tests_random_template
 from . import academy_tests_test_kind
+
+from . import academy_tests_attempt
+from . import academy_tests_attempt_answer
+from . import academy_tests_attempt_attempt_answer_rel
+
+from . import academy_training_action
+from . import academy_training_activity
+from . import academy_training_lesson
+from . import academy_training_action_enrolment
+from . import academy_tests_random_template_training_action_rel
+
+from . import academy_student
+from . import academy_random_template_scheduled_rel
+from . import academy_tests_test_availability

@@ -27,13 +27,14 @@ to create inherited question)
 from logging import getLogger
 from operator import itemgetter
 from random import shuffle as random_shuffle
+from datetime import datetime
 
 # pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
 from odoo.addons.academy_base.models.lib.custom_model_fields import Many2manyThroughView
 from odoo.tools.safe_eval import safe_eval
-from .lib.libuseful import ACADEMY_TESTS_TEST_TOPIC_IDS_SQL
-
+from odoo.tools.translate import _
+from .lib.libuseful import ACADEMY_TESTS_TEST_TOPIC_IDS_SQL, ACADEMY_ENROLMENT_AVAILABLE_TESTS
 
 
 # pylint: disable=locally-disabled, C0103
@@ -85,6 +86,17 @@ class AcademyTestsTest(models.Model):
         default=True,
         help=('If the active field is set to false, it will allow you to '
               'hide record without removing it')
+    )
+
+    code = fields.Char(
+        string='Code',
+        required=False,
+        readonly=False,
+        index=True,
+        default=None,
+        help='Internal code',
+        size=20,
+        translate=False
     )
 
     preamble = fields.Text(
@@ -155,7 +167,6 @@ class AcademyTestsTest(models.Model):
         context={},
         ondelete='cascade',
         auto_join=False,
-        groups='academy_base.academy_group_technical'
     )
 
     test_kind_id = fields.Many2one(
@@ -172,6 +183,159 @@ class AcademyTestsTest(models.Model):
         auto_join=False
     )
 
+    first_use_id = fields.Many2one(
+        string='First use',
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help=False,
+        comodel_name='res.partner',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False
+    )
+
+    training_action_ids = fields.Many2many(
+        string='Training actions',
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help='Choose the training actions in which this test will be available',
+        comodel_name='academy.training.action',
+        relation='academy_tests_test_training_action_rel',
+        column1='test_id',
+        column2='training_action_id',
+        domain=[],
+        context={},
+        limit=None
+    )
+
+
+    training_activity_ids = fields.Many2many(
+        string='Training activities',
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help='Choose the training activities in which this test will be available',
+        comodel_name='academy.training.activity',
+        relation='academy_tests_test_training_activity_rel',
+        column1='test_id',
+        column2='training_activity_id',
+        domain=[],
+        context={},
+        limit=None
+    )
+
+
+    training_module_ids = fields.Many2many(
+        string='Training modules',
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help='Choose the training modules in which this test will be available',
+        comodel_name='academy.training.module',
+        relation='academy_tests_test_training_module_rel',
+        column1='test_id',
+        column2='training_module_id',
+        domain=[('training_module_id', '=', False)],
+        context={},
+        limit=None
+    )
+
+    competency_unit_ids = fields.Many2many(
+        string='Competency units',
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help='Choose the competency units in which this test will be available',
+        comodel_name='academy.competency.unit',
+        relation='academy_tests_test_competency_unit_rel',
+        column1='test_id',
+        column2='competency_unit_id',
+        domain=[],
+        context={},
+        limit=None
+    )
+
+    lesson_ids = fields.Many2many(
+        string='Lessons',
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help='Choose the lessons in which this test will be available',
+        comodel_name='academy.training.lesson',
+        relation='academy_tests_test_training_lesson_rel',
+        column1='test_id',
+        column2='lesson_id',
+        domain=[],
+        context={},
+        limit=None
+    )
+
+    time_by = fields.Selection(
+        string='Time by',
+        required=False,
+        readonly=False,
+        index=False,
+        default=False,
+        help=False,
+        selection=[('test', 'Test'), ('question', 'Question')]
+    )
+
+    available_time = fields.Float(
+        string='Time',
+        required=False,
+        readonly=False,
+        index=False,
+        default=0.0,
+        digits=(16, 2),
+        help='Available time to complete the exercise'
+    )
+
+    lock_time = fields.Boolean(
+        string='Lock time',
+        required=False,
+        readonly=False,
+        index=False,
+        default=True,
+        help='Check to not allow the user to continue with the test once the time has passed'
+    )
+
+    correction_scale_id = fields.Many2one(
+        string='Correction scale',
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help='Choose the scale of correction',
+        comodel_name='academy.tests.correction.scale',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False
+    )
+
+    available_in = fields.One2many(
+        string='Available in',
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help='This test is directly related to',
+        comodel_name='academy.tests.test.availability',
+        inverse_name='test_id',
+        domain=[],
+        context={},
+        auto_join=False,
+        limit=None
+    )
 
     # -------------------------- MANAGEMENT FIELDS ----------------------------
 
@@ -261,6 +425,22 @@ class AcademyTestsTest(models.Model):
                 topic_obj = self.env['academy.tests.topic']
                 record.topic_id = topic_obj.browse(topic_id)
 
+    available_in_enrolment_ids = Many2manyThroughView(
+        string='Tests',
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help='Choose the enrolments in which this test will be available',
+        comodel_name='academy.training.action.enrolment',
+        relation='academy_tests_test_available_in_training_action_enrolment_rel',
+        column1='test_id',
+        column2='enrolment_id',
+        domain=[],
+        context={},
+        limit=None,
+        sql=ACADEMY_ENROLMENT_AVAILABLE_TESTS
+    )
 
     lang = fields.Char(
         string='Language',
@@ -387,7 +567,38 @@ class AcademyTestsTest(models.Model):
 
         return result
 
+    @api.returns('self', lambda value: value.id)
+    def copy(self, default=None):
+        self.ensure_one()
 
+        # STEP 1: Ensure default is a dictionary
+        if default is None:
+            default = {}
+
+        # STEP 2: Make new name adding ``(copy)``
+        if 'name' not in default:
+            default['name'] = _("%s (copy)") % self.name
+
+        # STEP 3: Create new links for all questions in the original test
+        if self.question_ids:
+            leafs = self.question_ids.mapped(self._mapped_question_ids)
+            if(leafs):
+                default['question_ids'] = leafs
+
+        # STEP 4: Call parent method
+        result = super(AcademyTestsTest, self).copy(default=default)
+
+        return result
+
+
+    @staticmethod
+    def _mapped_question_ids(item):
+        return (0, 0, {
+            'test_id': item.test_id.id,
+            'question_id': item.question_id.id,
+            'sequence': item.sequence,
+            'active': item.active
+        })
 
     def resequence(self):
         """ This updates the sequence of the questions into the test
@@ -415,3 +626,34 @@ class AcademyTestsTest(models.Model):
         for qposition in qpositions:
             self.question_ids[qposition].sequence = sequence
             sequence += 1
+
+    def _creation_subtype(self):
+        xid = 'academy_tests.academy_tests_test_created'
+        return self.env.ref(xid);
+
+    def _track_subtype(self, init_values):
+        self.ensure_one()
+
+        xid = 'academy_tests.academy_tests_test_written'
+        return self.env.ref(xid);
+
+    @api.returns('mail.message', lambda value: value.id)
+    def message_post(self, *,
+                     body='', subject=None, message_type='notification',
+                     email_from=None, author_id=None, parent_id=False,
+                     subtype_id=False, subtype=None, partner_ids=None, channel_ids=None,
+                     attachments=None, attachment_ids=None,
+                     add_sign=True, record_name=False,
+                     **kwargs):
+
+        for record in self:
+            for enrolment in record.available_in_enrolment_ids:
+                enrolment.message_post(
+                    body=body, subject=subject, message_type=message_type, email_from=email_from, author_id=author_id, parent_id=parent_id,
+                     subtype_id=subtype_id, subtype=subtype, partner_ids=partner_ids, channel_ids=channel_ids, attachments=attachments,
+                     attachment_ids=attachment_ids, add_sign=add_sign, record_name=record_name, **kwargs)
+
+        return super(AcademyTestsTest, self).message_post(
+                     body=body, subject=subject, message_type=message_type, email_from=email_from, author_id=author_id, parent_id=parent_id,
+                     subtype_id=subtype_id, subtype=subtype, partner_ids=partner_ids, channel_ids=channel_ids, attachments=attachments,
+                     attachment_ids=attachment_ids, add_sign=add_sign, record_name=record_name, **kwargs)

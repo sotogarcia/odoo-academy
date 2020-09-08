@@ -4,7 +4,7 @@
     <data noupdate="0">
 
         <!-- VIEWS: "Events"
-        
+
             - Model·········: academy.public.tendering.event
             - _rec_name·····: name
             - Domain········: []
@@ -13,7 +13,7 @@
             - View priority·: 16    Sequence····: 10
             - Action help···: There is no any event
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-        
+
         <!-- Tree view for "academy.public.tendering.event" -->
         <record id="view_academy_public_tendering_event_tree" model="ir.ui.view">
             <field name="name">view.academy.public.tendering.event.tree</field>
@@ -24,7 +24,7 @@
             <field name="active" eval="True" />
             <field name="arch" type="xml">
                 <tree string="academy_public_tendering_event_tree" create="1" delete="1" edit="1">
-                    <field name="academy_public_tendering_process_id" 
+                    <field name="academy_public_tendering_process_id"
                                 class="oe_field_academy_public_tendering_process_id" />
                     <field name="date" class="oe_field_date" />
                     <field name="event_type_id" class="oe_field_event_type_id" />
@@ -33,7 +33,7 @@
                     <field name="ir_atachment_id" class="oe_field_url" />
                     <field name="active" class="oe_field_active" invisible="1"  />
                     <field name="academy_public_tendering_process_id" invisible="1"
-                        class="oe_field_academy_public_tendering_process_id" />                
+                        class="oe_field_academy_public_tendering_process_id" />
                 </tree>
             </field>
         </record>
@@ -55,7 +55,7 @@
             </field>
         </record>
 
-        
+
         <!-- Form view for "academy.public.tendering.event" -->
         <record id="view_academy_public_tendering_event_form" model="ir.ui.view">
             <field name="name">view.academy.public.tendering.event.form</field>
@@ -81,17 +81,23 @@
                         <group col="2">
                             <field name="date" class="oe_field_date" />
                             <field name="event_type_id" class="oe_field_event_type_id" />
-                            <field name="academy_public_tendering_process_id" 
+                            <field name="academy_public_tendering_process_id"
                                 class="oe_field_academy_public_tendering_process_id" />
                             <field name="ir_atachment_id" class="oe_field_url" />
                             <field name="description" class="oe_field_description" />
                         </group>
                     </sheet>
+
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+
                 </form>
             </field>
         </record>
 
-        
+
         <!-- Search view for "academy.public.tendering.event" -->
         <record id="view_academy_public_tendering_event_search" model="ir.ui.view">
             <field name="name">view.academy.public.tendering.event.search</field>
@@ -108,7 +114,7 @@
             </field>
         </record>
 
-        
+
         <!-- Main window action for model.name -->
         <record id="action_academy_public_tendering_event_act_window" model="ir.actions.act_window">
             <field name="type">ir.actions.act_window</field>
@@ -123,12 +129,12 @@
                 <p class="oe_view_nocontent_create">
                     Click to add new events
                 </p><p>
-                    There is no any event
+                    There are no events yet
                 </p>
             </field>
         </record>
 
-        
+
         <!-- Main menu for model.name -->
         <record id="menu_public_tendering_event" model="ir.ui.menu" >
             <field name="name">Events</field>

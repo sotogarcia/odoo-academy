@@ -21,7 +21,7 @@ article.academy-post-test-question p {
     padding: 0px;
 }
 
-article.academy-post-test-question p::before {
+article.academy-post-test-question p.academy-question-name::before {
     margin: 0px 0px 0px 0px;
     padding: 0px 0.5ch 0px 0px;
     list-style-position: inside;

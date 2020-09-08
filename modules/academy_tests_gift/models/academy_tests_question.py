@@ -87,14 +87,14 @@ class AcademyTestQuestion(models.Model):
         // https://docs.moodle.org/38/en/GIFT_format#Format_symbols_explained
         """
 
-        create_uid = self.create_uid.name or _('unknown')
+        owner_id = self.owner_id.name or self.create_uid.name or _('unknown')
         write_uid = self.write_uid.name or _('unknown')
 
         create_date = self._get_date(self.create_date) or '1900-00-00'
         write_date = self._get_date(self.write_date) or '1900-00-00'
 
         return _('// Author: {} ({}) / Last edit: {} ({}){}').format(
-            create_uid,
+            owner_id,
             create_date,
             write_uid,
             write_date,

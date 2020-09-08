@@ -4,7 +4,7 @@
     <data noupdate="0">
 
         <!-- VIEWS: "Offers"
-        
+
             - Model·········: academy.public.tendering.public.offer
             - _rec_name·····: name
             - Domain········: []
@@ -13,7 +13,7 @@
             - View priority·: 16    Sequence····: 10
             - Action help···: There is no any public  offer yet
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-        
+
         <!-- Tree view for "academy.public.tendering.public.offer" -->
         <record id="view_academy_public_tendering_public_offer_tree" model="ir.ui.view">
             <field name="name">view.academy.public.tendering.public.offer.tree</field>
@@ -51,7 +51,7 @@
                 </tree>
             </field>
         </record>
-        
+
         <!-- Form view for "academy.public.tendering.public.offer" -->
         <record id="view_academy_public_tendering_public_offer_form" model="ir.ui.view">
             <field name="name">view.academy.public.tendering.public.offer.form</field>
@@ -65,7 +65,7 @@
                     <sheet>
                         <div class="oe_button_box" name="button_box">
                             <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
-                            
+
                             <button name="update_approval" type="object"
                                 class="oe_stat_button oe_read_only" icon="fa-calendar-check-o ">
                                 <span>Approve processes</span>
@@ -107,14 +107,14 @@
                             <page string="Processes" class="oe_page_processes" accesskey="P">
                                 <field name="tendering_process_ids" class="oe_field_tendering_process_ids"
                                     placeholder="Choose or create new processes"
-                                    context="{'default_public_tendering_public_offer_id' : id, 
-                                    'tree_view_ref' : 'academy_public_tendering.view_academy_public_tendering_process_tree_x2many'}" 
+                                    context="{'default_public_tendering_public_offer_id' : id,
+                                    'tree_view_ref' : 'academy_public_tendering.view_academy_public_tendering_process_tree_x2many'}"
                                     />
                             </page>
                             <page string="Description" class="oe_page_description" accesskey="D">
                                 <field name="description" class="oe_field_description"
                                     placeholder="Enter new value for description" />
-                            </page>    
+                            </page>
                         </notebook>
 
                     </sheet>
@@ -126,7 +126,7 @@
                 </form>
             </field>
         </record>
-        
+
         <!-- kanban view for "academy.public.tendering.public.offer" -->
         <record id="view_academy_public_tendering_public_offer_kanban" model="ir.ui.view">
             <field name="name">view.academy.public.tendering.public.offer.kanban</field>
@@ -211,11 +211,11 @@
                 </search>
             </field>
         </record>
-        
+
         <!-- Main window action for model.name -->
         <record id="action_offers_act_window" model="ir.actions.act_window">
             <field name="type">ir.actions.act_window</field>
-            <field name="name">Offers</field>
+            <field name="name">Public offers</field>
             <field name="res_model">academy.public.tendering.public.offer</field>
             <field name="view_mode">kanban,tree,form</field>
             <field name="target">current</field>
@@ -224,16 +224,16 @@
             <field name="search_view_id" ref="view_academy_public_tendering_public_offer_search" />
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
-                    Click to add new offers
+                    Click to add new public offers
                 </p><p>
-                    There is no any public offer yet
+                    There are no public offers yet
                 </p>
             </field>
         </record>
-        
+
         <!-- Main menu for model.name -->
         <record id="menu_offers" model="ir.ui.menu" >
-            <field name="name">Offers</field>
+            <field name="name">Public offers</field>
             <field name="sequence" eval="15" />
             <field name="action" ref="action_offers_act_window" />
             <field name="parent_id" ref="menu_academy_public_tendering" />

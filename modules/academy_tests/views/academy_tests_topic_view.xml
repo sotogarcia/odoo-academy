@@ -97,10 +97,10 @@
             <field name="search_view_id" ref="view_academy_topic_search" />
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
-                    There is not any topic defined.
+                    Click to add new topics
                 </p>
                 <p>
-                    Topics are used to group questions, each one of them can be divided in categories
+                    There are no topics yet
                 </p>
             </field>
         </record>

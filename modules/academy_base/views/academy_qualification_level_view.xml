@@ -85,7 +85,7 @@
         <!-- Main window action for model.name -->
         <record id="action_qualification_level_act_window" model="ir.actions.act_window">
             <field name="type">ir.actions.act_window</field>
-            <field name="name">Qualification level</field>
+            <field name="name">Qualification levels</field>
             <field name="res_model">academy.qualification.level</field>
             <field name="view_mode">tree,form</field>
 
@@ -95,9 +95,9 @@
             <field name="search_view_id" ref="view_academy_qualification_level_search" />
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
-                    Click to add new qualification level
+                    Click to add new qualification levels
                 </p><p>
-                    There are not qualification levels in catalog
+                    There are no qualification levels yet
                 </p>
             </field>
         </record>

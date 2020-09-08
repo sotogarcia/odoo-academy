@@ -43,7 +43,7 @@
                     <sheet>
                         <div class="oe_button_box" name="button_box"/>
                         <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
-                        
+
                         <div class="oe_title">
                             <field name="active" invisible="1"/>
                             <label for="name" class="oe_edit_only" />
@@ -83,7 +83,7 @@
         <!-- Main window action for model.name -->
         <record id="action_training_modality_act_window" model="ir.actions.act_window">
             <field name="type">ir.actions.act_window</field>
-            <field name="name">Training modality</field>
+            <field name="name">Training modalities</field>
             <field name="res_model">academy.training.modality</field>
             <field name="view_mode">tree,form</field>
 
@@ -93,9 +93,9 @@
             <field name="search_view_id" ref="view_academy_training_modality_search" />
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
-                    Click to add new training modality
+                    Click to add new training modalities
                 </p><p>
-                    There are not any training modalities
+                    There are no training modalities yet
                 </p>
             </field>
         </record>

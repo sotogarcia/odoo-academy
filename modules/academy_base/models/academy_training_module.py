@@ -36,22 +36,14 @@ from logging import getLogger
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
-from .lib.custom_model_fields import Many2manyThroughView
-
+from .lib.custom_model_fields import Many2manyThroughView, \
+    MODULE_INHERITED_RESOURCES_REL
 
 # pylint: disable=locally-disabled, C0103
 _logger = getLogger(__name__)
 
 
-INHERITED_RESOURCES_REL = """
-    SELECT DISTINCT
-        tree.requested_module_id AS training_module_id,
-        rel.training_resource_id 
-    FROM
-        academy_training_module_tree_readonly AS tree
-    INNER JOIN academy_training_module_training_resource_rel AS rel 
-        ON tree."responded_module_id" = rel.training_module_id
-"""
+
 
 
 # pylint: disable=locally-disabled, R0903
@@ -156,7 +148,7 @@ class AcademyTrainingModule(models.Model):
         help='Length in hours'
     )
 
-    training_resource_ids = fields.Many2many(
+    module_resource_ids = fields.Many2many(
         string='Own resources',
         required=False,
         readonly=False,
@@ -172,7 +164,7 @@ class AcademyTrainingModule(models.Model):
         limit=None
     )
 
-    available_training_resource_ids = Many2manyThroughView(
+    available_resource_ids = Many2manyThroughView(
         string='Available resources',
         required=False,
         readonly=True,
@@ -180,13 +172,13 @@ class AcademyTrainingModule(models.Model):
         default=None,
         help=False,
         comodel_name='academy.training.resource',
-        relation='academy_training_unit_training_resource_rel',
+        relation='academy_training_module_available_resource_rel',
         column1='training_module_id',
         column2='training_resource_id',
         domain=[],
         context={},
         limit=None,
-        sql=INHERITED_RESOURCES_REL
+        sql=MODULE_INHERITED_RESOURCES_REL
     )
 
     sequence = fields.Integer(

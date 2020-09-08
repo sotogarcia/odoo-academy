@@ -270,6 +270,20 @@ class AptPublicTendering(models.Model):
         track_visibility='onchange'
     )
 
+    training_action_id = fields.Many2one(
+        string='Default training action',
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help='Choose the default training action for public tendering',
+        comodel_name='academy.training.action',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False
+    )
+
     state_id = fields.Many2one(
         string='State',
         required=True,
@@ -283,8 +297,8 @@ class AptPublicTendering(models.Model):
         ondelete='cascade',
         auto_join=False,
         group_expand='_read_group_state_ids',
-        store=True
-
+        store=True,
+        track_visibility='onchange'
     )
 
     public_process_event_ids = fields.One2many(
@@ -317,6 +331,17 @@ class AptPublicTendering(models.Model):
         compute=lambda self: self._compute_last_event_id()
     )
 
+
+    def _track_subtype(self, init_values):
+        xid = 'academy_public_tendering.academy_public_tendering_state_change'
+
+        self.ensure_one()
+
+        if('state_id' in init_values.keys()):
+            return self.env.ref(xid).copy();
+
+        return super(AptPublicTendering, self)._track_subtype(init_values)
+
     # ----------------------- AUXILIAR FIELD METHODS --------------------------
 
     @api.onchange('public_process_event_ids')
@@ -327,6 +352,15 @@ class AptPublicTendering(models.Model):
             record._compute_state_date('finished')
             record._compute_last_event_id()
             record._ensure_state_id()
+
+    @api.onchange('employment_group_id')
+    def _onchange_employment_group_id(self):
+        _id = self.employment_group_id.id or -1
+        return {
+            'domain': {
+                'public_corps_id': [('employment_group_id', '=', _id)]
+            }
+        }
 
 
     @api.model

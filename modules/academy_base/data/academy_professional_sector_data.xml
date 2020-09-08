@@ -1,0 +1,1710 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="professional_sector_1101" model="academy.professional.sector">
+            <field name="name">Application of logic</field>
+            <field name="code">1101</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_11" />
+        </record>
+
+        <record id="professional_sector_1102" model="academy.professional.sector">
+            <field name="name">Deductive logic</field>
+            <field name="code">1102</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_11" />
+        </record>
+
+        <record id="professional_sector_1103" model="academy.professional.sector">
+            <field name="name">General logic</field>
+            <field name="code">1103</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_11" />
+        </record>
+
+        <record id="professional_sector_1104" model="academy.professional.sector">
+            <field name="name">Inductive logic</field>
+            <field name="code">1104</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_11" />
+        </record>
+
+        <record id="professional_sector_1105" model="academy.professional.sector">
+            <field name="name">Methodology</field>
+            <field name="code">1105</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_11" />
+        </record>
+
+        <record id="professional_sector_1199" model="academy.professional.sector">
+            <field name="name">Other specialities relating to logic</field>
+            <field name="code">1199</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_11" />
+        </record>
+
+        <record id="professional_sector_1201" model="academy.professional.sector">
+            <field name="name">Algebra</field>
+            <field name="code">1201</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_12" />
+        </record>
+
+        <record id="professional_sector_1202" model="academy.professional.sector">
+            <field name="name">Analysis and functional analysis</field>
+            <field name="code">1202</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_12" />
+        </record>
+
+        <record id="professional_sector_1203" model="academy.professional.sector">
+            <field name="name">Computer Sciences</field>
+            <field name="code">1203</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_12" />
+        </record>
+
+        <record id="professional_sector_1204" model="academy.professional.sector">
+            <field name="name">Geometry</field>
+            <field name="code">1204</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_12" />
+        </record>
+
+        <record id="professional_sector_1205" model="academy.professional.sector">
+            <field name="name">Number theory</field>
+            <field name="code">1205</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_12" />
+        </record>
+
+        <record id="professional_sector_1206" model="academy.professional.sector">
+            <field name="name">Numerical analysis</field>
+            <field name="code">1206</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_12" />
+        </record>
+
+        <record id="professional_sector_1207" model="academy.professional.sector">
+            <field name="name">Operations research</field>
+            <field name="code">1207</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_12" />
+        </record>
+
+        <record id="professional_sector_1208" model="academy.professional.sector">
+            <field name="name">Probability</field>
+            <field name="code">1208</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_12" />
+        </record>
+
+        <record id="professional_sector_1209" model="academy.professional.sector">
+            <field name="name">Statistics</field>
+            <field name="code">1209</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_12" />
+        </record>
+
+        <record id="professional_sector_1210" model="academy.professional.sector">
+            <field name="name">Topology</field>
+            <field name="code">1210</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_12" />
+        </record>
+
+        <record id="professional_sector_1299" model="academy.professional.sector">
+            <field name="name">Other mathematical specialities</field>
+            <field name="code">1299</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_12" />
+        </record>
+
+        <record id="professional_sector_2101" model="academy.professional.sector">
+            <field name="name">Cosmology</field>
+            <field name="code">2101</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_21" />
+        </record>
+
+        <record id="professional_sector_2102" model="academy.professional.sector">
+            <field name="name">Interplanetary physics</field>
+            <field name="code">2102</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_21" />
+        </record>
+
+        <record id="professional_sector_2103" model="academy.professional.sector">
+            <field name="name">Optical astronomy</field>
+            <field name="code">2103</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_21" />
+        </record>
+
+        <record id="professional_sector_2104" model="academy.professional.sector">
+            <field name="name">Planetology</field>
+            <field name="code">2104</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_21" />
+        </record>
+
+        <record id="professional_sector_2105" model="academy.professional.sector">
+            <field name="name">Radio-astronomy</field>
+            <field name="code">2105</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_21" />
+        </record>
+
+        <record id="professional_sector_2106" model="academy.professional.sector">
+            <field name="name">Solar system</field>
+            <field name="code">2106</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_21" />
+        </record>
+
+        <record id="professional_sector_2199" model="academy.professional.sector">
+            <field name="name">Other astronomical specialities</field>
+            <field name="code">2199</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_21" />
+        </record>
+
+        <record id="professional_sector_2201" model="academy.professional.sector">
+            <field name="name">Acoustics</field>
+            <field name="code">2201</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_22" />
+        </record>
+
+        <record id="professional_sector_2202" model="academy.professional.sector">
+            <field name="name">Electro-magnetism</field>
+            <field name="code">2202</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_22" />
+        </record>
+
+        <record id="professional_sector_2203" model="academy.professional.sector">
+            <field name="name">Electronics</field>
+            <field name="code">2203</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_22" />
+        </record>
+
+        <record id="professional_sector_2204" model="academy.professional.sector">
+            <field name="name">Physics</field>
+            <field name="code">2204</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_22" />
+        </record>
+
+        <record id="professional_sector_2205" model="academy.professional.sector">
+            <field name="name">Mechanics</field>
+            <field name="code">2205</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_22" />
+        </record>
+
+        <record id="professional_sector_2206" model="academy.professional.sector">
+            <field name="name">Molecular physics</field>
+            <field name="code">2206</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_22" />
+        </record>
+
+        <record id="professional_sector_2207" model="academy.professional.sector">
+            <field name="name">Nuclear physics</field>
+            <field name="code">2207</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_22" />
+        </record>
+
+        <record id="professional_sector_2208" model="academy.professional.sector">
+            <field name="name">Nucleonics</field>
+            <field name="code">2208</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_22" />
+        </record>
+
+        <record id="professional_sector_2209" model="academy.professional.sector">
+            <field name="name">Optics</field>
+            <field name="code">2209</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_22" />
+        </record>
+
+        <record id="professional_sector_2210" model="academy.professional.sector">
+            <field name="name">Physical chemistry</field>
+            <field name="code">2210</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_22" />
+        </record>
+
+        <record id="professional_sector_2211" model="academy.professional.sector">
+            <field name="name">Solid state physics</field>
+            <field name="code">2211</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_22" />
+        </record>
+
+        <record id="professional_sector_2212" model="academy.professional.sector">
+            <field name="name">Theoretical physics</field>
+            <field name="code">2212</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_22" />
+        </record>
+
+        <record id="professional_sector_2213" model="academy.professional.sector">
+            <field name="name">Thermodynamics</field>
+            <field name="code">2213</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_22" />
+        </record>
+
+        <record id="professional_sector_2214" model="academy.professional.sector">
+            <field name="name">Units and constants</field>
+            <field name="code">2214</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_22" />
+        </record>
+
+        <record id="professional_sector_2299" model="academy.professional.sector">
+            <field name="name">Other physical specialities</field>
+            <field name="code">2299</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_22" />
+        </record>
+
+        <record id="professional_sector_2301" model="academy.professional.sector">
+            <field name="name">Analytical chemistry</field>
+            <field name="code">2301</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_23" />
+        </record>
+
+        <record id="professional_sector_2302" model="academy.professional.sector">
+            <field name="name">Biochemistry</field>
+            <field name="code">2302</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_23" />
+        </record>
+
+        <record id="professional_sector_2303" model="academy.professional.sector">
+            <field name="name">Inorganic chemistry</field>
+            <field name="code">2303</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_23" />
+        </record>
+
+        <record id="professional_sector_2304" model="academy.professional.sector">
+            <field name="name">Macromolecular chemistry</field>
+            <field name="code">2304</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_23" />
+        </record>
+
+        <record id="professional_sector_2305" model="academy.professional.sector">
+            <field name="name">Nuclear chemistry</field>
+            <field name="code">2305</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_23" />
+        </record>
+
+        <record id="professional_sector_2306" model="academy.professional.sector">
+            <field name="name">Organic chemistry</field>
+            <field name="code">2306</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_23" />
+        </record>
+
+        <record id="professional_sector_2399" model="academy.professional.sector">
+            <field name="name">Other chemical specialities</field>
+            <field name="code">2399</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_23" />
+        </record>
+
+        <record id="professional_sector_2401" model="academy.professional.sector">
+            <field name="name">Animal Biology</field>
+            <field name="code">2401</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_24" />
+        </record>
+
+        <record id="professional_sector_2402" model="academy.professional.sector">
+            <field name="name">Anthropology</field>
+            <field name="code">2402</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_24" />
+        </record>
+
+        <record id="professional_sector_2404" model="academy.professional.sector">
+            <field name="name">Biomathematics</field>
+            <field name="code">2404</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_24" />
+        </record>
+
+        <record id="professional_sector_2405" model="academy.professional.sector">
+            <field name="name">Biometrics</field>
+            <field name="code">2405</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_24" />
+        </record>
+
+        <record id="professional_sector_2406" model="academy.professional.sector">
+            <field name="name">Biophysics</field>
+            <field name="code">2406</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_24" />
+        </record>
+
+        <record id="professional_sector_2407" model="academy.professional.sector">
+            <field name="name">Cell biology</field>
+            <field name="code">2407</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_24" />
+        </record>
+
+        <record id="professional_sector_2408" model="academy.professional.sector">
+            <field name="name">Ethology</field>
+            <field name="code">2408</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_24" />
+        </record>
+
+        <record id="professional_sector_2409" model="academy.professional.sector">
+            <field name="name">Genetics</field>
+            <field name="code">2409</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_24" />
+        </record>
+
+        <record id="professional_sector_2410" model="academy.professional.sector">
+            <field name="name">Human biology</field>
+            <field name="code">2410</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_24" />
+        </record>
+
+        <record id="professional_sector_2411" model="academy.professional.sector">
+            <field name="name">Human physiology</field>
+            <field name="code">2411</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_24" />
+        </record>
+
+        <record id="professional_sector_2412" model="academy.professional.sector">
+            <field name="name">Immunology</field>
+            <field name="code">2412</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_24" />
+        </record>
+
+        <record id="professional_sector_2413" model="academy.professional.sector">
+            <field name="name">Insect Biology</field>
+            <field name="code">2413</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_24" />
+        </record>
+
+        <record id="professional_sector_2414" model="academy.professional.sector">
+            <field name="name">Microbiology</field>
+            <field name="code">2414</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_24" />
+        </record>
+
+        <record id="professional_sector_2415" model="academy.professional.sector">
+            <field name="name">Molecular biology</field>
+            <field name="code">2415</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_24" />
+        </record>
+
+        <record id="professional_sector_2416" model="academy.professional.sector">
+            <field name="name">Palaeontology</field>
+            <field name="code">2416</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_24" />
+        </record>
+
+        <record id="professional_sector_2417" model="academy.professional.sector">
+            <field name="name">Plant Biology</field>
+            <field name="code">2417</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_24" />
+        </record>
+
+        <record id="professional_sector_2418" model="academy.professional.sector">
+            <field name="name">Radiobiology</field>
+            <field name="code">2418</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_24" />
+        </record>
+
+        <record id="professional_sector_2419" model="academy.professional.sector">
+            <field name="name">Symbiosis</field>
+            <field name="code">2419</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_24" />
+        </record>
+
+        <record id="professional_sector_2420" model="academy.professional.sector">
+            <field name="name">Virology</field>
+            <field name="code">2420</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_24" />
+        </record>
+
+        <record id="professional_sector_2499" model="academy.professional.sector">
+            <field name="name">Other biological specialities</field>
+            <field name="code">2499</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_24" />
+        </record>
+
+        <record id="professional_sector_2501" model="academy.professional.sector">
+            <field name="name">Atmospheric sciences</field>
+            <field name="code">2501</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_25" />
+        </record>
+
+        <record id="professional_sector_2502" model="academy.professional.sector">
+            <field name="name">Climatology</field>
+            <field name="code">2502</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_25" />
+        </record>
+
+        <record id="professional_sector_2503" model="academy.professional.sector">
+            <field name="name">Geochemistry</field>
+            <field name="code">2503</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_25" />
+        </record>
+
+        <record id="professional_sector_2504" model="academy.professional.sector">
+            <field name="name">Geodesy</field>
+            <field name="code">2504</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_25" />
+        </record>
+
+        <record id="professional_sector_2505" model="academy.professional.sector">
+            <field name="name">Geography</field>
+            <field name="code">2505</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_25" />
+        </record>
+
+        <record id="professional_sector_2506" model="academy.professional.sector">
+            <field name="name">Geology</field>
+            <field name="code">2506</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_25" />
+        </record>
+
+        <record id="professional_sector_2507" model="academy.professional.sector">
+            <field name="name">Geophysics</field>
+            <field name="code">2507</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_25" />
+        </record>
+
+        <record id="professional_sector_2508" model="academy.professional.sector">
+            <field name="name">Hydrology</field>
+            <field name="code">2508</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_25" />
+        </record>
+
+        <record id="professional_sector_2509" model="academy.professional.sector">
+            <field name="name">Meteorology</field>
+            <field name="code">2509</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_25" />
+        </record>
+
+        <record id="professional_sector_2510" model="academy.professional.sector">
+            <field name="name">Oceanography</field>
+            <field name="code">2510</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_25" />
+        </record>
+
+        <record id="professional_sector_2511" model="academy.professional.sector">
+            <field name="name">Soil Science</field>
+            <field name="code">2511</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_25" />
+        </record>
+
+        <record id="professional_sector_2512" model="academy.professional.sector">
+            <field name="name">Space Sciences</field>
+            <field name="code">2512</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_25" />
+        </record>
+
+        <record id="professional_sector_2599" model="academy.professional.sector">
+            <field name="name">Other Earth, Space or Environmental specialities</field>
+            <field name="code">2599</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_25" />
+        </record>
+
+        <record id="professional_sector_3101" model="academy.professional.sector">
+            <field name="name">Agricultural chemistry</field>
+            <field name="code">3101</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_31" />
+        </record>
+
+        <record id="professional_sector_3102" model="academy.professional.sector">
+            <field name="name">Agricultural engineering</field>
+            <field name="code">3102</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_31" />
+        </record>
+
+        <record id="professional_sector_3103" model="academy.professional.sector">
+            <field name="name">Agronomy</field>
+            <field name="code">3103</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_31" />
+        </record>
+
+        <record id="professional_sector_3104" model="academy.professional.sector">
+            <field name="name">Animal husbandry</field>
+            <field name="code">3104</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_31" />
+        </record>
+
+        <record id="professional_sector_3105" model="academy.professional.sector">
+            <field name="name">Fish and wildlife</field>
+            <field name="code">3105</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_31" />
+        </record>
+
+        <record id="professional_sector_3106" model="academy.professional.sector">
+            <field name="name">Forestry</field>
+            <field name="code">3106</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_31" />
+        </record>
+
+        <record id="professional_sector_3107" model="academy.professional.sector">
+            <field name="name">Horticulture</field>
+            <field name="code">3107</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_31" />
+        </record>
+
+        <record id="professional_sector_3108" model="academy.professional.sector">
+            <field name="name">Phytopathology</field>
+            <field name="code">3108</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_31" />
+        </record>
+
+        <record id="professional_sector_3109" model="academy.professional.sector">
+            <field name="name">Veterinary sciences</field>
+            <field name="code">3109</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_31" />
+        </record>
+
+        <record id="professional_sector_3199" model="academy.professional.sector">
+            <field name="name">Other agricultural specialities</field>
+            <field name="code">3199</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_31" />
+        </record>
+
+        <record id="professional_sector_3201" model="academy.professional.sector">
+            <field name="name">Clinical sciences</field>
+            <field name="code">3201</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_32" />
+        </record>
+
+        <record id="professional_sector_3202" model="academy.professional.sector">
+            <field name="name">Epidemiology</field>
+            <field name="code">3202</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_32" />
+        </record>
+
+        <record id="professional_sector_3203" model="academy.professional.sector">
+            <field name="name">Forensic medicine</field>
+            <field name="code">3203</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_32" />
+        </record>
+
+        <record id="professional_sector_3204" model="academy.professional.sector">
+            <field name="name">Occupational medicine</field>
+            <field name="code">3204</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_32" />
+        </record>
+
+        <record id="professional_sector_3205" model="academy.professional.sector">
+            <field name="name">Internal medicine</field>
+            <field name="code">3205</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_32" />
+        </record>
+
+        <record id="professional_sector_3206" model="academy.professional.sector">
+            <field name="name">Nutrition sciences</field>
+            <field name="code">3206</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_32" />
+        </record>
+
+        <record id="professional_sector_3207" model="academy.professional.sector">
+            <field name="name">Pathology</field>
+            <field name="code">3207</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_32" />
+        </record>
+
+        <record id="professional_sector_3208" model="academy.professional.sector">
+            <field name="name">Pharmacodynamics</field>
+            <field name="code">3208</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_32" />
+        </record>
+
+        <record id="professional_sector_3209" model="academy.professional.sector">
+            <field name="name">Pharmacology</field>
+            <field name="code">3209</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_32" />
+        </record>
+
+        <record id="professional_sector_3210" model="academy.professional.sector">
+            <field name="name">Preventive medicine</field>
+            <field name="code">3210</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_32" />
+        </record>
+
+        <record id="professional_sector_3211" model="academy.professional.sector">
+            <field name="name">Psychiatry</field>
+            <field name="code">3211</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_32" />
+        </record>
+
+        <record id="professional_sector_3212" model="academy.professional.sector">
+            <field name="name">Public health</field>
+            <field name="code">3212</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_32" />
+        </record>
+
+        <record id="professional_sector_3213" model="academy.professional.sector">
+            <field name="name">Surgery</field>
+            <field name="code">3213</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_32" />
+        </record>
+
+        <record id="professional_sector_3214" model="academy.professional.sector">
+            <field name="name">Toxicology</field>
+            <field name="code">3214</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_32" />
+        </record>
+
+        <record id="professional_sector_3299" model="academy.professional.sector">
+            <field name="name">Other medical specialities</field>
+            <field name="code">3299</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_32" />
+        </record>
+
+        <record id="professional_sector_3301" model="academy.professional.sector">
+            <field name="name">Aeronautical technology and engineering</field>
+            <field name="code">3301</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_33" />
+        </record>
+
+        <record id="professional_sector_3302" model="academy.professional.sector">
+            <field name="name">Biochemical technology</field>
+            <field name="code">3302</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_33" />
+        </record>
+
+        <record id="professional_sector_3303" model="academy.professional.sector">
+            <field name="name">Chemical technology and engineering</field>
+            <field name="code">3303</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_33" />
+        </record>
+
+        <record id="professional_sector_3304" model="academy.professional.sector">
+            <field name="name">Computer technology</field>
+            <field name="code">3304</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_33" />
+        </record>
+
+        <record id="professional_sector_3305" model="academy.professional.sector">
+            <field name="name">Construction technology</field>
+            <field name="code">3305</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_33" />
+        </record>
+
+        <record id="professional_sector_3306" model="academy.professional.sector">
+            <field name="name">Electrical technology and engineering</field>
+            <field name="code">3306</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_33" />
+        </record>
+
+        <record id="professional_sector_3307" model="academy.professional.sector">
+            <field name="name">Electronic technology</field>
+            <field name="code">3307</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_33" />
+        </record>
+
+        <record id="professional_sector_3308" model="academy.professional.sector">
+            <field name="name">Environmental technology and engineering</field>
+            <field name="code">3308</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_33" />
+        </record>
+
+        <record id="professional_sector_3309" model="academy.professional.sector">
+            <field name="name">Food technology</field>
+            <field name="code">3309</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_33" />
+        </record>
+
+        <record id="professional_sector_3310" model="academy.professional.sector">
+            <field name="name">Industrial technology</field>
+            <field name="code">3310</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_33" />
+        </record>
+
+        <record id="professional_sector_3311" model="academy.professional.sector">
+            <field name="name">Instrumentation technology</field>
+            <field name="code">3311</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_33" />
+        </record>
+
+        <record id="professional_sector_3312" model="academy.professional.sector">
+            <field name="name">Materials technology</field>
+            <field name="code">3312</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_33" />
+        </record>
+
+        <record id="professional_sector_3313" model="academy.professional.sector">
+            <field name="name">Mechanical Engineering and technology</field>
+            <field name="code">3313</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_33" />
+        </record>
+
+        <record id="professional_sector_3314" model="academy.professional.sector">
+            <field name="name">Medical technology</field>
+            <field name="code">3314</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_33" />
+        </record>
+
+        <record id="professional_sector_3315" model="academy.professional.sector">
+            <field name="name">Metallurgical technology</field>
+            <field name="code">3315</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_33" />
+        </record>
+
+        <record id="professional_sector_3316" model="academy.professional.sector">
+            <field name="name">Metal products technology</field>
+            <field name="code">3316</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_33" />
+        </record>
+
+        <record id="professional_sector_3317" model="academy.professional.sector">
+            <field name="name">Motor vehicle technology</field>
+            <field name="code">3317</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_33" />
+        </record>
+
+        <record id="professional_sector_3318" model="academy.professional.sector">
+            <field name="name">Mining technology</field>
+            <field name="code">3318</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_33" />
+        </record>
+
+        <record id="professional_sector_3319" model="academy.professional.sector">
+            <field name="name">Naval technology</field>
+            <field name="code">3319</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_33" />
+        </record>
+
+        <record id="professional_sector_3320" model="academy.professional.sector">
+            <field name="name">Nuclear technology</field>
+            <field name="code">3320</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_33" />
+        </record>
+
+        <record id="professional_sector_3321" model="academy.professional.sector">
+            <field name="name">Petroleum and coal technology</field>
+            <field name="code">3321</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_33" />
+        </record>
+
+        <record id="professional_sector_3322" model="academy.professional.sector">
+            <field name="name">Power technology</field>
+            <field name="code">3322</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_33" />
+        </record>
+
+        <record id="professional_sector_3323" model="academy.professional.sector">
+            <field name="name">Railway technology</field>
+            <field name="code">3323</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_33" />
+        </record>
+
+        <record id="professional_sector_3324" model="academy.professional.sector">
+            <field name="name">Space technology</field>
+            <field name="code">3324</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_33" />
+        </record>
+
+        <record id="professional_sector_3325" model="academy.professional.sector">
+            <field name="name">Telecommunications technology</field>
+            <field name="code">3325</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_33" />
+        </record>
+
+        <record id="professional_sector_3326" model="academy.professional.sector">
+            <field name="name">Textile technology</field>
+            <field name="code">3326</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_33" />
+        </record>
+
+        <record id="professional_sector_3327" model="academy.professional.sector">
+            <field name="name">Transportation systems technology</field>
+            <field name="code">3327</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_33" />
+        </record>
+
+        <record id="professional_sector_3328" model="academy.professional.sector">
+            <field name="name">Unit operations technology</field>
+            <field name="code">3328</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_33" />
+        </record>
+
+        <record id="professional_sector_3329" model="academy.professional.sector">
+            <field name="name">Urban Planning</field>
+            <field name="code">3329</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_33" />
+        </record>
+
+        <record id="professional_sector_3399" model="academy.professional.sector">
+            <field name="name">Other technological specialities</field>
+            <field name="code">3399</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_33" />
+        </record>
+
+        <record id="professional_sector_5101" model="academy.professional.sector">
+            <field name="name">Cultural anthropology</field>
+            <field name="code">5101</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_51" />
+        </record>
+
+        <record id="professional_sector_5102" model="academy.professional.sector">
+            <field name="name">Ethnography and Ethnology</field>
+            <field name="code">5102</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_51" />
+        </record>
+
+        <record id="professional_sector_5103" model="academy.professional.sector">
+            <field name="name">Social anthropology</field>
+            <field name="code">5103</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_51" />
+        </record>
+
+        <record id="professional_sector_5199" model="academy.professional.sector">
+            <field name="name">Other anthropology specialities</field>
+            <field name="code">5199</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_51" />
+        </record>
+
+        <record id="professional_sector_5201" model="academy.professional.sector">
+            <field name="name">Fertility</field>
+            <field name="code">5201</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_52" />
+        </record>
+
+        <record id="professional_sector_5202" model="academy.professional.sector">
+            <field name="name">General demography</field>
+            <field name="code">5202</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_52" />
+        </record>
+
+        <record id="professional_sector_5203" model="academy.professional.sector">
+            <field name="name">Geographical demography</field>
+            <field name="code">5203</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_52" />
+        </record>
+
+        <record id="professional_sector_5204" model="academy.professional.sector">
+            <field name="name">Historical demography</field>
+            <field name="code">5204</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_52" />
+        </record>
+
+        <record id="professional_sector_5205" model="academy.professional.sector">
+            <field name="name">Mortality</field>
+            <field name="code">5205</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_52" />
+        </record>
+
+        <record id="professional_sector_5206" model="academy.professional.sector">
+            <field name="name">Population characteristics</field>
+            <field name="code">5206</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_52" />
+        </record>
+
+        <record id="professional_sector_5207" model="academy.professional.sector">
+            <field name="name">Population size and demographic evolution</field>
+            <field name="code">5207</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_52" />
+        </record>
+
+        <record id="professional_sector_5299" model="academy.professional.sector">
+            <field name="name">Other demographic specialities</field>
+            <field name="code">5299</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_52" />
+        </record>
+
+        <record id="professional_sector_5301" model="academy.professional.sector">
+            <field name="name">Domestic fiscal policy and public finance</field>
+            <field name="code">5301</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_53" />
+        </record>
+
+        <record id="professional_sector_5302" model="academy.professional.sector">
+            <field name="name">Econometrics</field>
+            <field name="code">5302</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_53" />
+        </record>
+
+        <record id="professional_sector_5303" model="academy.professional.sector">
+            <field name="name">Economic accounting</field>
+            <field name="code">5303</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_53" />
+        </record>
+
+        <record id="professional_sector_5304" model="academy.professional.sector">
+            <field name="name">Economic activity</field>
+            <field name="code">5304</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_53" />
+        </record>
+
+        <record id="professional_sector_5305" model="academy.professional.sector">
+            <field name="name">Economic systems</field>
+            <field name="code">5305</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_53" />
+        </record>
+
+        <record id="professional_sector_5306" model="academy.professional.sector">
+            <field name="name">Economics of technological change</field>
+            <field name="code">5306</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_53" />
+        </record>
+
+        <record id="professional_sector_5307" model="academy.professional.sector">
+            <field name="name">Economic theory</field>
+            <field name="code">5307</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_53" />
+        </record>
+
+        <record id="professional_sector_5308" model="academy.professional.sector">
+            <field name="name">General economics</field>
+            <field name="code">5308</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_53" />
+        </record>
+
+        <record id="professional_sector_5309" model="academy.professional.sector">
+            <field name="name">Industrial organization and public policy</field>
+            <field name="code">5309</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_53" />
+        </record>
+
+        <record id="professional_sector_5310" model="academy.professional.sector">
+            <field name="name">International economics</field>
+            <field name="code">5310</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_53" />
+        </record>
+
+        <record id="professional_sector_5311" model="academy.professional.sector">
+            <field name="name">Organization and management of enterprises</field>
+            <field name="code">5311</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_53" />
+        </record>
+
+        <record id="professional_sector_5312" model="academy.professional.sector">
+            <field name="name">Sectorial economics</field>
+            <field name="code">5312</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_53" />
+        </record>
+
+        <record id="professional_sector_5399" model="academy.professional.sector">
+            <field name="name">Other economic specialities</field>
+            <field name="code">5399</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_53" />
+        </record>
+
+        <record id="professional_sector_5401" model="academy.professional.sector">
+            <field name="name">Economic geography</field>
+            <field name="code">5401</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_54" />
+        </record>
+
+        <record id="professional_sector_5402" model="academy.professional.sector">
+            <field name="name">Historical geography</field>
+            <field name="code">5402</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_54" />
+        </record>
+
+        <record id="professional_sector_5403" model="academy.professional.sector">
+            <field name="name">Human geography</field>
+            <field name="code">5403</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_54" />
+        </record>
+
+        <record id="professional_sector_5404" model="academy.professional.sector">
+            <field name="name">Regional geography</field>
+            <field name="code">5404</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_54" />
+        </record>
+
+        <record id="professional_sector_5499" model="academy.professional.sector">
+            <field name="name">Other geographical specialities</field>
+            <field name="code">5499</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_54" />
+        </record>
+
+        <record id="professional_sector_5501" model="academy.professional.sector">
+            <field name="name">Biographies</field>
+            <field name="code">5501</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_55" />
+        </record>
+
+        <record id="professional_sector_5502" model="academy.professional.sector">
+            <field name="name">General history</field>
+            <field name="code">5502</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_55" />
+        </record>
+
+        <record id="professional_sector_5503" model="academy.professional.sector">
+            <field name="name">History of countries</field>
+            <field name="code">5503</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_55" />
+        </record>
+
+        <record id="professional_sector_5504" model="academy.professional.sector">
+            <field name="name">History by epochs</field>
+            <field name="code">5504</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_55" />
+        </record>
+
+        <record id="professional_sector_5505" model="academy.professional.sector">
+            <field name="name">Sciences auxiliary to history</field>
+            <field name="code">5505</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_55" />
+        </record>
+
+        <record id="professional_sector_5506" model="academy.professional.sector">
+            <field name="name">Specialized histories</field>
+            <field name="code">5506</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_55" />
+        </record>
+
+        <record id="professional_sector_5599" model="academy.professional.sector">
+            <field name="name">Other historical specialities</field>
+            <field name="code">5599</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_55" />
+        </record>
+
+        <record id="professional_sector_5601" model="academy.professional.sector">
+            <field name="name">Canon law</field>
+            <field name="code">5601</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_56" />
+        </record>
+
+        <record id="professional_sector_5602" model="academy.professional.sector">
+            <field name="name">General theory and method</field>
+            <field name="code">5602</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_56" />
+        </record>
+
+        <record id="professional_sector_5603" model="academy.professional.sector">
+            <field name="name">International law</field>
+            <field name="code">5603</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_56" />
+        </record>
+
+        <record id="professional_sector_5604" model="academy.professional.sector">
+            <field name="name">Legal organization</field>
+            <field name="code">5604</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_56" />
+        </record>
+
+        <record id="professional_sector_5605" model="academy.professional.sector">
+            <field name="name">National law and legislation</field>
+            <field name="code">5605</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_56" />
+        </record>
+
+        <record id="professional_sector_5699" model="academy.professional.sector">
+            <field name="name">Other juridical specialities</field>
+            <field name="code">5699</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_56" />
+        </record>
+
+        <record id="professional_sector_5701" model="academy.professional.sector">
+            <field name="name">Applied linguistics</field>
+            <field name="code">5701</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_57" />
+        </record>
+
+        <record id="professional_sector_5702" model="academy.professional.sector">
+            <field name="name">Diachronic linguistics</field>
+            <field name="code">5702</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_57" />
+        </record>
+
+        <record id="professional_sector_5703" model="academy.professional.sector">
+            <field name="name">Linguistic geography</field>
+            <field name="code">5703</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_57" />
+        </record>
+
+        <record id="professional_sector_5704" model="academy.professional.sector">
+            <field name="name">Linguistic theory</field>
+            <field name="code">5704</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_57" />
+        </record>
+
+        <record id="professional_sector_5705" model="academy.professional.sector">
+            <field name="name">Synchronic linguistics</field>
+            <field name="code">5705</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_57" />
+        </record>
+
+        <record id="professional_sector_5799" model="academy.professional.sector">
+            <field name="name">Other linguistic specialities</field>
+            <field name="code">5799</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_57" />
+        </record>
+
+        <record id="professional_sector_5801" model="academy.professional.sector">
+            <field name="name">Educational theory and methods</field>
+            <field name="code">5801</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_58" />
+        </record>
+
+        <record id="professional_sector_5802" model="academy.professional.sector">
+            <field name="name">Organization and planning of education</field>
+            <field name="code">5802</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_58" />
+        </record>
+
+        <record id="professional_sector_5803" model="academy.professional.sector">
+            <field name="name">Teacher training and employment</field>
+            <field name="code">5803</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_58" />
+        </record>
+
+        <record id="professional_sector_5899" model="academy.professional.sector">
+            <field name="name">Other pedagogical specialities</field>
+            <field name="code">5899</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_58" />
+        </record>
+
+        <record id="professional_sector_5901" model="academy.professional.sector">
+            <field name="name">International relations</field>
+            <field name="code">5901</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_59" />
+        </record>
+
+        <record id="professional_sector_5902" model="academy.professional.sector">
+            <field name="name">Policy sciences</field>
+            <field name="code">5902</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_59" />
+        </record>
+
+        <record id="professional_sector_5903" model="academy.professional.sector">
+            <field name="name">Political ideologies</field>
+            <field name="code">5903</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_59" />
+        </record>
+
+        <record id="professional_sector_5904" model="academy.professional.sector">
+            <field name="name">Political institutions</field>
+            <field name="code">5904</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_59" />
+        </record>
+
+        <record id="professional_sector_5905" model="academy.professional.sector">
+            <field name="name">Political life</field>
+            <field name="code">5905</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_59" />
+        </record>
+
+        <record id="professional_sector_5906" model="academy.professional.sector">
+            <field name="name">Political sociology</field>
+            <field name="code">5906</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_59" />
+        </record>
+
+        <record id="professional_sector_5907" model="academy.professional.sector">
+            <field name="name">Political systems</field>
+            <field name="code">5907</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_59" />
+        </record>
+
+        <record id="professional_sector_5908" model="academy.professional.sector">
+            <field name="name">Political theory</field>
+            <field name="code">5908</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_59" />
+        </record>
+
+        <record id="professional_sector_5909" model="academy.professional.sector">
+            <field name="name">Public administration</field>
+            <field name="code">5909</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_59" />
+        </record>
+
+        <record id="professional_sector_5910" model="academy.professional.sector">
+            <field name="name">Public opinion</field>
+            <field name="code">5910</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_59" />
+        </record>
+
+        <record id="professional_sector_5999" model="academy.professional.sector">
+            <field name="name">Other political science specialities</field>
+            <field name="code">5999</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_59" />
+        </record>
+
+        <record id="professional_sector_6101" model="academy.professional.sector">
+            <field name="name">Abnormal psychology</field>
+            <field name="code">6101</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_61" />
+        </record>
+
+        <record id="professional_sector_6102" model="academy.professional.sector">
+            <field name="name">Adolescent and child psychology</field>
+            <field name="code">6102</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_61" />
+        </record>
+
+        <record id="professional_sector_6103" model="academy.professional.sector">
+            <field name="name">Counselling and guidance</field>
+            <field name="code">6103</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_61" />
+        </record>
+
+        <record id="professional_sector_6104" model="academy.professional.sector">
+            <field name="name">Educational psychology</field>
+            <field name="code">6104</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_61" />
+        </record>
+
+        <record id="professional_sector_6105" model="academy.professional.sector">
+            <field name="name">Evaluation and measurement in psychology</field>
+            <field name="code">6105</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_61" />
+        </record>
+
+        <record id="professional_sector_6106" model="academy.professional.sector">
+            <field name="name">Experimental psychology</field>
+            <field name="code">6106</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_61" />
+        </record>
+
+        <record id="professional_sector_6107" model="academy.professional.sector">
+            <field name="name">General psychology</field>
+            <field name="code">6107</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_61" />
+        </record>
+
+        <record id="professional_sector_6108" model="academy.professional.sector">
+            <field name="name">Geriatric psychology</field>
+            <field name="code">6108</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_61" />
+        </record>
+
+        <record id="professional_sector_6109" model="academy.professional.sector">
+            <field name="name">Occupational and personnel psychology</field>
+            <field name="code">6109</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_61" />
+        </record>
+
+        <record id="professional_sector_6110" model="academy.professional.sector">
+            <field name="name">Parapsychology</field>
+            <field name="code">6110</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_61" />
+        </record>
+
+        <record id="professional_sector_6111" model="academy.professional.sector">
+            <field name="name">Personality</field>
+            <field name="code">6111</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_61" />
+        </record>
+
+        <record id="professional_sector_6112" model="academy.professional.sector">
+            <field name="name">Psychological study of social issues</field>
+            <field name="code">6112</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_61" />
+        </record>
+
+        <record id="professional_sector_6113" model="academy.professional.sector">
+            <field name="name">Psychopharmacology</field>
+            <field name="code">6113</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_61" />
+        </record>
+
+        <record id="professional_sector_6114" model="academy.professional.sector">
+            <field name="name">Social psychology</field>
+            <field name="code">6114</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_61" />
+        </record>
+
+        <record id="professional_sector_6199" model="academy.professional.sector">
+            <field name="name">Other psychological specialities</field>
+            <field name="code">6199</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_61" />
+        </record>
+
+        <record id="professional_sector_6201" model="academy.professional.sector">
+            <field name="name">Architecture</field>
+            <field name="code">6201</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_62" />
+        </record>
+
+        <record id="professional_sector_6202" model="academy.professional.sector">
+            <field name="name">Literary theory, analysis and criticism</field>
+            <field name="code">6202</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_62" />
+        </record>
+
+        <record id="professional_sector_6203" model="academy.professional.sector">
+            <field name="name">Fine arts theory, analysis and criticism</field>
+            <field name="code">6203</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_62" />
+        </record>
+
+        <record id="professional_sector_6299" model="academy.professional.sector">
+            <field name="name">Other artistic specialities</field>
+            <field name="code">6299</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_62" />
+        </record>
+
+        <record id="professional_sector_6301" model="academy.professional.sector">
+            <field name="name">Cultural sociology</field>
+            <field name="code">6301</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_63" />
+        </record>
+
+        <record id="professional_sector_6302" model="academy.professional.sector">
+            <field name="name">Experimental sociology</field>
+            <field name="code">6302</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_63" />
+        </record>
+
+        <record id="professional_sector_6303" model="academy.professional.sector">
+            <field name="name">General sociology</field>
+            <field name="code">6303</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_63" />
+        </record>
+
+        <record id="professional_sector_6304" model="academy.professional.sector">
+            <field name="name">International disorder</field>
+            <field name="code">6304</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_63" />
+        </record>
+
+        <record id="professional_sector_6305" model="academy.professional.sector">
+            <field name="name">Mathematical sociology</field>
+            <field name="code">6305</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_63" />
+        </record>
+
+        <record id="professional_sector_6306" model="academy.professional.sector">
+            <field name="name">Occupational sociology</field>
+            <field name="code">6306</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_63" />
+        </record>
+
+        <record id="professional_sector_6307" model="academy.professional.sector">
+            <field name="name">Social change and development</field>
+            <field name="code">6307</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_63" />
+        </record>
+
+        <record id="professional_sector_6308" model="academy.professional.sector">
+            <field name="name">Social communications</field>
+            <field name="code">6308</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_63" />
+        </record>
+
+        <record id="professional_sector_6309" model="academy.professional.sector">
+            <field name="name">Social groups</field>
+            <field name="code">6309</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_63" />
+        </record>
+
+        <record id="professional_sector_6310" model="academy.professional.sector">
+            <field name="name">Social problems - Social disorder</field>
+            <field name="code">6310</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_63" />
+        </record>
+
+        <record id="professional_sector_6311" model="academy.professional.sector">
+            <field name="name">Sociology of human settlements</field>
+            <field name="code">6311</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_63" />
+        </record>
+
+        <record id="professional_sector_6399" model="academy.professional.sector">
+            <field name="name">Other sociological specialities</field>
+            <field name="code">6399</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_63" />
+        </record>
+
+        <record id="professional_sector_7101" model="academy.professional.sector">
+            <field name="name">Classical ethics</field>
+            <field name="code">7101</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_71" />
+        </record>
+
+        <record id="professional_sector_7102" model="academy.professional.sector">
+            <field name="name">Ethics of individuals</field>
+            <field name="code">7102</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_71" />
+        </record>
+
+        <record id="professional_sector_7103" model="academy.professional.sector">
+            <field name="name">Group ethics</field>
+            <field name="code">7103</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_71" />
+        </record>
+
+        <record id="professional_sector_7104" model="academy.professional.sector">
+            <field name="name">Prospective ethics</field>
+            <field name="code">7104</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_71" />
+        </record>
+
+        <record id="professional_sector_7199" model="academy.professional.sector">
+            <field name="name">Other specialities relating to ethics</field>
+            <field name="code">7199</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_71" />
+        </record>
+
+        <record id="professional_sector_7201" model="academy.professional.sector">
+            <field name="name">Philosophy of knowledge</field>
+            <field name="code">7201</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_72" />
+        </record>
+
+        <record id="professional_sector_7202" model="academy.professional.sector">
+            <field name="name">Philosophical anthropology</field>
+            <field name="code">7202</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_72" />
+        </record>
+
+        <record id="professional_sector_7203" model="academy.professional.sector">
+            <field name="name">General philosophy</field>
+            <field name="code">7203</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_72" />
+        </record>
+
+        <record id="professional_sector_7204" model="academy.professional.sector">
+            <field name="name">Philosophical systems</field>
+            <field name="code">7204</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_72" />
+        </record>
+
+        <record id="professional_sector_7205" model="academy.professional.sector">
+            <field name="name">Philosophy of science</field>
+            <field name="code">7205</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_72" />
+        </record>
+
+        <record id="professional_sector_7206" model="academy.professional.sector">
+            <field name="name">Philosophy of nature</field>
+            <field name="code">7206</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_72" />
+        </record>
+
+        <record id="professional_sector_7207" model="academy.professional.sector">
+            <field name="name">Social philosophy</field>
+            <field name="code">7207</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_72" />
+        </record>
+
+        <record id="professional_sector_7208" model="academy.professional.sector">
+            <field name="name">Philosophical doctrines</field>
+            <field name="code">7208</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_72" />
+        </record>
+
+        <record id="professional_sector_7209" model="academy.professional.sector">
+            <field name="name">Other philosophical specialities</field>
+            <field name="code">7209</field>
+            <field name="active" eval="1" />
+            <field name="professional_field_id" ref="professional_field_72" />
+        </record>
+
+
+
+    </data>
+</openerp>

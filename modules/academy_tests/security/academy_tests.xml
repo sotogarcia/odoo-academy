@@ -48,7 +48,7 @@
 
         <!-- answers 
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-        <record id="academy_teachers_can_only_update_or_unlink_their_own_answers_rule" model="ir.rule">
+        <!-- <record id="academy_teachers_can_only_update_or_unlink_their_own_answers_rule" model="ir.rule">
             <field name="name">Academy: Teachers can only update or unlink their own answers</field>
             <field name="model_id" ref="academy_tests.model_academy_tests_answer" />
             <field name="groups" eval="[(4, ref('academy_base.academy_group_teacher'))]" />
@@ -85,7 +85,7 @@
             <field name="perm_unlink" eval="True" />
             <field name="domain_force">[(1,'=',1)]</field>
             <field name="active" eval="True" />
-        </record>
+        </record> -->
 
 
         <!-- Questions 

@@ -83,7 +83,7 @@
 
                         <group col="2" string="Administration">
                             <group col="2">
-                                <field name="public_tendering_public_offer_id" 
+                                <field name="public_tendering_public_offer_id"
                                     readonly="context.get('default_public_tendering_public_offer_id', False)"/>
                                 <field name="announcement" />
                             </group>
@@ -124,8 +124,8 @@
                             </page>
                             <page string="Vacancies" class="oe_page_vacancies" accesskey="V">
                                 <field name="vacancy_position_ids" class="oe_field_vacancy_position_ids"
-                                    placeholder="Enter new value for Apt vacancy position ids" 
-                                    context="{'tree_view_ref' : 'academy_public_tendering.view_academy_public_tendering_vacancy_position_tree_x2many', 
+                                    placeholder="Enter new value for Apt vacancy position ids"
+                                    context="{'tree_view_ref' : 'academy_public_tendering.view_academy_public_tendering_vacancy_position_tree_x2many',
                                               'default_academy_public_tendering_process_id': id}"
                                     widget="one2many" />
                             </page>
@@ -146,6 +146,11 @@
                             <page string="Training actions" class="oe_page_training_actions" accesskey="T">
                                 <field name="training_action_ids" class="oe_field_training_action_ids"
                                     placeholder="Choose related training actions" />
+
+                                <group col="2">
+                                    <field name="training_action_id" class="oe_field_training_action_id" string="Default"
+                                        placeholder="Choose default training action" domain="[('id', 'in', training_action_ids)]" />
+                                </group>
                             </page>
                         </notebook>
                     </sheet>
@@ -190,7 +195,7 @@
                                 </div>
                                 <div class="oe_kanban_details">
                                     <ul class="oe_kanban_properties oe_kanban_academy_public_tendering_process_table">
-                                        
+
                                         <li>
                                             <strong>Approval</strong>
                                             <span>
@@ -208,7 +213,7 @@
                                         </li>
 
                                         <li>
-                                            
+
                                             <strong t-if="!record.finished.raw_value">Due date</strong>
                                             <span t-if="!record.finished.raw_value">
                                                 <t t-if="record.target_date.raw_value"><field name="target_date" widget="date" /></t>
@@ -249,7 +254,7 @@
 
                     <field name="public_tendering_public_offer_id" />
                     <field name="target_date" />
-                    
+
                     <field name="hiring_type_id" />
                     <field name="employment_group_id" />
                     <field name="public_corps_id" />
@@ -277,7 +282,7 @@
         <!-- Main window action for model.name -->
         <record id="action_academy_public_tendering_act_window" model="ir.actions.act_window">
             <field name="type">ir.actions.act_window</field>
-            <field name="name">Public Tendering</field>
+            <field name="name">Tendering processes</field>
             <field name="res_model">academy.public.tendering.process</field>
             <field name="view_mode">kanban,tree,form</field>
             <field name="target">current</field>
@@ -286,16 +291,16 @@
             <field name="search_view_id" ref="view_academy_public_tendering_process_search" />
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
-                    Click to add new Public Tendering
+                    Click to add new public tendering processes
                 </p><p>
-                    There is not any academy public tendering yet
+                    There are no public tendering processes yet
                 </p>
             </field>
         </record>
 
         <!-- Main menu for model.name -->
         <record id="menu_academy_public_tendering_process" model="ir.ui.menu" >
-            <field name="name">Public tenderings</field>
+            <field name="name">Tendering processes</field>
             <field name="sequence" eval="10" />
             <field name="action" ref="action_academy_public_tendering_act_window" />
             <field name="parent_id" ref="menu_academy_public_tendering" />

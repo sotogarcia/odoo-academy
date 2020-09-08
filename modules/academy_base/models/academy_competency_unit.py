@@ -20,18 +20,15 @@ _logger = getLogger(__name__)
 # pylint: disable=locally-disabled, R0903
 class AcademyCompetencyUnit(models.Model):
     """ Minimum set of professional skills, capable of recognition and partial
-    accreditation.
-
-    Fields:
-      competency_name (Char): Human readable name which will identify each record.
-
+    accreditation
     """
 
     _name = 'academy.competency.unit'
     _description = u'Academy competency unit'
 
     _rec_name = 'name'
-    _order = 'professional_qualification_id ASC, sequence ASC, competency_name ASC'
+    _order = ('professional_qualification_id ASC, '
+              'sequence ASC, competency_name ASC')
 
     _inherits = {'academy.training.module': 'training_module_id'}
 
@@ -90,7 +87,7 @@ class AcademyCompetencyUnit(models.Model):
 
     training_activity_id = fields.Many2one(
         string='Training activity',
-        required=False,
+        required=True,
         readonly=False,
         index=False,
         default=None,

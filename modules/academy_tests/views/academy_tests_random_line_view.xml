@@ -28,7 +28,6 @@
                     <field name="name" class="oe_field_name" />
                     <field name="description" class="oe_field_description" />
                     <field name="quantity" class="oe_field_quantity" />
-                    <field name="disallow_attachments" string="No attach" class="oe_field_disallow_attachments" />
                 </tree>
             </field>
         </record>
@@ -121,6 +120,28 @@
                         <field name="exclude_questions" class="oe_field_exclude_questions"
                             placeholder="Check it to include or uncheck to exclude"
                             string="Exclude selected" />
+                    </group>
+
+                    <group states="step5" col="6">
+                        <field name="stock_by" class="oe_field_stock_by" />
+                        <field name="stock" class="oe_field_stock"
+                            widget="percentage"
+                            attrs="{'readonly': [('stock_by', '=', 'not')], }"/>
+                        <separator colspan="2" />
+
+                        <field name="answered_by" class="oe_field_answered_by" />
+                        <field name="answered" class="oe_field_answered"
+                            widget="percentage"
+                            attrs="{'readonly': [('answered_by', '=', 'not')]}"/>
+                        <separator colspan="2" />
+
+                        <field name="restrict_by" class="oe_field_restrict_by" />
+                        <field name="supply" class="oe_field_answered"
+                            widget="percentage"
+                            attrs="{'readonly': [('restrict_by', '&lt;=', 1)]}"/>
+                        <field name="ratio" class="oe_field_mistaken"
+                            widget="percentage"
+                            attrs="{'readonly': [('restrict_by', '&lt;=', 1)]}"/>
                     </group>
 
                     <!-- Required to trigger onchange events -->

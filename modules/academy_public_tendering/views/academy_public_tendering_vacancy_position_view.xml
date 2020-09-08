@@ -110,9 +110,9 @@
             <field name="search_view_id" ref="view_academy_public_tendering_vacancy_position_search" />
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
-                    Click to add new Vacancy positions
+                    Click to add new vacancy positions
                 </p><p>
-                    There is not any question yet
+                    There are no vacancy positions yet
                 </p>
             </field>
         </record>

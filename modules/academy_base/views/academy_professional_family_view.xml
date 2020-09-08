@@ -99,7 +99,7 @@
         <!-- Main window action for model.name -->
         <record id="action_professional_family_act_window" model="ir.actions.act_window">
             <field name="type">ir.actions.act_window</field>
-            <field name="name">Professional family</field>
+            <field name="name">Professional families</field>
             <field name="res_model">academy.professional.family</field>
             <field name="view_mode">tree,form</field>
 
@@ -109,9 +109,9 @@
             <field name="search_view_id" ref="view_academy_professional_family_search" />
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
-                    Click to add new professional family
+                    Click to add new professional families
                 </p><p>
-                    There are not professional families in catalog
+                    There are no professional families yet
                 </p>
             </field>
         </record>

@@ -4,7 +4,7 @@
     <data noupdate="0">
 
         <!-- VIEWS: "Vacancy Position Type"
-        
+
             - Model·········: academy.public.tendering.vacancy.position.type
             - _rec_name·····: name
             - Domain········: []
@@ -13,7 +13,7 @@
             - View priority·: 16    Sequence····: 10
             - Action help···: There is no any vacancy position type yet
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-        
+
         <!-- Tree view for "academy_public_tendering_vacancy_position_type" -->
         <record id="view_academy_public_tendering_vacancy_position_type_tree" model="ir.ui.view">
             <field name="name">view.academy_public_tendering_vacancy_position_type.tree</field>
@@ -29,7 +29,7 @@
                 </tree>
             </field>
         </record>
-        
+
         <!-- Form view for "academy_public_tendering_vacancy_position_type" -->
         <record id="view_academy_public_tendering_vacancy_position_type_form" model="ir.ui.view">
             <field name="name">view.academy_public_tendering_vacancy_position_type.form</field>
@@ -54,7 +54,7 @@
                 </form>
             </field>
         </record>
-        
+
         <!-- Search view for "academy_public_tendering_vacancy_position_type" -->
         <record id="view_academy_public_tendering_vacancy_position_type_search" model="ir.ui.view">
             <field name="name">view.academy_public_tendering_vacancy_position_type.search</field>
@@ -70,11 +70,11 @@
                 </search>
             </field>
         </record>
-        
+
         <!-- Main window action for model.name -->
         <record id="action_academy_public_tendering_vacancy_position_type_act_window" model="ir.actions.act_window">
             <field name="type">ir.actions.act_window</field>
-            <field name="name">Academy Public Tendering Vacancy Position Type</field>
+            <field name="name">Vacancy position types</field>
             <field name="res_model">academy.public.tendering.vacancy.position.type</field>
             <field name="view_mode">tree,form</field>
             <field name="target">current</field>
@@ -83,16 +83,16 @@
             <field name="search_view_id" ref="view_academy_public_tendering_vacancy_position_type_search" />
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
-                    Click to add new vacancy position type
+                    Click to add new vacancy position types
                 </p><p>
-                    There is not any vacancy position type yet
+                    There are no vacancy position types yet
                 </p>
             </field>
         </record>
-        
+
         <!-- Main menu for model.name -->
         <record id="menu_academy_public_tendering_vacancy_position_type" model="ir.ui.menu" >
-            <field name="name">Vacancy Position Type</field>
+            <field name="name">Vacancy position types</field>
             <field name="sequence" eval="10" />
             <field name="action" ref="action_academy_public_tendering_vacancy_position_type_act_window" />
             <field name="parent_id" ref="menu_tendering_settings_top" />

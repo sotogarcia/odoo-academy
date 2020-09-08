@@ -17,7 +17,9 @@
                 <t t-name="academy_tests.academy_post_test_question_image">
                     
                     <figure class="figure ir-attachment-image">
-                        <img t-attf-src="/web/image/{{ ir_attachment_image_id.id }}" alt="Image" class="figure-img img-fluid rounded o_attachment_image"/>
+                        <img t-attf-src="/web/image/{{ ir_attachment_image_id.id }}" 
+                            alt="{{ ir_attachment_image_id.name }}" 
+                            class="figure-img img-fluid rounded o_attachment_image" />
                         <figcaption class="figure-caption text-center ir-attachment-image-name"
                             t-attf-title="{{ ir_attachment_image_id.name }}">
                             <t t-esc="ir_attachment_image_id.name" />

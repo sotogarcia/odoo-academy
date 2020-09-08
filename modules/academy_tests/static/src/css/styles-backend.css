@@ -34,7 +34,7 @@
     height: 2em;
     background-color: #F0F0F0;
     font-size: 90%;
-    font-variant: monospace; 
+    font-variant: monospace;
     cursor: auto;
 }
 
@@ -102,3 +102,39 @@ code but I have not found where I should make the change */
     resize: vertical!important;
 }
 
+
+/* Replace bootstrap alert classes
+ * Odoo sends warning when alert class is used, following classes can be
+ * used instead
+******************************************************************************/
+
+.academy-tests-test-msgbox {
+    position: relative;
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+}
+
+
+.academy-tests-test-msgbox-info {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+}
+
+
+.academy-tests-test-msgbox-warning {
+    color: #856404;
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+}
+
+.academy-tests-test-msgbox-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}

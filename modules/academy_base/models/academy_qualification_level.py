@@ -48,6 +48,17 @@ class AcademyQualificationLevel(models.Model):
         translate=True
     )
 
+    level = fields.Char(
+        string='Code',
+        required=True,
+        readonly=False,
+        index=True,
+        default=None,
+        help='Enter new code',
+        size=8,
+        translate=True
+    )
+
     sequence = fields.Integer(
         string='Sequence',
         required=True,

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="view_academy_tests_random_template_training_action_rel_tree" model="ir.ui.view">
+            <field name="name">Academy tests random template training action tree view</field>
+            <field name="model">academy.tests.random.template.training.action.rel</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <tree string="Random templates" create="1" delete="1" edit="1" editable="bottom">
+                    <field name="sequence" widget="handle" class="oe_field_sequence" />
+                    <field name="random_template_id" class="oe_field_random_template_id" />
+                    <field name="training_action_id" class="oe_field_training_action_id"
+                        invisible="1" />
+                </tree>
+            </field>
+        </record>
+
+    </data>
+</openerp>

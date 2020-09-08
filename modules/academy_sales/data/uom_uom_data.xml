@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="product_uom_month" model="uom.uom">
+            <field name="name">Months</field>
+            <field name="category_id" ref="uom.uom_categ_wtime" />
+            <field name="factor" eval="30.0"/>
+            <field name="rounding" eval="0.001"/>
+            <field name="uom_type">bigger</field>
+        </record>
+
+        <record id="product_uom_trimester" model="uom.uom">
+            <field name="name">Trimesters</field>
+            <field name="category_id" ref="uom.uom_categ_wtime" />
+            <field name="factor" eval="90.0"/>
+            <field name="rounding" eval="0.001"/>
+            <field name="uom_type">bigger</field>
+        </record>
+
+        <record id="product_uom_semester" model="uom.uom">
+            <field name="name">Semesters</field>
+            <field name="category_id" ref="uom.uom_categ_wtime" />
+            <field name="factor" eval="180.0"/>
+            <field name="rounding" eval="0.001"/>
+            <field name="uom_type">bigger</field>
+        </record>
+
+        <record id="product_uom_year" model="uom.uom">
+            <field name="name">Years</field>
+            <field name="category_id" ref="uom.uom_categ_wtime" />
+            <field name="factor" eval="360.0"/>
+            <field name="rounding" eval="0.001"/>
+            <field name="uom_type">bigger</field>
+        </record>
+
+    </data>
+</openerp>

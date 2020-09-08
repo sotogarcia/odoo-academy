@@ -37,6 +37,16 @@ class AcademyPublicTenderingAutonomousCommunity(models.Model):
         translate=True
     )
 
+
+    active = fields.Boolean(
+        string='Active',
+        required=False,
+        readonly=False,
+        index=False,
+        default=True,
+        help='Check it to show this attempt or uncheck to archivate'
+    )
+
     res_country_state_ids = fields.One2many(
         string='States',
         required=False,

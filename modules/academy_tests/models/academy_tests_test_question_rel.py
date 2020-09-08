@@ -97,6 +97,7 @@ class AcademyTestsTestQuestionRel(models.Model):
         store=True
     )
 
+
     _sql_constraints = [
         (
             'prevent_duplicate_questions',
@@ -104,3 +105,15 @@ class AcademyTestsTestQuestionRel(models.Model):
             _(u'Duplicate question in test')
         )
     ]
+
+
+    def name_get(self):
+        result = []
+
+        for record in self:
+            if self.env.context.get('show_question_id', False):
+                result.append((record.id, record.question_id.name))
+            else:
+                result.append((record.id, record.test_id.name))
+
+        return result

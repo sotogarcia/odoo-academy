@@ -24,6 +24,8 @@ class AcademyPublicTenderingEvent(models.Model):
     _name = 'academy.public.tendering.event'
     _description = u'Academy public tendering event'
 
+    _inherit = ['mail.thread']
+
     _rec_name = 'name'
     _order = 'date ASC, name ASC'
 
@@ -109,7 +111,6 @@ class AcademyPublicTenderingEvent(models.Model):
         auto_join=False
     )
 
-
     def _ensure_name(self, value_dict, type_id=False):
         """ If record name field value has not been set this method gets the
         name of the event type to assign it as record name
@@ -148,6 +149,8 @@ class AcademyPublicTenderingEvent(models.Model):
         if model != 'academy.public.tendering.process':
             result.academy_public_tendering_process_id.touch()
 
+        result.notify_creation()
+
         return result
 
 
@@ -166,4 +169,34 @@ class AcademyPublicTenderingEvent(models.Model):
         if model != 'academy.public.tendering.process':
             self.academy_public_tendering_process_id.touch()
 
+        self.notify_update()
+
         return result
+
+
+    def notify_creation(self):
+        """ Appends mail message to the parent process notifying new
+        related event has been created
+        """
+        xid = 'academy_public_tendering_event_created'
+        subtype = self.env.ref('academy_public_tendering.' + xid)
+        process = self.academy_public_tendering_process_id
+
+        subject = _('Process event created')
+        body_format = _('Event «{}» has been registered for process «{}»')
+        body = body_format.format(self.name, process.name)
+        process.message_post(body=body, subject=subject, subtype_id=subtype.id)
+
+
+    def notify_update(self):
+        """ Appends mail message to the parent process notifying existing
+        related event has been updated
+        """
+        xid = 'academy_public_tendering_event_written'
+        subtype = self.env.ref('academy_public_tendering.' + xid)
+        process = self.academy_public_tendering_process_id
+
+        subject = _('Process event updated')
+        body_format = _('Event «{}» for process «{}» has been updated')
+        body = body_format.format(self.name, process.name)
+        process.message_post(body=body, subject=subject, subtype_id=subtype.id)

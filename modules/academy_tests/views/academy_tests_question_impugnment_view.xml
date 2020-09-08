@@ -100,7 +100,7 @@
         <!-- Main window action for model.name -->
         <record id="action_question_impugnment_act_window" model="ir.actions.act_window">
             <field name="type">ir.actions.act_window</field>
-            <field name="name">Question impugnment</field>
+            <field name="name">Impugnments</field>
             <field name="res_model">academy.tests.question.impugnment</field>
             <field name="view_mode">tree,form,graph</field>
             <field name="target">current</field>
@@ -109,9 +109,10 @@
             <field name="search_view_id" ref="view_academy_question_impugnment_search" />
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
-                    Click to add new question impugnment
-                </p><p>
-                    There is not any impugnment for name
+                    Click to add new impugnments
+                </p>
+                <p>
+                    There are no impugnments yet
                 </p>
             </field>
         </record>

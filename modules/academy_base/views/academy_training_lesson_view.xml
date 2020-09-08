@@ -198,7 +198,7 @@
         <!-- Main window action for model.name -->
         <record id="action_academy_training_lesson_act_window" model="ir.actions.act_window">
             <field name="type">ir.actions.act_window</field>
-            <field name="name">Academy Training Lesson</field>
+            <field name="name">Training lessons</field>
             <field name="res_model">academy.training.lesson</field>
             <field name="view_mode">calendar,tree,kanban,form</field>
 
@@ -208,9 +208,9 @@
             <!-- <field name="search_view_id" ref="view_academy_training_lesson_search" /> -->
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
-                    Click to add new Academy Training Lesson
+                    Click to add new lessons
                 </p><p>
-                    Something about model
+                    There are no lessons yet
                 </p>
             </field>
         </record>

@@ -1,34 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <openerp>
-    <data noupdate="1">
+    <data noupdate="0">
 
         <record id="academy_public_tendering_employment_group_a1" model="academy.public.tendering.employment.group">
             <field name="name">A1</field>
+            <field name="qualification_level_id" ref="academy_base.academy_qualification_level_level_isced_2011_7" />
         </record>
 
         <record id="academy_public_tendering_employment_group_a2" model="academy.public.tendering.employment.group">
             <field name="name">A2</field>
+            <field name="qualification_level_id" ref="academy_base.academy_qualification_level_level_isced_2011_6" />
         </record>
 
         <record id="academy_public_tendering_employment_group_b" model="academy.public.tendering.employment.group">
             <field name="name">B</field>
+            <field name="qualification_level_id" ref="academy_base.academy_qualification_level_level_isced_2011_5" />
         </record>
 
         <record id="academy_public_tendering_employment_group_c1" model="academy.public.tendering.employment.group">
             <field name="name">C1</field>
+            <field name="qualification_level_id" ref="academy_base.academy_qualification_level_level_isced_2011_3" />
         </record>
 
         <record id="academy_public_tendering_employment_group_c2" model="academy.public.tendering.employment.group">
             <field name="name">C2</field>
+            <field name="qualification_level_id" ref="academy_base.academy_qualification_level_level_isced_2011_2" />
         </record>
 
         <record id="academy_public_tendering_employment_group_d" model="academy.public.tendering.employment.group">
             <field name="name">D</field>
+            <field name="qualification_level_id" ref="academy_base.academy_qualification_level_level_isced_2011_2" />
         </record>
 
         <record id="academy_public_tendering_employment_group_e" model="academy.public.tendering.employment.group">
             <field name="name">E</field>
+            <field name="qualification_level_id" ref="academy_base.academy_qualification_level_level_isced_2011_2" />
         </record>
 
     </data>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="product_category_academy" model="product.category">
+            <field name="parent_id" ref="product.product_category_all"/>
+            <field name="name">Academy</field>
+        </record>
+
+        <record id="product_category_academy_training_actions" model="product.category">
+            <field name="parent_id" ref="product_category_academy"/>
+            <field name="name">Training actions</field>
+        </record>
+
+        <record id="product_category_academy_training_module" model="product.category">
+            <field name="parent_id" ref="product_category_academy"/>
+            <field name="name">Training modules</field>
+        </record>
+
+    </data>
+</openerp>

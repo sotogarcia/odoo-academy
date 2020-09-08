@@ -25,7 +25,7 @@
             <field name="arch" type="xml">
                 <tree string="academy_training_action_enrolment_tree" create="1" delete="1" edit="1">
                     <field name="code" />
-                    <field name="res_partner_id" />
+                    <field name="student_id" />
                     <field name="training_action_id" />
                     <field name="register" />
                     <field name="deregister" />
@@ -53,7 +53,7 @@
                         </div>
 
                         <group col="2">
-                            <field name="res_partner_id" class="oe_field_res_partner_id"
+                            <field name="student_id" class="oe_field_student_id"
                                     placeholder="Choose student who will be enrolled" />
                             <field name="training_action_id" class="oe_field_training_action_id"
                                     placeholder="Choose action in which the student will be enrolled"
@@ -124,7 +124,7 @@
                     <field name="register" />
                     <field name="deregister" />
                     <field name="training_action_id" />
-                    <field name="res_partner_id" />
+                    <field name="student_id" />
 
                     <templates>
                         <t t-name="kanban-box">
@@ -141,7 +141,7 @@
                                     <h4><strong class="oe_partner_heading"><field name="name"/></strong></h4>
                                     <ul>
                                         <li class="o_ellipsis"><strong>Action:&#160;</strong><field name="training_action_id" /></li>
-                                        <li class="o_ellipsis"><strong>Student:&#160;</strong><field name="res_partner_id" /></li>
+                                        <li class="o_ellipsis"><strong>Student:&#160;</strong><field name="student_id" /></li>
                                         <t t-if="!record.deregister.raw_value">
                                             <li class="o_ellipsis"><strong>Register:&#160;</strong><field name="register" widget="date" /></li>
                                         </t>
@@ -174,7 +174,7 @@
                     <separator />
 
                     <field name="training_action_id" />
-                    <field name="res_partner_id" />
+                    <field name="student_id" />
 
                     <separator />
 
@@ -192,7 +192,7 @@
 
                     <group expand="0" name="group_by" string="Group By">
                         <filter name="group_by_training_action_id"  string="Training action" domain="[]" context="{'group_by' : 'training_action_id'}" />
-                        <filter name="group_by_res_partner_id" string="Student" domain="[]" context="{'group_by' : 'res_partner_id'}" />
+                        <filter name="group_by_student_id" string="Student" domain="[]" context="{'group_by' : 'student_id'}" />
                    </group>
                 </search>
             </field>
@@ -201,7 +201,7 @@
         <!-- Main window action for model.name -->
         <record id="action_training_action_enrolment_act_window" model="ir.actions.act_window">
             <field name="type">ir.actions.act_window</field>
-            <field name="name">Training action enrolment</field>
+            <field name="name">Enrolment</field>
             <field name="res_model">academy.training.action.enrolment</field>
             <field name="view_mode">kanban,tree,form</field>
 
@@ -211,9 +211,9 @@
             <field name="search_view_id" ref="view_academy_training_action_enrolment_search" />
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
-                    Click to add new enrolment
+                    Click to add new enrolments
                 </p><p>
-                    There are not enrolments
+                    There are no enrolments yet
                 </p>
             </field>
         </record>

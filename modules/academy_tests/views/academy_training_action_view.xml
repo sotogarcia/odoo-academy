@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="view_academy_training_action_form_add_test_page" model="ir.ui.view">
+            <field name="name">Extend training action form view adding test topics</field>
+            <field name="model">academy.training.action</field>
+            <field name="type">form</field>
+            <field name="mode">extension</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="academy_base.view_academy_training_action_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="inside">
+                    <page string="Tests" class="oe_page_tests" accesskey="T">
+
+                        <separator string="Tests" />
+                        <field name="test_ids" class="oe_field_tests_ids oe_edit_only" />
+                        <field name="available_test_ids" class="oe_field_available_test_ids oe_read_only" />
+
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>

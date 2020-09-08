@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="academy_demo_student" model="academy.student">
+            <field name="name">Demo Student</field>
+            <field name="email">student</field>
+            <!-- <field name="supplier" eval="False"/> -->
+            <!-- <field name="customer" eval="False"/> -->
+            <field name="city">Naraío</field>
+            <field name="zip">15576</field>
+            <field name="country_id" ref="base.es"/>
+            <field name="street">Farmedfield, 2</field>
+        </record>
+
+    </data>
+</openerp>

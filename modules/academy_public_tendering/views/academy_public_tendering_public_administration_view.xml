@@ -141,9 +141,9 @@
             <field name="search_view_id" ref="academy_public_tendering.view_academy_public_tendering_public_administration_search" />
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
-                    Click to add new administrations
+                    Click to add new public administrations
                 </p><p>
-                    Here are not any administration yet
+                    There are no public administrations yet
                 </p>
             </field>
         </record>

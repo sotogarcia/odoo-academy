@@ -52,7 +52,7 @@
                     <sheet>
                         <div class="oe_button_box" name="button_box"/>
                         <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
-                        
+
                         <div class="oe_title_question">
                             <field name="active" invisible="1"/>
                             <label for="name" class="oe_edit_only" />
@@ -84,19 +84,19 @@
                             <field name="category_ids" class="oe_field_category_ids"
                                 widget="many2many_tags" colspan="4" options="{'no_create': True}"
                                 attrs="{'readonly': [('topic_id', '=', False)]}"
-                                domain="[('topic_id', '=', topic_id)]" 
+                                domain="[('topic_id', '=', topic_id)]"
                                 context="{'default_topic_id': topic_id}" />
                             <field name="tag_ids" class="oe_field_tag_ids"
                                 widget="many2many_tags" colspan="4" />
                         </group>
-                        
-                        <!-- IMPORTAN: This group is hidden because it's not needed but can be 
+
+                        <!-- IMPORTAN: This group is hidden because it's not needed but can be
                         interesting in a future. Allows technicals to change the test owner -->
                         <group col="2" class="text-danger oe_edit_only" invisible="1"
                             groups="academy_base.academy_group_technical">
                             <field name="owner_id" class="oe_field_owner_id"
                                 options="{'no_create': True}"
-                                placeholder="Choose a different owner" 
+                                placeholder="Choose a different owner"
                                 groups="academy_base.academy_group_technical" />
                         </group>
 
@@ -216,8 +216,8 @@
                                     </div>
                                     <div class="p-0 o_question_kanban_status_menu" id="question_kanban_status_menu">
                                         <div class="dropdown">
-                                            <a class="btn btn-sm btn-outline-light dropdown-toggle" type="button" 
-                                               id="question_kanban_status_menu_button" data-toggle="dropdown" 
+                                            <a class="btn btn-sm btn-outline-light dropdown-toggle" type="button"
+                                               id="question_kanban_status_menu_button" data-toggle="dropdown"
                                                aria-haspopup="true" aria-expanded="false" role='button'>
                                                 <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
                                             </a>
@@ -288,14 +288,13 @@
             <field name="target">current</field>
             <field name="domain">[]</field>
             <field name="context">{"search_default_my_questions":1}</field>
-            <field name="limit">24</field>
             <field name="search_view_id" ref="view_academy_question_search" />
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">
-                    Click to add a new question
+               <p class="oe_view_nocontent_create">
+                    Click to add new questions
                 </p>
                 <p>
-                    Questions are the academy tests cornerstone
+                    There are no questions yet
                 </p>
             </field>
         </record>
@@ -405,8 +404,11 @@
             <field name="limit">0</field>
             <field name="search_view_id" ref="view_academy_question_search" />
             <field name="help" type="html">
+               <p class="oe_view_nocontent_create">
+                    Click to add new questions
+                </p>
                 <p>
-                    There are not questions in this test
+                    There are no questions yet
                 </p>
             </field>
         </record>

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="academy_qualification_level_level_isced_2011_0" model="academy.qualification.level">
+            <field name="name">Early childhood Education</field>
+            <field name="description">Education designed to support early development in preparation for participation in school and society. Programmes designed for children below the age of 3</field>
+            <field name="level">0</field>
+            <field name="sequence" eval="10" />
+        </record>
+
+        <record id="academy_qualification_level_level_isced_2011_1" model="academy.qualification.level">
+            <field name="name">Primary education</field>
+            <field name="description">Programmes typically designed to provide students with fundamental skills in reading, writing and mathematics and to establish a solid foundation for learning</field>
+            <field name="level">1</field>
+            <field name="sequence" eval="20" />
+        </record>
+
+        <record id="academy_qualification_level_level_isced_2011_2" model="academy.qualification.level">
+            <field name="name">Lower secondary education</field>
+            <field name="description">First stage of secondary education building on primary education, typically with a more subject-oriented curriculum</field>
+            <field name="level">2</field>
+            <field name="sequence" eval="30" />
+        </record>
+
+        <record id="academy_qualification_level_level_isced_2011_3" model="academy.qualification.level">
+            <field name="name">Upper secondary education</field>
+            <field name="description">Second/final stage of secondary education preparing for tertiary education and/or providing skills relevant to employment. Usually with an increased range of subject options and streams</field>
+            <field name="level">3</field>
+            <field name="sequence" eval="40" />
+        </record>
+
+        <record id="academy_qualification_level_level_isced_2011_4" model="academy.qualification.level">
+            <field name="name">Post-secondary non-tertiary education</field>
+            <field name="description">Programmes providing learning experiences that build on secondary education and prepare for labour market entry and/or tertiary education. The content is broader than secondary but not as complex as tertiary education</field>
+            <field name="level">4</field>
+            <field name="sequence" eval="50" />
+        </record>
+
+        <record id="academy_qualification_level_level_isced_2011_5" model="academy.qualification.level">
+            <field name="name">Short-cycle tertiary education</field>
+            <field name="description">Short first tertiary programmes that are typically practically-based, occupationally-specific and prepare for labour market entry. These programmes may also provide a pathway to other tertiary programmes</field>
+            <field name="level">5</field>
+            <field name="sequence" eval="60" />
+        </record>
+
+        <record id="academy_qualification_level_level_isced_2011_6" model="academy.qualification.level">
+            <field name="name">Bachelor or equivalent</field>
+            <field name="description">Programmes designed to provide intermediate academic and/or professional knowledge, skills and competencies leading to a first tertiary degree or equivalent qualification</field>
+            <field name="level">6</field>
+            <field name="sequence" eval="70" />
+        </record>
+
+        <record id="academy_qualification_level_level_isced_2011_7" model="academy.qualification.level">
+            <field name="name">Master or equivalent</field>
+            <field name="description">Programmes designed to provide advanced academic and/or professional knowledge, skills and competencies leading to a second tertiary degree or equivalent qualification</field>
+            <field name="level">7</field>
+            <field name="sequence" eval="80" />
+        </record>
+
+        <record id="academy_qualification_level_level_isced_2011_8" model="academy.qualification.level">
+            <field name="name">Doctoral or equivalent</field>
+            <field name="description">Programmes designed primarily to lead to an advanced research qualification, usually concluding with the submission and defense of a substantive dissertation of publishable quality based on original research</field>
+            <field name="level">8</field>
+            <field name="sequence" eval="90" />
+        </record>
+
+        <record id="academy_qualification_level_es_3B" model="academy.qualification.level">
+            <field name="name">Medium grade training cycle</field>
+            <field name="description">Spanish Official Education Program - Medium grade training cycle</field>
+            <field name="level">3B</field>
+            <field name="sequence" eval="40" />
+        </record>
+
+        <record id="academy_qualification_level_es_3C" model="academy.qualification.level">
+            <field name="name">Access course to intermediate level training cycle</field>
+            <field name="description">Spanish Official Education Program - Access course to intermediate level training cycle</field>
+            <field name="level">3C</field>
+            <field name="sequence" eval="40" />
+        </record>
+
+        <record id="academy_qualification_level_es_3D" model="academy.qualification.level">
+            <field name="name">Basic Vocational Training</field>
+            <field name="description">Spanish Official Education Program - Basic Vocational Training</field>
+            <field name="level">3D</field>
+            <field name="sequence" eval="40" />
+        </record>
+
+        <record id="academy_qualification_level_01" model="academy.qualification.level">
+            <field name="name">Professional Certificate - Level 1</field>
+            <field name="description">Basic general knowledge</field>
+            <field name="level">453A</field>
+            <field name="sequence" eval="51" />
+        </record>
+
+        <record id="academy_qualification_level_02" model="academy.qualification.level">
+            <field name="name">Professional Certificate - Level 2</field>
+            <field name="description">Basic factual knowledge in a specific field of work or study</field>
+            <field name="level">453-B</field>
+            <field name="sequence" eval="52" />
+        </record>
+
+        <record id="academy_qualification_level_03" model="academy.qualification.level">
+            <field name="name">Professional Certificate - Level 3</field>
+            <field name="description">Knowledge of facts, principles, processes and general concepts in a field of work or concrete study</field>
+            <field name="level">453-C</field>
+            <field name="sequence" eval="53" />
+        </record>
+
+        <record id="academy_qualification_level_04" model="academy.qualification.level">
+            <field name="name">Professional Certificate - Level 4</field>
+            <field name="description">Factual and theoretical knowledge in broad contexts in a specific field of work or study</field>
+            <field name="level">453-D</field>
+            <field name="sequence" eval="54" />
+        </record>
+
+        <record id="academy_qualification_level_05" model="academy.qualification.level">
+            <field name="name">Professional Certificate - Level 5</field>
+            <field name="description">Extensive specialized knowledge, factual and theoretical, in a specific field of work or study, being aware of the limits of this knowledge</field>
+            <field name="level">453-E</field>
+            <field name="sequence" eval="55" />
+        </record>
+
+        <record id="academy_qualification_level_06" model="academy.qualification.level">
+            <field name="name">Professional Certificate - Level 6</field>
+            <field name="description">Advanced knowledge in a field of work or study that requires a critical understanding of theories and principles</field>
+            <field name="level">453-F</field>
+            <field name="sequence" eval="56" />
+        </record>
+
+        <record id="academy_qualification_level_07" model="academy.qualification.level">
+            <field name="name">Professional Certificate - Level 7</field>
+            <field name="description">Highly specialized knowledge, some of them at the forefront in a field of work or concrete study, which lay the foundations of an original thought or investigation</field>
+            <field name="level">453-G</field>
+            <field name="sequence" eval="57" />
+        </record>
+
+        <record id="academy_qualification_level_08" model="academy.qualification.level">
+            <field name="name">Professional Certificate - Level 8</field>
+            <field name="description">Knowledge at the most advanced frontier of a particular work field or study and at the point of articulation between different fields</field>
+            <field name="level">453-H</field>
+            <field name="sequence" eval="58" />
+        </record>
+
+    </data>
+</openerp>

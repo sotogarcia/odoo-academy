@@ -3,19 +3,8 @@
 <openerp>
     <data noupdate="0">
 
-        <record id="academy_demo_student" model="res.partner">
-            <field name="name">Demo Student</field>
-            <field name="email">student</field>
-            <!-- <field name="supplier" eval="False"/> -->
-            <!-- <field name="customer" eval="False"/> -->
-            <field name="city">Naraío</field>
-            <field name="zip">15576</field>
-            <field name="country_id" ref="base.es"/>
-            <field name="street">Farmedfield, 2</field>
-            <field name="is_student" eval="True" />
-        </record>
 
-        <record id="academy_demo_consultant" model="res.partner">
+        <record id="academy_demo_consultant" model="academy.student">
             <field name="name">Demo Consultant</field>
             <field name="email">consultant</field>
             <!-- <field name="supplier" eval="False"/> -->
@@ -27,7 +16,7 @@
             <field name="street">Place of Chao, 5</field>
         </record>
 
-        <record id="academy_demo_teacher" model="res.partner">
+        <record id="academy_demo_teacher" model="academy.student">
             <field name="name">Demo Teacher</field>
             <field name="email">teacher</field>
             <!-- <field name="supplier" eval="False"/> -->
@@ -39,7 +28,7 @@
             <field name="street">Birch Forest, 4</field>
         </record>
 
-        <record id="academy_demo_technical" model="res.partner">
+        <record id="academy_demo_technical" model="academy.student">
             <field name="name">Demo Technical</field>
             <field name="email">technical</field>
             <!-- <field name="supplier" eval="False"/> -->
@@ -51,7 +40,7 @@
             <field name="street">Dark Rock, 1</field>
         </record>
 
-        <record id="academy_demo_manager" model="res.partner">
+        <record id="academy_demo_manager" model="academy.student">
             <field name="name">Demo Manager</field>
             <field name="email">manager</field>
             <!-- <field name="supplier" eval="False"/> -->
@@ -62,6 +51,7 @@
             <field name="company_name">YourCompany</field>
             <field name="street">Peartree, 6</field>
         </record>
+
 
     </data>
 </openerp>

@@ -69,13 +69,11 @@
                                     placeholder="Enter new value for description" />
                             </page>
                             <page string="Resources" class="oe_page_resources" accesskey="R">
-                                <p groups="base.group_no_one"><label for="training_resource_ids" /></p>
-                                <field name="training_resource_ids" class="oe_field_training_resource_ids"
-                                    placeholder="Choose resources will be available to this module" />
+                                <field name="module_resource_ids"
+                                    class="oe_field_module_resource_ids oe_edit_only" />
 
-                                <p groups="base.group_no_one"><label for="available_training_resource_ids" /></p>
-                                <field name="available_training_resource_ids" class="oe_field_available_training_resource_ids"
-                                     groups="base.group_no_one" placeholder="Enter new value for available training resources" />
+                                <field name="available_resource_ids"
+                                       class="oe_field_available_resource_ids oe_read_only" />
                             </page>
                         </notebook>
                     </sheet>
@@ -226,7 +224,7 @@
         <!-- Main window action for model.name -->
         <record id="action_training_module_act_window" model="ir.actions.act_window">
             <field name="type">ir.actions.act_window</field>
-            <field name="name">Training module</field>
+            <field name="name">Training modules</field>
             <field name="res_model">academy.training.module</field>
             <field name="view_mode">kanban,tree,form</field>
 
@@ -236,9 +234,9 @@
             <field name="search_view_id" ref="view_academy_training_module_search" />
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
-                    Click to add new training module
+                    Click to add new training modules
                 </p><p>
-                    There are not training modules in catalog
+                    There are no training modules yet
                 </p>
             </field>
         </record>
@@ -292,6 +290,9 @@
             <field name="active" eval="True" />
             <field name="inherit_id" ref="academy_base.view_academy_training_module_tree" />
             <field name="arch" type="xml">
+                <xpath expr="//tree" position="attributes">
+                    <attribute name="create">0</attribute>
+                </xpath>
                 <xpath expr="//field[@name='hours']" position="before">
                     <field name="training_module_id" class="oe_field_training_module_id"
                         placeholder="Choose the related training module" />
@@ -351,9 +352,9 @@
             <field name="search_view_id" ref="view_academy_training_module_search" />
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
-                    Click to add new training module
+                    Click to add new training units
                 </p><p>
-                    There are not training modules in catalog
+                    There are no training units yet
                 </p>
             </field>
         </record>

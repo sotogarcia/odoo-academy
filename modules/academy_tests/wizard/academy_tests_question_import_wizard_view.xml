@@ -43,14 +43,13 @@
                             placeholder="Choose test (optional)" />
                     </group>
 
-                    <group states="step1" col="4" groups="academy_base.academy_group_technical">
+                    <group states="step1" col="4">
                         <field name="owner_id" class="oe_field_owner_id"
                             placeholder="Choose a different owner" colspan="4"
                             groups="academy_base.academy_group_technical" />
 
                         <field name="autocategorize" class="oe_field_autocategorize"
-                            string="Autocategorizing"
-                            groups="academy_base.academy_group_technical" />
+                            string="Autocategorizing" />
 
                         <separator colspan="2" />
                     </group>

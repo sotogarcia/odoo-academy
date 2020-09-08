@@ -156,7 +156,7 @@
     </record>
 
     <record id="base.state_es_sa" model="res.country.state">
-    	<field name="autonomy_id" ref="galicia" />
+    	<field name="autonomy_id" ref="castilla_y_leon" />
     </record>
 
     <record id="base.state_es_tf" model="res.country.state">
@@ -205,6 +205,11 @@
 
     <record id="base.state_es_z" model="res.country.state">
     	<field name="autonomy_id" ref="aragon" />
+    </record>
+
+    <record id="base.state_es_c" model="res.country.state">
+        <field name="name">A Coruña</field>
+        <field name="autonomy_id" ref="galicia" />
     </record>
 
     </data>

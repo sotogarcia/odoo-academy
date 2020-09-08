@@ -10,7 +10,10 @@ from logging import getLogger
 
 # pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
+from odoo.tools.translate import _
 from odoo.exceptions import ValidationError
+from .lib.custom_model_fields import Many2manyThroughView, \
+    ACTION_EHROLMENT_INHERITED_RESOURCES_REL
 
 
 # pylint: disable=locally-disabled, C0103
@@ -30,7 +33,7 @@ class AcademyTrainingActionEnrolment(models.Model):
     _order = 'code ASC'
 
     _inherits = {
-        'res.partner': 'res_partner_id',
+        'academy.student': 'student_id',
         'academy.training.action': 'training_action_id'
     }
 
@@ -68,15 +71,15 @@ class AcademyTrainingActionEnrolment(models.Model):
         help='Enables/disables the record'
     )
 
-    res_partner_id = fields.Many2one(
+    student_id = fields.Many2one(
         string='Student',
         required=True,
         readonly=False,
         index=False,
         default=None,
         help='Choose enrolled student',
-        comodel_name='res.partner',
-        domain=[('is_student', '=', True)],
+        comodel_name='academy.student',
+        domain=[],
         context={},
         ondelete='cascade',
         auto_join=False
@@ -144,13 +147,32 @@ class AcademyTrainingActionEnrolment(models.Model):
         compute=lambda self: self._compute_student_name()
     )
 
-    @api.depends('res_partner_id')
+
+    available_resource_ids = Many2manyThroughView(
+        string='Training resources',
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help=False,
+        comodel_name='academy.training.resource',
+        relation='academy_training_action_enrolment_available_resource_rel',
+        column1='enrolment_id',
+        column2='training_resource_id',
+        domain=[],
+        context={},
+        limit=None,
+        sql=ACTION_EHROLMENT_INHERITED_RESOURCES_REL
+    )
+
+    @api.depends('student_id')
     def _compute_student_name(self):
         for record in self:
-            record.student_name = record.res_partner_id.name
+            record.student_name = record.student_id.name
 
 
     # ---------------------------- ONCHANGE EVENTS ----------------------------
+
 
     @api.onchange('training_action_id')
     def _onchange_training_action_id(self):
@@ -163,15 +185,15 @@ class AcademyTrainingActionEnrolment(models.Model):
         self.training_module_ids = module_set
 
         if module_set:
-            domain = {'training_module_ids':  [('id', 'in', ids)]}
+            domain = {'training_module_ids': [('id', 'in', ids)]}
             return {'domain': domain}
 
-        return {'domain': {'training_module_ids':  [('id', '=', -1)]}}
+        return {'domain': {'training_module_ids': [('id', '=', -1)]}}
 
 
     # -------------------------- OVERLOADED METHODS ---------------------------
 
-    # @api.one
+
     @api.returns('self', lambda value: value.id)
     def copy(self, default=None):
         """ Prevents new record of the inherited (_inherits) models will
@@ -180,7 +202,7 @@ class AcademyTrainingActionEnrolment(models.Model):
 
         default = dict(default or {})
         default.update({
-            'res_partner_id': self.res_partner_id.id,
+            'student_id': self.student_id.id,
             'training_action_id': self.training_action_id.id,
             'code': self._default_code()
         })
@@ -191,31 +213,33 @@ class AcademyTrainingActionEnrolment(models.Model):
 
     # -------------------------- PYTHON CONSTRAINTS ---------------------------
 
-    # @api.one
-    @api.constrains('training_action_id', 'res_partner_id')
-    def _check_unique_enrolment(self):
 
-        action_id = self.training_action_id.id or -1
-        partner_id = self.res_partner_id.id or -1
+    # @api.constrains('training_action_id', 'student_id')
+    # def _check_unique_enrolment(self):
 
-        domain = [
-            ('training_action_id', '=', action_id),
-            ('res_partner_id', '=', partner_id),
-            ('deregister', '=', False),
-            ('id', '<>', self.id)
-        ]
-        enroled_set = self.search(domain)
+    #     action_id = self.training_action_id.id or -1
+    #     student_id = self.student_id.id or -1
 
-        if enroled_set:
-            msg = '{student} already has been enrolled in {action}'
-            msg = msg.format(
-                student=self.res_partner_id.name,
-                action=self.training_action_id.action_name
-            )
-            raise ValidationError(msg)
+    #     domain = [
+    #         ('training_action_id', '=', action_id),
+    #         ('student_id', '=', student_id),
+    #         ('deregister', '=', False),
+    #         ('id', '<>', self.id)
+    #     ]
+    #     enroled_set = self.search(domain)
+
+    #     if enroled_set.competency_unit_ids & self.competency_unit_ids:
+    #         msg = _('{} already has been enrolled in same '
+    #                 'competency units for {}')
+    #         msg = msg.format(
+    #             self.student_id.name,
+    #             self.training_action_id.action_name
+    #         )
+    #         raise ValidationError(msg)
 
 
     # -------------------------- AUXILIARY METHODS ----------------------------
+
 
     @api.model
     def _default_code(self):

@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record model="product.product" id="public_tendering_daily_subscription">
+            <field name="name">Daily subscription to an opposition</field>
+            <field name="list_price">0.99</field>
+            <field name="standard_price">0.0</field>
+            <field name="description_sale">Pay only when you use the platform</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="uom.uom_categ_wtime"/>
+            <field name="uom_id" ref="uom.product_uom_day" />
+            <field name="uom_po_id" ref="uom.product_uom_day" />
+            <field name="default_code">PTS_DAY</field>
+            <field name="categ_id" ref="product_category_academy"/>
+        </record>
+
+        <record model="product.product" id="public_tendering_monthly_subscription">
+            <field name="name">Monthly subscription to an opposition</field>
+            <field name="list_price">11.99</field>
+            <field name="standard_price">0.0</field>
+            <field name="description_sale">Standard subscription, pay per month and cancel whenever you want</field>
+            <field name="type">service</field>
+            <field name="uom_id" ref="product_uom_month" />
+            <field name="uom_po_id" ref="product_uom_month" />
+            <field name="default_code">PTS_MON</field>
+            <field name="categ_id" ref="product_category_academy"/>
+            <field name="image_1920" type="base64" file="academy_sales/static/img/product_1.png"/>
+        </record>
+
+        <record model="product.product" id="public_tendering_quarterly_subscription">
+            <field name="name">Quarterly subscription to an opposition</field>
+            <field name="list_price">19.99</field>
+            <field name="standard_price">0.0</field>
+            <field name="description_sale">Three-month subscription, one payment. Save up to 40%</field>
+            <field name="type">service</field>
+            <field name="uom_id" ref="product_uom_trimester" />
+            <field name="uom_po_id" ref="product_uom_trimester" />
+            <field name="default_code">PTS_QRT</field>
+            <field name="uom_id" ref="product_uom_trimester" />
+            <field name="image_1920" type="base64" file="academy_sales/static/img/product_2.png"/>
+        </record>
+
+        <record model="product.product" id="public_tendering_biannual_subscription">
+            <field name="name">Biannual subscription to an opposition</field>
+            <field name="list_price">24.99</field>
+            <field name="standard_price">0.0</field>
+            <field name="description_sale">Six-month subscription, one payment. Save up to 65%</field>
+            <field name="type">service</field>
+            <field name="uom_id" ref="product_uom_semester" />
+            <field name="uom_po_id" ref="product_uom_semester" />
+            <field name="default_code">PTS_BAN</field>
+            <field name="categ_id" ref="product_category_academy"/>
+        </record>
+
+        <record model="product.product" id="public_tendering_annual_subscription">
+            <field name="name">Annual subscription to an opposition</field>
+            <field name="list_price">39.99</field>
+            <field name="standard_price">0</field>
+            <field name="description_sale">Twelve motnhs subscription, one payment. Save up to 70%</field>
+            <field name="type">service</field>
+            <field name="uom_id" ref="product_uom_year" />
+            <field name="uom_po_id" ref="product_uom_year" />
+            <field name="default_code">PTS_ANU</field>
+            <field name="categ_id" ref="product_category_academy"/>
+            <field name="image_1920" type="base64" file="academy_sales/static/img/product_3.png"/>
+        </record>
+
+        <record model="product.product" id="training_action_daily_subscription">
+            <field name="name">Daily subscription to an action</field>
+            <field name="list_price">0.99</field>
+            <field name="standard_price">0.0</field>
+            <field name="description_sale">Pay only when you use the platform</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="uom.uom_categ_wtime"/>
+            <field name="uom_id" ref="uom.product_uom_day" />
+            <field name="uom_po_id" ref="uom.product_uom_day" />
+            <field name="default_code">TAS_DAY</field>
+            <field name="categ_id" ref="product_category_academy"/>
+        </record>
+
+        <record model="product.product" id="training_action_monthly_subscription">
+            <field name="name">Monthly subscription to an action</field>
+            <field name="list_price">11.99</field>
+            <field name="standard_price">0.0</field>
+            <field name="description_sale">Standard subscription, pay per month and cancel whenever you want</field>
+            <field name="type">service</field>
+            <field name="uom_id" ref="product_uom_month" />
+            <field name="uom_po_id" ref="product_uom_month" />
+            <field name="default_code">TAS_MON</field>
+            <field name="categ_id" ref="product_category_academy"/>
+            <field name="image_1920" type="base64" file="academy_sales/static/img/product_1.png"/>
+        </record>
+
+        <record model="product.product" id="training_action_quarterly_subscription">
+            <field name="name">Quarterly subscription to an action</field>
+            <field name="list_price">19.99</field>
+            <field name="standard_price">0.0</field>
+            <field name="description_sale">Three-month subscription, one payment. Save up to 40%</field>
+            <field name="type">service</field>
+            <field name="uom_id" ref="product_uom_trimester" />
+            <field name="uom_po_id" ref="product_uom_trimester" />
+            <field name="default_code">TAS_QRT</field>
+            <field name="uom_id" ref="product_uom_trimester" />
+            <field name="image_1920" type="base64" file="academy_sales/static/img/product_2.png"/>
+        </record>
+
+        <record model="product.product" id="training_action_biannual_subscription">
+            <field name="name">Biannual subscription to an action</field>
+            <field name="list_price">24.99</field>
+            <field name="standard_price">0.0</field>
+            <field name="description_sale">Six-month subscription, one payment. Save up to 65%</field>
+            <field name="type">service</field>
+            <field name="uom_id" ref="product_uom_semester" />
+            <field name="uom_po_id" ref="product_uom_semester" />
+            <field name="default_code">TAS_BAN</field>
+            <field name="categ_id" ref="product_category_academy"/>
+        </record>
+
+        <record model="product.product" id="training_action_annual_subscription">
+            <field name="name">Annual subscription to an action</field>
+            <field name="list_price">39.99</field>
+            <field name="standard_price">0</field>
+            <field name="description_sale">Twelve motnhs subscription, one payment. Save up to 70%</field>
+            <field name="type">service</field>
+            <field name="uom_id" ref="product_uom_year" />
+            <field name="uom_po_id" ref="product_uom_year" />
+            <field name="default_code">TAS_ANU</field>
+            <field name="categ_id" ref="product_category_academy"/>
+            <field name="image_1920" type="base64" file="academy_sales/static/img/product_3.png"/>
+        </record>
+
+
+        <record model="product.product" id="training_module_daily_subscription">
+            <field name="name">Daily subscription to a module</field>
+            <field name="list_price">0.99</field>
+            <field name="standard_price">0.0</field>
+            <field name="description_sale">Pay only when you use the platform</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="uom.uom_categ_wtime"/>
+            <field name="uom_id" ref="uom.product_uom_day" />
+            <field name="uom_po_id" ref="uom.product_uom_day" />
+            <field name="default_code">TMS_DAY</field>
+            <field name="categ_id" ref="product_category_academy"/>
+        </record>
+
+        <record model="product.product" id="training_module_monthly_subscription">
+            <field name="name">Monthly subscription to a module</field>
+            <field name="list_price">11.99</field>
+            <field name="standard_price">0.0</field>
+            <field name="description_sale">Standard subscription, pay per month and cancel whenever you want</field>
+            <field name="type">service</field>
+            <field name="uom_id" ref="product_uom_month" />
+            <field name="uom_po_id" ref="product_uom_month" />
+            <field name="default_code">TMS_MON</field>
+            <field name="categ_id" ref="product_category_academy"/>
+            <field name="image_1920" type="base64" file="academy_sales/static/img/product_1.png"/>
+        </record>
+
+        <record model="product.product" id="training_module_quarterly_subscription">
+            <field name="name">Quarterly subscription to a module</field>
+            <field name="list_price">19.99</field>
+            <field name="standard_price">0.0</field>
+            <field name="description_sale">Three-month subscription, one payment. Save up to 40%</field>
+            <field name="type">service</field>
+            <field name="uom_id" ref="product_uom_trimester" />
+            <field name="uom_po_id" ref="product_uom_trimester" />
+            <field name="default_code">TMS_QRT</field>
+            <field name="uom_id" ref="product_uom_trimester" />
+            <field name="image_1920" type="base64" file="academy_sales/static/img/product_2.png"/>
+        </record>
+
+        <record model="product.product" id="training_module_biannual_subscription">
+            <field name="name">Biannual subscription to a module</field>
+            <field name="list_price">24.99</field>
+            <field name="standard_price">0.0</field>
+            <field name="description_sale">Six-month subscription, one payment. Save up to 65%</field>
+            <field name="type">service</field>
+            <field name="uom_id" ref="product_uom_semester" />
+            <field name="uom_po_id" ref="product_uom_semester" />
+            <field name="default_code">TMS_BAN</field>
+            <field name="categ_id" ref="product_category_academy"/>
+        </record>
+
+        <record model="product.product" id="training_module_annual_subscription">
+            <field name="name">Annual subscription to a module</field>
+            <field name="list_price">39.99</field>
+            <field name="standard_price">0</field>
+            <field name="description_sale">Twelve motnhs subscription, one payment. Save up to 70%</field>
+            <field name="type">service</field>
+            <field name="uom_id" ref="product_uom_year" />
+            <field name="uom_po_id" ref="product_uom_year" />
+            <field name="default_code">TMS_ANU</field>
+            <field name="categ_id" ref="product_category_academy"/>
+            <field name="image_1920" type="base64" file="academy_sales/static/img/product_3.png"/>
+        </record>
+
+    </data>
+</openerp>

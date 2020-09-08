@@ -78,7 +78,7 @@
       <!-- Main window action for model.name -->
       <record id="action_application_scope_act_window" model="ir.actions.act_window">
           <field name="type">ir.actions.act_window</field>
-          <field name="name">Application scope</field>
+          <field name="name">Application scopes</field>
           <field name="res_model">academy.application.scope</field>
           <field name="view_mode">tree,form</field>
 
@@ -88,9 +88,9 @@
           <field name="search_view_id" ref="view_academy_application_scope_search" />
           <field name="help" type="html">
               <p class="oe_view_nocontent_create">
-                  Click to add new application scope
+                  Click to add new application scopes
               </p><p>
-                  There are not any defined application scopes
+                    There are no application scopes yet
               </p>
           </field>
       </record>

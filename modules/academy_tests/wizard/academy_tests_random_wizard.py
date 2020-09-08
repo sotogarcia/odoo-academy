@@ -66,13 +66,19 @@ class AcademyTestsRandomWizard(models.TransientModel):
 
     _inherits = {'academy.tests.random.template': 'random_template_id'}
 
-    overwrite = fields.Boolean(
+    overwrite = fields.Selection(
         string='Overwrite',
-        required=False,
+        required=True,
         readonly=False,
         index=False,
-        default=False,
-        help='Check it to unlink existing questions before append new'
+        default='0',
+        help='Check it to unlink existing questions before append new',
+        selection=[
+            ('0', 'None'),
+            ('3', 'Questions'),
+            ('5', 'Test info'),
+            ('7', 'All')
+        ]
     )
 
     shuffle = fields.Boolean(
@@ -191,9 +197,11 @@ class AcademyTestsRandomWizard(models.TransientModel):
         self.ensure_one()
 
         if self.random_wizard_template_id:
+            self._merge_info_from_choosen_template()
 
             ids = []
             parent_id = self.random_template_id.id
+
             for line_item in self.random_wizard_template_id.random_line_ids:
                 new_line = line_item.copy({'random_template_id': parent_id})
                 ids.append(new_line.id)
@@ -204,6 +212,18 @@ class AcademyTestsRandomWizard(models.TransientModel):
             self.description = self.random_wizard_template_id.description
 
 
+    def _merge_info_from_choosen_template(self):
+        """ Reads
+        """
+        template = self.random_wizard_template_id
+        wizard_fields = []
+        for fname, field in self._fields.items():
+            if hasattr(field, 'wizard'):
+                wizard_fields.append(fname)
+
+        for field in wizard_fields:
+            value = getattr(template, field)
+            setattr(self, field, value)
 
 
     # -------------------------------- CRUD -----------------------------------

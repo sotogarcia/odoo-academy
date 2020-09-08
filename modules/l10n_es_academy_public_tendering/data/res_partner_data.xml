@@ -15,7 +15,7 @@
             <field name="city">Vigo</field>
             <field name="zip">36202</field>
             <field name="country_id" ref="base.es" />
-
+            <field name="state_id" ref="base.state_es_po" />
 
             <field name="email">010@vigo.org</field>
             <field name="phone">+34986810100</field>
@@ -47,7 +47,7 @@
             <field name="city">Santiago de Compostela</field>
             <field name="zip">15704</field>
             <field name="country_id" ref="base.es" />
-
+            <field name="state_id" ref="base.state_es_c" />
 
             <field name="email">012@xunta.gal</field>
             <field name="phone">+34981900643</field>
@@ -79,7 +79,7 @@
             <field name="city">Santiago de Compostela</field>
             <field name="zip">15703</field>
             <field name="country_id" ref="base.es" />
-
+            <field name="state_id" ref="base.state_es_c" />
 
             <field name="email">xerencia.sergas@sergas.es</field>
             <field name="phone">+34902077333</field>
@@ -110,7 +110,7 @@
             <field name="city">Madrid</field>
             <field name="zip">28071</field>
             <field name="country_id" ref="base.es" />
-
+            <field name="state_id" ref="base.state_es_m" />
 
             <field name="email">informacion.administrativa@minhap.es</field>
             <field name="phone">+34912739000</field>
@@ -142,7 +142,7 @@
             <field name="city">Madrid</field>
             <field name="zip">28015</field>
             <field name="country_id" ref="base.es" />
-
+            <field name="state_id" ref="base.state_es_m" />
 
             <field name="email">prensa@mjusticia.es</field>
             <field name="phone">+34902007214</field>
@@ -174,7 +174,7 @@
             <field name="city">Madrid</field>
             <field name="zip">28043</field>
             <field name="country_id" ref="base.es" />
-
+            <field name="state_id" ref="base.state_es_m" />
 
             <field name="email">webdgp@policia.es</field>
             <field name="phone">+34915828061</field>
@@ -205,7 +205,7 @@
             <field name="city">Madrid</field>
             <field name="zip">28003</field>
             <field name="country_id" ref="base.es" />
-
+            <field name="state_id" ref="base.state_es_m" />
 
             <field name="email">prensa@mjusticia.es</field>
             <field name="phone">+34915146001</field>
@@ -237,7 +237,7 @@
             <field name="city">Pontevedra</field>
             <field name="zip">36002</field>
             <field name="country_id" ref="base.es" />
-
+            <field name="state_id" ref="base.state_es_po" />
 
             <field name="email">contacto@pontevedra.gal</field>
             <field name="phone">+34986804300</field>
@@ -268,7 +268,7 @@
             <field name="city">Pontevedra</field>
             <field name="zip">36071</field>
             <field name="country_id" ref="base.es" />
-
+            <field name="state_id" ref="base.state_es_po" />
 
             <field name="email">info@depo.gal</field>
             <field name="phone">+34986804100</field>
@@ -299,7 +299,7 @@
             <field name="city">Vigo</field>
             <field name="zip">36310</field>
             <field name="country_id" ref="base.es" />
-
+            <field name="state_id" ref="base.state_es_po" />
 
             <field name="email">informacion@uvigo.es</field>
             <field name="phone">+34986812000</field>
@@ -329,7 +329,7 @@
             <field name="city">A Coruña</field>
             <field name="zip">15001</field>
             <field name="country_id" ref="base.es" />
-
+            <field name="state_id" ref="base.state_es_po" />
 
             <field name="email">info@udc.gal</field>
             <field name="phone">+34981167000</field>

@@ -13,11 +13,7 @@ _logger = getLogger(__name__)
 
 
 class AcademyKnowledgeArea(models.Model):
-    """ The summary line for a class docstring should fit on one line.
-
-    Fields:
-      name (Char): Human readable name which will identify each record.
-
+    """ The summary line for a class docstring should fit on one line
     """
 
     _name = 'academy.knowledge.area'

@@ -17,6 +17,8 @@ from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 from odoo.tools.safe_eval import safe_eval
 
+from .lib.custom_model_fields import Many2manyThroughView, \
+    ACTION_INHERITED_RESOURCES_REL
 
 # pylint: disable=locally-disabled, C0103
 _logger = getLogger(__name__)
@@ -247,6 +249,39 @@ class AcademyTrainingAction(models.Model):
         track_visibility='onchange'
     )
 
+
+    action_resource_ids = fields.Many2many(
+        string='Own resources',
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help=False,
+        comodel_name='academy.training.resource',
+        relation='academy_training_action_training_resource_rel',
+        column1='training_action_id',
+        column2='training_resource_id',
+        domain=[],
+        context={},
+        limit=None
+    )
+
+    available_resource_ids = Many2manyThroughView(
+        string='Training resources',
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help=False,
+        comodel_name='academy.training.resource',
+        relation='academy_training_action_available_resource_rel',
+        column1='training_action_id',
+        column2='training_resource_id',
+        domain=[],
+        context={},
+        limit=None,
+        sql=ACTION_INHERITED_RESOURCES_REL
+    )
 
     # ------------------------------ CONSTRAINS -------------------------------
 

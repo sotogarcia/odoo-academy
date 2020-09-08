@@ -4,7 +4,7 @@
     <data noupdate="0">
 
         <!-- VIEWS: "Templates"
-        
+
             - Model·········: academy.tests.random.template
             - _rec_name·····: name
             - Domain········: []
@@ -13,7 +13,7 @@
             - View priority·: 16    Sequence····: 10
             - Action help···: Templates make it possible to create new tests automatically
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-        
+
         <!-- Tree view for "academy.tests.random.template" -->
         <record id="view_academy_tests_random_template_tree" model="ir.ui.view">
             <field name="name">view.academy.tests.random.template.tree</field>
@@ -29,7 +29,7 @@
                 </tree>
             </field>
         </record>
-        
+
         <!-- Form view for "academy.tests.random.template" -->
         <record id="view_academy_tests_random_template_form" model="ir.ui.view">
             <field name="name">view.academy.tests.random.template.form</field>
@@ -56,18 +56,76 @@
                         </div>
 
                         <group col="2">
-                            <field name="description" class="oe_field_description"
-                                placeholder="Enter new description to this template" />
                             <field name="owner_id" class="oe_field_owner_id"
                                 placeholder="Choose a different owner"  options="{'no_create': True}"
                                 groups="academy_base.academy_group_technical" />
+                            <field name="description" class="oe_field_description"
+                                placeholder="Enter new description to this template" />
                         </group>
 
-                        <group>
-                            <field name="random_line_ids" colspan="8"
-                                class="oe_field_random_line_ids" nolabel="1"
-                                placeholder="Add or manage lines" widget="one2many" />
-                        </group>
+
+                        <notebook>
+                            <page string="Lines" class="oe_page_lines" accesskey="L">
+                                <field name="random_line_ids" colspan="8"
+                                    class="oe_field_random_line_ids" nolabel="1"
+                                    placeholder="Add or manage lines" widget="one2many" />
+                            </page>
+                            <page string="Test setup" class="oe_page_test_setup" accesskey="T">
+                                <group col="6">
+                                    <group col="2" colspan="2">
+                                        <field name="time_by" class="oe_field_time_by" />
+                                        <field name="available_time" class="oe_field_available_time"
+                                            widget="float_time" />
+                                        <field name="lock_time" class="oe_field_lock_time" />
+                                    </group>
+                                    <group col="2" colspan="4">
+                                        <field name="correction_scale_id"
+                                            class="oe_field_correction_scale_id" />
+                                        <field name="test_kind_id" class="oe_field_test_kind_id" />
+                                        <field name="name_pattern" class="oe_field_name_pattern" />
+                                    </group>
+                                </group>
+
+                                <group string="Preamble">
+                                    <field name="preamble" class="oe_field_preamble"
+                                        nolabel="1" />
+                                </group>
+
+                                <group string="Description">
+                                    <field name="test_description" class="oe_field_test_description"
+                                        nolabel="1" />
+                                </group>
+
+                                <div class="academy-tests-test-msgbox academy-tests-test-msgbox-info oe_edit_only">
+                                    <p><strong>Name pattern information:</strong></p>
+                                    <p>You can use following fields:</p>
+
+                                    <ul>
+                                        <li><code>{template}</code> for template name</li>
+                                        <li><code>{owner}</code> for owner name</li>
+                                        <li><code>{scale}</code> for correction scale name</li>
+                                        <li><code>{kind}</code> for test kind name</li>
+                                        <li><code>{sequence}</code> for test autoincrement sequence</li>
+                                        <li><code>{extra}</code> for extra <em>(this only can be used in some methods)</em></li>
+                                    </ul>
+
+                                    <p><strong>Note:</strong>
+                                        Any argument to the function
+                                        <a target="_new" href="https://docs.python.org/3/library/datetime.html#datetime.date.strftime">strftime</a>
+                                        is also accepted.
+                                    </p>
+                                </div>
+
+                            </page>
+                            <page string="Options" class="oe_page_options" accesskey="O">
+                                <group col="4">
+                                    <field name="single_transaction" class="oe_field_single_transaction" />
+                                    <field name="use_context" class="oe_field_use_context" />
+                                    <field name="skip_faulty_lines" class="oe_field_skip_faulty_lines" />
+                                    <field name="allow_automate" class="oe_field_allow_automate" />
+                                </group>
+                            </page>
+                        </notebook>
 
                     </sheet>
 
@@ -75,7 +133,7 @@
                         <field name="message_follower_ids" widget="mail_followers"/>
                         <field name="message_ids" widget="mail_thread"/>
                     </div>
-                    
+
                 </form>
             </field>
         </record>
@@ -95,7 +153,7 @@
                     <field name="image_128"/>
                     <field name="name" />
                     <field name="description" />
-                    
+
                     <templates>
                         <t t-name="kanban-box">
                             <div class="oe_kanban_global_click">
@@ -132,7 +190,7 @@
             </field>
         </record>
 
-        
+
         <!-- Search view for "academy.tests.random.template" -->
         <record id="view_academy_tests_random_template_search" model="ir.ui.view">
             <field name="name">view.academy.tests.random.template.search</field>
@@ -153,11 +211,11 @@
                 </search>
             </field>
         </record>
-        
+
         <!-- Main window action for model.name -->
         <record id="action_templates_act_window" model="ir.actions.act_window">
             <field name="type">ir.actions.act_window</field>
-            <field name="name">Templates</field>
+            <field name="name">Test templates</field>
             <field name="res_model">academy.tests.random.template</field>
             <field name="view_mode">kanban,tree,form</field>
             <field name="target">current</field>
@@ -165,17 +223,18 @@
             <field name="context">{"search_default_my_templates":1}</field>
             <field name="search_view_id" ref="view_academy_tests_random_template_search" />
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">
-                    Click to add new templates
-                </p><p>
-                    Templates make it possible to create new tests automatically
+               <p class="oe_view_nocontent_create">
+                    Click to add new test templates
+                </p>
+                <p>
+                    There are no test templates yet
                 </p>
             </field>
         </record>
-        
+
         <!-- Main menu for model.name -->
         <record id="menu_templates" model="ir.ui.menu" >
-            <field name="name">Templates</field>
+            <field name="name">Test templates</field>
             <field name="sequence" eval="10" />
             <field name="action" ref="action_templates_act_window" />
             <field name="parent_id" ref="menu_test_settings_top" />

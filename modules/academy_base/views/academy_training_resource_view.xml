@@ -45,6 +45,7 @@
                 <form string="academy_training_resource_form" create="1" delete="1" edit="1">
                     <sheet>
                         <field name="training_resource_id" invisible="1" />
+                        <field name="id" invisible="1" />
 
                         <div class="oe_button_box" name="button_box">
                             <button name="download_directory" type="object" class="oe_stat_button"
@@ -72,13 +73,11 @@
                         <separator />
 
                         <group col="4">
-                                <field name="manager_id" class="oe_field_manager_id"
-                                    placeholder="Choose resource manager" />
-                                <field name="id" invisible="1" />
-                                <field name="updater_id" class="oe_field_updater_id"
-                                    placeholder="Choose resource updater" />
-                                <field name="last_update" class="oe_field_last_update"
-                                    placeholder="Choose last revision date" />
+                            <field name="manager_id" class="oe_field_manager_id" />
+
+                            <field name="updater_id" class="oe_field_updater_id" />
+                            <field name="last_update" class="oe_field_last_update" />
+                            <field name="kind_id" class="od_field_kind_id" />
                         </group>
 
                         <group col="2" class="oe_edit_only">
@@ -118,19 +117,11 @@
                                             help="Click it to reload directory file list" />
                                 </group>
                             </page>
-                            <page string="Modules/Units" class="oe_page_in_modules" accesskey="M">
-                                <field name="training_module_ids" class="oe_field_training_module_ids"
-                                    placeholder="Choose related academy training modules" />
-                            </page>
-                            <page string="Training actions" class="oe_page_training_action_ids" accesskey="T">
-                                <field name="training_action_ids" class="oe_field_training_action_ids"
-                                    placeholder="Enter new value for academy training action" />
-                            </page>
-                            <page string="Historical" class="oe_page_historical" accesskey="H">
+<!--                             <page string="Historical" class="oe_page_historical" accesskey="H">
                                 <field name="historical_ids" class="oe_field_historical_ids"
                                     placeholder="Choose historical related resources"
                                     context="{'tree_view_ref':'academy_base.view_academy_training_resource_embed_tree'}" />
-                            </page>
+                            </page> -->
                         </notebook>
                     </sheet>
 
@@ -201,8 +192,6 @@
                     <field name="directory" />
                     <field name="ir_attachment_ids" />
                     <field name="directory_file_ids" />
-                    <!-- <field name="training_unit_ids" /> -->
-                    <field name="training_activity_ids" />
 
                     <filter string="From directory"
                         name="directory_resource"
@@ -220,13 +209,13 @@
 
                     <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
 
-                    <group expand="1" string="Group By">
+<!--                     <group expand="1" string="Group By">
                         <filter string="By training activity"
                             name="by_training_activity"
                             domain="[]"
                             context="{'group_by':'training_activity_ids'}"
                             help="" />
-                    </group>
+                    </group> -->
                 </search>
             </field>
         </record>
@@ -244,9 +233,9 @@
             <field name="search_view_id" ref="view_academy_training_resource_search" />
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
-                    Click to add new resources
+                    Click to add new training resources
                 </p><p>
-                    Here are not training resource
+                    There are no resources yet
                 </p>
             </field>
         </record>

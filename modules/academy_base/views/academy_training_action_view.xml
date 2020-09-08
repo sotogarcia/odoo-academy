@@ -55,8 +55,10 @@
 
                         <field name="image_1920" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}'/>
 
+                        <field name="id" invisible="1"/>
+                        <field name="active" invisible="1"/>
+
                         <div class="oe_title">
-                            <field name="active" invisible="1"/>
                             <label for="name" class="oe_edit_only" />
                             <h1>
                                 <field name="action_name" class="oe_field_name"
@@ -77,50 +79,56 @@
                             <field name="seating" class="oe_field_seating" />
                             <field name="end" class="oe_field_end" />
                             <field name="tuttor_id" class="od_field_tuttor_id" />
+                            <field name="description" class="oe_field_description"
+                                    placeholder="Enter new description" colspan="4" />
                         </group>
 
                         <notebook>
                             <page string="Data" class="oe_page_data" accesskey="T">
-                                <group col="2">
+
+                                <group col="4">
                                     <field name="knowledge_area_ids" class="od_field_knowledge_area"
-                                        placeholder="Choose knowledge area" widget="many2many_tags" />
+                                        placeholder="Choose knowledge area" widget="many2many_tags"
+                                        string="Area" title="Knowledge area" />
                                     <field name="professional_category_id" class="od_field_professional_category"
-                                        placeholder="Choose professional category" />
+                                        placeholder="Choose professional category"
+                                        string="Category" title="Professional category"  />
                                     <field name="training_modality_ids" class="od_field_training_modality"
-                                        placeholder="Choose training modality" widget="many2many_tags" />
+                                        placeholder="Choose training modality" widget="many2many_tags"
+                                        string="Modality" title="Training modality"  />
                                     <field name="training_methodology_ids" class="od_field_training_methodology"
-                                        placeholder="Choose training methodology" widget="many2many_tags" />
+                                        placeholder="Choose training methodology" widget="many2many_tags"
+                                        string="Methodology" title="Training methodology"  />
+
+                                    <field name="professional_family_id" class="oe_field_professional_family_id"
+                                        placeholder="Choose related professional family" readonly="1" />
+                                    <field name="professional_area_id" class="oe_field_professional_area_id"
+                                        placeholder="Choose related professional area" readonly="1" />
+                                    <field name="activity_code" class="oe_field_action_code"
+                                        placeholder="Enter new internal code" readonly="1" />
+                                    <field name="qualification_level_id" class="oe_field_qualification_level_id"
+                                        placeholder="Choose related qualification level" readonly="1" />
                                 </group>
+
                             </page>
 
-                            <page string="Description" class="oe_page_description" accesskey="D">
-                                <field name="description" class="oe_field_description"
-                                    placeholder="Enter new description" />
-                            </page>
-                            <page string="Qualification" class="oe_page_qualification" accesskey="Q">
-                                    <group col="4">
-                                        <field name="professional_family_id" class="oe_field_professional_family_id"
-                                            placeholder="Choose related professional family" readonly="1" />
-                                        <field name="professional_area_id" class="oe_field_professional_area_id"
-                                            placeholder="Choose related professional area" readonly="1" />
-                                        <field name="activity_code" class="oe_field_action_code"
-                                            placeholder="Enter new internal code" readonly="1" />
-                                        <field name="qualification_level_id" class="oe_field_qualification_level_id"
-                                            placeholder="Choose related qualification level" readonly="1" />
-                                    </group>
-                            </page>
                             <page string="Competency units" class="oe_page_competency_units" accesskey="C">
                                 <field name="competency_unit_ids" class="oe_field_competency_unit_ids"
                                     placeholder="Choose related competency units" readonly="1" />
                             </page>
-                            <page string="Students" class="oe_page_students" accesskey="S">
+                            <page string="Enrolments" class="oe_page_students" accesskey="S">
                                 <field name="training_action_enrolment_ids" class="oe_field_training_action_enrolment_ids"
                                     context="{'training_action_id': id}" />
                             </page>
-                            <page string="Resources" class="oe_page_resources" accesskey="R">
-                                <field name="training_resource_ids" class="oe_field_training_resource_ids"
-                                    placeholder="Enter new value for academy training resource" />
+
+                            <page string="Resources" class="oe_page_available_resources" accesskey="R">
+                                <field name="action_resource_ids"
+                                       class="oe_field_action_resource_ids oe_edit_only" />
+
+                                <field name="available_resource_ids"
+                                       class="oe_field_available_resource_ids oe_read_only" />
                             </page>
+
                         </notebook>
                     </sheet>
 
@@ -220,7 +228,7 @@
         <!-- Main window action for model.name -->
         <record id="action_training_action_act_window" model="ir.actions.act_window">
             <field name="type">ir.actions.act_window</field>
-            <field name="name">Training action</field>
+            <field name="name">Training actions</field>
             <field name="res_model">academy.training.action</field>
             <field name="view_mode">kanban,tree,form</field>
 
@@ -230,9 +238,9 @@
             <field name="search_view_id" ref="view_academy_training_action_search" />
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
-                    Click to add new training action
+                    Click to add new training actions
                 </p><p>
-                    There are not training actions in catalog
+                    There are no training actions yet
                 </p>
             </field>
         </record>

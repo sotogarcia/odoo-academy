@@ -19,7 +19,7 @@
         </record>
 
         <record id="academy_application_scope_intersectoral" model="academy.application.scope">
-            <field name="name">Intersectorial</field>
+            <field name="name">Intersectoral</field>
             <field name="description">Training for the learning of transversal competences belonging to various sectors of economic activity</field>
         </record>
 

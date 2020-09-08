@@ -4,7 +4,7 @@
     <data noupdate="0">
 
         <!-- VIEWS: "Event types"
-        
+
             - Model·········: academy.public.tendering.event.type
             - _rec_name·····: name
             - Domain········: []
@@ -13,7 +13,7 @@
             - View priority·: 16    Sequence····: 10
             - Action help···: There is no any event type
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-        
+
         <!-- Tree view for "academy.public.tendering.event.type" -->
         <record id="view_academy_public_tendering_event_type_tree" model="ir.ui.view">
             <field name="name">view.academy.public.tendering.event.type.tree</field>
@@ -34,7 +34,7 @@
                 </tree>
             </field>
         </record>
-        
+
         <!-- Form view for "academy.public.tendering.event.type" -->
         <record id="view_academy_public_tendering_event_type_form" model="ir.ui.view">
             <field name="name">view.academy.public.tendering.event.type.form</field>
@@ -67,7 +67,7 @@
                 </form>
             </field>
         </record>
-        
+
         <!-- Search view for "academy.public.tendering.event.type" -->
         <record id="view_academy_public_tendering_event_type_search" model="ir.ui.view">
             <field name="name">view.academy.public.tendering.event.type.search</field>
@@ -83,11 +83,11 @@
                 </search>
             </field>
         </record>
-        
+
         <!-- Main window action for model.name -->
         <record id="action_public_tendering_event_type_act_window" model="ir.actions.act_window">
             <field name="type">ir.actions.act_window</field>
-            <field name="name">Public tendering event types</field>
+            <field name="name">Event types</field>
             <field name="res_model">academy.public.tendering.event.type</field>
             <field name="view_mode">tree,form</field>
             <field name="target">current</field>
@@ -96,13 +96,13 @@
             <field name="search_view_id" ref="view_academy_public_tendering_event_type_search" />
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
-                    Click to add new public tendering event types
+                    Click to add new event types
                 </p><p>
-                    There is no any event type
+                    There are no event types yet
                 </p>
             </field>
         </record>
-        
+
         <!-- Main menu for model.name -->
         <record id="menu_public_tendering_event_type" model="ir.ui.menu" >
             <field name="name">Event types</field>

@@ -58,6 +58,8 @@
                             </h1>
                         </div>
 
+                        <field name="id" class="oe_field_id" invisible="1" />
+
                         <group col="2">
                             <field name="professional_family_id" class="oe_field_professional_family_id"
                                 placeholder="Choose professional families" />
@@ -67,9 +69,9 @@
                                 placeholder="Choose qualification levels" />
                             <field name="general_competence" class="oe_field_general_competence"
                                 placeholder="Enter new value for general competence" />
-                            <field name="professional_field" class="oe_field_professional_field"
+                            <field name="professional_field_id" class="oe_field_professional_field"
                                 placeholder="Enter new value for professional field" />
-                            <field name="professional_sectors" class="oe_field_professional_sectors"
+                            <field name="professional_sector_ids" class="oe_field_professional_sector_ids"
                                 placeholder="Enter new value for professional sectors" />
                         </group>
 
@@ -81,20 +83,22 @@
                             <page string="Competency units" class="oe_page_compentency_units" accesskey="C">
                                 <field name="competency_unit_ids" class="oe_field_competency_unit_ids"
                                     placeholder="Choose related competency units"
-                                    context="{'tree_view_ref' : 'academy_base.view_academy_competency_unit_embed_tree'}" />
+                                    context="{'tree_view_ref' : 'academy_base.view_academy_competency_unit_embed_tree',
+                                              'default_training_activity_id' : id, 'append_to_training_activity' : True}" />
                             </page>
                             <page string="Actions" class="oe_page_actions" accesskey="A">
                                 <field name="training_action_ids" class="oe_field_training_actions_ids"
                                     placeholder="Choose related training actions" />
                             </page>
-                            <!-- <page string="Units" class="oe_page_units" accesskey="U">
-                                <field name="training_unit_ids" class="oe_field_training_unit_ids"
-                                    placeholder="Choose related training units" />
-                            </page> -->
-                            <page string="Available resources" class="oe_page_available_resources" accesskey="R">
-                                <field name="training_resource_ids" class="oe_field_training_resource_ids"
-                                    placeholder="Choose related training resources" />
+
+                            <page string="Resources" class="oe_page_available_resources" accesskey="R">
+                                <field name="activity_resource_ids"
+                                    class="oe_field_activity_resource_ids oe_edit_only" />
+
+                                <field name="available_resource_ids"
+                                    class="oe_field_available_resource_ids oe_read_only" />
                             </page>
+
                         </notebook>
                     </sheet>
 
@@ -193,7 +197,7 @@
         <!-- Main window action for model.name -->
         <record id="action_academy_training_activity_act_window" model="ir.actions.act_window">
             <field name="type">ir.actions.act_window</field>
-            <field name="name">Academy training activity</field>
+            <field name="name">Training activities</field>
             <field name="res_model">academy.training.activity</field>
             <field name="view_mode">kanban,tree,form</field>
 
@@ -203,9 +207,9 @@
             <field name="search_view_id" ref="view_academy_training_activity_search" />
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
-                    Click to add new Academy training activity
+                    Click to add new training activities
                 </p><p>
-                    There are not training activities in catalog
+                    There are no training activities yet
                 </p>
             </field>
         </record>

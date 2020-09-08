@@ -27,6 +27,7 @@
                     <field name="name" class="oe_field_name" />
                     <field name="description" class="oe_field_description" />
                     <field name="question_count" class="oe_field_question_count" />
+                    <field name="test_kind_id" class="od_field_test_kind_id" />
                 </tree>
             </field>
         </record>
@@ -86,7 +87,7 @@
                             </div>
                         </div><!-- row -->
 
-                        <!-- IMPORTAN: This group is hidden because it's not needed but can be 
+                        <!-- IMPORTAN: This group is hidden because it's not needed but can be
                         interesting in a future. Allows technicals to change the test owner -->
                         <group col="2" class="text-danger oe_edit_only" invisible="1"
                             groups="academy_base.academy_group_technical" >
@@ -110,13 +111,37 @@
                                 </field>
                             </page>
                             <page string="Details" class="oe_page_description" accesskey="D">
-                                <group col="2">
+                                <group col="4">
+                                    <field name="code" class="oe_field_code"
+                                        placeholder="Choose an unique internal code" />
                                     <field name="test_kind_id" class="oe_field_test_kind_id"
                                         placeholder="Choose a kind" />
-                                    <field name="description" class="oe_field_description"
-                                        placeholder="Enter new text for description" />
-                                    <field name="topic_ids" class="oe_field_topic_ids" options="{'no_create': True}" />
+                                    <field name="first_use_id" class="oe_field_first_use_id"
+                                        placeholder="Choose who used this test for first time" />
+                                    <field name="correction_scale_id" class="oe_field_correction_scale_id"
+                                        placeholder="Choose the scale of correction" />
+                                    <field name="time_by" class="oe_field_time_by"
+                                        placeholder="Choose an option" />
+                                    <field name="available_time" class="oe_field_available_time"
+                                        placeholder="Enter the available time" widget="float_time"  />
+                                    <field name="lock_time" class="oe_field_lock_time"
+                                        placeholder="Check it to lock time" />
                                 </group>
+
+                                <separator string="Description" />
+                                <field name="description" class="oe_field_description"
+                                    nolabel="1" placeholder="Enter new text for description" />
+
+                                <separator string="Topics" />
+                                <field name="topic_ids" class="oe_field_topic_ids"
+                                     options="{'no_create': True}" nolabel="1">
+                                    <tree>
+                                        <field name="name" class="oe_field_name" />
+                                    </tree>
+                                </field>
+                            </page>
+                            <page id="available" string="Available" class="oe_page_tests" accesskey="A" groups="academy_base.academy_group_manager">
+                                <field name="available_in" class="oe_field_available_in" />
                             </page>
                         </notebook>
                     </sheet>
@@ -149,7 +174,7 @@
                     <field name="image_128"/>
                     <field name="name" />
                     <field name="description" />
-                    
+
                     <templates>
                         <t t-name="kanban-box">
                             <div class="oe_kanban_global_click">
@@ -237,14 +262,13 @@
             <field name="target">current</field>
             <field name="domain">[]</field>
             <field name="context">{"search_default_my_tests":1}</field>
-            <field name="limit">15</field>
             <field name="search_view_id" ref="view_academy_tests_search" />
             <field name="help" type="html">
-                <p class="oe_view_nocontent_create">
-                    There is not any stored test
+               <p class="oe_view_nocontent_create">
+                    Click to add new tests
                 </p>
                 <p>
-                    Tests should be made using wizards, once new test have been created it will can be saved. Saved test will be shown here.
+                    There are no tests yet
                 </p>
             </field>
         </record>

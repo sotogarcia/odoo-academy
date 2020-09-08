@@ -7,71 +7,14 @@
 from odoo import models, fields, api
 from odoo.tools.translate import _
 from odoo.addons.academy_base.models.lib.custom_model_fields import Many2manyThroughView
-
+from .lib.libuseful import INHERITED_TOPICS_REL, INHERITED_CATEGORIES_REL, \
+    ACADEMY_MODULE_AVAILABLE_TESTS
 
 from logging import getLogger
 
 
 _logger = getLogger(__name__)
 
-
-INHERITED_TOPICS_REL = """
-    SELECT
-        tree."requested_module_id" as training_module_id,
-        link."topic_id" as test_topic_id
-    FROM
-        academy_training_module_tree_readonly AS tree
-    INNER JOIN academy_tests_topic_training_module_link AS link 
-        ON tree."responded_module_id" = link."training_module_id"
-"""
-
-INHERITED_CATEGORIES_REL = """
-    WITH linked AS (
-        SELECT
-            tree."requested_module_id",
-            tree."responded_module_id",
-            link."topic_id",
-            link_rel."category_id" 
-        FROM
-            academy_training_module_tree_readonly AS tree
-        INNER JOIN academy_tests_topic_training_module_link AS link 
-            ON tree."responded_module_id" = link."training_module_id"
-        LEFT JOIN academy_tests_category_tests_topic_training_module_link_rel AS link_rel 
-            ON link_rel."tests_topic_training_module_link_id" = link."id" 
-    ), direct_categories AS ( 
-        SELECT 
-            requested_module_id,
-            topic_id,
-            category_id 
-        FROM 
-            linked 
-        WHERE 
-            category_id IS NOT NULL 
-    ), no_direct_categories AS (
-        SELECT
-            requested_module_id,
-            linked."topic_id",
-            atc."id" AS category_id 
-        FROM
-            linked
-        INNER JOIN academy_tests_category AS atc 
-            ON atc."topic_id" = linked."topic_id" 
-        WHERE
-            linked."category_id" IS NULL 
-    ), full_set as (
-        SELECT
-            * 
-        FROM
-            direct_categories 
-        UNION ALL SELECT
-            * 
-        FROM
-            no_direct_categories
-        ) SELECT 
-            requested_module_id AS training_module_id,
-            category_id AS test_category_id
-    FROM full_set
-"""
 
 
 class AcademyTrainingModule(models.Model):
@@ -135,3 +78,51 @@ class AcademyTrainingModule(models.Model):
         sql=INHERITED_CATEGORIES_REL
     )
 
+    test_ids = fields.Many2many(
+        string='Tests',
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help='Choose the tests related with this training module',
+        comodel_name='academy.tests.test',
+        relation='academy_tests_test_training_module_rel',
+        column1='training_module_id',
+        column2='test_id',
+        domain=[],
+        context={},
+        limit=None
+    )
+
+    available_test_ids = Many2manyThroughView(
+        string='Tests',
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help='Choose the tests will be available in this training module',
+        comodel_name='academy.tests.test',
+        relation='academy_tests_test_available_in_training_module_rel',
+        column1='training_module_id',
+        column2='test_id',
+        domain=[],
+        context={},
+        limit=None,
+        sql=ACADEMY_MODULE_AVAILABLE_TESTS
+    )
+
+    template_link_ids = fields.Many2many(
+        string='Random templates',
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help='Choose random template',
+        comodel_name='academy.tests.random.template',
+        relation='academy_tests_random_template_training_module_rel',
+        column1='training_module_id',
+        column2='random_template_id',
+        domain=[],
+        context={},
+        limit=None
+    )

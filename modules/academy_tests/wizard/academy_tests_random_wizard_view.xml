@@ -26,21 +26,57 @@
                         <field name="test_id" class="oe_field_test_id" colspan="6" />
                         <field name="shuffle" class="oe_field_overwrite"
                             attrs="{'readonly': [('test_id', '=', False)]}"
-                            placeholder="Check it to overwrite" />
+                            placeholder="Check it to sort by random" />
                         <field name="random_wizard_template_id"  colspan="6"
                             class="oe_field_random_wizard_id"
                             options="{'no_open': True, 'no_create': True, 'no_quick_create': True, 'no_create_edit': True }"
                             placeholder="Choose template for random wizard" />
                         <field name="overwrite" class="oe_field_overwrite"
-                            attrs="{'readonly': [('test_id', '=', False)]}"
-                            placeholder="Check it to overwrite" />
+                            attrs="{'readonly': [('test_id', '=', False)]}" />
                     </group>
-                    
-                    <group>
-                        <field name="random_line_ids" colspan="8"
-                            class="oe_field_random_line_ids" nolabel="1"
-                            placeholder="Add or manage lines" widget="one2many" />
-                    </group>
+
+                    <notebook>
+                        <page string="Lines" class="oe_page_lines" accesskey="L">
+                            <field name="random_line_ids" colspan="8"
+                                class="oe_field_random_line_ids" nolabel="1"
+                                placeholder="Add or manage lines" widget="one2many" />
+                        </page>
+                        <page string="Test setup" class="oe_page_test_setup" accesskey="T">
+                            <group col="6">
+                                <group col="2" colspan="4">
+                                    <field name="correction_scale_id"
+                                        class="oe_field_correction_scale_id" />
+                                    <field name="test_kind_id" class="oe_field_test_kind_id" />
+                                </group>
+
+                                <group col="2" colspan="2">
+                                    <field name="time_by" class="oe_field_time_by" />
+                                    <field name="available_time" class="oe_field_available_time"
+                                        widget="float_time" />
+                                    <field name="lock_time" class="oe_field_lock_time" />
+                                </group>
+                            </group>
+
+                            <group string="Preamble">
+                                <field name="preamble" class="oe_field_preamble"
+                                    nolabel="1" />
+                            </group>
+
+                            <group string="Description">
+                                <field name="test_description" class="oe_field_test_description"
+                                    nolabel="1" />
+                            </group>
+                        </page>
+                        <page string="Options" class="oe_page_options" accesskey="O">
+                            <group col="2">
+                                <group col="2">
+                                    <field name="single_transaction" class="oe_field_single_transaction" />
+                                    <field name="use_context" class="oe_field_use_context" />
+                                    <field name="skip_faulty_lines" class="oe_field_skip_faulty_lines" />
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
 
                     <footer />
 

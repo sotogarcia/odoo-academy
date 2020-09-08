@@ -12,9 +12,6 @@
             <field name="qualification_level_id" ref="academy_base.academy_qualification_level_03" />
             <field name="activity_code">ADGD0308</field>
             <field name="general_competence">Perform administrative management operations</field>
-            <field name="professional_field">This professional exercises his activity in the administration area</field>
-            <field name="professional_sectors">It is present in all the productive sectors, as well as in the Public Administration</field>
-            <field name="competency_unit_ids" eval="[(4, ref('academy_base.academy_competency_unit_libre'))]"/>
         </record>
 
         <record id="academy_training_activity_ms" model="academy.training.activity">
@@ -26,9 +23,6 @@
             <field name="qualification_level_id" ref="academy_base.academy_qualification_level_03" />
             <field name="activity_code">ADGD0100</field>
             <field name="general_competence">Perform basic computer operations with Microsoft Software</field>
-            <field name="professional_field">This student will can exercises his activity in home or office</field>
-            <field name="professional_sectors">It is present in all the productive sectors, as well as in the Public Administration</field>
-            <field name="competency_unit_ids" eval="[(4, ref('academy_base.academy_competency_unit_mswin')),(4, ref('academy_base.academy_competency_unit_office'))]"/>
         </record>
 
     </data>

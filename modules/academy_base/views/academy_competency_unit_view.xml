@@ -25,7 +25,10 @@
             <field name="arch" type="xml">
                 <tree string="academy_competency_unit_tree" create="1" delete="1" edit="1">
                     <field name="competency_name" />
-                    <field name="training_module_id" />
+                    <field name="training_activity_id"
+                        invisible="context.get('default_training_activity_id', False)" />
+                    <field name="training_module_id"
+                        invisible="context.get('default_training_module_id', False)" />
                     <field name="hours" />
                 </tree>
             </field>
@@ -56,8 +59,12 @@
                             </h1>
                         </div>
                         <group col="2">
+                            <field name="training_activity_id" class="oe_field_training_activity_id"
+                                placeholder="Choose an existing training activity"
+                                invisible="context.get('append_to_training_activity', False)" />
                             <field name="training_module_id" class="oe_field_training_module_id"
-                                placeholder="Choose an existing training module" />
+                                placeholder="Choose an existing training module"
+                                invisible="context.get('append_to_training_module', False)" />
                         </group>
 
                         <notebook>
@@ -113,7 +120,7 @@
                                     <strong class="oe_partner_heading"><field name="competency_name"/></strong>
                                     <ul>
                                        <!-- <li><strong>Units:&#160;</strong><field name="training_unit_count" /></li> -->
-                                       <li><strong>Lifespan:&#160;</strong><field name="hours"/>&#160;horas</li>
+                                       <li><strong>Lifespan:&#160;</strong><field name="hours"/>&#160;hours</li>
                                      </ul>
                                 </div>
                             </div>
@@ -152,7 +159,7 @@
         <!-- Main window action for model.name -->
         <record id="action_competency_unit_act_window" model="ir.actions.act_window">
             <field name="type">ir.actions.act_window</field>
-            <field name="name">Competency unit</field>
+            <field name="name">Competency units</field>
             <field name="res_model">academy.competency.unit</field>
             <field name="view_mode">kanban,tree,form</field>
 
@@ -162,9 +169,9 @@
             <field name="search_view_id" ref="view_academy_competency_unit_search" />
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
-                    Click to add new competency unit
+                    Click to add new competency units
                 </p><p>
-                    There are not competency units in catalog
+                    There are no competency units yet
                 </p>
             </field>
         </record>

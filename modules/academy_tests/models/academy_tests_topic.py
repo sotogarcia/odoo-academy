@@ -126,6 +126,21 @@ class AcademyTestsTopic(models.Model):
     ]
 
 
+    @staticmethod
+    def findall(regex, strlist):
+        """ Search regex pattern in a list of strings. It's used to
+        search pattern in question name and question description
+        """
+        result = False
+
+        for stritem in strlist:
+            result = regex.findall(stritem)
+            if result:
+                break
+
+        return result
+
+
     def search_for_categories(self, _in_string):
         """ Search partial matches for all category keywords in given string
         and returns that categories
@@ -135,6 +150,8 @@ class AcademyTestsTopic(models.Model):
 
         msg = _('Error on autocategorize. Text: {}, Keywords: {}, Error: {}')
         result = {}
+        if isinstance(_in_string, str):
+            _in_string = [_in_string]
 
         # STEP 1: Run over topic recordset
         for record in self:
@@ -152,7 +169,7 @@ class AcademyTestsTopic(models.Model):
                 for keyword in keywords:
                     try:
                         regex = re.compile(keyword, re.IGNORECASE)
-                        if regex.findall(_in_string):
+                        if self.findall(regex, _in_string):
                             result[record.id].append(catitem.id)
 
                     except Exception as ex:

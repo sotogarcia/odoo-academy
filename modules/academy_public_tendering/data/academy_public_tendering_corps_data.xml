@@ -6,11 +6,13 @@
         <record id="academy_public_tendering_corps_administrative" model="academy.public.tendering.corps">
             <field name="name">General Administrative Corps</field>
             <field name="active" eval="True" />
+            <field name="employment_group_id" ref='academy_public_tendering_employment_group_c1' />
         </record>
 
         <record id="academy_public_tendering_corps_administrative_assistant" model="academy.public.tendering.corps">
             <field name="name">General Auxiliary Corps of Administration</field>
             <field name="active" eval="True" />
+            <field name="employment_group_id" ref='academy_public_tendering_employment_group_c2' />
         </record>
 
     </data>

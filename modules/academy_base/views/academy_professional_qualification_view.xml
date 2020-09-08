@@ -176,7 +176,7 @@
         <!-- Main window action for model.name -->
         <record id="action_professional_qualification_act_window" model="ir.actions.act_window">
             <field name="type">ir.actions.act_window</field>
-            <field name="name">Professional qualification</field>
+            <field name="name">Professional qualifications</field>
             <field name="res_model">academy.professional.qualification</field>
             <field name="view_mode">kanban,tree,form</field>
 
@@ -186,9 +186,9 @@
             <field name="search_view_id" ref="view_academy_professional_qualification_search" />
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
-                    Click to add new professional qualification
+                    Click to add new professional qualifications
                 </p><p>
-                    There are not professional qualifications in catalog
+                    There are no training professional qualifications yet
                 </p>
             </field>
         </record>

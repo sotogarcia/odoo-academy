@@ -249,7 +249,6 @@ class AcademyTestsQuestion(models.Model):
         context={},
         ondelete='cascade',
         auto_join=False,
-        groups='academy_base.academy_group_technical'
     )
 
 
@@ -461,8 +460,42 @@ class AcademyTestsQuestion(models.Model):
                 continue
 
             # matches => {topic_id: [categorory_id1, ...]}
-            matches = record.topic_id.search_for_categories(record.name)
+            matches = record.topic_id.search_for_categories(
+                [record.name, record.description])
             ids = matches.get(record.topic_id.id, False)
 
             if ids:
                 record.category_ids = [(6, None, ids)]
+
+
+    def _track_subtype(self, init_values):
+        self.ensure_one()
+
+        if(not 'active' in init_values):
+            xid = 'academy_tests.academy_tests_question_written'
+            return self.env.ref(xid);
+        else:
+            _super = super(AcademyTestsQuestion, self)
+            return _super._track_subtype(init_values)
+
+
+    @api.returns('mail.message', lambda value: value.id)
+    def message_post(self, *,
+                     body='', subject=None, message_type='notification',
+                     email_from=None, author_id=None, parent_id=False,
+                     subtype_id=False, subtype=None, partner_ids=None, channel_ids=None,
+                     attachments=None, attachment_ids=None,
+                     add_sign=True, record_name=False,
+                     **kwargs):
+
+        for record in self:
+            for rel in record.test_ids:
+                rel.test_id.message_post(
+                    body=body, subject=subject, message_type=message_type, email_from=email_from, author_id=author_id, parent_id=parent_id,
+                     subtype_id=subtype_id, subtype=subtype, partner_ids=partner_ids, channel_ids=channel_ids, attachments=attachments,
+                     attachment_ids=attachment_ids, add_sign=add_sign, record_name=record_name, **kwargs)
+
+        return super(AcademyTestsQuestion, self).message_post(
+                     body=body, subject=subject, message_type=message_type, email_from=email_from, author_id=author_id, parent_id=parent_id,
+                     subtype_id=subtype_id, subtype=subtype, partner_ids=partner_ids, channel_ids=channel_ids, attachments=attachments,
+                     attachment_ids=attachment_ids, add_sign=add_sign, record_name=record_name, **kwargs)

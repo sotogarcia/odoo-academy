@@ -83,7 +83,7 @@
         <!-- Main window action for model.name -->
         <record id="action_professional_category_act_window" model="ir.actions.act_window">
             <field name="type">ir.actions.act_window</field>
-            <field name="name">Professional Category</field>
+            <field name="name">Professional categories</field>
             <field name="res_model">academy.professional.category</field>
             <field name="view_mode">tree,form</field>
 
@@ -93,9 +93,9 @@
             <field name="search_view_id" ref="view_academy_professional_category_search" />
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
-                    Click to add new professional category
+                    Click to add new professional categories
                 </p><p>
-                    There are not any defined professional categories
+                    There are no professional categories yet
                 </p>
             </field>
         </record>

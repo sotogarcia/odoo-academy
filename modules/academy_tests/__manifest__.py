@@ -28,10 +28,13 @@
 
     # always loaded
     'data': [
+        'data/mail_message_subtype_data.xml',
         'data/academy_tests_level_data.xml',
         'data/academy_tests_question_type_data.xml',
         'data/ir_actions_server_data.xml',
         'data/academy_tests_test_kind_data.xml',
+        'data/academy_tests_correction_scale_data.xml',
+        'data/ir_sequence.xml',
 
         'security/academy_tests.xml',
         'security/academy_tests_answer.xml',
@@ -49,6 +52,13 @@
         'security/academy_tests_random_template.xml',
         'security/academy_tests_topic_training_module_link.xml',
         'security/academy_tests_test_kind.xml',
+        'security/academy_tests_attempt.xml',
+        'security/academy_tests_attempt_answer.xml',
+        'security/academy_tests_attempt_attempt_answer_rel.xml',
+        'security/academy_tests_correction_scale.xml',
+        'security/academy_tests_random_template_training_action_rel.xml',
+        'security/academy_random_template_scheduled_rel.xml',
+        'security/academy_tests_test_availability.xml',
 
         'views/academy_tests.xml',
         'views/academy_tests_answer_view.xml',
@@ -67,6 +77,18 @@
 
         'views/academy_tests_topic_training_module_link_view.xml',
         'views/academy_training_module_view.xml',
+        'views/academy_competency_unit_view.xml',
+        'views/academy_training_action_view.xml',
+        'views/academy_training_activity_view.xml',
+        'views/academy_trining_lesson_view.xml',
+        'views/academy_training_action_enrolment_view.xml',
+        'views/academy_student_view.xml',
+
+        'views/academy_tests_attempt_answer_view.xml',
+        'views/academy_tests_attempt_view.xml',
+        'views/academy_tests_correction_scale_view.xml',
+        'views/academy_tests_random_template_training_action_rel_view.xml',
+        'views/academy_tests_test_availability_view.xml',
 
         'report/academy_tests_report_assets.xml',
         'report/academy_test_report.xml',

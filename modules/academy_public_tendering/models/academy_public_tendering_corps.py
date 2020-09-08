@@ -57,3 +57,31 @@ class AcademyPublicTenderingVacancyPositionCorps(models.Model):
         help=('If the active field is set to false, it will allow you '
               'to hide record without removing it.')
     )
+
+    employment_group_id = fields.Many2one(
+        string='Employment group',
+        required=True,
+        readonly=False,
+        index=False,
+        default=None,
+        help='Choose employment group to which this record belongs',
+        comodel_name='academy.public.tendering.employment.group',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False
+    )
+
+    specialization_id = fields.Many2one(
+        string='Specialization',
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help='Choose the required specialization',
+        comodel_name='academy.public.tendering.required.specialization',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False
+    )
