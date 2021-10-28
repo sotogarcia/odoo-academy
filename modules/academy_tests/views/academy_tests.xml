@@ -17,6 +17,13 @@
             <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical')), (4, ref('academy_base.academy_group_teacher'))]"/>
         </record>
 
+        <record id="menu_test_utilities" model="ir.ui.menu" >
+            <field name="name">Utilities</field>
+            <field name="sequence" eval="15" />
+            <field name="parent_id" ref="academy_base.menu_academy_resources" />
+            <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical')), (4, ref('academy_base.academy_group_teacher'))]"/>
+        </record>
+
         <record id="menu_test_settings_top" model="ir.ui.menu" >
             <field name="name">Test</field>
             <field name="sequence" eval="10" />

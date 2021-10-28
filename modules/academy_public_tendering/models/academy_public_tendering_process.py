@@ -498,7 +498,6 @@ class AptPublicTendering(models.Model):
             if etype_set:
                 event_set = record.public_process_event_ids.filtered(
                     lambda x: x.event_type_id.id == etype_set.id)
-                print(event_set)
 
                 if event_set:
                     pass

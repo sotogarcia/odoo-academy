@@ -1,15 +1,22 @@
 # -*- coding: utf-8 -*-
-###############################################################################
-#    License, author and contributors information in:                         #
-#    __openerp__.py file at the root folder of this module.                   #
-###############################################################################
+""" AcademyTestsAttemptAnswer
+
+This module contains the academy.tests.attempt.answer Odoo model which stores
+all academy tests attempt answer attributes and behavior.
+"""
 
 from odoo import models, fields, api
 from odoo.tools.translate import _
 from logging import getLogger
 
-
 _logger = getLogger(__name__)
+
+
+USER_ACTIONS = [
+    ('blank', 'Leave blank'),
+    ('doubt', 'Doubt'),
+    ('answer', 'Answer'),
+]
 
 
 def _made_check():
@@ -29,7 +36,6 @@ class AcademyTestsAttemptAnswer(models.Model):
 
     _rec_name = 'id'
     _order = 'instant ASC'
-
 
     active = fields.Boolean(
         string='Active',
@@ -55,7 +61,7 @@ class AcademyTestsAttemptAnswer(models.Model):
     )
 
     question_link_id = fields.Many2one(
-        string='Question',
+        string='Question link',
         required=True,
         readonly=False,
         index=False,
@@ -98,13 +104,23 @@ class AcademyTestsAttemptAnswer(models.Model):
         index=False,
         default='blank',
         help='What did the user do?',
-        selection=[
-            ('blank', 'Leave blank'),
-            ('doubt', 'Doubt'),
-            ('answer', 'Answer'),
-        ]
+        selection=USER_ACTIONS
     )
 
+    question_id = fields.Many2one(
+        string='Question',
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help=False,
+        comodel_name='academy.tests.question',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False,
+        related='question_link_id.question_id'
+    )
 
     _sql_constraints = [
         (
@@ -113,7 +129,6 @@ class AcademyTestsAttemptAnswer(models.Model):
             _(u'Field answer_id is mandatory except for blanks')
         )
     ]
-
 
     @api.onchange('attempt_id')
     def _onchange_attempt_id(self):
@@ -133,3 +148,36 @@ class AcademyTestsAttemptAnswer(models.Model):
                 'answer_id': [('question_id', '=', question_id.id)]
             }
         }
+
+    @api.onchange('user_action')
+    def _onchange_user_action(self):
+        for record in self:
+            if record.user_action == 'blank':
+                record.answer_id = None
+
+    @api.depends('answer_id', 'user_action')
+    def name_get(self):
+        result = []
+        for record in self:
+            if isinstance(record.id, models.NewId):
+                name = _('New attempt answer')
+            else:
+                answer = record.answer_id.name or _('Answer')
+                action = record.user_action or _('Blank')
+                name = '{} - {} - #{}'.format(answer, action, record.id)
+
+            result.append((record.id, name))
+
+        return result
+
+    def write(self, values):
+        """ Remove answer_id when user action is True
+        """
+
+        user_action = values.get('user_action', False)
+        if user_action == 'blank':
+            values['answer_id'] = None
+
+        result = super(AcademyTestsAttemptAnswer, self).write(values)
+
+        return result

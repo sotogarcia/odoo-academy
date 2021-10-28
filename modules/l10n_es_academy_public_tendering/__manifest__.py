@@ -42,8 +42,7 @@
         'academy_public_tendering'
     ],
     'external_dependencies': {
-        'python': [
-        ],
+        'python': [],
     },
     'data': [
         'data/academy_public_tendering_autonomous_community_data.xml',

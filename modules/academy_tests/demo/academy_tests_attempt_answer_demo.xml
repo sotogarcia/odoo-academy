@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="academy_tests_attempt_answer_demo_1" model="academy.tests.attempt.answer">
+            <field name="active" eval="True" />
+            <field name="user_action">doubt</field>
+            <field name="attempt_id" ref="academy_tests.academy_tests_attempt_demo" />
+            <field name="question_link_id" ref="academy_tests.academy_tests_test_question_rel_1" />
+            <field name="answer_id" ref="academy_tests.academy_tests_answer_A_to_question_1" />
+        </record>
+
+        <record id="academy_tests_attempt_answer_demo_2" model="academy.tests.attempt.answer">
+            <field name="active" eval="True" />
+            <field name="user_action">answer</field>
+            <field name="attempt_id" ref="academy_tests.academy_tests_attempt_demo" />
+            <field name="question_link_id" ref="academy_tests.academy_tests_test_question_rel_2" />
+            <field name="answer_id" ref="academy_tests.academy_tests_answer_A_to_question_2" />
+        </record>
+
+        <record id="academy_tests_attempt_answer_demo_3" model="academy.tests.attempt.answer">
+            <field name="active" eval="True" />
+            <field name="user_action">answer</field>
+            <field name="attempt_id" ref="academy_tests.academy_tests_attempt_demo" />
+            <field name="question_link_id" ref="academy_tests.academy_tests_test_question_rel_3" />
+            <field name="answer_id" ref="academy_tests.academy_tests_answer_A_to_question_3" />
+        </record>
+
+        <record id="academy_tests_attempt_answer_demo_4" model="academy.tests.attempt.answer">
+            <field name="active" eval="True" />
+            <field name="user_action">doubt</field>
+            <field name="attempt_id" ref="academy_tests.academy_tests_attempt_demo" />
+            <field name="question_link_id" ref="academy_tests.academy_tests_test_question_rel_5" />
+            <field name="answer_id" ref="academy_tests.academy_tests_answer_A_to_question_5" />
+        </record>
+
+    </data>
+</openerp>
+
+
+
+
+
+
+
+

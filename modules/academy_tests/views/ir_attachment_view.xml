@@ -8,16 +8,83 @@
             <field name="model">ir.attachment</field>
             <field name="type">tree</field>
             <field name="mode">primary</field>
-            <field name="priority" eval="16" />
+            <field name="priority" eval="99" />
             <field name="active" eval="True" />
             <field name="arch" type="xml">
                 <tree string="Attachment tree" create="1" delete="1" edit="1" editable="top">
-                    <field name="name" class="oe_field_name" />
+                    <field name="name" class="oe_field_name" string="Name" />
                     <field name="type" class="oe_field_type" />
                     <field name="mimetype" class="oe_field_mimetype" />
                 </tree>
             </field>
         </record>
 
+        <record id="view_ir_attachment_form" model="ir.ui.view">
+            <field name="name">Attachment form</field>
+            <field name="model">ir.attachment</field>
+            <field name="type">form</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="99" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="base.view_attachment_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//div[@name='creation_div']" position="after">
+                    <field name="owner_id" class="oe_field_owner_id"
+                        groups="academy_base.academy_group_technical" />
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_attachment_search" model="ir.ui.view">
+            <field name="model">ir.attachment</field>
+            <field name="type">search</field>
+            <field name="mode">extension</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="base.view_attachment_search" />
+            <field name="arch" type="xml">
+                <xpath expr="//filter[@name='my_documents_filter']" position="attributes">
+                    <attribute name="string">Created by me</attribute>
+                    <attribute name="help">Filter by documents created by me</attribute>
+                </xpath>
+                <xpath expr="//filter[@name='my_documents_filter']" position="after">
+                    <filter string="My documents"
+                        name="my_own_documents_filter"
+                        domain="[('owner_id','=', uid)]"
+                        context="{}"
+                        help="Filter on my documents" />
+                </xpath>
+            </field>
+        </record>
+
+        <record id="action_manage_attachments_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Manage attachments</field>
+            <field name="res_model">ir.attachment</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="target">current</field>
+            <field name="domain">[
+                '|',
+                ('res_model', '=', 'academy.tests.question'),
+                ('res_model', '=', False)
+            ]</field>
+            <field name="context">{
+                'tree_view_ref': 'academy_tests.view_ir_attachment_tree',
+                'form_view_ref': 'academy_tests.view_ir_attachment_form',
+                'search_default_my_documents_filter': 0,
+                'search_default_my_own_documents_filter': 1,
+                'default_res_model': 'academy.tests.question',
+                'default_res_id': 0
+            }</field>
+            <field name="search_view_id" ref="view_attachment_search" />
+        </record>
+
+        <record id="menu_manage_attachments" model="ir.ui.menu" >
+            <field name="name">Manage attachments</field>
+            <field name="sequence" eval="5" />
+            <field name="action" ref="action_manage_attachments_act_window" />
+            <field name="parent_id" ref="academy_base.menu_academy_resources" />
+            <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical')), (4, ref('academy_base.academy_group_teacher'))]"/>
+        </record>
     </data>
 </openerp>

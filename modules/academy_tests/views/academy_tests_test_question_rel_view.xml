@@ -24,13 +24,41 @@
             <field name="priority" eval="16" />
             <field name="active" eval="True" />
             <field name="arch" type="xml">
-                <tree string="Question" create="1" delete="1" edit="1" editable="bottom">
-                    <field name="question_id" class="oe_field_name" />
-                    <field name="topic_id" class="oe_field_topic_id" readonly="1" />
-                    <field name="level_id" class="oe_field_level_id" readonly="1"  />
-                    <field name="answer_count" class="oe_field_answer_count" readonly="1"  />
-                    <field name="attachment_count" class="oe_field_attachment_count" readonly="1"  />
+                <tree string="Question" create="1" delete="1" edit="1" editable="bottom"
+                    decoration-success="not depends_on_id and not status == 'draft'"
+                    decoration-warning="depends_on_id" decoration-danger="status == 'draft'"
+                    class="view_academy_tests_test_question_rel_tree">
+
+                    <field name="status" class="oe_field_status" invisible="1" readonly="1" />
+                    <field name="depends_on_id" class="oe_field_depends_on_id" invisible="1" readonly="1" />
+
+                    <field name="index" class="oe_field_index oe_read_only" />
+                    <field name="question_id" class="oe_field_name"
+                        context="{'search_default_all_available_questions': 1}" />
+                    <field name="type_id" class="oe_field_type_id" readonly="1" />
+                    <field name="topic_id" class="oe_field_topic_id" readonly="1" string="Version" />
+                    <field name="topic_version_ids" class="oe_field_topic_version_ids" widget="many2many_tags" readonly="1" />
+                    <field name="category_ids" class="oe_field_category_ids" widget="many2many_tags" readonly="1" />
+                    <field name="level_id" class="oe_field_level_id" readonly="1" />
+                    <field name="attachment_count" class="oe_field_attachment_count" readonly="1" string="Attachments" />
+
                 </tree>
+            </field>
+        </record>
+
+                <!-- Tree view for "academy.tests.test.question.rel" -->
+        <record id="view_academy_tests_test_question_rel_embed_tree" model="ir.ui.view">
+            <field name="name">view.academy.tests.test.question.rel.tree</field>
+            <field name="model">academy.tests.test.question.rel</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="20" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="view_academy_tests_test_question_rel_tree" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='index']" position="before">
+                    <field name="sequence" class="oe_field_sequence oe_edit_only" widget="handle" />
+                </xpath>
             </field>
         </record>
 
@@ -40,11 +68,67 @@
             <field name="model">academy.tests.test.question.rel</field>
             <field name="type">form</field>
             <field name="mode">primary</field>
-            <field name="priority" eval="16" />
+            <field name="priority" eval="20" />
             <field name="active" eval="True" />
             <field name="inherit_id" ref="view_academy_question_form" />
             <field name="arch" type="xml">
-                <xpath expr="." position="inside">
+
+                <xpath expr="//div[@name='button_box']" position="attributes">
+                    <attribute name="attrs">{'invisible': [('question_id', '=', False), ('perform', '=', 'link')]}</attribute>
+                </xpath>
+
+                <xpath expr="//div[@id='academy-tests-question-title']" position="attributes">
+                    <attribute name="attrs">{'invisible': [('question_id', '=', False), ('perform', '=', 'link')]}</attribute>
+                </xpath>
+
+                <xpath expr="//group[@id='academy-tests-question-attributes']" position="attributes">
+                    <attribute name="attrs">{'invisible': [('question_id', '=', False), ('perform', '=', 'link')]}</attribute>
+                </xpath>
+
+                <xpath expr="//notebook[@id='academy-tests-question-data']" position="attributes">
+                    <attribute name="attrs">{'invisible': [('question_id', '=', False), ('perform', '=', 'link')]}</attribute>
+                </xpath>
+
+                <xpath expr="//div[@name='button_box']" position="after">
+                    <group string="Choose question" attrs="{'invisible': ['|', ('question_id', '!=', False), ('perform', '=', 'new')]}">
+                        <field name="perform" required="1" class="oe_field_perform" />
+                        <field name="question_id" class="oe_field_question_id" required="0" />
+                        <field name="test_id" class="oe_field_test_id" invisible="1" colspan="6" />
+                    </group>
+                </xpath>
+
+            </field>
+        </record>
+
+
+        <!-- Form view for "academy.tests.test.question.rel" -->
+        <record id="view_academy_tests_test_question_rel_kanban" model="ir.ui.view">
+            <field name="name">view.academy.tests.test.question.rel.kanban</field>
+            <field name="model">academy.tests.test.question.rel</field>
+            <field name="type">kanban</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="20" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="view_academy_tests_question_kanban" />
+            <field name="arch" type="xml">
+                <xpath expr="//kanban" position="attributes">
+                    <attribute name="create">0</attribute>
+                </xpath>
+                <xpath expr="//div[@id='question_kanban_status_menu_button']" position="replace" />
+            </field>
+        </record>
+
+        <!-- Form view for "academy.tests.test.question.rel" -->
+        <record id="view_academy_tests_test_question_rel_pivot" model="ir.ui.view">
+            <field name="name">view.academy.tests.test.question.rel.pivot</field>
+            <field name="model">academy.tests.test.question.rel</field>
+            <field name="type">pivot</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="20" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="view_academy_questions_pivot" />
+            <field name="arch" type="xml">
+                <xpath expr="//pivot" position="attributes">
 
                 </xpath>
             </field>
@@ -56,15 +140,38 @@
             <field name="model">academy.tests.test.question.rel</field>
             <field name="type">search</field>
             <field name="mode">primary</field>
-            <field name="priority" eval="16" />
+            <field name="priority" eval="20" />
             <field name="active" eval="True" />
-            <field name="inherit_id" ref="view_academy_question_search" />
+            <field name="inherit_id"></field>
             <field name="arch" type="xml">
-               <xpath expr="." position="inside">
-
-                </xpath>
+                <search string="Test question link search view">
+                    <field name="name" class="oe_field_name" />
+                    <field name="topic_id" class="oe_field_topic_id" />
+                    <field name="category_ids" class="oe_field_category_ids" />
+                </search>
             </field>
+        </record>
+
+        <record id="action_test_question_links_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Test question links</field>
+            <field name="res_model">academy.tests.test.question.rel</field>
+            <field name="view_mode">kanban,tree,form,pivot</field>
+            <field name="target">current</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="limit">0</field>
+            <field name="search_view_id" ref="view_academy_tests_test_question_rel_search" />
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('view_academy_tests_test_question_rel_tree')}),
+                (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_academy_tests_test_question_rel_kanban')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('view_academy_tests_test_question_rel_form')}),
+                (0, 0, {'view_mode': 'pivot', 'view_id': ref('view_academy_tests_test_question_rel_pivot')})]" />
         </record>
 
     </data>
 </openerp>
+
+
+
+

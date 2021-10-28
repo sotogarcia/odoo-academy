@@ -66,7 +66,7 @@
                             <label for="name" class="oe_edit_only" />
                             <h1>
                                 <field name="name" class="oe_field_name"
-                                    placeholder="Name" />
+                                    placeholder="Enter new name" />
                             </h1>
                         </div>
 
@@ -91,17 +91,16 @@
                                     placeholder="Enter new description" />
                             </page>
                             <page string="Attachments" class="oe_page_attachments" accesskey="A">
-                                <field name="ir_attachment_ids" class="oe_field_ir_attachment_ids"
-                                    placeholder="Choose related attachments">
+                                <field name="ir_attachment_ids" class="oe_field_ir_attachment_ids">
                                     <tree>
                                         <field name="name" class="oe_field_name"
-                                            placeholder="Enter new value for name" />
+                                            placeholder="Enter new name" />
                                         <field name="type" class="oe_field_type"
-                                            placeholder="Enter new value for type" />
+                                            placeholder="Enter new type" />
                                         <field name="mimetype" class="oe_field_mimetype"
-                                            placeholder="Enter new value for MIME type" />
+                                            placeholder="Enter new MIME type" />
                                         <field name="file_size" class="oe_field_file_size"
-                                            placeholder="Enter new value for file size" />
+                                            placeholder="Enter the file size" />
                                     </tree>
                                 </field>
                             </page>
@@ -117,11 +116,7 @@
                                             help="Click it to reload directory file list" />
                                 </group>
                             </page>
-<!--                             <page string="Historical" class="oe_page_historical" accesskey="H">
-                                <field name="historical_ids" class="oe_field_historical_ids"
-                                    placeholder="Choose historical related resources"
-                                    context="{'tree_view_ref':'academy_base.view_academy_training_resource_embed_tree'}" />
-                            </page> -->
+
                         </notebook>
                     </sheet>
 
@@ -242,7 +237,7 @@
 
         <!-- Main menu for model.name -->
         <record id="menu_resources" model="ir.ui.menu" >
-            <field name="name">Resources</field>
+            <field name="name">Training resources</field>
             <field name="sequence" eval="10" />
             <field name="action" ref="action_resources_act_window" />
             <field name="parent_id" ref="academy_base.menu_academy_resources" />

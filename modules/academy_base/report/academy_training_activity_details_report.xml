@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="view_academy_training_activity_details_document_qweb" model="ir.ui.view">
+            <field name="name">Training activity details document</field>
+            <field name="model">academy.tests.test</field>
+            <field name="type">qweb</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <t t-name="academy_base.view_academy_training_activity_details_document_qweb">
+
+                    <div class="page">
+                        <div class="oe_structure"/>
+
+                        <div class="clearfix"></div>
+
+                        <div class="row mb32 mt16">
+                            <section class="col-12">
+
+                                <header>
+                                    <h2>IDENTIFICATION OF THE TRAINING ACTIVITY</h2>
+                                </header>
+
+                                <div class="section-content">
+
+                                    <!-- GENERAL DATA  - - - - - - - - - - - - - - - - - - - -->
+                                    <dl class="d-block clearfix">
+                                        <dt class="mr-2" style="float: left;">Denomination:</dt>
+                                        <dd style="float: left;"><t t-esc="o.name" />&#160;</dd>
+                                        <dt class="mr-2" style="float: left; clear: left;">Code:</dt>
+                                        <dd style="float: left;"><t t-esc="o.activity_code" />&#160;</dd>
+                                        <dt class="mr-2" style="float: left; clear: left;">Professional family:</dt>
+                                        <dd style="float: left;"><t t-if="o.professional_family_id"><t t-esc="o.professional_family_id.name" />&#160;</t></dd>
+                                        <dt class="mr-2" style="float: left; clear: left;">Professional area:</dt>
+                                        <dd style="float: left;"><t t-if="o.professional_area_id"><t t-esc="o.professional_area_id.name" />&#160;</t></dd>
+                                        <dt class="mr-2" style="float: left; clear: left;">Qualification level:</dt>
+                                        <dd style="float: left;"><t t-if="o.qualification_level_id"><t t-esc="o.qualification_level_id.name" />&#160;</t></dd>
+                                    </dl>
+
+                                    <!-- LIST OF COMPETENCY UNITS  - - - - - - - - - - - - - -->
+                                    <h3 class="mt-4 mb-2">List of competence units</h3>
+
+                                    <t t-if="o.competency_unit_ids">
+                                        <ul class="list-unstyled unit_list">
+                                        <t t-foreach="o.competency_unit_ids" t-as="competency_unit_id">
+                                            <li>
+                                                <strong class="mr-2">
+                                                    <span t-if="competency_unit_id.competency_code"><t t-esc="competency_unit_id.competency_code" /></span>
+                                                    <span t-else="" class="unit_item">UNIT </span>:
+                                                </strong>
+                                                <span><t t-esc="competency_unit_id.competency_name" /></span>
+                                            </li>
+                                        </t>
+                                        </ul>
+                                    </t>
+                                    <t t-else="">It has not been specified.</t>
+
+                                    <!-- GENERAL COMPETENCE  - - - - - - - - - - - - - - - - -->
+                                    <h3 class="mt-4 mb-2">General competence</h3>
+                                    <p t-if="o.general_competence" class="text-justify"><t t-esc="o.general_competence" /></p>
+                                    <p t-else="">It has not been specified.</p>
+
+                                    <h3 class="mt-4 mb-2">Professional environment</h3>
+                                    <h4 class="mt-2">Professional field</h4>
+                                    <p class="text-justify">
+                                        <t t-if="o.professional_field_id">
+                                            <strong><t t-esc="o.professional_field_id.name" /></strong>
+                                            <span><t t-esc="o.professional_field_id.description" /></span>   
+                                        </t>
+                                        <t t-else="">It has not been specified.</t>
+                                    </p>
+                                    <h4 class="mt-2">Professional sectors</h4>
+                                    <t t-if="o.professional_sector_ids">
+                                        <t t-foreach="o.professional_sector_ids" t-as="professional_sector_id">
+                                            <dl>
+                                                <dt><t t-esc="professional_sector_id.name" /></dt>
+                                                <dd class="text-justify"><t t-esc="professional_sector_id.description" /></dd>
+                                            </dl>
+                                        </t>
+                                    </t>
+                                    <t t-else="">It has not been specified.</t>
+
+                                    <!-- LIST OF TRAINING MODULES  - - - - - - - - - - - - - -->
+                                    <h3 class="mt-4 mb-2">List of training modules</h3>
+                                    <t t-if="o.competency_unit_ids">
+                                        <ul class="list-unstyled module_list">
+                                        <t t-foreach="o.competency_unit_ids" t-as="competency_unit_id">
+                                            <li>
+                                                <t t-set="module_id" t-value="competency_unit_id.training_module_id" />
+                                                <strong class="mr-2">
+                                                    <span t-if="module_id.module_code"><t t-esc="module_id.module_code" /></span>
+                                                    <span t-else="" class="module_item">MODULE </span>:
+                                                </strong>
+                                                <span><t t-esc="module_id.name" /></span>
+                                            </li>
+                                        </t>
+                                        </ul>
+                                    </t>
+                                    <t t-else="">It has not been specified.</t>
+
+                                </div>
+
+                            </section>
+                        </div>
+
+                        <div class="row mb32 mt16">
+                            <section class="col-12">
+
+                                <header>
+                                    <h2>PROFESSIONAL PROFILE</h2>
+                                </header>
+
+                                <div class="section-content unit_list">
+                                    <t t-foreach="o.competency_unit_ids" t-as="competency_unit_id">
+                                        <t t-set="module_id" t-value="competency_unit_id.training_module_id" />
+                                        <div class="mt-6">
+                                            <dl class="clearfix">
+                                                <dt class="mr-2" style="float: left;">COMPETENCY UNIT</dt>
+                                                <dd style="float: left;"><b class="unit_item" />&#160;</dd>
+                                                <dt class="mr-2" style="float: left; clear: left;">Denomination:</dt>
+                                                <dd style="float: left;"><t t-esc="competency_unit_id.competency_name" />&#160;</dd>
+                                                <dt class="mr-2" style="float: left; clear: left;">Code:</dt>
+                                                <dd style="float: left;"><t t-esc="competency_unit_id.competency_code" />&#160;</dd>
+                                                <dt class="mr-2" style="float: left; clear: left;">Description:</dt>
+                                                <dd style="float: left; clear: both;">
+                                                    <t t-if="competency_unit_id.description"><t t-esc="competency_unit_id.description" />&#160;</t>
+                                                    <t t-else="">It has not been specified.&#160;</t>
+                                                </dd>
+                                                <dt class="mr-2" style="float: left; clear: left;">Module:</dt>
+                                                <dd style="float: left;">
+                                                    <span t-if="module_id.module_code"><t t-esc="module_id.module_code" /> - </span>
+                                                    <t t-esc="module_id.name" />&#160;
+                                                </dd>
+                                            </dl>
+
+                                            <div id="training_unit_ids">
+                                                <t t-if="len(module_id.training_unit_ids) &gt; 1">
+                                                    <ol>
+                                                        <t t-foreach="module_id.training_unit_ids" t-as="unit_id">
+                                                            <li>
+                                                                <span t-if="unit_id.module_code"><t t-esc="unit_id.module_code" /> - </span>
+                                                                <t t-esc="unit_id.name" />
+                                                            </li>
+                                                        </t>
+                                                    </ol>
+                                                </t>
+                                            </div>
+
+                                        </div>
+                                    </t>
+                                </div>
+
+                            </section>
+                        </div> 
+
+                            
+
+                    </div> <!-- page -->
+
+                </t> <!-- t-name -->
+
+            </field>
+        </record>
+
+
+        <record id="view_academy_training_activity_details_qweb" model="ir.ui.view">
+            <field name="name">Training activity details report</field>
+            <field name="model">academy.training.activity</field>
+            <field name="type">qweb</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <t t-name="academy_base.view_academy_training_activity_details_qweb">
+                    <t t-call="web.html_container">
+                        <t t-foreach="docs" t-as="o">
+                            <t t-call="web.external_layout">
+                                <t t-call="academy_base.view_academy_training_activity_details_document_qweb" />
+                            </t>
+                        </t> 
+                    </t> <!-- t-html_container -->
+                </t>
+            </field>
+        </record>
+
+        <record id="action_report_academy_training_activity_details" model="ir.actions.report">
+            <field name="name">Training activity details</field>
+            <field name="model">academy.training.activity</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">academy_base.view_academy_training_activity_details_qweb</field>
+            <field name="attachment_use" eval="False" />
+            <field name="attachment">(object.name+'.pdf')</field>
+            <field name="paperformat_id" ref="base.paperformat_euro" />
+            <field name="help">Training activity details report</field>
+            <field name="binding_model_id" ref="academy_base.model_academy_training_activity" />
+        </record>
+
+    </data>
+</openerp>
+
+

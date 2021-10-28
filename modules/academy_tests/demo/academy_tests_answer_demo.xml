@@ -92,7 +92,7 @@
             <field name="name">First logo (1)</field>
             <field name="active" eval="True" />
             <field name="question_id" ref="academy_tests_question_demo_4" />
-            <field name="is_correct" eval="True" />
+            <field name="is_correct" eval="False" />
             <field name="sequence" eval="1" />
         </record>
 
@@ -100,7 +100,7 @@
             <field name="name">Second logo (2)</field>
             <field name="active" eval="True" />
             <field name="question_id" ref="academy_tests_question_demo_4" />
-            <field name="is_correct" eval="False" />
+            <field name="is_correct" eval="True" />
             <field name="sequence" eval="2" />
         </record>
 
@@ -130,6 +130,37 @@
             <field name="sequence" eval="2" />
         </record>
 
+        <record id="academy_tests_answer_A_to_question_6" model="academy.tests.answer">
+            <field name="name">Pink</field>
+            <field name="active" eval="True" />
+            <field name="question_id" ref="academy_tests_question_demo_6" />
+            <field name="is_correct" eval="True" />
+            <field name="sequence" eval="2" />
+        </record>
+
+        <record id="academy_tests_answer_B_to_question_6" model="academy.tests.answer">
+            <field name="name">Black</field>
+            <field name="active" eval="True" />
+            <field name="question_id" ref="academy_tests_question_demo_6" />
+            <field name="is_correct" eval="False" />
+            <field name="sequence" eval="2" />
+        </record>
+
+        <record id="academy_tests_answer_C_to_question_6" model="academy.tests.answer">
+            <field name="name">Transparent</field>
+            <field name="active" eval="True" />
+            <field name="question_id" ref="academy_tests_question_demo_6" />
+            <field name="is_correct" eval="True" />
+            <field name="sequence" eval="2" />
+        </record>
+
+        <record id="academy_tests_answer_D_to_question_6" model="academy.tests.answer">
+            <field name="name">White</field>
+            <field name="active" eval="True" />
+            <field name="question_id" ref="academy_tests_question_demo_6" />
+            <field name="is_correct" eval="False" />
+            <field name="sequence" eval="2" />
+        </record>
 
         <record id="academy_tests_question_demo_1" model="academy.tests.question">
             <field name="active" eval="True" />
@@ -151,5 +182,8 @@
             <field name="active" eval="True" />
         </record>
 
+        <record id="academy_tests_question_demo_6" model="academy.tests.question">
+            <field name="active" eval="True" />
+        </record>
     </data>
 </openerp>

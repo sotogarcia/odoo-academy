@@ -14,11 +14,12 @@
             <field name="description">GNU Lesser General Public License</field>
             <field name="active" eval="True" />
             <field name="type_id" ref="academy_tests.academy_tests_question_type_1" />
-            <field name="topic_id" ref="academy_tests.academy_tests_topic_demo" />
+            <field name="topic_id" ref="academy_tests.academy_tests_topic_demo_1" />
+            <field name="topic_version_ids" eval="[(4, ref('academy_tests.academy_tests_topic_version_demo_1'))]" />
             <field name="category_ids" eval="[(4, ref('academy_tests.academy_tests_category_demo_brand'))]" />
             <field name="tag_ids" eval="[(4, ref('academy_tests.academy_tests_tag_demo_brand'))]" />
             <field name="level_id" ref="academy_tests.academy_level_12" />
-            <field name="owner_id" ref="base.user_admin" />
+            <field name="owner_id" ref="academy_base.res_users_demo_teacher" />
             <field name="active" eval="False" />
         </record>
 
@@ -27,11 +28,12 @@
             <field name="preamble">Odoo is developed by a heterogeneous community, but all programmers use the same language</field>
             <field name="active" eval="True" />
             <field name="type_id" ref="academy_tests.academy_tests_question_type_1" />
-            <field name="topic_id" ref="academy_tests.academy_tests_topic_demo" />
+            <field name="topic_id" ref="academy_tests.academy_tests_topic_demo_1" />
+            <field name="topic_version_ids" eval="[(4, ref('academy_tests.academy_tests_topic_version_demo_3'))]" />
             <field name="category_ids" eval="[(4, ref('academy_tests.academy_tests_category_demo_development'))]" />
             <field name="tag_ids" eval="[(4, ref('academy_tests.academy_tests_tag_demo_code'))]" />
-            <field name="level_id" ref="academy_tests.academy_level_12" />
-            <field name="owner_id" ref="base.user_admin" />
+            <field name="level_id" ref="academy_tests.academy_level_13" />
+            <field name="owner_id" ref="academy_base.res_users_demo_teacher" />
             <field name="active" eval="False" />
         </record>
 
@@ -40,11 +42,12 @@
             <field name="description">PostgreSQL is an object-relational database management system (ORDBMS)</field>
             <field name="active" eval="True" />
             <field name="type_id" ref="academy_tests.academy_tests_question_type_1" />
-            <field name="topic_id" ref="academy_tests.academy_tests_topic_demo" />
+            <field name="topic_id" ref="academy_tests.academy_tests_topic_demo_1" />
+            <field name="topic_version_ids" eval="[(4, ref('academy_tests.academy_tests_topic_version_demo_1'))]" />
             <field name="category_ids" eval="[(4, ref('academy_tests.academy_tests_category_demo_development')), (4, ref('academy_tests.academy_tests_category_demo_brand'))]" />
             <field name="tag_ids" eval="[(4, ref('academy_tests.academy_tests_tag_demo_third_party')), (4, ref('academy_tests.academy_tests_tag_demo_code'))]" />
-            <field name="level_id" ref="academy_tests.academy_level_12" />
-            <field name="owner_id" ref="base.user_admin" />
+            <field name="level_id" ref="academy_tests.academy_level_15" />
+            <field name="owner_id" ref="academy_base.res_users_demo_teacher" />
             <field name="active" eval="False" />
         </record>
 
@@ -53,12 +56,13 @@
             <field name="preamble">OpenERP logo was changed at the same time the name was changed</field>
             <field name="description">Odoo logos was available to download in Odoo home page</field>
             <field name="active" eval="True" />
-            <field name="type_id" ref="academy_tests.academy_tests_question_type_1" />
-            <field name="topic_id" ref="academy_tests.academy_tests_topic_demo" />
+            <field name="type_id" ref="academy_tests.academy_tests_question_type_3" />
+            <field name="topic_id" ref="academy_tests.academy_tests_topic_demo_1" />
+            <field name="topic_version_ids" eval="[(4, ref('academy_tests.academy_tests_topic_version_demo_1'))]" />
             <field name="category_ids" eval="[(4, ref('academy_tests.academy_tests_category_demo_brand'))]" />
             <field name="tag_ids" eval="[(4, ref('academy_tests.academy_tests_tag_demo_brand'))]" />
             <field name="level_id" ref="academy_tests.academy_level_12" />
-            <field name="owner_id" ref="base.user_admin" />
+            <field name="owner_id" ref="academy_base.res_users_demo_teacher" />
             <field name="active" eval="False" />
         </record>
 
@@ -66,11 +70,25 @@
             <field name="name">Which is the Odoo Spain homepage URL?</field>
             <field name="active" eval="True" />
             <field name="type_id" ref="academy_tests.academy_tests_question_type_1" />
-            <field name="topic_id" ref="academy_tests.academy_tests_topic_demo" />
+            <field name="topic_id" ref="academy_tests.academy_tests_topic_demo_1" />
+            <field name="topic_version_ids" eval="[(4, ref('academy_tests.academy_tests_topic_version_demo_1'))]" />
             <field name="category_ids" eval="[(4, ref('academy_tests.academy_tests_category_demo_brand'))]" />
             <field name="tag_ids" eval="[(4, ref('academy_tests.academy_tests_tag_demo_brand'))]" />
-            <field name="level_id" ref="academy_tests.academy_level_12" />
-            <field name="owner_id" ref="base.user_admin" />
+            <field name="level_id" ref="academy_tests.academy_level_14" />
+            <field name="owner_id" ref="academy_base.res_users_demo_technical" />
+            <field name="active" eval="False" />
+        </record>
+
+        <record id="academy_tests_question_demo_6" model="academy.tests.question">
+            <field name="name">Which is the color of the Invisible Pink Unicorn?</field>
+            <field name="active" eval="True" />
+            <field name="type_id" ref="academy_tests.academy_tests_question_type_1" />
+            <field name="topic_id" ref="academy_tests.academy_tests_topic_demo_2" />
+            <field name="topic_version_ids" eval="[(4, ref('academy_tests.academy_tests_topic_version_demo_2'))]" />
+            <field name="category_ids" eval="[(4, ref('academy_tests.academy_tests_category_demo_concepts'))]" />
+            <field name="level_id" ref="academy_tests.academy_level_11" />
+            <field name="owner_id" ref="academy_base.res_users_demo_technical" />
+            <field name="authorship" eval="False" />
             <field name="active" eval="False" />
         </record>
 

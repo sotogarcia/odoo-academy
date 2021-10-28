@@ -26,7 +26,7 @@
                 <tree string="academy_public_tendering_vacancy_position_tree" create="1" delete="1" edit="1">
                     <field name="sequence" class="od_field_sequence" widget="handle" />
                     <field name="academy_public_tendering_vacancy_position_type_id" class="oe-field-academy-public-tendering-vacancy-position-type" />
-                    <field name="name" class="oe_field_name" required="0" />
+                    <field name="name" class="oe_field_name" required="0" string="Name" />
                     <field name="quantity" class="oe_field_total_of_vacancies" />
                 </tree>
             </field>
@@ -62,19 +62,19 @@
                             <label for="name" class="oe_edit_only" />
                             <h1>
                                 <field name="name" class="oe_field_name"
-                                    placeholder="Enter new value for name" />
+                                    placeholder="Enter new name" />
                             </h1>
                         </div>
 
                         <group col="1" string="Description">
-                            <field name="academy_public_tendering_process_id" class="oe_field_academy_public_tendering_process_id"
-                                placeholder="Choose the related process" />
-                            <field name="academy_public_tendering_vacancy_position_type_id" class="oe_field_academy_public_tendering_vacancy_position_type_id"
-                                placeholder="Choose vacancy position type" />
+                            <field name="academy_public_tendering_process_id"
+                                class="oe_field_academy_public_tendering_process_id" />
+                            <field name="academy_public_tendering_vacancy_position_type_id"
+                                class="oe_field_academy_public_tendering_vacancy_position_type_id" />
                             <field name="quantity" class="oe_field_quantity"
-                                placeholder="Enter new value for quantity" />
+                                placeholder="Enter new quantity" />
                             <field name="description" class="oe_field_description" nolabel="1"
-                                placeholder="Enter new value for description" />
+                                placeholder="Enter new description" />
                         </group>
 
                     </sheet>

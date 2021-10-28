@@ -40,18 +40,24 @@
             <field name="arch" type="xml">
                 <form string="academy_tag_form" create="1" delete="1" edit="1">
                     <sheet>
-                        <div class="oe_title">
+                        <div class="oe_button_box" name="button_box">
+                            <widget name="web_ribbon" title="Archived" bg_color="bg-danger"
+                                attrs="{'invisible': [('active', '=', True)]}" />
+                        </div>
+
+                        <div class="oe_title w-100">
+                            <field name="active" class="oe_field_active" invisible="1" />
                             <label for="name" class="oe_edit_only" />
                             <h1>
                                 <field name="name" class="oe_field_name"
-                                    string="Name" placeholder="Name"
-                                    help="Enter new value for name" />
+                                    string="Name" placeholder="Enter new name"
+                                    help="Enter new name" />
                             </h1>
                         </div>
 
                         <group col="2">
                             <field name="description" class="oe_field_description"
-                                placeholder="Enter new text for description" />
+                                placeholder="Enter new description" />
                         </group>
                     </sheet>
                 </form>

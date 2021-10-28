@@ -33,6 +33,7 @@ class ChangeOwnerWizard(models.TransientModel):
     _rec_name = 'id'
     _order = 'id ASC'
 
+    _inherit = ['academy.abstract.owner']
 
     question_ids = fields.Many2many(
         string='Questions',
@@ -51,7 +52,7 @@ class ChangeOwnerWizard(models.TransientModel):
     )
 
     test_ids = fields.Many2many(
-        string='Tests',
+        string='Change owner wizard tests',
         required=False,
         readonly=False,
         index=False,
@@ -66,18 +67,18 @@ class ChangeOwnerWizard(models.TransientModel):
         limit=None
     )
 
-    owner_id = fields.Many2one(
-        string='Owner',
+    authorship = fields.Selection(
+        string='Authorship',
         required=True,
         readonly=False,
         index=False,
-        default=lambda self: self.default_owner_id(),
-        help='Choose new owner',
-        comodel_name='res.users',
-        domain=[],
-        context={},
-        ondelete='cascade',
-        auto_join=False
+        default='preserve',
+        help=False,
+        selection=[
+            ('preserve', 'Preserve'),
+            ('own', 'My own'),
+            ('third', 'Third-party')
+        ]
     )
 
     state = fields.Selection(
@@ -89,7 +90,6 @@ class ChangeOwnerWizard(models.TransientModel):
         help='Current wizard step',
         selection=WIZARD_STATES
     )
-
 
     def default_question_ids(self):
         """ It computes default question list loading all has been selected
@@ -104,7 +104,6 @@ class ChangeOwnerWizard(models.TransientModel):
 
         return [(6, None, ids)] if ids else False
 
-
     def default_test_ids(self):
         """ It computes default question list loading all has been selected
         before wizard opening
@@ -118,17 +117,16 @@ class ChangeOwnerWizard(models.TransientModel):
 
         return [(6, None, ids)] if ids else False
 
-
-    def default_owner_id(self):
-        return self.env.context.get('uid', None)
-
-
     def default_state(self):
         model = self.env.context.get('active_model', None)
 
         return WIZARD_STATES[1 if model == 'academy.tests.question' else 0][0]
 
-
     def update_targets(self):
         self.question_ids.owner_id = self.owner_id
         self.test_ids.owner_id = self.owner_id
+
+        if self.authorship != 'preserve':
+            authorship = (self.authorship == 'own')
+            self.question_ids.authorship = authorship
+            self.test_ids.authorship = authorship

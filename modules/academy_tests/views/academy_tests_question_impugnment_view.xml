@@ -24,8 +24,10 @@
             <field name="active" eval="True" />
             <field name="arch" type="xml">
                 <tree string="academy_question_impugnment_tree" create="1" delete="1" edit="1">
+                    <field name="student_id" class="oe_field_student_id" />
                     <field name="name" />
                     <field name="create_uid" />
+                    <field name="owner_id" />
                 </tree>
             </field>
         </record>
@@ -41,26 +43,43 @@
             <field name="arch" type="xml">
                 <form string="academy_question_impugnment_form" create="1" delete="1" edit="1">
                     <sheet>
-                        <div class="oe_title">
+                        <div class="oe_button_box" name="button_box">
+                            <widget name="web_ribbon" title="Archived" bg_color="bg-danger"
+                                attrs="{'invisible': [('active', '=', True)]}" />
+                        </div>
+
+                        <div class="oe_title w-100">
+                            <field name="active" class="oe_field_active" invisible="1" />
                             <label for="name" class="oe_edit_only" />
                             <h1>
                                 <field name="name" class="oe_field_name"
-                                    placeholder="Name" />
+                                    placeholder="Enter new name" widget="text" />
                             </h1>
                         </div>
+
                         <group col="2" string="Question">
-                            <field name="question_id" class="oe_field_question_id"
-                                placeholder="Choose related question" options="{'no_create': True}" />
+                            <field name="question_id" class="oe_field_question_id" options="{'no_create': True}" />
                         </group>
-                        <group col="4" string="Creation" class="oe_read_only">
-                            <field name="create_uid" class="oe_field_create_uid oe_read_only" />
-                            <field name="create_date" class="oe_field_create_uid oe_read_only" />
+
+                        <group col="4" string="Creation">
+                            <field name="owner_id" class="oe_field_owner_id" />
+                            <field name="student_id" class="oe_field_student_id" />
                         </group>
+
                         <group string="Description">
                             <field name="description" class="oe_field_create_uid"
                                 nolabel="1" />
                         </group>
+
+                        <group string="Replies">
+                            <field name="reply_ids" class="oe_field_reply_ids"
+                                nolabel="1" />
+                        </group>
                     </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
                 </form>
             </field>
         </record>
@@ -76,24 +95,15 @@
             <field name="arch" type="xml">
                 <search string="academy_question_impugnment_search">
                     <field name="name" />
-                    <!-- ··· -->
-                </search>
-            </field>
-        </record>
+                    <field name="student_id" />
+                    <field name="owner_id" />
 
-        <record id="view_academy_question_impugnment_graph" model="ir.ui.view">
-            <field name="name">Question impugment</field>
-            <field name="model">academy.tests.question.impugnment</field>
-            <field name="type">graph</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="16" />
-            <field name="active" eval="True" />
-            <field name="arch" type="xml">
-                <graph string="Impugnments" type="pivot">
-                    <field type="row" name="active" />
-                    <field type="col" name="question_id" />
-                    <field type="measure" name="id" />
-                </graph>
+                    <filter string="My impugnments"
+                        name="my_impugnments"
+                        domain="[('owner_id', '=', uid)]"
+                        context="{}"
+                        help="List only the own impugnments" />
+                </search>
             </field>
         </record>
 
@@ -102,10 +112,10 @@
             <field name="type">ir.actions.act_window</field>
             <field name="name">Impugnments</field>
             <field name="res_model">academy.tests.question.impugnment</field>
-            <field name="view_mode">tree,form,graph</field>
+            <field name="view_mode">tree,form</field>
             <field name="target">current</field>
             <field name="domain">[]</field>
-            <field name="context">{}</field>
+            <field name="context">{"search_default_my_impugnments": 1}</field>
             <field name="search_view_id" ref="view_academy_question_impugnment_search" />
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
@@ -120,9 +130,9 @@
         <!-- Main menu for model.name -->
         <record id="menu_question_impugnment" model="ir.ui.menu" >
             <field name="name">Impugnments</field>
-            <field name="sequence" eval="20" />
+            <field name="sequence" eval="30" />
             <field name="action" ref="action_question_impugnment_act_window" />
-            <field name="parent_id" ref="academy_tests.menu_test_top" />
+            <field name="parent_id" ref="academy_base.menu_academy_monitoring" />
             <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical')), (4, ref('academy_base.academy_group_teacher'))]"/>
         </record>
 

@@ -23,7 +23,6 @@ class AcademyTestAnswersTableReport(models.AbstractModel):
     _report_xid = 'academy_tests.action_report_printable_answer_table'
     _target_model = 'academy.tests.test'
 
-
     @api.model
     def _get_report_values(self, docids, data=None):
 

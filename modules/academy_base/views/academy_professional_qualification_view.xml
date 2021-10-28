@@ -27,7 +27,7 @@
                     <field name="qualification_code" />
                     <field name="name" />
                     <field name="qualification_level_id" />
-                    <field name="competency_unit_count" />
+                    <field name="competency_unit_count" string="Competency units" />
                 </tree>
             </field>
         </record>
@@ -53,18 +53,14 @@
                             <label for="name" class="oe_edit_only" />
                             <h1>
                                 <field name="name" class="oe_field_name"
-                                    placeholder="Name" />
+                                    placeholder="Enter new name" />
                             </h1>
                         </div>
                         <group col="2">
-                            <field name="professional_family_id" class="oe_field_professional_family_id"
-                                placeholder="Choose related professional family" />
-                            <field name="professional_area_id" class="oe_field_professional_area_id"
-                                placeholder="Choose related professional area" />
-                            <field name="qualification_code" class="oe_field_qualification_code"
-                                placeholder="Enter new internal code" />
-                            <field name="qualification_level_id" class="oe_field_qualification_level_id"
-                                placeholder="Choose related qualification level" />
+                            <field name="professional_family_id" class="oe_field_professional_family_id" />
+                            <field name="professional_area_id" class="oe_field_professional_area_id" />
+                            <field name="qualification_code" class="oe_field_qualification_code" />
+                            <field name="qualification_level_id" class="oe_field_qualification_level_id" />
                         </group>
                         <notebook>
                             <page string="Description" class="oe_page_description" accesskey="D">
@@ -72,12 +68,11 @@
                                     placeholder="Enter new description" />
                             </page>
                             <page string="Competency units" class="oe_page_cualificaciones_profesionales" accesskey="C">
-                                <field name="competency_unit_ids" class="oe_field_competency_unit_ids"
-                                    placeholder="Choose competency units for this action" widget="many2many">
+                                <field name="competency_unit_ids" class="oe_field_competency_unit_ids" widget="many2many">
                                     <tree string="Units">
                                         <field name="sequence" widget="handle" />
                                         <field name="name" class="oe_field_name"
-                                            placeholder="Enter new value for name" />
+                                            placeholder="Enter new name" />
                                     </tree>
                                 </field>
                             </page>
@@ -117,7 +112,7 @@
                                 <div class="oe_kanban_details">
                                     <strong class="oe_partner_heading"><field name="name"/></strong>
                                     <ul>
-                                       <li class="o_ellipsis"><strong>Internal code:&#160;</strong><field name="competency_unit_count" /></li>
+                                       <li class="o_ellipsis"><strong>Internal code:&#160;</strong><field name="competency_unit_count" string="Competency units" /></li>
                                        <li class="o_ellipsis"><strong>Level:&#160;</strong><field name="qualification_level_id"/></li>
                                        <li class="o_ellipsis"><strong>Units:&#160;</strong><field name="qualification_code" /></li>
                                      </ul>

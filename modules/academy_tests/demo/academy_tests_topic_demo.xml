@@ -4,9 +4,15 @@
     <data noupdate="0">
 
 
-        <record id="academy_tests_topic_demo" model="academy.tests.topic">
+        <record id="academy_tests_topic_demo_1" model="academy.tests.topic">
             <field name="name">Enterprise Resource Planning</field>
             <field name="description">Enterprise Resource Planning Open Source Software</field>
+            <field name="active" eval="True" />
+        </record>
+
+        <record id="academy_tests_topic_demo_2" model="academy.tests.topic">
+            <field name="name">Invisible Pink Unicorn</field>
+            <field name="description">The goddess of a new religion</field>
             <field name="active" eval="True" />
         </record>
 

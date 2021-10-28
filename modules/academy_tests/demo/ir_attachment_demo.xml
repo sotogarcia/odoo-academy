@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="ir_attachment_demo" model="ir.attachment">
+            <field name="name">Odoo logos</field>
+            <field name="datas" type="base64" file="academy_tests/demo/odoo_logos.png"></field>
+            <field name="res_model">academy.tests.question</field>
+            <field name="public" eval="True"/>
+        </record>
+
+    </data>
+</openerp>

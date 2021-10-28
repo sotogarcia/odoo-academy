@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
-###############################################################################
-#    License, author and contributors information in:                         #
-#    __openerp__.py file at the root folder of this module.                   #
-###############################################################################
+""" AcademyTestsRandomTemplateTrainingActionRel
 
-from odoo import models, fields, api
-from odoo.tools.translate import _
+This module contains the academy.tests.random.template.training.action.rel Odoo
+model which stores middle table to Many2many relationship with sequence.
+"""
+
+from odoo import models, fields
+
 from logging import getLogger
-
 
 _logger = getLogger(__name__)
 
@@ -17,7 +17,7 @@ class AcademyTestsRandomTemplateTrainingActionRel(models.Model):
     """
 
     _name = 'academy.tests.random.template.training.action.rel'
-    _description = u'Academy tests random template training action relationship'
+    _description = 'Academy tests random template training action relationship'
 
     _rec_name = 'random_template_id'
     _order = 'training_action_id ASC, sequence ASC'

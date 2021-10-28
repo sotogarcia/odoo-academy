@@ -15,10 +15,10 @@
             <field name="active" eval="True" />
             <field name="arch" type="xml">
                 <t t-name="academy_tests.academy_post_test_question_image">
-                    
+
                     <figure class="figure ir-attachment-image">
-                        <img t-attf-src="/web/image/{{ ir_attachment_image_id.id }}" 
-                            alt="{{ ir_attachment_image_id.name }}" 
+                        <img t-attf-src="/web/image/{{ ir_attachment_image_id.id }}"
+                            alt="{{ ir_attachment_image_id.name }}"
                             class="figure-img img-fluid rounded o_attachment_image" />
                         <figcaption class="figure-caption text-center ir-attachment-image-name"
                             t-attf-title="{{ ir_attachment_image_id.name }}">
@@ -71,16 +71,12 @@
 
                         <!-- IMAGE-ATTACHMENTS:: BEGIN -->
                         <t t-set="display_image_ids" t-value="question_id.ir_attachment_image_ids" />
-                        <!-- Prevent the same image was displayed in consecutive questions -->
-                        <t t-if="test_ids_index and test_ids_index &gt; 0">
-                            <div class="ir-attachment-image-ids row">
-                                <div class="col-12">
-                                    <t t-set="display_image_ids" t-value="display_image_ids - o.question_ids[test_ids_index - 1].question_id.ir_attachment_image_ids" />
-                                </div>
-                            </div>
-                        </t>
-                        <t t-foreach="display_image_ids" t-as="ir_attachment_image_id">
-                            <t t-call="academy_tests.academy_post_test_question_image" />
+
+                        <t t-if="not previous_attachment_ids or previous_attachment_ids != question_id.ir_attachment_ids">
+
+                            <t t-foreach="display_image_ids" t-as="ir_attachment_image_id">
+                                <t t-call="academy_tests.academy_post_test_question_image" />
+                            </t>
                         </t>
                         <!-- IMAGE-ATTACHMENTS:: END -->
 
@@ -89,9 +85,9 @@
 
                             <t t-foreach="question_id.answer_ids" t-as="academy_answer_id">
 
-                            <li class="academy-answer" t-attf-id="academy-question-{{ academy_answer_id.id }}" t-attf-correct="{{ academy_answer_id.is_correct }}" t-attf-data-id="{{ academy_answer_id.id }}">
-                                <t t-call="academy_tests.view_academy_answer_qweb" />
-                            </li>
+                                <li class="academy-answer" t-attf-id="academy-question-{{ academy_answer_id.id }}" t-attf-correct="{{ academy_answer_id.is_correct }}" t-attf-data-id="{{ academy_answer_id.id }}">
+                                    <t t-call="academy_tests.view_academy_answer_qweb" />
+                                </li>
 
                             </t>
 
@@ -125,25 +121,21 @@
                                         <p class="academy-test-preamble"><t t-esc="o.preamble" /></p>
                                     </t>
 
+                                    <t t-set="previous_attachment_ids" t-value="None" />
+
                                     <t t-foreach="o.question_ids" t-as="academy_question_rel_id">
 
-                                    <t t-set="question_id" t-value="academy_question_rel_id.question_id" />
+                                        <t t-set="question_id" t-value="academy_question_rel_id.question_id" />
                                         <t t-call="academy_tests.view_academy_question_qweb" />
+                                        <t t-set="previous_attachment_ids" t-value="academy_question_rel_id.question_id.ir_attachment_ids" />
 
                                     </t><!-- question_ids -->
+
                                 </section>
 
                             </div>
 
                             <div class="clearfix"></div>
-
-                            <!-- <div class="row">
-
-                                <section class="col-12">
-                                    <t t-call="academy_tests.view_academy_answers_table_qweb" />
-                                </section>
-                            </div>  --><!-- row -->
-
 
                         </div> <!-- page -->
 
@@ -151,7 +143,6 @@
 
             </field>
         </record>
-
 
 
         <!-- REPORT: "Loop over test recordset"
@@ -170,7 +161,7 @@
                             <t t-call="web.external_layout">
                                 <t t-call="academy_tests.view_academy_tests_document_qweb" />
                             </t>
-                        </t> 
+                        </t>
                     </t> <!-- t-html_container -->
                 </t>
             </field>
@@ -178,7 +169,7 @@
 
 
         <!-- Report action to show: "Printable test" -->
-        <record id="action_report_printable_test" model="ir.actions.report">
+        <!-- <record id="action_report_printable_test" model="ir.actions.report">
             <field name="name">Printable test</field>
             <field name="model">academy.tests.test</field>
             <field name="report_type">qweb-pdf</field>
@@ -187,9 +178,8 @@
             <field name="attachment">(object.name+'.pdf')</field>
             <field name="paperformat_id" ref="base.paperformat_euro" />
             <field name="help">Printable test in PDF</field>
-            <!-- Following line adds print dropdown menú -->
             <field name="binding_model_id" ref="academy_tests.model_academy_tests_test" />
-        </record>
+        </record> -->
 
 
         <!-- REPORT: "Loop over test recordset"
@@ -202,13 +192,13 @@
             <field name="priority" eval="16" />
             <field name="active" eval="True" />
             <field name="arch" type="xml">
-                <t t-name="academy_tests.view_academy_tests_qweb">
+                <t t-name="academy_tests.view_academy_tests_preview_qweb">
                     <t t-call="web.html_container">
                         <t t-foreach="docs" t-as="o">
                             <t t-call="web.internal_layout">
                                 <t t-call="academy_tests.view_academy_tests_document_qweb" />
                             </t>
-                        </t> 
+                        </t>
                     </t> <!-- t-html_container -->
                 </t>
             </field>
@@ -224,7 +214,94 @@
             <field name="attachment">(object.name+'.html')</field>
             <field name="paperformat_id" ref="base.paperformat_euro" />
             <field name="help">Show a test preview as Web page</field>
-            <!-- Following line adds print dropdown menú -->
+            <field name="binding_model_id" ref="academy_tests.model_academy_tests_test" />
+        </record>
+
+
+        <!-- REPORT: "Full report. Test and answers table"
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+        <record id="view_academy_tests_full_document_qweb" model="ir.ui.view">
+            <field name="name">Printable test document with answers</field>
+            <field name="model">academy.tests.test</field>
+            <field name="type">qweb</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <t t-name="academy_tests.view_academy_tests_full_document_qweb">
+
+                        <div class="page">
+                            <div class="oe_structure"/>
+
+                            <div class="clearfix"></div>
+
+                            <div class="row mt16 mb32">
+                                <section class="academy-post-test-test posted-test-body col-12">
+                                    <t t-if="o.preamble">
+                                        <p class="academy-test-preamble"><t t-esc="o.preamble" /></p>
+                                    </t>
+
+                                    <t t-set="previous_attachment_ids" t-value="None" />
+
+                                    <t t-foreach="o.question_ids" t-as="academy_question_rel_id">
+
+                                        <t t-set="question_id" t-value="academy_question_rel_id.question_id" />
+                                        <t t-call="academy_tests.view_academy_question_qweb" />
+                                        <t t-set="previous_attachment_ids" t-value="academy_question_rel_id.question_id.ir_attachment_ids" />
+
+                                    </t><!-- question_ids -->
+
+                                </section>
+
+                            </div>
+
+                            <div class="clearfix line-between-test-and-answers">&#160;</div>
+
+                            <div class="row mt16 mb32">
+                                <section class="academy-post-test-test posted-test-body col-12">
+                                    <t t-call="academy_tests.view_academy_answers_table_qweb" />
+                                </section>
+                            </div>
+
+                        </div> <!-- page -->
+
+                </t> <!-- t-name -->
+
+            </field>
+        </record>
+
+
+        <record id="view_academy_tests_full_report_qweb" model="ir.ui.view">
+            <field name="name">Printable test with answers</field>
+            <field name="model">academy.tests.test</field>
+            <field name="type">qweb</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <t t-name="academy_tests.view_academy_tests_full_report_qweb">
+                    <t t-call="web.html_container">
+                        <t t-foreach="docs" t-as="o">
+                            <t t-call="web.external_layout">
+                                <t t-call="academy_tests.view_academy_tests_full_document_qweb" />
+                            </t>
+                        </t>
+                    </t> <!-- t-html_container -->
+                </t>
+            </field>
+        </record>
+
+        <record id="action_report_full_printable_test" model="ir.actions.report">
+            <field name="name">Printable test with answers</field>
+            <field name="model">academy.tests.test</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">academy_tests.view_academy_tests_full_report_qweb</field>
+            <field name="print_report_name">(object.name)</field>
+            <field name="attachment_use" eval="False" />
+            <field name="attachment">(object.name+'.pdf')</field>
+            <field name="paperformat_id" ref="base.paperformat_euro" />
+            <field name="help">Printable test in PDF</field>
             <field name="binding_model_id" ref="academy_tests.model_academy_tests_test" />
         </record>
 

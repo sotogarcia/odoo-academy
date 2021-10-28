@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="9">
+
+        <record id="academy_tests_topic_training_module_link_demo" model="academy.tests.topic.training.module.link">
+            <field name="training_module_id" ref="academy_base.academy_training_module_odoo" />
+            <field name="topic_id" ref="academy_tests.academy_tests_topic_demo_1" />
+            <field name="topic_version_id" ref="academy_tests.academy_tests_topic_version_demo_1" />
+            <field name="category_ids" eval="[(4, ref('academy_tests.academy_tests_category_demo_development'), None), (4, ref('academy_tests.academy_tests_category_demo_brand'), None)]" />
+            <field name="sequence" eval="10" />
+        </record>
+
+    </data>
+</openerp>
+
+

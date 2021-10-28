@@ -3,22 +3,22 @@
 
 This module contains the academy.training.action Odoo model which stores
 all training action attributes and behavior.
-
 """
-
 
 from logging import getLogger
 
 from datetime import datetime, timedelta
 from pytz import timezone, utc
+from odoo.tools.translate import _
 
 # pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 from odoo.tools.safe_eval import safe_eval
+from odoo.osv.expression import AND
 
-from .lib.custom_model_fields import Many2manyThroughView, \
-    ACTION_INHERITED_RESOURCES_REL
+from .utils.custom_model_fields import Many2manyThroughView
+from .utils.raw_sql import ACADEMY_TRAINING_ACTION_AVAILABLE_RESOURCE_REL
 
 # pylint: disable=locally-disabled, C0103
 _logger = getLogger(__name__)
@@ -26,13 +26,9 @@ _logger = getLogger(__name__)
 
 # pylint: disable=locally-disabled, R0903
 class AcademyTrainingAction(models.Model):
-    """ Each of the creditable qualifications in catalog.
-
-    Fields:
-      action_name (Char): Human readable name which will identify each record.
-
+    """ The training actions represent several groups of students for the same
+    training activity
     """
-
 
     _name = 'academy.training.action'
     _description = u'Academy training action'
@@ -40,9 +36,7 @@ class AcademyTrainingAction(models.Model):
     _rec_name = 'action_name'
     _order = 'action_name ASC'
 
-    # 'appointment.manager',
     _inherit = ['image.mixin', 'mail.thread', 'academy.abstract.observable']
-
     _inherits = {'academy.training.activity': 'training_activity_id'}
 
     action_name = fields.Char(
@@ -52,7 +46,7 @@ class AcademyTrainingAction(models.Model):
         index=True,
         default=None,
         help='Enter new name',
-        size=255,
+        size=1024,
         translate=True,
     )
 
@@ -82,7 +76,7 @@ class AcademyTrainingAction(models.Model):
         readonly=False,
         index=False,
         default=lambda self: self._utc_o_clock(),
-        help='Start date of an event, without time for full days events'
+        help='Start date of an event, without time for full day events'
     )
 
     # pylint: disable=locally-disabled, w0212
@@ -92,7 +86,7 @@ class AcademyTrainingAction(models.Model):
         readonly=False,
         index=False,
         default=lambda self: self._utc_o_clock(),
-        help='Stop date of an event, without time for full days events',
+        help='Stop date of an event, without time for full day events',
     )
 
     application_scope_id = fields.Many2one(
@@ -216,11 +210,11 @@ class AcademyTrainingAction(models.Model):
         readonly=False,
         index=False,
         default=20,
-        help='Maximum number of sign ups allowed'
+        help='Maximum number of signups allowed'
     )
 
     training_action_enrolment_ids = fields.One2many(
-        string='Enrolments',
+        string='Action enrolments',
         required=False,
         readonly=False,
         index=False,
@@ -249,9 +243,8 @@ class AcademyTrainingAction(models.Model):
         track_visibility='onchange'
     )
 
-
     action_resource_ids = fields.Many2many(
-        string='Own resources',
+        string='Action resources',
         required=False,
         readonly=False,
         index=False,
@@ -267,7 +260,7 @@ class AcademyTrainingAction(models.Model):
     )
 
     available_resource_ids = Many2manyThroughView(
-        string='Training resources',
+        string='Available action resources',
         required=False,
         readonly=True,
         index=False,
@@ -280,19 +273,39 @@ class AcademyTrainingAction(models.Model):
         domain=[],
         context={},
         limit=None,
-        sql=ACTION_INHERITED_RESOURCES_REL
+        sql=ACADEMY_TRAINING_ACTION_AVAILABLE_RESOURCE_REL
     )
 
-    # ------------------------------ CONSTRAINS -------------------------------
+    training_action_enrolment_count = fields.Integer(
+        string='Number of enrolments',
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        help='Show number of enrolments',
+        compute='_compute_training_action_enrolment_count'
+    )
 
+    @api.depends('training_action_enrolment_ids')
+    def _compute_training_action_enrolment_count(self):
+        for record in self:
+            record.training_action_enrolment_count = \
+                len(record.training_action_enrolment_ids)
+
+    @api.onchange('training_action_enrolment_ids')
+    def _onchange_training_action_enrolment_ids(self):
+        self._compute_training_action_enrolment_count()
+
+    # ------------------------------ CONSTRAINS -------------------------------
 
     @api.constrains('end')
     def _check_end(self):
         """ Ensures end field value is greater then start value """
+        message = 'End date must be greater then start date'
+
         for record in self:
             if record.end <= record.start:
-                raise ValidationError("End date must be greater then start date")
-
+                raise ValidationError(message)
 
     # -------------------------- OVERLOADED METHODS ---------------------------
 
@@ -320,7 +333,9 @@ class AcademyTrainingAction(models.Model):
         action to this action.
         """
 
-        act_xid = 'academy_base.action_academy_training_session_wizard_act_window'
+        module = 'academy_base'
+        name = 'action_academy_training_session_wizard_act_window'
+        act_xid = '{}.{}'.format(module, name)
 
         self.ensure_one()
 
@@ -355,6 +370,52 @@ class AcademyTrainingAction(models.Model):
         # STEP 5: Return the action
         return action_map
 
+    @staticmethod
+    def _eval_domain(domain):
+        """ Evaluate a domain expresion (str, False, None, list or tuple) an
+        returns a valid domain
+
+        Arguments:
+            domain {mixed} -- domain expresion
+
+        Returns:
+            mixed -- Odoo valid domain. This will be a tuple or list
+        """
+
+        if domain in [False, None]:
+            domain = []
+        elif not isinstance(domain, (list, tuple)):
+            try:
+                domain = eval(domain)
+            except Exception:
+                domain = []
+
+        return domain
+
+    def show_enrolments(self):
+
+        self.ensure_one()
+
+        act_xid = 'academy_base.action_training_action_enrolment_act_window'
+        action = self.env.ref(act_xid)
+
+        domain = self._eval_domain(action.domain)
+        domain = AND([domain, [('training_action_id', '=', self.id)]])
+
+        action_values = {
+            'name': '{} {}'.format(_('Enroled in'), self.name),
+            'type': action.type,
+            'help': action.help,
+            'domain': domain,
+            'context': action.context,
+            'res_model': action.res_model,
+            'target': action.target,
+            'view_mode': action.view_mode,
+            'search_view_id': action.search_view_id.id,
+            'target': 'current'
+        }
+
+        return action_values
 
     # -------------------------- AUXILIARY METHODS ----------------------------
 
@@ -380,5 +441,3 @@ class AcademyTrainingAction(models.Model):
             result = fields.Datetime.to_string(utc_ock)
 
         return result
-
-

@@ -8,7 +8,7 @@
             <field name="description">Code development</field>
             <field name="active" eval="True" />
             <field name="sequence" eval="1" />
-            <field name="topic_id" ref="academy_tests.academy_tests_topic_demo" />
+            <field name="topic_id" ref="academy_tests.academy_tests_topic_demo_1" />
         </record>
 
         <record id="academy_tests_category_demo_brand" model="academy.tests.category">
@@ -16,7 +16,15 @@
             <field name="description">Information about the software</field>
             <field name="active" eval="True" />
             <field name="sequence" eval="2" />
-            <field name="topic_id" ref="academy_tests.academy_tests_topic_demo" />
+            <field name="topic_id" ref="academy_tests.academy_tests_topic_demo_1" />
+        </record>
+
+        <record id="academy_tests_category_demo_concepts" model="academy.tests.category">
+            <field name="name">Concepts</field>
+            <field name="description">Basic concepts about the religion</field>
+            <field name="active" eval="True" />
+            <field name="sequence" eval="2" />
+            <field name="topic_id" ref="academy_tests.academy_tests_topic_demo_2" />
         </record>
 
     </data>

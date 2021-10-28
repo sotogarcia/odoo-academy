@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
-###############################################################################
-#    License, author and contributors information in:                         #
-#    __openerp__.py file at the root folder of this module.                   #
-###############################################################################
+""" AcademyKnowledgeArea
 
-from odoo import models, fields, api, api
-from odoo.tools.translate import _
+This module contains the academy.knowledge.area Odoo model which stores
+all Knowledge Area attributes and behavior.
+"""
+
+from odoo import models, fields
+
 from logging import getLogger
-
 
 _logger = getLogger(__name__)
 
 
 class AcademyKnowledgeArea(models.Model):
-    """ The summary line for a class docstring should fit on one line
+    """ Knowledge area is a property of the training action
     """
 
     _name = 'academy.knowledge.area'

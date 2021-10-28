@@ -24,6 +24,7 @@
             <field name="active" eval="True" />
             <field name="arch" type="xml">
                 <tree string="academy_competency_unit_tree" create="1" delete="1" edit="1">
+                    <field name="competency_code" class="oe_field_competency_code" />
                     <field name="competency_name" />
                     <field name="training_activity_id"
                         invisible="context.get('default_training_activity_id', False)" />
@@ -55,30 +56,23 @@
                             <label for="name" class="oe_edit_only" />
                             <h1>
                                 <field name="competency_name" class="oe_field_name"
-                                    placeholder="Name" />
+                                    placeholder="Enter new name" />
                             </h1>
                         </div>
                         <group col="2">
+                            <field name="competency_code" class="oe_field_competency_code"
+                                placeholder="Enter new code" />
                             <field name="training_activity_id" class="oe_field_training_activity_id"
-                                placeholder="Choose an existing training activity"
                                 invisible="context.get('append_to_training_activity', False)" />
                             <field name="training_module_id" class="oe_field_training_module_id"
-                                placeholder="Choose an existing training module"
                                 invisible="context.get('append_to_training_module', False)" />
                         </group>
 
                         <notebook>
                             <page string="Description" class="oe_page_description" accesskey="D">
                                 <field name="description" class="oe_field_description"
-                                    placeholder="Enter new value for description" />
+                                    placeholder="Enter new description" />
                             </page>
-                            <!-- <page string="Training units" class="oe_page_units" accesskey="U">
-                                <field name="training_unit_ids" class="oe_field_training_unit_ids"
-                                    placeholder="Choose or create module training units"
-                                    context="{'tree_view_ref' : 'academy_base.view_academy_training_unit_embed_tree'}"
-                                    readonly="1" />
-
-                            </page> -->
                         </notebook>
                     </sheet>
 
@@ -102,7 +96,6 @@
                 <kanban create="1" delete="1" edit="1">
                     <field name="image_128" />
                     <field name="competency_name" />
-                    <!-- <field name="training_unit_count" /> -->
                     <field name="hours" />
 
                     <templates>
@@ -119,8 +112,7 @@
                                 <div class="oe_kanban_details">
                                     <strong class="oe_partner_heading"><field name="competency_name"/></strong>
                                     <ul>
-                                       <!-- <li><strong>Units:&#160;</strong><field name="training_unit_count" /></li> -->
-                                       <li><strong>Lifespan:&#160;</strong><field name="hours"/>&#160;hours</li>
+                                       <li><strong>Lifespan:&#160;</strong><field name="hours" />&#160;hours</li>
                                      </ul>
                                 </div>
                             </div>
@@ -140,15 +132,17 @@
             <field name="active" eval="True" />
             <field name="arch" type="xml">
                 <search string="academy_competency_unit_search">
-                    <field name="competency_name" />
-                    <field name="training_module_id" />
-                    <field name="professional_qualification_id" />
+                    <field name="competency_name" string="Name" />
+                    <field name="competency_code" string="Code" />
 
-                    <filter string="By professional qualification"
-                        name="competency_units_by_professional_qualification"
+                    <field name="training_activity_id" />
+                    <field name="training_module_id" />
+
+                    <filter string="By training activity"
+                        name="competency_units_by_training_activity"
                         domain="[]"
-                        context="{'group_by': 'professional_qualification_id'}"
-                        help="" />
+                        context="{'group_by': 'training_activity_id'}"
+                        help="Group the competency units by training activity" />
 
                     <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
 
@@ -179,7 +173,7 @@
         <!-- Main menu for model.name -->
         <record id="menu_competency_unit" model="ir.ui.menu" >
             <field name="name">Competency units</field>
-            <field name="sequence" eval="15" />
+            <field name="sequence" eval="25" />
             <field name="action" ref="action_competency_unit_act_window" />
             <field name="parent_id" ref="academy_base.menu_academy_catalog" />
             <field name="groups_id" eval="[(4, ref('academy_base.academy_group_manager'))]"/>
@@ -196,8 +190,7 @@
             <field name="inherit_id" ref="academy_base.view_academy_competency_unit_tree" />
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='competency_name']" position="before">
-                    <field name="sequence" class="oe_field_sequence" widget="handle"
-                        placeholder="Choose competency unit order in activity" />
+                    <field name="sequence" class="oe_field_sequence" widget="handle" />
                 </xpath>
             </field>
         </record>

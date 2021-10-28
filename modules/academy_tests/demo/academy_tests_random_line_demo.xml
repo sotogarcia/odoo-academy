@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="academy_tests_random_line_demo" model="academy.tests.random.line">
+            <field name="name">Odoo</field>
+            <field name="description">Questions about Odoo</field>
+            <field name="active" eval="True" />
+            <field name="sequence" eval="1" />
+            <field name="state">step1</field>
+            <field name="random_template_id" ref="academy_tests.academy_tests_random_template_demo" />
+            <field name="quantity">2</field>
+            <field name="type_ids" eval="[(4, ref('academy_tests.academy_tests_question_type_1'), None)]" />
+            <field name="owner_ids" eval="[(4, ref('academy_tests.academy_tests_topic_demo_1'), None)]" />
+        </record>
+
+    </data>
+</openerp>

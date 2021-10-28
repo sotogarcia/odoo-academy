@@ -127,6 +127,7 @@ class AcademyPublicTenderingEvent(models.Model):
 
 
 
+    @api.model
     def create(self, values):
         """ Touches related tendering processes to ensure state_id
         """
@@ -178,25 +179,31 @@ class AcademyPublicTenderingEvent(models.Model):
         """ Appends mail message to the parent process notifying new
         related event has been created
         """
-        xid = 'academy_public_tendering_event_created'
-        subtype = self.env.ref('academy_public_tendering.' + xid)
-        process = self.academy_public_tendering_process_id
 
-        subject = _('Process event created')
-        body_format = _('Event «{}» has been registered for process «{}»')
-        body = body_format.format(self.name, process.name)
-        process.message_post(body=body, subject=subject, subtype_id=subtype.id)
+        for record in self:
+            xid = 'academy_public_tendering_event_created'
+            subtype = record.env.ref('academy_public_tendering.' + xid)
+            process = record.academy_public_tendering_process_id
+
+            subject = _('Process event created')
+            body_format = _('Event «{}» has been registered for process «{}»')
+            body = body_format.format(record.name, process.name)
+            process.message_post(
+                body=body, subject=subject, subtype_id=subtype.id)
 
 
     def notify_update(self):
         """ Appends mail message to the parent process notifying existing
         related event has been updated
         """
-        xid = 'academy_public_tendering_event_written'
-        subtype = self.env.ref('academy_public_tendering.' + xid)
-        process = self.academy_public_tendering_process_id
 
-        subject = _('Process event updated')
-        body_format = _('Event «{}» for process «{}» has been updated')
-        body = body_format.format(self.name, process.name)
-        process.message_post(body=body, subject=subject, subtype_id=subtype.id)
+        for record in self:
+            xid = 'academy_public_tendering_event_written'
+            subtype = record.env.ref('academy_public_tendering.' + xid)
+            process = record.academy_public_tendering_process_id
+
+            subject = _('Process event updated')
+            body_format = _('Event «{}» for process «{}» has been updated')
+            body = body_format.format(record.name, process.name)
+            process.message_post(
+                body=body, subject=subject, subtype_id=subtype.id)

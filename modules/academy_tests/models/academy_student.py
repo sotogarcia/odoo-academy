@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
-###############################################################################
-#    License, author and contributors information in:                         #
-#    __openerp__.py file at the root folder of this module.                   #
-###############################################################################
+""" AcademyCompetencyUnit
 
-from odoo import models, fields, api
-from odoo.tools.translate import _
+This module extends the academy.student Odoo model
+"""
+
+from odoo import models, fields
+
+import odoo.addons.academy_base.models.utils.custom_model_fields as custom
+from .utils.sql_m2m_through_view import ACADEMY_STUDENT_AVAILABLE_TESTS
+
 from logging import getLogger
-from odoo.addons.academy_base.models.lib.custom_model_fields import Many2manyThroughView
-from .lib.libuseful import ACADEMY_STUDENT_AVAILABLE_TESTS
 
 _logger = getLogger(__name__)
 
@@ -19,8 +20,8 @@ class AcademyStudent(models.Model):
 
     _inherit = 'academy.student'
 
-    available_test_ids = Many2manyThroughView(
-        string='Tests',
+    available_test_ids = custom.Many2manyThroughView(
+        string='Student available tests',
         required=False,
         readonly=False,
         index=False,
@@ -34,4 +35,20 @@ class AcademyStudent(models.Model):
         context={},
         limit=None,
         sql=ACADEMY_STUDENT_AVAILABLE_TESTS
+    )
+
+    question_statistics_ids = fields.One2many(
+        string='Question statistics',
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        comodel_name='academy.statistics.student.question.readonly',
+        inverse_name='student_id',
+        domain=[],
+        context={},
+        auto_join=False,
+        limit=None,
+        help=('Show the statistics related with the questions answered by the '
+              'student')
     )

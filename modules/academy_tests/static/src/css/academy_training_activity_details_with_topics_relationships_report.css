@@ -1,0 +1,12 @@
+.topic-item + .topic-item {
+    margin-top: 0.5em;
+}
+.category_name:not(:last-child)::after{
+    content: '; '; 
+    text-align: left; 
+    display:inline-block; 
+    width: 1ch;
+}
+.categories-table {
+    table-layout: auto!important;
+}

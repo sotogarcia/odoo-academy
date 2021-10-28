@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
-###############################################################################
-#    License, author and contributors information in:                         #
-#    __openerp__.py file at the root folder of this module.                   #
-###############################################################################
+""" AcademyProfessionalField
 
-from odoo import models, fields, api
-from odoo.tools.translate import _
+This module contains the academy.professional.field Odoo model which stores
+all professional field attributes and behavior.
+"""
+
+from odoo import models, fields
+
 from logging import getLogger
-
 
 _logger = getLogger(__name__)
 
 
 class AcademyProfessionalField(models.Model):
-    """ Academy professional field
+    """ Professional field is a property of the training activity
     """
 
     _name = 'academy.professional.field'

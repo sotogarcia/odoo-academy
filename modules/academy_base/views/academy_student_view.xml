@@ -44,6 +44,7 @@
             <field name="arch" type="xml">
                 <form string="academy_student_form" create="1" delete="1" edit="1">
                     <sheet>
+                        <field name="id" class="oe_field_id" invisible="1" />
 
                         <div class="oe_button_box" name="button_box"/>
                         <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
@@ -55,7 +56,7 @@
                             <label for="name" class="oe_edit_only" />
                             <h1>
                                 <field name="name" class="oe_field_name"
-                                    placeholder="Name" attrs="{'invisible': [('create_uid', '=', False)]}" />
+                                    placeholder="Enter new name" />
                             </h1>
                         </div>
 
@@ -91,6 +92,10 @@
                         <notebook>
                             <page string="Comment" class="oe_page_comment" accesskey="C">
                                <field name="comment" />
+                            </page>
+                            <page string="Enrolments" class="oe_page_enrolments" accesskey="E">
+                                <field name="enrolment_ids" class="oe_field_enrolment_ids"
+                                    context="{'default_student_id': id}" />
                             </page>
                         </notebook>
 
@@ -191,9 +196,9 @@
         <!-- Main menu for model.name -->
         <record id="menu_student" model="ir.ui.menu" >
             <field name="name">Students</field>
-            <field name="sequence" eval="10" />
+            <field name="sequence" eval="15" />
             <field name="action" ref="action_student_act_window" />
-            <field name="parent_id" ref="academy_base.menu_academy_monitoring" />
+            <field name="parent_id" ref="academy_base.menu_academy_catalog" />
             <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
         </record>
 

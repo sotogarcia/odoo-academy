@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <template id="academy_base_report_assets_common" name="academy_base_report_assets_common" inherit_id="web.report_assets_common">
+            <xpath expr="." position="inside">
+                <link href="/academy_tests/static/src/css/academy_training_activity_details_report.css" />
+            </xpath>
+        </template>
+
+    </data>
+</openerp>

@@ -25,16 +25,13 @@
                     </footer>
 
                     <group string="Training action" attrs="{'invisible': [('state', '!=', 'step1')]}">
-                        <field name="training_action_id" class="oe_field_training_action_id"
-                            placeholder="Choose related training action" />
+                        <field name="training_action_id" class="oe_field_training_action_id" />
                         <field name="training_unit_ids" class="oe_field_training_unit_ids"
-                            placeholder="Choose related training units"
                             readonly="1" options="{'no_open': True}" />
                     </group>
 
                     <group string="Training modules" attrs="{'invisible': [('state', '!=', 'step2')]}">
                         <field name="wizard_line_ids" class="oe_field_wizard_line_ids"
-                            placeholder="Choose related training units"
                             nolabel="1"
                             domain="[('session_wizard_id', '=', id)]"
                             context="{'session_wizard_id': id}" />

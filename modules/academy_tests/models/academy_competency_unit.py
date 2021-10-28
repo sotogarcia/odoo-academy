@@ -1,27 +1,28 @@
 # -*- coding: utf-8 -*-
-###############################################################################
-#    License, author and contributors information in:                         #
-#    __openerp__.py file at the root folder of this module.                   #
-###############################################################################
+""" AcademyCompetencyUnit
 
-from odoo import models, fields, api
-from odoo.tools.translate import _
+This module extends the academy.competency.unit Odoo model
+"""
+
+from odoo import models, fields
+
+import odoo.addons.academy_base.models.utils.custom_model_fields as custom
+from .utils.sql_m2m_through_view import \
+    ACADEMY_TESTS_TEST_AVAILABLE_IN_COMPETENCY_UNIT_REL
+
 from logging import getLogger
-from odoo.addons.academy_base.models.lib.custom_model_fields import Many2manyThroughView
-from .lib.libuseful import ACADEMY_COMPETENCY_AVAILABLE_TESTS
-
 
 _logger = getLogger(__name__)
 
 
 class AcademyCompetencyUnit(models.Model):
-    """ Extends model adding a many2many field to link tests to units
+    """ Extends model adding two many2many fields to link tests and units
     """
 
     _inherit = 'academy.competency.unit'
 
     competency_test_ids = fields.Many2many(
-        string='Tests',
+        string='Competency unit tests',
         required=False,
         readonly=False,
         index=False,
@@ -36,8 +37,8 @@ class AcademyCompetencyUnit(models.Model):
         limit=None
     )
 
-    competency_available_test_ids = Many2manyThroughView(
-        string='Tests',
+    competency_available_test_ids = custom.Many2manyThroughView(
+        string='Competency unit available tests',
         required=False,
         readonly=False,
         index=False,
@@ -50,5 +51,5 @@ class AcademyCompetencyUnit(models.Model):
         domain=[],
         context={},
         limit=None,
-        sql=ACADEMY_COMPETENCY_AVAILABLE_TESTS
+        sql=ACADEMY_TESTS_TEST_AVAILABLE_IN_COMPETENCY_UNIT_REL
     )

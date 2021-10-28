@@ -19,14 +19,14 @@
                         <field name="state" widget="statusbar" clickable="1" />
                     </header>
 
-                    <group col="2">
-                        <field name="owner_id" class="oe_field_owner_id"
-                            placeholder="Choose new owner" />
+                    <group col="6">
+                        <field name="owner_id" class="oe_field_owner_id" colspan="4" />
+                        <field name="authorship" class="oe_field_authorship" />
                     </group>
 
                     <field name="test_ids" class="oe_field_test_ids" states="step1">
                         <tree string="Tests" create="1" delete="1" edit="1" editable="bottom">
-                            <field name="name" class="oe_field_name" autocomplete="off" />
+                            <field name="name" class="oe_field_name" autocomplete="off" string="Name" />
                             <field name="create_uid" class="oe_field_create_uid" />
                             <field name="write_uid" class="oe_field_write_uid" />
                             <field name="owner_id" class="oe_field_owner_id" />
@@ -37,7 +37,7 @@
                     <field name="question_ids" class="oe_field_question_ids" states="step2">
                         <tree string="Questions" create="1" delete="1" edit="1" editable="bottom">
                             <field name="name" class="oe_field_name" autocomplete="off" />
-                            <field name="create_uid" class="oe_field_create_uid" />
+                            <field name="create_uid" class="oe_field_create_uid" string="Name" />
                             <field name="write_uid" class="oe_field_write_uid" />
                             <field name="owner_id" class="oe_field_owner_id" />
                         </tree>

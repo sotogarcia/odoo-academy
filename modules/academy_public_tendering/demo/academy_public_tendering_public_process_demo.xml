@@ -17,7 +17,7 @@
             <field name="public_tendering_public_offer_id" ref="academy_public_tendering_public_offer_sansa_2016" />
             <field name="bulletin_board_url">https://sede.sansadurnino.gal/opencms/es/procedimientosytramites/index.html#empleo_publico</field>
             <field name="official_journal_url">https://www.boe.es/boe/dias/2016/11/23/pdfs/BOE-A-2016-11039.pdf</field>
-            <field name="training_action_ids" eval="[(4, ref('academy_base.academy_training_action'))]" />
+            <field name="training_action_ids" eval="[(4, ref('academy_base.academy_training_action_demo'))]" />
             <field name="image_128" type="base64" file="academy_public_tendering/static/src/img/res_partner_sansa_city_hall.png" />
         </record>
 

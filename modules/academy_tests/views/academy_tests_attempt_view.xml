@@ -24,7 +24,7 @@
             <field name="active" eval="True" />
             <field name="arch" type="xml">
                 <tree string="academy_tests_attempt_tree" create="1" delete="1" edit="1">
-                    <field name="student_id" />
+                    <field name="display_name" class="oe_field_display_name" />
                     <field name="test_id" />
                     <field name="start" />
                     <field name="available" />
@@ -45,15 +45,24 @@
             <field name="arch" type="xml">
                 <form string="academy_tests_attempt_form" create="1" delete="1" edit="1">
                     <sheet>
-                        <div class="oe_button_box" name="button_box"/>
-                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+                        <div class="oe_button_box" name="button_box">
+                            <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+                            <button name="close" type="object"
+                                class="oe_stat_button oe_read_only" icon="fa-close"
+                                attrs="{'invisible': [('closed', '=', True)]}">
+                                <span>Close</span>
+                            </button>
+                        </div>
 
-                        <div class="oe_title">
+                        <div class="oe_title w-100">
                             <field name="active" invisible="1"/>
-                            <label for="id" class="oe_edit_only" />
+                            <field name="closed" invisible="1" />
+                            <field name="id" invisible="1" />
+                            <label for="display_name" class="oe_edit_only" />
                             <h1>
-                                Attempt #<field name="id" class="oe_field_id"
-                                    placeholder="Attempt" />
+                               <field name="display_name" class="oe_field_display_name"
+                                    attrs="{'invisible': [('id', '=', False)]}"/>
+                                <span attrs="{'invisible': [('id', '!=', False)]}">New attempt</span>
                             </h1>
                         </div>
 
@@ -107,6 +116,12 @@
                     <field name="available" />
                     <field name="elapsed" />
                     <field name="correction_type" />
+
+                    <filter string="Opened"
+                        name="opened_attempts"
+                        domain="[('closed', '!=', True)]"
+                        context="{}"
+                        help="Attempts which have not been closed" />
                 </search>
             </field>
         </record>
@@ -134,7 +149,7 @@
         <!-- Main menu for model.name -->
         <record id="menu_test_attempts" model="ir.ui.menu" >
             <field name="name">Test attempts</field>
-            <field name="sequence" eval="10" />
+            <field name="sequence" eval="25" />
             <field name="action" ref="action_test_attempts_act_window" />
             <field name="parent_id" ref="academy_base.menu_academy_monitoring" />
         </record>

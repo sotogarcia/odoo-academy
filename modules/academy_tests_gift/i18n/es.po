@@ -6,16 +6,24 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-07 09:10+0000\n"
-"PO-Revision-Date: 2020-04-07 11:14+0200\n"
+"POT-Creation-Date: 2021-05-30 17:39+0000\n"
+"PO-Revision-Date: 2021-05-30 17:39+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
-"Language: es\n"
-"X-Generator: Poedit 2.3\n"
+
+#. module: academy_tests_gift
+#: model:ir.actions.report,print_report_name:academy_tests_gift.action_report_test_as_gift
+msgid "'%s - GIFT' % object.name"
+msgstr ""
+
+#. module: academy_tests_gift
+#: model:ir.actions.report,print_report_name:academy_tests_gift.action_report_question_as_gift
+msgid "'QID%s - GIFT' % object.id"
+msgstr ""
 
 #. module: academy_tests_gift
 #: code:addons/academy_tests_gift/models/academy_tests_question.py:0
@@ -43,7 +51,7 @@ msgstr "Formato GIFT exportable"
 #. module: academy_tests_gift
 #: model_terms:ir.ui.view,arch_db:academy_tests_gift.view_academy_tests_question_form_gift
 msgid "GIFT"
-msgstr "GIFT"
+msgstr ""
 
 #. module: academy_tests_gift
 #: model:ir.model.fields,field_description:academy_tests_gift.field_academy_tests_answer__gift
@@ -51,7 +59,7 @@ msgstr "GIFT"
 #: model:ir.model.fields,field_description:academy_tests_gift.field_academy_tests_test_question_rel__gift
 #: model_terms:ir.ui.view,arch_db:academy_tests_gift.view_academy_tests_question_form_gift
 msgid "Gift"
-msgstr "Gift"
+msgstr ""
 
 #. module: academy_tests_gift
 #: code:addons/academy_tests_gift/models/academy_tests_question.py:0
@@ -60,23 +68,30 @@ msgid "Given argument in_dt ({}) is not a valid datetime value"
 msgstr "El argumento dado in_dt ({}) no es un valor de fecha y hora válido"
 
 #. module: academy_tests_gift
-#: model_terms:ir.actions.report,help:academy_tests_gift.action_report_question_as_gift
-msgid "View question as GIFT format, a valid content to import from a Moodle platform"
-msgstr "Visualizar la pregunta como formato GIFT, un contenido válido para importar desde una plataforma Moodle"
-
-
-#. module: academy_tests_gift
-#: model_terms:ir.actions.report,help:academy_tests_gift.action_report_test_as_gift
-msgid "View test as GIFT format, a valid content to import from a Moodle platform"
-msgstr "Visualizar la pregunta como formato GIFT, un contenido válido para importar desde una plataforma Moodle"
-
-#. module: academy_tests_gift
 #: model:ir.actions.report,name:academy_tests_gift.action_report_question_as_gift
 #: model:ir.actions.report,name:academy_tests_gift.action_report_test_as_gift
 msgid "View as GIFT"
 msgstr "Ver como GIFT"
 
 #. module: academy_tests_gift
+#: model_terms:ir.actions.report,help:academy_tests_gift.action_report_question_as_gift
+msgid ""
+"View question as GIFT format, a valid content to import from a Moodle "
+"platform"
+msgstr ""
+"Visualizar la pregunta como formato GIFT, un contenido válido para importar "
+"desde una plataforma Moodle"
+
+#. module: academy_tests_gift
+#: model_terms:ir.actions.report,help:academy_tests_gift.action_report_test_as_gift
+msgid ""
+"View test as GIFT format, a valid content to import from a Moodle platform"
+msgstr ""
+"Visualizar la pregunta como formato GIFT, un contenido válido para importar "
+"desde una plataforma Moodle"
+
+#. module: academy_tests_gift
+#: code:addons/academy_tests_gift/models/academy_tests_question.py:0
 #: code:addons/academy_tests_gift/models/academy_tests_question.py:0
 #, python-format
 msgid "unknown"

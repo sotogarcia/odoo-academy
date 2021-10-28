@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="view_academy_tests_questions_by_teacher_wizard_form" model="ir.ui.view">
+            <field name="name">Questions by teacher</field>
+            <field name="model">academy.tests.questions.by.teacher.wizard</field>
+            <field name="type">form</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <form string="Caption" create="1" delete="1" edit="1">
+                    <header>
+                        <button name="show_pivot" type="object"
+                            string="Pivot" class="btn btn-primary pull-right" />
+                        <field name="state" widget="statusbar" clickable="1" />
+                    </header>
+
+                    <group col="4" states="step1">
+                        <field name="period" class="oe_field_period" />
+                        <separator colspan="2" />
+                        <field name="start" class="oe_field_start" />
+                        <field name="end" class="oe_field_end" />
+                        <separator colspan="4" />
+                        <field name="order_by" class="oe_field_order_by" />
+                        <field name="allow_empty" class="oe_field_allow_empty" />
+                    </group>
+
+                    <group col="2" string="Teachers" states="step2">
+                        <field name="teacher_ids" class="oe_field_teacher_ids" nolabel="1">
+                            <tree>
+                                <field name="name" class="oe_field_name" />
+                                <field name="email" class="oe_field_name" />
+                            </tree>
+                        </field>
+                    </group>
+
+                    <group col="2" string="Topics" states="step3">
+                        <field name="topic_ids" class="oe_field_topic_ids" nolabel="1">
+                            <tree>
+                                <field name="name" class="oe_field_name"
+                                    style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" />
+                            </tree>
+                        </field>
+                    </group>
+
+                    <footer />
+                </form>
+            </field>
+        </record>
+
+        <record id="action_questions_by_teacher_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Questions by teacher</field>
+            <field name="res_model">academy.tests.questions.by.teacher.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="binding_model_id" ref="academy_base.model_academy_teacher" />
+            <field name="binding_view_types">list,form</field>
+        </record>
+
+    </data>
+</openerp>

@@ -1,22 +1,18 @@
 # -*- coding: utf-8 -*-
-###############################################################################
-#    License, author and contributors information in:                         #
-#    __openerp__.py file at the root folder of this module.                   #
-###############################################################################
+""" AcademyTestsTestKind
 
-from odoo import models, fields, api
-from odoo.tools.translate import _
+This module contains the academy.tests.kind Odoo model which stores
+all academy tests kind attributes and behavior.
+"""
+from odoo import models, fields
+
 from logging import getLogger
-
 
 _logger = getLogger(__name__)
 
+
 class AcademyTestsTestKind(models.Model):
-    """ The summary line for a class docstring should fit on one line.
-
-    Fields:
-      name (Char): Human readable name which will identify each record.
-
+    """ This is a property of the academy.tests.test model
     """
 
     _name = 'academy.tests.test.kind'
@@ -24,6 +20,8 @@ class AcademyTestsTestKind(models.Model):
 
     _rec_name = 'name'
     _order = 'name ASC'
+
+    _inherit = ['image.mixin']
 
     name = fields.Char(
         string='Name',
@@ -56,7 +54,7 @@ class AcademyTestsTestKind(models.Model):
     )
 
     test_ids = fields.One2many(
-        string='Tests',
+        string='Used in tests',
         required=False,
         readonly=True,
         index=False,

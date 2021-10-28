@@ -33,7 +33,7 @@ class AcademyPublicTenderingPublicAdministration(models.Model):
 
     @api.onchange('state_id')
     def _onchange_state_id(self):
-        """ When exists an autonomous community related with choosen state_id
+        """ When exists an autonomous community related with chosen state_id
         it will be automatically set
         """
 

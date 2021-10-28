@@ -14,17 +14,14 @@ Classes:
 
 """
 
-
 from logging import getLogger
 
 # pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
 from odoo.tools.translate import _
 
-
 # pylint: disable=locally-disabled, C0103
 _logger = getLogger(__name__)
-
 
 
 # pylint: disable=locally-disabled, R0903
@@ -48,7 +45,7 @@ class AcademyTestsTestQuestionRel(models.Model):
 
     test_id = fields.Many2one(
         string='Test',
-        required=False,
+        required=True,
         readonly=False,
         index=False,
         default=None,
@@ -58,7 +55,6 @@ class AcademyTestsTestQuestionRel(models.Model):
         context={},
         ondelete='cascade',
         auto_join=False,
-        # oldname='academy_test_id'
     )
 
     question_id = fields.Many2one(
@@ -73,7 +69,6 @@ class AcademyTestsTestQuestionRel(models.Model):
         context={},
         ondelete='cascade',
         auto_join=False,
-        # oldname='academy_question_id'
     )
 
     sequence = fields.Integer(
@@ -97,6 +92,30 @@ class AcademyTestsTestQuestionRel(models.Model):
         store=True
     )
 
+    # This only is used by 'view_academy_tests_test_question_rel_form' view
+    perform = fields.Selection(
+        string='Perform',
+        required=False,
+        readonly=False,
+        index=False,
+        default='link',
+        help='Choose how the new link will be created',
+        selection=[
+            ('link', 'Link an existing question'),
+            ('new', 'Create a new question')
+        ]
+    )
+
+    index = fields.Integer(
+        string='Index',
+        required=False,
+        readonly=True,
+        index=False,
+        default=1,
+        help='Show the order of the question in the test',
+        related="sequence",
+        store=False
+    )
 
     _sql_constraints = [
         (
@@ -106,7 +125,6 @@ class AcademyTestsTestQuestionRel(models.Model):
         )
     ]
 
-
     def name_get(self):
         result = []
 
@@ -115,5 +133,77 @@ class AcademyTestsTestQuestionRel(models.Model):
                 result.append((record.id, record.question_id.name))
             else:
                 result.append((record.id, record.test_id.name))
+
+        return result
+
+    def switch_status(self):
+        """ This method is only a wrapper will be allows user to call
+        the real switch_status existing in related question
+        """
+
+        question_ids = self.mapped('question_id')
+        question_ids.switch_status()
+
+    def _is_a_new_question(values):
+        keys = values.keys()
+        result = 'question_id 'not in keys
+        result = result and 'name' in keys
+        result = result and 'topic_id' in keys
+        result = result and 'topic_version_ids' in keys
+        result = result and 'category_ids' in keys
+        result = result and 'type_id' in keys
+        result = result and 'level_id' in keys
+        result = result and 'owner_id' in keys
+        result = result and 'answer_ids' in keys
+
+        return result
+
+    def _get_text_id(self, values):
+        test_id = values.get('test_id')
+
+        if not test_id:
+            active_model = self.env.context.get('active_model', False)
+            active_id = self.env.context.get('active_id', False)
+
+            if active_model == 'academy.tests.test' and active_id:
+                test_id = active_id
+
+        return test_id
+
+    @api.model
+    def create(self, values):
+        """
+            Create a new record for a model ModelName
+            @param values: provides a data for new record
+
+            @return: returns a id of new record
+        """
+
+        test_id = self._get_text_id(values)
+
+        if test_id:
+            link_obj = self.env['academy.tests.test.question.rel']
+            link_set = link_obj.search([('test_id', '=', test_id)])
+            sequences = link_set.mapped('sequence') or [0]
+            values['sequence'] = max(sequences) + 1
+
+        if 'question_id' not in values and 'name' in values:
+            temp = values.copy()
+            question_values = values.copy()
+
+            question_values.pop('test_id')
+            question_values.pop('sequence')
+
+            question_item = self.env['academy.tests.question']
+            question_item.create(question_values)
+
+            values = {
+                'test_id': temp.get('test_id', None),
+                'question_id': question_item.id,
+                'sequence': temp.get('sequence', 1)
+            }
+
+        _super = super(AcademyTestsTestQuestionRel, self)
+        result = _super.create(values)
 
         return result

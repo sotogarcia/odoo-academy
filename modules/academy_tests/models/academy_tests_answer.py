@@ -1,38 +1,20 @@
 # -*- coding: utf-8 -*-
-# Part of Odoo. See LICENSE file for full copyright and licensing details.
-""" academy tests
+""" AcademyTestsAnswer
 
-This module contains the academy.tests.answer an unique Odoo model
-which contains all academy tests answer attributes and behavior.
-
-This model is the representation of the real life answer for question
-
-Classes:
-    AcademyTest: This is the unique model class in this module
-    and it defines an Odoo model with all its attributes and related behavior.
-
+This module contains the academy.tests.answer Odoo model which stores
+all academy tests answer attributes and behavior.
 """
-
 
 from logging import getLogger
 
-# pylint: disable=locally-disabled, E0401
-from odoo import models, fields, api
+from odoo import models, fields
 from odoo.tools.translate import _
 
-
-# pylint: disable=locally-disabled, C0103
 _logger = getLogger(__name__)
 
 
-
-# pylint: disable=locally-disabled, R0903
 class AcademyTestsAnswer(models.Model):
-    """ Answer for a question
-
-    Fields:
-      name (Char): Human readable name which will identify each record.
-
+    """ This model stores an answer for existing academy.tests.question
     """
 
     _name = 'academy.tests.answer'
@@ -41,19 +23,20 @@ class AcademyTestsAnswer(models.Model):
     _rec_name = 'name'
     _order = 'sequence ASC, id ASC'
 
-    _inherit = ['mail.thread']
+    _inherit = ['academy.abstract.spreadable', 'mail.thread']
 
     # ---------------------------- ENTITY FIELDS ------------------------------
 
     name = fields.Char(
-        string='Name',
+        string='Answer',
         required=True,
         readonly=False,
         index=True,
         default=None,
         help='Text for this answer',
         size=1024,
-        translate=True
+        translate=True,
+        track_visibility='onchange'
     )
 
     description = fields.Text(
@@ -73,7 +56,8 @@ class AcademyTestsAnswer(models.Model):
         index=False,
         default=True,
         help=('If the active field is set to false, it will allow you to '
-              'hide record without removing it')
+              'hide record without removing it'),
+        track_visibility='onchange'
     )
 
     question_id = fields.Many2one(
@@ -88,7 +72,6 @@ class AcademyTestsAnswer(models.Model):
         context={},
         ondelete='cascade',
         auto_join=False,
-        # oldname='academy_question_id'
     )
 
     is_correct = fields.Boolean(
@@ -97,7 +80,8 @@ class AcademyTestsAnswer(models.Model):
         readonly=False,
         index=False,
         default=False,
-        help='Checked means this is a right answer for the question'
+        help='Checked means this is a right answer for the question',
+        track_visibility='onchange'
     )
 
     sequence = fields.Integer(
@@ -131,3 +115,24 @@ class AcademyTestsAnswer(models.Model):
             'target': 'current',
             'state': 'paid'
         }
+
+    def _track_subtype(self, init_values):
+        self.ensure_one()
+
+        if('active' not in init_values):
+            xid = 'academy_tests.academy_tests_answer_written'
+            return self.env.ref(xid)
+        else:
+            _super = super(AcademyTestsAnswer, self)
+            return _super._track_subtype(init_values)
+
+    def _spread_to(self, subtype_id=False, subtype=None):
+        expected = 'academy_tests.academy_tests_answer_written'
+
+        result = []
+        self.ensure_one()
+
+        if subtype_id == self.env.ref(expected).id:
+            result.append(self.question_id)
+
+        return result

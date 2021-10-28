@@ -45,7 +45,7 @@
         </record>
 
         <record id="academy_knowledge_area_09" model="academy.knowledge.area">
-            <field name="name">Archeology</field>
+            <field name="name">Archaeology</field>
             <field name="knowle_code">33</field>
         </record>
 
@@ -190,7 +190,7 @@
         </record>
 
         <record id="academy_knowledge_area_38" model="academy.knowledge.area">
-            <field name="name">Languages ​​And Computer Systems</field>
+            <field name="name">Languages and Computer Systems</field>
             <field name="knowle_code">570</field>
         </record>
 

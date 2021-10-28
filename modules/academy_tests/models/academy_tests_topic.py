@@ -1,40 +1,21 @@
 # -*- coding: utf-8 -*-
-# Part of Odoo. See LICENSE file for full copyright and licensing details.
-""" academy tests
+""" AcademyTestsTopic
 
-This module contains the academy.tests.topic an unique Odoo model
-which contains all academy tests attributes and behavior.
-
-This model is the representation of the real question topic
-
-Classes:
-    AcademyTest: This is the unique model class in this module
-    and it defines an Odoo model with all its attributes and related behavior.
-
+This module contains the academy.tests.topic Odoo model which stores
+all academy tests topic attributes and behavior.
 """
 
-
-from logging import getLogger
-import re
-
-# pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
 from odoo.tools.translate import _
 
+import re
+from logging import getLogger
 
-# pylint: disable=locally-disabled, C0103
 _logger = getLogger(__name__)
 
 
-
-# pylint: disable=locally-disabled, R0903
 class AcademyTestsTopic(models.Model):
-    """ Topics are used to group serveral categories. IE, a topic named
-    Internet could group the following categories: web pages, email, etc.
-
-    Fields:
-      name (Char): Human readable name which will identify each record.
-
+    """ This is a property of the academy.tests.question model
     """
 
     _name = 'academy.tests.topic'
@@ -52,7 +33,7 @@ class AcademyTestsTopic(models.Model):
         index=True,
         default=None,
         help="Name for this topic",
-        size=255,
+        size=1024,
         translate=True,
         track_visibility='onchange'
     )
@@ -90,9 +71,37 @@ class AcademyTestsTopic(models.Model):
         context={},
         auto_join=False,
         limit=None,
-        # oldname='academy_category_ids'
     )
 
+    question_ids = fields.One2many(
+        string='Questions',
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help='List the related questions',
+        comodel_name='academy.tests.question',
+        inverse_name='topic_id',
+        domain=[],
+        context={},
+        auto_join=False,
+        limit=None
+    )
+
+    topic_version_ids = fields.One2many(
+        string='Versions',
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help='Manage different versions of the same topic',
+        comodel_name='academy.tests.topic.version',
+        inverse_name='topic_id',
+        domain=[],
+        context={},
+        auto_join=False,
+        limit=None
+    )
 
     # -------------------------- MANAGEMENT FIELDS ----------------------------
 
@@ -114,6 +123,27 @@ class AcademyTestsTopic(models.Model):
         for record in self:
             record.category_count = len(record.category_ids)
 
+    @api.onchange('category_ids')
+    def _onchange_category_ids(self):
+        self.compute_category_count()
+
+    question_count = fields.Integer(
+        string='Number of questions',
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        help='Show number of questions',
+        compute=lambda self: self.compute_question_count()
+    )
+
+    @api.depends('question_ids')
+    def compute_question_count(self):
+        """ Computes `question_count` field value, this will be the number
+        of categories related with this topic
+        """
+        for record in self:
+            record.question_count = len(record.question_ids)
 
     # --------------------------- SQL_CONTRAINTS ------------------------------
 
@@ -125,6 +155,14 @@ class AcademyTestsTopic(models.Model):
         )
     ]
 
+    # --------------------------- PUBLIC METHODS ------------------------------
+
+    def last_version(self, topic_id=None):
+        item = topic_id or self
+
+        versions = item.topic_version_ids.sorted(key='sequence', reverse=True)
+
+        return versions[0] if versions else False
 
     @staticmethod
     def findall(regex, strlist):
@@ -139,7 +177,6 @@ class AcademyTestsTopic(models.Model):
                 break
 
         return result
-
 
     def search_for_categories(self, _in_string):
         """ Search partial matches for all category keywords in given string
@@ -177,3 +214,18 @@ class AcademyTestsTopic(models.Model):
                             _in_string, catitem.keywords, str(ex)))
 
         return result
+
+    def append_version(self):
+        self.ensure_one()
+
+        action = {
+            'type': 'ir.actions.act_window',
+            'name': 'New topic version wizard',
+            'res_model': 'academy.test.new.topic.version.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'domain': [],
+            'context': {'active_model': self._name, 'active_id': self.id},
+        }
+
+        return action

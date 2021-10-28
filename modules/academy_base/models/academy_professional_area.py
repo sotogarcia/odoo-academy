@@ -1,28 +1,20 @@
 # -*- coding: utf-8 -*-
-""" AcademyTrainingAction
+""" AcademyProfessionalArea
 
 This module contains the academy.professional.area Odoo model which stores
-all professional area attributes and behavior.
+all Professional Area attributes and behavior.
 """
 
+from odoo import models, fields
 
 from logging import getLogger
 
-# pylint: disable=locally-disabled, E0401
-from odoo import models, fields
-
-
-# pylint: disable=locally-disabled, C0103
 _logger = getLogger(__name__)
 
 
 # pylint: disable=locally-disabled, R0903
 class AcademyProfessionalArea(models.Model):
-    """ ...
-
-    Fields:
-      name (Char): Human readable name which will identify each record.
-
+    """ Professional area is a property of the training activity
     """
 
     _name = 'academy.professional.area'
@@ -91,5 +83,3 @@ class AcademyProfessionalArea(models.Model):
         auto_join=False,
         limit=None
     )
-
-

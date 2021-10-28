@@ -70,11 +70,78 @@ odoo.define('academy_tests.QuestionKanbanView', function(require) {
 });
 
 
-        /*_openRecord: function () {
+odoo.define('html_in_tree_field.web_ext', function (require) {
+    "use strict";
+    var Listview = require('web.ListView');
+    var formats = require('web.formats');
+
+    Listview.Column.include({
+        _format: function (row_data, options) {
+        // Removed _.escape() function to display html content.
+        // Before : return _.escape(formats.format_value(row_data[this.id].value, this, options.value_if_empty));
+        return formats.format_value(row_data[this.id].value, this, options.value_if_empty);
+        }
+    });
+});
+
+
+
+// in file academy_tests.js
+odoo.define('academy_tests.ManualCategorizationWidgets', function(require) {
+
+    "use strict";
+
+    var fieldRegistry = require('web.field_registry');
+    var AbstractField = require('web.AbstractField');
+    var FieldMany2Many = require('web.relational_fields').FieldMany2Many;
+    var rpc = require('web.rpc');
+
+    var FieldMany2ManyMD = FieldMany2Many.extend({
+
+        events: _.extend({}, AbstractField.prototype.events, {
+            'open_record': '_onOpenRecord',
+        }),
+
+        init: function (parent, options) {
             this._super.apply(this, arguments);
         },
 
-        _onGlobalClick: function (event) {
-            console.log(event);
-            this._super.apply(this, arguments);
-        },*/
+        /**
+         * Prevents odoo form view will be opened for target record
+         * @param  {odooevent} event the event data
+         */
+        _onOpenRecord: function (event) {
+            let id = this._getId(event);
+
+            event.stopPropagation();
+
+            var orders = rpc.query({
+                model: 'academy.tests.question',
+                method: 'read_as_string',
+                args: [id, true]
+            }).then(function (data) {
+                console.log(data);
+            });
+
+        },
+
+        _getId: function (event) {
+            let strId = event.data.id;
+            let id = null;
+
+            for(let item of event.target.state.data) {
+                id = item.res_id;
+                if (item.id == strId) {
+                    break;
+                }
+            }
+
+            return id;
+        }
+
+    }); // FieldMany2ManyMD
+
+    fieldRegistry.add('many2many_md', FieldMany2ManyMD);
+});
+
+

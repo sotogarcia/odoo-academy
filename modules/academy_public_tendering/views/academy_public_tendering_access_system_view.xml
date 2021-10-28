@@ -45,7 +45,7 @@
                             <label for="name" class="oe_edit_only" />
                             <h1>
                                 <field name="name" class="oe_field_name"
-                                    placeholder="Name" />
+                                    placeholder="Enter new name" />
                             </h1>
                         </div>
                         <!-- ··· -->

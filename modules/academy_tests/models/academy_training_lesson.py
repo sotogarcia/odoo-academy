@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
-###############################################################################
-#    License, author and contributors information in:                         #
-#    __openerp__.py file at the root folder of this module.                   #
-###############################################################################
+""" AcademyTrainingLesson
 
-from odoo import models, fields, api
-from odoo.tools.translate import _
+This module extends the academy.training.lesson Odoo model
+"""
+
+from odoo import models, fields
+
 from logging import getLogger
-
 
 _logger = getLogger(__name__)
 
@@ -18,9 +17,8 @@ class AcademyTrainingLesson(models.Model):
 
     _inherit = 'academy.training.lesson'
 
-
     test_ids = fields.Many2many(
-        string='Tests',
+        string='Lesson tests',
         required=False,
         readonly=False,
         index=False,
@@ -34,4 +32,3 @@ class AcademyTrainingLesson(models.Model):
         context={},
         limit=None
     )
-

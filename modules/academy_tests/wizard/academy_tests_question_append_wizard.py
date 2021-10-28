@@ -11,21 +11,19 @@ to append some question to one or more tests
 from logging import getLogger
 
 # pylint: disable=locally-disabled, E0401
-from odoo import models, fields, api
+from odoo import models, fields
 from odoo.tools.translate import _
-from odoo.exceptions import ValidationError
 
+from odoo.exceptions import ValidationError, UserError
 
 # pylint: disable=locally-disabled, C0103
 _logger = getLogger(__name__)
-
 
 
 # pylint: disable=locally-disabled, R0903
 class Nameofmodel(models.TransientModel):
     """ This model is the representation of the name of model
     """
-
 
     _name = 'academy.tests.question.append.wizard'
     _description = u'Academy tests, question append wizard'
@@ -63,14 +61,36 @@ class Nameofmodel(models.TransientModel):
         default=lambda self: self.default_question_ids(),
     )
 
+    def _context_has_links(self):
+        """ Check if context active_ids belongs to the
+        academy.tests.test.question.rel records
+        """
+
+        link = 'academy.tests.test.question.rel'
+
+        return self.env.context.get('active_model') == link
+
+    def _mapped_questions(self, ids):
+        """ Get questions related with academy.tests.test.question.rel records
+        with the given ID's.
+        """
+
+        link_domain = [('id', 'in', ids)]
+        link_obj = self.env['academy.tests.test.question.rel']
+        link_set = link_obj.search(link_domain)
+
+        return link_set.mapped('question_id.id')
 
     def default_question_ids(self):
         """ Get default `id` values from context, these will be questions
-        had been choosen before launch this wizard
+        had been chosen before launch this wizard
         """
-        ids = self.env.context.get('active_ids', [])
-        return [(6, None, ids)] if ids else False
 
+        ids = self.env.context.get('active_ids', [])
+        if self._context_has_links():
+            ids = self._mapped_questions(ids)
+
+        return [(6, None, ids)] if ids else False
 
     def default_test_id(self):
         """ Get last test used with wizard. Wizard is a transient model
@@ -78,7 +98,7 @@ class Nameofmodel(models.TransientModel):
         """
 
         uid = self.env.context.get('uid', -1)
-        domain = ['|', ('create_uid', '=', uid), ('write_uid', '=', uid)]
+        domain = [('owner_id', '=', uid)]
         order = 'write_date desc, create_date desc, id desc'
 
         wizard_set = self.search(domain, limit=1, order=order)
@@ -88,8 +108,8 @@ class Nameofmodel(models.TransientModel):
 
         test_obj = self.env['academy.tests.test']
         test_set = test_obj.search(domain, limit=1, order=order)
-        return test_set.id if test_set else False
 
+        return test_set.id if test_set else False
 
     def _ensure_required(self):
         # pylint: disable=locally-disabled, W0101
@@ -103,7 +123,6 @@ class Nameofmodel(models.TransientModel):
 
         return True
 
-
     def _get_last_sequence(self):
         rel_domain = [('test_id', '=', self.test_id.id)]
         rel_obj = self.env['academy.tests.test.question.rel']
@@ -111,10 +130,10 @@ class Nameofmodel(models.TransientModel):
 
         return rel_set.sequence if rel_set else 0
 
-
     def execute(self):
         """ Performs the wizard action
         """
+        dep_msg = _('Question with dependencies must be added manually')
         self.ensure_one()
         self._ensure_required()
 
@@ -122,6 +141,9 @@ class Nameofmodel(models.TransientModel):
         rel_obj = self.env['academy.tests.test.question.rel']
 
         for question_id in self.question_ids:
+            if question_id.depends_on_id:
+                raise UserError(dep_msg)
+
             values = {
                 'test_id': self.test_id.id,
                 'question_id': question_id.id,
@@ -130,9 +152,3 @@ class Nameofmodel(models.TransientModel):
             }
 
             rel_obj.create(values)
-
-
-
-
-
-

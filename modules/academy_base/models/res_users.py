@@ -1,34 +1,26 @@
 # -*- coding: utf-8 -*-
-# Part of Odoo. See LICENSE file for full copyright and licensing details.
-""" Res Users
+""" ResUsers
 
-This module extends the res.users to link with training resources
+This module extend res.users model to link to own training resources
 """
+
+from odoo import models, fields
+from odoo.osv.expression import TRUE_DOMAIN, FALSE_DOMAIN, \
+    NEGATIVE_TERM_OPERATORS
 
 
 from logging import getLogger
 
-# pylint: disable=locally-disabled, E0401
-from odoo import models, fields
-
-
-# pylint: disable=locally-disabled, C0103
 _logger = getLogger(__name__)
-
 
 
 # pylint: disable=locally-disabled, R0903
 class ResUsers(models.Model):
-    """ This model is the representation of the res users
-
-    Fields:
-      training_resource_ids: related resources
+    """ This model extends bae.model_res_users
     """
-
 
     _name = 'res.users'
     _inherit = ['res.users']
-
 
     training_resource_ids = fields.One2many(
         string='Training resources',
@@ -44,4 +36,3 @@ class ResUsers(models.Model):
         auto_join=False,
         limit=None
     )
-

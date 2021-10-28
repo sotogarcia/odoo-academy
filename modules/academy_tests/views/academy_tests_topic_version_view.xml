@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <!-- VIEWS: "Topic versions"
+
+            - Model·········: academy.tests.topic.version
+            - _rec_name·····: name
+            - Domain········: []
+            - Context·······: {}
+            - Parent menu ··: academy_base.menu_test_settings_top
+            - View priority·: 16    Sequence····: 10
+            - Action help···: There are no topics yet
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+        <!-- Tree view for "academy.tests.topic.version" -->
+        <record id="view_academy_tests_topic_version_tree" model="ir.ui.view">
+            <field name="name">view.academy.tests.topic.version.tree</field>
+            <field name="model">academy.tests.topic.version</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <tree string="academy_tests_topic_version_tree" create="1" delete="1" edit="1">
+                    <field name="name" class="oe_field_name" />
+                    <field name="topic_id" class="oe_field_topic_id" />
+                    <field name="description" class="oe_field_description" />
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form view for "academy.tests.topic.version" -->
+        <record id="view_academy_tests_topic_version_form" model="ir.ui.view">
+            <field name="name">view.academy.tests.topic.version.form</field>
+            <field name="model">academy.tests.topic.version</field>
+            <field name="type">form</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <form string="academy_tests_topic_version_form" create="1" delete="1" edit="1">
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <widget name="web_ribbon" title="Archived" bg_color="bg-danger"
+                                attrs="{'invisible': [('active', '=', True)]}" />
+                          </div>
+
+                        <div class="oe_title w-100">
+                            <field name="active" invisible="1"/>
+                            <label for="name" class="oe_edit_only" />
+                            <h1>
+                                <field name="name" class="oe_field_name"
+                                    placeholder="Enter new name" />
+                            </h1>
+                        </div>
+
+                        <group>
+                            <field name="topic_id" class="oe_field_topic_id" />
+                            <field name="description" class="oe_field_description" />
+                        </group>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search view for "academy.tests.topic.version" -->
+        <record id="view_academy_tests_topic_version_search" model="ir.ui.view">
+            <field name="name">view.academy.tests.topic.version.search</field>
+            <field name="model">academy.tests.topic.version</field>
+            <field name="type">search</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <search string="academy_tests_topic_version_search">
+                    <field name="name" />
+                    <field name="topic_id" />
+
+                    <filter string="Group by topic"
+                        name="group_by_topic"
+                        domain="[]"
+                        context="{'group_by': 'topic_id'}"
+                        help="" />
+                </search>
+            </field>
+        </record>
+
+        <!-- Main window action for model.name -->
+        <record id="action_topic_versions_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Topic versions</field>
+            <field name="res_model">academy.tests.topic.version</field>
+            <field name="view_mode">tree,form</field>
+            <field name="target">current</field>
+            <field name="domain">[]</field>
+            <field name="context">{'search_default_group_by_topic': 1}</field>
+            <field name="search_view_id" ref="view_academy_tests_topic_version_search" />
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to add new topic versions
+                </p><p>
+                    There are no topic versions yet
+                </p>
+            </field>
+        </record>
+
+        <!-- Main menu for model.name -->
+        <record id="menu_topic_versions" model="ir.ui.menu" >
+            <field name="name">Topic versions</field>
+            <field name="sequence" eval="10" />
+            <field name="action" ref="action_topic_versions_act_window" />
+            <field name="parent_id" ref="menu_test_settings_top" />
+        </record>
+
+        <!-- Tree view for "academy.tests.topic.version" -->
+        <record id="view_academy_tests_topic_version_x2many_tree" model="ir.ui.view">
+            <field name="name">view.academy.tests.topic.version.x2many.tree</field>
+            <field name="model">academy.tests.topic.version</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="inherit_id"></field>
+            <field name="arch" type="xml">
+                <tree string="view_academy_tests_topic_version_x2many_tree" create="1" delete="1" edit="1" editable="bottom">
+                    <field name="sequence" class="oe_field_sequence" widget="handle" />
+                    <field name="name" class="oe_field_name" />
+                    <field name="description" class="oe_field_description" />
+                </tree>
+            </field>
+        </record>
+
+    </data>
+</openerp>

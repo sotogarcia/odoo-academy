@@ -3,6 +3,14 @@
 <openerp>
     <data noupdate="0">
 
+        <record id="academy_tests_answer_written" model="mail.message.subtype">
+            <field name="name">Answer has been updated</field>
+            <field name="res_model">academy.tests.answer</field>
+            <field name="relation_field">write_date</field>
+            <field name="default" eval="True"/>
+            <field name="description">Answer has been updated</field>
+        </record>
+
         <record id="academy_tests_question_written" model="mail.message.subtype">
             <field name="name">Question has been updated</field>
             <field name="res_model">academy.tests.question</field>
@@ -26,6 +34,22 @@
             <field name="relation_field">write_date</field>
             <field name="default" eval="True"/>
             <field name="description">Test has been updated</field>
+        </record>
+
+        <record id="academy_tests_question_owned" model="mail.message.subtype">
+            <field name="name">Ownership of the question has changed</field>
+            <field name="res_model">academy.tests.question</field>
+            <field name="relation_field">write_date</field>
+            <field name="default" eval="True"/>
+            <field name="description">Ownership of the question has changed</field>
+        </record>
+
+        <record id="academy_tests_test_owned" model="mail.message.subtype">
+            <field name="name">Ownership of the test has changed</field>
+            <field name="res_model">academy.tests.test</field>
+            <field name="relation_field">write_date</field>
+            <field name="default" eval="True"/>
+            <field name="description">Ownership of the test has changed</field>
         </record>
 
     </data>

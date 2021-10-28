@@ -6,6 +6,7 @@
         <template id="academy_tests_report_assets_common" name="academy_tests_report_assets_common" inherit_id="web.report_assets_common">
             <xpath expr="." position="inside">
                 <link href="/academy_tests/static/src/css/academy_tests_report.css" rel="stylesheet" />
+                <link href="/academy_tests/static/src/css/academy_training_activity_details_with_topics_relationships_report.css" />
             </xpath>
         </template>
 

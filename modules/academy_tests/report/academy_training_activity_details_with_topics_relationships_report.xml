@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="view_academy_training_activity_details_topics_unit_relationship_row_qweb" model="ir.ui.view">
+            <field name="name">Topics-Units relationship</field>
+            <field name="model">academy.tests.test</field>
+            <field name="type">qweb</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <t t-name="academy_tests.view_academy_training_activity_details_topics_unit_relationship_row_qweb">
+                    <tr>
+                        <td class="px-2">
+                            <t t-if="unit_id.training_module_id">
+                                <span t-if="unit_id.module_code"><t t-esc="unit_id.module_code" /> - </span>
+                                <t t-esc="unit_id.name" />
+                            </t>
+                            <t t-else="">
+                                <span>*</span>
+                            </t>
+                        </td>
+
+                        <td class="px-2">
+                            <t t-if="unit_id.topic_link_ids">
+                                <ul class="list-unstyled">
+                                    <t t-foreach="unit_id.topic_link_ids" t-as="link_id">
+                                    <li class="topic-item">
+                                        <div class="font-weight-bold"><t t-esc="link_id.topic_id.name" /></div>
+                                        <t t-if="link_id.category_ids">
+                                            <ul class="list-unstyled p-0">
+                                                <t t-foreach="link_id.category_ids" t-as="cat_id">
+                                                <li class="d-inline-block category_name"><t t-esc="cat_id.name" /></li>
+                                                </t>
+                                            </ul>
+                                        </t>
+                                        <t t-else=""><div class="font-italic font-weight-light">(All categories)</div></t>
+                                    </li>
+                                    </t>
+                                </ul>
+                            </t>
+                            <t t-else="">No topics assigned</t>
+                        </td>
+                    </tr>
+                </t>
+            </field>
+        </record>
+
+
+        <record id="view_academy_training_activity_topics_module_relationships_table_qweb" model="ir.ui.view">
+            <field name="name">Topics-Modules relationship</field>
+            <field name="model">academy.tests.test</field>
+            <field name="type">qweb</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <t t-name="academy_tests.view_academy_training_activity_topics_module_relationships_table_qweb">
+                    <table class="table table-sm table-bordered w-100 table-stripped categories-table mt-0 mb-2">
+                        <thead>
+                            <tr>
+                                <th class="text-nowrap px-2">Training unit</th>
+                                <th class="text-nowrap px-2">Test topic</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-call="academy_tests.view_academy_training_activity_details_topics_unit_relationship_row_qweb">
+                                <t t-set="unit_id" t-value="module_id"/>
+                            </t>
+                            <t t-foreach="module_id.training_unit_ids" t-as="unit_id">
+                                <t t-call="academy_tests.view_academy_training_activity_details_topics_unit_relationship_row_qweb" />
+                            </t>
+                        </tbody>
+                    </table>
+                </t>
+            </field>
+        </record>
+
+        <record id="view_academy_training_activity_topics_module_relationships_document_qweb" model="ir.ui.view">
+            <field name="name">Training activity topics-module relationships document</field>
+            <field name="model">academy.training.activity</field>
+            <field name="type">qweb</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="academy_base.view_academy_training_activity_details_document_qweb" />
+            <field name="arch" type="xml">
+            	<xpath expr="//t[@t-name='academy_base.view_academy_training_activity_details_document_qweb']" position="attributes">
+            	    <attribute name="t-name">academy_tests.view_academy_training_activity_topics_module_relationships_document_qweb</attribute>
+            	</xpath>
+                <xpath expr="//div[@id='training_unit_ids']" position="replace">
+					<t t-call="academy_tests.view_academy_training_activity_topics_module_relationships_table_qweb" />
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_academy_training_activity_topics_module_relationships_qweb" model="ir.ui.view">
+            <field name="name">Training activity topics-module relationships</field>
+            <field name="model">academy.training.activity</field>
+            <field name="type">qweb</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <t t-name="">
+                    <t t-call="web.html_container">
+                        <t t-foreach="docs" t-as="o">
+                            <t t-call="web.external_layout">
+                                <t t-call="academy_tests.view_academy_training_activity_topics_module_relationships_document_qweb" />
+                            </t>
+                        </t>
+                    </t> <!-- t-html_container -->
+                </t>
+            </field>
+        </record>
+
+        <record id="action_report_academy_training_activity_topics_module_relationships" model="ir.actions.report">
+            <field name="name">Training activity module-topics relationships</field>
+            <field name="model">academy.training.activity</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">academy_tests.view_academy_training_activity_topics_module_relationships_qweb</field>
+            <field name="attachment_use" eval="False" />
+            <field name="attachment">(object.name+'.pdf')</field>
+            <field name="paperformat_id" ref="base.paperformat_euro" />
+            <field name="help">Training activity details report</field>
+            <field name="binding_model_id" ref="academy_base.model_academy_training_activity" />
+        </record>
+
+
+
+        <record id="view_academy_training_activity_topics_module_relationships_only_document_qweb" model="ir.ui.view">
+            <field name="name">Training activity topics-module relationships document</field>
+            <field name="model">academy.training.activity</field>
+            <field name="type">qweb</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <t t-name="academy_base.view_academy_training_activity_topics_module_relationships_only_document_qweb">
+
+                    <div class="page">
+                        <div class="oe_structure"/>
+
+                        <div class="clearfix"></div>
+
+                        <div class="row mb32 mt16">
+                            <section class="col-12">
+                                <header>
+                                    <h1 class="my-0">
+                                        <span t-if="o.activity_code"><t t-esc="o.activity_code" /> - </span>
+                                        <t t-esc="o.name" />
+                                    </h1>
+                                </header>
+                                <t t-foreach="o.competency_unit_ids" t-as="competency_unit_id">
+                                    <h2 class="mt-4">
+                                        <span t-if="competency_unit_id.competency_code"><t t-esc="competency_unit_id.competency_code" /></span>
+                                        <span t-else="" class="unit_item">UNIT </span>:
+                                        <span><t t-esc="competency_unit_id.competency_name" /></span>
+                                    </h2>
+                                    <t t-call="academy_tests.view_academy_training_activity_topics_module_relationships_table_qweb">
+                                        <t t-set="module_id" t-value="competency_unit_id.training_module_id" />
+                                    </t>
+                                    <br class="mt-0 p-0 mb-6" />
+                                </t>
+                            </section>
+                        </div>
+                    </div>
+                </t>
+            </field>
+        </record>
+
+
+          <record id="view_academy_training_activity_topics_module_relationships_only_qweb" model="ir.ui.view">
+            <field name="name">Training activity topics-module relationships</field>
+            <field name="model">academy.training.activity</field>
+            <field name="type">qweb</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <t t-name="academy_base.view_academy_training_activity_topics_module_relationships_only_qweb">
+                    <t t-call="web.html_container">
+                        <t t-foreach="docs" t-as="o">
+                            <t t-call="web.external_layout">
+                                <t t-call="academy_tests.view_academy_training_activity_topics_module_relationships_only_document_qweb" />
+                            </t>
+                        </t>
+                    </t>
+                </t>
+            </field>
+        </record>
+
+        <record id="action_report_academy_training_activity_topics_module_relationships_only" model="ir.actions.report">
+            <field name="name">Training activity module-topics relationships only</field>
+            <field name="model">academy.training.activity</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">academy_tests.view_academy_training_activity_topics_module_relationships_only_qweb</field>
+            <field name="attachment_use" eval="False" />
+            <field name="attachment">(object.name+'.pdf')</field>
+            <field name="paperformat_id" ref="base.paperformat_euro" />
+            <field name="help">Training activity module-topics relationships only</field>
+            <field name="binding_model_id" ref="academy_base.model_academy_training_activity" />
+        </record>
+
+    </data>
+</openerp>

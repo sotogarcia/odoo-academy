@@ -1,13 +1,9 @@
 # -*- coding: utf-8 -*-
-""" AcademyTrainingAction
+""" AcademyTrainingResource
 
 This module contains the academy.action.resource Odoo model which stores
-all training action attributes and behavior.
-
+all training resource attributes and behavior.
 """
-
-
-from logging import getLogger
 
 import os
 import re
@@ -15,7 +11,6 @@ import zipfile
 import base64
 from pathlib import Path
 
-# pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
 from odoo.tools import config
 
@@ -24,8 +19,8 @@ try:
 except ImportError:
     from io import BytesIO
 
+from logging import getLogger
 
-# pylint: disable=locally-disabled, c0103
 _logger = getLogger(__name__)
 
 
@@ -37,11 +32,8 @@ DOWNLOAD_URL = (
 
 
 class AcademyTrainingResource(models.Model):
-    """ Resource will be used in a training unit or session
-
-    Fields:
-      name (Char): Human readable name which will identify each record.
-
+    """ Resource will be used in a training unit or session. It can be related
+    with a ir.attachment or with a local directory
     """
 
     _name = 'academy.training.resource'
@@ -53,7 +45,6 @@ class AcademyTrainingResource(models.Model):
     _inherit = ['image.mixin', 'mail.thread']
 
     # ---------------------------- ENTITY FIELDS ------------------------------
-
 
     name = fields.Char(
         string='Name',
@@ -221,7 +212,6 @@ class AcademyTrainingResource(models.Model):
         auto_join=False
     )
 
-
     # --------------------------- COMPUTED FIELDS -----------------------------
 
     attachmentcounting = fields.Integer(
@@ -242,7 +232,6 @@ class AcademyTrainingResource(models.Model):
         for record in self:
             record.attachmentcounting = len(record.ir_attachment_ids)
 
-
     directory_filecounting = fields.Integer(
         string='Number of files',
         required=False,
@@ -253,7 +242,6 @@ class AcademyTrainingResource(models.Model):
         compute='_compute_directory_filecounting',
     )
 
-
     @api.depends('directory_file_ids')
     def _compute_directory_filecounting(self):
         """ Computes the number of files in resource related directory
@@ -262,18 +250,7 @@ class AcademyTrainingResource(models.Model):
         for record in self:
             record.directory_filecounting = len(record.directory_file_ids)
 
-
     # ---------------------- FIELD METHODS AND EVENTS -------------------------
-
-    # def _domain_for_training_unit_ids(self):
-    #     """ Compute the domain for the training units, this restrict
-    #     allowed units to those are related with selected modules.
-    #     """
-
-    #     ids = self.training_module_ids.mapped('training_unit_ids').ids
-
-    #     return [('id', 'in', ids) if ids else ('id', '=', -1)]
-
 
     @api.onchange('directory')
     def _onchange_directory(self):
@@ -281,22 +258,6 @@ class AcademyTrainingResource(models.Model):
         """
 
         self._reload_single_directory()
-
-
-    # @api.onchange('training_module_ids')
-    # def _training_module_ids(self):
-    #     """ training_module_ids change event. Update the training unit
-    #     list and domain
-    #     """
-
-    #     #STEP 1: Update the unit set according to the selected modules
-    #     utdel = self._get_units_to_remove()
-    #     utadd = self._get_units_to_add()
-    #     self.training_unit_ids = self.training_unit_ids - utdel +utadd
-
-    #     #STEP 1: Return new domain to restrict units within selected modules
-    #     return {'domain': {'training_unit_ids': self._domain_for_training_unit_ids()}}
-
 
     # ------------------------- AUXLIARY METHODS ------------------------------
 
@@ -309,19 +270,21 @@ class AcademyTrainingResource(models.Model):
         return self.training_unit_ids.filtered(
             lambda item: item.training_module_id.id not in module_ids)
 
-
     def _get_units_to_add(self):
         """ Computes which units will be added to list. This list
         changes when the list of training modules changes before.
         """
 
+        def check(item):
+            result = item.training_unit_ids
+            result = result and not item.training_unit_ids & unit_ids
+
+            return result
+
         unit_ids = self.training_unit_ids
-        module_set = self.training_module_ids.filtered(
-            lambda item: item.training_unit_ids and \
-                         not item.training_unit_ids & unit_ids)
+        module_set = self.training_module_ids.filtered(check)
 
         return module_set.mapped('training_unit_ids')
-
 
     def _reload_single_directory(self):
         """ Reload directory filenames
@@ -337,19 +300,17 @@ class AcademyTrainingResource(models.Model):
 
             filenames = []
 
-            #pylint: disable=I0011,W0612
             for root, dirs, files in os.walk(base_path):
                 for name in files:
-                    rel_path = os.path.join(root, name).replace(base_path + '\\', '')
+                    rel_path = os.path.join(root, name)
+                    rel_path = rel_path.replace(base_path + '\\', '')
 
-                    if  re.search('^[^~_.]', rel_path):
-                        filenames.append(
-                            (0, 0, {
-                                'name': rel_path,
-                                'training_resource_id': record.id
-                                }
-                            )
-                        )
+                    if re.search('^[^~_.]', rel_path):
+                        values = {
+                            'name': rel_path,
+                            'training_resource_id': record.id
+                        }
+                        filenames.append((0, 0, values))
 
                 record.directory_file_ids = filenames
 
@@ -358,13 +319,12 @@ class AcademyTrainingResource(models.Model):
         # ziph is zipfile handle
         dirname = os.path.basename(path)
 
-        for root, dirs, files in os.walk(path): # pylint: disable=locally-disabled, W0612
+        for root, dirs, files in os.walk(path):
             for file in files:
                 relpath = os.path.relpath(root, path)
                 relfile = os.path.join(dirname, relpath, file)
                 _logger.debug(u'### Zipping %s', relfile)
                 ziph.write(os.path.join(root, file), relfile)
-
 
     # --------------------------- PUBLIC METHODS ------------------------------
 
@@ -373,8 +333,7 @@ class AcademyTrainingResource(models.Model):
         """
 
         for record in self:
-            record._reload_single_directory() # pylint: disable=locally-disabled, W0212
-
+            record._reload_single_directory()
 
     def download_directory(self):
         """ Download related directory as a zip file. This method will be
@@ -441,7 +400,6 @@ class AcademyTrainingResource(models.Model):
 
         return action
 
-
     # pylint: disable=locally-disabled, W0212
     historical_count = fields.Integer(
         string='Historical count',
@@ -458,8 +416,6 @@ class AcademyTrainingResource(models.Model):
         for record in self:
             record.historical_count = len(record.historical_ids)
 
-
-
     def button_snapshot(self, values):
         """
             Update all record(s) in recordset, with new value comes as {values}
@@ -472,19 +428,24 @@ class AcademyTrainingResource(models.Model):
 
         for record in self:
             old_attachments = self.ir_attachment_ids.copy()
+
+            module_ids_action = [(6, None, self.training_module_ids._ids)]
+            file_ids_action = [(6, None, self.directory_file_ids._ids)]
+            action_ids_action = [(6, None, self.training_action_ids._ids)]
+
             old_values = {
-                'name' : record.name,
-                'description' : record.description,
-                'active' : record.active,
-                'manager_id' : record.manager_id.id,
-                'last_update' : record.last_update,
-                'training_resource_id' : record.id,
-                'ir_attachment_ids' : [(6, None, old_attachments._ids)],
-                'directory' : self.directory,
-                'training_module_ids' : [(6, None, self.training_module_ids._ids)],
-                'directory_file_ids' : [(6, None, self.directory_file_ids._ids)],
-                'training_action_ids' : [(6, None, self.training_action_ids._ids)],
-                'historical_ids' : [(5, None, None)],
+                'name': record.name,
+                'description': record.description,
+                'active': record.active,
+                'manager_id': record.manager_id.id,
+                'last_update': record.last_update,
+                'training_resource_id': record.id,
+                'ir_attachment_ids': [(6, None, old_attachments._ids)],
+                'directory': self.directory,
+                'training_module_ids': module_ids_action,
+                'directory_file_ids': file_ids_action,
+                'training_action_ids': action_ids_action,
+                'historical_ids': [(5, None, None)],
             }
 
             super(AcademyTrainingResource, self).create(old_values)
@@ -509,6 +470,8 @@ class AcademyTrainingResource(models.Model):
         :return: the query expressing the given domain as provided in domain
         :rtype: osv.query.Query
         """
+        _super = super(AcademyTrainingResource, self)
+
         domain = domain[:]  # See the parent method
 
         if domain:
@@ -519,5 +482,4 @@ class AcademyTrainingResource(models.Model):
         else:
             domain = [('training_resource_id', '=', False)]
 
-        return super(AcademyTrainingResource, self)._where_calc(domain, active_test)
-
+        return _super._where_calc(domain, active_test)

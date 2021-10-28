@@ -4,7 +4,7 @@
     <data noupdate="0">
 
         <!-- VIEWS: "Test topic to training module link"
-        
+
             - Model·········: academy.tests.topic.training.module.link
             - _rec_name·····: topic_id
             - Domain········: []
@@ -13,7 +13,7 @@
             - View priority·: 16    Sequence····: 10
             - Action help···: There is no topics
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-        
+
         <!-- Tree view for "academy.tests.topic.training.module.link" -->
         <record id="view_academy_tests_topic_training_module_link_tree" model="ir.ui.view">
             <field name="name">view.academy.tests.topic.training.module.link.tree</field>
@@ -25,10 +25,11 @@
             <field name="arch" type="xml">
                 <tree string="academy_tests_topic_training_module_link_tree" create="1" delete="1" edit="1" editable="bottom">
                     <field name="topic_id" />
-                    <field name="category_ids" widget="many2many_tags" domain="[('topic_id', '=', topic_id)]" />
+                    <field name="topic_version_id" domain="[('topic_id', '=', topic_id)]" string="Version" />
+                    <field name="category_ids" widget="many2many_tags" domain="[('topic_id', '=', topic_id)]" string="Categories" />
                 </tree>
             </field>
         </record>
-        
+
     </data>
 </openerp>

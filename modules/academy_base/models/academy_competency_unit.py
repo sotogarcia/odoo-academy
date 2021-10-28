@@ -1,26 +1,21 @@
 # -*- coding: utf-8 -*-
-""" AcademyTrainingActivity
+""" AcademyCompetencyUnit
 
 This module contains the academy.competency.unit Odoo model which stores
-all competency.unit attributes and behavior.
-
+all competency unit attributes and behavior.
 """
 
+from odoo import models, fields, api
 
 from logging import getLogger
 
-# pylint: disable=locally-disabled, E0401
-from odoo import models, fields, api
-
-
-# pylint: disable=locally-disabled, c0103
 _logger = getLogger(__name__)
 
 
 # pylint: disable=locally-disabled, R0903
 class AcademyCompetencyUnit(models.Model):
-    """ Minimum set of professional skills, capable of recognition and partial
-    accreditation
+    """ Competency unit stores the specific name will be used by a module in
+    a training activity
     """
 
     _name = 'academy.competency.unit'
@@ -32,6 +27,17 @@ class AcademyCompetencyUnit(models.Model):
 
     _inherits = {'academy.training.module': 'training_module_id'}
 
+    competency_code = fields.Char(
+        string='Unit code',
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help='Reference code that identifies the competency unit',
+        size=30,
+        translate=True
+    )
+
     competency_name = fields.Char(
         string='Competency name',
         required=True,
@@ -39,7 +45,7 @@ class AcademyCompetencyUnit(models.Model):
         index=True,
         default=None,
         help='Enter new name',
-        size=255,
+        size=1024,
         translate=True,
     )
 
@@ -113,10 +119,8 @@ class AcademyCompetencyUnit(models.Model):
         auto_join=False
     )
 
-
     # -------------------------- OVERLOADED METHODS ---------------------------
 
-    # @api.one
     @api.returns('self', lambda value: value.id)
     def copy(self, default=None):
         """ Prevents new record of the inherited (_inherits) model will be

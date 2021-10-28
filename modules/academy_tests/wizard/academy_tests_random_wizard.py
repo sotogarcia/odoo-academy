@@ -15,19 +15,6 @@ In this case, two things can happen:
     2. There is not a related template  (`random_wizard_template_id`):
     then the inherited `random_template_id` set of lines will be used
     as template.
-
-
-TODO
-- [ ] Method _onchange_random_wizard_template_id changes active value,
-perheaps this action is wrong
-- [ ] Method _onchange_random_wizard_template_id removes current lines
-when template is unlinked, is this action was removed then current lines
-will be kept in new set allowing to create new template with a copy from
-old template.
-- [ ] Full current save tamplate behavior is called from CRUD methods,
-this should be called from `append_questions` method *before* performs
-the action.
-
 """
 
 
@@ -36,27 +23,15 @@ from datetime import datetime
 
 # pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
-from odoo.tools.translate import _
-
 
 # pylint: disable=locally-disabled, C0103
 _logger = getLogger(__name__)
 
 
-
 # pylint: disable=locally-disabled, R0903, W0201
 class AcademyTestsRandomWizard(models.TransientModel):
     """ This model is the representation of the academy tests random wizard
-
-    Fields:
-      name (Char)       : Human readable name which will identify each record
-      description (Text): Something about the record or other information which
-      has not an specific defined field to store it.
-      active (Boolean)  : Checked do the record will be found by search and
-      browse model methods, unchecked hides the record.
-
     """
-
 
     _name = 'academy.tests.random.wizard'
     _description = u'Academy tests, random wizard'
@@ -86,7 +61,7 @@ class AcademyTestsRandomWizard(models.TransientModel):
         required=False,
         readonly=False,
         index=False,
-        default=False,
+        default=True,
         help='Check it to sort the questions randomly'
     )
 
@@ -143,19 +118,29 @@ class AcademyTestsRandomWizard(models.TransientModel):
 
     # ----------------- AUXILIARY FIELDS METHODS AND EVENTS -------------------
 
-
     def default_test_id(self):
         """ It computes default question list loading all has been selected
         before wizard opening
         """
-        active_model = self.env.context.get('active_model', False)
-        active_ids = self.env.context.get('active_ids', False)
+        context = self.env.context or {}
 
-        if (active_model == 'academy.tests.test' and active_ids):
-            return active_ids[0]
+        active_model = context.get('active_model', False)
+        active_id = context.get('active_id', -1)
 
-        return None
+        result = None
 
+        if (active_model == 'academy.tests.test' and active_id > 0):
+            result = active_id
+        else:
+            uid = self.env.context.get('uid', -1)
+
+            order = 'write_date DESC, create_date DESC'
+            domain = [('owner_id', '=', uid)]
+
+            test_obj = self.env['academy.tests.test']
+            result = test_obj.search(domain, order=order, limit=1)
+
+        return result
 
     def default_random_template_id(self):
         """ Create a new set of lines will be used in inherited field. This
@@ -178,7 +163,6 @@ class AcademyTestsRandomWizard(models.TransientModel):
 
         return lineset_item.id
 
-
     def default_random_wizard_template_id(self):
         active_model = self.env.context.get('active_model', False)
         active_ids = self.env.context.get('active_ids', False)
@@ -187,9 +171,6 @@ class AcademyTestsRandomWizard(models.TransientModel):
             return active_ids[0]
 
         return None
-        # template_obj = self.env['academy.tests.random.template']
-        # self.random_wizard_template_id = template_obj.browse(active_ids[0])
-        # self._onchange_random_wizard_template_id()
 
     @api.onchange('random_wizard_template_id')
     def _onchange_random_wizard_template_id(self):
@@ -197,22 +178,27 @@ class AcademyTestsRandomWizard(models.TransientModel):
         self.ensure_one()
 
         if self.random_wizard_template_id:
-            self._merge_info_from_choosen_template()
+            self._merge_info_from_chosen_template()
 
             ids = []
-            parent_id = self.random_template_id.id
+            template_id = self.random_template_id.id
 
             for line_item in self.random_wizard_template_id.random_line_ids:
-                new_line = line_item.copy({'random_template_id': parent_id})
+                new_line = line_item.copy({'random_template_id': template_id})
                 ids.append(new_line.id)
 
             self.random_line_ids = [(6, None, ids)]
 
-            self.name = self.random_wizard_template_id.name
+            self.name = datetime.now().strftime('WIZARD %Y-%m-%d %H:%M:%S')
             self.description = self.random_wizard_template_id.description
+            self.random_template_id.active = False
+            self.random_template_id.parent_id = \
+                self.random_wizard_template_id.id
 
+        else:
+            self.random_template_id.parent_id = None
 
-    def _merge_info_from_choosen_template(self):
+    def _merge_info_from_chosen_template(self):
         """ Reads
         """
         template = self.random_wizard_template_id
@@ -224,7 +210,6 @@ class AcademyTestsRandomWizard(models.TransientModel):
         for field in wizard_fields:
             value = getattr(template, field)
             setattr(self, field, value)
-
 
     # -------------------------------- CRUD -----------------------------------
 
@@ -244,9 +229,7 @@ class AcademyTestsRandomWizard(models.TransientModel):
 
         return result
 
-
     # -------------------------- AUXILIARY METHODS ----------------------------
-
 
     def _collect_garbage(self):
         """ Each one of used wizards creates at least a set of lines, this
@@ -271,12 +254,10 @@ class AcademyTestsRandomWizard(models.TransientModel):
         line_set.unlink()
         lineset_set.unlink()
 
-
     def _inherited_line_set_is_no_longer_needed(self):
         """ Check if lines in inherited line set should be removed
         """
         return not self.save or self.random_wizard_template_id
-
 
     @staticmethod
     def _remove_lines_from_set(source):
@@ -290,7 +271,6 @@ class AcademyTestsRandomWizard(models.TransientModel):
         actions = [(2, line.id, None) for line in line_set]
         source.random_line_ids = actions
 
-
     def append_questions(self):
         """ Calls action by each related line
         """
@@ -302,7 +282,6 @@ class AcademyTestsRandomWizard(models.TransientModel):
 
         if self.shuffle:
             self.test_id.shuffle()
-
 
     def _remove_inherited_line_set(self):
         """ Removes inherited line set. This method will be called by wizard

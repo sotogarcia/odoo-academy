@@ -4,8 +4,6 @@
 #    __openerp__ file at the root folder of this module.                   #
 ###############################################################################
 
-
-
 from . import academy_abstract_observable
 
 from . import academy_training_methodology
@@ -26,8 +24,6 @@ from . import academy_competency_unit
 from . import academy_qualification_level
 from . import academy_training_activity
 from . import academy_training_action
-
-
 
 from . import academy_student
 from . import res_users

@@ -11,10 +11,10 @@
         </record>
 
         <record id="academy_training_module_lb5" model="academy.training.module">
-            <field name="name">Libre Office 5</field>
+            <field name="name">LibreOffice 5</field>
             <field name="description">Students will gain basic hands-on experience using the integrated programs of Microsoft Office 2010</field>
             <field name="active">True</field>
-            <field name="module_code">MS2010</field>
+            <field name="module_code">LBO50</field>
         </record>
 
         <record id="academy_training_module_win10" model="academy.training.module">
@@ -65,6 +65,14 @@
             <field name="module_code">LBC5</field>
             <field name="active">True</field>
             <field name="training_module_id" ref="academy_base.academy_training_module_lb5" />
+        </record>
+
+        <record id="academy_training_module_odoo" model="academy.training.module">
+            <field name="name">Odoo ERP</field>
+            <field name="description">This course is designed for students who want to gain the necessary skills to operate with Odoo ERP</field>
+            <field name="ownhours">8</field>
+            <field name="module_code">ODOO</field>
+            <field name="active">True</field>
         </record>
 
     </data>

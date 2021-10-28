@@ -26,7 +26,7 @@
                 <tree string="academy_tests_tree" create="1" delete="1" edit="1">
                     <field name="name" class="oe_field_name" />
                     <field name="description" class="oe_field_description" />
-                    <field name="question_count" class="oe_field_question_count" />
+                    <field name="question_count" class="oe_field_question_count" string="Questions" />
                     <field name="test_kind_id" class="od_field_test_kind_id" />
                 </tree>
             </field>
@@ -45,15 +45,18 @@
                     <sheet>
                         <div class="oe_button_box" name="button_box">
                                 <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
-                                <button name="import_questions" type="object"
+                                <button name="import_questions" confirm="Import wizard has been moved to the Action menu"
                                     class="oe_stat_button oe_read_only" icon="fa-upload">
                                     <span>Import</span>
                                 </button>
+
+                                <button name="choose_report_dialog" type="object"
+                                    class="oe_stat_button oe_read_only" icon="fa-print">
+                                    <span>Print</span>
+                                </button>
+
                                 <button name="shuffle" type="object"
                                     class="oe_stat_button oe_read_only" icon="fa-random">
-                                    <!-- <span attrs="{'invisible': [('random_wizard_id', '!=', False)]}">Random</span>
-                                    <field name="random_wizard_id" class="oe_field_random_wizard_id"
-                                        placeholder="Enter new value for random wizard" /> -->
                                     Shuffle
                                 </button>
                                 <button name="show_questions" type="object"
@@ -69,7 +72,7 @@
                                     <label for="name" class="oe_edit_only" />
                                     <h1>
                                         <field name="name" class="oe_field_name"
-                                            placeholder="Name" />
+                                            placeholder="Enter new name" />
                                     </h1>
                                 </div>
                                 <div>
@@ -77,7 +80,7 @@
                                     <label for="preamble" class="oe_edit_only" />
                                     <div>
                                         <field name="preamble" class="oe_field_preamble" widget="text"
-                                            placeholder="Enter new text for preamble" />
+                                            placeholder="Enter new preamble" />
                                     </div>
 
                                 </div>
@@ -87,60 +90,53 @@
                             </div>
                         </div><!-- row -->
 
-                        <!-- IMPORTAN: This group is hidden because it's not needed but can be
-                        interesting in a future. Allows technicals to change the test owner -->
-                        <group col="2" class="text-danger oe_edit_only" invisible="1"
-                            groups="academy_base.academy_group_technical" >
-                            <field name="owner_id" class="oe_field_owner_id"
-                                placeholder="Choose a different owner"  options="{'no_create': True}"
-                                groups="academy_base.academy_group_technical" />
-                        </group>
-
                         <notebook class="academy-tests-test-data">
                             <!-- options="{'no_create': 1}" -->
                             <page string="Questions" class="oe_page_questions" accesskey="Q">
-                                <field name="question_ids" class="oe_field_question_ids">
-                                    <tree string="Question" create="1" delete="1" edit="1" editable="bottom">
-                                        <field name="sequence" class="oe_field_sequence" widget="handle" />
-                                        <field name="question_id" class="oe_field_name" />
-                                        <field name="topic_id" class="oe_field_topic_id" readonly="1" />
-                                        <field name="level_id" class="oe_field_level_id" readonly="1"  />
-                                        <field name="answer_count" class="oe_field_answer_count" readonly="1"  />
-                                        <field name="attachment_count" class="oe_field_attachment_count" readonly="1"  />
-                                    </tree>
-                                </field>
+                                <field name="question_ids" class="oe_field_question_ids"
+                                    context="{'tree_view_ref': 'academy_tests.view_academy_tests_test_question_rel_embed_tree'}" />
                             </page>
+
                             <page string="Details" class="oe_page_description" accesskey="D">
                                 <group col="4">
                                     <field name="code" class="oe_field_code"
-                                        placeholder="Choose an unique internal code" />
-                                    <field name="test_kind_id" class="oe_field_test_kind_id"
-                                        placeholder="Choose a kind" />
+                                        placeholder="Enter new code" />
+                                    <field name="test_kind_id" class="oe_field_test_kind_id" />
+
+                                    <separator string="Proprietary" colspan="4" />
+
+                                    <field name="owner_id" class="oe_field_owner_id" options="{'no_create': True}"
+                                        groups="academy_base.academy_group_technical" />
+                                    <field name="authorship" class="oe_field_authorship" />
                                     <field name="first_use_id" class="oe_field_first_use_id"
-                                        placeholder="Choose who used this test for first time" />
-                                    <field name="correction_scale_id" class="oe_field_correction_scale_id"
-                                        placeholder="Choose the scale of correction" />
-                                    <field name="time_by" class="oe_field_time_by"
-                                        placeholder="Choose an option" />
+                                        attrs="{'invisible': [('authorship', '=', True)]}" />
+
+                                    <separator string="Realization" colspan="4" />
+
+                                    <field name="correction_scale_id" class="oe_field_correction_scale_id" />
+                                    <field name="time_by" class="oe_field_time_by" />
                                     <field name="available_time" class="oe_field_available_time"
-                                        placeholder="Enter the available time" widget="float_time"  />
-                                    <field name="lock_time" class="oe_field_lock_time"
-                                        placeholder="Check it to lock time" />
+                                        placeholder="Enter new time" widget="float_time"  />
+                                    <field name="lock_time" class="oe_field_lock_time" />
+
+                                    <separator string="Description" colspan="4" />
+
+                                    <field name="description" class="oe_field_description"
+                                        placeholder="Enter new description" colspan="4" />
                                 </group>
 
-                                <separator string="Description" />
-                                <field name="description" class="oe_field_description"
-                                    nolabel="1" placeholder="Enter new text for description" />
+                            </page>
 
+                            <page id="available" string="Related" class="oe_page_tests" accesskey="A" groups="academy_base.academy_group_manager">
                                 <separator string="Topics" />
                                 <field name="topic_ids" class="oe_field_topic_ids"
                                      options="{'no_create': True}" nolabel="1">
                                     <tree>
-                                        <field name="name" class="oe_field_name" />
+                                        <field name="name" class="oe_field_name" string="Name" />
                                     </tree>
                                 </field>
-                            </page>
-                            <page id="available" string="Available" class="oe_page_tests" accesskey="A" groups="academy_base.academy_group_manager">
+
+                                <separator string="Available in" />
                                 <field name="available_in" class="oe_field_available_in" />
                             </page>
                         </notebook>
@@ -263,6 +259,7 @@
             <field name="domain">[]</field>
             <field name="context">{"search_default_my_tests":1}</field>
             <field name="search_view_id" ref="view_academy_tests_search" />
+            <field name="limit" eval="24" />
             <field name="help" type="html">
                <p class="oe_view_nocontent_create">
                     Click to add new tests

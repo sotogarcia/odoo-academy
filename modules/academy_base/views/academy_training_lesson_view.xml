@@ -55,6 +55,7 @@
                                     placeholder="code" />
                             </h1>
                         </div>
+
                         <group col="2">
                             <field name="training_action_id" class="oe_field_training_action_id"
                                 colspan="4" placeholder="Training action" />
@@ -63,20 +64,21 @@
                             <field name="teacher_id" class="oe_field_teacher_id"
                                 placeholder="Teacher" />
                         </group>
+
                         <group col="4">
                             <field name="start_date" class="oe_field_start_date"
-                                placeholder="Choose new date start" />
+                                placeholder="Enter new date/time" />
                             <field name="duration" class="oe_field_duration"
-                                placeholder="Enter new value for date delay" widget="float_time" />
+                                placeholder="Enter new time" widget="float_time" />
                         </group>
+
                         <notebook>
                             <page string="Description" class="oe_page_description" accesskey="D">
                                 <field name="description" class="oe_field_description"
-                                    placeholder="Enter new value for description" />
+                                    placeholder="Enter new description" />
                             </page>
                             <page string="Resources" class="oe_page_resources" accesskey="R">
-                                <field name="training_resource_ids" class="oe_field_training_resource_ids"
-                                    placeholder="Choose training resources" />
+                                <field name="training_resource_ids" class="oe_field_training_resource_ids" nolabel="1" />
                             </page>
                             <page string="Attendance" class="oe_page_attendance" accesskey="A">
                                 <p>This area will be occupied by assists</p>
@@ -218,7 +220,7 @@
         <!-- Main menu for model.name -->
         <record id="menu_academy_training_lesson" model="ir.ui.menu" >
             <field name="name">Training lessons</field>
-            <field name="sequence" eval="10" />
+            <field name="sequence" eval="20" />
             <field name="action" ref="action_academy_training_lesson_act_window" />
             <field name="parent_id" ref="academy_base.menu_academy_monitoring" />
             <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical')), (4, ref('academy_base.academy_group_teacher'))]"/>

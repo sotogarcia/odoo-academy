@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="view_academy_tests_random_template_scheduled_tree" model="ir.ui.view">
+            <field name="name">Template scheduled task tree</field>
+            <field name="model">academy.tests.random.template.scheduled</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="base.ir_cron_view_tree" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="template_id" class="oe_field_template_id" />
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_academy_tests_random_template_scheduled_form" model="ir.ui.view">
+            <field name="name">Template scheduled task form</field>
+            <field name="model">academy.tests.random.template.scheduled</field>
+            <field name="type">form</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="base.ir_cron_view_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='state']" position="before">
+                    <field name="template_id" class="oe_field_template_id" />
+                </xpath>
+                <xpath expr="//field[@name='state']" position="before">
+                    <separator colspan="2" string="Targets" />
+                    <notebook colspan="2">
+                        <page string="Actions" class="oe_page_actions" accesskey="A">
+                            <field name="training_action_ids" class="oe_field_training_action_ids"
+                                options="{'no_create': True, 'no_open': True, 'no_edit': True}">
+                                <tree string="Actions" create="1" delete="1" edit="1">
+                                    <field name="display_name" class="oe_field_name" />
+                                </tree>
+                            </field>
+                            <group col="2">
+                                <field name="one_by_enrolment" class="oe_field_one_by_enrolment" />
+                            </group>
+                        </page>
+                        <page string="Enrolments" class="oe_page_enrolments" accesskey="E">
+                            <field name="enrolment_ids" class="oe_field_enrolment_ids"
+                                options="{'no_create': True, 'no_open': True, 'no_edit': True}">
+                                <tree string="Actions" create="1" delete="1" edit="1">
+                                    <field name="display_name" class="oe_field_name" />
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </xpath>
+                <xpath expr="//field[@name='user_id']" position="attributes">
+                    <attribute name="options">{'no_create': True, 'no_open': True, 'no_edit': True}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='model_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='state']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+            </field>
+        </record>
+
+        <record id="view_academy_tests_random_template_scheduled_calendar" model="ir.ui.view">
+            <field name="name">Template scheduled task calendar</field>
+            <field name="model">academy.tests.random.template.scheduled</field>
+            <field name="type">calendar</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="base.ir_cron_view_calendar" />
+            <field name="arch" type="xml">
+                <xpath expr="//." position="inside">
+
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_academy_tests_random_template_scheduled_search" model="ir.ui.view">
+            <field name="name">Template scheduled task search</field>
+            <field name="model">academy.tests.random.template.scheduled</field>
+            <field name="type">search</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="inherit_id"></field>
+            <field name="arch" type="xml">
+               <search string="Scheduled tasks">
+                   <field name="template_id" class="oe_field_template_id" />
+                   <field name="user_id" class="oe_field_user_id" />
+               </search>
+            </field>
+        </record>
+
+        <record id="action_template_scheduled_tasks_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Template scheduled tasks</field>
+            <field name="res_model">academy.tests.random.template.scheduled</field>
+            <field name="view_mode">tree,form</field>
+            <field name="target">current</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="search_view_id" ref="view_academy_tests_random_template_scheduled_search" />
+        </record>
+
+        <record id="menu_scheduled" model="ir.ui.menu" >
+            <field name="name">Scheduled</field>
+            <field name="sequence" eval="10" />
+            <field name="action" ref="action_template_scheduled_tasks_act_window" />
+            <field name="parent_id" ref="menu_test_settings_top" />
+            <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical')), (4, ref('academy_base.academy_group_teacher'))]"/>
+        </record>
+
+    </data>
+</openerp>

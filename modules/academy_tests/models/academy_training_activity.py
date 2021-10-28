@@ -1,16 +1,22 @@
 # -*- coding: utf-8 -*-
-###############################################################################
-#    License, author and contributors information in:                         #
-#    __openerp__.py file at the root folder of this module.                   #
-###############################################################################
+""" AcademyTrainingActivity
 
-from odoo import models, fields, api
-from odoo.tools.translate import _
+This module extends the academy.training.activity Odoo model
+"""
+
+from odoo import models, fields
+
+import odoo.addons.academy_base.models.utils.custom_model_fields as custom
+from .utils.sql_m2m_through_view import ACADEMY_ACTIVITY_AVAILABLE_TESTS, \
+    PARTIAL_ACADEMY_TESTS_QUESTION_TRAINING_MODULE, \
+    ACADEMY_TESTS_QUESTION_TRAINING_ACTIVITY_REL
+
 from logging import getLogger
-from odoo.addons.academy_base.models.lib.custom_model_fields import Many2manyThroughView
-from .lib.libuseful import ACADEMY_ACTIVITY_AVAILABLE_TESTS
 
 _logger = getLogger(__name__)
+
+AVAILABLE_QUESTIONS = ACADEMY_TESTS_QUESTION_TRAINING_ACTIVITY_REL.format(
+    PARTIAL_ACADEMY_TESTS_QUESTION_TRAINING_MODULE)
 
 
 class AcademyTrainingActivity(models.Model):
@@ -19,9 +25,8 @@ class AcademyTrainingActivity(models.Model):
 
     _inherit = 'academy.training.activity'
 
-
     test_ids = fields.Many2many(
-        string='Tests',
+        string='Activity tests',
         required=False,
         readonly=False,
         index=False,
@@ -36,8 +41,8 @@ class AcademyTrainingActivity(models.Model):
         limit=None
     )
 
-    available_test_ids = Many2manyThroughView(
-        string='Tests',
+    available_test_ids = custom.Many2manyThroughView(
+        string='Activity available tests',
         required=False,
         readonly=False,
         index=False,
@@ -67,4 +72,21 @@ class AcademyTrainingActivity(models.Model):
         domain=[],
         context={},
         limit=None
+    )
+
+    available_question_ids = custom.Many2manyThroughView(
+        string='Available questions',
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help='Show questions available in the module',
+        comodel_name='academy.tests.question',
+        relation='academy_tests_question_training_activity_rel',
+        column1='training_activity_id',
+        column2='question_id',
+        domain=[],
+        context={},
+        limit=None,
+        sql=AVAILABLE_QUESTIONS
     )

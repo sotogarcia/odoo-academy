@@ -1,13 +1,19 @@
 # -*- coding: utf-8 -*-
-###############################################################################
-#    License, author and contributors information in:                         #
-#    __openerp__.py file at the root folder of this module.                   #
-###############################################################################
+""" AcademyTestsAttempt
+
+This module contains the academy.tests.attempt Odoo model which stores
+all academy tests attempt attributes and behavior.
+"""
 
 from odoo import models, fields, api
 from odoo.tools.translate import _
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
+import odoo.addons.academy_base.models.utils.custom_model_fields as custom
+from .utils.sql_inverse_searches import ATTEMPTS_CLOSED_SEARCH
+from odoo.osv.expression import FALSE_DOMAIN, TRUE_DOMAIN
+
 from logging import getLogger
-from odoo.addons.academy_base.models.lib.custom_model_fields import Many2manyThroughView
+from datetime import datetime
 
 _logger = getLogger(__name__)
 
@@ -21,7 +27,6 @@ class AcademyTestsAttempt(models.Model):
 
     _rec_name = 'id'
     _order = 'start ASC'
-
 
     active = fields.Boolean(
         string='Active',
@@ -99,7 +104,6 @@ class AcademyTestsAttempt(models.Model):
         help='Enter the total time for the attempt'
     )
 
-
     end = fields.Datetime(
         string='End',
         required=False,
@@ -131,10 +135,12 @@ class AcademyTestsAttempt(models.Model):
         domain=[],
         context={},
         auto_join=False,
-        limit=None
+        limit=None,
+        copy=True,
     )
 
-    attempt_final_answer_ids = Many2manyThroughView(
+    # This must be a Many2manyThroughView because middle relation is a VIEW
+    attempt_final_answer_ids = custom.Many2manyThroughView(
         string='Final answers',
         required=False,
         readonly=True,
@@ -147,7 +153,8 @@ class AcademyTestsAttempt(models.Model):
         column2='attempt_answer_id',
         domain=[],
         context={},
-        limit=None
+        limit=None,
+        copy=False,
     )
 
     right = fields.Float(
@@ -186,14 +193,118 @@ class AcademyTestsAttempt(models.Model):
         readonly=False,
         index=False,
         default=True,
-        help='Check to not allow the user to continue with the test once the time has passed'
+        help=('Check to not allow the user to continue with the test once '
+              'the time has passed')
     )
 
+    closed = fields.Boolean(
+        string='Closed',
+        required=False,
+        readonly=False,
+        index=False,
+        default=False,
+        help='Attempt has finished and it has been fully stored',
+        compute=lambda self: self._compute_closed(),
+        search='_closed_search'
+    )
 
-    _sql_constraints = [
-         (
-             'check_start_before_end',
-             'CHECK("end" IS NULL OR start <= "end")',
-             _(u'The start date/time must be anterior to the end date')
-         )
-     ]
+    @api.depends('elapsed', 'end', 'attempt_answer_ids')
+    def _compute_closed(self):
+        for record in self:
+            answered_set = record._get_anwered_link_ids()
+            test_set = record._get_tests_link_ids()
+            left_set = test_set - answered_set
+
+            record.closed = record.elapsed and record.end and not left_set
+
+    @api.model
+    def _closed_search(self, operator, operand):
+        self.env.cr.execute(ATTEMPTS_CLOSED_SEARCH)
+        result_set = self.env.cr.fetchall()
+
+        assert operator in ['=', '!='] and operand in [True, False], \
+            _('Invalid search operation for closed field in attempt')
+
+        if result_set:
+            ids = [item[0] for item in result_set]
+
+            if self._closed_is_true(operator, operand):
+                domain = [('id', 'in', ids)]
+            else:
+                domain = [('id', 'not in', ids)]
+        else:
+            if self._closed_is_true(operator, operand):
+                domain = FALSE_DOMAIN
+            else:
+                domain = TRUE_DOMAIN
+
+        return domain
+
+    _sql_constraints = [(
+        'check_start_before_end',
+        'CHECK("end" IS NULL OR start <= "end")',
+        _(u'The start date/time must be anterior to the end date')
+    )]
+
+    @staticmethod
+    def _closed_is_true(operator, value):
+        return operator == '=' and value or operator == '!=' and not value
+
+    def _get_anwered_link_ids(self):
+        field_path = 'attempt_answer_ids.question_link_id'
+        return self.mapped(field_path)
+
+    def _get_tests_link_ids(self):
+        field_path = 'test_id.question_ids'
+        return self.mapped(field_path)
+
+    def close(self):
+        """ Close attempt performing the following actions:
+        - Set end value to current datetime if it's empty
+        - Computes elapsed time value if end has not been set
+        - Appends an attempt answer line for each of the questions have not
+        been answered
+        """
+
+        for record in self:
+            if not record.end:
+                value = datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+                record.end = value
+
+            if not record.elapsed:
+                end = fields.Datetime.from_string(record.end)
+                start = fields.Datetime.from_string(record.start)
+                elapsed = (end - start).total_seconds() / 60
+                record.elapsed = min(record.available, elapsed)
+
+            answered_set = record._get_anwered_link_ids()
+            test_set = record._get_tests_link_ids()
+
+            answer_obj = record.env['academy.tests.attempt.answer']
+            left_set = test_set - answered_set
+            for link_item in (left_set):
+                values = {
+                    'active': True,
+                    'user_action': 'blank',
+                    'attempt_id': record.id,
+                    'question_link_id': link_item.id,
+                    'answer_id': None
+                }
+                answer_obj.create(values)
+
+            self.closed = True
+
+    @api.depends('student_id', 'test_id')
+    def name_get(self):
+        result = []
+        for record in self:
+            if isinstance(record.id, models.NewId):
+                name = _('New attempt')
+            else:
+                student = record.student_id.name or _('Student')
+                test = record.test_id.name or _('Test')
+                name = '{} - {} - #{}'.format(student, test, record.id)
+
+            result.append((record.id, name))
+
+        return result

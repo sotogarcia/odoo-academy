@@ -504,10 +504,10 @@ class AcademyTrainingSessionWizard(models.TransientModel):
 
     def _get_units(self):
         """ Search all training training units (final training modues)
-        and they are relatated whith choosen training action
+        and they are relatated whith chosen training action
 
         @return (academy.training.mudule): sorted recordset with all units
-        in choosen training action.
+        in chosen training action.
         """
 
         action_id = self.training_action_id
@@ -589,7 +589,7 @@ class AcademyTrainingSessionWizard(models.TransientModel):
         return line.start_time if not line.following else self.start_time
 
 
-    def _get_choosen_weekday(self):
+    def _get_chosen_weekday(self):
         """ Get string value from self.week_list selection field and returns
         a numerical value. This will be the ZERO index of the weekday
 
@@ -599,7 +599,7 @@ class AcademyTrainingSessionWizard(models.TransientModel):
         return safe_eval(self.week_list[-1:])
 
 
-    def _get_choosen_weekday_position(self):
+    def _get_chosen_weekday_position(self):
         """ Get string value from self.byday selection field and returns
         a numerical value. This value will be a ZERO based nth weekday
         position in month or -1 to designate the last day of month
@@ -717,8 +717,8 @@ class AcademyTrainingSessionWizard(models.TransientModel):
 
         cal = Calendar(firstweekday=0)
 
-        weekday = self._get_choosen_weekday()
-        nth = self._get_choosen_weekday_position()
+        weekday = self._get_chosen_weekday()
+        nth = self._get_chosen_weekday_position()
 
         month = in_date.month
         datelist = cal.itermonthdates(in_date.year, month)
@@ -761,7 +761,7 @@ class AcademyTrainingSessionWizard(models.TransientModel):
     def _next_date(self, current_date):
         """ Computes next date, this will be the one that follows the given
         current_date. To do it, this method uses step of weekdays depending of
-        the value choosen in rrule_type wizard field
+        the value chosen in rrule_type wizard field
         """
 
         computed_date = self._get_first_valid_date(current_date)

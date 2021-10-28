@@ -20,17 +20,18 @@
                             attrs="{'readonly': [('random_line_ids', '=', [])]}"/>
                     </header>
 
-                    <field name="random_template_id" invisible="1" required="1" />
+                    <field name="random_template_id" invisible="1" required="0" />
 
-                    <group col="8">
-                        <field name="test_id" class="oe_field_test_id" colspan="6" />
+                    <group col="6">
+
+                        <field name="test_id" class="oe_field_test_id" colspan="4"
+                            context="{'search_default_filter': 'my_tests'}" />
                         <field name="shuffle" class="oe_field_overwrite"
-                            attrs="{'readonly': [('test_id', '=', False)]}"
-                            placeholder="Check it to sort by random" />
-                        <field name="random_wizard_template_id"  colspan="6"
+                            attrs="{'readonly': [('test_id', '=', False)]}" />
+
+                        <field name="random_wizard_template_id" colspan="4"
                             class="oe_field_random_wizard_id"
-                            options="{'no_open': True, 'no_create': True, 'no_quick_create': True, 'no_create_edit': True }"
-                            placeholder="Choose template for random wizard" />
+                            options="{'no_open': True, 'no_create': True, 'no_quick_create': True, 'no_create_edit': True }" />
                         <field name="overwrite" class="oe_field_overwrite"
                             attrs="{'readonly': [('test_id', '=', False)]}" />
                     </group>
@@ -64,14 +65,14 @@
 
                             <group string="Description">
                                 <field name="test_description" class="oe_field_test_description"
-                                    nolabel="1" />
+                                    nolabel="1" string="Description" />
                             </group>
                         </page>
                         <page string="Options" class="oe_page_options" accesskey="O">
                             <group col="2">
                                 <group col="2">
-                                    <field name="single_transaction" class="oe_field_single_transaction" />
-                                    <field name="use_context" class="oe_field_use_context" />
+                                    <field name="context_ref" class="oe_field_context_ref"
+                                        options="{'no_open': True, 'no_create': True, 'no_quick_create': True, 'no_create_edit': True }" />
                                     <field name="skip_faulty_lines" class="oe_field_skip_faulty_lines" />
                                 </group>
                             </group>
@@ -99,10 +100,10 @@
             <field name="binding_view_types">form</field>
         </record>
 
-        <!-- Secondaty action to bind wizard to templates view -->
+        <!-- Secondary action to bind wizard to templates view -->
         <record id="action_random_wizard_bingind_to_template_act_window" model="ir.actions.act_window">
             <field name="type">ir.actions.act_window</field>
-            <field name="name">Pupulate a test</field>
+            <field name="name">Populate a test</field>
             <field name="res_model">academy.tests.random.wizard</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>
@@ -110,6 +111,13 @@
             <field name="context">{}</field>
             <field name="binding_model_id" ref="academy_tests.model_academy_tests_random_template" />
             <field name="binding_view_types">form</field>
+        </record>
+
+        <record id="menu_new_random_test" model="ir.ui.menu" >
+            <field name="name">Populate a test</field>
+            <field name="sequence" eval="10" />
+            <field name="action" ref="academy_tests.action_random_wizard_act_window" />
+            <field name="parent_id" ref="academy_tests.menu_test_utilities" />
         </record>
 
     </data>

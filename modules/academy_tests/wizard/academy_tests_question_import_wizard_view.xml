@@ -23,46 +23,76 @@
                     <group states="step1" col="4">
 
                         <field name="type_id" class="oe_field_type_id"
-                            placeholder="Choose type will be used in" />
+                            options="{'no_create_edit': True}" />
                         <field name="level_id" class="oe_field_level_id"
-                            placeholder="Choose difficulty will be used in" />
+                            options="{'no_create_edit': True}" />
+
+                        <separator colspan="4" />
 
                         <field name="topic_id" class="oe_field_topic_id"
-                            placeholder="Choose topic will be used in" />
+                            options="{'no_create_edit': True}" />
+
+                        <field name="topic_version_ids" class="oe_field_topic_version_ids"
+                            domain="[('topic_id', '=', topic_id)]" string="Versions"
+                            context="{'default_topic_id': topic_id}"
+                            attrs="{'readonly': [('topic_id', '=', False)]}"
+                            widget="many2many_tags" options="{'no_create_edit': True}" />
 
                         <field name="category_ids" class="oe_field_category_ids"
-                            widget="many2many_tags" domain="[('topic_id', '=', topic_id)]"
+                            domain="[('topic_id', '=', topic_id)]"
+                            context="{'default_topic_id': topic_id}"
                             attrs="{'readonly': [('topic_id', '=', False)]}"
-                            placeholder="Choose categories will be used in" />
-
-                        <field name="tag_ids" class="oe_field_tag_ids"
-                            placeholder="Choose tags will be used in"
-                            widget="many2many_tags" />
-
-                        <field name="test_id" class="oe_field_test_id"
-                            placeholder="Choose test (optional)" />
-                    </group>
-
-                    <group states="step1" col="4">
-                        <field name="owner_id" class="oe_field_owner_id"
-                            placeholder="Choose a different owner" colspan="4"
-                            groups="academy_base.academy_group_technical" />
+                            widget="many2many_tags" options="{'no_create_edit': True}" />
 
                         <field name="autocategorize" class="oe_field_autocategorize"
-                            string="Autocategorizing" />
+                            string="Autocategorize" />
 
-                        <separator colspan="2" />
+                        <div class="alert alert-info mt-2" role="alert" colspan="4"
+                            attrs="{'invisible': ['|', ('state', '&lt;&gt;', 'step1'), ('autocategorize', '=', False)]}">
+                            Only those questions for which there is a match with any of the keywords will be auto-categorized, the rest will be assigned the ones indicated manually.
+                        </div>
+
+                        <separator colspan="4" />
+
+                        <field name="tag_ids" class="oe_field_tag_ids"
+                            widget="many2many_tags" colspan="4" />
+
+                        <separator colspan="4" />
+
+                        <field name="test_id" class="oe_field_test_id" colspan="4" />
+
+                        <separator colspan="4" />
+
+                        <field name="owner_id" class="oe_field_owner_id" colspan="4"
+                            groups="academy_base.academy_group_technical" />
+
+                        <field name="authorship" class="oe_field_authorship" />
+                        <div colspan="2" class="pr-4">
+                            <div class="alert alert-warning mr-4" role="alert"
+                                attrs="{'invisible': [('authorship', '&lt;&gt;', True)]}">
+                                <i class="fa fa-exclamation-triangle text-danger" role="img" aria-label="Warning" title="Warning"/> Are these questions really yours?
+                            </div>
+                            <div class="alert alert-info mr-4" role="alert"
+                                attrs="{'invisible': [('authorship', '&lt;&gt;', False)]}">
+                                <i class="fa fa-info-circle text-primary" role="img" aria-label="Info" title="Information"/> Remember to mark the authorship on your questions.
+                            </div>
+                        </div>
+
                     </group>
 
-                    <div class="alert alert-info" role="alert" 
-                        attrs="{'invisible': ['|', ('state', '&lt;&gt;', 'step1'), ('autocategorize', '=', False)]}">
-                        Only categories with keywords will be used in automatic categorization
-                    </div>
+                    <group states="step1">
 
-                    <group string="Attachments"  states="step1">
-                        <field name="imported_attachment_ids" class="oe_field_imported_attachment_ids"
-                            placeholder="Choose files to import as attachments" colspan="4"
-                             nolabel="1" widget='many2many_binary' />
+                        <field name="imported_attachment_ids"
+                            class="oe_field_imported_attachment_ids"
+                            context="{
+                                'search_default_my_documents_filter': 0,
+                                'search_default_my_own_documents_filter': 1,
+                                'default_res_model': 'academy.tests.question',
+                                'default_res_id': 0,
+                                'default_owner_id': owner_id
+                            }"
+                            widget='many2many_binary' />
+
                     </group>
 
                     <group states="step2">
@@ -74,7 +104,13 @@
 
                     <group string="Attachments"  states="step2">
                         <field name="attachment_ids" class="oe_field_attachment_ids"
-                            placeholder="Choose required attachments" colspan="4" nolabel="1">
+                            context="{
+                                'search_default_my_documents_filter': 0,
+                                'search_default_my_own_documents_filter': 1,
+                                'default_res_model': 'academy.tests.question',
+                                'default_res_id': 0,
+                                'default_owner_id': owner_id
+                            }" colspan="4" nolabel="1">
                             <kanban string="Attachments" create="1" delete="1" edit="1"
                                 quick_create="0" class="o_kanban_mobile" >
 
@@ -131,7 +167,7 @@
 
         <record id="action_academy_tests_question_import_wizard_act_window" model="ir.actions.act_window">
             <field name="type">ir.actions.act_window</field>
-            <field name="name">Import</field>
+            <field name="name">Import questions</field>
             <field name="res_model">academy.tests.question.import.wizard</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>
@@ -140,11 +176,22 @@
             <field name="binding_model_id" ref="academy_tests.model_academy_tests_question" />
         </record>
 
+        <record id="action_academy_tests_question_import_wizard_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Import questions</field>
+            <field name="res_model">academy.tests.question.import.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="binding_model_id" ref="academy_tests.model_academy_tests_test" />
+        </record>
+
         <record id="menu_import_questions" model="ir.ui.menu" >
             <field name="name">Import questions</field>
-            <field name="sequence" eval="10" />
+            <field name="sequence" eval="20" />
             <field name="action" ref="action_academy_tests_question_import_wizard_act_window" />
-            <field name="parent_id" ref="academy_tests.menu_test_top" />
+            <field name="parent_id" ref="academy_tests.menu_test_utilities" />
         </record>
 
     </data>

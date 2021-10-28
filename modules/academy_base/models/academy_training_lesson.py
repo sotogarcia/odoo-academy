@@ -1,80 +1,34 @@
 # -*- coding: utf-8 -*-
-# Part of Odoo. See LICENSE file for full copyright and licensing details.
-""" Academy Training Lesson
+""" AcademyTeacher
 
-This module contains the academy.training.lesson an unique Odoo model
-which contains all Academy Training Lesson attributes and behavior.
-
-This model is the representation of the real life training lesson. One
-lesson has some related resources and a linked list of students who have
-attended.
-
-In addition, training you can designate the modules or units which have
-been imparted in it.
-
-Classes:
-    AcademyTrainingLesson: This is the unique model class in this module
-    and it defines an Odoo model with all its attributes and related behavior.
-
-    Inside this class can be, in order, the following attributes and methods:
-    * Object attributes like name, description, inheritance, etc.
-    * Entity fields with the full definition
-    * Computed fields and required computation methods
-    * Events (@api.onchange) and other field required methods like computed
-    domain, defaul values, etc...
-    * Overloaded object methods, like create, write, copy, etc.
-    * Public object methods will be called from outside
-    * Private auxiliary methods not related with the model fields, they will
-    be called from other class methods
-
-
-Todo:
-    * Complete the model attributes and behavior
-
+This module contains the academy.teacher Odoo model which stores
+all teacher attributes and behavior.
 """
 
+from odoo import models, fields, api
 
 from logging import getLogger
 
-# pylint: disable=locally-disabled, E0401
-from odoo import models, fields, api
-from odoo.exceptions import ValidationError
-
-
-# pylint: disable=locally-disabled, C0103
 _logger = getLogger(__name__)
 
 
-
-# pylint: disable=locally-disabled, R0903
 class AcademyTrainingLesson(models.Model):
-    """ This model is the representation of the real life training lesson. One
-lesson has some related resources and a linked list of students who have
-attended.
-
-    Fields:
-      name (Char)       : Human readable name which will identify each record
-      description (Text): Something about the record or other information witch
-      has not an specific defined field to store it.
-      active (Boolean)  : Checked do the record will be found by search and
-      browse model methods, unchecked hides the record.
-
+    """ Lesson represents a period of instruction. It links a student to a
+    training module over a period of time
     """
-
 
     _name = 'academy.training.lesson'
     _description = u'Academy training lesson'
 
     _inherits = {
-        'academy.training.action' : 'training_action_id',
-        'academy.training.module' : 'training_module_id'
+        'academy.training.action': 'training_action_id',
+        'academy.training.module': 'training_module_id'
     }
 
     _rec_name = 'code'
     _order = 'code ASC'
 
     _inherit = ['mail.thread']
-
 
     training_action_id = fields.Many2one(
         string='Training action',
@@ -91,7 +45,7 @@ attended.
     )
 
     training_module_id = fields.Many2one(
-        string='Training module',
+        string='Lesson module',
         required=True,
         readonly=False,
         index=True,
@@ -145,7 +99,7 @@ attended.
     )
 
     duration = fields.Float(
-        string='Date delay',
+        string='Duration',
         required=True,
         readonly=False,
         index=False,
@@ -169,7 +123,7 @@ attended.
     )
 
     training_resource_ids = fields.Many2many(
-        string='Training resources',
+        string='Lesson resources',
         required=False,
         readonly=False,
         index=False,
@@ -186,7 +140,6 @@ attended.
 
     # -------------------------------------------------------------------------
 
-
     @api.model
     def _default_code(self):
         """ Get next value for sequence
@@ -199,25 +152,23 @@ attended.
 
         return result
 
-
     @api.onchange('training_module_id')
     def _onchange_training_module_id(self):
         module_set = self.training_module_id
         res_list = []
 
-        for res in module_set.training_resource_ids:
+        for res in module_set.module_resource_ids:
             res_list.append((4, res.id, None))
 
-        for res in module_set.available_training_resource_ids:
+        for res in module_set.available_resource_ids:
             res_list.append((4, res.id, None))
 
         self.training_resource_ids = res_list
 
-
     @api.onchange('training_action_id')
     def _onchange_training_action_id(self):
         if self.training_action_id:
-            ids = self.training_action_id.training_unit_ids.mapped('id')
+            ids = self.training_action_id.available_unit_ids.mapped('id')
             domain = [('id', 'in', ids)]
         else:
             domain = [('id', '=', -1)]

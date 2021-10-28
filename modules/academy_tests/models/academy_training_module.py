@@ -1,33 +1,31 @@
 # -*- coding: utf-8 -*-
-###############################################################################
-#    License, author and contributors information in:                         #
-#    __openerp__.py file at the root folder of this module.                   #
-###############################################################################
+""" AcademyTrainingModule
 
-from odoo import models, fields, api
-from odoo.tools.translate import _
-from odoo.addons.academy_base.models.lib.custom_model_fields import Many2manyThroughView
-from .lib.libuseful import INHERITED_TOPICS_REL, INHERITED_CATEGORIES_REL, \
-    ACADEMY_MODULE_AVAILABLE_TESTS
+This module extends the academy.training.module Odoo model
+"""
+
+from odoo import models, fields
+
+import odoo.addons.academy_base.models.utils.custom_model_fields as custom
+from .utils.sql_m2m_through_view import INHERITED_TOPICS_REL, \
+    INHERITED_CATEGORIES_REL, ACADEMY_MODULE_AVAILABLE_TESTS, \
+    PARTIAL_ACADEMY_TESTS_QUESTION_TRAINING_MODULE, \
+    ACADEMY_TESTS_QUESTION_TRAINING_MODULE_REL
 
 from logging import getLogger
 
-
 _logger = getLogger(__name__)
 
+AVAILABLE_QUESTIONS = ACADEMY_TESTS_QUESTION_TRAINING_MODULE_REL.format(
+    PARTIAL_ACADEMY_TESTS_QUESTION_TRAINING_MODULE)
 
 
 class AcademyTrainingModule(models.Model):
     """ Extends academy.training.module to link to training topic
-
-    Fields:
-      topic_ids (One2many): Test topics linked to the module record.
-
     """
 
     _name = 'academy.training.module'
     _inherit = ['academy.training.module']
-
 
     topic_link_ids = fields.One2many(
         string='Topics',
@@ -44,7 +42,7 @@ class AcademyTrainingModule(models.Model):
         limit=None,
     )
 
-    available_topic_ids = Many2manyThroughView(
+    available_topic_ids = custom.Many2manyThroughView(
         string='Available topics',
         required=False,
         readonly=True,
@@ -61,7 +59,7 @@ class AcademyTrainingModule(models.Model):
         sql=INHERITED_TOPICS_REL
     )
 
-    available_categories_ids = Many2manyThroughView(
+    available_categories_ids = custom.Many2manyThroughView(
         string='Available categories',
         required=False,
         readonly=True,
@@ -79,7 +77,7 @@ class AcademyTrainingModule(models.Model):
     )
 
     test_ids = fields.Many2many(
-        string='Tests',
+        string='Training module tests',
         required=False,
         readonly=False,
         index=False,
@@ -94,8 +92,8 @@ class AcademyTrainingModule(models.Model):
         limit=None
     )
 
-    available_test_ids = Many2manyThroughView(
-        string='Tests',
+    available_test_ids = custom.Many2manyThroughView(
+        string='Training module available tests',
         required=False,
         readonly=False,
         index=False,
@@ -125,4 +123,21 @@ class AcademyTrainingModule(models.Model):
         domain=[],
         context={},
         limit=None
+    )
+
+    available_question_ids = custom.Many2manyThroughView(
+        string='Available questions',
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help='Show questions available in the module',
+        comodel_name='academy.tests.question',
+        relation='academy_tests_question_training_module_rel',
+        column1='training_module_id',
+        column2='question_id',
+        domain=[],
+        context={},
+        limit=None,
+        sql=AVAILABLE_QUESTIONS
     )

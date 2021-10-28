@@ -26,14 +26,21 @@
             <field name="priority" eval="16" />
             <field name="active" eval="True" />
             <field name="arch" type="xml">
-                <tree string="academy_question_tree" create="1" delete="1" edit="1">
-                    <field name="name" class="oe_field_name" />
+                <tree string="academy_question_tree" create="1" delete="1" edit="1"
+                    decoration-success="not depends_on_id and not status == 'draft'"
+                    decoration-warning="depends_on_id"
+                    decoration-danger="status == 'draft'">
+
+                    <field name="status" class="oe_field_status" invisible="1" />
+                    <field name="name" class="oe_field_name" string="Name" />
                     <field name="type_id" class="oe_field_type_id" />
                     <field name="topic_id" class="oe_field_topic_id" />
+                    <field name="topic_version_ids" class="oe_field_topic_version_ids" widget="many2many_tags" string="Versions" />
+                    <field name="category_ids" class="oe_field_category_ids" widget="many2many_tags" />
                     <field name="level_id" class="oe_field_level_id" />
-                    <field name="answer_count" class="oe_field_answer_count" />
-                    <field name="attachment_count" class="oe_field_attachment_count" />
+                    <field name="attachment_count" class="oe_field_attachment_count" string="Attachments" />
                     <field name="owner_id" class="oe_field_owner_id" />
+                    <field name="depends_on_id" class="oe_field_depends_on_id" invisible="1" />
                </tree>
             </field>
         </record>
@@ -50,111 +57,143 @@
             <field name="arch" type="xml">
                 <form string="academy_question_form" create="1" delete="1" edit="1">
                     <sheet>
-                        <div class="oe_button_box" name="button_box"/>
-                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
 
-                        <div class="oe_title_question">
-                            <field name="active" invisible="1"/>
-                            <label for="name" class="oe_edit_only" />
-                            <h1>
-                                <field name="name" class="oe_field_name"
-                                    placeholder="Name" widget="text" />
-                            </h1>
+                        <div class="oe_button_box" name="button_box">
+                            <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+                            <button name="show_impugnments" type="object"
+                                class="oe_stat_button oe_read_only" icon="fa-exclamation">
+                                <field name="impugnment_count" class="oe_field_impugnment_count" />&#160;Discuss
+                            </button>
+                            <button name="switch_status" type="object" attrs="{'invisible': [('status', '&lt;&gt;', 'ready')]}"
+                                class="oe_stat_button oe_read_only text-success" icon="fa-pencil-square-o">
+                                <field name="status" class="oe_field_status" />
+                            </button>
+                            <button name="switch_status" type="object" attrs="{'invisible': [('status', '=', 'ready')]}"
+                                class="oe_stat_button oe_read_only text-danger" icon="fa-pencil-square-o">
+                                <field name="status" class="oe_field_status" />
+                            </button>
                         </div>
 
-                        <div class="academy-tests-question-data">
-                            <separator />
+                        <div class="oe_title_question" id="academy-tests-question-title">
+
+                            <field name="active" invisible="1"/>
+
                             <label for="preamble" class="oe_edit_only" />
                             <div>
                                 <field name="preamble" class="oe_field_preamble" widget="text"
-                                    placeholder="Enter new text for preamble" />
+                                    placeholder="Enter new preamble" />
                             </div>
+
+                            <separator />
+
+                            <label for="name" class="oe_edit_only" />
+                            <h1>
+                                <field name="name" class="oe_field_name"
+                                    placeholder="Enter new name" widget="text" />
+                            </h1>
                         </div>
 
-                        <group col="4">
+                        <group col="4" id="academy-tests-question-attributes">
                             <field name="type_id" class="oe_field_type_id"
-                                options="{'no_create': True}"
-                                placeholder="Choose the type for this question" />
-                            <field name="active" class="oe_field_active"
-                                placeholder="Check it to activate" />
-                            <field name="topic_id" class="oe_field_topic_id"
                                 options="{'no_create': True}" />
                             <field name="level_id" class="oe_field_level_id"
-                                placeholder="Enter new value for level" options="{'no_create': True}" />
+                                options="{'no_create': True}" />
+                            <field name="topic_id" class="oe_field_topic_id"
+                                options="{'no_create': True}" />
+                            <field name="topic_version_ids" class="oe_field_topic_version_ids"
+                                widget="many2many_tags" options="{'no_create': True}"
+                                domain="[('topic_id', '=', topic_id)]" string="Versions" />
                             <field name="category_ids" class="oe_field_category_ids"
-                                widget="many2many_tags" colspan="4" options="{'no_create': True}"
+                                widget="many2many_tags" options="{'no_create': True}"
                                 attrs="{'readonly': [('topic_id', '=', False)]}"
                                 domain="[('topic_id', '=', topic_id)]"
                                 context="{'default_topic_id': topic_id}" />
                             <field name="tag_ids" class="oe_field_tag_ids"
-                                widget="many2many_tags" colspan="4" />
-                        </group>
+                                widget="many2many_tags" />
 
-                        <!-- IMPORTAN: This group is hidden because it's not needed but can be
-                        interesting in a future. Allows technicals to change the test owner -->
-                        <group col="2" class="text-danger oe_edit_only" invisible="1"
-                            groups="academy_base.academy_group_technical">
+                            <separator colspan="4" />
+
+                            <field name="authorship" class="oe_field_authorship" />
                             <field name="owner_id" class="oe_field_owner_id"
-                                options="{'no_create': True}"
-                                placeholder="Choose a different owner"
-                                groups="academy_base.academy_group_technical" />
+                                groups="academy_base.academy_group_technical"
+                                options="{'no_create': True}" />
                         </group>
 
-                        <notebook class="academy-tests-question-data">
+                        <notebook class="academy-tests-question-data" id="academy-tests-question-data">
                             <page string="Answers" class="oe_page_answers" accesskey="A">
                                 <field name="answer_ids" class="oe_field_answer_ids"
                                     context="{'tree_view_ref' : 'academy_tests.view_academy_answer_tree_x2many'}" />
                             </page>
                             <page string="Attachments" class="oe_page_attachments" accesskey="T">
                                 <field name="ir_attachment_ids" class="oe_field_ir_attachment_ids"
-                                    context="{'tree_view_ref' : 'academy_tests.view_ir_attachment_tree', 'search_default_my_documents_filter': 1}" />
-                            </page>
-                            <page string="Images" class="oe_page_images" accesskey="I">
+                                    context="{
+                                        'tree_view_ref' : 'academy_tests.view_ir_attachment_tree',
+                                        'search_default_my_documents_filter': 0,
+                                        'search_default_my_own_documents_filter': 1,
+                                        'default_res_model': 'academy.tests.question',
+                                        'default_res_id': 0,
+                                        'default_owner_id': owner_id
+                                    }" />
 
-                            <field name="ir_attachment_image_ids"
-                                class="oe_field_ir_attachment_image_ids"
-                                widget="many2many_kanban">
-                                <kanban quick_create="false" create="true" delete="true">
-                                    <field name="id"/>
-                                    <field name="mimetype"/>
-                                    <field name="type"/>
-                                    <field name="name"/>
-                                    <templates>
-                                        <t t-name="kanban-box">
-                                            <div class="oe_kanban_global_click" style="position: relative">
-                                                <a t-if="! read_only_mode" type="delete" style="position: absolute; right: 0; padding: 4px; diplay: inline-block">
-                                                </a>
-                                                <div class="oe_module_vignette">
-                                                    <div t-if="record.type.raw_value == 'binary'">
-                                                        <a t-attf-href="/web/content/#{record.id.raw_value}?download=1">
-                                                            <t t-set="webimage" t-value="new RegExp('image.*(gif|jpeg|jpg|png)').test(record.mimetype.value)"/>
-                                                            <div t-if="!webimage" class="o_image" t-att-data-mimetype="record.mimetype.value"/>
-                                                            <div t-if="webimage" class="o_attachment_image">
-                                                                <img t-attf-src="/web/image/#{record.id.raw_value}?download=1" alt="Related image" />
-                                                            </div>
-                                                        </a>
+                                <separator string="Preview (images only)"
+                                    attrs="{'invisible': [('ir_attachment_image_ids', '=', [])]}" />
+
+                                <field name="ir_attachment_image_ids"
+                                    class="oe_field_ir_attachment_image_ids"
+                                    widget="many2many_kanban">
+                                    <kanban quick_create="false" create="true" delete="true">
+                                        <field name="id"/>
+                                        <field name="mimetype"/>
+                                        <field name="type"/>
+                                        <field name="name"/>
+                                        <templates>
+                                            <t t-name="kanban-box">
+                                                <div class="oe_kanban_global_click" style="position: relative">
+                                                    <a t-if="! read_only_mode" type="delete" style="position: absolute; right: 0; padding: 4px; diplay: inline-block">
+                                                    </a>
+                                                    <div class="oe_module_vignette">
+                                                        <div t-if="record.type.raw_value == 'binary'">
+                                                            <a t-attf-href="/web/content/#{record.id.raw_value}?download=1">
+                                                                <t t-set="webimage" t-value="new RegExp('image.*(gif|jpeg|jpg|png)').test(record.mimetype.value)"/>
+                                                                <div t-if="!webimage" class="o_image" t-att-data-mimetype="record.mimetype.value"/>
+                                                                <div t-if="webimage" class="o_attachment_image">
+                                                                    <img t-attf-src="/web/image/#{record.id.raw_value}?download=1" alt="Related image" />
+                                                                </div>
+                                                            </a>
+                                                        </div>
+                                                        <field name="name"/>
                                                     </div>
-                                                    <field name="name"/>
                                                 </div>
-                                            </div>
-                                    </t>
-                                    </templates>
-                                </kanban>
-                            </field>
+                                        </t>
+                                        </templates>
+                                    </kanban>
+                                </field>
 
                             </page>
 
                             <page string="Description" class="oe_page_description" accesskey="D">
                                 <field name="description" class="oe_field_description"
-                                    placeholder="Enter new text for description" />
+                                    placeholder="Enter new description" />
                             </page>
 
                             <page string="Used in" class="oe_page_usedin" accesskey="U">
-                                <field name="test_ids" class="oe_field_test_ids">
+                                <field name="test_ids" class="oe_field_test_ids" options="{'no_open': True}">
                                     <tree string="Tests by questions" create="0" delete="0" edit="0">
                                         <field name="test_id" class="oe_field_test_id" />
                                     </tree>
                                 </field>
+                            </page>
+
+                            <page string="Dependency" class="oe_page_description" accesskey="E">
+                                <group cols="2">
+                                    <field name="depends_on_id" class="oe_field_depends_on_id" />
+                                    <separator colspan="2" />
+                                    <field name="depends_on_ids" class="oe_field_depends_on_ids"
+                                        context="{'tree_view_ref' : 'academy_tests.view_academy_question_embed_tree'}" />
+                                    <separator colspan="2" />
+                                    <field name="dependent_ids" class="oe_field_dependent_ids"
+                                        context="{'tree_view_ref' : 'academy_tests.view_academy_question_embed_tree'}" />
+                                </group>
                             </page>
 
                         </notebook>
@@ -188,12 +227,14 @@
                     <field name="category_count" />
                     <field name="preamble" />
                     <field name="description" />
+                    <field name="status" />
+                    <field name="color" />
 
                     <templates>
                         <t t-name="kanban-box">
-                            <div class="oe_kanban_global_click o_question_kanban">
+                            <div t-attf-class="oe_kanban_global_click o_question_kanban #{kanban_color(record.color.raw_value)}">
                                 <div class="oe_kanban_details">
-                                    <h4><field name="name"/></h4>
+                                    <h4><field name="name" /></h4>
                                     <ol class="o_question_kanban_answer_list">
                                     <t t-foreach="record.answer_ids.raw_value" t-as="o">
                                         <li t-att-data-is-correct="o.is_correct"><span t-att-title="o.name"><t t-esc="o.name" /></span></li>
@@ -221,7 +262,7 @@
                                                aria-haspopup="true" aria-expanded="false" role='button'>
                                                 <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
                                             </a>
-                                            <div class="dropdown-menu" aria-labelledby="question_kanban_status_menu_button" role='menu'>
+                                            <div class="dropdown-menu" aria-labelledby="question_kanban_status_menu_button" role='menu' id="question_kanban_status_menu_button">
                                                 <a class="dropdown-item" id="question_kanban_status_menu_add_to_test" href="#">
                                                     Add to test
                                                 </a>
@@ -269,11 +310,45 @@
                     <field name="test_ids" string="Test" />
                     <field name="topic_id" string="Topic" />
 
+                    <filter string="All available questions"
+                        name="all_available_questions"
+                        domain="[('status', '=', 'ready'), ('depends_on_id', '=', False)]"
+                        context="{}"
+                        help="List the own available questions" />
+
+                    <separator/>
+
                     <filter string="My questions"
-                        name="my_questions"
+                        name="my_own_questions"
                         domain="[('owner_id', '=', uid)]"
                         context="{}"
-                        help="List only the own questions" />
+                        help="List all the own questions" />
+
+                    <filter string="My available questions"
+                        name="my_own_available_questions"
+                        domain="[('owner_id', '=', uid), ('status', '=', 'ready'), ('depends_on_id', '=', False)]"
+                        context="{}"
+                        help="List the own available questions" />
+
+                    <filter string="My available authorship questions"
+                        name="my_own_available_authorship_questions"
+                        domain="[('owner_id', '=', uid), ('status', '=', 'ready'), ('depends_on_id', '=', False), ('authorship', '=', True)]"
+                        context="{}"
+                        help="List the own available authorship questions" />
+
+                    <separator/>
+
+                    <filter string="My questions to review"
+                        name="to_be_reviewed"
+                        domain="[('owner_id', '=', uid), ('status', '&lt;&gt;', 'ready')]"
+                        context="{}"
+                        help="List the questions need to be revised" />
+
+                    <filter string="My dependent questions"
+                        name="dependent_questions"
+                        domain="[('owner_id', '=', uid), ('depends_on_id', '&lt;&gt;', False)]"
+                        context="{}"
+                        help="List those questions that depend on another" />
                 </search>
             </field>
         </record>
@@ -287,8 +362,9 @@
             <field name="view_mode">kanban,tree,form,pivot</field>
             <field name="target">current</field>
             <field name="domain">[]</field>
-            <field name="context">{"search_default_my_questions":1}</field>
+            <field name="context">{"search_default_my_own_available_questions":1}</field>
             <field name="search_view_id" ref="view_academy_question_search" />
+            <field name="limit" eval="24" />
             <field name="help" type="html">
                <p class="oe_view_nocontent_create">
                     Click to add new questions
@@ -437,6 +513,125 @@
             <field name="act_window_id" ref="action_questions_keep_items_act_window"/>
         </record>
 
+
+        <!-- Simple tree view to embed in other forms views
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        <record id="view_academy_question_embed_tree" model="ir.ui.view">
+            <field name="name">view.academy.tests.question.tree</field>
+            <field name="model">academy.tests.question</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <tree string="academy_question_tree" create="1" delete="1" edit="1" decoration-success="not depends_on_id and not status == 'draft'" decoration-warning="depends_on_id" decoration-danger="status == 'draft'">
+                    <field name="status" class="oe_field_status" invisible="1" />
+                    <field name="depends_on_id" class="oe_field_depends_on_id" invisible="1" />
+                    <field name="name" class="oe_field_name" />
+                    <field name="type_id" class="oe_field_type_id" />
+                    <field name="topic_id" class="oe_field_topic_id" />
+                    <field name="level_id" class="oe_field_level_id" readonly="1"  />
+                    <field name="attachment_count" class="oe_field_attachment_count" />
+               </tree>
+            </field>
+        </record>
+
+
+        <!-- Following views will be used to categorize questions
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+        <record id="view_academy_tests_manual_question_categorization_tree" model="ir.ui.view">
+            <field name="name">Manual question categorization tree</field>
+            <field name="model">academy.tests.question</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <tree string="Questions" create="0" delete="0" edit="1" editable="top" class="manual-categorization-tree-view">
+
+                    <field name="markdown" class="oe_field_markdown" />
+
+                    <field name="topic_id" class="oe_field_topic_id"
+                        options="{'no_quick_create': True, 'no_create': True}" />
+
+                    <field name="topic_version_ids" class="oe_field_topic_version_ids"
+                        widget="many2many_tags" string="Versions"
+                        domain="[('topic_id', '=', topic_id)]"
+                        options="{'no_quick_create': True, 'no_create': True}" />
+
+                    <field name="category_ids" class="oe_field_category_ids"
+                        widget="many2many_tags"
+                        attrs="{'readonly': [('topic_id', '=', False)]}"
+                        domain="[('topic_id', '=', topic_id)]"
+                        context="{'default_topic_id': topic_id}"
+                        options="{'no_quick_create': True, 'no_create': True}" />
+
+                    <button name="save"
+                            string="Apply"
+                            special="save"
+                            icon="fa-check"
+                            help="Apply current changes"
+                            class="oe_edit_only" />
+
+                    <button name="cancel"
+                            string="Cancel"
+                            special="cancel"
+                            icon="fa-undo"
+                            help="Cancel current changes"
+                            class="oe_edit_only" />
+
+                    <button name="open_form_view"
+                             string="Open in form"
+                             type="object"
+                             icon="fa-external-link"
+                             help="Open in form view" />
+
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_academy_tests_manual_question_categorization_search" model="ir.ui.view">
+            <field name="name">Manual question categorization search</field>
+            <field name="model">academy.tests.question</field>
+            <field name="type">search</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="academy_tests.view_academy_question_search" />
+            <field name="arch" type="html">
+                <xpath expr="//field[@name='topic_id']" position="after">
+                    <field name="category_ids" class="oe_field_category_ids" />
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Main window action for model.name -->
+        <record id="action_academy_tests_manual_categorization_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Manual categorization</field>
+            <field name="res_model">academy.tests.question</field>
+            <field name="view_mode">tree</field>
+            <field name="target">current</field>
+            <field name="domain">[]</field>
+            <field name="context">{"search_default_my_own_available_questions":1}</field>
+            <field name="search_view_id" ref="view_academy_tests_manual_question_categorization_search" />
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to add new question
+                </p><p>
+                    Any question have been stored
+                </p>
+            </field>
+        </record>
+
+        <!-- Main menu for model.name -->
+        <record id="menu_manual_categorization" model="ir.ui.menu" >
+            <field name="name">Manual categorization</field>
+            <field name="sequence" eval="10" />
+            <field name="action" ref="action_academy_tests_manual_categorization_act_window" />
+            <field name="parent_id" ref="academy_tests.menu_test_utilities" />
+        </record>
 
     </data>
 </openerp>

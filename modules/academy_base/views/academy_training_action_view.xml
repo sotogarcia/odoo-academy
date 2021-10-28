@@ -25,7 +25,7 @@
             <field name="active" eval="True" />
             <field name="arch" type="xml">
                 <tree string="academy_training_action_tree" create="1" delete="1" edit="1">
-                    <field name="action_name" />
+                    <field name="action_name" string="Name" />
                     <field name="start" class="oe_field_start" />
                     <field name="end" class="oe_field_end" />
                     <field name="tuttor_id" />
@@ -47,9 +47,13 @@
                         <div class="oe_button_box" name="button_box">
                             <button name="session_wizard" type="object" class="oe_stat_button" icon="fa-calendar">
                                 <div class="o_field_widget o_stat_info">
-                                    <span class="o_stat_text">Sessions</span>
+                                    <span class="o_stat_text">New session</span>
                                 </div>
                             </button>
+                            <button name="show_enrolments" type="object" class="oe_stat_button" icon="fa-user-o">
+                                <field name="training_action_enrolment_count" class="oe_field_training_action_enrolment_count" />&#160;students
+                            </button>
+
                             <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
                         </div>
 
@@ -62,15 +66,13 @@
                             <label for="name" class="oe_edit_only" />
                             <h1>
                                 <field name="action_name" class="oe_field_name"
-                                    placeholder="Name" />
+                                    placeholder="Enter new name" />
                             </h1>
                         </div>
 
                         <group col="2">
-                            <field name="training_activity_id" class="oe_field_training_activity_id"
-                                placeholder="Choose related training activity" />
-                            <field name="application_scope_id" class="od_field_application_scope"
-                                placeholder="Choose new application scope" />
+                            <field name="training_activity_id" class="oe_field_training_activity_id" />
+                            <field name="application_scope_id" class="od_field_application_scope" />
                         </group>
 
                         <group col="4">
@@ -87,34 +89,26 @@
                             <page string="Data" class="oe_page_data" accesskey="T">
 
                                 <group col="4">
-                                    <field name="knowledge_area_ids" class="od_field_knowledge_area"
-                                        placeholder="Choose knowledge area" widget="many2many_tags"
+                                    <field name="knowledge_area_ids" class="od_field_knowledge_area" widget="many2many_tags"
                                         string="Area" title="Knowledge area" />
                                     <field name="professional_category_id" class="od_field_professional_category"
-                                        placeholder="Choose professional category"
                                         string="Category" title="Professional category"  />
-                                    <field name="training_modality_ids" class="od_field_training_modality"
-                                        placeholder="Choose training modality" widget="many2many_tags"
+                                    <field name="training_modality_ids" class="od_field_training_modality" widget="many2many_tags"
                                         string="Modality" title="Training modality"  />
-                                    <field name="training_methodology_ids" class="od_field_training_methodology"
-                                        placeholder="Choose training methodology" widget="many2many_tags"
+                                    <field name="training_methodology_ids" class="od_field_training_methodology" widget="many2many_tags"
                                         string="Methodology" title="Training methodology"  />
 
-                                    <field name="professional_family_id" class="oe_field_professional_family_id"
-                                        placeholder="Choose related professional family" readonly="1" />
-                                    <field name="professional_area_id" class="oe_field_professional_area_id"
-                                        placeholder="Choose related professional area" readonly="1" />
+                                    <field name="professional_family_id" class="oe_field_professional_family_id" readonly="1" />
+                                    <field name="professional_area_id" class="oe_field_professional_area_id" readonly="1" />
                                     <field name="activity_code" class="oe_field_action_code"
                                         placeholder="Enter new internal code" readonly="1" />
-                                    <field name="qualification_level_id" class="oe_field_qualification_level_id"
-                                        placeholder="Choose related qualification level" readonly="1" />
+                                    <field name="qualification_level_id" class="oe_field_qualification_level_id" readonly="1" />
                                 </group>
 
                             </page>
 
                             <page string="Competency units" class="oe_page_competency_units" accesskey="C">
-                                <field name="competency_unit_ids" class="oe_field_competency_unit_ids"
-                                    placeholder="Choose related competency units" readonly="1" />
+                                <field name="competency_unit_ids" class="oe_field_competency_unit_ids" readonly="1" />
                             </page>
                             <page string="Enrolments" class="oe_page_students" accesskey="S">
                                 <field name="training_action_enrolment_ids" class="oe_field_training_action_enrolment_ids"
@@ -122,10 +116,10 @@
                             </page>
 
                             <page string="Resources" class="oe_page_available_resources" accesskey="R">
-                                <field name="action_resource_ids"
+                                <field name="action_resource_ids" nolabel="1"
                                        class="oe_field_action_resource_ids oe_edit_only" />
 
-                                <field name="available_resource_ids"
+                                <field name="available_resource_ids" nolabel="1"
                                        class="oe_field_available_resource_ids oe_read_only" />
                             </page>
 
@@ -191,8 +185,8 @@
             <field name="active" eval="True" />
             <field name="arch" type="xml">
                 <search string="academy_training_action_search">
-                    <field name="action_name" />
-                    <field name="action_code" />
+                    <field name="action_name" string="Name" />
+                    <field name="action_code" string="Code" />
 
                     <field name="application_scope_id" />
                     <field name="professional_category_id" />

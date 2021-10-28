@@ -24,8 +24,8 @@
             <field name="active" eval="True" />
             <field name="arch" type="xml">
                 <tree string="academy_topic_tree" create="1" delete="1" edit="1">
-                    <field name="name" class="oe_field_name" />
-                    <field name="category_count" class="oe_field_category_count" />
+                    <field name="name" class="oe_field_name" string="Name" />
+                    <field name="category_count" class="oe_field_category_count" string="Categories" />
                     <field name="description" class="oe_field_category_count" />
                 </tree>
             </field>
@@ -42,17 +42,30 @@
             <field name="arch" type="xml">
                 <form string="academy_topic_form" create="1" delete="1" edit="1">
                     <sheet>
-                        <div class="oe_title">
+                        <div class="oe_button_box" name="button_box">
+                            <widget name="web_ribbon" title="Archived" bg_color="bg-danger"
+                                attrs="{'invisible': [('active', '=', True)]}" />
+                            <button name="append_version" type="object"
+                                class="oe_stat_button" icon="fa-magic">
+                                Add version
+                            </button>
+                        </div>
+
+                        <div class="oe_title w-100">
+                            <field name="id" class="oe_field_id" invisible="1" />
+                            <field name="active" class="oe_field_active" invisible="1" />
                             <label for="name" class="oe_edit_only" />
                             <h1>
                                 <field name="name" class="oe_field_name"
-                                    placeholder="Name" />
+                                    placeholder="Enter new name" />
                             </h1>
                         </div>
 
-                        <group col="2">
+                        <group col="4">
+                            <field name="category_count" class="oe_field_category_count" string="Categories" />
+                            <field name="question_count" class="oe_field_question_count" string="Questions" />
                             <field name="description" class="oe_field_description"
-                                placeholder="Enter new text for description" />
+                                placeholder="Enter new description" colspan="4" />
                         </group>
 
                         <notebook>
@@ -60,6 +73,11 @@
                                 <field name="category_ids" class="oe_field_category_ids" options="{'no_create': True}"
                                     context="{'tree_view_ref': 'academy_tests.view_academy_category_tree_x2many', 'default_topic_id': id}" />
                             </page>
+                            <page string="Versions" class="oe_page_versions" accesskey="V">
+                                <field name="topic_version_ids" class="oe_field_topic_version_ids" string="Versions"
+                                    context="{'tree_view_ref': 'academy_tests.view_academy_tests_topic_version_x2many_tree',
+                                    'default_topic_id': id}" />
+                                </page>
                         </notebook>
                     </sheet>
                     <div class="oe_chatter">

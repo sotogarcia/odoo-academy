@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
-###############################################################################
-#    License, author and contributors information in:                         #
-#    __openerp__.py file at the root folder of this module.                   #
-###############################################################################
+""" AcademyTrainingResourceKind
 
-from odoo import models, fields, api
-from odoo.tools.translate import _
+This module contains the academy.action.resource.kind Odoo model which stores
+all training resource kind attributes and behavior.
+"""
+
+from odoo import models, fields
+
 from logging import getLogger
-
 
 _logger = getLogger(__name__)
 
 
 class AcademyTrainingResourceKind(models.Model):
-    """ Kind for academy training resource
+    """ This model allow user to sort out stored resources
     """
 
     _name = 'academy.training.resource.kind'
@@ -21,7 +21,6 @@ class AcademyTrainingResourceKind(models.Model):
 
     _rec_name = 'name'
     _order = 'name ASC'
-
 
     name = fields.Char(
         string='Name',

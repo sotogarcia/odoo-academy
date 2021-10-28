@@ -1,24 +1,19 @@
 # -*- coding: utf-8 -*-
-###############################################################################
-#    License, author and contributors information in:                         #
-#    __openerp__.py file at the root folder of this module.                   #
-###############################################################################
+""" AcademyQualificationLevel
 
-from odoo import models, fields, api, api
-from odoo.tools.translate import _
+This module contains the academy.qualification.level Odoo model which stores
+all qualification level attributes and behavior.
+"""
+
+from odoo import models, fields
+
 from logging import getLogger
-
 
 _logger = getLogger(__name__)
 
 
 class AcademyQualificationLevel(models.Model):
-    """ Set of qualifications according to criteria of the complexity of
-    task.
-
-    Fields:
-      name (Char): Human readable name which will identify each record.
-
+    """ Qualification level is a property of the training activity
     """
 
     _name = 'academy.qualification.level'

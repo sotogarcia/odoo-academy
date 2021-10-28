@@ -3,8 +3,8 @@
 <openerp>
     <data noupdate="0">
 
-        <record id="academy_training_action" model="academy.training.action">
-            <field name="action_name">Microsoft Office appliances</field>
+        <record id="academy_training_action_demo" model="academy.training.action">
+            <field name="action_name">Free software in the office</field>
             <field name="description">Introduces the basic features of the more used office appliances</field>
             <field name="active">True</field>
             <field name="start">2020-06-01 19:00:00</field>
@@ -12,7 +12,7 @@
             <field name="application_scope_id" ref="academy_base.academy_application_scope_public" />
             <field name="professional_category_id" ref="academy_base.academy_professional_category_administrative" />
             <!-- <field name="training_action_category_id"></field> -->
-            <field name="training_activity_id" ref="academy_base.academy_training_activity_ms" />
+            <field name="training_activity_id" ref="academy_base.academy_training_activity_ADGD0308" />
             <field name="action_code">AGE2020</field>
             <field name="seating">5</field>
         </record>

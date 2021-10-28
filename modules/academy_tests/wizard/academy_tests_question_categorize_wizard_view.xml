@@ -17,15 +17,12 @@
                                 string="Update" class="oe_highlight"
                                 states="step2" />
 
-<!--                         <button name="write" type="object" string="Save"
-                                states="step3" /> -->
-
                         <field name="state" widget="statusbar" clickable="1" />
                     </header>
 
                     <field name="question_ids" class="oe_field_question_ids" states="step1">
                         <tree string="Questions" create="1" delete="1" edit="1" editable="bottom">
-                            <field name="name" class="oe_field_name" autocomplete="off" />
+                            <field name="name" class="oe_field_name" autocomplete="off" string="Name" />
                             <field name="topic_id" class="oe_field_topic_id" autocomplete="off" />
                             <field name="category_ids" class="oe_field_category_ids"
                                 domain="[('topic_id', '=', topic_id)]"
@@ -33,32 +30,54 @@
                         </tree>
                     </field>
 
-                    <group states="step2" col="4">
-                        <field name="change_topic" class="oe_field_change_topic"
-                            colspan="4"/>
+                    <group states="step2" col="6">
+                        <field name="change_topic" class="oe_field_change_topic" colspan="2" />
+                        <field name="topic_id" class="oe_field_topic_id" colspan="4"
+                            options="{'no_create_edit': True, 'no_open': True}"
+                            attrs="{'readonly': [('change_topic', '=', False)], 'required' : [('change_topic', '=', True)]}" />
 
-                        <field name="topic_id" class="oe_field_topic_id"
-                            attrs="{'invisible': [('change_topic', '=', False)], 'required' : [('change_topic', '=', True)]}" />
-                        <field name="category_action" class="oe_field_category_action"
-                            attrs="{'invisible': [('change_topic', '=', False)], 'required' : [('change_topic', '=', True)]}" />
+                        <field name="topic_version_action" class="oe_field_topic_version_action" colspan="2"
+                            attrs="{'readonly': [('change_topic', '=', False)], 'required' : [('change_topic', '=', True)]}" />
+                        <field name="topic_version_ids" class="oe_field_topic_version_ids"
+                            domain="[('topic_id', '=', topic_id)]" widget="many2many_tags"
+                            options="{'no_create_edit': True}" colspan="4" string="Versions"
+                            attrs="{'readonly': [('change_topic', '=', False)], 'required' : [('change_topic', '=', True)]}" />
+
+
+                        <field name="category_action" class="oe_field_category_action" colspan="2"
+                            attrs="{'readonly': [('change_topic', '=', False)], 'required' : [('change_topic', '=', True)]}" />
                         <field name="category_ids" class="oe_field_category_ids"
-                            domain="[('topic_id', '=', topic_id)]" colspan="4" widget="many2many_tags"
-                            attrs="{'invisible': [('change_topic', '=', False)], 'required' : [('change_topic', '=', True)]}" />
-                    </group>
+                            domain="[('topic_id', '=', topic_id)]" widget="many2many_tags"
+                            options="{'no_create_edit': True}" colspan="4"
+                            attrs="{'readonly': [('change_topic', '=', False)], 'required' : [('change_topic', '=', True)]}" />
 
-                    <group  states="step2" col="4">
-                        <field name="change_type" class="oe_field_change_type" />
-                        <field name="type_id" class="oe_field_type_id"
+                        <field name="autocategorize" class="oe_field_autocategorize" colspan="6"  />
+
+                        <separator colspan="6" string="Tags" />
+
+                        <field name="tag_action" class="oe_field_tag_action" colspan="2" />
+                        <field name="tag_ids" class="oe_field_tag_ids"
+                            widget="many2many_tags" colspan="4"
+                            attrs="{'readonly': [('tag_action', '=', False)], 'required' : [('tag_action', '=', 'new')]}" />
+
+                        <separator colspan="6" string="Datails" />
+
+                        <field name="change_type" class="oe_field_change_type" colspan="2" />
+                        <field name="type_id" class="oe_field_type_id" colspan="4"
+                            options="{'no_create_edit': True, 'no_open': True}"
                             attrs="{'readonly': [('change_type', '=', False)], 'required' : [('change_type', '=', True)]}" />
 
-                        <field name="change_level" class="oe_field_change_level" />
-                        <field name="level_id" class="oe_field_level_id"
+                        <field name="change_level" class="oe_field_change_level" colspan="2" />
+                        <field name="level_id" class="oe_field_level_id" colspan="4"
+                            options="{'no_create_edit': True, 'no_open': True}"
                             attrs="{'readonly': [('change_level', '=', False)], 'required' : [('change_level', '=', True)]}" />
 
-                        <field name="tag_action" class="oe_field_tag_action" />
-                        <field name="tag_ids" class="oe_field_tag_ids"
-                            widget="many2many_tags"
-                            attrs="{'readonly': [('tag_action', '=', False)], 'required' : [('tag_action', '=', 'new')]}" />
+                        <separator colspan="6" string="Special" />
+
+                        <field name="status" class="oe_field_status" colspan="2" />
+                        <field name="authorship" class="oe_field_authorship" colspan="2" />
+                        <separator colspan="2" />
+
                     </group>
 
                     <footer />

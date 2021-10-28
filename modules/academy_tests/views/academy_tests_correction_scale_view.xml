@@ -44,12 +44,17 @@
             <field name="arch" type="xml">
                 <form string="model_form" create="1" delete="1" edit="1">
                     <sheet>
-                        <div class="oe_title">
+                        <div class="oe_button_box" name="button_box">
+                            <widget name="web_ribbon" title="Archived" bg_color="bg-danger"
+                                attrs="{'invisible': [('active', '=', True)]}" />
+                        </div>
+
+                        <div class="oe_title w-100">
                             <field name="active" invisible="1"/>
                             <label for="name" class="oe_edit_only" />
                             <h1>
                                 <field name="name" class="oe_field_name"
-                                    placeholder="Name" />
+                                    placeholder="Enter new name" />
                             </h1>
                         </div>
 

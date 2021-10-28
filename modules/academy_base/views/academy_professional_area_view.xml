@@ -51,12 +51,11 @@
                             <label for="name" class="oe_edit_only" />
                             <h1>
                                 <field name="name" class="oe_field_name"
-                                    placeholder="Name" />
+                                    placeholder="Enter new name" />
                             </h1>
                         </div>
                         <group col="2">
-                            <field name="professional_family_id" class="oe_field_professional_family_id"
-                                placeholder="Choose professional family to which this area belongs" />
+                            <field name="professional_family_id" class="oe_field_professional_family_id" />
                         </group>
                         <notebook>
                             <page string="Description" class="oe_page_description" accesskey="D">

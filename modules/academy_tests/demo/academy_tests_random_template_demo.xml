@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="academy_tests_random_template_demo" model="academy.tests.random.template">
+            <field name="name">Odoo questions</field>
+            <field name="description">Append questions about Odoo</field>
+            <field name="active" eval="True" />
+            <field name="owner_id" ref="academy_base.res_users_demo_teacher" />
+            <field name="preamble">Below is presented a list of questions with four answers each, of which only one is correct. Select the right answer for each of the questions.</field>
+         </record>
+
+    </data>
+</openerp>

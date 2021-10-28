@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+    <!-- Report "Student/question statistics" document template -->
+    <record id="view_academy_statistics_student_question_readonly_document_qweb" model="ir.ui.view">
+        <field name="name">Student/question statistics document</field>
+        <field name="model">academy.statistics.student.question.readonly</field>
+        <field name="type">qweb</field>
+        <field name="mode">primary</field>
+        <field name="priority" eval="16" />
+        <field name="active" eval="True" />
+        <field name="arch" type="xml">
+            <t t-name="academy_tests.view_academy_statistics_student_question_readonly_document_qweb">
+                <table class="table table-sm my-2">
+                    <caption class="w-100 text-justify" style="caption-side: top!important">
+                        <t t-esc="caption" />
+                    </caption>
+                    <thead>
+                        <tr>
+                            <th style="border-top: none;">&#160;</th>
+                            <th style="border-top: none;">Attempt</th>
+                            <th>Answer</th>
+                            <th>Doubt</th>
+                            <th>Blank</th>
+                            <th>Right</th>
+                            <th>Wrong</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>ABSOLUTE</th>
+                            <td><span t-field="stats.attempts" /></td>
+                            <td><span t-field="stats.answer" /></td>
+                            <td><span t-field="stats.doubt" /></td>
+                            <td><span t-field="stats.blank" /></td>
+                            <td><span t-field="stats.right" /></td>
+                            <td><span t-field="stats.wrong" /></td>
+                        </tr>
+                        <tr>
+                            <th>PERCENTAGE</th>
+                            <td><span t-field="stats.answer" /></td>
+                            <td>100%</td>
+                            <td><t t-esc="'%.2f'%(stats.doubt_percent * 100)" />%</td>
+                            <td><t t-esc="'%.2f'%(stats.blank_percent * 100)" />%</td>
+                            <td><t t-esc="'%.2f'%(stats.right_percent * 100)" />%</td>
+                            <td><t t-esc="'%.2f'%(stats.wrong_percent * 100)" />%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </t>
+        </field>
+    </record>
+
+    <record id="view_academy_statistics_student_question_qweb" model="ir.ui.view">
+        <field name="name">Student/question statistics</field>
+        <field name="model">academy.student</field>
+        <field name="type">qweb</field>
+        <field name="mode">primary</field>
+        <field name="priority" eval="16" />
+        <field name="active" eval="True" />
+        <field name="arch" type="xml">
+            <t t-name="academy_tests.view_academy_statistics_student_question_qweb">
+                <t t-call="web.html_container">
+                    <t t-foreach="docs" t-as="o">
+                        <t t-call="web.external_layout">
+                            <div class="page">
+                                <h2><span t-field="o.name" /></h2>
+
+                                <t t-foreach="o.question_statistics_ids" t-as="stats">
+                                    <t t-call="academy_tests.view_academy_statistics_student_question_readonly_document_qweb">
+                                        <t t-set="caption" t-value="stats.question_id.name" />
+                                    </t>
+                                </t>
+
+                            </div>
+                        </t>
+                    </t>
+                </t>
+            </t>
+        </field>
+    </record>
+
+    <record id="action_report_student_question_statistics" model="ir.actions.report">
+        <field name="name">Student/question statistics</field>
+        <field name="model">academy.student</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">academy_tests.view_academy_statistics_student_question_qweb</field>
+        <field name="print_report_name">'%s report' % (object.name)</field>
+        <field name="attachment_use" eval="False" />
+        <field name="attachment">(object.name+'.pdf')</field>
+        <field name="paperformat_id" ref="base.paperformat_euro" />
+        <field name="multi" eval="False" />
+        <field name="help">Statistics on the answers grouped by student</field>
+
+        <field name="binding_model_id" ref="academy_base.model_academy_student" />
+        <field name="binding_view_types">list,form</field>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="view_academy_statistics_question_student_qweb" model="ir.ui.view">
+        <field name="name">Question/student statistics</field>
+        <field name="model">academy.tests.question</field>
+        <field name="type">qweb</field>
+        <field name="mode">primary</field>
+        <field name="priority" eval="16" />
+        <field name="active" eval="True" />
+        <field name="arch" type="xml">
+            <t t-name="academy_tests.view_academy_statistics_question_student_qweb">
+                <t t-call="web.html_container">
+                    <t t-foreach="docs" t-as="o">
+                        <t t-call="web.external_layout">
+                            <div class="page">
+                                <h2><span t-field="o.name" /></h2>
+
+                                <t t-foreach="o.student_statistics_ids" t-as="stats">
+                                    <t t-call="academy_tests.view_academy_statistics_student_question_readonly_document_qweb">
+                                        <t t-set="caption" t-value="stats.student_id.name" />
+                                    </t>
+                                </t>
+
+                            </div>
+                        </t>
+                    </t>
+                </t>
+            </t>
+        </field>
+    </record>
+
+    <record id="action_report_question_student_statistics" model="ir.actions.report">
+        <field name="name">Question/student statistics</field>
+        <field name="model">academy.tests.question</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">academy_tests.view_academy_statistics_question_student_qweb</field>
+        <field name="print_report_name">'%s report' % (object.name)</field>
+        <field name="attachment_use" eval="False" />
+        <field name="attachment">(object.name+'.pdf')</field>
+        <field name="paperformat_id" ref="base.paperformat_euro" />
+        <field name="multi" eval="False" />
+        <field name="help">Statistics on the answers grouped by question</field>
+
+        <field name="binding_model_id" />
+        <field name="binding_view_types" />
+        <field name="binding_type">report</field>
+    </record>
+
+    </data>
+</openerp>

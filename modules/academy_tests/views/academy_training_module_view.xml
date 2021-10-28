@@ -22,12 +22,10 @@
                         <separator string="Templates" />
                         <field name="template_link_ids" class="oe_field_template_link_ids"
                             context="{'default_training_action_id': id}"/>
-
                     </page>
                     <page string="Tests categories" class="oe_page_tests" accesskey="T">
                         <p groups="base.group_no_one"><label for="topic_link_ids" /></p>
-                        <field name="topic_link_ids" class="oe_field_topic_ids"
-                            placeholder="Choose related topics" />
+                        <field name="topic_link_ids" class="oe_field_topic_ids" />
 
                         <p groups="base.group_no_one"><label for="available_topic_ids" /></p>
                         <field name="available_topic_ids" class="oe_field_topic_ids" groups="base.group_no_one" />

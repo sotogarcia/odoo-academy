@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
-###############################################################################
-#    License, author and contributors information in:                         #
-#    __openerp__.py file at the root folder of this module.                   #
-###############################################################################
+""" AcademyTrainingAction
 
-from odoo import models, fields, api
-from odoo.tools.translate import _
+This module extends the academy.training.action Odoo model
+"""
+
+from odoo import models, fields
+
+import odoo.addons.academy_base.models.utils.custom_model_fields as custom
+from .utils.sql_m2m_through_view import ACADEMY_ACTION_AVAILABLE_TESTS
+
 from logging import getLogger
-from odoo.addons.academy_base.models.lib.custom_model_fields import Many2manyThroughView
-from .lib.libuseful import ACADEMY_ACTION_AVAILABLE_TESTS
-
 _logger = getLogger(__name__)
 
 
@@ -19,9 +19,8 @@ class AcademyTrainingAction(models.Model):
 
     _inherit = 'academy.training.action'
 
-
     test_ids = fields.Many2many(
-        string='Tests',
+        string='Training action tests',
         required=False,
         readonly=False,
         index=False,
@@ -36,8 +35,8 @@ class AcademyTrainingAction(models.Model):
         limit=None
     )
 
-    available_test_ids = Many2manyThroughView(
-        string='Tests',
+    available_test_ids = custom.Many2manyThroughView(
+        string='Training action available tests',
         required=False,
         readonly=False,
         index=False,
@@ -52,4 +51,3 @@ class AcademyTrainingAction(models.Model):
         limit=None,
         sql=ACADEMY_ACTION_AVAILABLE_TESTS
     )
-

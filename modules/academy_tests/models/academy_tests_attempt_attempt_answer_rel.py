@@ -1,23 +1,28 @@
 # -*- coding: utf-8 -*-
-###############################################################################
-#    License, author and contributors information in:                         #
-#    __openerp__.py file at the root folder of this module.                   #
-###############################################################################
+""" AcademyTestsAttemptAnswerRel
 
-from odoo import models, fields, api
-from odoo.tools.translate import _
+This module contains the academy.tests.attempt.answer.rel Odoo model which
+stores the final academy answer for each question in academy tests attempt.
+"""
+
+from odoo import models, fields
+
 from odoo.tools import drop_view_if_exists
-from logging import getLogger
-from .lib.libuseful import ACADEMY_TESTS_ATTEMPT_ATTEMPT_ANSWER_REL
+from .utils.view_academy_tests_attempt_attempt_answer_rel import \
+    ACADEMY_TESTS_ATTEMPT_ATTEMPT_ANSWER_REL_MODEL
 
+from logging import getLogger
 
 _logger = getLogger(__name__)
 
 
 class AcademyTestsAttemptAttemptAnswerRel(models.Model):
-    """ Builds a view with all finally attempt answers. This view will
-    be used as middle table in many2many field to show final attempt
-    answers by attempt.
+    """ Builds a view with the final answer of each question in an attempt.
+    This view will be used as middle table in many2many field to show final
+    attempt answers by attempt.
+
+    A Many2manyThroughView custom field can not be used because this model
+    has serveral extra fields.
 
     Only the following fields: attempt_id and attempt_answer_id, are
     required, all other can be usefull in a future.
@@ -31,8 +36,7 @@ class AcademyTestsAttemptAttemptAnswerRel(models.Model):
 
     _auto = False
 
-    _table = 'academy_tests_attempt_attempt_answer_rel'
-
+    _view_sql = ACADEMY_TESTS_ATTEMPT_ATTEMPT_ANSWER_REL_MODEL
 
     attempt_id = fields.Many2one(
         string='Attempt',
@@ -123,11 +127,22 @@ class AcademyTestsAttemptAttemptAnswerRel(models.Model):
     )
 
     def init(self):
+        sentence = 'CREATE or REPLACE VIEW {} as ( {} )'
+
         drop_view_if_exists(self.env.cr, self._table)
 
-        self.env.cr.execute('''CREATE or REPLACE VIEW {} as (
-            {}
-        )'''.format(
-            self._table,
-            ACADEMY_TESTS_ATTEMPT_ATTEMPT_ANSWER_REL)
-        )
+        self.env.cr.execute(sentence.format(self._table, self._view_sql))
+
+        self.prevent_actions()
+
+    def prevent_actions(self):
+        actions = ['INSERT', 'UPDATE', 'DELETE']
+
+        BASE_SQL = '''
+            CREATE OR REPLACE RULE {table}_{action} AS
+                ON {action} TO {table} DO INSTEAD NOTHING
+        '''
+
+        for action in actions:
+            sql = BASE_SQL.format(table=self._table, action=action)
+            self.env.cr.execute(sql)

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+
+        <!-- REPORT: "Loop over test recordset"
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        <record id="view_academy_tests_test_changelog_qweb" model="ir.ui.view">
+            <field name="name">Changelog</field>
+            <field name="model">academy.tests.test</field>
+            <field name="type">qweb</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+<t t-name="academy_tests.view_academy_tests_preview_qweb"><t t-set="index" t-value="1" /><t t-foreach="docs" t-as="o"># <t t-esc="o.name" />
+
+<t t-esc="report.translate('Update')" />: <t t-esc="o.write_date.strftime('%d/%m/%Y')" />
+<t t-foreach="o.question_ids" t-as="link_id"><t t-set="question_id" t-value="link_id.question_id"/><t t-if="question_id.changelog_entry_ids">
+## <t t-esc="report.translate('Question')" /> <t t-esc="link_id.sequence" />
+<t t-foreach="question_id.changelog_entry_ids.filtered(lambda x: x.write_date >= o.create_date)" t-as="entry_id">
+### <t t-esc="entry_id.message_id.write_date.strftime('%d/%m/%Y')" /> - <t t-esc="entry_id.message_id.subtype_id.name" />
+
+    <t t-if="entry_id.tracking_id.field == 'is_correct'"><t t-esc="entry_id.tracking_id.field_desc" />: <t t-esc="report.is_correct(entry_id.tracking_id.old_value_integer)" /> → <t t-esc="report.is_correct(entry_id.tracking_id.new_value_integer)" /></t><t t-if="entry_id.tracking_id.field != 'is_correct'"><t t-esc="entry_id.tracking_id.field_desc" />: <t t-esc="entry_id.tracking_id.old_value_char" /> → <t t-esc="entry_id.tracking_id.new_value_char" /></t>
+</t></t></t>
+<t t-if="index &lt; len(docs)">
+--------------------------------------------------------------------------------
+</t>
+<t t-set="index" t-value="index + 1" />
+</t></t>
+            </field>
+        </record>
+
+        <!-- Report action to show Changelog -->
+        <record id="action_report_test_changelog" model="ir.actions.report">
+            <field name="name">Changelog</field>
+            <field name="model">academy.tests.test</field>
+            <field name="report_type">qweb-text</field>
+            <field name="report_name">academy_tests.view_academy_tests_test_changelog_qweb</field>
+            <field name="attachment_use" eval="False" />
+            <field name="attachment">(object.name+'.txt')</field>
+            <field name="paperformat_id" ref="base.paperformat_euro" />
+            <field name="help">Full test changelog</field>
+            <field name="binding_model_id" ref="academy_tests.model_academy_tests_test" />
+        </record>
+
+    </data>
+</openerp>

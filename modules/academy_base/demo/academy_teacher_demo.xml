@@ -3,7 +3,7 @@
 <openerp>
     <data noupdate="0">
 
-        <record id="academy_teacher_teacher" model="academy.teacher">
+        <record id="academy_teacher_teacher_demo" model="academy.teacher">
             <field name="res_users_id" ref="academy_base.res_users_demo_teacher" />
         </record>
 

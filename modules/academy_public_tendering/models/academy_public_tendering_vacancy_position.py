@@ -123,6 +123,7 @@ class AptVacancyPosition(models.Model):
         return value_dict
 
 
+    @api.model
     def create(self, values):
         """ Touches related tendering processes to ensure state_id
         """

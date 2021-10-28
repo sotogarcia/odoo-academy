@@ -1,38 +1,20 @@
 # -*- coding: utf-8 -*-
-# Part of Odoo. See LICENSE file for full copyright and licensing details.
-""" academy tests
+""" AcademyTestsTag
 
-This module contains the academy.tests.tag an unique Odoo model
-which contains all academy tests attributes and behavior.
-
-This model is the representation of the real life question difficulty tag
-
-Classes:
-    AcademyTest: This is the unique model class in this module
-    and it defines an Odoo model with all its attributes and related behavior.
-
+This module contains the academy.tests.tag Odoo model which stores
+all academy tests tag attributes and behavior.
 """
 
+from odoo import models, fields
+from odoo.tools.translate import _
 
 from logging import getLogger
 
-# pylint: disable=locally-disabled, E0401
-from odoo import models, fields, api
-from odoo.tools.translate import _
-
-
-# pylint: disable=locally-disabled, C0103
 _logger = getLogger(__name__)
 
 
-
-# pylint: disable=locally-disabled, R0903
 class AcademyTestsTag(models.Model):
-    """ Tag can be used to better describe this question
-
-    Fields:
-      name (Char): Human readable name which will identify each record.
-
+    """ This is a property of the academy.tests.test model
     """
 
     _name = 'academy.tests.tag'
@@ -86,7 +68,6 @@ class AcademyTestsTag(models.Model):
         domain=[],
         context={},
         limit=None,
-        # oldname='academy_question_ids'
     )
 
     # --------------------------- SQL_CONTRAINTS ------------------------------

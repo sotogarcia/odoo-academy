@@ -24,10 +24,10 @@
             <field name="active" eval="True" />
             <field name="arch" type="xml">
                 <tree string="academy_public_tendering_exam_type_tree" editable="bottom" create="1" delete="1" edit="1">
-                    <field name="name" class="oe_field_name"
-                        placeholder="Enter new value for name" />
+                    <field name="name" class="oe_field_name" string="Name"
+                        placeholder="Enter new name" />
                     <field name="description" class="oe_field_description"
-                        placeholder="Enter new value for description" />
+                        placeholder="Enter new description" />
                 </tree>
             </field>
         </record>
@@ -47,12 +47,12 @@
                             <label for="name" class="oe_edit_only" />
                             <h1>
                                 <field name="name" class="oe_field_name"
-                                    placeholder="Name" />
+                                    placeholder="Enter new name" />
                             </h1>
                         </div>
                         <group col="2">
                             <field name="description" class="oe_field_description"
-                                placeholder="Enter new value for description" />
+                                placeholder="Enter new description" />
                         </group>
                     </sheet>
                 </form>

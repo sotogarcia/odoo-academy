@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-""" AcademyTrainingAction
+""" AcademyTrainingActionEnrolment
 
-This module contains the academy.action.enrolment Odoo model which stores
-all training action attributes and behavior.
-
+This module contains the academy.training.action.enrolment Odoo model which
+stores all training action enrolment attributes and behavior.
 """
 
 from logging import getLogger
@@ -11,9 +10,10 @@ from logging import getLogger
 # pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
 from odoo.tools.translate import _
-from odoo.exceptions import ValidationError
-from .lib.custom_model_fields import Many2manyThroughView, \
-    ACTION_EHROLMENT_INHERITED_RESOURCES_REL
+
+from .utils.custom_model_fields import Many2manyThroughView
+from .utils.raw_sql import \
+    ACADEMY_TRAINING_ACTION_ENROLMENT_AVAILABLE_RESOURCE_REL
 
 
 # pylint: disable=locally-disabled, C0103
@@ -22,8 +22,7 @@ _logger = getLogger(__name__)
 
 # pylint: disable=locally-disabled, R0903
 class AcademyTrainingActionEnrolment(models.Model):
-    """ This model stores attributes and behavior relative to the
-    enrollment of students in academy training actions
+    """ Enrollment allows the student to be linked to a training action
     """
 
     _name = 'academy.training.action.enrolment'
@@ -38,7 +37,6 @@ class AcademyTrainingActionEnrolment(models.Model):
     }
 
     _inherit = ['mail.thread']
-
 
     # pylint: disable=locally-disabled, W0212
     code = fields.Char(
@@ -101,7 +99,7 @@ class AcademyTrainingActionEnrolment(models.Model):
 
     # pylint: disable=locally-disabled, W0212
     training_module_ids = fields.Many2many(
-        string='Training modules',
+        string='Enrolled in the modules',
         required=False,
         readonly=False,
         index=False,
@@ -118,7 +116,7 @@ class AcademyTrainingActionEnrolment(models.Model):
 
     # pylint: disable=locally-disabled, W0108
     register = fields.Date(
-        string='Sign up',
+        string='Signup',
         required=True,
         readonly=False,
         index=False,
@@ -135,6 +133,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         help='Date in which student has been unsubscribed'
     )
 
+    # It is necessary to keep the difference with the name of the activity
     student_name = fields.Char(
         string='Student name',
         required=False,
@@ -144,12 +143,24 @@ class AcademyTrainingActionEnrolment(models.Model):
         help='Show the name of the related student',
         size=255,
         translate=True,
-        compute=lambda self: self._compute_student_name()
+        related="student_id.name"
     )
 
+    # It is necessary to keep the difference with the name of the activity
+    action_name = fields.Char(
+        string='Training action name',
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help='Show the name of the related training action',
+        size=255,
+        translate=True,
+        related="training_action_id.action_name"
+    )
 
     available_resource_ids = Many2manyThroughView(
-        string='Training resources',
+        string='Available enrolment resources',
         required=False,
         readonly=True,
         index=False,
@@ -162,17 +173,10 @@ class AcademyTrainingActionEnrolment(models.Model):
         domain=[],
         context={},
         limit=None,
-        sql=ACTION_EHROLMENT_INHERITED_RESOURCES_REL
+        sql=ACADEMY_TRAINING_ACTION_ENROLMENT_AVAILABLE_RESOURCE_REL
     )
 
-    @api.depends('student_id')
-    def _compute_student_name(self):
-        for record in self:
-            record.student_name = record.student_id.name
-
-
     # ---------------------------- ONCHANGE EVENTS ----------------------------
-
 
     @api.onchange('training_action_id')
     def _onchange_training_action_id(self):
@@ -190,9 +194,7 @@ class AcademyTrainingActionEnrolment(models.Model):
 
         return {'domain': {'training_module_ids': [('id', '=', -1)]}}
 
-
     # -------------------------- OVERLOADED METHODS ---------------------------
-
 
     @api.returns('self', lambda value: value.id)
     def copy(self, default=None):
@@ -210,36 +212,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         rec = super(AcademyTrainingActionEnrolment, self).copy(default)
         return rec
 
-
-    # -------------------------- PYTHON CONSTRAINTS ---------------------------
-
-
-    # @api.constrains('training_action_id', 'student_id')
-    # def _check_unique_enrolment(self):
-
-    #     action_id = self.training_action_id.id or -1
-    #     student_id = self.student_id.id or -1
-
-    #     domain = [
-    #         ('training_action_id', '=', action_id),
-    #         ('student_id', '=', student_id),
-    #         ('deregister', '=', False),
-    #         ('id', '<>', self.id)
-    #     ]
-    #     enroled_set = self.search(domain)
-
-    #     if enroled_set.competency_unit_ids & self.competency_unit_ids:
-    #         msg = _('{} already has been enrolled in same '
-    #                 'competency units for {}')
-    #         msg = msg.format(
-    #             self.student_id.name,
-    #             self.training_action_id.action_name
-    #         )
-    #         raise ValidationError(msg)
-
-
     # -------------------------- AUXILIARY METHODS ----------------------------
-
 
     @api.model
     def _default_code(self):
@@ -253,7 +226,21 @@ class AcademyTrainingActionEnrolment(models.Model):
 
         return result
 
+    def name_get(self):
+        result = []
 
+        for record in self:
+            student = record.student_id.name
+            if len(record.training_module_ids) == 1:
+                item = record.training_module_ids.name
+            else:
+                item = record.training_action_id.name
 
+            if student and item:
+                name = '{} - {}'.format(item, student)
+            else:
+                name = _('New training action enrolment')
 
+            result.append((record.id, name))
 
+        return result

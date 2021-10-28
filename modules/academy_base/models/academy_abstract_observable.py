@@ -16,14 +16,10 @@ The Obserser model must have a method with this signature:
 
 """
 
-from logging import getLogger
-
-
 import types
 
-# pylint: disable=locally-disabled, E0401
+from logging import getLogger
 from odoo import models, fields, api
-
 
 # pylint: disable=locally-disabled, C0103
 _logger = getLogger(__name__)
@@ -31,16 +27,11 @@ _logger = getLogger(__name__)
 
 # pylint: disable=locally-disabled, R0903,W0212
 class AcademyObservableModel(models.AbstractModel):
-    """ The summary line for a class docstring should fit on one line.
-
-    Fields:
-      name (Char): Human readable name which will identify each record.
-
+    """ Models can extend this to touch related models through 'x2many' fields
     """
 
     _name = 'academy.abstract.observable'
     _description = u'Academy observer pattern: observable class'
-
 
     # -------------------------- AUXILIARY METHODS ----------------------------
 
@@ -51,13 +42,11 @@ class AcademyObservableModel(models.AbstractModel):
         relational = (fields.Many2one, fields.One2many, fields.Many2many)
         return isinstance(field, relational)
 
-
     @staticmethod
     def _is_not_magic(field):
         """ Check if given field is a Odoo special field """
 
-        return not field.name in models.MAGIC_COLUMNS
-
+        return field.name not in models.MAGIC_COLUMNS
 
     def _is_observer(self, field):
         """ Check if given field is related with a model which has a method
@@ -74,7 +63,6 @@ class AcademyObservableModel(models.AbstractModel):
 
         return False
 
-
     def _get_observers(self):
         """ Walk over relational fields checking if comodel has update method
         """
@@ -90,7 +78,6 @@ class AcademyObservableModel(models.AbstractModel):
 
         return result
 
-
     def _get_state(self, observers):
         """ Returns a dictionary {field name: field value} with all fields
         in ONE RECORD of this model which must be updated
@@ -105,7 +92,6 @@ class AcademyObservableModel(models.AbstractModel):
             result.update({fname: value})
 
         return result
-
 
     def _get_states(self):
         """ Returns a list of dictionaries {field name: field value} with all
@@ -127,7 +113,6 @@ class AcademyObservableModel(models.AbstractModel):
                 method = getattr(recordset, 'update_from_external')
                 method(crud, fieldname, self)
 
-
     # -------------------------- OVERLOADED METHODS ---------------------------
 
     @api.model
@@ -143,7 +128,6 @@ class AcademyObservableModel(models.AbstractModel):
 
         return result
 
-
     def write(self, values):
         """ Call update method in observers
         """
@@ -157,7 +141,6 @@ class AcademyObservableModel(models.AbstractModel):
         self._notify('write', newstates)
 
         return result
-
 
     def unlink(self):
         """ Call update method in observers

@@ -1,23 +1,21 @@
 # -*- coding: utf-8 -*-
-###############################################################################
-#    License, author and contributors information in:                         #
-#    __openerp__.py file at the root folder of this module.                   #
-###############################################################################
+""" AcademyTrainingResourceFile
 
-from odoo import models, fields, api
-from odoo.tools.translate import _
+This module contains the academy.action.resource.file Odoo model which stores
+all training resource file attributes and behavior.
+"""
+
+from odoo import models, fields
+
 from logging import getLogger
-
 
 _logger = getLogger(__name__)
 
 
 class AcademyTrainingResourceFile(models.Model):
-    """ The summary line for a class docstring should fit on one line.
-
-    Fields:
-      name (Char): Human readable name which will identify each record.
-
+    """ When a training resource has been linked to local directory, this
+    folder will have several files. This model will be used to store the
+    information of these files.
     """
 
     _name = 'academy.training.resource.file'
@@ -50,4 +48,3 @@ class AcademyTrainingResourceFile(models.Model):
         ondelete='cascade',
         auto_join=False
     )
-

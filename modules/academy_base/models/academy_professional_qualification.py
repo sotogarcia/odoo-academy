@@ -1,30 +1,20 @@
 # -*- coding: utf-8 -*-
-""" AcademyTrainingActivity
+""" AcademyProfessionalQualification
 
-This module contains the professional.qualification.unit Odoo model which stores
-all professional.qualification attributes and behavior.
-
+This module contains the academy.professional.qualification Odoo model which
+stores all professional qualification attributes and behavior.
 """
 
+from odoo import models, fields, api
 
 from logging import getLogger
 
-# pylint: disable=locally-disabled, E0401
-from odoo import models, fields, api
-
-
-# pylint: disable=locally-disabled, c0103
 _logger = getLogger(__name__)
 
 
 # pylint: disable=locally-disabled, R0903
 class AcademyProfessionalQualification(models.Model):
-    """ Set of qualifications according to criteria of affinity of professional
-    competence..
-
-    Fields:
-      name (Char): Human readable name which will identify each record.
-
+    """ Professional qualification is a property of the training activity
     """
 
     _name = 'academy.professional.qualification'
@@ -80,7 +70,6 @@ class AcademyProfessionalQualification(models.Model):
         limit=None,
     )
 
-
     professional_family_id = fields.Many2one(
         string='Professional family',
         required=False,
@@ -134,7 +123,6 @@ class AcademyProfessionalQualification(models.Model):
         auto_join=False
     )
 
-
     # --------------------------- MANAGEMENT FIELDS ---------------------------
 
     # pylint: disable=locally-disabled, W0212
@@ -144,10 +132,10 @@ class AcademyProfessionalQualification(models.Model):
         readonly=True,
         index=False,
         default=0,
-        help='Number of competency units related with this professional qualification',
+        help=('Number of competency units related with this professional '
+              'qualification'),
         compute=lambda self: self._compute_competency_unit_count()
     )
-
 
     @api.depends('competency_unit_ids')
     def _compute_competency_unit_count(self):

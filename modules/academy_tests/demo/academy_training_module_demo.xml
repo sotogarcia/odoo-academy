@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="academy_base.academy_training_module_odoo" model="academy.training.module">
+            <field name="test_ids" eval="[(4, ref('academy_tests.academy_tests_demo_1'), None)]" />
+        </record>
+
+    </data>
+</openerp>

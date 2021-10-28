@@ -24,8 +24,10 @@
             <field name="active" eval="True" />
             <field name="arch" type="xml">
                 <tree string="academy_tests_random_template_tree" create="1" delete="1" edit="1">
-                    <field name="name" />
-                    <field name="description" />
+                    <field name="name" class="oe_field_name" string="Name" />
+                    <field name="owner_id" class="oe_field_owner_id" />
+                    <field name="context_ref" class="oe_field_context_ref" />
+                    <field name="scheduled_count" class="oe_field_scheduled_count" />
                 </tree>
             </field>
         </record>
@@ -41,28 +43,34 @@
             <field name="arch" type="xml">
                 <form string="academy_tests_random_template_form" create="1" delete="1" edit="1">
                     <sheet>
-                        <div class="oe_button_box" name="button_box"/>
-                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
 
-                        <field name="image_1920" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}' />
+                        <div class="oe_button_box clearfix" name="button_box">
+                            <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+                            <button name="view_tests" type="object"
+                                class="oe_stat_button oe_read_only" icon="fa-files-o">
+                                View test
+                            </button>
+                            <button name="new_test" type="object"
+                                class="oe_stat_button oe_read_only" icon="fa-file-text-o">
+                                New test
+                            </button>
+                        </div>
 
-                        <div class="oe_title">
-                            <field name="active" invisible="1"/>
+                        <field name="image_1920" widget='image' class="oe_avatar clearfix" options='{"preview_image": "image_128"}' />
+
+                        <div class="oe_title w-100">
+                            <field name="active" class="oe_field_active" invisible="1" />
                             <label for="name" class="oe_edit_only" />
                             <h1>
                                 <field name="name" class="oe_field_name"
-                                    placeholder="Name" />
+                                    placeholder="Enter new name" />
                             </h1>
                         </div>
 
                         <group col="2">
-                            <field name="owner_id" class="oe_field_owner_id"
-                                placeholder="Choose a different owner"  options="{'no_create': True}"
-                                groups="academy_base.academy_group_technical" />
                             <field name="description" class="oe_field_description"
-                                placeholder="Enter new description to this template" />
+                                placeholder="Enter new description" />
                         </group>
-
 
                         <notebook>
                             <page string="Lines" class="oe_page_lines" accesskey="L">
@@ -93,7 +101,7 @@
 
                                 <group string="Description">
                                     <field name="test_description" class="oe_field_test_description"
-                                        nolabel="1" />
+                                        nolabel="1" string="Description" />
                                 </group>
 
                                 <div class="academy-tests-test-msgbox academy-tests-test-msgbox-info oe_edit_only">
@@ -106,7 +114,7 @@
                                         <li><code>{scale}</code> for correction scale name</li>
                                         <li><code>{kind}</code> for test kind name</li>
                                         <li><code>{sequence}</code> for test autoincrement sequence</li>
-                                        <li><code>{extra}</code> for extra <em>(this only can be used in some methods)</em></li>
+                                        <li><code>{extra}</code> for extra <em>(this only can be useused in some methods)</em></li>
                                     </ul>
 
                                     <p><strong>Note:</strong>
@@ -118,12 +126,24 @@
 
                             </page>
                             <page string="Options" class="oe_page_options" accesskey="O">
-                                <group col="4">
-                                    <field name="single_transaction" class="oe_field_single_transaction" />
-                                    <field name="use_context" class="oe_field_use_context" />
-                                    <field name="skip_faulty_lines" class="oe_field_skip_faulty_lines" />
-                                    <field name="allow_automate" class="oe_field_allow_automate" />
+                                <group col="4" groups="academy_base.academy_group_technical">
+                                    <field name="owner_id" class="oe_field_owner_id" options="{'no_create': True}"
+                                        groups="academy_base.academy_group_technical" />
+                                    <separator colspan="2" />
                                 </group>
+
+                                <group col="4">
+                                    <field name="context_ref" class="oe_field_context_ref" />
+
+                                    <separator colspan="4" />
+
+                                    <field name="skip_faulty_lines" class="oe_field_skip_faulty_lines" />
+                                    <separator colspan="2" />
+
+                                </group>
+                            </page>
+                            <page string="Scheduled tasks" class="oe_page_sheduled_tasks" accesskey="S" groups="academy_base.academy_group_technical">
+                                <field name="scheduled_ids" class="oe_field_scheduled_ids" />
                             </page>
                         </notebook>
 
@@ -235,9 +255,9 @@
         <!-- Main menu for model.name -->
         <record id="menu_templates" model="ir.ui.menu" >
             <field name="name">Test templates</field>
-            <field name="sequence" eval="10" />
+            <field name="sequence" eval="25" />
             <field name="action" ref="action_templates_act_window" />
-            <field name="parent_id" ref="menu_test_settings_top" />
+            <field name="parent_id" ref="academy_tests.menu_test_top" />
             <field name="groups_id" eval="[(4, ref('academy_base.academy_group_teacher')), (4, ref('academy_base.academy_group_technical'))]" />
         </record>
 

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="academy_tests_random_line_categorization_demo" model="academy.tests.random.line.categorization">
+            <field name="description">In Odoo topic</field>
+            <field name="active" eval="True" />
+            <field name="sequence" eval="1" />
+            <field name="topic_id" ref="academy_tests.academy_tests_topic_demo_1" />
+            <field name="topic_version_ids" eval="[(4, ref('academy_tests.academy_tests_topic_version_demo_1'), None)]" />
+            <field name="category_ids" eval="[(4, ref('academy_tests.academy_tests_category_demo_brand'), None)]" />
+            <field name="random_line_id" ref="academy_tests.academy_tests_random_line_demo" />
+        </record>
+
+    </data>
+</openerp>

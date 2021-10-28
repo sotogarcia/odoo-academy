@@ -8,7 +8,7 @@
             <field name="preamble">OpenERP (formally Odoo) is a complete open source business management system (ERP)</field>
             <field name="description">This test contains some questions related with Odoo</field>
             <field name="active" eval="True" />
-            <field name="owner_id" ref="base.user_admin" />
+            <field name="owner_id" ref="academy_base.res_users_demo_teacher" />
         </record>
 
     </data>

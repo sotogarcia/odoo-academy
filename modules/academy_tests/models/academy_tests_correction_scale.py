@@ -1,23 +1,18 @@
 # -*- coding: utf-8 -*-
-###############################################################################
-#    License, author and contributors information in:                         #
-#    __openerp__.py file at the root folder of this module.                   #
-###############################################################################
+""" AcademyTestsCorrectionScale
 
-from odoo import models, fields, api
-from odoo.tools.translate import _
+This module contains the academy.tests.correction.scale Odoo model which stores
+all academy tests correction scale attributes and behavior.
+"""
+
+from odoo import models, fields
 from logging import getLogger
-
 
 _logger = getLogger(__name__)
 
 
 class AcademyTestsCorrectionScale(models.Model):
-    """ The summary line for a class docstring should fit on one line.
-
-    Fields:
-      name (Char): Human readable name which will identify each record.
-
+    """ This is a property of the academy.tests.test model
     """
 
     _name = 'academy.tests.correction.scale'

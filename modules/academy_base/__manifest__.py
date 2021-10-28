@@ -12,19 +12,14 @@
     'author': "Jorge Soto Garcia",
     'website': "https://github.com/sotogarcia",
 
-    # Categories can be used to filter modules in modules listing
-    # Check https://github.com/odoo/odoo/blob/master/openerp/addons/base/module/module_data.xml
-    # for the full list
     'category': 'Academy',
     'version': '13.0.1.0.0',
 
-    # any module necessary for this one to work correctly
     'depends': [
         'base',
         'mail'
     ],
 
-    # always loaded
     'data': [
         'data/mail_message_subtype_data.xml',
         'data/res_groups_data.xml',
@@ -64,6 +59,9 @@
 
         'views/academy_teacher_view.xml',
 
+        'report/academy_base_report_assets.xml',
+        'report/academy_training_activity_details_report.xml',
+
         'views/academy_training_resource_view.xml',
         'views/academy_training_resource_kind_view.xml',
 
@@ -101,10 +99,11 @@
 
         'security/res_users.xml',
     ],
+
     'qweb': [
 
     ],
-    # only loaded in demonstration mode
+
     'demo': [
         'demo/academy_student_demo.xml',
         'demo/res_partner.xml',
@@ -123,15 +122,21 @@
 
         'demo/ir_atachment.xml',
         'demo/academy_training_resource.xml',
+        'demo/academy_training_action_enrolment_demo.xml',
+        'demo/academy_training_lesson_demo.xml',
     ],
+
     'js': [
-        # 'static/src/js/appointment_manager.js'
     ],
+
     'css': [
         'static/src/css/academy_base_view.css',
+        'static/src/css/academy_training_activity_details_report.css',
     ],
+
     "external_dependencies": {
-        "python" : []
+        "python": []
     },
+
     'license': 'AGPL-3'
 }

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="academy_tests_topic_version_demo_1" model="academy.tests.topic.version">
+            <field name="name">v.13</field>
+            <field name="description">Version 13</field>
+            <field name="active" eval="True" />
+            <field name="topic_id" ref="academy_tests_topic_demo_1" />
+        </record>
+
+        <record id="academy_tests_topic_version_demo_2" model="academy.tests.topic.version">
+            <field name="name">Unique</field>
+            <field name="description">The only true version</field>
+            <field name="active" eval="True" />
+            <field name="topic_id" ref="academy_tests_topic_demo_2" />
+        </record>
+
+        <record id="academy_tests_topic_version_demo_3" model="academy.tests.topic.version">
+            <field name="name">v.7</field>
+            <field name="description">Version 7</field>
+            <field name="active" eval="True" />
+            <field name="topic_id" ref="academy_tests_topic_demo_1" />
+        </record>
+
+    </data>
+</openerp>

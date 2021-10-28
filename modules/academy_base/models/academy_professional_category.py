@@ -1,23 +1,19 @@
 # -*- coding: utf-8 -*-
-###############################################################################
-#    License, author and contributors information in:                         #
-#    __openerp__.py file at the root folder of this module.                   #
-###############################################################################
+""" AcademyProfessionalCategory
 
-from odoo import models, fields, api, api
-from odoo.tools.translate import _
+This module contains the academy.professional.category Odoo model which stores
+all Professional Area attributes and behavior.
+"""
+
+from odoo import models, fields
+
 from logging import getLogger
-
 
 _logger = getLogger(__name__)
 
 
 class AcademyProfessionalCategory(models.Model):
-    """ ...
-
-    Fields:
-      name (Char): Human readable name which will identify each record.
-
+    """ Professional category is a property of the training action
     """
 
     _name = 'academy.professional.category'

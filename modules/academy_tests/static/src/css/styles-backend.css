@@ -70,7 +70,22 @@
     padding-right: 10px!important;
 }
 
+/* STYLES WILL BE USED BY ACADEMY TESTS TEST QUESTION REL VIEWS
+******************************************************************************/
 
+.view_academy_tests_test_question_rel_tree th[data-name="index"],
+.view_academy_tests_test_question_rel_tree td.oe_field_index {
+    text-align: center!important;
+    padding-left: 3px!important;
+    padding-right: 3px!important;
+
+}
+
+.view_academy_tests_test_question_rel_tree td.oe_field_index {
+    font-family: monospace;
+    font-weight: bold;
+    font-size: 1.15em;
+}
 
 /* STYLES WILL BE USED BY IMPORT WIZARD
 ******************************************************************************/
@@ -137,4 +152,55 @@ code but I have not found where I should make the change */
     color: #721c24;
     background-color: #f8d7da;
     border-color: #f5c6cb;
+}
+
+/* manual-categorization-tree-view
+******************************************************************************/
+
+.manual-categorization-tree-view .o_list_record_selector {
+    width: 40px!important;
+}
+
+.manual-categorization-tree-view [data-name="markdown"] {
+    width: 50%!important;
+    max-width:  50%!important;
+}
+
+/*
+.manual-categorization-tree-view .oe_field_markdown {
+    font-size:  13px;
+    font-family: monospace;
+    padding-top: 3px ;
+    line-height:  1.15em!important;
+}*/
+
+.manual-categorization-tree-view [data-name="topic_id"],
+.manual-categorization-tree-view [data-name="topic_version_ids"],
+.manual-categorization-tree-view [data-name="category_ids"] {
+    min-width:  120px!important;
+}
+
+.manual-categorization-tree-view [data-name="topic_id"] {
+    width:  20%!important;
+}
+
+.manual-categorization-tree-view [data-name="topic_version_ids"], {
+    width:  10%!important;
+}
+
+.manual-categorization-tree-view [data-name="category_ids"] {
+    width:  20%!important;
+}
+
+.manual-categorization-tree-view td.o_list_button {
+    min-width: 24px;
+    text-align: center;
+}
+
+.manual-categorization-tree-view .oe_edit_only {
+    display: none;
+}
+
+.manual-categorization-tree-view .o_selected_row .oe_edit_only {
+    display: inline-block;
 }

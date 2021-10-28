@@ -25,7 +25,7 @@
             <field name="arch" type="xml">
                 <tree string="academy_tests_random_line_tree" create="1" delete="1" edit="1">
                     <field name="sequence" widget="handle" />
-                    <field name="name" class="oe_field_name" />
+                    <field name="name" class="oe_field_name" string="Name" />
                     <field name="description" class="oe_field_description" />
                     <field name="quantity" class="oe_field_quantity" />
                 </tree>
@@ -52,103 +52,149 @@
                     </header>
 
                     <group states="step1" col="8">
-                        <field name="name" class="oe_field_name"
-                            placeholder="Enter new value for name" colspan="4" />
-                        <field name="quantity" class="oe_field_quantity"
-                            placeholder="Enter new value for quantity" colspan="2" />
-                        <field name="disallow_attachments"
-                            class="oe_field_disallow_attachments"
-                            placeholder="Check it to exclude all attachments"
-                            string="No attachments" colspan="2" />
+                        <field name="name" class="oe_field_name" string="Name"
+                            placeholder="Enter new name" colspan="6" />
+                        <field name="quantity" class="oe_field_quantity" min="2"
+                            placeholder="Enter new quantity" colspan="2" />
 
                         <separator colspan="8" />
 
                         <field name="description" class="oe_field_description"
-                            placeholder="Enter new value for description" colspan="8" />
+                            placeholder="Enter new description" colspan="8" />
 
                         <separator colspan="8" />
 
                         <field name="type_ids" class="oe_field_type_ids"
                             widget="many2many_tags" colspan="6"
-                            placeholder="Choose types to include/exclude" />
+                            options="{'no_create': True, 'no_open':True}" />
                         <field name="exclude_types" class="oe_field_exclude_types"
                             placeholder="Check it to include or uncheck to exclude"
-                            string="Exclude selected" colspan="2" />
+                            string="Exclude" colspan="2" />
 
                         <field name="level_ids" class="oe_field_level_ids"
                             widget="many2many_tags" colspan="6"
-                            placeholder="Choose levels to include/exclude" />
+                            options="{'no_create': True, 'no_open':True}" />
                         <field name="exclude_levels" class="oe_field_exclude_levels"
                             placeholder="Check it to include or uncheck to exclude"
-                            string="Exclude selected" colspan="2" />
-                        <field name="tag_ids" class="oe_field_tag_ids"
-                            widget="many2many_tags" colspan="6"
-                            placeholder="Choose tags to include/exclude" />
+                            string="Exclude" colspan="2" />
+
+                        <separator colspan="8" />
+
+                        <field name="number_of_answers" class="oe_field_number_of_answers"
+                            string="Answers" />
+                        <field name="minimum_answers" class="oe_field_minimum_answers"
+                            attrs="{'readonly': [('number_of_answers', '!=', True)]}"
+                            options='{"type": "number", "step": 1}' min="2" />
+                        <field name="maximum_answers" class="oe_field_maximum_answers"
+                            attrs="{'readonly': [('number_of_answers', '!=', True)]}"
+                            options='{"type": "number", "step": 1}' min="2" />
+                        <field name="exclude_answers" class="oe_field_exclude_answers"
+                            attrs="{'readonly': [('number_of_answers', '!=', True)]}"
+                            string="Exclude" />
+
+                        <separator colspan="8" />
+
+                        <field name="owner_ids" class="oe_field_owner_ids"
+                            colspan="6" widget="many2many_tags"
+                            options="{'no_create': True, 'no_open':True}" />
+                        <field name="exclude_owners" class="oe_field_exclude_owners"
+                            string="Exclude" colspan="2" />
+
+                    </group>
+
+                    <group col="8" states="step1">
+                        <field name="authorship" class="oe_field_authorship"
+                            colspan="4" />
+                        <field name="attachments" class="oe_field_attachments"
+                            colspan="4" />
+                    </group>
+
+                    <group col="6" states="step2" style="table-layout:fixed">
+                        <field name="categorization_ids" nolabel="1" states="step2"
+                            class="oe_field_categorization_ids" colspan="6" />
+
+                        <field name="exclude_categorization" class="oe_field_exclude_categorization"
+                            string="Exclude" />
+
+                        <separator colspan="4" />
+                    </group>
+
+                    <group string="Tags" col="6" states="step2">
+                        <field name="tag_ids" class="oe_field_tag_ids" widget="many2many_tags"
+                            options="{'no_create': True, 'no_open':True}" colspan="4" />
                         <field name="exclude_tags" class="oe_field_exclude_tags"
-                            placeholder="Check it to include or uncheck to exclude"
-                            string="Exclude selected" colspan="2" />
-
+                            string="Exclude" />
                     </group>
 
-                    <group states="step2">
-                        <field name="topic_ids" class="oe_field_topic_ids"
-                            widget="many2many_tags"
-                            placeholder="Choose topics to include/exclude" />
-                        <field name="exclude_topics" class="oe_field_exclude_topics"
-                            placeholder="Check it to include or uncheck to exclude"
-                            string="Exclude selected" />
-
-                        <field name="category_ids" class="oe_field_category_ids"
-                            widget="many2many_tags" domain="[('topic_id', 'in', topic_ids)]"
-                            placeholder="Choose categories to include/exclude" />
-                        <field name="exclude_categories" class="oe_field_exclude_categories"
-                            placeholder="Check it to include or uncheck to exclude"
-                            string="Exclude selected" />
-                    </group>
-
-                    <group states="step3">
-                        <field name="test_ids" class="oe_field_test_ids"
-                            placeholder="Choose tests include/exclude" />
+                    <group col="6" states="step3">
+                        <field name="test_ids" class="oe_field_test_ids" colspan="6"
+                            options="{'no_create': True, 'no_open':True}" nolabel="1"
+                            attrs="{'readonly': [('tests_by_context', '=', True)]}" />
                         <field name="exclude_tests" class="oe_field_exclude_tests"
                             placeholder="Check it to include or uncheck to exclude"
-                            string="Exclude selected" />
+                            string="Exclude" />
+                        <field name="tests_by_context" class="oe_field_tests_by_context"
+                            string="Use context" />
+                        <separator colspan="2" />
                     </group>
 
-                    <group states="step4">
-                        <field name="question_ids" class="oe_field_question_ids"
-                            placeholder="Choose questions to include/exclude" />
+                    <group col="6" states="step4">
+                        <field name="question_ids" class="oe_field_question_ids" nolabel="1"
+                            options="{'no_create': True, 'no_open':True}" colspan="6"
+                            attrs="{'readonly': [('questions_by_context', '=', True)]}" />
                         <field name="exclude_questions" class="oe_field_exclude_questions"
                             placeholder="Check it to include or uncheck to exclude"
-                            string="Exclude selected" />
+                            string="Exclude" />
+                        <field name="questions_by_context" class="oe_field_tests_by_context"
+                            string="Use context" />
+                        <separator colspan="2" />
                     </group>
 
-                    <group states="step5" col="6">
+                    <group col="6" colspan="2" states="step5">
+
                         <field name="stock_by" class="oe_field_stock_by" />
                         <field name="stock" class="oe_field_stock"
                             widget="percentage"
-                            attrs="{'readonly': [('stock_by', '=', 'not')], }"/>
+                            attrs="{'readonly': [('stock_by', '=', False)]}"/>
                         <separator colspan="2" />
+
+                        <separator colspan="6" />
 
                         <field name="answered_by" class="oe_field_answered_by" />
                         <field name="answered" class="oe_field_answered"
                             widget="percentage"
-                            attrs="{'readonly': [('answered_by', '=', 'not')]}"/>
+                            attrs="{'readonly': [('answered_by', '=', False)]}"/>
                         <separator colspan="2" />
 
                         <field name="restrict_by" class="oe_field_restrict_by" />
                         <field name="supply" class="oe_field_answered"
                             widget="percentage"
-                            attrs="{'readonly': [('restrict_by', '&lt;=', 1)]}"/>
+                            attrs="{'readonly': [('restrict_by', '=', False)]}"/>
                         <field name="ratio" class="oe_field_mistaken"
                             widget="percentage"
-                            attrs="{'readonly': [('restrict_by', '&lt;=', 1)]}"/>
+                            attrs="{'readonly': [('restrict_by', '=', False)]}"/>
                     </group>
+
+                    <separator states="step5" />
+
+                    <div class="alert alert-info" role="alert" states="step5">
+                        <h4 style="margin-top: 0.25em;">
+                            <span class="fa fa-info-circle" style="margin-right: 0.5em"></span>
+                            <span style="font-variant: small-caps">Information</span>
+                        </h4>
+                        <ol style="list-style-type: none; padding: 0px; margin: 0px">
+                            <li>The stock percentage will be calculated on the number of questions required by this line.</li>
+                            <li>The percentage of answered questions will be calculated on the total number of available questions.</li>
+                            <li>The percentage of answered questions, with the given restrictions, will be calculated on the total number of available questions.</li>
+                            <li>With the training actions, the ratio will be compared with the average of all enrolled students.</li>
+                            <li>If the context has not been supplied, all the answered questions in the database will be used.</li>
+                        </ol>
+                    </div>
 
                     <!-- Required to trigger onchange events -->
                     <field name="type_count" invisible="1" />
                     <field name="test_count" invisible="1" />
-                    <field name="topic_count" invisible="1" />
-                    <field name="category_count" invisible="1" />
+                    <field name="categorization_count" invisible="1" />
                     <field name="tag_count" invisible="1" />
                     <field name="level_count" invisible="1" />
                     <field name="question_count" invisible="1" />
@@ -171,6 +217,25 @@
                     <!-- ··· -->
                 </search>
             </field>
+        </record>
+
+        <record id="action_random_lines_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Random lines</field>
+            <field name="res_model">academy.tests.random.line</field>
+            <field name="view_mode">tree,form</field>
+            <field name="target">current</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="search_view_id" ref="view_academy_tests_random_line_search" />
+        </record>
+
+        <record id="menu_random_actions" model="ir.ui.menu" >
+            <field name="name">Random lines</field>
+            <field name="sequence" eval="10" />
+            <field name="action" ref="action_random_lines_act_window" />
+            <field name="parent_id" ref="menu_test_settings_top" />
+            <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical')), (4, ref('academy_base.academy_group_teacher'))]"/>
         </record>
 
     </data>

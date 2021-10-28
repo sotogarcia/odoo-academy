@@ -24,7 +24,7 @@
             <field name="active" eval="True" />
             <field name="arch" type="xml">
                 <tree string="academy_training_action_enrolment_tree" create="1" delete="1" edit="1">
-                    <field name="code" />
+                    <field name="display_name" />
                     <field name="student_id" />
                     <field name="training_action_id" />
                     <field name="register" />
@@ -45,60 +45,59 @@
                 <form string="academy_training_action_enrolment_form" create="1" delete="1" edit="1">
                     <sheet>
                         <div class="oe_title">
-                            <label for="code" class="oe_edit_only" />
+                            <label for="display_name" class="oe_edit_only" />
                             <h1>
-                                <field name="code" class="oe_field_code"
-                                    placeholder="Code" />
+                                <field name="display_name" class="oe_field_display_name" string="Name" />
                             </h1>
                         </div>
 
                         <group col="2">
-                            <field name="student_id" class="oe_field_student_id"
-                                    placeholder="Choose student who will be enrolled" />
+                            <field name="student_id" class="oe_field_student_id" />
                             <field name="training_action_id" class="oe_field_training_action_id"
-                                    placeholder="Choose action in which the student will be enrolled"
                                     invisible="context.get('training_action_id', False)" />
                         </group>
 
                         <group col="4">
                             <field name="register" class="oe_field_register"
-                                placeholder="Enter new value for register" />
+                                placeholder="Enter new date/time" />
                             <field name="deregister" class="oe_field_deregister"
-                                placeholder="Enter new value for deregister" />
+                                placeholder="Enter new date/time" />
                         </group>
 
                         <notebook>
                             <page string="Description" class="oe_page_description" accesskey="D">
                                 <field name="description" class="oe_field_description"
-                                    placeholder="Enter new value for description" />
+                                    placeholder="Enter new description" />
                             </page>
                             <page string="Student" class="oe_page_student" accesskey="S">
                                 <group col="4">
-                                    <field name="student_name" class="oe_field_display_student_name"
-                                        placeholder="Enter new value for display student name" readonly="1" />
+                                    <field name="student_name" class="oe_field_student_name"
+                                        placeholder="Enter new name" readonly="1" string="Student" />
                                     <field name="phone" class="oe_field_phone"
-                                        placeholder="Enter new value for phone" readonly="1" />
+                                        placeholder="Enter new phone" readonly="1" />
                                     <field name="email" class="oe_field_email"
-                                        placeholder="Enter new value for email" readonly="1" />
+                                        placeholder="Enter new email address" readonly="1" />
                                     <field name="zip" class="oe_field_zip"
-                                        placeholder="Enter new value for zip" readonly="1" />
+                                        placeholder="Enter new zip code" readonly="1" />
                                 </group>
                             </page>
                             <page string="Action" class="oe_page_action" accesskey="A">
                                 <group col="4">
                                     <field name="action_name" class="oe_field_action_name"
-                                        placeholder="Enter new value for action name" readonly="1" />
+                                        placeholder="Enter new name" readonly="1" string="Training action" />
                                     <field name="action_code" class="oe_field_action_code"
-                                        placeholder="Enter new value for action code" readonly="1" />
+                                        placeholder="Enter new code" readonly="1" />
                                     <field name="start" class="oe_field_start"
-                                        placeholder="Enter new value for start" readonly="1" />
+                                        placeholder="Enter new date/time" readonly="1" />
                                     <field name="end" class="oe_field_end"
-                                        placeholder="Enter new value for end" readonly="1" />
+                                        placeholder="Enter new date/time" readonly="1" />
                                 </group>
                             </page>
                             <page string="Modules" class="oe_page_modules" accesskey="M">
-                                <field name="training_module_ids" class="oe_field_training_module_ids"
-                                    placeholder="Choose modules in which student will be enrolled" />
+                                <field name="training_module_ids" class="oe_field_training_module_ids" />
+                            </page>
+                            <page string="Resources" class="oe_page_resources" accesskey="R">
+                                <field name="available_resource_ids" class="oe_field_available_resource_ids" nolabel="1" />
                             </page>
                         </notebook>
                     </sheet>
@@ -138,7 +137,7 @@
                                     </t>
                                 </div>
                                 <div class="oe_kanban_details">
-                                    <h4><strong class="oe_partner_heading"><field name="name"/></strong></h4>
+                                    <h4><strong class="oe_partner_heading"><field name="display_name" /></strong></h4>
                                     <ul>
                                         <li class="o_ellipsis"><strong>Action:&#160;</strong><field name="training_action_id" /></li>
                                         <li class="o_ellipsis"><strong>Student:&#160;</strong><field name="student_id" /></li>
@@ -168,13 +167,13 @@
             <field name="active" eval="True" />
             <field name="arch" type="xml">
                 <search string="academy_training_action_enrolment_search">
-                    <field name="name" />
-                    <field name="code" />
+
+                    <field name="student_id" />
 
                     <separator />
 
                     <field name="training_action_id" />
-                    <field name="student_id" />
+                    <field name="training_module_ids" />
 
                     <separator />
 
@@ -221,7 +220,7 @@
         <!-- Main menu for model.name -->
         <record id="menu_training_action_enrolment" model="ir.ui.menu" >
             <field name="name">Enrolments</field>
-            <field name="sequence" eval="10" />
+            <field name="sequence" eval="15" />
             <field name="action" ref="action_training_action_enrolment_act_window" />
             <field name="parent_id" ref="academy_base.menu_academy_monitoring" />
             <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>

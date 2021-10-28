@@ -1,42 +1,25 @@
 # -*- coding: utf-8 -*-
-# Part of Odoo. See LICENSE file for full copyright and licensing details.
-""" academy tests
+""" AcademyTestsQuestionImpugnment
 
-This module contains the academy.tests.question.impugnment an unique Odoo model
-which contains all academy tests attributes and behavior.
-
-This model is the representation of the real life inpugnment for a question
-
-Classes:
-    AcademyTest: This is the unique model class in this module
-    and it defines an Odoo model with all its attributes and related behavior.
-
+This module contains the academy.tests.question.impugnment Odoo model which
+stores all student impugnments for questions, their attributes and behavior.
 """
-
 
 from logging import getLogger
 
-# pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
-from odoo.tools.translate import _
 
-
-# pylint: disable=locally-disabled, C0103
 _logger = getLogger(__name__)
 
 
-
-# pylint: disable=locally-disabled, R0903
 class AcademyTestsQuestionImpugnment(models.Model):
-    """ Question impugnment
-
-    Fields:
-      name (Char): Human readable name which will identify each record.
-
+    """ Studens can impugn questions, this model stores the impugnment details
     """
 
     _name = 'academy.tests.question.impugnment'
     _description = u'Academy tests, question impugnment'
+
+    _inherit = ['academy.abstract.owner', 'mail.thread']
 
     _rec_name = 'name'
     _order = 'write_date DESC, create_date DESC'
@@ -74,7 +57,6 @@ class AcademyTestsQuestionImpugnment(models.Model):
         context={},
         ondelete='cascade',
         auto_join=False,
-        # oldname='academy_question_id'
     )
 
     active = fields.Boolean(
@@ -86,3 +68,47 @@ class AcademyTestsQuestionImpugnment(models.Model):
         help=('If the active field is set to false, it will allow you to '
               'hide record without removing it')
     )
+
+    student_id = fields.Many2one(
+        string='Student',
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help='Choose student who impugn this question',
+        comodel_name='academy.student',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False
+    )
+
+    parent_id = fields.Many2one(
+        string='Parent impugnment',
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help='Choose parent impugnment',
+        comodel_name='academy.tests.question.impugnment',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False
+    )
+
+    reply_ids = fields.One2many(
+        string='Replies',
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help=False,
+        comodel_name='academy.tests.question.impugnment.reply',
+        inverse_name='impugnment_id',
+        domain=[],
+        context={},
+        auto_join=False,
+        limit=None
+    )
+

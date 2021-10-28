@@ -1,31 +1,22 @@
 # -*- coding: utf-8 -*-
-# Part of Odoo. See LICENSE file for full copyright and licensing details.
 """ Academy Tests Question Import
 
 This module contains the academy.tests.question.import model
-which contains all Academy Tests Question Import wizzard attributes and behavior.
+which contains all Import wizzard attributes and behavior.
 
 This model is the a wizard  to import questions from text
-
-Todo:
-    * Complete the model attributes and behavior
-    - [x] All questions should be crated in the same transaction
-
 """
 
-
-from logging import getLogger
-from enum import Enum
-from collections import Counter
-from re import match, sub as replace, search, MULTILINE, UNICODE, IGNORECASE
-
-# pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
 from odoo.tools.translate import _
 from odoo.exceptions import ValidationError, UserError
 
+from enum import Enum
+from collections import Counter
+from re import sub as replace, search, MULTILINE, UNICODE, IGNORECASE
 
-# pylint: disable=locally-disabled, C0103
+from logging import getLogger
+
 _logger = getLogger(__name__)
 
 
@@ -67,19 +58,20 @@ class AcademyTestsQuestionImport(models.TransientModel):
     """ This model is the a wizard  to import questions from text
     """
 
-
     _name = 'academy.tests.question.import.wizard'
     _description = u'Academy tests, question import'
 
     _rec_name = 'id'
     _order = 'id DESC'
 
+    _inherit = ['academy.abstract.owner']
+
     test_id = fields.Many2one(
         string='Test',
         required=False,
         readonly=False,
         index=False,
-        default=None,
+        default=lambda self: self.default_test_id(),
         help='Choose test to which questions will be append',
         comodel_name='academy.tests.test',
         domain=[],
@@ -135,8 +127,20 @@ class AcademyTestsQuestionImport(models.TransientModel):
         relation='academy_tests_question_import_ir_attachment_rel',
         column1='question_import_id',
         column2='attachment_id',
-        domain=[],
-        context={},
+        domain=[
+            '|',
+            '|',
+            ('res_model', '=', 'academy.tests.question'),
+            ('res_model', '=', 'academy.tests.question.import.wizard'),
+            ('res_model', '=', False)
+        ],
+        context={
+            'search_default_my_documents_filter': 0,
+            'search_default_my_own_documents_filter': 1,
+            'default_res_model': 'academy.tests.question',
+            'default_res_id': 0,
+            'default_owner_id': lambda self: self.owner_id.id
+        },
         limit=None
     )
 
@@ -151,8 +155,20 @@ class AcademyTestsQuestionImport(models.TransientModel):
         relation='academy_tests_question_import_imported_ir_attachment_rel',
         column1='question_import_id',
         column2='attachment_id',
-        domain=[],
-        context={},
+        domain=[
+            '|',
+            '|',
+            ('res_model', '=', 'academy.tests.question'),
+            ('res_model', '=', 'academy.tests.question.import.wizard'),
+            ('res_model', '=', False)
+        ],
+        context={
+            'search_default_my_documents_filter': 0,
+            'search_default_my_own_documents_filter': 1,
+            'default_res_model': 'academy.tests.question',
+            'default_res_id': 0,
+            'default_owner_id': lambda self: self.owner_id.id
+        },
         limit=None
     )
 
@@ -170,12 +186,28 @@ class AcademyTestsQuestionImport(models.TransientModel):
         auto_join=False
     )
 
+    topic_version_ids = fields.Many2many(
+        string='Topic versions',
+        required=True,
+        readonly=False,
+        index=False,
+        default=lambda self: self.default_topic_version_ids(),
+        help='Choose which versions of the topic this question belongs to',
+        comodel_name='academy.tests.topic.version',
+        relation='academy_tests_question_import_topic_version_rel',
+        column1='question_import_id',
+        column2='topic_version_id',
+        domain=[],
+        context={},
+        limit=None
+    )
+
     category_ids = fields.Many2many(
         string='Categories',
         required=True,
         readonly=False,
         index=False,
-        default=lambda self: self.default_category_ids(),
+        default=False,
         help='Choose categories will be used for new questions',
         comodel_name='academy.tests.category',
         relation='academy_tests_question_import_category_rel',
@@ -185,7 +217,6 @@ class AcademyTestsQuestionImport(models.TransientModel):
         context={},
         limit=None
     )
-
 
     type_id = fields.Many2one(
         string='Type',
@@ -231,21 +262,6 @@ class AcademyTestsQuestionImport(models.TransientModel):
         limit=None
     )
 
-    owner_id = fields.Many2one(
-        string='Owner',
-        required=True,
-        readonly=False,
-        index=False,
-        default=lambda self: self.default_owner_id(),
-        help='Choose new owner',
-        comodel_name='res.users',
-        domain=[],
-        context={},
-        ondelete='cascade',
-        auto_join=False,
-        groups='academy_base.academy_group_technical'
-    )
-
     autocategorize = fields.Boolean(
         string='Autocategorize',
         required=False,
@@ -255,63 +271,68 @@ class AcademyTestsQuestionImport(models.TransientModel):
         help='Check to autoset categories using keywords'
     )
 
+    status = fields.Selection(
+        string='Status',
+        required=False,
+        readonly=False,
+        index=False,
+        default='ready',
+        help='Switch question status',
+        selection=[
+            ('draft', 'Draft'),
+            ('ready', 'Ready')
+        ]
+    )
+
+    authorship = fields.Boolean(
+        string='Authorship',
+        required=False,
+        readonly=False,
+        index=False,
+        default=True,
+        help='Check it to indicate that it is your own authorship'
+    )
+
     # ----------------- EVENTS AND AUXILIARY FIELD METHODS --------------------
+
+    def default_test_id(self):
+        result_set = self.env['academy.tests.test']
+
+        context = self.env.context or {}
+        active_model = context.get('active_model', False)
+        active_id = context.get('active_id', False)
+
+        if active_model == 'academy.tests.test' and active_id:
+            result_set = self.env[active_model].browse(active_id)
+
+        return result_set
 
     def default_topic_id(self):
         """ This returns most frecuency used topic id
         """
         return self._most_frecuent('topic_id')
 
-
-    def default_category_ids(self):
-        """ This returns most frecuency used category id
+    def default_topic_version_ids(self):
+        """ This returns all versions for the chosen topic
         """
-        topic_id = self._most_frecuent('topic_id')
-        domain = [('topic_id', '=', topic_id)] if topic_id else []
-
-        _id = self._most_frecuent('category_ids', domain)
-        return [(6, None, [_id])] if _id else False
-
+        return self.topic_id.last_version()
 
     def default_type_id(self):
         """ This returns most frecuency used type id
         """
         return self._most_frecuent('type_id')
 
-
     def default_level_id(self):
         """ This returns most frecuency used level id
         """
         return self._most_frecuent('level_id')
 
-
-    def default_owner_id(self):
-        return self.env.context.get('uid', None)
-
-
     @api.onchange('topic_id')
     def _onchange_topid_id(self):
-        """ Updates domain form category_ids, this shoud allow categories
-        only in the selected topic.
+        """ Removes version and categories
         """
-        topic_set = self.topic_id
 
-        # Categories can have a newid, in that case id must be got from origin
-        # this is a consequence of previous on_change event
-        # @see https://stackoverflow.com/questions/36869257/
-        cur_cat_ids = []
-        for item in self.category_ids.mapped('id'):
-            if hasattr(item, 'origin'):
-                cur_cat_ids.append(getattr(item, 'origin'))
-            else:
-                cur_cat_ids.append(item)
-
-        top_cat_ids = topic_set.category_ids.mapped('id')
-
-        valid_ids = [item for item in top_cat_ids if item in cur_cat_ids]
-
-        self.category_ids = [(6, None, valid_ids)]
-
+        self.topic_version_ids = self.default_topic_version_ids()
 
     @api.onchange('state')
     def _onchange_state(self):
@@ -332,7 +353,6 @@ class AcademyTestsQuestionImport(models.TransientModel):
 
         return False
 
-
     # --------------------------- PUBLIC METHODS ------------------------------
 
     def process_text(self):
@@ -346,6 +366,7 @@ class AcademyTestsQuestionImport(models.TransientModel):
         groups = self._split_in_line_groups(content)
         value_set = self._build_value_set(groups)
 
+        self._update_attachments()
         self._create_questions(value_set)
 
         if self.test_id:
@@ -355,7 +376,11 @@ class AcademyTestsQuestionImport(models.TransientModel):
                 'view_mode': 'form',
                 'res_id': self.test_id.id,
                 'target': 'main',
-                'flags': {'form': {'action_buttons': True, 'options': {'mode': 'edit'}}}
+                'flags': {
+                    'form': {
+                        'action_buttons': True, 'options': {'mode': 'edit'}
+                    }
+                }
             }
         else:
             act_xid = 'academy_tests.action_questions_act_window'
@@ -364,8 +389,15 @@ class AcademyTestsQuestionImport(models.TransientModel):
 
         return values
 
-
     # -------------------------------------------------------------------------
+
+    def _update_attachments(self):
+        values = {
+            'res_model': 'academy.tests.question',
+            'res_id': 0,
+            'owner_id': self.owner_id.id
+        }
+        self.attachment_ids.write(values)
 
     def _get_cleared_text(self):
         """ Perform some operations to obtain a cleared text
@@ -394,7 +426,6 @@ class AcademyTestsQuestionImport(models.TransientModel):
 
         return content
 
-
     @staticmethod
     def _split_in_line_groups(content):
         """ Splits content into lines and then splits these lines into
@@ -419,7 +450,6 @@ class AcademyTestsQuestionImport(models.TransientModel):
 
         return groups
 
-
     @staticmethod
     def _append_line(_in_buffer, line):
         """ Appends new line using previous line break when buffer is not empty
@@ -431,7 +461,6 @@ class AcademyTestsQuestionImport(models.TransientModel):
 
         return _in_buffer
 
-
     @staticmethod
     def safe_cast(val, to_type, default=None):
         """ Performs a safe cast between `val` type to `to_type`
@@ -441,7 +470,6 @@ class AcademyTestsQuestionImport(models.TransientModel):
             return to_type(val)
         except (ValueError, TypeError):
             return default
-
 
     def _can_current_user_change_the_owner(self):
         """ If current user is allowed to access to the owner_id field then
@@ -458,7 +486,6 @@ class AcademyTestsQuestionImport(models.TransientModel):
 
         return bret
 
-
     def _process_line_group(self, line_group):
         """ Gets description, image, preamble, statement, and answers
         from a given group of lines
@@ -471,6 +498,7 @@ class AcademyTestsQuestionImport(models.TransientModel):
         # pylint: disable=locally-disabled, E1101
         catops = [(4, ID, None) for ID in self.category_ids.mapped('id')]
         tagops = [(4, ID, None) for ID in self.tag_ids.mapped('id')]
+        verops = [(4, ID, None) for ID in self.topic_version_ids.mapped('id')]
 
         values = {
             'description': '',
@@ -479,6 +507,7 @@ class AcademyTestsQuestionImport(models.TransientModel):
             'answer_ids': [],
             'ir_attachment_ids': [],
             'topic_id': self.topic_id.id,
+            'topic_version_ids': verops,
             'category_ids': catops,
             'type_id': self.type_id.id,
             'tag_ids': tagops,
@@ -521,7 +550,6 @@ class AcademyTestsQuestionImport(models.TransientModel):
 
         return values
 
-
     def _set_attachment_title(self, groups, ID):
         """ Reads title from markdown line ![title](uri) and set it to the
         attachement with the given ID in related recordset
@@ -532,7 +560,6 @@ class AcademyTestsQuestionImport(models.TransientModel):
         attach_record.name = groups[Mi.TITLE.value]
 
         return attach_record
-
 
     def _process_attachment_groups(self, groups):
         uri = groups[Mi.URI.value]
@@ -564,14 +591,12 @@ class AcademyTestsQuestionImport(models.TransientModel):
         # STEP 4: Return ID
         return record.id
 
-
     @staticmethod
     def _equal(str1, str2):
         str1 = (str1 or '').lower()
         str2 = (str2 or '').lower()
 
         return str1 == str2
-
 
     def _build_value_set(self, groups):
         value_set = []
@@ -580,7 +605,6 @@ class AcademyTestsQuestionImport(models.TransientModel):
             value_set.append(values)
 
         return value_set
-
 
     def _create_questions(self, value_set):
         question_obj = self.env['academy.tests.question']
@@ -600,14 +624,14 @@ class AcademyTestsQuestionImport(models.TransientModel):
 
                 question_set = question_obj.create(values)
 
-
                 if self.test_id:
                     sequence = sequence + 1
                     tvalues = {
                         'question_ids': [(0, None, {
                             'test_id': self.test_id.id,
                             'question_id': question_set.id,
-                            'sequence': sequence
+                            'sequence': sequence,
+                            'authorship': self.authorship
                         })]
                     }
                     self.test_id.write(tvalues)
@@ -626,7 +650,6 @@ class AcademyTestsQuestionImport(models.TransientModel):
         _ids = self.imported_attachment_ids.mapped('id')
         self.attachment_ids = [(4, _id, None) for _id in _ids]
         self.imported_attachment_ids = [(5, None, None)]
-
 
     def _most_frecuent(self, fname, domain=None):
 

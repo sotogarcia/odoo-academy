@@ -54,19 +54,19 @@
                             <label for="name" class="oe_edit_only" />
                             <h1>
                                 <field name="name" class="oe_field_name"
-                                    placeholder="Name" />
+                                    placeholder="Enter new name" />
                             </h1>
                         </div>
 
                         <group col="2">
                             <field name="module_code" class="oe_field_module_code"
-                                placeholder="Enter new value for code" />
+                                placeholder="Enter new code" />
                         </group>
 
                         <notebook>
                             <page string="Description" class="oe_page_description" accesskey="D">
                                 <field name="description" nolabel="1" class="oe_field_description"
-                                    placeholder="Enter new value for description" />
+                                    placeholder="Enter new description" />
                             </page>
                             <page string="Resources" class="oe_page_resources" accesskey="R">
                                 <field name="module_resource_ids"
@@ -166,8 +166,7 @@
             <field name="inherit_id" ref="academy_base.view_academy_training_module_tree" />
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='hours']" position="before">
-                    <field name="training_unit_count" class="oe_field_training_unit_count"
-                        placeholder="Enter new value for training unit count" />
+                    <field name="training_unit_count" class="oe_field_training_unit_count" string="Units" />
                 </xpath>
             </field>
         </record>
@@ -186,7 +185,6 @@
                 <xpath expr="//notebook/page" position="after">
                    <page string="Training units" class="oe_page_training_units" accesskey="U">
                         <field name="training_unit_ids" class="oe_field_training_unit_ids"
-                            placeholder="Choose or create module training units"
                             context="{'form_view_ref':'academy_base.view_academy_training_module_unit_form', 'default_training_module_id': id}" />
                     </page>
                 </xpath>
@@ -197,8 +195,7 @@
                     <field name="hours" class="oe_field_hours"
                         placeholder="Total of hours from all units in module"
                         attrs="{'invisible': [('training_unit_count', '=', 0)]}"/>
-                    <field name="training_unit_count" class="oe_field_training_unit_count"
-                        placeholder="Enter new value for training unit count" />
+                    <field name="training_unit_count" class="oe_field_training_unit_count" string="Units" />
                 </xpath>
             </field>
         </record>
@@ -269,7 +266,7 @@
         <!-- Main menu for model.name -->
         <record id="menu_training_module" model="ir.ui.menu" >
             <field name="name">Training modules</field>
-            <field name="sequence" eval="20" />
+            <field name="sequence" eval="30" />
             <field name="action" ref="action_training_module_act_window" />
             <field name="parent_id" ref="academy_base.menu_academy_catalog" />
             <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
@@ -294,8 +291,7 @@
                     <attribute name="create">0</attribute>
                 </xpath>
                 <xpath expr="//field[@name='hours']" position="before">
-                    <field name="training_module_id" class="oe_field_training_module_id"
-                        placeholder="Choose the related training module" />
+                    <field name="training_module_id" class="oe_field_training_module_id" />
                 </xpath>
             </field>
         </record>
@@ -312,12 +308,10 @@
             <field name="arch" type="xml">
                 <xpath expr="//sheet/group/field[1]" position="after">
                     <field name="training_module_id" class="oe_field_training_module_id"
-                        attrs="{'invisible': [('training_module_id', '&lt;&gt;', False)]}"
-                        placeholder="Choose related training module" />
+                        attrs="{'invisible': [('training_module_id', '&lt;&gt;', False)]}" />
                 </xpath>
                  <xpath expr="//field[@name='module_code']" position="after">
-                    <field name="ownhours" class="oe_field_ownhours"
-                        placeholder="Enter number of hours to this module"/>
+                    <field name="ownhours" class="oe_field_ownhours" />
                 </xpath>
             </field>
         </record>
@@ -387,7 +381,7 @@
         <!-- Main menu for model.name -->
         <record id="menu_training_module_unit" model="ir.ui.menu" >
             <field name="name">Training units</field>
-            <field name="sequence" eval="20" />
+            <field name="sequence" eval="35" />
             <field name="action" ref="action_training_module_units_act_window" />
             <field name="parent_id" ref="academy_base.menu_academy_catalog" />
             <field name="groups_id" eval="[(4, ref('academy_base.academy_group_manager'))]"/>

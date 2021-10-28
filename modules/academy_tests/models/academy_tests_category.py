@@ -1,39 +1,22 @@
 # -*- coding: utf-8 -*-
-# Part of Odoo. See LICENSE file for full copyright and licensing details.
-""" academy tests
+""" AcademyTestsCategory
 
-This module contains the academy.tests.category an unique Odoo model
-which contains all academy tests attributes and behavior.
-
-This model is the representation of the real life category for question
-
-Classes:
-    AcademyTest: This is the unique model class in this module
-    and it defines an Odoo model with all its attributes and related behavior.
-
+This module contains the academy.tests.category Odoo model which stores
+all academy tests category attributes and behavior.
 """
 
-
-from logging import getLogger
-import re
-
-
-# pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
 from odoo.tools.translate import _
 from odoo.exceptions import ValidationError
 
-# pylint: disable=locally-disabled, C0103
+from logging import getLogger
+import re
+
 _logger = getLogger(__name__)
 
 
-# pylint: disable=locally-disabled, R0903
 class AcademyTestsCategory(models.Model):
-    """ Category of the question
-
-    Fields:
-      name (Char): Human readable name which will identify each record.
-
+    """ This is a property of the academy.tests.test model
     """
 
     _name = 'academy.tests.category'
@@ -42,9 +25,7 @@ class AcademyTestsCategory(models.Model):
     _rec_name = 'name'
     _order = 'sequence ASC, name ASC'
 
-
     # ---------------------------- ENTITY FIEDS -------------------------------
-
 
     name = fields.Char(
         string='Name',
@@ -99,7 +80,6 @@ class AcademyTestsCategory(models.Model):
         context={},
         ondelete='cascade',
         auto_join=False,
-        # oldname='academy_topic_id',
     )
 
     question_ids = fields.Many2many(
@@ -116,7 +96,6 @@ class AcademyTestsCategory(models.Model):
         domain=[],
         context={},
         limit=None,
-        # oldname='academy_question_ids'
     )
 
     keywords = fields.Char(
@@ -130,9 +109,41 @@ class AcademyTestsCategory(models.Model):
         translate=False
     )
 
+    question_ids = fields.Many2many(
+        string='Questions',
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help='List the related questions',
+        comodel_name='academy.tests.question',
+        relation='academy_tests_question_category_rel',
+        column1='category_id',
+        column2='question_id',
+        domain=[],
+        context={},
+        limit=None
+    )
+
+    question_count = fields.Integer(
+        string='Number of questions',
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        help='Show number of questions',
+        compute=lambda self: self.compute_question_count()
+    )
+
+    @api.depends('question_ids')
+    def compute_question_count(self):
+        """ Computes `question_count` field value, this will be the number
+        of categories related with this topic
+        """
+        for record in self:
+            record.question_count = len(record.question_ids)
 
     # --------------------------- SQL_CONTRAINTS ------------------------------
-
 
     _sql_constraints = [
         (
@@ -143,9 +154,7 @@ class AcademyTestsCategory(models.Model):
         )
     ]
 
-
     # -------------------------- PYTHON_CONTRAINTS ----------------------------
-
 
     @api.constrains('keywords')
     def _check_keywords(self):
@@ -165,7 +174,6 @@ class AcademyTestsCategory(models.Model):
 
                 if not self._is_valid_regular_expression(keyword):
                     raise ValidationError(message.format(keyword))
-
 
     @staticmethod
     def _is_valid_regular_expression(keyword):

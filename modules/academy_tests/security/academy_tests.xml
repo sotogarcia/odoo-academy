@@ -4,7 +4,7 @@
     <data noupdate="0">
 
 
-        <!-- tests 
+        <!-- tests
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
         <record id="academy_teachers_can_only_update_or_unlink_their_own_tests_rule" model="ir.rule">
             <field name="name">Academy: Teachers can only update or unlink their own tests</field>
@@ -46,7 +46,7 @@
         </record>
 
 
-        <!-- answers 
+        <!-- answers
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
         <!-- <record id="academy_teachers_can_only_update_or_unlink_their_own_answers_rule" model="ir.rule">
             <field name="name">Academy: Teachers can only update or unlink their own answers</field>
@@ -88,7 +88,7 @@
         </record> -->
 
 
-        <!-- Questions 
+        <!-- Questions
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
         <record id="academy_teachers_can_only_update_or_unlink_their_own_questions_rule" model="ir.rule">
             <field name="name">Academy: Teachers can only update or unlink their own questions</field>
@@ -130,7 +130,7 @@
         </record>
 
 
-        <!-- Tests 
+        <!-- Tests
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
         <record id="academy_teachers_can_only_update_or_unlink_their_own_tests_rule" model="ir.rule">
             <field name="name">Academy: Teachers can only update or unlink their own tests</field>
@@ -172,7 +172,7 @@
         </record>
 
 
-        <!-- Templates 
+        <!-- Templates
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
         <record id="academy_teachers_can_only_update_or_unlink_their_own_templates_rule" model="ir.rule">
             <field name="name">Academy: Teachers can only update or unlink their own templates</field>

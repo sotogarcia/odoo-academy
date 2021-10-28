@@ -129,11 +129,13 @@ class AcademyPublicTenderingEventType(models.Model):
     )
 
 
-
+    @api.model
     def create(self, values):
         """ Touches all tendering processes to ensure state_id, both those
         which are related and those which are not
         """
+        # STEP 0: For backward compatibility, ``vals_list`` may be a dictionary
+        values = values if isinstance(values, list) else [values]
 
         result = super(AcademyPublicTenderingEventType, self).create(values)
 
@@ -146,17 +148,17 @@ class AcademyPublicTenderingEventType(models.Model):
         return result
 
 
-    def write(self, values):
-        """ Touches all tendering processes to ensure state_id, both those
-        which are related and those which are not
-        """
+    # def write(self, values):
+    #     """ Touches all tendering processes to ensure state_id, both those
+    #     which are related and those which are not
+    #     """
 
-        result = super(AcademyPublicTenderingEventType, self).write(values)
+    #     result = super(AcademyPublicTenderingEventType, self).write(values)
 
-        model = self.env.context.get('model', False)
-        if model != 'academy.public.tendering.process':
-            process_obj = self.env['academy.public.tendering.process']
-            process_set = process_obj.search([])
-            process_set.touch()
+    #     model = self.env.context.get('model', False)
+    #     if model != 'academy.public.tendering.process':
+    #         process_obj = self.env['academy.public.tendering.process']
+    #         process_set = process_obj.search([])
+    #         process_set.touch()
 
-        return result
+    #     return result

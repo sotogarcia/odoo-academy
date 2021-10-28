@@ -24,10 +24,10 @@
             <field name="active" eval="True" />
             <field name="arch" type="xml">
                 <tree string="academy_public_tendering_hiring_type_tree" editable="bottom" create="1" delete="1" edit="1">
-                    <field name="name" class="oe_field_name"
-                        placeholder="Enter new value for name" />
+                    <field name="name" class="oe_field_name" string="Name"
+                        placeholder="Enter new name" />
                     <field name="description" class="oe_field_description"
-                        placeholder="Enter new value for description" />
+                        placeholder="Enter new description" />
                 </tree>
             </field>
         </record>
@@ -47,12 +47,12 @@
                             <label for="name" class="oe_edit_only" />
                             <h1>
                                 <field name="name" class="oe_field_name"
-                                    placeholder="Name" />
+                                    placeholder="Enter new name" />
                             </h1>
                         </div>
                         <group col="2">
                             <field name="description" class="oe_field_description"
-                                placeholder="Enter new value for description" />
+                                placeholder="Enter new description" />
                         </group>
                     </sheet>
                 </form>
@@ -76,7 +76,7 @@
         </record>
 
         <!-- Main window action for model.name -->
-        <record id="action_vacancy_position_class_act_window" model="ir.actions.act_window">
+        <record id="action_hiring_type_act_window" model="ir.actions.act_window">
             <field name="type">ir.actions.act_window</field>
             <field name="name">Hiring types</field>
             <field name="res_model">academy.public.tendering.hiring.type</field>
@@ -95,10 +95,10 @@
         </record>
 
         <!-- Main menu for model.name -->
-        <record id="menu_vacancy_position_class" model="ir.ui.menu" >
+        <record id="menu_hiring_type" model="ir.ui.menu" >
             <field name="name">Hiring types</field>
             <field name="sequence" eval="10" />
-            <field name="action" ref="action_vacancy_position_class_act_window" />
+            <field name="action" ref="action_hiring_type_act_window" />
             <field name="parent_id" ref="menu_tendering_settings_top" />
             <field name="groups_id" eval="[(4, ref('academy_base.academy_group_manager'))]" />
         </record>

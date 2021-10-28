@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo noupdate="0">
+
+    <record id="ir_cron_complete_the_checksum_of_the_questions" model="ir.cron">
+        <field name="name">Complete the checksum of the questions</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="nextcall" eval="(DateTime.now().replace(hour=2, minute=0) + timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S')" />
+        <field name="doall" eval="False"/>
+        <field name="model_id" ref="model_academy_tests_question"/>
+        <field name="code">model.ensure_checksums()</field>
+        <field name="state">code</field>
+    </record>
+
+</odoo>
+

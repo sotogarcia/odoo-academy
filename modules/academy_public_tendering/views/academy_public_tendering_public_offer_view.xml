@@ -70,7 +70,6 @@
                                 class="oe_stat_button oe_read_only" icon="fa-calendar-check-o ">
                                 <span>Approve processes</span>
                             </button>
-
                             <button name="show_processes" type="object"
                                 class="oe_stat_button oe_read_only" icon="fa-list-ol">
                                 <field name="total_of_processes" widget="statinfo" string="Processes" />
@@ -85,7 +84,7 @@
                                 <label for="name" class="oe_edit_only" />
                                 <h1>
                                     <field name="name" class="oe_field_name"
-                                        placeholder="Name" />
+                                        placeholder="Enter new name" />
                                 </h1>
                             </div>
                             <div>
@@ -95,7 +94,6 @@
 
                         <group col="2">
                             <field name="public_administration_id" class="oe_field_administration_id"
-                                    placeholder="Choose the related public administration"
                                     readonly="context.get('default_public_administration_id', False)" />
                             <field name="bulletin_board_url" class="oe_field_bulletin_board_url" widget="url"  />
                             <field name="official_journal_url" class="oe_field_official_journal_url" widget="url" />
@@ -106,14 +104,13 @@
                         <notebook>
                             <page string="Processes" class="oe_page_processes" accesskey="P">
                                 <field name="tendering_process_ids" class="oe_field_tendering_process_ids"
-                                    placeholder="Choose or create new processes"
                                     context="{'default_public_tendering_public_offer_id' : id,
                                     'tree_view_ref' : 'academy_public_tendering.view_academy_public_tendering_process_tree_x2many'}"
                                     />
                             </page>
                             <page string="Description" class="oe_page_description" accesskey="D">
                                 <field name="description" class="oe_field_description"
-                                    placeholder="Enter new value for description" />
+                                    placeholder="Enter new description" />
                             </page>
                         </notebook>
 

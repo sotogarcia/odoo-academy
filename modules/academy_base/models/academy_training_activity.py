@@ -3,17 +3,16 @@
 
 This module contains the academy.training.activity Odoo model which stores
 all training activity attributes and behavior.
-
 """
-
 
 from logging import getLogger
 
 # pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
-from .lib.custom_model_fields import Many2manyThroughView, \
-    TRAINING_MODULE_IDS_SQL, TRAINING_UNIT_IDS_SQL, \
-    ACTIVITY_INHERITED_RESOURCES_REL
+from .utils.custom_model_fields import Many2manyThroughView
+from .utils.raw_sql import ACADEMY_TRAINING_ACTIVITY_TRAINING_MODULE_REL, \
+    ACADEMY_TRAINING_ACTIVITY_TRAINING_UNIT_REL, \
+    ACADEMY_TRAINING_ACTIVITY_AVAILABLE_RESOURCE_REL
 
 # pylint: disable=locally-disabled, C0103
 _logger = getLogger(__name__)
@@ -33,7 +32,6 @@ class AcademyTrainingActivity(models.Model):
 
     _inherit = ['image.mixin', 'mail.thread']
 
-
     name = fields.Char(
         string='Name',
         required=True,
@@ -41,7 +39,7 @@ class AcademyTrainingActivity(models.Model):
         index=True,
         default=None,
         help=False,
-        size=255,
+        size=1024,
         translate=True
     )
 
@@ -65,7 +63,7 @@ class AcademyTrainingActivity(models.Model):
     )
 
     professional_family_id = fields.Many2one(
-        string='Professional',
+        string='Professional family',
         required=False,
         readonly=False,
         index=False,
@@ -123,29 +121,10 @@ class AcademyTrainingActivity(models.Model):
         readonly=False,
         index=False,
         default=None,
-        help='Description of general competence that will be acquired at the end of the activity',
+        help=('Description of general competence that will be acquired at the '
+              'end of the activity'),
         translate=True
     )
-
-    # professional_field = fields.Text(
-    #     string='Professional field',
-    #     required=False,
-    #     readonly=False,
-    #     index=False,
-    #     default=None,
-    #     help='Description of the professional field to which this activity is oriented',
-    #     translate=True
-    # )
-
-    # professional_sectors = fields.Text(
-    #     string='Professional sectors',
-    #     required=False,
-    #     readonly=False,
-    #     index=False,
-    #     default=None,
-    #     help='Description of the professional sector/s to which this activity is oriented',
-    #     translate=True
-    # )
 
     professional_field_id = fields.Many2one(
         string='Professional field',
@@ -207,8 +186,7 @@ class AcademyTrainingActivity(models.Model):
         limit=None,
     )
 
-
-    training_module_ids = Many2manyThroughView(
+    available_module_ids = Many2manyThroughView(
         string='Training modules',
         required=False,
         readonly=True,
@@ -222,11 +200,11 @@ class AcademyTrainingActivity(models.Model):
         domain=[],
         context={},
         limit=None,
-        sql=TRAINING_MODULE_IDS_SQL
+        sql=ACADEMY_TRAINING_ACTIVITY_TRAINING_MODULE_REL
     )
 
-    training_unit_ids = Many2manyThroughView(
-        string='Training units',
+    available_unit_ids = Many2manyThroughView(
+        string='Available training units',
         required=False,
         readonly=True,
         index=False,
@@ -239,11 +217,11 @@ class AcademyTrainingActivity(models.Model):
         domain=[],
         context={},
         limit=None,
-        sql=TRAINING_UNIT_IDS_SQL
+        sql=ACADEMY_TRAINING_ACTIVITY_TRAINING_UNIT_REL
     )
 
     activity_resource_ids = fields.Many2many(
-        string='Own resources',
+        string='Activity resources',
         required=False,
         readonly=False,
         index=False,
@@ -259,7 +237,7 @@ class AcademyTrainingActivity(models.Model):
     )
 
     available_resource_ids = Many2manyThroughView(
-        string='Training resources',
+        string='Available activity resources',
         required=False,
         readonly=True,
         index=False,
@@ -272,19 +250,19 @@ class AcademyTrainingActivity(models.Model):
         domain=[],
         context={},
         limit=None,
-        sql=ACTIVITY_INHERITED_RESOURCES_REL
+        sql=ACADEMY_TRAINING_ACTIVITY_AVAILABLE_RESOURCE_REL
     )
 
-
     # -------------------------- MANAGEMENT FIELDS ----------------------------
-
 
     @api.onchange('professional_field_id')
     def _onchange_professional_field_id(self):
         _id = self.professional_field_id.id
+        domain = [('professional_field_id', '=', _id)]
+
         return {
             'domain': {
-                'professional_sector_ids': [('professional_field_id', '=', _id)]
+                'professional_sector_ids': domain
             }
         }
 
@@ -304,7 +282,6 @@ class AcademyTrainingActivity(models.Model):
         for record in self:
             record.competency_unit_count = len(record.competency_unit_ids)
 
-
     # pylint: disable=W0212
     training_action_count = fields.Integer(
         string='Number of training actions',
@@ -322,7 +299,6 @@ class AcademyTrainingActivity(models.Model):
         for record in self:
             record.training_action_count = len(record.training_action_ids)
 
-
     # pylint: disable=W0212
     training_resource_count = fields.Integer(
         string='Resources',
@@ -339,11 +315,10 @@ class AcademyTrainingActivity(models.Model):
         for record in self:
             record.training_resource_count = len(record.training_resource_ids)
 
-
     # ---------------------------- PUBLIC FIELDS ------------------------------
 
     # pylint: disable=locally-disabled, W0613
     def update_from_external(self, crud, fieldname, recordset):
-        """ Observer notify method, will be called by academy.professional.action
+        """ Observer notify method, will be called by action
         """
         self._compute_training_action_count()

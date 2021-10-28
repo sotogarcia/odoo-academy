@@ -32,7 +32,6 @@ from odoo.exceptions import ValidationError
 _logger = getLogger(__name__)
 
 
-
 WIZARD_STATES = [
     ('step1', 'Targets'),
     ('step2', 'Batch'),
@@ -43,15 +42,15 @@ MANY2MANY_ACTIONS = [
     ('sub', 'Replace'),
 ]
 
-VALIDATION_ERROR = _('You have chosen to change {target}, so you must fill in the related fields')
-
+VALIDATION_ERROR = _('You have chosen to change {target}, so you must fill in '
+                     'the related fields')
 
 
 # pylint: disable=locally-disabled, R0903,W0212
 class AcademyTestsQuestionCategorizeWizard(models.TransientModel):
-    """ This model is the representation of the academy tests question categorize wizard
+    """ This model is the representation of the academy tests question
+    categorize wizard
     """
-
 
     _name = 'academy.tests.question.categorize.wizard'
     _description = u'Academy tests, question categorize wizard'
@@ -64,7 +63,7 @@ class AcademyTestsQuestionCategorizeWizard(models.TransientModel):
         required=False,
         readonly=False,
         index=False,
-        default=lambda self: self.default_question_ids(), # pylint: disable=locally-disabled, w0212
+        default=lambda self: self.default_question_ids(),
         help=False,
         comodel_name='academy.tests.question',
         relation='academy_tests_question_categorize_question_rel',
@@ -96,6 +95,32 @@ class AcademyTestsQuestionCategorizeWizard(models.TransientModel):
         index=False,
         default=True,
         help='If checked topic will be set to selected questions'
+    )
+
+    topic_version_ids = fields.Many2many(
+        string='Topic versions',
+        required=True,
+        readonly=False,
+        index=False,
+        default=lambda self: self.default_topic_version_ids(),
+        help='Choose which versions of the topic this question belongs to',
+        comodel_name='academy.tests.topic.version',
+        relation='academy_tests_question_categorize_topic_version_rel',
+        column1='question_import_id',
+        column2='topic_version_id',
+        domain=[],
+        context={},
+        limit=None
+    )
+
+    topic_version_action = fields.Selection(
+        string='Version action',
+        required=False,
+        readonly=False,
+        index=False,
+        default='new',
+        help='Choose how to set versions',
+        selection=MANY2MANY_ACTIONS
     )
 
     category_ids = fields.Many2many(
@@ -206,6 +231,40 @@ class AcademyTestsQuestionCategorizeWizard(models.TransientModel):
         selection=WIZARD_STATES
     )
 
+    autocategorize = fields.Boolean(
+        string='Autocategorize',
+        required=False,
+        readonly=False,
+        index=False,
+        default=False,
+        help='Check to autocategorize questions'
+    )
+
+    status = fields.Selection(
+        string='Status',
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help='Switch question status',
+        selection=[
+            ('draft', 'Draft'),
+            ('ready', 'Ready')
+        ]
+    )
+
+    authorship = fields.Selection(
+        string='Authorship',
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help=False,
+        selection=[
+            ('own', 'My own'),
+            ('third', 'Third-party')
+        ]
+    )
 
     # ------------------------------ DEFAULTS ---------------------------------
 
@@ -218,21 +277,16 @@ class AcademyTestsQuestionCategorizeWizard(models.TransientModel):
 
         return [(6, None, ids)] if ids else False
 
-
     # ------------------------------- EVENTS ----------------------------------
 
     @api.onchange('topic_id')
     def _onchange_topic_id(self):
         self.category_ids = [(5, None, None)]
-
+        self.topic_version_ids = self.default_topic_version_ids()
 
     @api.onchange('state')
     def _onchange_state(self):
         self._ensure_state()
-
-        # if valid and self.state == WIZARD_STATES[2][0]:
-        #     self.update_targets()
-
 
     @api.onchange('question_ids')
     def _onchange_question_ids(self):
@@ -259,7 +313,6 @@ class AcademyTestsQuestionCategorizeWizard(models.TransientModel):
         if tag_ids and len(tag_ids) <= 10:
             self.tag_ids = [(6, None, tag_ids)]
 
-
     # --------------------------- PUBLIC METHODS ------------------------------
 
     def update_targets(self):
@@ -272,10 +325,18 @@ class AcademyTestsQuestionCategorizeWizard(models.TransientModel):
 
         values = self._get_values()
 
-        self.question_ids.write(values)
+        if values:
+            self.question_ids.write(values)
 
+        if self.autocategorize:
+            self.question_ids.auto_categorize()
 
     # -------------------------- AUXILIARY METHODS ----------------------------
+
+    def default_topic_version_ids(self):
+        """ This returns all versions for the chosen topic
+        """
+        return self.topic_id.last_version()
 
     def _ensure_state(self):
         """ Check given step returning it if is valid or the mayor valid step
@@ -297,7 +358,6 @@ class AcademyTestsQuestionCategorizeWizard(models.TransientModel):
 
         return result
 
-
     def _reload_on_step3(self):
         """ Builds an action which loads again transient model record using
         'step3' as state
@@ -314,7 +374,6 @@ class AcademyTestsQuestionCategorizeWizard(models.TransientModel):
             'target': 'new'
         }
 
-
     def _validate_form(self, raise_error=True):
         """ Check if all required wizard field values have been filled by user.
             Required fiels are not always the same, this depends on the
@@ -323,9 +382,13 @@ class AcademyTestsQuestionCategorizeWizard(models.TransientModel):
 
         target = None
 
-        if self.change_topic and not (self.topic_id and self.category_ids \
-                                       and self.category_action):
+        category_filled = self.category_ids and self.category_action
+        version_filled = self.topic_version_ids and self.topic_version_action
+
+        if self.change_topic and not (self.topic_id and category_filled):
             target = _('topic and categories')
+        if self.change_topic and not (self.topic_id and version_filled):
+            target = _('topic and versions')
         elif self.change_type and not self.type_id:
             target = _('type')
         elif self.change_level and not self.level_id:
@@ -337,7 +400,6 @@ class AcademyTestsQuestionCategorizeWizard(models.TransientModel):
             raise ValidationError(VALIDATION_ERROR.format(target=target))
 
         return target is None
-
 
     def _append_leaf(self, values, fname, replace=False):
         """ Appends a valid leaf to a values dictionary. This gets the value
@@ -357,46 +419,50 @@ class AcademyTestsQuestionCategorizeWizard(models.TransientModel):
 
         if isinstance(field, fields.Many2one):
             if recordset:
-                values.update({fname : recordset.id})
+                values.update({fname: recordset.id})
             elif replace:
-                values.update({fname : None})
+                values.update({fname: None})
 
         elif isinstance(field, fields.Many2many):
             _ids = recordset.mapped('id')
             if replace:
                 if _ids:
-                    values.update({fname : [(6, None, _ids)]})
+                    values.update({fname: [(6, None, _ids)]})
                 else:
-                    values.update({fname : [(5, None, None)]})
+                    values.update({fname: [(5, None, None)]})
             else:
-                values.update({fname : [(4, _id, None) for _id in _ids]})
+                values.update({fname: [(4, _id, None) for _id in _ids]})
 
-
-    def _update_category_special_actions(self, values):
-        """ Categories and topics are related to each other, previous
+    def _append_leaf_to_remove_unsuited(self, fname, values):
+        """ Categories and versions are related to a topic, previous
         question recordset can be incompatible with current topic, this
-        method search for non compatible categories and adds the needed
-        leafs to remove them.
+        method search for non compatible categories and versions to append
+        the needed leafs to remove them.
 
+        @param fname (string): field name (category_ids or topic_version_ids)
         @parm values (dict): values dictionary will be updated
         """
 
-        old_ids = self.question_ids.mapped('category_ids').mapped('id')
-        valid_ids = self.topic_id.mapped('category_ids').mapped('id')
+        old_ids = self.question_ids.mapped(fname).mapped('id')
+        valid_ids = self.topic_id.mapped(fname).mapped('id')
 
         for _id in old_ids:
             if _id not in valid_ids:
-                values['category_ids'].append((3, _id, None))
-
+                values[fname].append((3, _id, None))
 
     def _get_values(self):
         values = {}
 
         if self.change_topic:
-            replace = (self.category_action == 'sub')
             self._append_leaf(values, 'topic_id')
+
+            replace = (self.category_action == 'sub')
             self._append_leaf(values, 'category_ids', replace=replace)
-            self._update_category_special_actions(values)
+            self._append_leaf_to_remove_unsuited('category_ids', values)
+
+            replace = (self.topic_version_action == 'sub')
+            self._append_leaf(values, 'topic_version_ids', replace=replace)
+            self._append_leaf_to_remove_unsuited('topic_version_ids', values)
 
         if self.change_type:
             self._append_leaf(values, 'type_id')
@@ -408,8 +474,13 @@ class AcademyTestsQuestionCategorizeWizard(models.TransientModel):
             replace = (self.tag_action == 'sub')
             self._append_leaf(values, 'tag_ids', replace=replace)
 
-        return values
+        if self.status:
+            values['status'] = self.status
 
+        if self.authorship:
+            values['authorship'] = (self.authorship == 'own')
+
+        return values
 
     @staticmethod
     def _increment_item_counter(items_dict, item_key):
@@ -423,7 +494,6 @@ class AcademyTestsQuestionCategorizeWizard(models.TransientModel):
             items_dict[item_key] = items_dict[item_key] + 1
         else:
             items_dict[item_key] = 1
-
 
     def _most_repeated(self, recordset, fname):
         """ Search for most repeated value for given field in a recordset

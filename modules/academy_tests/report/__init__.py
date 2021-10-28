@@ -6,3 +6,5 @@
 
 from . import academy_test_report
 from . import academy_test_answers_table_report
+from . import academy_test_changelog_report
+from . import academy_tests_test_text_report
