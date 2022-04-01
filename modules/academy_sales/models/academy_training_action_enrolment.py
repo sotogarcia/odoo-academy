@@ -31,3 +31,35 @@ class AcademyTrainingActionEnrolment(models.Model):
         ondelete='cascade',
         auto_join=False
     )
+
+    sale_ids = fields.Many2many(
+        string='Sales',
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help='Service sales for this enrolment',
+        comodel_name='sale.order',
+        relation='academy_training_action_enrolment_sale_order_rel',
+        column1='enrolment_id',
+        column2='sale_order_id',
+        domain=[],
+        context={},
+        limit=None
+    )
+
+    def invoice(self):
+        for record in self:
+            pass
+
+    def renew(self):
+        for record in self:
+            pass
+
+    def prorogate(self):
+        for record in self:
+            pass
+
+    def renounce(self):
+        for record in self:
+            pass

@@ -331,14 +331,13 @@ class AptPublicTendering(models.Model):
         compute=lambda self: self._compute_last_event_id()
     )
 
-
     def _track_subtype(self, init_values):
         xid = 'academy_public_tendering.academy_public_tendering_state_change'
 
         self.ensure_one()
 
         if('state_id' in init_values.keys()):
-            return self.env.ref(xid).copy();
+            return self.env.ref(xid).copy()
 
         return super(AptPublicTendering, self)._track_subtype(init_values)
 
@@ -362,7 +361,6 @@ class AptPublicTendering(models.Model):
             }
         }
 
-
     @api.model
     def _default_employment_group_id(self):
         """ Returns the default value for group_id field.
@@ -385,7 +383,6 @@ class AptPublicTendering(models.Model):
 
         return record.id
 
-
     @api.model
     def _default_hiring_type_id(self):
         """ Returns the default value for class_id field.
@@ -397,7 +394,6 @@ class AptPublicTendering(models.Model):
 
         return record
 
-
     @staticmethod
     def default_submissions_deadline():
         """ Returns the default value for deadline_for_submissions field. This
@@ -407,7 +403,6 @@ class AptPublicTendering(models.Model):
             datetime.now() + timedelta(days=20)
         )
 
-
     @api.depends('vacancy_position_ids')
     def compute_total_of_vacancies(self):
         """ Returns computed value for total_of_vacancies field
@@ -415,7 +410,6 @@ class AptPublicTendering(models.Model):
         for record in self:
             record.total_of_vacancies = \
                 sum(record.vacancy_position_ids.mapped('quantity'))
-
 
     def _default_state_id(self):
         """ Returns the state with lowerest sequence
@@ -429,7 +423,6 @@ class AptPublicTendering(models.Model):
             event_type_domain, order=order, limit=1)
 
         return event_type_set.mapped('id')[0] if event_type_set else None
-
 
     def _compute_state_date(self, field_name):
         """ Some date fields in this model must be computed each time of events
@@ -469,7 +462,6 @@ class AptPublicTendering(models.Model):
                         computed_date = max(event_set.mapped('date'))
 
             setattr(record, field_name, computed_date)
-
 
     def _register_event_for_date(self, field_name, in_date):
         """ Some date fields in this model must be computed each time of events
@@ -512,7 +504,6 @@ class AptPublicTendering(models.Model):
 
             record.touch()
 
-
     @api.depends('public_process_event_ids')
     def _compute_last_event_id(self):
         for record in self:
@@ -522,9 +513,7 @@ class AptPublicTendering(models.Model):
             else:
                 record.last_event_id = None
 
-
     # ------------------------- AUXILIARY  METHODS ----------------------------
-
 
     def _ensure_state_id(self):
         """ Recomputes state_id field value using related process events
@@ -544,9 +533,7 @@ class AptPublicTendering(models.Model):
 
         return self
 
-
     # --------------------------- PUBLIC METHODS ------------------------------
-
 
     def update_states(self):
         """ This method will be called by the cron server action to keep
@@ -565,7 +552,6 @@ class AptPublicTendering(models.Model):
 
         process_set.touch()
 
-
     def touch(self):
         """ This method should be called from other models to update related
         records
@@ -581,18 +567,13 @@ class AptPublicTendering(models.Model):
             # STEP 2: Update non computed fields which depend from others
             record._ensure_state_id()
 
-
     def set_approval(self, approval):
         self._register_event_for_date('approval', approval)
-
 
     def set_announcement(self, announcement):
         self._register_event_for_date('announcement', announcement)
 
-
-
     # ------------------------- OVERLOADED METHODS ----------------------------
-
 
     @api.model
     def create(self, values):
@@ -604,7 +585,6 @@ class AptPublicTendering(models.Model):
         result._ensure_state_id()
 
         return result
-
 
     def write(self, values):
         """ Once all other values in redordset has been written the state is
@@ -618,11 +598,10 @@ class AptPublicTendering(models.Model):
 
         result = super(AptPublicTendering, self).write(values)
 
-        if not 'state_id' in values:
+        if 'state_id' not in values:
             self._ensure_state_id()
 
         return result
-
 
     @api.model
     def _read_group_state_ids(self, stages, domain, order):

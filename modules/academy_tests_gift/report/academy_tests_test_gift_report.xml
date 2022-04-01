@@ -5,14 +5,14 @@
 
         <record id="view_academy_test_test_question_gift_qweb" model="ir.ui.view">
             <field name="name">Academy Test Question GIFT report</field>
-            <field name="model">academy.test.question</field>
+            <field name="model">academy.tests.question</field>
             <field name="type">qweb</field>
             <field name="mode">primary</field>
             <field name="priority" eval="16" />
             <field name="active" eval="True" />
             <field name="arch" type="xml">
 <t t-name="academy_tests_gift.view_academy_test_test_question_gift_qweb">
-<t t-foreach="docs" t-as="o"><t t-foreach="o.question_ids" t-as="academy_question_rel_id" ><t t-set="question_id" t-value="academy_question_rel_id.question_id" /><t t-esc="question_id.gift" /></t>
+<t t-foreach="docs" t-as="o"><t t-foreach="o.question_ids" t-as="academy_question_rel_id" ><t t-esc="academy_question_rel_id.to_gift()" /></t>
 </t>
 </t>
             </field>

@@ -12,7 +12,7 @@
         <field name="active" eval="True" />
         <field name="inherit_id" ref="academy_base.view_academy_training_action_enrolment_form" />
         <field name="arch" type="xml">
-            <xpath expr="//notebook" position="inside">
+            <xpath expr="//notebook/*[last()]" position="after">
                 <page string="Tests" class="oe_page_tests" accesskey="T">
                     <field name="test_ids" class="oe_field_test_ids oe_edit_only" />
                     <field name="available_test_ids" class="oe_field_test_ids oe_read_only" />

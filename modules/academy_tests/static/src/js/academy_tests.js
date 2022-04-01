@@ -21,21 +21,27 @@ odoo.define('academy_tests.QuestionKanbanView', function(require) {
         },
 
         _onKanbanStatusMenuAddToTest: function(event) {
-            var self = this;
-            var data = this.recordData;
+            let self = this;
+            let data = this.recordData;
+            let question_id = false;
 
             event.preventDefault();
 
-            console.log({'default_question_ids': [(4, data['id'])]});
+            if(this.modelName == "academy.tests.test.question.rel") {
+                question_id = data.question_id.res_id;
+            } else {
+                question_id = data['id'];
+            }
 
-            this.do_action({
-                type: 'ir.actions.act_window',
-                res_model: 'academy.tests.question.append.wizard',
-/*                res_id: id,*/
-                views: [[false, 'form']],
-                target: 'new',
-                context: {'default_question_ids': [(4, data['id'])]}
-            });
+            if(question_id !== false) {
+                this.do_action({
+                    type: 'ir.actions.act_window',
+                    res_model: 'academy.tests.question.append.wizard',
+                    views: [[false, 'form']],
+                    target: 'new',
+                    context: {'default_question_ids': [(4, question_id)]}
+                });
+            } // if
 
         },
 
@@ -87,7 +93,7 @@ odoo.define('html_in_tree_field.web_ext', function (require) {
 
 
 // in file academy_tests.js
-odoo.define('academy_tests.ManualCategorizationWidgets', function(require) {
+odoo.define('academy_tests.AcademyTestsWidgets', function(require) {
 
     "use strict";
 
@@ -96,7 +102,7 @@ odoo.define('academy_tests.ManualCategorizationWidgets', function(require) {
     var FieldMany2Many = require('web.relational_fields').FieldMany2Many;
     var rpc = require('web.rpc');
 
-    var FieldMany2ManyMD = FieldMany2Many.extend({
+    var FieldMany2ManyDeedless = FieldMany2Many.extend({
 
         events: _.extend({}, AbstractField.prototype.events, {
             'open_record': '_onOpenRecord',
@@ -111,37 +117,12 @@ odoo.define('academy_tests.ManualCategorizationWidgets', function(require) {
          * @param  {odooevent} event the event data
          */
         _onOpenRecord: function (event) {
-            let id = this._getId(event);
-
             event.stopPropagation();
-
-            var orders = rpc.query({
-                model: 'academy.tests.question',
-                method: 'read_as_string',
-                args: [id, true]
-            }).then(function (data) {
-                console.log(data);
-            });
-
         },
-
-        _getId: function (event) {
-            let strId = event.data.id;
-            let id = null;
-
-            for(let item of event.target.state.data) {
-                id = item.res_id;
-                if (item.id == strId) {
-                    break;
-                }
-            }
-
-            return id;
-        }
 
     }); // FieldMany2ManyMD
 
-    fieldRegistry.add('many2many_md', FieldMany2ManyMD);
+    fieldRegistry.add('many2many_deedless', FieldMany2ManyDeedless);
 });
 
 

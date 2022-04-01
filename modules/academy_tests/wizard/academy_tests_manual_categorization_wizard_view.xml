@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="view_academy_tests_categorization_wizard_form" model="ir.ui.view">
+            <field name="name">Manual categorization wizard</field>
+            <field name="model">academy.tests.categorization.wizard</field>
+            <field name="type">form</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <form string="academy_tests_choose_report_form">
+                    <header>
+                        <button name="show_view" type="object"
+                            string="Go" class="oe_highlight" />
+                    </header>
+
+                    <group col="6" string="Columns">
+                        <field name="show_topic" class="oe_field_show_topic" />
+                        <field name="show_versions" class="oe_field_show_versions" attrs="{'readonly': [('show_topic', '=', True)]}" />
+                        <field name="show_categories" class="oe_field_show_categories" attrs="{'readonly': [('show_topic', '=', True)]}" />
+                        <field name="show_tags" class="oe_field_show_tags" />
+                        <field name="show_level" class="oe_field_show_level" />
+                        <field name="show_type" class="oe_field_show_type" />
+                    </group>
+
+                    <group string="Filters">
+                        <field name="default_filter" class="oe_field_default_filter" />
+                        <!-- <field name="filter_ids" class="oe_field_filter_ids" widget="many2many_tags" /> -->
+                    </group>
+
+                    <footer />
+                </form>
+            </field>
+        </record>
+
+
+        <record id="action_manual_categorization_wizard_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Manual categorization</field>
+            <field name="res_model">academy.tests.categorization.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="binding_model_id" ref="academy_tests.model_academy_tests_question" />
+            <field name="binding_view_types">list</field>
+        </record>
+
+
+        <!-- Main menu for model.name -->
+        <record id="menu_manual_categorization_wizard" model="ir.ui.menu" >
+            <field name="name">Manual categorization</field>
+            <field name="sequence" eval="30" />
+            <field name="action" ref="action_manual_categorization_wizard_act_window" />
+            <field name="parent_id" ref="academy_tests.menu_test_utilities" />
+        </record>
+
+
+        <record id="action_manual_categorization_wizard_bind_to_link_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Manual categorization</field>
+            <field name="res_model">academy.tests.categorization.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="binding_model_id" ref="academy_tests.model_academy_tests_test_question_rel" />
+            <field name="binding_view_types">list</field>
+        </record>
+
+        <record id="action_manual_categorization_wizard_bind_to_test_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Manual categorization</field>
+            <field name="res_model">academy.tests.categorization.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="binding_model_id" ref="academy_tests.model_academy_tests_test" />
+            <field name="binding_view_types">form,list</field>
+        </record>
+
+    </data>
+</openerp>

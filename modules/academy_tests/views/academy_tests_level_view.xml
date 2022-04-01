@@ -88,7 +88,13 @@
             <field name="arch" type="xml">
                 <search string="academy_level_search">
                     <field name="name" />
-                    <!-- ··· -->
+
+                    <filter string="Active"
+                        name="active"
+                        domain="[('active', '=', True)]"
+                        context="{}"
+                        help="List only the active levels" />
+
                 </search>
             </field>
         </record>
@@ -103,9 +109,6 @@
             <field name="domain">[]</field>
             <field name="context">{}</field>
             <field name="search_view_id" ref="view_academy_level_search" />
-            <!-- <field name="view_ids" eval="[(5, 0, 0),
-                (0, 0, {'view_mode': 'tree', 'view_id': ref('view_academy_level_tree_sequence')})]"/>
-            <field name="views">[(False, 'form'), ('view_academy_level_tree_sequence', 'tree')]</field> -->
             <field name="help" type="html">
                <p class="oe_view_nocontent_create">
                     Click to add new levels

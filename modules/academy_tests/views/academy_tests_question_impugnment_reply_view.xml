@@ -25,7 +25,8 @@
             <field name="arch" type="xml">
                 <tree string="academy_tests_question_impugnment_reply_tree" create="1" delete="1" edit="1">
                     <field name="write_date" class="oe_readonly" />
-                    <field name="description" />
+                    <field name="student_id" class="oe_field_student_id" />
+                    <field name="description" class="oe_field_description" />
                 </tree>
             </field>
         </record>

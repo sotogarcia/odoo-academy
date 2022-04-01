@@ -5,15 +5,15 @@
 ###############################################################################
 
 from odoo import models, fields, api
-
+from odoo.osv.expression import FALSE_DOMAIN
 from logging import getLogger
 
 
 _logger = getLogger(__name__)
 
 WIZARD_STATES = [
-    ('step1', 'Create'),
-    ('step2', 'Update')
+    ('step1', 'Create version'),
+    ('step2', 'Exclude questions')
 ]
 
 NO_UPDATED_ACTION = [
@@ -22,6 +22,33 @@ NO_UPDATED_ACTION = [
     ('new', 'Clone with new version'),
     ('new_draft', 'Clone as draft with new version'),
 ]
+
+EXCLUDE_SQL = '''
+    WITH has_given_categories AS (
+        SELECT
+            atq."id" AS question_id
+        FROM
+            academy_tests_question AS atq
+        INNER JOIN academy_tests_question_category_rel AS crel
+            ON crel.question_id = atq."id"
+        INNER JOIN academy_tests_question_topic_version_rel AS vrel
+            ON vrel.question_id = atq."id"
+        WHERE
+            topic_version_id = {ver}
+            AND category_id IN ( {cats} )
+    ) SELECT DISTINCT
+        atq."id"
+    FROM
+        academy_tests_question AS atq
+    INNER JOIN academy_tests_question_topic_version_rel AS vrel
+        ON vrel.question_id = atq."id"
+    LEFT JOIN has_given_categories AS hgc
+        ON hgc.question_id = atq."id"
+    WHERE
+        topic_version_id = {ver}
+        AND hgc.question_id {op} NULL
+        --IS NOT
+'''
 
 
 class AcademyTestNewTopicVersion(models.TransientModel):
@@ -43,14 +70,15 @@ class AcademyTestNewTopicVersion(models.TransientModel):
         readonly=False,
         index=False,
         default=None,
-        help='Chosen  categories',
         comodel_name='academy.tests.category',
         relation='academy_test_new_topic_version_wizard_category_rel',
         column1='wizard_id',
         column2='category_id',
         domain=[],
         context={},
-        limit=None
+        limit=None,
+        help=('Categories contain the questions to which the new version will '
+              'not be added')
     )
 
     topic_version_id = fields.Many2one(
@@ -68,7 +96,7 @@ class AcademyTestNewTopicVersion(models.TransientModel):
     )
 
     update_questions = fields.Boolean(
-        string='Update questions',
+        string='Append version',
         required=False,
         readonly=False,
         index=False,
@@ -77,7 +105,7 @@ class AcademyTestNewTopicVersion(models.TransientModel):
     )
 
     no_updated = fields.Selection(
-        string='With no updated',
+        string='With excluded',
         required=True,
         readonly=False,
         index=False,
@@ -124,7 +152,7 @@ class AcademyTestNewTopicVersion(models.TransientModel):
 
             topic_item = self.env[active_model].browse(active_id)
             versions = topic_item.topic_version_ids.mapped('sequence')
-            values['sequence'] = max(versions or [10])
+            values['sequence'] = max(versions or [0]) + 10
 
         return values
 
@@ -138,7 +166,7 @@ class AcademyTestNewTopicVersion(models.TransientModel):
         """
 
         for record in self:
-            record.chosen_category_ids = self.topic_id.category_ids
+            record.chosen_category_ids = [(5, 0, 0)]
 
     @api.onchange('update_questions')
     def _onchange_update_questions(self):
@@ -162,13 +190,15 @@ class AcademyTestNewTopicVersion(models.TransientModel):
             mixed -- ID of the previous version or None
         """
 
-        version_ids = self.topic_id.topic_version_ids.sorted(
-            key=lambda x: x.sequence, reverse=True).mapped('id')
+        version_obj = self.env['academy.tests.topic.version']
 
-        while new_id in version_ids:
-            version_ids.remove(new_id)
+        domain = [('topic_id', '=', self.topic_id.id), ('id', '!=', new_id)]
+        rows = version_obj.search_read(
+            domain, ['id', 'name'], limit=1, order='sequence DESC')
 
-        return version_ids[0] if version_ids else None
+        print(rows)
+
+        return rows[0]['id'] if rows else None
 
     @staticmethod
     def _except(whole, to_exclude):
@@ -207,8 +237,24 @@ class AcademyTestNewTopicVersion(models.TransientModel):
 
         for question_item in question_set:
             result_set += question_item.copy(defaults)
+        print(domain)
 
         return result_set
+
+    def _build_domain(self, version_id, category_ids, exclude=False):
+        op = 'IS NOT' if exclude else 'IS'
+        joined = ', '.join([str(item) for item in category_ids])
+        sql = EXCLUDE_SQL.format(ver=version_id, cats=joined, op=op)
+
+        self.env.cr.execute(sql)
+        rows = self.env.cr.dictfetchall()
+
+        if not rows:
+            return FALSE_DOMAIN
+
+        question_ids = [row['id'] for row in (rows or [])]
+
+        return [('id', 'in', question_ids)]
 
     def _append_version(self, version_id, last_version_id):
         """ Append new created version to those questions have at least one of
@@ -221,10 +267,8 @@ class AcademyTestNewTopicVersion(models.TransientModel):
         category_ids = self._read_chosen_category_ids()
 
         if category_ids and last_version_id:
-            domain = [
-                ('topic_version_ids', '=', last_version_id),
-                ('category_ids', '=', category_ids)
-            ]
+            domain = self._build_domain(
+                last_version_id, category_ids, False)
             values = {'topic_version_ids': [(4, version_id, None)]}
 
             self._update_questions(domain, values)
@@ -238,15 +282,12 @@ class AcademyTestNewTopicVersion(models.TransientModel):
             updated_ids {list} -- ID of the questions were previously updated
         """
 
-        topic_category_ids = self._read_topic_category_ids()
-        target_cat_ids = self._except(topic_category_ids, updated_ids)
+        category_ids = self._read_chosen_category_ids()
 
-        if target_cat_ids:
+        if category_ids:
 
-            target_domain = [
-                ('topic_version_ids', '=', last_version_id),
-                ('category_ids', '=', target_cat_ids)
-            ]
+            target_domain = self._build_domain(
+                last_version_id, category_ids, True)
 
             if self.no_updated == 'draft':
                 values = dict(status='draft')

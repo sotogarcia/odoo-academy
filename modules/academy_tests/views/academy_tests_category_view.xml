@@ -25,9 +25,10 @@
             <field name="arch" type="xml">
                 <tree string="academy_category_tree" create="1" delete="1" edit="1">
                     <field name="name" class="oe_field_name" string="Name" />
-                    <field name="keywords" class="oe_field_regex" />
-                    <field name="question_count" class="oe_field_question_count" string="Questions" />
                     <field name="description" class="oe_field_description" />
+                    <field name="keywords" class="oe_field_regex" />
+                    <field name="provisional" class="oe_field_provisional" />
+                    <field name="question_count" class="oe_field_question_count" string="Questions" />
                 </tree>
             </field>
         </record>
@@ -44,11 +45,12 @@
                     <field name="sequence" class="oe_field_sequence" widget="handle" />
                     <field name="name" class="oe_field_name"
                         placeholder="Enter new name" string="Name" />
-                    <field name="keywords" class="oe_field_regex"
-                        placeholder="Enter keywords separated by commas" />
-                    <field name="question_count" class="oe_field_question_count" string="Questions" />
                     <field name="description" class="oe_field_description"
                         placeholder="Enter new description" />
+                    <field name="keywords" class="oe_field_regex"
+                        placeholder="Enter keywords separated by commas" />
+                    <field name="provisional" class="oe_field_provisional" />
+                    <field name="question_count" class="oe_field_question_count" string="Questions" />
                 </tree>
             </field>
         </record>
@@ -83,6 +85,7 @@
                                 readonly="context.get('default_topic_id', False)" />
                             <field name="keywords" class="oe_field_regex"
                                 placeholder="Enter new regular expression" />
+                            <field name="provisional" class="oe_field_provisional" />
                             <field name="question_count" class="oe_field_question_count"
                                 string="Questions" />
 
@@ -104,8 +107,17 @@
             <field name="active" eval="True" />
             <field name="arch" type="xml">
                 <search string="academy_category_search">
+
                     <field name="name" />
+                    <field name="description" />
                     <field name="topic_id" />
+                    <field name="training_activity_ids" />
+                    <field name="competency_unit_ids" />
+                    <field name="training_module_ids" />
+                    <field name="id" string="Topic ID" />
+
+                    <filter name="inactive" string="Archived"
+                            domain="[('active','=',False)]"/>
                 </search>
             </field>
         </record>

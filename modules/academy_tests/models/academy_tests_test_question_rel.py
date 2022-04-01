@@ -19,6 +19,9 @@ from logging import getLogger
 # pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
 from odoo.tools.translate import _
+from odoo.exceptions import ValidationError
+
+from io import BytesIO
 
 # pylint: disable=locally-disabled, C0103
 _logger = getLogger(__name__)
@@ -71,6 +74,12 @@ class AcademyTestsTestQuestionRel(models.Model):
         auto_join=False,
     )
 
+    # This is a hack to use ID field to search in views
+    real_question_id = fields.Integer(
+        string='Question ID',
+        related='question_id.id'
+    )
+
     sequence = fields.Integer(
         string='Sequence',
         required=False,
@@ -78,18 +87,6 @@ class AcademyTestsTestQuestionRel(models.Model):
         index=False,
         default=0,
         help='Question sequence order'
-    )
-
-    active = fields.Boolean(
-        string='Active',
-        required=False,
-        readonly=False,
-        index=False,
-        default=True,
-        help=('If the active field is set to false, it will allow you to '
-              'hide record without removing it'),
-        related='question_id.active',
-        store=True
     )
 
     # This only is used by 'view_academy_tests_test_question_rel_form' view
@@ -117,6 +114,34 @@ class AcademyTestsTestQuestionRel(models.Model):
         store=False
     )
 
+    request_id = fields.Many2one(
+        string='Request',
+        required=False,
+        readonly=True,
+        index=True,
+        default=None,
+        help='Show the request from which this link was created',
+        comodel_name='academy.tests.question.request',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False
+    )
+
+    test_block_id = fields.Many2one(
+        string='Test block',
+        required=False,
+        readonly=False,
+        index=True,
+        default=None,
+        help='Choose the test block in which this question appears',
+        comodel_name='academy.tests.test.block',
+        domain=[],
+        context={},
+        ondelete='set null',
+        auto_join=False
+    )
+
     _sql_constraints = [
         (
             'prevent_duplicate_questions',
@@ -129,12 +154,25 @@ class AcademyTestsTestQuestionRel(models.Model):
         result = []
 
         for record in self:
-            if self.env.context.get('show_question_id', False):
-                result.append((record.id, record.question_id.name))
-            else:
+            if self.env.context.get('show_test_id', False):
                 result.append((record.id, record.test_id.name))
+            else:
+                result.append((record.id, record.question_id.name))
 
         return result
+
+    @api.model
+    def fields_get(self, fields=None):
+
+        fields = super(AcademyTestsTestQuestionRel, self).fields_get()
+
+        selectable = self.question_id._selectable.copy()
+        selectable.append('real_question_id')
+
+        for field_name in fields.keys():
+            fields[field_name]['selectable'] = field_name in selectable
+
+        return fields
 
     def switch_status(self):
         """ This method is only a wrapper will be allows user to call
@@ -172,11 +210,9 @@ class AcademyTestsTestQuestionRel(models.Model):
 
     @api.model
     def create(self, values):
-        """
-            Create a new record for a model ModelName
-            @param values: provides a data for new record
-
-            @return: returns a id of new record
+        """ Ensure right sequence values. Allow to use given values valid to
+        create question as link values dictionary. Ensure related a valid state
+        in the related requests.
         """
 
         test_id = self._get_text_id(values)
@@ -206,4 +242,107 @@ class AcademyTestsTestQuestionRel(models.Model):
         _super = super(AcademyTestsTestQuestionRel, self)
         result = _super.create(values)
 
+        request_set = result.mapped('request_id')
+        request_set.update_state()
+
         return result
+
+    def write(self, values):
+        """ Ensure related a valid state in the related requests.
+        """
+        _super = super(AcademyTestsTestQuestionRel, self)
+        result = _super.write(values)
+
+        request_set = self.mapped('request_id')
+        request_set.update_state()
+
+        return result
+
+    def unlink(self):
+        """ Ensure related a valid state in the related requests.
+        """
+
+        request_set = self.mapped('request_id')
+
+        _super = super(AcademyTestsTestQuestionRel, self)
+        result = _super.unlink()
+
+        request_set.update_state()
+
+        return result
+
+    def open_test(self):
+        self.ensure_one()
+
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'academy.tests.test',
+            'view_mode': 'form',
+            'res_id': self.test_id.id,
+            'target': 'main',
+            'flags': {
+                'form': {
+                    'action_buttons': True, 'options': {'mode': 'edit'}
+                }
+            }
+        }
+
+    link_html = fields.Html(
+        string='Link HTML',
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help='Show question as HTML',
+        compute=lambda self: self.compute_link_html()
+    )
+
+    def compute_link_html(self):
+        for record in self:
+            record.link_html = record.to_html()
+
+    def _get_values_for_template(self):
+        self.ensure_one()
+
+        result = self.question_id._get_values_for_template()
+        result['index'] = self.sequence
+
+        return result
+
+    def to_html(self):
+        output = ''
+
+        template_xid = \
+            'academy_tests.view_academy_tests_display_question_as_html'
+        view_obj = self.env['ir.ui.view']
+
+        for record in self:
+
+            values = record._get_values_for_template()
+
+            html = view_obj.render_template(template_xid, values)
+            output += html.decode('utf8')
+
+        return output
+
+    def show_duplicates(self):
+        return self.question_id.show_duplicates()
+
+    def show_impugnments(self):
+        return self.question_id.show_impugnments()
+
+    def to_moodle(self, encoding='utf8', prettify=True, xml_declaration=True,
+                  category=None):
+        quiz = self.question_id._moodle_create_quiz(category=category)
+
+        for record in self:
+            name = 'SEQ-{:04}'.format(record.sequence)
+            node = record.question_id._to_moodle(name=name)
+            quiz.append(node)
+
+        file = BytesIO()
+        root = quiz.getroottree()
+        root.write(file, encoding=encoding, pretty_print=prettify,
+                   xml_declaration=xml_declaration)
+
+        return file.getvalue()

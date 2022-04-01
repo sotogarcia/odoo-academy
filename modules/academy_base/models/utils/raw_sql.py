@@ -291,3 +291,14 @@ ACADEMY_TRAINING_MODULE_TREE_READONLY = '''
         requested_module_id ASC,
         responded_module_id ASC
 '''
+
+# Raw SQL used in Many2manyThroughView
+# Middle relations between training actions and students
+# -----------------------------------------------------------------------------
+ACADEMY_TRAINING_ACTION_STUDENT_REL = '''
+    SELECT
+        training_action_id,
+        student_id
+    FROM
+        academy_training_action_enrolment
+'''

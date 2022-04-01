@@ -80,7 +80,15 @@
             <field name="arch" type="xml">
                 <search string="academy_tests_test_kind_search">
                     <field name="name" />
-                    <!-- ··· -->
+                    <field name="test_ids" class="oe_field_test_id" />
+
+
+                    <filter string="Active"
+                        name="active"
+                        domain="[('active', '=', True)]"
+                        context="{}"
+                        help="List only the active test kinds" />
+
                 </search>
             </field>
         </record>

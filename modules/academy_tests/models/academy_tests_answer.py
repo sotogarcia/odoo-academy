@@ -112,27 +112,27 @@ class AcademyTestsAnswer(models.Model):
             'res_model': 'academy.tests.answer',
             'type': 'ir.actions.act_window',
             'res_id': self.id,
-            'target': 'current',
+            'target': 'new',
             'state': 'paid'
         }
 
-    def _track_subtype(self, init_values):
-        self.ensure_one()
+    # def _track_subtype(self, init_values):
+    #     self.ensure_one()
 
-        if('active' not in init_values):
-            xid = 'academy_tests.academy_tests_answer_written'
-            return self.env.ref(xid)
-        else:
-            _super = super(AcademyTestsAnswer, self)
-            return _super._track_subtype(init_values)
+    #     if('active' not in init_values):
+    #         xid = 'academy_tests.academy_tests_answer_written'
+    #         return self.env.ref(xid)
+    #     else:
+    #         _super = super(AcademyTestsAnswer, self)
+    #         return _super._track_subtype(init_values)
 
-    def _spread_to(self, subtype_id=False, subtype=None):
-        expected = 'academy_tests.academy_tests_answer_written'
+    # def _spread_to(self, subtype_id=False, subtype=None):
+    #     expected = 'academy_tests.academy_tests_answer_written'
 
-        result = []
-        self.ensure_one()
+    #     result = []
+    #     self.ensure_one()
 
-        if subtype_id == self.env.ref(expected).id:
-            result.append(self.question_id)
+    #     if subtype_id == self.env.ref(expected).id:
+    #         result.append(self.question_id)
 
-        return result
+    #     return result

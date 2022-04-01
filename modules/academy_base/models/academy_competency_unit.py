@@ -21,7 +21,7 @@ class AcademyCompetencyUnit(models.Model):
     _name = 'academy.competency.unit'
     _description = u'Academy competency unit'
 
-    _rec_name = 'name'
+    _rec_name = 'competency_name'
     _order = ('professional_qualification_id ASC, '
               'sequence ASC, competency_name ASC')
 

@@ -23,7 +23,6 @@ class AcademyTestReport(models.AbstractModel):
     _report_xid = 'academy_tests.action_report_printable_test'
     _target_model = 'academy.tests.test'
 
-
     @api.model
     def _get_report_values(self, docids, data=None):
 
@@ -38,7 +37,7 @@ class AcademyTestReport(models.AbstractModel):
             'doc_ids': docids,
             'doc_model': self.env['academy.tests.test'],
             'data': data,
-            'docs': test_set,
+            'docs': test_set
         }
 
         return docargs

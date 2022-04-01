@@ -53,4 +53,10 @@ from . import academy_statistics_student_question_readonly
 
 from . import academy_tests_question_changelog_entry
 
-# from . import academy_tests_manual_categorization_project
+from . import academy_tests_uncategorized_by_user_readonly
+from . import res_users
+
+from . import academy_tests_question_request_set
+from . import academy_tests_question_request
+
+from . import academy_tests_test_block

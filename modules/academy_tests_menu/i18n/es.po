@@ -1,0 +1,179 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* academy_tests_menu
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 13.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-03-30 11:43+0000\n"
+"PO-Revision-Date: 2022-03-30 13:44+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"X-Generator: Poedit 3.0.1\n"
+
+#. module: academy_tests_menu
+#: model:ir.ui.menu,name:academy_tests_menu.menu_test_main_questions_attachments_all_questions
+msgid "All attachments"
+msgstr "Todos los adjuntos"
+
+#. module: academy_tests_menu
+#: model:ir.ui.menu,name:academy_tests_menu.menu_test_main_questions_all_questions
+msgid "All questions"
+msgstr "Todas las preguntas"
+
+#. module: academy_tests_menu
+#: model:ir.ui.menu,name:academy_tests_menu.menu_test_main_tests_all_tests
+msgid "All tests"
+msgstr "Todos los test"
+
+#. module: academy_tests_menu
+#: model:ir.ui.menu,name:academy_tests_menu.menu_test_main_questions_attachments
+msgid "Attachments"
+msgstr "Adjuntos"
+
+#. module: academy_tests_menu
+#: model:ir.ui.menu,name:academy_tests_menu.menu_test_main_tracking_students_attempts
+msgid "Attempts"
+msgstr "Intentos"
+
+#. module: academy_tests_menu
+#: model:ir.ui.menu,name:academy_tests_menu.menu_test_main_questions_utilities_batch_import
+msgid "Batch import"
+msgstr "Importar lote"
+
+#. module: academy_tests_menu
+#: model_terms:ir.actions.act_window,help:academy_tests_menu.action_question_impugnment_act_window_all_impugnments
+msgid "Click to add new impugnments"
+msgstr "Clic para añadir nuevas impugnaciones"
+
+#. module: academy_tests_menu
+#: model_terms:ir.actions.act_window,help:academy_tests_menu.action_questions_act_window_all_questions
+msgid "Click to add new questions"
+msgstr "Clic para añadir nuevas preguntas"
+
+#. module: academy_tests_menu
+#: model_terms:ir.actions.act_window,help:academy_tests_menu.action_tests_act_window_all_tests
+#: model_terms:ir.actions.act_window,help:academy_tests_menu.action_tests_act_window_my_tests
+msgid "Click to add new tests"
+msgstr "Clic para añadir nuevos tests"
+
+#. module: academy_tests_menu
+#: model:ir.actions.act_window,name:academy_tests_menu.action_academy_tests_question_import_wizard_new_test_act_window
+#: model:ir.ui.menu,name:academy_tests_menu.menu_test_main_tests_wizards_import
+msgid "Create and import"
+msgstr "Crear e importar"
+
+#. module: academy_tests_menu
+#: model:ir.actions.act_window,name:academy_tests_menu.action_random_wizard_new_test_act_window
+#: model:ir.ui.menu,name:academy_tests_menu.menu_test_main_tests_wizards_random
+msgid "Create and pick"
+msgstr "Crear y seleccionar"
+
+#. module: academy_tests_menu
+#: model:ir.actions.act_window,name:academy_tests_menu.action_question_impugnment_act_window_all_impugnments
+#: model:ir.ui.menu,name:academy_tests_menu.menu_test_main_tracking_impugnments
+msgid "Impugnments"
+msgstr "Impugnaciones"
+
+#. module: academy_tests_menu
+#: model:ir.ui.menu,name:academy_tests_menu.menu_test_main_tracking_students_journal
+msgid "Journal"
+msgstr "Diario"
+
+#. module: academy_tests_menu
+#: model:ir.actions.act_window,name:academy_tests_menu.action_manage_attachments_act_window_all_attachments
+msgid "Manage attachments"
+msgstr "Gestionar adjuntos"
+
+#. module: academy_tests_menu
+#: model:ir.ui.menu,name:academy_tests_menu.menu_test_main_questions_utilities_manual_categorize
+msgid "Manual categorize"
+msgstr "Categorizar manualmente"
+
+#. module: academy_tests_menu
+#: model:ir.ui.menu,name:academy_tests_menu.menu_test_main_questions_attachments_my_questions
+msgid "My attachments"
+msgstr "Mis adjuntos"
+
+#. module: academy_tests_menu
+#: model:ir.ui.menu,name:academy_tests_menu.menu_test_main_questions_my_questions
+msgid "My questions"
+msgstr "Mis preguntas"
+
+#. module: academy_tests_menu
+#: model:ir.ui.menu,name:academy_tests_menu.menu_test_main
+#: model:ir.ui.menu,name:academy_tests_menu.menu_test_main_tests_my_tests
+msgid "My tests"
+msgstr "Mis tests"
+
+#. module: academy_tests_menu
+#: model:ir.actions.act_window,name:academy_tests_menu.action_questions_act_window_all_questions
+#: model:ir.ui.menu,name:academy_tests_menu.menu_test_main_questions
+msgid "Questions"
+msgstr "Preguntas"
+
+#. module: academy_tests_menu
+#: model:ir.ui.menu,name:academy_tests_menu.menu_test_main_tracking_students
+#: model:ir.ui.menu,name:academy_tests_menu.menu_test_main_tracking_students_students
+msgid "Students"
+msgstr "Estudiantes"
+
+#. module: academy_tests_menu
+#: model:ir.ui.menu,name:academy_tests_menu.menu_test_main_tests_utilities_templates
+msgid "Templates"
+msgstr "Plantillas"
+
+#. module: academy_tests_menu
+#: model:ir.actions.act_window,name:academy_tests_menu.action_tests_act_window_all_tests
+#: model:ir.actions.act_window,name:academy_tests_menu.action_tests_act_window_my_tests
+#: model:ir.ui.menu,name:academy_tests_menu.menu_test_main_tests
+msgid "Tests"
+msgstr "Tests"
+
+#. module: academy_tests_menu
+#: model_terms:ir.actions.act_window,help:academy_tests_menu.action_question_impugnment_act_window_all_impugnments
+msgid "There are no impugnments yet"
+msgstr "Todavía no hay impugnaciones"
+
+#. module: academy_tests_menu
+#: model_terms:ir.actions.act_window,help:academy_tests_menu.action_questions_act_window_all_questions
+msgid "There are no questions yet"
+msgstr "Todavía no hay preguntas"
+
+#. module: academy_tests_menu
+#: model_terms:ir.actions.act_window,help:academy_tests_menu.action_tests_act_window_all_tests
+#: model_terms:ir.actions.act_window,help:academy_tests_menu.action_tests_act_window_my_tests
+msgid "There are no tests yet"
+msgstr "Todavía no hay tests"
+
+#. module: academy_tests_menu
+#: model:ir.ui.menu,name:academy_tests_menu.menu_test_main_tracking_impugnments_all_questions
+msgid "To all questions"
+msgstr "A todas las preguntas"
+
+#. module: academy_tests_menu
+#: model:ir.ui.menu,name:academy_tests_menu.menu_test_main_tracking_impugnments_my_questions
+msgid "To my questions"
+msgstr "A mis preguntas"
+
+#. module: academy_tests_menu
+#: model:ir.ui.menu,name:academy_tests_menu.menu_test_main_tracking
+msgid "Tracking"
+msgstr "Seguimiento"
+
+#. module: academy_tests_menu
+#: model:ir.ui.menu,name:academy_tests_menu.menu_test_main_questions_utilities
+#: model:ir.ui.menu,name:academy_tests_menu.menu_test_main_tests_utilities
+msgid "Utilities"
+msgstr "Utilidades"
+
+#. module: academy_tests_menu
+#: model:ir.ui.menu,name:academy_tests_menu.menu_test_main_tests_wizards
+msgid "Wizards"
+msgstr "Asistentes"

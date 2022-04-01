@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="view_report_academy_tests_template_questions_report_qweb" model="ir.ui.view">
+            <field name="name">Template questions report</field>
+            <field name="model">academy.tests.random.template</field>
+            <field name="type">qweb</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <t t-name="academy_tests.view_report_academy_tests_template_questions_report_qweb">
+                    <t t-call="web.html_container">
+                        <t t-foreach="docs" t-as="o">
+                            <t t-call="web.internal_layout">
+                                <div class="page">
+                                    <div class="oe_structure"/>
+
+                                    <div class="clearfix"></div>
+
+                                    <div class="row">
+                                        <div class="col-12">
+
+                                        </div>
+                                    </div>
+
+                                    <div class="row mt16 mb32">
+
+                                        <section class="academy-post-test-test posted-test-body col-12">
+                                            <h1 class="w-100"><t t-esc="o.name" /></h1>
+
+                                            <div class="clearfix"></div>
+
+                                            <table class="table table-striped w-100">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Line</th>
+                                                        <th class="py-2">Required</th>
+                                                        <th class="py-2">Available</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <t t-foreach="o.random_line_ids" t-as="line">
+                                                        <tr>
+                                                            <td class="py-2"><t t-esc="line.name" /></td>
+                                                            <td class="py-2 text-right"><t t-esc="line.quantity" /></td>
+                                                            <td class="py-2 text-right"><t t-esc="line.perform_search_count()" /></td>
+                                                        </tr>
+                                                    </t>
+                                                </tbody>
+                                            </table>
+
+                                        </section>
+
+                                    </div>
+
+                                </div>
+
+                            </t>
+                        </t>
+                    </t>
+                </t>
+            </field>
+        </record>
+
+        <record id="action_academy_tests_template_questions_report" model="ir.actions.report">
+            <field name="name">Template questions report</field>
+            <field name="model">academy.tests.random.template</field>
+            <field name="report_type">qweb-html</field>
+            <field name="report_name">academy_tests.view_report_academy_tests_template_questions_report_qweb</field>
+            <field name="print_report_name">(object.name)</field>
+            <field name="attachment_use" eval="False" />
+            <field name="attachment">(object.name+'.pdf')</field>
+            <field name="paperformat_id" ref="base.paperformat_euro" />
+            <field name="help">Display the number of questions available for test template</field>
+            <field name="binding_model_id" ref="academy_tests.model_academy_tests_random_template" />
+        </record>
+
+    </data>
+</openerp>

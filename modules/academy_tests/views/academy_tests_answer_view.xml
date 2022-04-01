@@ -71,19 +71,18 @@
 
                         <div class="oe_title w-100">
                             <field name="active" invisible="1"/>
-                            <label for="name" class="oe_edit_only" />
-                            <h1>
-                                <field name="name" class="oe_field_name"
-                                    placeholder="Enter new name" />
-                            </h1>
+                            <label for="id" class="oe_edit_only" />
+                            <h1>ID-<field name="id" class="oe_field_id" /></h1>
                         </div>
                         <group col="2">
                             <field name="is_correct" class="oe_field_is_correct" />
                         </group>
                         <notebook>
+                            <page string="Text" class="oe_page_text" accesskey="T">
+                                <field name="name" class="oe_field_name" nolabel="1" widget="text" />
+                            </page>
                             <page string="Description" class="oe_page_description" accesskey="D">
-                                <field name="description" class="oe_field_description"
-                                    placeholder="Enter new description" />
+                                <field name="description" class="oe_field_description" nolabel="1" />
                             </page>
                         </notebook>
                     </sheet>

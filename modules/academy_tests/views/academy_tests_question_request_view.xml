@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <!-- VIEWS: "Requested to me"
+
+            - Model·········: academy.tests.question.request
+            - _rec_name·····: id
+            - Domain········: []
+            - Context·······: {}
+            - Parent menu ··: academy_tests.menu_test_top
+            - View priority·: 16    Sequence····: 35
+            - Action help···: There are no question requests yet
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+        <!-- Tree view for "academy.tests.question.request" -->
+        <record id="view_academy_tests_question_request_tree" model="ir.ui.view">
+            <field name="name">view.academy.tests.question.request.tree</field>
+            <field name="model">academy.tests.question.request</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <tree string="academy_tests_question_request_tree" create="0" delete="0" edit="1">
+                    <field name="display_name" />
+                    <field name="res_user_id" />
+                    <field name="expiration" />
+                    <field name="minimum" />
+                    <field name="maximum" />
+                    <field name="supplied" />
+                </tree>
+            </field>
+        </record>
+
+
+        <record id="view_academy_tests_question_request_embed_tree" model="ir.ui.view">
+            <field name="name">Academy tests question request embed in set</field>
+            <field name="model">academy.tests.question.request</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="25" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <tree string="Requets" class="question-request-embed-tree-view" create="1" delete="1" edit="1" editable="bottom">
+                    <field name="state" class="oe_field_state" invisible="1" />
+                    <field name="res_user_id" class="oe_field_res_user_id" />
+                    <field name="order" class="oe_field_order" />
+                    <field name="topic_id" class="oe_field_topic_id" />
+                    <field name="minimum" class="oe_field_minimum" />
+                    <field name="maximum" class="oe_field_maximum" />
+                    <field name="supplied" class="oe_field_supplied oe_read_only" />
+                    <button name="notify" class="oe_button_notify oe_read_only"
+                        string="Notify"
+                        type="object"
+                        default_focus="0"
+                        icon="fa-envelope-o"
+                        help="Send an email requesting the questions or their subsequent verification" />
+                    <button name="autocomplete" class="oe_button_wizard oe_read_only"
+                        string="Auto-complete"
+                        type="object"
+                        default_focus="0"
+                        icon="fa-magic"
+                        help="Use wizard to auto-complete required questions" />
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form view for "academy.tests.question.request" -->
+        <record id="view_academy_tests_question_request_form" model="ir.ui.view">
+            <field name="name">view.academy.tests.question.request.form</field>
+            <field name="model">academy.tests.question.request</field>
+            <field name="type">form</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <form string="academy_tests_question_request_form" create="1" delete="1" edit="1">
+                    <sheet>
+                        <field name="state" class="oe_field_state" invisible="1" />
+                        <div class="oe_button_box" name="button_box">
+                            <button name="import_wizard" class="oe_button_wizard oe_read_only"
+                                string="Import"
+                                type="object"
+                                default_focus="0"
+                                icon="fa-upload"
+                                help="Use wizard to import new questions"
+                                states="received,urgent" />
+                            <button name="autocomplete_wizard" class="oe_button_wizard oe_read_only"
+                                string="Auto-complete"
+                                type="object"
+                                default_focus="0"
+                                icon="fa-magic"
+                                help="Use wizard to auto-complete required questions"
+                                states="received,urgent" />
+                        </div>
+
+                        <div class="oe_title w-100">
+                            <field name="id" class="oe_field_id" invisible="1" />
+                            <field name="test_id" class="oe_field_test_id" invisible="1" />
+                            <label for="name" class="oe_edit_only" />
+                            <h1>
+                                <field name="name" class="oe_field_name"
+                                    placeholder="Enter new name" readonly="1" />
+                            </h1>
+                        </div>
+
+                        <group col="2">
+                            <field name="description" readonly="1"
+                                attrs="{'invisible': [('description', '=', False)]}" />
+                            <separator colspan="2"
+                                attrs="{'invisible': [('description', '=', False)]}" />
+
+                            <group col="2" string="Created">
+                                <field name="owner_id" colspan="4" readonly="1" />
+                                <field name="create_date" readonly="1" />
+                                <field name="expiration" readonly="1" />
+                            </group>
+                            <group cols="2" string="Required">
+                                <field name="minimum" readonly="1" />
+                                <field name="maximum" readonly="1" />
+                                <field name="supplied" readonly="1" />
+                            </group>
+                        </group>
+
+
+                        <separtor string="Submitted questions" />
+                        <field name="question_ids" nolabel="1"
+                            context="{'tree_view_ref': 'academy_tests.view_academy_tests_test_question_rel_embed_tree', 'default_test_id': test_id}" />
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="view_academy_tests_question_request_kanban" model="ir.ui.view">
+            <field name="name">view.academy.tests.question.request.kanban</field>
+            <field name="model">academy.tests.question.request</field>
+            <field name="type">kanban</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_mobile" default_group_by="state"
+                    group_create="0" group_delete="0" group_edit="0"
+                    create="0" delete="0"
+                    archivable="1" records_draggable="0" default_order="create_date desc">
+
+                    <field name="display_name" />
+                    <field name="owner_id" />
+                    <field name="order" />
+                    <field name="minimum" />
+                    <field name="supplied" />
+                    <field name="topic_id" />
+
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click">
+                                <div class="oe_kanban_details">
+                                    <h4 class="o_ellipsis text-truncate" t-att-title="record.name">
+                                        <field name="name"/>
+                                    </h4>
+
+                                    <p class="my-2">
+                                        <t t-if="record.order.raw_value">
+                                            <field name="order" />
+                                        </t>
+                                        <t t-else=""><i>No description</i></t>
+                                    </p>
+
+                                    <ul class="list-unstyled d-flex flex-row flex-wrap my-2">
+                                        <li class="d-block w-100">
+                                            <t t-if="record.topic_id.raw_value">
+                                                <field name="topic_id" />
+                                            </t>
+                                            <t t-else=""><i>No topic</i></t>
+                                        </li>
+                                        <li class="d-block w-100">
+                                            <strong>Applicant:</strong>
+                                            <field name="owner_id"/>
+                                        </li>
+                                        <li class="d-block w-50">
+                                            <strong>Required:</strong>
+                                            <field name="minimum"/>
+                                        </li>
+                                        <li class="d-block w-50">
+                                            <strong>Supplied:</strong>
+                                            <field name="supplied"/>
+                                        </li>
+                                    </ul>
+
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+
+                </kanban>
+            </field>
+        </record>
+
+
+        <!-- Search view for "academy.tests.question.request" -->
+        <record id="view_academy_tests_question_request_search" model="ir.ui.view">
+            <field name="name">view.academy.tests.question.request.search</field>
+            <field name="model">academy.tests.question.request</field>
+            <field name="type">search</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <search string="academy_tests_question_request_search">
+                    <field name="name" />
+                    <field name="res_user_id" />
+                    <field name="owner_id" />
+                    <field name="test_id" />
+                    <field name="state" />
+                    <field name="expiration" />
+                    <field name="question_ids" />
+                    <field name="request_set_id" />
+                </search>
+            </field>
+        </record>
+
+        <!-- Main window action for model.name -->
+        <record id="action_academy_tests_question_request_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Requested to me</field>
+            <field name="res_model">academy.tests.question.request</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="target">current</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="search_view_id" ref="view_academy_tests_question_request_search" />
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to add new question request
+                </p><p>
+                    There are no question requests yet
+                </p>
+            </field>
+        </record>
+
+        <!-- Main menu for model.name -->
+        <record id="menu_academy_tests_question_request" model="ir.ui.menu" >
+            <field name="name">Requested to me</field>
+            <field name="sequence" eval="30" />
+            <field name="action" ref="action_academy_tests_question_request_act_window" />
+            <field name="parent_id" ref="academy_tests.menu_test_utilities" />
+        </record>
+
+    </data>
+</openerp>

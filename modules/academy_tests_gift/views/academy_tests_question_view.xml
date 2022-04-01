@@ -12,10 +12,10 @@
             <field name="active" eval="True" />
             <field name="inherit_id" ref="academy_tests.view_academy_question_form" />
             <field name="arch" type="xml">
-                <xpath expr="//notebook" position="inside">
-                    <page string="GIFT" class="oe_page_gift" accesskey="G">
-                        <field name="gift" string="Gift" invisible="0" class="text-monospace" />
-                    </page>
+                <xpath expr="//notebook/page[@id='page-question-preview']/group[@id='group-question-markdown']" position="after">
+                    <group string="Gift">
+                        <field name="gift" class="text-monospace" nolabel="1" />
+                    </group>
                 </xpath>
             </field>
         </record>

@@ -14,5 +14,53 @@
         <field name="state">code</field>
     </record>
 
+    <record id="ir_cron_academy_tests_question_request_set_cron_actions" model="ir.cron">
+        <field name="name">Perform all actions related to request sets</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field name="numbercall">-1</field>
+        <field name="nextcall" eval="(DateTime.now().replace(minute=0, second=0, microsecond=0) + timedelta(hours=1)).strftime('%Y-%m-%d %H:%M:%S')" />
+        <field name="doall" eval="False"/>
+        <field name="model_id" ref="model_academy_tests_question_request_set"/>
+        <field name="code">model.cron_actions()</field>
+        <field name="state">code</field>
+    </record>
+
+    <record id="ir_cron_nofify_uncategorized_questions" model="ir.cron">
+        <field name="name">Notify uncategorized questions</field>
+        <field name="interval_number">11</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="nextcall" eval="(DateTime.now().replace(hour=2, minute=45) + timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S')" />
+        <field name="doall" eval="False"/>
+        <field name="model_id" ref="base.model_res_users"/>
+        <field name="code">model.notify_uncategorized()</field>
+        <field name="state">code</field>
+    </record>
+
+    <record id="ir_cron_nofify_duplicate_questions" model="ir.cron">
+        <field name="name">Notify duplicate questions</field>
+        <field name="interval_number">21</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="nextcall" eval="(DateTime.now().replace(hour=2, minute=45) + timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S')" />
+        <field name="doall" eval="False"/>
+        <field name="model_id" ref="base.model_res_users"/>
+        <field name="code">model.notify_duplicated()</field>
+        <field name="state">code</field>
+    </record>
+
+    <record id="ir_cron_nofify_impugnments" model="ir.cron">
+        <field name="name">Notify impugnments</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="nextcall" eval="(DateTime.now().replace(hour=2, minute=45) + timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S')" />
+        <field name="doall" eval="False"/>
+        <field name="model_id" ref="base.model_res_users"/>
+        <field name="code">model.notify_impugnments()</field>
+        <field name="state">code</field>
+    </record>
+
 </odoo>
 

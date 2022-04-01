@@ -1,6 +1,69 @@
+/* STYLES WILL BE USED BY ACADEMY TESTS QUESTION FORM
+******************************************************************************/
+
+.o_question_form h1.oe_statement {
+    font-size:  125%;
+}
+
+.o_question_form .o_field_many2many.oe_field_ir_attachment_image_ids {
+    margin-bottom: 0px!important;
+    margin-top: 0px!important;
+}
+
+.o_question_form .oe_field_ir_attachment_image_ids .oe_kanban_global_click.o_kanban_record {
+    border: none!important;
+}
+
+.o_question_form .oe_field_ir_attachment_image_ids .o_attachment_image {
+    max-height: 160px;
+    overflow: hidden;
+}
+
+.o_question_form .oe_field_ir_attachment_image_ids .o_attachment_image img {
+    max-height: 100%!important;
+    max-width: 100%!important;
+    width:auto!important;
+    height:auto!important;
+}
+
+.o_question_form .oe_field_ir_attachment_image_ids .o_kanban_record .oe_module_vignette+span {
+    font-size:small;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    margin-top: 0.5em;
+}
+
+.o_question_form .oe_field_answer_ids th[data-name="sequence"],
+.o_question_form .oe_field_answer_ids th[data-name="is_correct"],
+.o_question_form .oe_field_answer_ids th[data-name="cmd_open_in_form"] {
+    width: 30px!important;
+}
+
+.o_question_form td.o_data_cell.o_field_cell.oe_field_is_correct,
+.o_question_form td.o_data_cell.o_list_button {
+    text-align: center;
+}
+
+.o_question_form .oe_field_answer_ids[data-name="name"] {
+    width: 100%!important;
+}
+
+/* STYLES WILL BE USED BY ACADEMY TESTS QUESTION KANBAN
+******************************************************************************/
+
 .o_question_kanban {
     position: relative;
     padding-bottom: 2.25em!important;
+}
+
+/*.o_kanban_view.o_kanban_ungrouped .o_question_kanban.o_kanban_record {
+  width: 400px;
+}*/
+
+.o_question_kanban .oe_kanban_details > h4 {
+    font-size:  100%!important;
 }
 
 .o_question_kanban_answer_list {
@@ -166,14 +229,6 @@ code but I have not found where I should make the change */
     max-width:  50%!important;
 }
 
-/*
-.manual-categorization-tree-view .oe_field_markdown {
-    font-size:  13px;
-    font-family: monospace;
-    padding-top: 3px ;
-    line-height:  1.15em!important;
-}*/
-
 .manual-categorization-tree-view [data-name="topic_id"],
 .manual-categorization-tree-view [data-name="topic_version_ids"],
 .manual-categorization-tree-view [data-name="category_ids"] {
@@ -191,9 +246,12 @@ code but I have not found where I should make the change */
 .manual-categorization-tree-view [data-name="category_ids"] {
     width:  20%!important;
 }
-
+.manual-categorization-tree-view th[data-name="save"],
+.manual-categorization-tree-view th[data-name="cancel"],
+.manual-categorization-tree-view th[data-name="open_form_view"],
 .manual-categorization-tree-view td.o_list_button {
-    min-width: 24px;
+    min-width: 24px!important;
+    max-width: 28px!important;
     text-align: center;
 }
 
@@ -203,4 +261,96 @@ code but I have not found where I should make the change */
 
 .manual-categorization-tree-view .o_selected_row .oe_edit_only {
     display: inline-block;
+}
+
+/* Display question as HTML
+******************************************************************************/
+
+.display_question_as_html li,
+.display_question_as_html p {
+    text-overflow: hidden;
+    white-space: initial;
+    line-height: 1.5em;
+    margin: 0;
+}
+
+.display_question_as_html .academy-answer.is-correct {
+    text-decoration: underline;
+}
+
+.display_question_as_html .academy-question-name {
+    font-weight: bold;
+}
+
+.display_question_as_html ol {
+    list-style-type: lower-alpha!important;
+}
+
+.display_question_as_html figure {
+    max-height: 160px;
+    overflow: hidden;
+}
+
+.display_question_as_html figure img {
+    max-height: 100%!important;
+    max-width: 100%!important;
+    width:auto!important;
+    height:auto!important;
+}
+
+
+/* Center buttons on parent cell in tree view (.oe_center_buttons)
+******************************************************************************/
+
+.oe_center_buttons .o_list_button {
+    text-align: center;
+}
+
+
+/* Display question as HTML
+******************************************************************************/
+
+/*.question-request-embed-tree-view [data-name="res_user_id"],
+.question-request-embed-tree-view [data-name="topic_id"] {
+    max-width: 180px!important;
+    width: 180px!important;
+}
+
+.question-request-embed-tree-view [data-name="minimum"],
+.question-request-embed-tree-view [data-name="maximum"],
+.question-request-embed-tree-view [data-name="supplied"] {
+    max-width: 90px!important;
+    width: 90px!important;
+}
+
+.question-request-embed-tree-view [data-name="remind"],
+.question-request-embed-tree-view [data-name="wizard"] {
+    max-width: 40px!important;
+    width: 40px!important;
+}
+
+.question-request-embed-tree-view .o_list_button {
+    text-align: center;
+}
+*/
+
+
+/* view_academy_tests_question_append_wizard_link_tree
+******************************************************************************/
+
+.oe_append_wizard_link_tree thead [data-name="sequence"] {
+    width: 33px!important;
+}
+
+.oe_append_wizard_link_tree thead [data-name="question_id"] {
+    width: 100%!important;
+}
+
+.oe_append_wizard_link_tree thead .o_list_record_remove_header {
+    width: 33px!important;
+}
+
+.oe_append_wizard_link_tree td.o_handle_cell,
+.oe_append_wizard_link_tree td.o_list_record_remove {
+    text-align: center!important;
 }

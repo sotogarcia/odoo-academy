@@ -17,6 +17,7 @@ In this case, two things can happen:
     as template.
 """
 
+from odoo.tools.translate import _
 
 from logging import getLogger
 from datetime import datetime
@@ -116,6 +117,17 @@ class AcademyTestsRandomWizard(models.TransientModel):
         help='Check it to save wizard data as template'
     )
 
+    name = fields.Char(
+        string='Name',
+        required=True,
+        readonly=False,
+        index=True,
+        default=lambda self: self.default_name(),
+        help="Name for this test",
+        size=255,
+        translate=True,
+    )
+
     # ----------------- AUXILIARY FIELDS METHODS AND EVENTS -------------------
 
     def default_test_id(self):
@@ -171,6 +183,12 @@ class AcademyTestsRandomWizard(models.TransientModel):
             return active_ids[0]
 
         return None
+
+    def default_name(self):
+        test = _('Test')
+        time = datetime.now().strftime('%Y·%M·%d-%H·%M·%S')
+
+        return '{}-{}'.format(test, time)
 
     @api.onchange('random_wizard_template_id')
     def _onchange_random_wizard_template_id(self):
@@ -271,17 +289,49 @@ class AcademyTestsRandomWizard(models.TransientModel):
         actions = [(2, line.id, None) for line in line_set]
         source.random_line_ids = actions
 
+    @api.model
+    def _switch_user_from_context(self):
+        user_id = self.env.context.get('with_user_id', False)
+        if user_id:
+            return self.with_user(user_id)
+
+        return self
+
     def append_questions(self):
         """ Calls action by each related line
         """
 
         self.ensure_one()
 
+        self = self._switch_user_from_context()
+
         template = self.random_template_id
+        create_new = self.env.context.get('create_new_test', False)
+
+        if create_new:
+            values = {'name': self.name}
+            test_obj = self.env['academy.tests.test']
+            self.test_id = test_obj.create(values)
+            self.env.cr.commit()
+
         template.append_questions(self.test_id, self.overwrite)
 
         if self.shuffle:
             self.test_id.shuffle()
+
+        if create_new:
+            return {
+                'type': 'ir.actions.act_window',
+                'res_model': 'academy.tests.test',
+                'view_mode': 'form',
+                'res_id': self.test_id.id,
+                'target': 'main',
+                'flags': {
+                    'form': {
+                        'action_buttons': True, 'options': {'mode': 'edit'}
+                    }
+                }
+            }
 
     def _remove_inherited_line_set(self):
         """ Removes inherited line set. This method will be called by wizard

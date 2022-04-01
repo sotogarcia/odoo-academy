@@ -27,6 +27,7 @@
                     <field name="name" class="oe_field_name" string="Name" />
                     <field name="category_count" class="oe_field_category_count" string="Categories" />
                     <field name="description" class="oe_field_category_count" />
+                    <field name="provisional" class="oe_field_provisional" />
                 </tree>
             </field>
         </record>
@@ -64,6 +65,8 @@
                         <group col="4">
                             <field name="category_count" class="oe_field_category_count" string="Categories" />
                             <field name="question_count" class="oe_field_question_count" string="Questions" />
+                            <field name="provisional" class="oe_field_provisional" />
+                            <separator colspan="2" />
                             <field name="description" class="oe_field_description"
                                 placeholder="Enter new description" colspan="4" />
                         </group>
@@ -99,6 +102,14 @@
             <field name="arch" type="xml">
                 <search string="academy_topic_search">
                     <field name="name" />
+                    <field name="description" />
+                    <field name="training_activity_ids" />
+                    <field name="competency_unit_ids" />
+                    <field name="training_module_ids" />
+                    <field name="id" string="Topic ID" />
+
+                    <filter name="inactive" string="Archived"
+                            domain="[('active','=',False)]"/>
                 </search>
             </field>
         </record>

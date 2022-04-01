@@ -43,9 +43,15 @@
             <field name="arch" type="xml">
                 <form string="academy_question_impugnment_form" create="1" delete="1" edit="1">
                     <sheet>
+
                         <div class="oe_button_box" name="button_box">
-                            <widget name="web_ribbon" title="Archived" bg_color="bg-danger"
-                                attrs="{'invisible': [('active', '=', True)]}" />
+                            <field name="state" class="oe_field_state" invisible="1" />
+                            <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+                            <button name="toggle_open_close" type="object"
+                                class="oe_stat_button oe_read_only" icon="fa-circle-o">
+                                <span attrs="{'invisible': [('state', '=', 'close')]}">Close</span>
+                                <span attrs="{'invisible': [('state', '&lt;&gt;', 'close')]}">Reopen</span>
+                            </button>
                         </div>
 
                         <div class="oe_title w-100">
@@ -84,6 +90,78 @@
             </field>
         </record>
 
+        <record id="view_academy_tests_question_impugnment_kanban" model="ir.ui.view">
+            <field name="name">view.academy.tests.question.impugnment.kanban</field>
+            <field name="model">academy.tests.question.impugnment</field>
+            <field name="type">kanban</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_mobile" default_group_by="state"
+                    group_create="1" group_delete="1" group_edit="1"
+                    archivable="1" records_draggable="0" quick_create="0">
+
+                    <field name="name" />
+                    <field name="create_date" />
+                    <field name="student_id" />
+                    <field name="reply_date" />
+
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click">
+                                <div class="oe_kanban_details">
+                                    <h4 class="o_ellipsis" t-att-title="record.name.raw_value">
+                                        <field name="name"/>
+                                    </h4>
+                                </div>
+
+                                <table class="table table-sm table-borderless w-100" style="table-layout: fixed;">
+                                    <tbody>
+                                        <tr>
+                                            <th>Student:</th>
+                                            <td class="o_ellipsis">
+                                                <t t-if="record.student_id.raw_value">
+                                                    <field name="student_name"/>
+                                                </t>
+                                                <t t-else="">
+                                                    &#160;
+                                                </t>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>Create:</th>
+                                            <td class="o_ellipsis"><span t-esc="record.create_date.raw_value.toLocaleString()"/></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+
+                            </div>
+                        </t>
+                    </templates>
+
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Pivot view for "academy.questions" -->
+        <record id="view_academy_questions_pivot" model="ir.ui.view">
+            <field name="name">view.academy.tests.question.impugnment.pivot</field>
+            <field name="model">academy.tests.question.impugnment</field>
+            <field name="type">pivot</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <pivot string="Test items">
+                    <field name="student_id" type="row"/>
+                    <field name="state" type="col"/>
+                    <field name="id" type="__count__"/>
+                </pivot>
+            </field>
+        </record>
+
         <!-- Search view for "academy.tests.question.impugnment" -->
         <record id="view_academy_question_impugnment_search" model="ir.ui.view">
             <field name="name">view.academy.tests.question.impugnment.search</field>
@@ -112,7 +190,7 @@
             <field name="type">ir.actions.act_window</field>
             <field name="name">Impugnments</field>
             <field name="res_model">academy.tests.question.impugnment</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">kanban,tree,form,pivot</field>
             <field name="target">current</field>
             <field name="domain">[]</field>
             <field name="context">{"search_default_my_impugnments": 1}</field>

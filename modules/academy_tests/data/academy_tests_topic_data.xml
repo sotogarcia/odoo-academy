@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+
+        <record id="academy_tests_topic_no_topic" model="academy.tests.topic">
+            <field name="name">No topic</field>
+            <field name="description">This will be used to store uncategorized questions</field>
+            <field name="active" eval="True" />
+            <field name="provisional" eval="True" />
+        </record>
+
+    </data>
+</openerp>

@@ -50,6 +50,10 @@
                                 class="oe_stat_button oe_read_only" icon="fa-files-o">
                                 View test
                             </button>
+                            <button name="edit_lines" type="object"
+                                class="oe_stat_button oe_read_only" icon="fa-pencil-square-o">
+                                Edit lines
+                            </button>
                             <button name="new_test" type="object"
                                 class="oe_stat_button oe_read_only" icon="fa-file-text-o">
                                 New test
@@ -59,6 +63,7 @@
                         <field name="image_1920" widget='image' class="oe_avatar clearfix" options='{"preview_image": "image_128"}' />
 
                         <div class="oe_title w-100">
+                            <field name="id" class="oe_field_id" invisible="1" />
                             <field name="active" class="oe_field_active" invisible="1" />
                             <label for="name" class="oe_edit_only" />
                             <h1>
@@ -73,9 +78,13 @@
                         </group>
 
                         <notebook>
-                            <page string="Lines" class="oe_page_lines" accesskey="L">
+                            <page string="Criteria" class="oe_page_lines" accesskey="L">
                                 <field name="random_line_ids" colspan="8"
                                     class="oe_field_random_line_ids" nolabel="1"
+                                    context="{
+                                        'default_random_template_id': id,
+                                        'tree_view_ref': 'academy_tests.view_academy_tests_random_line_embed_tree'
+                                    }"
                                     placeholder="Add or manage lines" widget="one2many" />
                             </page>
                             <page string="Test setup" class="oe_page_test_setup" accesskey="T">
@@ -131,15 +140,10 @@
                                         groups="academy_base.academy_group_technical" />
                                     <separator colspan="2" />
                                 </group>
-
                                 <group col="4">
+                                    <field name="incremental" class="oe_field_incremental" colspan="2"/>
+                                    <field name="skip_faulty_lines" class="oe_field_skip_faulty_lines" colspan="2"/>
                                     <field name="context_ref" class="oe_field_context_ref" />
-
-                                    <separator colspan="4" />
-
-                                    <field name="skip_faulty_lines" class="oe_field_skip_faulty_lines" />
-                                    <separator colspan="2" />
-
                                 </group>
                             </page>
                             <page string="Scheduled tasks" class="oe_page_sheduled_tasks" accesskey="S" groups="academy_base.academy_group_technical">
@@ -197,7 +201,7 @@
                                 </div>
 
                                 <div class="d-flex p-2">
-                                    <div class="p-2 font-weight-bold">Lines:</div>
+                                    <div class="p-2 font-weight-bold">Criteria:</div>
                                     <div class="p-2"><field name="lines_count" /></div>
                                     <div class="p-2 font-weight-bold">Questions:</div>
                                     <div class="p-2"><field name="quantity" /></div>

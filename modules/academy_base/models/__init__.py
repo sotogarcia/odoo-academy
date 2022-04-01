@@ -35,3 +35,5 @@ from . import academy_training_resource_kind
 
 from . import academy_training_action_enrolment
 from . import academy_training_lesson
+
+from . import res_partner

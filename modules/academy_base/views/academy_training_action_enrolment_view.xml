@@ -44,7 +44,12 @@
             <field name="arch" type="xml">
                 <form string="academy_training_action_enrolment_form" create="1" delete="1" edit="1">
                     <sheet>
-                        <div class="oe_title">
+                        <div class="oe_button_box" name="button_box">
+                            <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+                        </div>
+
+                        <div class="oe_title" id="academy-academy-training-action-enrolment-title">
+                            <field name="active" invisible="1"/>
                             <label for="display_name" class="oe_edit_only" />
                             <h1>
                                 <field name="display_name" class="oe_field_display_name" string="Name" />
@@ -182,8 +187,8 @@
 
                     <separator />
 
-                    <filter name="registered" string="Registered" domain="[('deregister','=',False)]"/>
-                    <filter name="deregistered" string="Deregistered" domain="[('deregister','&lt;&gt;',False)]"/>
+                    <filter name="has_finalized" string="Finalized" domain="[('finalized','=', True)]"/>
+                    <filter name="in_progress" string="Initiated" domain="[('finalized','=', False)]"/>
 
                     <separator />
 
@@ -226,6 +231,44 @@
             <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
         </record>
 
+        <!-- View student enrolments inside another model
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        <record id="view_academy_training_action_enrolment_embed_tree" model="ir.ui.view">
+            <field name="name">view.academy.training.action.enrolment.embed.tree</field>
+            <field name="model">academy.training.action.enrolment</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="24" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <tree string="view_academy_training_action_enrolment_embed_tree" create="1" delete="1" edit="1">
+                    <field name="training_action_id" class="oe_field_training_action_id" />
+                    <field name="training_module_ids" class="oe_field_training_module_ids" />
+                    <field name="register" class="oe_field_register" />
+                    <field name="deregister" class="oe_field_deregister" />
+                </tree>
+            </field>
+        </record>
+
+
+        <!-- Edit student enrolments in separate view
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        <record id="view_academy_training_action_enrolment_edit_by_user_tree" model="ir.ui.view">
+            <field name="name">view.academy.training.action.enrolment.embed.tree</field>
+            <field name="model">academy.training.action.enrolment</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="32" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <tree string="view_academy_training_action_enrolment_edit_by_user_tree" create="1" delete="1" edit="1" editable="top">
+                    <field name="training_action_id" class="oe_field_training_action_id" />
+                    <field name="training_module_ids" class="oe_field_training_module_ids" widget="many2many_tags" />
+                    <field name="register" class="oe_field_register" />
+                    <field name="deregister" class="oe_field_deregister" />
+                </tree>
+            </field>
+        </record>
 
     </data>
 </openerp>

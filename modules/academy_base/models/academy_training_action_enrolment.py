@@ -10,6 +10,7 @@ from logging import getLogger
 # pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
 from odoo.tools.translate import _
+from odoo.exceptions import UserError
 
 from .utils.custom_model_fields import Many2manyThroughView
 from .utils.raw_sql import \
@@ -175,6 +176,50 @@ class AcademyTrainingActionEnrolment(models.Model):
         limit=None,
         sql=ACADEMY_TRAINING_ACTION_ENROLMENT_AVAILABLE_RESOURCE_REL
     )
+
+    finalized = fields.Boolean(
+        string='Finalized',
+        required=True,
+        readonly=True,
+        index=False,
+        default=False,
+        help='True if period is completed',
+        compute='_compute_finalized',
+        search='_search_finalized',
+    )
+
+    @api.depends('register', 'deregister')
+    def _compute_finalized(self):
+        now = fields.Date.today()
+        for record in self:
+            record.finalized = record.deregister and record.deregister < now
+
+    def _search_finalized(self, operator, value):
+        pattern = _('Unsupported domain leaf ("finalized", "{}", "{}")')
+        now = fields.Date.to_string(fields.Date.today())
+
+        if operator == '!=':
+            operator == '<>'
+
+        if (operator == '=' and value) or (operator == '<>' and not value):
+            domain = [
+                '&',
+                ('deregister', '<>', False),
+                ('deregister', '<', now)
+            ]
+
+        elif (operator == '=' and not value) or (operator == '<>' and value):
+            domain = [
+                '|',
+                ('deregister', '=', False),
+                ('deregister', '>=', now)
+            ]
+
+        else:
+            raise UserError(pattern.format(operator, value))
+
+        print(operator, value, domain)
+        return domain
 
     # ---------------------------- ONCHANGE EVENTS ----------------------------
 

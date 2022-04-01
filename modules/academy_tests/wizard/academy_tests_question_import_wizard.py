@@ -11,9 +11,9 @@ from odoo import models, fields, api
 from odoo.tools.translate import _
 from odoo.exceptions import ValidationError, UserError
 
-from enum import Enum
+
 from collections import Counter
-from re import sub as replace, search, MULTILINE, UNICODE, IGNORECASE
+from datetime import datetime
 
 from logging import getLogger
 
@@ -37,22 +37,6 @@ WIZARD_STATES = [
 ]
 
 
-class Mi(Enum):
-    """ Enumerates regex group index un line processing
-    """
-    ALL = 0
-    QUESTION = 1
-    ANSWER = 2
-    LETTER = 3
-    FALSE = 4
-    TRUE = 5
-    DESCRIPTION = 6
-    IMAGE = 7
-    TITLE = 8
-    URI = 9
-    CONTENT = 10
-
-
 # pylint: disable=locally-disabled, R0903, W0212, E1101
 class AcademyTestsQuestionImport(models.TransientModel):
     """ This model is the a wizard  to import questions from text
@@ -64,7 +48,7 @@ class AcademyTestsQuestionImport(models.TransientModel):
     _rec_name = 'id'
     _order = 'id DESC'
 
-    _inherit = ['academy.abstract.owner']
+    _inherit = ['academy.abstract.owner', 'academy.abstract.import.export']
 
     test_id = fields.Many2one(
         string='Test',
@@ -129,17 +113,16 @@ class AcademyTestsQuestionImport(models.TransientModel):
         column2='attachment_id',
         domain=[
             '|',
-            '|',
-            ('res_model', '=', 'academy.tests.question'),
-            ('res_model', '=', 'academy.tests.question.import.wizard'),
-            ('res_model', '=', False)
+            ('res_model', '=', False),
+            ('res_model', '=', 'academy.tests.question.import.wizard')
         ],
         context={
+            'import_wizard': True,
+            'tree_view_ref': 'academy_tests.view_ir_attachment_tree',
+            'form_view_ref': 'academy_tests.view_ir_attachment_form',
+            'search_view_ref': 'academy_tests.view_attachment_search',
             'search_default_my_documents_filter': 0,
-            'search_default_my_own_documents_filter': 1,
-            'default_res_model': 'academy.tests.question',
-            'default_res_id': 0,
-            'default_owner_id': lambda self: self.owner_id.id
+            'search_default_my_own_documents_filter': 1
         },
         limit=None
     )
@@ -155,20 +138,8 @@ class AcademyTestsQuestionImport(models.TransientModel):
         relation='academy_tests_question_import_imported_ir_attachment_rel',
         column1='question_import_id',
         column2='attachment_id',
-        domain=[
-            '|',
-            '|',
-            ('res_model', '=', 'academy.tests.question'),
-            ('res_model', '=', 'academy.tests.question.import.wizard'),
-            ('res_model', '=', False)
-        ],
-        context={
-            'search_default_my_documents_filter': 0,
-            'search_default_my_own_documents_filter': 1,
-            'default_res_model': 'academy.tests.question',
-            'default_res_id': 0,
-            'default_owner_id': lambda self: self.owner_id.id
-        },
+        domain=[],
+        context={'import_wizard': True},
         limit=None
     )
 
@@ -191,7 +162,7 @@ class AcademyTestsQuestionImport(models.TransientModel):
         required=True,
         readonly=False,
         index=False,
-        default=lambda self: self.default_topic_version_ids(),
+        default=None,
         help='Choose which versions of the topic this question belongs to',
         comodel_name='academy.tests.topic.version',
         relation='academy_tests_question_import_topic_version_rel',
@@ -207,7 +178,7 @@ class AcademyTestsQuestionImport(models.TransientModel):
         required=True,
         readonly=False,
         index=False,
-        default=False,
+        default=None,
         help='Choose categories will be used for new questions',
         comodel_name='academy.tests.category',
         relation='academy_tests_question_import_category_rel',
@@ -293,6 +264,35 @@ class AcademyTestsQuestionImport(models.TransientModel):
         help='Check it to indicate that it is your own authorship'
     )
 
+    name = fields.Char(
+        string='Name',
+        required=True,
+        readonly=False,
+        index=True,
+        default=lambda self: self.default_name(),
+        help="Name for this test",
+        size=255,
+        translate=True,
+    )
+
+    check_categorization = fields.Boolean(
+        string='Check categorization',
+        required=False,
+        readonly=False,
+        index=False,
+        default=False,
+        help='Check it to perform a manual categorization check'
+    )
+
+    sequential = fields.Boolean(
+        string='Sequential',
+        required=False,
+        readonly=False,
+        index=True,
+        default=False,
+        help='Check it to indicate that the questions are chained'
+    )
+
     # ----------------- EVENTS AND AUXILIARY FIELD METHODS --------------------
 
     def default_test_id(self):
@@ -310,12 +310,15 @@ class AcademyTestsQuestionImport(models.TransientModel):
     def default_topic_id(self):
         """ This returns most frecuency used topic id
         """
-        return self._most_frecuent('topic_id')
 
-    def default_topic_version_ids(self):
-        """ This returns all versions for the chosen topic
-        """
-        return self.topic_id.last_version()
+        xid = 'academy_tests.academy_tests_topic_no_topic'
+        topic_item = self.env.ref(xid)
+
+        if not self.env.context.get('create_new_test', False):
+            exclude = [('id', '<>', topic_item.id)]
+            topic_item = self._most_frecuent('topic_id', domain=exclude)
+
+        return topic_item
 
     def default_type_id(self):
         """ This returns most frecuency used type id
@@ -327,12 +330,30 @@ class AcademyTestsQuestionImport(models.TransientModel):
         """
         return self._most_frecuent('level_id')
 
+    def default_name(self):
+        test = _('Test')
+        time = datetime.now().strftime('%Y·%M·%d-%H·%M·%S')
+
+        return '{}-{}'.format(test, time)
+
     @api.onchange('topic_id')
     def _onchange_topid_id(self):
         """ Removes version and categories
         """
+        xid = 'academy_tests.academy_tests_topic_no_topic'
+        topic_item = self.env.ref(xid)
 
-        self.topic_version_ids = self.default_topic_version_ids()
+        if self.topic_id.id == topic_item.id:
+            xid = 'academy_tests.academy_tests_topic_version_no_version'
+            item = self.env.ref(xid)
+            self.topic_version_ids = [(6, 0, [item.id])]
+
+            xid = 'academy_tests.academy_tests_category_no_category'
+            item = self.env.ref(xid)
+            self.category_ids = [(6, 0, [item.id])]
+        else:
+            self.topic_version_ids = self.topic_id.last_version()
+            self.category_ids = [(5, 0, 0)]
 
     @api.onchange('state')
     def _onchange_state(self):
@@ -362,285 +383,120 @@ class AcademyTestsQuestionImport(models.TransientModel):
             message = _('Topic and categories are not optional')
             raise ValidationError(message)
 
-        content = self._get_cleared_text()
-        groups = self._split_in_line_groups(content)
-        value_set = self._build_value_set(groups)
+        if self.env.context.get('create_new_test', False):
+            values = {'name': self.name}
+            test_obj = self.env['academy.tests.test']
+            self.test_id = test_obj.create(values)
 
-        self._update_attachments()
-        self._create_questions(value_set)
+        content = self.clear_text(self.content)
+        groups = self.split_in_line_groups(content)
+        value_set = self.build_value_set(groups, update=False)
+
+        self.postprocess_attachment_ids(value_set, self.attachment_ids)
+
+        self._append_categorization(value_set)
+
+        if self.autocategorize:
+            self.auto_set_categories(value_set, self.topic_id)
+
+        if self.owner_field_is_accessible(self):
+            self.assign_to(self.attachment_ids, self.owner_id)
+            self.append_owner(value_set, self.owner_id)
+
+        self.question_ids = self.create_questions(value_set, self.sequential)
 
         if self.test_id:
-            values = {
-                'type': 'ir.actions.act_window',
-                'res_model': 'academy.tests.test',
-                'view_mode': 'form',
-                'res_id': self.test_id.id,
-                'target': 'main',
-                'flags': {
-                    'form': {
-                        'action_buttons': True, 'options': {'mode': 'edit'}
-                    }
+            question_set = self.question_ids.sorted(
+                key=lambda q: q.id, reverse=False)
+            self.append_to_test(self.test_id, question_set)
+
+        return self._close_wizard_and_redirect()
+
+    def _close_wizard_and_redirect(self):
+        self.ensure_one()
+
+        if self.check_categorization:
+            result = self._manual_categorization_act_window()
+
+        elif self.test_id and not self._is_in_the_target_test():
+            result = self._test_form_act_window()
+
+        else:
+            result = self._questions_act_window()
+
+        return result
+
+    def _manual_categorization_act_window(self):
+        act_xid = ('academy_tests.'
+                   'action_academy_tests_manual_categorization_act_window')
+        result = self.env.ref(act_xid).read()[0]
+
+        question_ids = self.question_ids.mapped('id')
+
+        result['target'] = 'main'
+        result['name'] = _('Imported questions')
+        result['domain'] = [('id', 'in', question_ids)]
+
+        return result
+
+    def _test_form_act_window(self):
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'academy.tests.test',
+            'view_mode': 'form',
+            'res_id': self.test_id.id,
+            'target': 'main',
+            'flags': {
+                'form': {
+                    'action_buttons': True, 'options': {'mode': 'edit'}
                 }
             }
-        else:
-            act_xid = 'academy_tests.action_questions_act_window'
-            values = self.env.ref(act_xid).read()[0]
-            values['target'] = 'main'
+        }
 
-        return values
+    def _questions_act_window(self):
+        act_xid = 'academy_tests.action_questions_act_window'
+        result = self.env.ref(act_xid).read()[0]
+
+        result['target'] = 'main'
+        result['context'] = {}  # Remove filters
+
+        return result
+
+    def _is_in_the_target_test(self):
+
+        result = False
+
+        params = self.env.context.get('params', False) or {}
+
+        if params:
+            model = params.get('model', False)
+            active_id = params.get('id', False)
+
+            result = (model == 'academy.tests.test') and \
+                     (active_id == self.test_id.id)
+
+        return result
 
     # -------------------------------------------------------------------------
 
-    def _update_attachments(self):
-        values = {
-            'res_model': 'academy.tests.question',
-            'res_id': 0,
-            'owner_id': self.owner_id.id
-        }
-        self.attachment_ids.write(values)
-
-    def _get_cleared_text(self):
-        """ Perform some operations to obtain a cleared text
-            - Replace tabs with spaces en removes extra spaces
-            - Replace extra simbols after lists elements
-        """
-        content = (self.content or '').strip()
-        flags = MULTILINE | UNICODE
-
-        # STEP 1: Remove tabs and extra spaces
-        content = replace(r'[ \t]+', r' ', content, flags=flags)
-
-        # STEP 2: Remove spaces from both line bounds
-        content = replace(r'[ \t]+$', r'', content, flags=flags)
-        content = replace(r'^[ \t]+', r'', content, flags=flags)
-
-        # STEP 3: Replace CRLF by LF and remove duplicates
-        content = replace(r'[\r\n]', r'\n', content, flags=flags)
-        content = replace(r'[\n]{2,}', r'\n\n', content, flags=flags)
-
-        # STEP 2: Update questions and answers numbering formats
-        pattern = r'^([0-9]{1,10})[.\-)]+[ \t]+'
-        content = replace(pattern, r'\1. ', content, flags=flags)
-        pattern = r'^([a-zñA-ZÑ])[.\-)]+[ \t]+'
-        content = replace(pattern, r'\1) ', content, flags=flags)
-
-        return content
-
-    @staticmethod
-    def _split_in_line_groups(content):
-        """ Splits content into lines and then splits these lines into
-        groups using empty lines as a delimiter.
-
-        """
-
-        lines = content.splitlines(False)
-        groups = []
-
-        group = []
-        numlines = len(lines)
-        for index in range(0, numlines):
-            if lines[index] == '':
-                groups.append(group)
-                group = []
-            elif index == (numlines - 1):
-                group.append(lines[index])
-                groups.append(group)
-            else:
-                group.append(lines[index])
-
-        return groups
-
-    @staticmethod
-    def _append_line(_in_buffer, line):
-        """ Appends new line using previous line break when buffer is not empty
-        """
-        if _in_buffer:
-            _in_buffer = _in_buffer + '\n' + line
-        else:
-            _in_buffer = line
-
-        return _in_buffer
-
-    @staticmethod
-    def safe_cast(val, to_type, default=None):
-        """ Performs a safe cast between `val` type to `to_type`
-        """
-
-        try:
-            return to_type(val)
-        except (ValueError, TypeError):
-            return default
-
-    def _can_current_user_change_the_owner(self):
-        """ If current user is allowed to access to the owner_id field then
-        field should be returned by `fields_get` method
-        """
-
-        # Check field access in the current wizard
-        bret = self.fields_get().get('owner_id', False)
-
-        if bret:
-            # Check field access in question model
-            question_model = self.env['academy.tests.question']
-            bret = question_model.fields_get().get('owner_id', False)
-
-        return bret
-
-    def _process_line_group(self, line_group):
-        """ Gets description, image, preamble, statement, and answers
-        from a given group of lines
-        """
-
-        sequence = 0
-        regex = r'((^[0-9]+\. )|(((^[a-wy-z])|(^x))\) )|(^> )|(^\!\[([^]]+)\]\(([^)]+)))?(.+)'  # noqa: E501
-        flags = UNICODE | IGNORECASE
-
+    def _append_categorization(self, values_set):
         # pylint: disable=locally-disabled, E1101
         catops = [(4, ID, None) for ID in self.category_ids.mapped('id')]
         tagops = [(4, ID, None) for ID in self.tag_ids.mapped('id')]
         verops = [(4, ID, None) for ID in self.topic_version_ids.mapped('id')]
 
-        values = {
-            'description': '',
-            'preamble': '',
-            'name': None,
-            'answer_ids': [],
-            'ir_attachment_ids': [],
+        categorization_values = {
             'topic_id': self.topic_id.id,
             'topic_version_ids': verops,
             'category_ids': catops,
             'type_id': self.type_id.id,
             'tag_ids': tagops,
-            'level_id': self.level_id.id
+            'level_id': self.level_id.id,
+            'authorship': self.authorship
         }
 
-        if self._can_current_user_change_the_owner():
-            values['owner_id'] = self.owner_id.id
-
-        for line in line_group:
-            found = search(regex, line, flags)
-            if found:
-                groups = found.groups()
-
-                if groups[Mi.QUESTION.value]:
-                    values['name'] = groups[Mi.CONTENT.value]
-
-                elif groups[Mi.ANSWER.value]:
-                    sequence = sequence + 1
-                    ansvalues = {
-                        'name': groups[Mi.CONTENT.value],
-                        'is_correct': (groups[Mi.TRUE.value] is not None),
-                        'sequence': sequence
-                    }
-                    values['answer_ids'].append((0, None, ansvalues))
-
-                elif groups[Mi.DESCRIPTION.value]:
-                    values['description'] = self._append_line(
-                        values['description'], groups[Mi.CONTENT.value])
-
-                elif groups[Mi.IMAGE.value]:
-                    ID = self._process_attachment_groups(groups)
-                    if ID:
-                        self._set_attachment_title(groups, ID)
-                        values['ir_attachment_ids'].append((4, ID, None))
-
-                else:
-                    values['preamble'] = self._append_line(
-                        values['preamble'], groups[Mi.CONTENT.value])
-
-        return values
-
-    def _set_attachment_title(self, groups, ID):
-        """ Reads title from markdown line ![title](uri) and set it to the
-        attachement with the given ID in related recordset
-        """
-
-        attach_record = self.attachment_ids.filtered(
-            lambda rec: rec.id == ID)
-        attach_record.name = groups[Mi.TITLE.value]
-
-        return attach_record
-
-    def _process_attachment_groups(self, groups):
-        uri = groups[Mi.URI.value]
-        title = groups[Mi.TITLE.value]
-        record = self.env['ir.attachment']
-
-        # STEP 1: Try to find attachment by `id` field
-        numericURI = self.safe_cast(uri, int, 0)
-        if numericURI:
-            record = self.attachment_ids.filtered(
-                lambda item: item.id == numericURI)
-
-        # STEP 2: Try to find attachment by `name` field, with (`uri`) or
-        # without `title` extension
-        if not record:
-            uri = groups[Mi.URI.value]
-
-            record = self.attachment_ids.filtered(
-                lambda item: self._equal(item.name, uri) or self._equal(item.name, title)) # noqa: 501
-
-        # STEP 3: Raise error if number of found items is not equal to one
-        if not record:
-            message = _('Invalid attachment URI: ![%s](%s)')
-            raise ValidationError(message % (title, uri))
-        elif len(record) > 1:
-            message = _('Duplicate attachment URI: %s')
-            raise ValidationError(message % (title, uri))
-
-        # STEP 4: Return ID
-        return record.id
-
-    @staticmethod
-    def _equal(str1, str2):
-        str1 = (str1 or '').lower()
-        str2 = (str2 or '').lower()
-
-        return str1 == str2
-
-    def _build_value_set(self, groups):
-        value_set = []
-        for group in groups:
-            values = self._process_line_group(group)
-            value_set.append(values)
-
-        return value_set
-
-    def _create_questions(self, value_set):
-        question_obj = self.env['academy.tests.question']
-        sequence = 0
-
-        # pylint: disable=locally-disabled, W0703
-        try:
-            for values in value_set:
-
-                if self.autocategorize:
-                    name = values['name']
-                    # matches => {topic_id: [categorory_id1, ...]}
-                    matches = self.topic_id.search_for_categories(name)
-                    ids = matches.get(self.topic_id.id, False)
-                    if ids:
-                        values['category_ids'] = [(6, False, ids)]
-
-                question_set = question_obj.create(values)
-
-                if self.test_id:
-                    sequence = sequence + 1
-                    tvalues = {
-                        'question_ids': [(0, None, {
-                            'test_id': self.test_id.id,
-                            'question_id': question_set.id,
-                            'sequence': sequence,
-                            'authorship': self.authorship
-                        })]
-                    }
-                    self.test_id.write(tvalues)
-
-        except Exception as ex:
-            message = _('Some questions could not be created, system says: %s')
-            raise UserError(message % ex)
-
-        return False
+        for values in values_set:
+            values.update(categorization_values)
 
     def _move_imported_attachments(self):
         """ Appends imported files to list of available attachments and

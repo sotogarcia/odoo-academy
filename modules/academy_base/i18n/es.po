@@ -6527,8 +6527,8 @@ msgstr "Configurar la clave"
 
 #. module: academy_base
 #: model:ir.ui.menu,name:academy_base.menu_academy_settings
-msgid "Settings"
-msgstr "Ajustes"
+msgid "Academy"
+msgstr "Academia"
 
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_student__partner_share

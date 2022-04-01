@@ -329,7 +329,10 @@ class AcademyTestsQuestionCategorizeWizard(models.TransientModel):
             self.question_ids.write(values)
 
         if self.autocategorize:
-            self.question_ids.auto_categorize()
+            abstract = self.env['academy.abstract.import.export']
+            for question_item in self.question_ids:
+                topic_id = question_item.topic_id
+                abstract.auto_set_categories(question_item, topic_id)
 
     # -------------------------- AUXILIARY METHODS ----------------------------
 

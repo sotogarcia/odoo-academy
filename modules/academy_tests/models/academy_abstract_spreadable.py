@@ -3,7 +3,7 @@
 """
 
 from logging import getLogger
-from odoo import models, fields, api
+from odoo import models, api
 
 # pylint: disable=locally-disabled, C0103
 _logger = getLogger(__name__)
@@ -29,16 +29,8 @@ class AcademyAbstractSpreadable(models.AbstractModel):
         for target_set in target_list:
             for target_item in target_set:
 
-                target_item.message_post(
+                target_item.sudo().message_post(
                     subtype_id=subtype_id, subtype=subtype, **kwargs)
 
         return super(AcademyAbstractSpreadable, self).message_post(
             subtype_id=subtype_id, subtype=subtype, **kwargs)
-
-# self, *,
-# body='', subject=None, message_type='notification',
-# email_from=None, author_id=None, parent_id=False,
-# subtype_id=False, subtype=None, partner_ids=None,
-# channel_ids=None, attachments=None,
-# attachment_ids=None, add_sign=True,
-# record_name=False, **kwargs

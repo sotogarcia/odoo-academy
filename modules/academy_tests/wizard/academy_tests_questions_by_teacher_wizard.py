@@ -183,7 +183,6 @@ class AcademyTestsQuestionsByTeacherWizard(models.TransientModel):
         )
 
         topic_ids = [item['topic_id'][0] for item in item_set]
-        print(topic_ids)
 
         return [(6, 0, topic_ids)]
 
@@ -263,8 +262,6 @@ class AcademyTestsQuestionsByTeacherWizard(models.TransientModel):
             ('create_date', '>=', fields.Date.to_string(self.start)),
             ('create_date', '<=', fields.Date.to_string(self.end)),
         ]
-
-        print(domain)
 
         return {
             'model': 'ir.actions.act_window',

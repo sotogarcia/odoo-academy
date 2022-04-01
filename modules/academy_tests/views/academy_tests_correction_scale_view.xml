@@ -83,7 +83,16 @@
             <field name="arch" type="xml">
                 <search string="model_search">
                     <field name="name" />
-                    <!-- ··· -->
+                    <field name="right" />
+                    <field name="wrong" />
+                    <field name="blank" />
+
+                    <filter string="Active"
+                        name="active"
+                        domain="[('active', '=', True)]"
+                        context="{}"
+                        help="List only the active correction scales" />
+
                 </search>
             </field>
         </record>

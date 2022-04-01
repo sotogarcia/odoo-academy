@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <!-- VIEWS: "Academy Tests Uncategorized By User Readonly"
+
+            - Model·········: academy.tests.uncategorized.by.user.readonly
+            - _rec_name·····: owner_id
+            - Domain········: []
+            - Context·······: {}
+            - Parent menu ··: academy_tests.menu_test_settings_top
+            - View priority·: 16    Sequence····: 10
+            - Action help···: Show uncategorized questions by user
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+        <!-- Tree view for "academy.tests.uncategorized.by.user.readonly" -->
+        <record id="view_academy_tests_uncategorized_by_user_readonly_tree" model="ir.ui.view">
+            <field name="name">view.academy.tests.uncategorized.by.user.readonly.tree</field>
+            <field name="model">academy.tests.uncategorized.by.user.readonly</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <tree string="academy_tests_uncategorized_by_user_readonly_tree" create="1" delete="1" edit="1">
+                    <field name="owner_id" class="oe_field_owner_id" />
+                    <field name="topic_id" class="oe_field_topic_id" />
+                    <field name="question_count" class="oe_field_question_count" />
+                </tree>
+            </field>
+        </record>
+
+        <!-- Search view for "academy.tests.uncategorized.by.user.readonly" -->
+        <record id="view_academy_tests_uncategorized_by_user_readonly_search" model="ir.ui.view">
+            <field name="name">view.academy.tests.uncategorized.by.user.readonly.search</field>
+            <field name="model">academy.tests.uncategorized.by.user.readonly</field>
+            <field name="type">search</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <search string="academy_tests_uncategorized_by_user_readonly_search">
+                    <field name="owner_id" />
+                    <field name="topic_id" />
+                    <field name="question_count" />
+                </search>
+            </field>
+        </record>
+
+        <!-- Main window action for model.name -->
+        <record id="action_academy_tests_uncategorized_by_user_readonly_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Academy Tests Uncategorized By User Readonly</field>
+            <field name="res_model">academy.tests.uncategorized.by.user.readonly</field>
+            <field name="view_mode">tree</field>
+            <field name="target">current</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="search_view_id" ref="view_academy_tests_uncategorized_by_user_readonly_search" />
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Records are readonly
+                </p><p>
+                    Show uncategorized questions by user
+                </p>
+            </field>
+        </record>
+
+        <!-- Main menu for model.name -->
+        <record id="menu_academy_tests_uncategorized_by_user_readonly" model="ir.ui.menu" >
+            <field name="name">Uncategorized questions</field>
+            <field name="sequence" eval="10" />
+            <field name="action" ref="action_academy_tests_uncategorized_by_user_readonly_act_window" />
+            <field name="parent_id" ref="academy_tests.menu_test_settings_top" />
+        </record>
+
+    </data>
+</openerp>

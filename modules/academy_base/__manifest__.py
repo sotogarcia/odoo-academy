@@ -53,8 +53,8 @@
         'views/academy_training_activity_view.xml',
         'views/academy_training_action_view.xml',
 
-        'views/academy_student_view.xml',
         'views/academy_training_action_enrolment_view.xml',
+        'views/academy_student_view.xml',
         'views/academy_training_lesson_view.xml',
 
         'views/academy_teacher_view.xml',
@@ -64,6 +64,8 @@
 
         'views/academy_training_resource_view.xml',
         'views/academy_training_resource_kind_view.xml',
+
+        'views/res_partner_view.xml',
 
         'wizard/academy_training_session_wizard_view.xml',
         'wizard/academy_training_session_wizard_line_view.xml',

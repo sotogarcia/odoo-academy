@@ -13,15 +13,23 @@ from os import linesep
 from odoo.exceptions import ValidationError, UserError
 from odoo.osv.expression import AND
 
+import docx
+from io import BytesIO
+import os
+import base64
+from re import split
+
 # pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
 from odoo.tools.translate import _
 
 import odoo.addons.academy_base.models.utils.custom_model_fields as custom
 from .utils.sql_operations import ACADEMY_TESTS_SHUFFLE
+from .utils.sql_operations import ACADEMY_TESTS_ARRANGE_BLOCKS
 from .utils.sql_inverse_searches import QUESTION_COUNT_SEARCH
 from .utils.sql_m2m_through_view import ACADEMY_ENROLMENT_AVAILABLE_TESTS
 from .utils.sql_m2m_through_view import ACADEMY_TESTS_TEST_TOPIC_IDS_SQL
+from .utils.sql_m2m_through_view import ACADEMY_TESTS_TEST_TEST_BLOCK_REL
 from .utils.libuseful import prepare_text, fix_established, is_numeric, \
     eval_domain
 
@@ -137,7 +145,7 @@ class AcademyTestsTest(models.Model):
         readonly=True,
         index=False,
         default=None,
-        help='Template has been used to pupulate this tests',
+        help='Template has been used to Populate this tests',
         comodel_name='academy.tests.random.template',
         domain=[],
         context={},
@@ -323,6 +331,76 @@ class AcademyTestsTest(models.Model):
         index=False,
         default=True,
         help='Check it to indicate that it is your own authorship'
+    )
+
+    repeat_images = fields.Boolean(
+        string='Repeat images',
+        required=False,
+        readonly=False,
+        index=False,
+        default=False,
+        help='Repeat the image every time it is referred to in a question'
+    )
+
+    tag_ids = fields.Many2many(
+        string='Tags',
+        required=False,
+        readonly=False,
+        index=True,
+        default=None,
+        help='Tag can be used to better describe this question',
+        comodel_name='academy.tests.tag',
+        relation='academy_tests_test_tag_rel',
+        column1='test_id',
+        column2='tag_id',
+        domain=[],
+        context={},
+        limit=None,
+        track_visibility='onchange',
+    )
+
+    test_block_ids = custom.Many2manyThroughView(
+        string='Test blocks',
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help='List all blocks have been used in this tests',
+        comodel_name='academy.tests.test.block',
+        relation='academy_tests_test_test_block_rel',
+        column1='test_id',
+        column2='test_block_id',
+        domain=[],
+        context={},
+        limit=None,
+        sql=ACADEMY_TESTS_TEST_TEST_BLOCK_REL
+    )
+
+    auto_arrange_blocks = fields.Boolean(
+        string='Auto arrange blocks',
+        required=False,
+        readonly=False,
+        index=False,
+        default=True,
+        help='Check it to auto arrange questions in blocks'
+    )
+
+    restart_numbering = fields.Boolean(
+        string='Restart numbering',
+        required=False,
+        readonly=False,
+        index=False,
+        default=False,
+        help='Check it to restart numbering in each block'
+    )
+
+    block_starts_page = fields.Boolean(
+        string='Block starts a page',
+        required=False,
+        readonly=False,
+        index=False,
+        default=True,
+        help='Check it to do each block starts a new page'
     )
 
     # -------------------------- MANAGEMENT FIELDS ----------------------------
@@ -537,10 +615,11 @@ class AcademyTestsTest(models.Model):
         link_ids = self.mapped('question_ids.id')
 
         return {
-            'name': _('Links test/question'),
+            'name': self.name,
             'view_mode': 'kanban,tree,form,pivot',
             'res_model': 'academy.tests.test.question.rel',
             'type': 'ir.actions.act_window',
+            'target': 'current',
             'domain': AND([domain, [('id', 'in', link_ids)]]),
             'context': {'default_test_id': self.id},
         }
@@ -583,7 +662,8 @@ class AcademyTestsTest(models.Model):
             default['name'] = _("%s (copy)") % self.name
 
         # STEP 3: Create new links for all questions in the original test
-        if self.question_ids:
+        create_empty = self.env.context.get('create_empty_test', False)
+        if self.question_ids and not create_empty:
             leafs = self.question_ids.mapped(self._mapped_question_ids)
             if(leafs):
                 default['question_ids'] = leafs
@@ -606,18 +686,25 @@ class AcademyTestsTest(models.Model):
         """ This updates the sequence of the questions into the test
         """
 
-        # order_by = 'sequence ASC, write_date ASC, create_date ASC, id ASC'
-        # rel_domain = [('test_id', '=', self.id)]
-        # rel_obj = self.env['academy.tests.test.question.rel']
-        # rel_set = rel_obj.search(rel_domain, order=order_by)
+        if self:
 
-        for record in self:
-            rel_set = record.question_ids.sorted()
+            if self.auto_arrange_blocks:  # Keep test blocks
+                test_ids = self.mapped('id')
+                test_ids_str = [str(tid) for tid in test_ids]
+                joined = ', '.join(test_ids_str)
 
-            index = 1
-            for rel_item in rel_set:
-                rel_item.write({'sequence': index})
-                index = index + 1
+                query = ACADEMY_TESTS_ARRANGE_BLOCKS.format(joined)
+
+                self.env.cr.execute(query)
+
+            else:
+                for record in self:
+                    rel_set = record.question_ids.sorted()
+
+                    index = 1
+                    for rel_item in rel_set:
+                        rel_item.write({'sequence': index})
+                        index = index + 1
 
     def shuffle(self):
         dep_msg = _('This test has dependent questions, '
@@ -709,3 +796,176 @@ class AcademyTestsTest(models.Model):
             'domain': [],
             'context': {'default_test_id': self.id}
         }
+
+    def update_questions_dialog(self):
+        wizard_model = 'academy.tests.update.questions.wizard'
+        question_set = self.mapped('question_ids.question_id')
+
+        wizard_set = self.env[wizard_model]
+        wizard_set = wizard_set.create({})
+        wizard_set.set_questions(question_set)
+
+        return {
+            'name': _('Update questions'),
+            'type': 'ir.actions.act_window',
+            'res_model': wizard_model,
+            'view_mode': 'form',
+            'views': [(False, 'form')],
+            'target': 'new',
+            'domain': [],
+            'res_id': wizard_set.id
+        }
+
+    def save_as_docx(self):
+
+        tpl_path = self._docx_get_template_path()
+        wd = self._docx_new_from_template(tpl_path)
+
+        self._docx_update_title(wd)
+        self._docx_update_preamble(wd)
+
+        self._docx_update_questions(wd)
+
+        buffer = BytesIO()
+        wd.save(buffer)
+        datas = base64.b64encode(buffer.getvalue())
+
+        attach_item = self.env['ir.attachment'].create({
+            'name': '{}.docx'.format(self.name),
+            'datas': datas,
+            'type': 'binary',
+            'res_model': 'academy.tests.test',
+            'res_id': self.id,
+            'mimetype': 'application/msword'
+        })
+
+        return {
+            'name': attach_item.name,
+            'res_model': 'ir.actions.act_url',
+            'type': 'ir.actions.act_url',
+            'target': '_blank',
+            'url': '/web/content/{}?download=true'.format(attach_item.id)
+        }
+
+    def _docx_get_template_path(self):
+        file_path = os.path.realpath(__file__)
+        dir_path = os.path.dirname(file_path)
+        return os.path.join(dir_path, '..', 'static', 'docx', 'test.docx')
+
+    def _docx_new_from_template(self, template_path):
+        wd = None
+
+        with open(template_path, 'rb') as tpl_file:
+            buffer = BytesIO(tpl_file.read())
+            wd = docx.Document(buffer)
+
+        return wd
+
+    def _docx_update_title(self, wd):
+        wd.add_paragraph(self.name, 'Heading 1')
+
+    def _docx_update_preamble(self, wd):
+        wd.add_paragraph(self.preamble, 'Preamble')
+
+    @staticmethod
+    def _docx_update_block(link, wd):
+        if link.test_block_id:
+            wd.add_paragraph(link.test_block_id.name, 'Heading 2')
+            if link.test_block_id.preamble:
+                wd.add_paragraph(link.test_block_id.preamble, 'Preamble')
+
+    def _docx_update_questions(self, wd):
+        test_block_id = 0
+
+        for qitem in self.question_ids:
+            if test_block_id != qitem.test_block_id.id:
+                self._docx_update_block(qitem, wd)
+
+            test_block_id = qitem.test_block_id.id
+
+            for img in qitem.ir_attachment_image_ids:
+                content = base64.b64decode(img.datas)
+                img_stream = BytesIO(content)
+                wd.add_picture(img_stream)
+                wd.add_paragraph(img.name, 'Caption')
+
+            if qitem.description:
+                for line in self._split_lines(qitem.description):
+                    if line:
+                        wd.add_paragraph(line, 'About')
+            if qitem.preamble:
+                for line in self._split_lines(qitem.preamble):
+                    if line:
+                        wd.add_paragraph(line, 'About')
+
+            wd.add_paragraph(qitem.name, 'Question')
+
+            for aitem in qitem.answer_ids:
+                if aitem.is_correct:
+                    wd.add_paragraph(style='Answer') \
+                        .add_run(aitem.name, style='Right answer')
+                else:
+                    wd.add_paragraph(aitem.name, 'Answer')
+
+            wd.add_paragraph('', 'Normal')
+
+    @staticmethod
+    def _split_lines(content):
+        return split(r"[\r\n]+", content)
+
+    def request_for_questions(self):
+
+        print(self)
+
+        self.ensure_one()
+
+        rset_domain = [('test_id', '=', self.id)]
+        rset_obj = self.env['academy.tests.question.request.set']
+        rset_set = rset_obj.search(rset_domain)
+
+        act_window = {
+            'model': 'ir.actions.act_window',
+            'type': 'ir.actions.act_window',
+            'name': _('Request for questions'),
+            'res_model': 'academy.tests.question.request.set',
+            'target': 'new',
+            'view_mode': 'form',
+            'views': [(False, 'form')],
+            'domain': [],
+            'context': {}
+        }
+
+        if rset_set:
+            act_window['res_id'] = rset_set.id
+        else:
+            act_window['context'] = {'default_test_id': self.id}
+
+        return act_window
+
+    def download_as_moodle_xml(self):
+        self.ensure_one()
+
+        relative_url = '/academy_tests/moodle/test?test_id={}'
+        return {
+            'type': 'ir.actions.act_url',
+            'url': relative_url.format(self.id),
+            'target': 'self',
+        }
+
+    def compute_block_classes(self, block):
+        self.ensure_one()
+
+        classes = ['academy-post-test-block']
+
+        if self.restart_numbering:
+            classes.append('academy-post-test-restart-numbering')
+
+        if self.block_starts_page:
+            classes.append('academy-post-test-page-break')
+
+        if block or self.block_starts_page:
+            classes.extend(['invisible', 'm-0', 'border-0'])
+
+        print(classes)
+
+        return ' '.join(classes)

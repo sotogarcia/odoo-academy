@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="mail_template_duplicated_questions_by_user_and_topic" model="mail.template">
+            <field name="name">Duplicate questions by user</field>
+            <field name="model_id" ref="base.model_res_users"/>
+            <field name="subject">IMPORTANT: Duplicate questions</field>
+            <field name="email_from">"${object.company_id.name | safe}" &lt;${(object.company_id.email or user.email) | safe}&gt;</field>
+            <field name="partner_to">${object.partner_id.id if object.partner_id.email and object.partner_id.email == object.email else False}</field>
+            <field name="reply_to">${object.company_id.email}</field>
+            <field name="lang">${object.partner_id.lang}</field>
+<field name="body_html" type="html">
+<table border="0" cellpadding="0" cellspacing="0" style="background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;"><tr><td align="center">
+<table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
+<tbody>
+    <!-- CONTENT -->
+    <tr>
+        <td align="center" style="min-width: 590px;">
+            <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                <td style="text-align : left">
+                    <span style="font-size: 20px; font-weight: bold;">
+                        Duplicate questions
+                    </span><br/><br/>
+                </td>
+                <tr><td valign="top" style="font-size: 13px;">
+                    <div>
+                        <p style="margin: 1.5em 0px!important; line-height: 1.25em;">
+                            Dear ${object.name or ''},
+                        </p>
+
+                        % if object and object.duplicate_question_ids:
+
+                        <p style="text-justify; margin: 0.5em 0; line-height: 1.25em;">
+                          You have added back ${object.duplicate_question_ids|length}
+                          questions that already existed previously in the
+                          database. Please change these new questions or merge
+                          them with the original question.
+                        </p>
+
+                        % else:
+
+                        <p style="text-justify; margin: 0.5em 0; line-height: 1.25em;">
+                          It is my pleasure to inform you that at this time you
+                          do not have duplicate questions.
+                        </p>
+
+                        % endif
+
+                        <p style="margin: 1.5em 0px!important; line-height: 1.25em;">
+                            Have a nice day!
+                        </p>
+                        <br>--</br>
+                        <p style="margin: 0.5em 0; line-height: 1.25em;">
+                            The ${object.company_id.name} Team
+                        </p>
+                    </div>
+                </td></tr>
+                <tr><td style="text-align:center;">
+                  <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
+                </td></tr>
+            </table>
+        </td>
+    </tr>
+</tbody>
+</table>
+</td></tr>
+</table>
+            </field>
+            <field name="lang">${object.partner_id.lang}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="user_signature" eval="False"/>
+        </record>
+
+    </data>
+</openerp>

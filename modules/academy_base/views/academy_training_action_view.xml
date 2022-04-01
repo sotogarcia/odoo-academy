@@ -108,7 +108,9 @@
                             </page>
 
                             <page string="Competency units" class="oe_page_competency_units" accesskey="C">
-                                <field name="competency_unit_ids" class="oe_field_competency_unit_ids" readonly="1" />
+                                <field name="competency_unit_ids" class="oe_field_competency_unit_ids"
+                                    context="{'tree_view_ref' : 'academy_base.view_academy_competency_unit_embed_tree',
+                                              'default_training_activity_id' : id, 'append_to_training_activity' : True}" />
                             </page>
                             <page string="Enrolments" class="oe_page_students" accesskey="S">
                                 <field name="training_action_enrolment_ids" class="oe_field_training_action_enrolment_ids"
@@ -203,6 +205,10 @@
                     <field name="professional_family_id" />
                     <field name="professional_area_id" />
                     <field name="qualification_level_id" />
+
+                    <separator/>
+
+                    <field name="student_ids" />
 
                     <separator/>
 

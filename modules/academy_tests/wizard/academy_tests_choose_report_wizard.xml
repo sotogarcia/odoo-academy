@@ -58,5 +58,12 @@
             <field name="binding_view_types">form</field>
         </record>
 
+
+        <!-- Ensure full report is chosen by default in wizard -->
+        <record id="ir_default_test_report" model="ir.default">
+            <field name="field_id" ref="academy_tests.field_academy_test_choose_report_wizard__chosen_report_id" />
+            <field name="json_value" ref="academy_tests.action_report_full_printable_test" />
+        </record>
+
     </data>
 </openerp>

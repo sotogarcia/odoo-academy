@@ -53,3 +53,14 @@ class AcademyCompetencyUnit(models.Model):
         limit=None,
         sql=ACADEMY_TESTS_TEST_AVAILABLE_IN_COMPETENCY_UNIT_REL
     )
+
+    def create_test_template(self, no_open=False):
+        template_obj = self.env['academy.tests.random.template']
+        module_obj = self.env['academy.training.module']
+
+        values = module_obj.get_template_values(self)
+
+        template = template_obj.create(values)
+
+        if not no_open and template:
+            return module_obj._template_act_window(template)

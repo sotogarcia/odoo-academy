@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="view_academy_tests_update_questions_wizard_form" model="ir.ui.view">
+            <field name="name">Update questions wizard</field>
+            <field name="model">academy.tests.update.questions.wizard</field>
+            <field name="type">form</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <form string="Academy Tests Update Questions" class="view_academy_tests_update_questions_wizard_form" create="1" delete="1" edit="1">
+                    <header>
+                        <button name="process_text" type="object"
+                            string="Save" class="oe_highlight" states="step1,step2" />
+                        <button name="save_as_zip" type="object" string="Download"
+                            class="oe_highlight btn-secondary" states="step1,step2" />
+
+                        <field name="state" widget="statusbar" clickable="1" />
+                    </header>
+
+                    <field name="question_ids" invisible="1" />
+
+                    <group col="4" states="step1">
+                        <!-- <field name="text_file" class="oe_field_zip_file" string="Load text" />
+                        <field name="text_encoding" class="oe_field_text_encoding"
+                            attrs="{'readonly': [('text_file', '=', False)]}" />
+
+                        <separator colspan="4" />-->
+                        <field name="markdown" class="oe_field_markdown" nolabel="1" colspan="4" />
+                    </group>
+
+                    <group col="2" states="step2">
+                        <field name="zip_file" class="oe_field_zip_file" string="Load zip" />
+                        <separator colspan="2" />
+
+                        <div class="alert alert-info" colspan="2" role="alert"
+                            attrs="{'invisible': [('zip_file', '=', False)]}">
+                            Attachments will be updated on accept changes
+                        </div>
+
+                        <separator colspan="2" string="Attachments" />
+
+                        <field name="ir_attachment_ids" class="oe_field_attachment_ids"
+                            context="{}" colspan="2" nolabel="1">
+                            <kanban string="Attachments" create="1" delete="1" edit="1"
+                                quick_create="0" class="o_kanban_mobile" >
+
+                                <field name="name" />
+                                <field name="id" />
+                                <field name="name" />
+                                <field name="type" />
+                                <field name="mimetype" />
+                                <field name="index_content" />
+
+                                <templates>
+                                    <t t-name="kanban-box">
+                                        <div class="oe_kanban_global_click oe_import_wizard_attachments" style="position: relative">
+                                            <a t-if="!read_only_mode" type="delete" class="fa fa-times pull-right"/>
+                                            <a t-if="!read_only_mode" class="fa fa-copy pull-right" href="javascript:void(0)"
+                                                t-att-data-markdown="'!['+record.name.raw_value+']('+record.id.raw_value+')'" />
+
+                                            <div class="o_kanban_image">
+                                                <img t-if="record.index_content.raw_value == 'image'" class="img img-responsive" t-att-src="'/web/image/'+record.id.raw_value+'/100x80'" />
+                                                <img t-else="" class="img img-responsive" src="/web/static/src/img/mimetypes/binary.png" />
+                                            </div>
+
+                                            <div class="oe_kanban_details">
+                                                <h4><field name="name" /></h4>
+                                                <table>
+                                                    <tbody>
+                                                        <tr>
+                                                            <th>File:&#160;</th>
+                                                            <td colspan="3"><field name="name" /></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Type:&#160;</th>
+                                                            <td><field name="type" /> (<field name="mimetype" />)</td>
+                                                            <th>&#160;&#160;&#160;ID&#160;</th>
+                                                            <td><field name="id" /></td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                        </div>
+                                    </t>
+                                </templates>
+                            </kanban>
+                        </field>
+                    </group>
+
+                    <footer />
+
+                </form>
+            </field>
+        </record>
+
+        <record id="action_test_update_questions_wizard_edit_questions_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Edit questions</field>
+            <field name="res_model">academy.tests.update.questions.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="binding_model_id" ref="academy_tests.model_academy_tests_question" />
+            <field name="binding_view_types">list</field>
+        </record>
+
+        <record id="action_test_update_questions_wizard_edit_links_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Edit questions</field>
+            <field name="res_model">academy.tests.update.questions.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="binding_model_id" ref="academy_tests.model_academy_tests_test_question_rel" />
+            <field name="binding_view_types">list</field>
+        </record>
+
+    </data>
+</openerp>

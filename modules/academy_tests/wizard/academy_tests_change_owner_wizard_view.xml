@@ -58,6 +58,7 @@
             <field name="domain">[]</field>
             <field name="context">{}</field>
             <field name="binding_model_id" ref="academy_tests.model_academy_tests_question" />
+            <field name="binding_view_types">list</field>
             <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
         </record>
 
@@ -70,6 +71,7 @@
             <field name="domain">[]</field>
             <field name="context">{}</field>
             <field name="binding_model_id" ref="academy_tests.model_academy_tests_test" />
+            <field name="binding_view_types">list</field>
             <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
         </record>
 

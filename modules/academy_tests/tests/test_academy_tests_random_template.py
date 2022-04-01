@@ -92,8 +92,6 @@ class TestAcademyTestsRandomTemplate(TransactionCase):
         set1 = set1.sorted(lambda x: x.id),
         set2 = set2.sorted(lambda x: x.id),
 
-        print(self._callers_name(), set1, set2)
-
         self.assertEqual(set1, set2, self._msg)
 
     def _one_line_with_ids(self, id_name, ids_name, ids, exname, exvalue):

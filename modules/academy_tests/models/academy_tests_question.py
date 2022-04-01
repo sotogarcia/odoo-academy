@@ -15,13 +15,19 @@ from os import linesep
 from re import search, UNICODE, IGNORECASE
 from enum import Enum
 
+import lxml.etree as ET
+import mimetypes
+from io import BytesIO
+
 from .utils.libuseful import prepare_text, fix_established, is_numeric
 import odoo.addons.academy_base.models.utils.custom_model_fields as custom
 from .utils.sql_operations import ACADEMY_QUESTION_ENSURE_CHECKSUMS, \
     FIND_MOST_USED_QUESTION_FIELD_VALUE_FOR_SQL, \
     FIND_MOST_USED_QUESTION_CATEGORY_VALUE_SQL
-from .utils.sql_m2m_through_view import ACADEMY_TESTS_QUESTION_DEPENDENCY_REL
-from .utils.sql_inverse_searches import ANSWER_COUNT_SEARCH
+from .utils.sql_m2m_through_view import ACADEMY_TESTS_QUESTION_DEPENDENCY_REL,\
+    ACADEMY_TESTS_QUESTION_DUPLICATED_REL
+from .utils.sql_inverse_searches import ANSWER_COUNT_SEARCH, \
+    UNCATEGORIZED_QUESTION_SEARCH
 
 _logger = getLogger(__name__)
 
@@ -58,6 +64,30 @@ class AcademyTestsQuestion(models.Model):
         'academy.abstract.owner',
         'academy.abstract.spreadable',
         'mail.thread'
+    ]
+
+    _selectable = [
+        'id',
+        'description',
+        'preamble',
+        'name',
+        'answer_ids',
+        'ir_attachment_ids',
+        'topic_id',
+        'topic_version_ids',
+        'category_ids',
+        'level_id',
+        'tag_ids',
+        'owner_id',
+        'authorship',
+        'active',
+        'uncategorized',
+        'status',
+        'test_ids',
+        'create_date',
+        'write_date',
+        'create_uid',
+        'write_uid',
     ]
 
     # ---------------------------- ENTITY FIELDS ------------------------------
@@ -166,7 +196,6 @@ class AcademyTestsQuestion(models.Model):
         context={},
         auto_join=False,
         limit=None,
-        track_visibility='onchange',
         copy=True
     )
 
@@ -213,17 +242,13 @@ class AcademyTestsQuestion(models.Model):
         relation='academy_tests_question_ir_attachment_rel',
         column1='question_id',
         column2='attachment_id',
-        domain=[
-            '|',
-            ('res_model', '=', 'academy.tests.question'),
-            ('res_model', '=', False)
-        ],
+        domain=[('res_model', '=', False), ('public', '=', True)],
         context={
+            'tree_view_ref': 'academy_tests.view_ir_attachment_tree',
+            'form_view_ref': 'academy_tests.view_ir_attachment_form',
+            'search_view_ref': 'academy_tests.view_attachment_search',
             'search_default_my_documents_filter': 0,
-            'search_default_my_own_documents_filter': 1,
-            'default_res_model': 'academy.tests.question',
-            'default_res_id': 0,
-            'default_owner_id': lambda self: self.owner_id.id
+            'search_default_my_own_documents_filter': 1
         },
         limit=None,
     )
@@ -354,6 +379,42 @@ class AcademyTestsQuestion(models.Model):
         sql=ACADEMY_TESTS_QUESTION_DEPENDENCY_REL
     )
 
+    duplicated_ids = custom.Many2manyThroughView(
+        string='Duplicates',
+        required=False,
+        readonly=True,
+        index=True,
+        default=None,
+        help=False,
+        comodel_name='academy.tests.question',
+        relation='academy_tests_question_duplicated_rel',
+        column1='question_id',
+        column2='duplicate_id',
+        domain=[],
+        context={},
+        limit=None,
+        sql=ACADEMY_TESTS_QUESTION_DUPLICATED_REL
+    )
+
+    # This field can have a maximum of one record. It's used in some domains
+    # to check if question is not the original.
+    original_ids = custom.Many2manyThroughView(
+        string='Original',
+        required=False,
+        readonly=True,
+        index=True,
+        default=None,
+        help=False,
+        comodel_name='academy.tests.question',
+        relation='academy_tests_question_duplicated_rel',
+        column1='duplicate_id',
+        column2='question_id',
+        domain=[],
+        context={},
+        limit=None,
+        sql=ACADEMY_TESTS_QUESTION_DUPLICATED_REL
+    )
+
     color = fields.Integer(
         string='Color index',
         required=True,
@@ -461,6 +522,21 @@ class AcademyTestsQuestion(models.Model):
     def _compute_impugnment_count(self):
         for record in self:
             record.impugnment_count = len(record.impugnment_ids)
+
+    duplicated_count = fields.Integer(
+        string='Duplicated count',
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        help='Show the number of duplicate questions',
+        compute=lambda self: self._compute_duplicated_count()
+    )
+
+    @api.depends('duplicated_ids')
+    def _compute_duplicated_count(self):
+        for record in self:
+            record.duplicated_count = len(record.duplicated_ids)
 
     ir_attachment_image_ids = fields.Many2many(
         string='Images',
@@ -574,6 +650,41 @@ class AcademyTestsQuestion(models.Model):
         for record in self:
             record.category_count = len(record.category_ids)
 
+    uncategorized = fields.Boolean(
+        string='Uncategorized',
+        required=False,
+        readonly=True,
+        index=False,
+        default=False,
+        help='Show if question has been categorized',
+        compute='_compute_uncategorized',
+        search='_search_uncategorized',
+    )
+
+    @api.depends('topic_id', 'topic_version_ids', 'category_ids')
+    def _compute_uncategorized(self):
+        for record in self:
+            topic_id = record.topic_id
+            is_valid_topic = topic_id.active and topic_id.provisional is False
+
+            category_ids = record.category_ids
+            act_cats = all(category_ids.mapped('active'))
+            end_cats = not any(category_ids.mapped('provisional'))
+
+            version_ids = record.topic_version_ids
+            act_vers = all(version_ids.mapped('active'))
+            end_vers = not any(version_ids.mapped('provisional'))
+
+            record.uncategorized = (topic_id and is_valid_topic) and \
+                (category_ids and act_cats and end_cats) and \
+                (version_ids and act_vers and end_vers)
+
+    def _search_uncategorized(self, operator, value):
+        self.env.cr.execute(UNCATEGORIZED_QUESTION_SEARCH)
+        ids = self.env.cr.fetchall()
+
+        return [('id', operator, ids)]
+
     # --------------- ONCHANGE EVENTS AND OTHER FIELD METHODS -----------------
 
     def default_type_id(self, type_id=None):
@@ -662,6 +773,25 @@ class AcademyTestsQuestion(models.Model):
 
         return result
 
+    @api.onchange('description')
+    def _onchange_description(self):
+        self.markdown = self.to_string(True).strip()
+
+    @api.onchange('preamble')
+    def _onchange_preamble(self):
+        self.markdown = self.to_string(True).strip()
+        self.html = self.to_html()
+
+    @api.onchange('name')
+    def _onchange_name(self):
+        self.markdown = self.to_string(True).strip()
+        self.html = self.to_html()
+
+    @api.onchange('answer_ids')
+    def _onchange_answer_ids(self):
+        self.markdown = self.to_string(True).strip()
+        self.html = self.to_html()
+
     @api.onchange('topic_id')
     def _onchange_academy_topid_id(self):
         """ Updates domain form category_ids, this shoud allow categories
@@ -674,6 +804,7 @@ class AcademyTestsQuestion(models.Model):
     def _onchange_ir_attachment_id(self):
         self._compute_ir_attachment_image_ids()
         self.markdown = self.to_string(True).strip()
+        self.html = self.to_html()
 
     # -------------------------- PYTHON CONSTRAINS ----------------------------
 
@@ -716,24 +847,48 @@ class AcademyTestsQuestion(models.Model):
 
         return order_str
 
-    def _update_ir_attachments(self, ownership=False):
+    def _update_ir_attachments(self):
         attachment_set = self.mapped('ir_attachment_ids')
-        values = {'res_model': self._name, 'res_id': 0}
-        if ownership:
-            self.ensure_one()
-            values['owner_id'] = self.owner_id
+        values = {'res_model': None, 'res_id': 0, 'public': True}
 
         attachment_set.write(values)
 
+    def name_get(self):
+        ''' Compute display_name field value.
+        '''
+
+        pattern = '{}. {}'
+        result = []
+
+        for record in self:
+            if isinstance(record.id, models.NewId):
+                text = _('New question')
+            else:
+                text = pattern.format(record.id, record.name)
+
+            result.append((record.id, text))
+
+        return result
+
+    @api.model
+    def fields_get(self, fields=None):
+
+        fields = super(AcademyTestsQuestion, self).fields_get()
+
+        for field_name in fields.keys():
+            fields[field_name]['selectable'] = field_name in self._selectable
+
+        return fields
+
     @api.model
     def create(self, values):
-        """
+        """ Update attachment records
         """
 
         _super = super(AcademyTestsQuestion, self)
         result = _super.create(values)
 
-        # result._update_ir_attachments(ownership=True)
+        result._update_ir_attachments()
 
         return result
 
@@ -753,23 +908,6 @@ class AcademyTestsQuestion(models.Model):
         self._update_ir_attachments()
 
         return result
-
-    def auto_categorize(self):
-        """ Try to append categories to each question in set using regular
-        expressions
-        """
-
-        for record in self:
-            if not record.topic_id:  # This is imposible
-                continue
-
-            # matches => {topic_id: [categorory_id1, ...]}
-            matches = record.topic_id.search_for_categories(
-                [record.name, record.description])
-            ids = matches.get(record.topic_id.id, False)
-
-            if ids:
-                record.category_ids = [(6, None, ids)]
 
     # ----------------------- MESSAGING METHODS ------------------------
 
@@ -1028,25 +1166,84 @@ class AcademyTestsQuestion(models.Model):
         default=None,
         help='Show question as markdown text',
         translate=False,
-        compute=lambda self: self.compute_markdown()
+        compute=lambda self: self.compute_markdown(),
+        store=False
     )
 
-    @api.depends('name', 'preamble', 'answer_ids', 'attachment_ids')
+    @api.depends(
+        'name', 'preamble', 'answer_ids', 'attachment_ids', 'description')
     def compute_markdown(self):
         for record in self:
             record.markdown = record.to_string(True).strip()
 
-    @api.onchange('preamble')
-    def _onchange_preamble(self):
-        self.markdown = self.to_string(True).strip()
+    html = fields.Html(
+        string='Html',
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help='Show question as HTML',
+        compute=lambda self: self.compute_html(),
+        store=False
+    )
 
-    @api.onchange('name')
-    def _onchange_name(self):
-        self.markdown = self.to_string(True).strip()
+    @api.depends(
+        'name', 'preamble', 'answer_ids', 'attachment_ids', 'description')
+    def compute_html(self):
+        for record in self:
+            record.html = record.to_html()
 
-    @api.onchange('answer_ids')
-    def _onchange_answer_ids(self):
-        self.markdown = self.to_string(True).strip()
+    def _get_values_for_template(self):
+        answers = []
+        images = []
+
+        self.ensure_one()
+
+        for answer_item in self.answer_ids:
+            answers.append({
+                'name': answer_item.name,
+                'is_correct': answer_item.is_correct
+            })
+
+        for image_item in self.ir_attachment_image_ids:
+            images.append({
+                'id': self._get_real_id(image_item),
+                'name': image_item.name
+            })
+
+        return {
+            'index': self._get_real_id(),
+            'name': self.name,
+            'preamble': self.preamble,
+            'answers': answers,
+            'images': images
+        }
+
+    def _get_real_id(self, item=None):
+        item = item or self
+
+        item.ensure_one()
+
+        if isinstance(item.id, models.NewId):
+            return item._origin.id
+        else:
+            return item.id
+
+    def to_html(self):
+        output = ''
+
+        template_xid = \
+            'academy_tests.view_academy_tests_display_question_as_html'
+        view_obj = self.env['ir.ui.view']
+
+        for record in self:
+
+            values = record._get_values_for_template()
+
+            html = view_obj.render_template(template_xid, values)
+            output += html.decode('utf8')
+
+        return output
 
     def to_string(self, editable=False):
         """ Export question contents as markdown text
@@ -1059,7 +1256,6 @@ class AcademyTestsQuestion(models.Model):
         """
         output = ''
         index = 0
-        src_field = 'id' if editable else 'local_url'
 
         for record in self:
             lines = []
@@ -1070,9 +1266,12 @@ class AcademyTestsQuestion(models.Model):
             if(desc_line):
                 lines.append(desc_line)
 
-            # STEP 2: Append each one of the attachement lines
+            # STEP 2: Append each one of the attachment lines
             for attach in record.ir_attachment_ids:
-                src_value = getattr(attach, src_field)
+                if editable:
+                    src_value = self._get_real_id(attach)
+                else:
+                    src_value = getattr(attach, 'local_url')
                 attach_line = '![{}]({})'.format(attach.name, src_value)
                 lines.append(attach_line)
 
@@ -1082,12 +1281,13 @@ class AcademyTestsQuestion(models.Model):
                 lines.append(pre_line)
 
             # STEP 4: Append name line (unique)
-            lines.append('{}. {}'.format(index, record.name.strip()))
+            lines.append('{}. {}'.format(index, (record.name or '').strip()))
 
             # STEP 5: Append each one of the answers
             for aindex, answer in enumerate(record.answer_ids):
                 letter = 'x' if answer.is_correct else chr(97 + aindex)
-                lines.append('{}) {}'.format(letter, answer.name.strip()))
+                lines.append('{}) {}'.format(
+                    letter, (answer.name or '').strip()))
 
             # STEP 6: Append empty line (between questions)
             lines.append(linesep)
@@ -1178,6 +1378,28 @@ class AcademyTestsQuestion(models.Model):
 
         return act_dict
 
+    def show_duplicates(self):
+        self.ensure_one()
+
+        act_xid = ('academy_tests.'
+                   'action_remove_duplicate_questions_wizard_act_window')
+        act_item = self.env.ref(act_xid)
+
+        act_dict = dict(
+            name=act_item.name,
+            view_mode='form',
+            view_id=False,
+            view_type='form',
+            res_model=act_item.res_model,
+            type='ir.actions.act_window',
+            target='new',
+            context={
+                'default_question_id': self.id
+            }
+        )
+
+        return act_dict
+
     @api.model
     def domain_to_sql(self, domain):
         items = self._where_calc(domain).get_sql()
@@ -1190,8 +1412,6 @@ class AcademyTestsQuestion(models.Model):
 
         context = self.env.context or {}
         res_id = self[0].id if self else None
-
-        print(context)
 
         if not res_id:
             res_id = self.env.context.get('active_id', False)
@@ -1214,3 +1434,154 @@ class AcademyTestsQuestion(models.Model):
             'flags': {'mode': 'readonly'}
         }
 
+    def to_moodle(self, encoding='utf8', prettify=True, xml_declaration=True,
+                  category=None):
+        quiz = self._moodle_create_quiz(category=category)
+
+        for record in self:
+            node = record._to_moodle()
+            quiz.append(node)
+
+        file = BytesIO()
+        root = quiz.getroottree()
+        root.write(file, encoding=encoding, pretty_print=prettify,
+                   xml_declaration=xml_declaration)
+
+        return file.getvalue()
+
+    @staticmethod
+    def _moodle_create_quiz(category=None):
+        category = category or _('Odoo export')
+
+        node = ET.Element('quiz')
+
+        qnode = ET.SubElement(node, 'question', type='category')
+        cnode = ET.SubElement(qnode, 'category')
+        ET.SubElement(cnode, 'text').text = '$course$/top'
+
+        qnode = ET.SubElement(node, 'question', type='category')
+        cnode = ET.SubElement(qnode, 'category')
+        ET.SubElement(cnode, 'text').text = '$course$/top/{}'.format(category)
+
+        return node
+
+    def _answer_count(self):
+        self.ensure_one()
+
+        right_set = self.answer_ids.filtered(lambda a: a.is_correct)
+
+        return len(self.answer_ids), len(right_set)
+
+    @staticmethod
+    def _moodle_cdata(text=None):
+        return ET.CDATA(text) if text else ''
+
+    @staticmethod
+    def _moodle_paragraphs(text, prettify=True):
+        paragraphs = []
+        lines = text.splitlines()
+        sep = '\n' if prettify else ''
+
+        for line in lines:
+            paragraphs.append('<p>{}</p>'.format(line))
+
+        return sep.join(paragraphs)
+
+    @staticmethod
+    def _moodle_create_node(multichoice=False):
+        node = ET.Element('question', type='multichoice')
+
+        ET.SubElement(node, 'hidden').text = '0'
+        ET.SubElement(node, 'shuffleanswers').text = 'false'
+        ET.SubElement(node, 'answernumbering').text = 'abc'
+        ET.SubElement(node, 'single').text = 'false' if multichoice else 'true'
+
+        return node
+
+    def _moodle_append_name(self, node, name=None):
+        if not name:
+            name = '{}-{}'.format('ID', self.id)
+
+        sub = ET.SubElement(node, 'name')
+        ET.SubElement(sub, 'text').text = name
+
+    def _moodle_append_description(self, node, prettify=True):
+        description = self._moodle_paragraphs(self.description or '', prettify)
+        sub = ET.SubElement(
+            node, 'generalfeedback', format='moodle_auto_format')
+        ET.SubElement(sub, 'text').text = self._moodle_cdata(description)
+
+    def _moodle_append_statement(self, node, prettify=True):
+        tag = '<img src="@@PLUGINFILE@@/{fn}" alt="{fn}" role="presentation">'
+        html = ''
+
+        snode = ET.SubElement(node, 'questiontext', format='html')
+
+        if self.ir_attachment_ids:
+            pattern = '<div style="display: flex;">{}</div>{}'
+            sep = '\n' if prettify else ''
+            img_tags = []
+
+            for attach in self.ir_attachment_ids:
+                ext = mimetypes.guess_extension(attach.mimetype)
+                fname = '{}{}'.format(attach.name, ext)
+
+                attnode = ET.SubElement(
+                    snode, 'file', name=fname, path="/", encoding="base64")
+                attnode.text = attach.datas
+
+                img_tags.append(tag.format(fn=fname))
+
+            html += pattern.format(sep.join(img_tags), sep)
+
+        if self.preamble:
+            html += self._moodle_paragraphs(self.preamble or '', prettify)
+
+        html += self._moodle_paragraphs(self.name or '', prettify)
+
+        ET.SubElement(snode, 'text').text = self._moodle_cdata(html)
+
+    def _moodle_append_answer(self, node, answer, fraction):
+        ans_node = ET.SubElement(
+            node, 'answer', format='moodle_auto_format', fraction=fraction)
+        ET.SubElement(ans_node, 'text').text = self._moodle_cdata(answer.name)
+
+        desc_node = ET.SubElement(
+            ans_node, 'feedback', format='moodle_auto_format')
+        ET.SubElement(desc_node, 'text').text = \
+            self._moodle_cdata(answer.description or '')
+
+    def _to_moodle(self, name=None):
+        self.ensure_one()
+
+        a_total, a_right = self._answer_count()
+        good = 100 / a_right
+        bad = (100 / (a_total - a_right)) * -1
+
+        node = self._moodle_create_node(multichoice=(a_right > 1))
+
+        self._moodle_append_name(node, name)
+        self._moodle_append_statement(node)
+        self._moodle_append_description(node)
+
+        for answer in self.answer_ids:
+            fraction = str(good) if answer.is_correct else str(bad)
+
+            self._moodle_append_answer(node, answer, fraction)
+
+        return node
+
+    def download_as_moodle_xml(self):
+        question_ids = self.mapped('id')
+
+        if not question_ids:
+            raise(_('There are no questions'))
+
+        ids_str = ','.join([str(item) for item in question_ids])
+
+        relative_url = '/academy_tests/moodle/questions?question_ids={}'
+        return {
+            'type': 'ir.actions.act_url',
+            'url': relative_url.format(ids_str),
+            'target': 'self',
+        }

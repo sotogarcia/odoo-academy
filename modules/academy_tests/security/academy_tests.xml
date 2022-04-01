@@ -184,7 +184,7 @@
             <field name="perm_write" eval="True" />
             <field name="perm_unlink" eval="True" />
             <field name="domain_force">['|',('owner_id', '=', user.id), ('owner_id', '=', False)]</field>
-            <field name="active" eval="True" />
+            <field name="active" eval="False" />
         </record>
 
         <record id="academy_technicians_can_update_templates_of_others_rule" model="ir.rule">

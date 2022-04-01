@@ -35,6 +35,35 @@
             </field>
         </record>
 
+        <record id="view_academy_training_action_enrolment_embed_tree" model="ir.ui.view">
+            <field name="name">view.academy.training.action.enrolment.edit.by.user.tree</field>
+            <field name="model">academy.training.action.enrolment</field>
+            <field name="type">tree</field>
+            <field name="mode">extension</field>
+            <field name="priority" eval="24" />
+            <field name="inherit_id" ref="academy_base.view_academy_training_action_enrolment_embed_tree" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='training_action_id']" position="after">
+                    <field name="public_tendering_process_id" />
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_academy_training_action_enrolment_edit_by_user_tree" model="ir.ui.view">
+            <field name="name">view.academy.training.action.enrolment.edit.by.user.tree</field>
+            <field name="model">academy.training.action.enrolment</field>
+            <field name="type">tree</field>
+            <field name="mode">extension</field>
+            <field name="priority" eval="32" />
+            <field name="inherit_id" ref="academy_base.view_academy_training_action_enrolment_edit_by_user_tree" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='training_action_id']" position="after">
+                    <field name="public_tendering_process_id" />
+                </xpath>
+            </field>
+        </record>
 
     </data>
 </openerp>

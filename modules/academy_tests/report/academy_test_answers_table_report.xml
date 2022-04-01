@@ -30,17 +30,50 @@
 
                         <tbody>
 
+                        <t t-set="index" t-value="0" />
+                        <t t-set="previous_test_block_id" t-value="None" />
+
                         <t t-foreach="o.answers_table_ids" t-as="answer">
+
+                            <t t-if="answer.test_block_id != previous_test_block_id">
+
+                                <t t-set="previous_test_block_id" t-value="answer.test_block_id" />
+
+                                <t t-if="answer.test_block_id or answer_index > 0">
+                                    <tr>
+                                        <th colspan="5" class="text-center text-uppercase">
+                                            <t t-if="answer.test_block_id">
+                                                <t t-esc="answer.test_block_id.name" />
+                                            </t>
+                                            <t t-else="">
+                                                ---
+                                            </t>
+                                        </th>
+                                    </tr>
+                                </t>
+
+                                <t t-if="o.restart_numbering">
+                                    <t t-set="index" t-value="1" />
+                                </t>
+                                <t t-else="">
+                                    <t t-set="index" t-value="index + 1" />
+                                </t>
+
+                            </t>
+                            <t t-else="">
+                                <t t-set="index" t-value="index + 1" />
+                            </t>
+
                             <tr>
-                                <th><t t-esc="answer.sequence" /></th>
-                                <td><t t-esc="answer.name" /></td>
-                                <td><t t-esc="answer.description" /></td>
-                                <td>
+                                <th class="answers-table-question"><t t-esc="index" /></th>
+                                <td class="answers-table-answer"><t t-esc="answer.name" /></td>
+                                <td class="answers-table-description"><t t-esc="answer.description" /></td>
+                                <td class="answers-table-topic">
                                     <t t-if="answer.topic_id">
                                         <t t-esc="answer.topic_id.name" />
                                     </t>
                                 </td>
-                                <td>
+                                <td class="answers-table-category">
                                     <t t-if="answer.category_ids">
                                         <ul class="list-inline">
                                         <t t-foreach="answer.category_ids" t-as="category_id">

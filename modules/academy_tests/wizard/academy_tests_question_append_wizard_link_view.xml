@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="view_academy_tests_question_append_wizard_link_tree" model="ir.ui.view">
+            <field name="name">Academy Tests Question Append Wizard Link</field>
+            <field name="model">academy.tests.question.append.wizard.link</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <tree string="Append Wizard Link" create="1" delete="1" edit="1" editable="top" class="oe_append_wizard_link_tree">
+                    <field name="sequence" class="oe_field_sequence" widget="handle" />
+                    <field name="question_id" class="oe_field_question_id" />
+                </tree>
+            </field>
+        </record>
+
+    </data>
+</openerp>

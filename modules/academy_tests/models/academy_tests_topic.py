@@ -7,6 +7,12 @@ all academy tests topic attributes and behavior.
 
 from odoo import models, fields, api
 from odoo.tools.translate import _
+from odoo.osv.expression import FALSE_DOMAIN
+
+from .utils.sql_m2m_through_view import \
+    INHERITED_TOPICS_REL as SEARCH_MODULES, \
+    ACADEMY_TRAINING_ACTIVITY_TEST_TOPIC_REL as SEARCH_ACTIVITIES, \
+    ACADEMY_COMPETENCY_UNIT_TEST_TOPIC_REL as SEARCH_COMPETENCIES
 
 import re
 from logging import getLogger
@@ -103,6 +109,15 @@ class AcademyTestsTopic(models.Model):
         limit=None
     )
 
+    provisional = fields.Boolean(
+        string='Provisional',
+        required=False,
+        readonly=False,
+        index=True,
+        default=False,
+        help='Check it to indicate the topic is not definitive'
+    )
+
     # -------------------------- MANAGEMENT FIELDS ----------------------------
 
     category_count = fields.Integer(
@@ -136,6 +151,165 @@ class AcademyTestsTopic(models.Model):
         help='Show number of questions',
         compute=lambda self: self.compute_question_count()
     )
+
+    training_activity_ids = fields.Many2many(
+        string='Activities',
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help='List all training activities that use this topic',
+        comodel_name='academy.training.activity',
+        relation='academy_training_activity_test_topic_rel',
+        column1='test_topic_id',
+        column2='training_activity_id',
+        domain=[],
+        context={},
+        limit=None,
+        store=False,
+        compute='_compute_training_activity_ids',
+        search='_search_training_activity_ids'
+    )
+
+    competency_unit_ids = fields.Many2many(
+        string='Competency units',
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help='List all competency units that use this topic',
+        comodel_name='academy.competency.unit',
+        relation='academy_competency_unit_test_topic_rel',
+        column1='test_topic_id',
+        column2='competency_unit_id',
+        domain=[],
+        context={},
+        limit=None,
+        store=False,
+        compute='_compute_competency_unit_ids',
+        search='_search_competency_unit_ids'
+    )
+
+    training_module_ids = fields.Many2many(
+        string='Modules',
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help='List all training modules that use this topic',
+        comodel_name='academy.training.module',
+        relation='academy_training_module_test_topic_rel',
+        column1='test_topic_id',
+        column2='training_module_id',
+        domain=[],
+        context={},
+        limit=None,
+        store=False,
+        compute='_compute_training_module_ids',
+        search='_search_training_module_ids'
+    )
+
+    def _compute_training_activity_ids(self):
+        for record in self:
+            record.training_activity_ids = [(5, None, None)]
+
+            model = 'academy.tests.topic.training.module.link'
+            domain = [('topic_id', '=', record.id)]
+            module_ids = self._read_field_values(
+                model, domain, 'training_module_id.id')
+
+            if module_ids:
+                field_path = 'competency_unit_ids.training_module_id.id'
+                domain = [(field_path, 'in', module_ids)]
+                activity_set = self.env['academy.training.activity']
+                activity_ids = activity_set.search(domain).mapped('id')
+
+                if activity_ids:
+                    record.training_activity_ids = [(6, None, activity_ids)]
+
+    def _compute_competency_unit_ids(self):
+        for record in self:
+            record.competency_unit_ids = [(5, None, None)]
+
+            model = 'academy.tests.topic.training.module.link'
+            domain = [('topic_id', '=', record.id)]
+            module_ids = self._read_field_values(
+                model, domain, 'training_module_id.id')
+
+            if module_ids:
+                domain = [('training_module_id', 'in', module_ids)]
+                competency_set = self.env['academy.competency.unit']
+                competency_set = competency_set.search(domain)
+
+                if competency_set:
+                    competency_ids = competency_set.mapped('id')
+                    record.competency_unit_ids = [(6, None, competency_ids)]
+
+    def _compute_training_module_ids(self):
+        for record in self:
+            model = 'academy.tests.topic.training.module.link'
+            domain = [('topic_id', '=', record.id)]
+            module_ids = self._read_field_values(
+                model, domain, 'training_module_id.id')
+
+            if module_ids:
+                record.training_module_ids = [(6, None, module_ids)]
+            else:
+                record.training_module_ids = [(5, None, None)]
+
+    def _search_training_activity_ids(self, operator, value):
+
+        domain = [('name', operator, value)]
+        activity_set = self.env['academy.training.activity']
+        activity_set = activity_set.search(domain)
+
+        path = 'competency_unit_ids.training_module_id.id'
+        module_ids = activity_set.mapped(path)
+
+        domain = self._topic_domain_from_module_ids(module_ids)
+
+        return domain
+
+    def _search_competency_unit_ids(self, operator, value):
+
+        domain = [('competency_name', operator, value)]
+        competency_set = self.env['academy.competency.unit']
+        competency_set = competency_set.search(domain)
+
+        path = 'training_module_id.id'
+        module_ids = competency_set.mapped(path)
+
+        domain = self._topic_domain_from_module_ids(module_ids)
+
+        return domain
+
+    def _search_training_module_ids(self, operator, value):
+
+        model = 'academy.training.module'
+        domain = [('name', operator, value)]
+        module_ids = self._read_field_values(model, domain, 'id')
+
+        domain = self._topic_domain_from_module_ids(module_ids)
+
+        return domain
+
+    def _read_field_values(self, model, domain, field):
+        model_obj = self.env[model]
+        model_set = model_obj.search(domain)
+        return model_set.mapped(field)
+
+    def _topic_domain_from_module_ids(self, module_ids):
+        result = FALSE_DOMAIN
+
+        if module_ids:
+            model = 'academy.tests.topic.training.module.link'
+            domain = [('training_module_id', 'in', module_ids)]
+            topic_ids = self._read_field_values(model, domain, 'topic_id.id')
+
+            if topic_ids:
+                result = [('id', 'in', topic_ids)]
+
+        return result
 
     @api.depends('question_ids')
     def compute_question_count(self):

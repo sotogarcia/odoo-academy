@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="mail_template_you_have_impugnments" model="mail.template">
+            <field name="name">You have impugnments</field>
+            <field name="model_id" ref="base.model_res_users"/>
+            <field name="subject">IMPORTANT: You have impugnments</field>
+            <field name="email_from">"${object.company_id.name | safe}" &lt;${(object.company_id.email or user.email) | safe}&gt;</field>
+            <field name="partner_to">${object.partner_id.id if object.partner_id.email and object.partner_id.email == object.email else False}</field>
+            <field name="reply_to">${object.company_id.email}</field>
+            <field name="lang">${object.partner_id.lang}</field>
+<field name="body_html" type="html">
+<table border="0" cellpadding="0" cellspacing="0" style="background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;"><tr><td align="center">
+<table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
+<tbody>
+    <!-- CONTENT -->
+    <tr>
+        <td align="center" style="min-width: 590px;">
+            <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                <td style="text-align : left">
+                    <span style="font-size: 20px; font-weight: bold;">
+                        You have impugnments
+                    </span><br/><br/>
+                </td>
+                <tr><td valign="top" style="font-size: 13px;">
+                    <div>
+                        <p style="margin: 1.5em 0px!important; line-height: 1.25em;">
+                            Dear ${object.name or ''},
+                        </p>
+
+                        <p style="text-justify; margin: 0.5em 0; line-height: 1.25em;">
+                          You have open disputes regarding any of your questions.
+                        </p>
+
+                       <p style="margin: 0.5em 0; line-height: 1.25em;">
+                            It is important for the students who are doing the
+                            exercises related to these questions that you give
+                            them a quick and correct answer.
+                        </p>
+
+                        <p style="text-justify; margin: 0.5em 0; line-height: 1.25em;">
+                          These disputes can also serve for the process of continuous
+                          improvement of the contents in the platform, since many times
+                          these make clear the multiple interpretations that can be given
+                          to the wording of the statements.
+                        </p>
+
+                        <p style="margin: 1.5em 0px!important; line-height: 1.25em;">
+                            Have a nice day!
+                        </p>
+                        <br>--</br>
+                        <p style="margin: 0.5em 0; line-height: 1.25em;">
+                            The ${object.company_id.name} Team
+                        </p>
+                    </div>
+                </td></tr>
+                <tr><td style="text-align:center;">
+                  <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
+                </td></tr>
+            </table>
+        </td>
+    </tr>
+</tbody>
+</table>
+</td></tr>
+</table>
+            </field>
+            <field name="lang">${object.partner_id.lang}</field>
+            <field name="report_name">${(object.name or 'email')}</field>
+            <field name="report_template" ref="academy_tests.action_report_uncategorized_by_user" />
+            <field name="auto_delete" eval="True"/>
+            <field name="user_signature" eval="False"/>
+        </record>
+
+    </data>
+</openerp>

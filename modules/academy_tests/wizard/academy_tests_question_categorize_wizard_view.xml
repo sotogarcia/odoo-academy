@@ -88,13 +88,14 @@
 
         <record id="action_question_categorize_wizard_act_window" model="ir.actions.act_window">
             <field name="type">ir.actions.act_window</field>
-            <field name="name">Categorize</field>
+            <field name="name">Bulk categorization</field>
             <field name="res_model">academy.tests.question.categorize.wizard</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>
             <field name="domain">[]</field>
             <field name="context">{}</field>
             <field name="binding_model_id" ref="academy_tests.model_academy_tests_question" />
+            <field name="binding_view_types">list</field>
         </record>
 
     </data>

@@ -13,7 +13,7 @@
             <field name="arch" type="xml">
                 <form string="Question Append Wizard" create="1" delete="1" edit="1">
                     <header>
-                        <button name="execute" string="Execute" type="object" />
+                        <button name="execute" string="Append" type="object" />
                     </header>
 
                         <group col="2">
@@ -21,7 +21,7 @@
                         </group>
 
                         <group col="1" string="Questions">
-                            <field name="question_ids" nolabel="1" />
+                            <field name="question_link_ids" nolabel="1" />
                         </group>
 
                    <footer />

@@ -77,6 +77,20 @@ class AcademyTestsAnswersTable(models.Model):
         auto_join=False,
     )
 
+    link_id = fields.Many2one(
+        string='Test/Question link',
+        required=True,
+        readonly=False,
+        index=False,
+        default=None,
+        help='Test question relationship',
+        comodel_name='academy.tests.test.question.rel',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False
+    )
+
     sequence = fields.Integer(
         string='Sequence',
         required=True,
@@ -123,6 +137,11 @@ class AcademyTestsAnswersTable(models.Model):
         compute=lambda self: self._compute_category_ids()
     )
 
+    test_block_id = fields.Many2one(
+        string='Test block',
+        related='link_id.test_block_id'
+    )
+
     @api.depends('question_id')
     def _compute_category_ids(self):
         for record in self:
@@ -142,3 +161,4 @@ class AcademyTestsAnswersTable(models.Model):
                 ACADEMY_TESTS_ANSWERS_TABLE_MODEL
             )
         )
+

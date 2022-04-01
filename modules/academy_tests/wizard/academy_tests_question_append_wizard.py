@@ -45,52 +45,69 @@ class Nameofmodel(models.TransientModel):
         auto_join=False
     )
 
-    question_ids = fields.Many2many(
+    question_link_ids = fields.One2many(
         string='Questions',
         required=True,
         readonly=False,
         index=False,
-        help='False',
-        comodel_name='academy.tests.question',
-        relation='academy_tests_question_append_wizard_rel',
-        column1='question_append_wizard_id',
-        column2='question_id',
+        default=lambda self: self.default_question_ids(),
+        help=False,
+        comodel_name='academy.tests.question.append.wizard.link',
+        inverse_name='wizard_id',
         domain=[],
         context={},
-        limit=None,
-        default=lambda self: self.default_question_ids(),
+        auto_join=False,
+        limit=None
     )
 
-    def _context_has_links(self):
-        """ Check if context active_ids belongs to the
-        academy.tests.test.question.rel records
+    def _get_active_ids(self):
+        """Get active_ids context keyword values
+
+        Returns:
+            list: list of integers with gotten IDs
         """
+        return self.env.context.get('active_ids', [])
 
-        link = 'academy.tests.test.question.rel'
-
-        return self.env.context.get('active_model') == link
-
-    def _mapped_questions(self, ids):
-        """ Get questions related with academy.tests.test.question.rel records
-        with the given ID's.
+    def _get_active_model_and_path(self):
+        """ Get active_model from context and choose mapping path to access to
+        question ID
         """
+        model = self.env.context.get('active_model')
 
-        link_domain = [('id', 'in', ids)]
-        link_obj = self.env['academy.tests.test.question.rel']
-        link_set = link_obj.search(link_domain)
+        if model == 'academy.tests.test.question.rel':
+            return model, 'question_id.id'
+        elif model == 'academy.tests.question':
+            return model, 'id'
 
-        return link_set.mapped('question_id.id')
+        return False, False
 
     def default_question_ids(self):
         """ Get default `id` values from context, these will be questions
         had been chosen before launch this wizard
         """
 
-        ids = self.env.context.get('active_ids', [])
-        if self._context_has_links():
-            ids = self._mapped_questions(ids)
+        x2mop = [(5, 0, 0)]
 
-        return [(6, None, ids)] if ids else False
+        active_ids = self._get_active_ids()
+        active_model, path_for_id = self._get_active_model_and_path()
+
+        if active_model and active_ids:
+
+            domain = [('id', 'in', active_ids)]
+            model_obj = self.env[active_model]
+            record_set = model_obj.search(domain)
+
+            sequence = 0
+            for record in record_set:
+                sequence += 1
+                values = {
+                    'wizard_id': self.id,
+                    'question_id': record.mapped(path_for_id)[0],
+                    'sequence': sequence
+                }
+                x2mop.append((0, 0, values))
+
+        return x2mop
 
     def default_test_id(self):
         """ Get last test used with wizard. Wizard is a transient model
@@ -98,7 +115,7 @@ class Nameofmodel(models.TransientModel):
         """
 
         uid = self.env.context.get('uid', -1)
-        domain = [('owner_id', '=', uid)]
+        domain = [('create_uid', '=', uid)]
         order = 'write_date desc, create_date desc, id desc'
 
         wizard_set = self.search(domain, limit=1, order=order)
@@ -117,7 +134,7 @@ class Nameofmodel(models.TransientModel):
             raise ValidationError(_('Test field is required'))
             return False
 
-        if not self.question_ids:
+        if not self.question_link_ids:
             raise ValidationError(_('Questions field is required'))
             return False
 
@@ -138,17 +155,17 @@ class Nameofmodel(models.TransientModel):
         self._ensure_required()
 
         sequence = self._get_last_sequence()
-        rel_obj = self.env['academy.tests.test.question.rel']
 
-        for question_id in self.question_ids:
-            if question_id.depends_on_id:
+        operations = []
+        for link in self.question_link_ids:
+            if link.question_id.depends_on_id:
                 raise UserError(dep_msg)
 
-            values = {
-                'test_id': self.test_id.id,
-                'question_id': question_id.id,
-                'sequence': sequence + 1,
-                'active': question_id.active and self.test_id.active
-            }
+            sequence += 1
+            link = {'sequence': sequence, 'question_id': link.question_id.id}
+            operations.append((0, None, link))
 
-            rel_obj.create(values)
+        if self.test_id and operations:
+            self.test_id.question_ids = operations
+
+        self.test_id.resequence()

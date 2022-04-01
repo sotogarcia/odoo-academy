@@ -9,6 +9,7 @@ from odoo import models, fields, api
 from odoo.tools.translate import _
 from odoo.exceptions import UserError
 from odoo.osv.expression import AND
+from odoo.osv.expression import TRUE_DOMAIN
 from .utils.libuseful import eval_domain
 from enum import IntFlag
 
@@ -70,7 +71,7 @@ class AcademyTestsRandomTemplate(models.Model):
     )
 
     random_line_ids = fields.One2many(
-        string='Lines',
+        string='Criteria',
         required=True,
         readonly=False,
         index=False,
@@ -147,6 +148,21 @@ class AcademyTestsRandomTemplate(models.Model):
         default=0,
         help='Show number of scheduled tasks',
         compute=lambda self: self.compute_scheduled_count()
+    )
+
+    incremental = fields.Selection(
+        string='Incremental',
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help='Exclude questions previously selected by this template',
+        selection=[
+            ('tpl', 'Template'),
+            ('usr', 'Active user'),
+            ('tplusr', 'Template/Active user')
+        ],
+        wizard=True
     )
 
     @api.depends('scheduled_ids')
@@ -349,33 +365,38 @@ class AcademyTestsRandomTemplate(models.Model):
         return {
             'test_id': test_id.id,
             'question_id': None,
-            'sequence': sequence,
-            'active': True
+            'sequence': sequence
         }
 
-    @staticmethod
-    def _build_many2many_write_action(question_set, base_values):
+    @classmethod
+    def _build_many2many_write_action(cls, question_set, base_values):
         leafs = []
-        values = base_values.copy()
+        values = cls._dict_copy(base_values)
+
         for question in question_set:
             values['question_id'] = question.id
             values['sequence'] = values['sequence'] + 1
 
-            leafs.append((0, None, values.copy()))
+            leafs.append((0, None, cls._dict_copy(values)))
 
         return leafs
 
     def _perform_many2many_write_action(self, leafs, test_id):
         return test_id.write({'question_ids': leafs})
 
+    @staticmethod
+    def _dict_copy(in_dict):
+        return in_dict.copy() if in_dict else {}
+
     # ---------------------------- PUBIC METHODS ------------------------------
 
-    def assert_expected_questions(self, result_set):
+    def assert_expected_questions(self, items):
         """ Check if are there enough questions in given recordset to supply
         required by the template
 
         Arguments:
-            result_set {recordset} -- question recordset will be checked
+            items {recordset|list} -- question recordset or x2many
+            operations will be checked
 
         Raises:
             UserError -- if the length of the record is different than required
@@ -384,7 +405,7 @@ class AcademyTestsRandomTemplate(models.Model):
 
         self.compute_quantity()
 
-        have = len(result_set)
+        have = len(items)
         need = self.quantity
         skip = self.skip_faulty_lines
 
@@ -520,24 +541,33 @@ class AcademyTestsRandomTemplate(models.Model):
         self.ensure_one()
 
         question_set = self.env['academy.tests.question']
-
         values = self._get_test_info(overwrite, test_id=test_id)
+
+        question_ids = self._exclude_incremental()
+        if question_ids:
+            domain = [('id', 'not in', question_ids)]
+        else:
+            domain = []
 
         overwrite = self._has_flag(overwrite, OverwriteInfo.QUESTIONS)
         if test_id.question_ids and not overwrite:
-            ids = test_id.question_ids.mapped('question_id')
-            exclude_existing = [('id', 'not in', ids)]
+            ids = test_id.question_ids.mapped('question_id.id')
+            domain.extend([('id', 'not in', ids)])
             values['question_ids'] = []
         else:
-            exclude_existing = []
             values['question_ids'] = [(5, 0, 0)]
             values['random_template_id'] = self._original_template_id()
 
-        question_set = self.random_line_ids.perform_search(
-            exclude_existing, context_ref, self.skip_faulty_lines)
-        self.assert_expected_questions(question_set)
+        # question_set = self.random_line_ids.perform_search(
+        #     domain, context_ref, self.skip_faulty_lines)
 
-        link_values = self._build_link_operations(question_set)
+        link_values = self.random_line_ids.build_link_operations(
+            domain, context_ref, self.skip_faulty_lines)
+
+        self.assert_expected_questions(link_values)
+        self.assert_no_more_than_required(link_values)
+
+        # link_values = self._build_link_operations(question_set)
         values['question_ids'].extend(link_values)
 
         test_id.write(values)
@@ -553,7 +583,6 @@ class AcademyTestsRandomTemplate(models.Model):
         success = self._begin_proccess()
 
         try:
-
             for record in self:
                 question_set += record._append_questions(
                     test_id, overwrite, context_ref)
@@ -574,29 +603,60 @@ class AcademyTestsRandomTemplate(models.Model):
     def _build_link_operations(self, question_set):
         operations = []
 
+        request_id = self.env.context.get('request_id', None)
+
         sequence = 10
         for question_item in question_set:
-            link = {'sequence': sequence, 'question_id': question_item.id}
+            link = {
+                'sequence': sequence,
+                'question_id': question_item.id,
+                'request_id': request_id
+            }
             operations.append((0, None, link))
             sequence += 10
 
         return operations
 
+    def assert_no_more_than_required(self, items):
+        msg = _('Too many questions supplied {}/{}')
+
+        request_id = self.env.context.get('request_id', False)
+
+        if request_id:
+            domain = [('id', '=', request_id)]
+            request_set = self.env['academy.tests.question.request']
+            result = request_set.search_read(domain, ['maximum'])
+
+            if result:
+                if(len(items) > result[0]['maximum']):
+                    msg = msg.format(len(items), result[0]['maximum'])
+                    raise UserError(msg)
+
     def _new_test(self, context_ref):
         self.ensure_one()
 
         test_id = None
+        allow_partial = self.skip_faulty_lines
 
-        question_set = self.random_line_ids.perform_search(
-            context_ref=context_ref, allow_partial=self.skip_faulty_lines)
-        self.assert_expected_questions(question_set)
+        # question_set = self.random_line_ids.perform_search(
+        #     context_ref=context_ref, allow_partial=self.skip_faulty_lines)
 
         values = self._get_test_info(overwrite=OverwriteInfo.ALL, test_id=None)
         values['name'] = self._new_name()
         values['random_template_id'] = self._original_template_id()
 
-        link_values = self._build_link_operations(question_set)
-        values['question_ids'] = link_values
+        question_ids = self._exclude_incremental()
+        if question_ids:
+            domain = [('id', 'not in', question_ids)]
+        else:
+            domain = TRUE_DOMAIN
+
+        # link_values = self._build_link_operations(question_set)
+        values['question_ids'] = self.random_line_ids.build_link_operations(
+            extra=domain, context_ref=context_ref, allow_partial=allow_partial)
+
+        self.assert_expected_questions(values['question_ids'])
+        self.assert_no_more_than_required(values['question_ids'])
 
         test_id = self.env['academy.tests.test']
         test_id = test_id.create(values)
@@ -718,3 +778,44 @@ class AcademyTestsRandomTemplate(models.Model):
             'view_ids': action.view_ids.mapped('id'),
             'views': action.views
         }
+
+    def edit_lines(self):
+        self.ensure_one()
+
+        view_xid = 'academy_tests.view_academy_tests_random_line_editable_tree'
+
+        return {
+            'name': _('Lines in «{}»').format(self.name),
+            'view_mode': 'tree',
+            'view_id': self.env.ref(view_xid).id,
+            'view_type': 'form',
+            'res_model': 'academy.tests.random.line',
+            'type': 'ir.actions.act_window',
+            'nodestroy': True,
+            'target': 'current',
+            'domain': [('random_template_id', '=', self.id)],
+        }
+
+    def _exclude_incremental(self):
+        question_ids = []
+
+        self.ensure_one()
+
+        if self.incremental:
+
+            test_obj = self.env['academy.tests.test']
+            map_path = 'question_ids.question_id.id'
+            domain = []
+
+            if self.incremental in ['tpl', 'tplusr']:
+                tplid = self._original_template_id()
+                domain.append(('random_template_id', '=', tplid))
+
+            if self.incremental in ['usr', 'tplusr']:
+                uid = self.env.context.get('uid', False)
+                domain.append(('owner_id', '=', uid))
+
+            test_set = test_obj.search(domain)
+            question_ids = test_set.mapped(map_path)
+
+        return question_ids

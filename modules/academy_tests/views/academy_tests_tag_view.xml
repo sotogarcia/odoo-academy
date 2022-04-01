@@ -93,7 +93,7 @@
             <field name="view_mode">tree,form</field>
             <field name="target">current</field>
             <field name="domain">[]</field>
-            <field name="context">{"search_default_my_tags":1}</field>
+            <field name="context">{"search_default_my_tags": 1}</field>
             <field name="search_view_id" ref="view_academy_tag_search" />
             <field name="help" type="html">
                <p class="oe_view_nocontent_create">

@@ -5,7 +5,7 @@
 
         <record id="view_academy_test_question_gift_qweb" model="ir.ui.view">
             <field name="name">Academy Test Question GIFT report</field>
-            <field name="model">academy.test.question</field>
+            <field name="model">academy.tests.question</field>
             <field name="type">qweb</field>
             <field name="mode">primary</field>
             <field name="priority" eval="16" />

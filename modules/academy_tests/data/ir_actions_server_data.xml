@@ -3,12 +3,52 @@
 <openerp>
     <data noupdate="0">
 
-        <record id="action_download_as_word_document" model="ir.actions.server">
+<!--         <record id="action_download_as_word_document" model="ir.actions.server">
             <field name="type">ir.actions.server</field>
             <field name="name">Download as Word document</field>
             <field name="model_id" ref="academy_tests.model_academy_tests_test" />
             <field name="sequence" eval="5" />
             <field name="code">action = self.to_docx(cr, uid, context=context)</field>
+        </record> -->
+
+        <record id="action_remove_duplicate_questions" model="ir.actions.server">
+            <field name="type">ir.actions.server</field>
+            <field name="name">Remove duplicates</field>
+            <field name="model_id" ref="academy_tests.model_academy_tests_question" />
+            <field name="sequence" eval="5" />
+            <field name="state">code</field>
+            <field name="code">
+if records:
+    wizard = env['academy.tests.remove.duplicate.questions.wizard']
+    wizard.remove_duplicates(records)
+            </field>
+            <field name="binding_model_id" ref="academy_tests.model_academy_tests_question" />
+            <field name="binding_view_types">list</field>
+            <field name="groups_id" eval="[(4, ref('academy_base.academy_group_teacher'))]"/>
+        </record>
+
+        <record id="action_download_test_as_moodle_xml" model="ir.actions.server">
+            <field name="type">ir.actions.server</field>
+            <field name="name">Export to moodle</field>
+            <field name="model_id" ref="academy_tests.model_academy_tests_test" />
+            <field name="sequence" eval="5" />
+            <field name="state">code</field>
+            <field name="code">action = record.download_as_moodle_xml()</field>
+            <field name="binding_model_id" ref="academy_tests.model_academy_tests_test" />
+            <field name="binding_view_types">form</field>
+            <field name="groups_id" eval="[(4, ref('academy_base.academy_group_teacher'))]"/>
+        </record>
+
+        <record id="action_download_questions_as_moodle_xml" model="ir.actions.server">
+            <field name="type">ir.actions.server</field>
+            <field name="name">Export to moodle</field>
+            <field name="model_id" ref="academy_tests.model_academy_tests_question" />
+            <field name="sequence" eval="5" />
+            <field name="state">code</field>
+            <field name="code">action = records.download_as_moodle_xml()</field>
+            <field name="binding_model_id" ref="academy_tests.model_academy_tests_question" />
+            <field name="binding_view_types">list,form</field>
+            <field name="groups_id" eval="[(4, ref('academy_base.academy_group_teacher'))]"/>
         </record>
 
     </data>

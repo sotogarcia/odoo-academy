@@ -25,7 +25,7 @@ class AcademyTestsQuestionImpugnmentReply(models.Model):
 
     description = fields.Text(
         string='Description',
-        required=False,
+        required=True,
         readonly=False,
         index=False,
         default=None,
@@ -70,3 +70,25 @@ class AcademyTestsQuestionImpugnmentReply(models.Model):
         ondelete='cascade',
         auto_join=False
     )
+
+    def create(self, values):
+        """ Call parent inpugnment update method
+        """
+
+        _super = super(AcademyTestsQuestionImpugnmentReply, self)
+        result = _super.create(values)
+
+        result.impugnment_id.update_state()
+
+        return result
+
+    def write(self, values):
+        """ Call parent inpugnment update method
+        """
+
+        _super = super(AcademyTestsQuestionImpugnmentReply, self)
+        result = _super.write(values)
+
+        self.impugnment_id.update_state()
+
+        return result

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="mail_template_verify_questions_reminder" model="mail.template">
+            <field name="name">verify questions reminder</field>
+            <field name="model_id" ref="academy_tests.model_academy_tests_question_request"/>
+            <field name="subject">IMPORTANT: Question verification</field>
+            <field name="email_from">"${object.res_user_id.company_id.name | safe}" &lt;${(object.res_user_id.company_id.email or user.email) | safe}&gt;</field>
+            <field name="partner_to">${object.res_user_id.partner_id.id if object.res_user_id.partner_id.email and object.res_user_id.partner_id.email == object.res_user_id.email else False}</field>
+            <field name="reply_to">${object.res_user_id.company_id.email}</field>
+            <field name="lang">${object.res_user_id.partner_id.lang}</field>
+<field name="body_html" type="html">
+<table border="0" cellpadding="0" cellspacing="0" style="background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;"><tr><td align="center">
+<table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
+<tbody>
+    <!-- CONTENT -->
+    <tr>
+        <td align="center" style="min-width: 590px;">
+            <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                <td style="text-align : left">
+                    <span style="font-size: 20px; font-weight: bold;">
+                        Question verification
+                    </span><br/><br/>
+                </td>
+                <tr><td valign="top" style="font-size: 13px;">
+                    <div>
+                        <p style="margin: 1.5em 0px!important; line-height: 1.25em;">
+                            Dear ${object.res_user_id.name or ''},
+                        </p>
+
+                        <p style="text-justify; margin: 0.5em 0; line-height: 1.25em;">
+                            It is important that you verify that the <b>${object.submited}</b>
+                            questions provided for the «<i>${object.request_set_id.test_id.name}</i>»
+                            exercise are appropriate.
+                        </p>
+
+                        <p style="text-justify; margin: 0.5em 0; line-height: 1.25em;">
+                            Click <a href="${object.generate_url()}">here</a> for quick access
+                            to the list of submitted questions.
+                        </p>
+
+                        <p style="text-justify; margin: 0.5em 0; line-height: 1.25em;">
+                            The person in charge of collecting the questions for
+                            the exercise is <b>${object.request_set_id.owner_id.partner_id.name}</b>.
+
+                        % if object and object.request_set_id.owner_id.partner_id.email:
+                            You can contact this person via email at the following address
+                            <a href="mailto:${object.request_set_id.owner_id.partner_id.email}?subject=${object.request_set_id.name} - ${object.res_user_id.name or ''}, ${object.id}" title="${object.request_set_id.owner_id.partner_id.email}">${object.request_set_id.owner_id.partner_id.email}</a>.
+                        % endif
+                        </p>
+
+                        <p style="margin: 1.5em 0px!important; line-height: 1.25em;">
+                            Thank you in advance!
+                        </p>
+                        <br>-·-</br>
+                        <p style="margin: 0.5em 0; line-height: 1.25em;">
+                            The ${object.res_user_id.company_id.name} Team
+                        </p>
+                    </div>
+                </td></tr>
+                <tr><td style="text-align:center;">
+                  <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
+                </td></tr>
+            </table>
+        </td>
+    </tr>
+</tbody>
+</table>
+</td></tr>
+</table>
+            </field>
+            <field name="lang">${object.res_user_id.partner_id.lang}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="user_signature" eval="False"/>
+        </record>
+
+    </data>
+</openerp>

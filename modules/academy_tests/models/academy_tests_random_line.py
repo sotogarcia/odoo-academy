@@ -23,7 +23,7 @@ WIZARD_LINE_STATES = [
     ('step2', _('Categorization')),
     ('step3', _('Tests')),
     ('step4', _('Questions')),
-    ('step5', _('Restrictions'))
+    ('step5', _('Special'))
 ]
 
 RESTRICT_BY = [
@@ -129,7 +129,7 @@ class AcademyTestsRandomWizardLine(models.Model):
         domain=[],
         context={},
         ondelete='cascade',
-        auto_join=False
+        auto_join=True
     )
 
     quantity = fields.Integer(
@@ -474,6 +474,20 @@ class AcademyTestsRandomWizardLine(models.Model):
               'between given minimum and maximum values')
     )
 
+    test_block_id = fields.Many2one(
+        string='Test block',
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help=False,
+        comodel_name='academy.tests.test.block',
+        domain=[],
+        context={},
+        ondelete='set null',
+        auto_join=False
+    )
+
     # ----------------------- AUXILIARY FIELD METHODS -------------------------
 
     def default_name(self):
@@ -681,7 +695,7 @@ class AcademyTestsRandomWizardLine(models.Model):
             domain = [('authorship', operator, True)]
             domains.append(domain)
 
-    def _append_attachements(self, domains):
+    def _append_attachments(self, domains):
         """ Appends new domain to the given list with the needed leaft to allow
         filtering using attachments
 
@@ -785,7 +799,7 @@ class AcademyTestsRandomWizardLine(models.Model):
 
         self._append_answers(domains)
         self._append_authorship(domains)
-        self._append_attachements(domains)
+        self._append_attachments(domains)
 
         self._append_tests(domains, context_ref)
         self._append_questions(domains, context_ref)
@@ -1043,6 +1057,24 @@ class AcademyTestsRandomWizardLine(models.Model):
 
         return results
 
+    def _assert_restrictions(self, domain, context_ref):
+        available = self._get_stock(domain)
+
+        if self.stock_by == 'pct':
+            self._assert_stock(available)
+
+        if self.answered_by or self.restrict_by:
+            statistics = self._statistics_domain(context_ref)
+
+            if self.answered_by:
+                question_ids = self._assert_answer(statistics, available)
+
+            if self.restrict_by:
+                question_ids = self._assert_restricted(statistics, available)
+
+            if question_ids:
+                domain = AND([domain, [('id', 'in', question_ids)]])
+
     def _perform_search(self, extra, context_ref):
         """ Performs search for a single template record, that is why the first
         line is an ``ensure_one``.
@@ -1067,23 +1099,7 @@ class AcademyTestsRandomWizardLine(models.Model):
         question_set = question_set.with_context(ctx)
 
         domain = self._compute_domain(extra, context_ref)
-
-        available = self._get_stock(domain)
-
-        if self.stock_by == 'pct':
-            self._assert_stock(available)
-
-        if self.answered_by or self.restrict_by:
-            statistics = self._statistics_domain(context_ref)
-
-            if self.answered_by:
-                question_ids = self._assert_answer(statistics, available)
-
-            if self.restrict_by:
-                question_ids = self._assert_restricted(statistics, available)
-
-            if question_ids:
-                domain = AND([domain, [('id', 'in', question_ids)]])
+        self._assert_restrictions(domain, context_ref)
 
         self._log_operation(domain, LogDomain.FINAL)
 
@@ -1138,3 +1154,67 @@ class AcademyTestsRandomWizardLine(models.Model):
             result_set += record_set
 
         return result_set
+
+    def perform_search_count(self, extra=None, context_ref=None):
+        self.ensure_one()
+
+        if not context_ref:
+            context_ref = self.random_template_id.context_ref
+
+        question_set = self.env['academy.tests.question']
+        domain = self._compute_domain(extra or [], context_ref)
+
+        self._log_operation(domain, LogDomain.FINAL)
+
+        return question_set.search_count(domain)
+
+    def build_link_operations(
+            self, extra=None, context_ref=None, allow_partial=False):
+        """ Performs search for all lines in given recorset. This method
+        calls a private ``_perform_search`` method by earch record.
+
+        This uses resulted question IDs to exclude them when it will perform
+        the next line search
+
+        Keyword Arguments:
+            extra {list} -- Odoo valid domain will be merged as extra leafs in
+            new computed domain (default: {None})
+            random {bool} -- True to allow return found questions when the
+            required quantity has not been reached
+
+        Returns:
+            recordset -- found question recordset using all lines
+        """
+
+        ids = []
+        extra, domain = self._initialize_domains(extra)
+
+        request_id = self.env.context.get('request_id', None)
+
+        operations = []
+        sequence = 10
+
+        for record in self:
+            record_set = record._perform_search(domain, context_ref)
+
+            record._assert_expected_questions(record_set, allow_partial)
+            ids.extend(record_set.mapped('id'))
+            if ids:
+                domain = AND([extra, [('id', 'not in', ids)]])
+
+            if record.test_block_id:
+                test_block_id = record.test_block_id.id
+            else:
+                test_block_id = None
+
+            for question_item in record_set:
+                link = {
+                    'sequence': sequence,
+                    'question_id': question_item.id,
+                    'request_id': request_id,
+                    'test_block_id': test_block_id
+                }
+                operations.append((0, None, link))
+                sequence += 10
+
+        return operations

@@ -18,7 +18,8 @@ from odoo.tools.safe_eval import safe_eval
 from odoo.osv.expression import AND
 
 from .utils.custom_model_fields import Many2manyThroughView
-from .utils.raw_sql import ACADEMY_TRAINING_ACTION_AVAILABLE_RESOURCE_REL
+from .utils.raw_sql import ACADEMY_TRAINING_ACTION_AVAILABLE_RESOURCE_REL, \
+    ACADEMY_TRAINING_ACTION_STUDENT_REL
 
 # pylint: disable=locally-disabled, C0103
 _logger = getLogger(__name__)
@@ -276,6 +277,23 @@ class AcademyTrainingAction(models.Model):
         sql=ACADEMY_TRAINING_ACTION_AVAILABLE_RESOURCE_REL
     )
 
+    student_ids = Many2manyThroughView(
+        string='Students',
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help='Show the students have been enrolled in this training action',
+        comodel_name='academy.student',
+        relation='academy_training_action_student_rel',
+        column1='training_action_id',
+        column2='student_id',
+        domain=[],
+        context={},
+        limit=None,
+        sql=ACADEMY_TRAINING_ACTION_STUDENT_REL
+    )
+
     training_action_enrolment_count = fields.Integer(
         string='Number of enrolments',
         required=False,
@@ -407,12 +425,12 @@ class AcademyTrainingAction(models.Model):
             'type': action.type,
             'help': action.help,
             'domain': domain,
-            'context': action.context,
+            'context': {'default_training_action_id': self.id},
             'res_model': action.res_model,
             'target': action.target,
             'view_mode': action.view_mode,
             'search_view_id': action.search_view_id.id,
-            'target': 'current'
+            'target': 'current',
         }
 
         return action_values

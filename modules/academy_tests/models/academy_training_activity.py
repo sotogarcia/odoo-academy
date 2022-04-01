@@ -90,3 +90,15 @@ class AcademyTrainingActivity(models.Model):
         limit=None,
         sql=AVAILABLE_QUESTIONS
     )
+
+    def create_test_template(self, no_open=False):
+        template_obj = self.env['academy.tests.random.template']
+        module_obj = self.env['academy.training.module']
+
+        values = module_obj.get_template_values(
+            self.competency_unit_ids, name=self.name)
+
+        template = template_obj.create(values)
+
+        if not no_open and template:
+            return module_obj._template_act_window(template)

@@ -29,6 +29,7 @@
                     decoration-warning="depends_on_id" decoration-danger="status == 'draft'"
                     class="view_academy_tests_test_question_rel_tree">
 
+                    <field name="test_id" class="oe_field_test_id" invisible="1" />
                     <field name="status" class="oe_field_status" invisible="1" readonly="1" />
                     <field name="depends_on_id" class="oe_field_depends_on_id" invisible="1" readonly="1" />
 
@@ -54,11 +55,36 @@
             <field name="mode">primary</field>
             <field name="priority" eval="20" />
             <field name="active" eval="True" />
-            <field name="inherit_id" ref="view_academy_tests_test_question_rel_tree" />
+            <field name="inherit_id"></field>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='index']" position="before">
+                <tree string="Question" create="1" delete="1" edit="1" editable="bottom"
+                    decoration-success="not depends_on_id and not status == 'draft'"
+                    decoration-warning="depends_on_id" decoration-danger="status == 'draft'"
+                    class="view_academy_tests_test_question_rel_tree">
+
                     <field name="sequence" class="oe_field_sequence oe_edit_only" widget="handle" />
-                </xpath>
+
+                    <field name="test_id" class="oe_field_test_id" invisible="1" />
+                    <field name="status" class="oe_field_status" invisible="1" readonly="1" />
+                    <field name="depends_on_id" class="oe_field_depends_on_id" invisible="1" readonly="1" />
+
+                    <field name="index" class="oe_field_index oe_edit_only" />
+
+                    <field name="question_id" class="oe_field_name oe_edit_only"
+                        context="{'search_default_all_available_questions': 1}" />
+
+                    <field name="test_block_id" class="oe_field_test_block_id oe_edit_only" />
+
+                    <field name="type_id" class="oe_field_type_id oe_edit_only" readonly="1" />
+                    <field name="topic_id" class="oe_field_topic_id oe_edit_only" readonly="1" string="Version" />
+<!--                     <field name="topic_version_ids" class="oe_field_topic_version_ids oe_edit_only" widget="many2many_tags" readonly="1" />
+                    <field name="category_ids" class="oe_field_category_ids oe_edit_only" widget="many2many_tags" readonly="1" />
+                    <field name="level_id" class="oe_field_level_id oe_edit_only" readonly="1" />
+ -->
+                    <field name="link_html" class="oe_field_link_html oe_read_only"
+                        string="Statement" readonly="1"
+                        widget="html" options="{'style-inline': true, 'safe': True}" />
+                </tree>
             </field>
         </record>
 
@@ -72,6 +98,9 @@
             <field name="active" eval="True" />
             <field name="inherit_id" ref="view_academy_question_form" />
             <field name="arch" type="xml">
+                <xpath expr="//form" position="attributes">
+                    <attribute name="duplicate">0</attribute>
+                </xpath>
 
                 <xpath expr="//div[@name='button_box']" position="attributes">
                     <attribute name="attrs">{'invisible': [('question_id', '=', False), ('perform', '=', 'link')]}</attribute>
@@ -111,10 +140,17 @@
             <field name="active" eval="True" />
             <field name="inherit_id" ref="view_academy_tests_question_kanban" />
             <field name="arch" type="xml">
+                <xpath expr="//kanban/field[@name='name']" position="before">
+                    <!-- Required by custom javascript -->
+                    <field name="question_id" />
+                    <field name="sequence" />
+                </xpath>
+                <xpath expr="//h4/field[@name='id']" position="replace">
+                    <field name="sequence" class="oe_field_sequence" />.
+                </xpath>
                 <xpath expr="//kanban" position="attributes">
                     <attribute name="create">0</attribute>
                 </xpath>
-                <xpath expr="//div[@id='question_kanban_status_menu_button']" position="replace" />
             </field>
         </record>
 
@@ -142,13 +178,13 @@
             <field name="mode">primary</field>
             <field name="priority" eval="20" />
             <field name="active" eval="True" />
-            <field name="inherit_id"></field>
+            <field name="inherit_id" ref="academy_tests.view_academy_question_search" />
             <field name="arch" type="xml">
-                <search string="Test question link search view">
-                    <field name="name" class="oe_field_name" />
-                    <field name="topic_id" class="oe_field_topic_id" />
-                    <field name="category_ids" class="oe_field_category_ids" />
-                </search>
+                <xpath expr="//field[@name='id']" position="replace">
+                    <field name="real_question_id" string="Question ID" />
+                </xpath>
+                <xpath expr="//filter" position="replace" />
+                <xpath expr="//separator" position="replace" />
             </field>
         </record>
 

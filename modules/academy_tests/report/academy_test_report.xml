@@ -72,7 +72,7 @@
                         <!-- IMAGE-ATTACHMENTS:: BEGIN -->
                         <t t-set="display_image_ids" t-value="question_id.ir_attachment_image_ids" />
 
-                        <t t-if="not previous_attachment_ids or previous_attachment_ids != question_id.ir_attachment_ids">
+                        <t t-if="o.repeat_images or not previous_attachment_ids or previous_attachment_ids != question_id.ir_attachment_ids">
 
                             <t t-foreach="display_image_ids" t-as="ir_attachment_image_id">
                                 <t t-call="academy_tests.academy_post_test_question_image" />
@@ -97,6 +97,59 @@
             </field>
         </record>
 
+        <!-- REPORT: "Manage blocks"
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        <record id="view_academy_tests_manage_blocks_qweb" model="ir.ui.view">
+            <field name="name">Test report manage blocks</field>
+            <field name="model">academy.tests.test</field>
+            <field name="type">qweb</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <t t-name="academy_tests.view_academy_tests_manage_blocks_qweb">
+
+                    <section class="academy-post-test-test posted-test-body col-12">
+                        <t t-if="o.preamble">
+                            <p class="academy-test-preamble"><t t-esc="o.preamble" /></p>
+                        </t>
+
+                        <t t-set="previous_attachment_ids" t-value="None" />
+                        <t t-set="previous_test_block_id" t-value="None" />
+
+                        <t t-foreach="o.question_ids" t-as="academy_question_rel_id">
+
+                            <t t-if="previous_test_block_id != academy_question_rel_id.test_block_id">
+
+                                <t t-if="academy_question_rel_id_index &gt; 0">
+                                    <t t-set="classes" t-value="o.compute_block_classes(academy_question_rel_id.test_block_id)" />
+                                    <hr t-att-class="classes" />
+                                </t>
+
+                                <t t-if="academy_question_rel_id.test_block_id">
+
+                                    <h2 class="mt-3 mb-2 academy-test-block-name"><t t-esc="academy_question_rel_id.test_block_id.name" /></h2>
+                                    <t t-if="academy_question_rel_id.test_block_id.preamble">
+                                        <p class="academy-test-block-preamble"><t t-esc="academy_question_rel_id.test_block_id.preamble" /></p>
+                                    </t>
+                                </t>
+
+                            </t>
+
+                            <t t-set="question_id" t-value="academy_question_rel_id.question_id" />
+                            <t t-call="academy_tests.view_academy_question_qweb" />
+
+                            <t t-set="previous_attachment_ids" t-value="academy_question_rel_id.question_id.ir_attachment_ids" />
+                            <t t-set="previous_test_block_id" t-value="academy_question_rel_id.test_block_id" />
+
+                        </t><!-- question_ids -->
+
+                    </section>
+
+                </t>
+            </field>
+        </record>
+
 
         <!-- REPORT: "Single test content"
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -116,23 +169,7 @@
                             <div class="clearfix"></div>
 
                             <div class="row mt16 mb32">
-                                <section class="academy-post-test-test posted-test-body col-12">
-                                    <t t-if="o.preamble">
-                                        <p class="academy-test-preamble"><t t-esc="o.preamble" /></p>
-                                    </t>
-
-                                    <t t-set="previous_attachment_ids" t-value="None" />
-
-                                    <t t-foreach="o.question_ids" t-as="academy_question_rel_id">
-
-                                        <t t-set="question_id" t-value="academy_question_rel_id.question_id" />
-                                        <t t-call="academy_tests.view_academy_question_qweb" />
-                                        <t t-set="previous_attachment_ids" t-value="academy_question_rel_id.question_id.ir_attachment_ids" />
-
-                                    </t><!-- question_ids -->
-
-                                </section>
-
+                                <t t-call="academy_tests.view_academy_tests_manage_blocks_qweb" />
                             </div>
 
                             <div class="clearfix"></div>
@@ -237,23 +274,7 @@
                             <div class="clearfix"></div>
 
                             <div class="row mt16 mb32">
-                                <section class="academy-post-test-test posted-test-body col-12">
-                                    <t t-if="o.preamble">
-                                        <p class="academy-test-preamble"><t t-esc="o.preamble" /></p>
-                                    </t>
-
-                                    <t t-set="previous_attachment_ids" t-value="None" />
-
-                                    <t t-foreach="o.question_ids" t-as="academy_question_rel_id">
-
-                                        <t t-set="question_id" t-value="academy_question_rel_id.question_id" />
-                                        <t t-call="academy_tests.view_academy_question_qweb" />
-                                        <t t-set="previous_attachment_ids" t-value="academy_question_rel_id.question_id.ir_attachment_ids" />
-
-                                    </t><!-- question_ids -->
-
-                                </section>
-
+                                <t t-call="academy_tests.view_academy_tests_manage_blocks_qweb" />
                             </div>
 
                             <div class="clearfix line-between-test-and-answers">&#160;</div>

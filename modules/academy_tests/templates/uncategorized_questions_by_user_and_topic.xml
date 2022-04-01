@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="mail_template_uncategorized_questions_by_user_and_topic" model="mail.template">
+            <field name="name">Uncategorized questions by user and topic</field>
+            <field name="model_id" ref="base.model_res_users"/>
+            <field name="subject">IMPORTANT: Question categorization</field>
+            <field name="email_from">"${object.company_id.name | safe}" &lt;${(object.company_id.email or user.email) | safe}&gt;</field>
+            <field name="partner_to">${object.partner_id.id if object.partner_id.email and object.partner_id.email == object.email else False}</field>
+            <field name="reply_to">${object.company_id.email}</field>
+            <field name="lang">${object.partner_id.lang}</field>
+<field name="body_html" type="html">
+<table border="0" cellpadding="0" cellspacing="0" style="background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;"><tr><td align="center">
+<table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
+<tbody>
+    <!-- CONTENT -->
+    <tr>
+        <td align="center" style="min-width: 590px;">
+            <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                <td style="text-align : left">
+                    <span style="font-size: 20px; font-weight: bold;">
+                        Uncategorized questions
+                    </span><br/><br/>
+                </td>
+                <tr><td valign="top" style="font-size: 13px;">
+                    <div>
+                        <p style="margin: 1.5em 0px!important; line-height: 1.25em;">
+                            Dear ${object.name or ''},
+                        </p>
+
+                        % if object and object.uncategorized_questions_ids:
+
+                        <p style="text-justify; margin: 0.5em 0; line-height: 1.25em;">
+                          The summary below shows the number of questions that
+                          you have not yet categorized properly.
+                        </p>
+
+                        <ul style="display: table; width: 100%; margin: 1em auto; padding: 0px 40px; border-collapse: collapse; white-space: normal!important;">
+                            <li style="display: table-row; font-weight: bold;">
+                                <span style="display: table-cell; padding: 3px 6px; text-align: left; border-bottom:1px solid rgb(204,204,204)">
+                                    Topic
+                                </span>
+                                <span style="display: table-cell; width: 60px; padding: 3px 6px; text-align: center; border-bottom:1px solid rgb(204,204,204)">
+                                    Count
+                                </span>
+                            </li>
+                        % for uncategorized_id in object.uncategorized_questions_ids:
+                            <li style="display: table-row;">
+                                <span style="display: table-cell; padding: 3px 6px; text-align: left; border-top:1px solid rgb(204,204,204); border-bottom:1px solid rgb(204,204,204)">
+                                    ${ uncategorized_id.topic_id.name }
+                                </span>
+                                <span style="display: table-cell; width: 60px; padding: 3px 6px; text-align: center; border-top:1px solid rgb(204,204,204); border-bottom:1px solid rgb(204,204,204)">
+                                    ${ uncategorized_id.question_count }
+                                </span>
+                            </li>
+                        % endfor
+                        </ul>
+
+                        <p style="margin: 0.5em 0; line-height: 1.25em;">
+                            It is important that you make the appropriate
+                            corrections as soon as possible.
+                        </p>
+
+                        % else:
+
+                        <p style="text-justify; margin: 0.5em 0; line-height: 1.25em;">
+                          It is my pleasure to inform you that at this time you
+                          have all of your questions categorized appropriately.
+                        </p>
+
+                        % endif
+
+                        <p style="text-justify; margin: 0.5em 0; line-height: 1.25em;">
+                            Keeping the questions properly categorized is
+                            important, as it makes it easier for both your work
+                            and that of your colleagues.
+                        </p>
+
+                        <p style="margin: 1.5em 0px!important; line-height: 1.25em;">
+                            Have a nice day!
+                        </p>
+                        <br>--</br>
+                        <p style="margin: 0.5em 0; line-height: 1.25em;">
+                            The ${object.company_id.name} Team
+                        </p>
+                    </div>
+                </td></tr>
+                <tr><td style="text-align:center;">
+                  <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
+                </td></tr>
+            </table>
+        </td>
+    </tr>
+</tbody>
+</table>
+</td></tr>
+</table>
+            </field>
+            <field name="lang">${object.partner_id.lang}</field>
+            <field name="report_name">${(object.name or 'email')}</field>
+            <field name="report_template" ref="academy_tests.action_report_uncategorized_by_user" />
+            <field name="auto_delete" eval="True"/>
+            <field name="user_signature" eval="False"/>
+        </record>
+
+    </data>
+</openerp>

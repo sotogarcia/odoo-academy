@@ -136,7 +136,7 @@ class Many2manyThroughView(Many2many):
 
         return True
 
-    def _column_names_match(self, cursor):
+    def _get_column_names(self, cursor):
         """ Check the both columns of the view has correct names
         """
 
@@ -148,14 +148,27 @@ class Many2manyThroughView(Many2many):
                 information_schema."columns"
             WHERE
                 "table_name" = '{}'
+            ORDER BY
+                ordinal_position ASC
             LIMIT 1
         '''
 
         sql = sql.format(self.relation)
         cursor.execute(sql)
-        result = cursor.fetchone()
+        return cursor.fetchone()
 
-        return result and self.column1 in result and self.column2 in result
+    def _column_names_match(self, cursor):
+        names = self._get_column_names(cursor)
+
+        return names and self.column1 in names and self.column2 in names
+
+    def _column_order_match(self, cursor):
+        names = self._get_column_names(cursor)
+
+        pos1 = names.index(self.column1)
+        pos2 = names.index(self.column2)
+
+        return pos1 < pos2
 
     def _relation_is_actually_a_table(self, cursor):
         """ Check if relation is a table instead a SQL view
@@ -192,6 +205,8 @@ class Many2manyThroughView(Many2many):
         elif self._relation_is_actually_a_table(cursor):
             result = True
         elif not self._column_names_match(cursor):
+            result = True
+        elif self._column_order_match(cursor):  # Removes only if col1, col2
             result = True
 
         return result

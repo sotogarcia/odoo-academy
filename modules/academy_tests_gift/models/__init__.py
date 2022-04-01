@@ -6,3 +6,4 @@
 
 from . import academy_tests_answer
 from . import academy_tests_question
+from . import academy_tests_test_question_rel

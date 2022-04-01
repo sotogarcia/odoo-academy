@@ -4,8 +4,13 @@
 Styles applied over the group of questions (main OL and LI tags)
 -----------------------------------------------------------------------------*/
 
-section.academy-post-test-test {
+section.academy-post-test-test,
+hr.academy-post-test-restart-numbering {
     counter-reset: questionlist;
+}
+
+hr.academy-post-test-page-break {
+    page-break-before: always;
 }
 
 article.academy-post-test-question {

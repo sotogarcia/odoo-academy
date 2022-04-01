@@ -26,6 +26,8 @@
                 <tree string="academy_tests_tree" create="1" delete="1" edit="1">
                     <field name="name" class="oe_field_name" />
                     <field name="description" class="oe_field_description" />
+                    <field name="topic_id" class="oe_field_topic_id" />
+                    <field name="owner_id" class="oe_field_owner_id" />
                     <field name="question_count" class="oe_field_question_count" string="Questions" />
                     <field name="test_kind_id" class="od_field_test_kind_id" />
                 </tree>
@@ -45,20 +47,27 @@
                     <sheet>
                         <div class="oe_button_box" name="button_box">
                                 <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
-                                <button name="import_questions" confirm="Import wizard has been moved to the Action menu"
-                                    class="oe_stat_button oe_read_only" icon="fa-upload">
-                                    <span>Import</span>
+
+                                <button name="%(action_report_full_printable_test)d" type="action"
+                                    class="oe_stat_button oe_read_only" icon="fa-file-pdf-o">
+                                    <span>Create PDF</span>
                                 </button>
 
-                                <button name="choose_report_dialog" type="object"
-                                    class="oe_stat_button oe_read_only" icon="fa-print">
-                                    <span>Print</span>
+                                <button name="save_as_docx" type="object"
+                                    class="oe_stat_button oe_read_only" icon="fa-file-word-o">
+                                    <span>Word file</span>
+                                </button>
+
+                                <button name="update_questions_dialog" type="object"
+                                    class="oe_stat_button oe_read_only" icon="fa-file-text">
+                                    <span>Text edit</span>
                                 </button>
 
                                 <button name="shuffle" type="object"
                                     class="oe_stat_button oe_read_only" icon="fa-random">
                                     Shuffle
                                 </button>
+
                                 <button name="show_questions" type="object"
                                     class="oe_stat_button oe_read_only" icon="fa-list-ol">
                                     <field name="question_count" widget="statinfo" string="Questions" />
@@ -68,7 +77,8 @@
                         <div class="row academy-tests-test-data">
                             <div class="col-10">
                                 <div class="oe_title">
-                                    <field name="active" invisible="1"/>
+                                    <field name="active" invisible="1" />
+                                    <field name="id" class="oe_field_id" invisible="1" />
                                     <label for="name" class="oe_edit_only" />
                                     <h1>
                                         <field name="name" class="oe_field_name"
@@ -93,7 +103,7 @@
                         <notebook class="academy-tests-test-data">
                             <!-- options="{'no_create': 1}" -->
                             <page string="Questions" class="oe_page_questions" accesskey="Q">
-                                <field name="question_ids" class="oe_field_question_ids"
+                                <field name="question_ids" class="oe_field_question_ids" options="{'no_create': 1}"
                                     context="{'tree_view_ref': 'academy_tests.view_academy_tests_test_question_rel_embed_tree'}" />
                             </page>
 
@@ -101,7 +111,11 @@
                                 <group col="4">
                                     <field name="code" class="oe_field_code"
                                         placeholder="Enter new code" />
+                                    <field name="tag_ids" class="oe_field_tag_ids"
+                                        widget="many2many_tags" />
+
                                     <field name="test_kind_id" class="oe_field_test_kind_id" />
+                                    <field name="repeat_images" class="oe_field_repeat_images" />
 
                                     <separator string="Proprietary" colspan="4" />
 
@@ -123,6 +137,13 @@
 
                                     <field name="description" class="oe_field_description"
                                         placeholder="Enter new description" colspan="4" />
+
+                                    <separator colspan="4" string="Blocks" />
+                                    <field name="test_block_ids" class="oe_field_test_block_ids"
+                                        widget="many2many_tags" />
+                                    <field name="auto_arrange_blocks" class="oe_field_auto_arrange_blocks" />
+                                    <field name="restart_numbering" class="oe_field_restart_numbering" />
+                                    <field name="block_starts_page" class="oe_field_block_starts_page" />
                                 </group>
 
                             </page>
@@ -238,7 +259,13 @@
                 <search string="academy_tests_search">
                     <field name="name" string="Name" />
                     <field name="topic_ids" string="Has topic" />
-                    <field name="create_uid" string ="Created by" />
+                    <field name="tag_ids" />
+                    <field name="owner_id" />
+                    <field name="create_date" />
+                    <field name="test_kind_id" />
+                    <field name="available_in" />
+
+                    <field name="id" string="Test ID" />
 
                     <filter string="My tests"
                         name="my_tests"
