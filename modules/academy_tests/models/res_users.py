@@ -17,6 +17,7 @@ UTPL = 'academy_tests.mail_template_uncategorized_questions_by_user_and_topic'
 DTPL = 'academy_tests.mail_template_duplicated_questions_by_user_and_topic'
 ITPL = 'academy_tests.mail_template_you_have_impugnments'
 
+
 class ResUsers(models.Model):
     """ Extend base.res_users to add a relationship between this model and
     academy.tests.uncategorized.by.user.readonly
@@ -79,7 +80,7 @@ class ResUsers(models.Model):
 
     @api.model
     def notify_uncategorized(self):
-        user_set = self.search([('uncategorized_questions_ids', '=', False)])
+        user_set = self.search([('uncategorized_questions_ids', '!=', False)])
         mail_template = self.env.ref(UTPL)
 
         for user_item in user_set:
@@ -87,7 +88,7 @@ class ResUsers(models.Model):
 
     @api.model
     def notify_duplicated(self):
-        user_set = self.search([('uncategorized_questions_ids', '=', False)])
+        user_set = self.search([('duplicate_question_ids', '!=', False)])
         mail_template = self.env.ref(DTPL)
 
         for user_item in user_set:

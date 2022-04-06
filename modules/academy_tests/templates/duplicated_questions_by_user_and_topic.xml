@@ -33,9 +33,8 @@
                         % if object and object.duplicate_question_ids:
 
                         <p style="text-justify; margin: 0.5em 0; line-height: 1.25em;">
-                          You have added back ${object.duplicate_question_ids|length}
-                          questions that already existed previously in the
-                          database. Please change these new questions or merge
+                          You have added back questions that already existed previously
+                          in the database. Please change these new questions or merge
                           them with the original question.
                         </p>
 

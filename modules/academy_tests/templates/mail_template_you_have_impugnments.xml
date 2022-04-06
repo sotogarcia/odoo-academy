@@ -68,9 +68,9 @@
 </table>
             </field>
             <field name="lang">${object.partner_id.lang}</field>
-            <field name="report_name">${(object.name or 'email')}</field>
-            <field name="report_template" ref="academy_tests.action_report_uncategorized_by_user" />
-            <field name="auto_delete" eval="True"/>
+            <field name="report_name" />
+            <field name="report_template" />
+            <field name="auto_delete" eval="False"/>
             <field name="user_signature" eval="False"/>
         </record>
 

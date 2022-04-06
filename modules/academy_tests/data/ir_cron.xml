@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<odoo noupdate="0">
+<odoo noupdate="1">
 
     <record id="ir_cron_complete_the_checksum_of_the_questions" model="ir.cron">
         <field name="name">Complete the checksum of the questions</field>
@@ -28,10 +28,10 @@
 
     <record id="ir_cron_nofify_uncategorized_questions" model="ir.cron">
         <field name="name">Notify uncategorized questions</field>
-        <field name="interval_number">11</field>
-        <field name="interval_type">days</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">months</field>
         <field name="numbercall">-1</field>
-        <field name="nextcall" eval="(DateTime.now().replace(hour=2, minute=45) + timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S')" />
+        <field name="nextcall" eval="(DateTime.now().replace(day=21, hour=2, minute=45)).strftime('%Y-%m-%d %H:%M:%S')" />
         <field name="doall" eval="False"/>
         <field name="model_id" ref="base.model_res_users"/>
         <field name="code">model.notify_uncategorized()</field>
@@ -40,10 +40,10 @@
 
     <record id="ir_cron_nofify_duplicate_questions" model="ir.cron">
         <field name="name">Notify duplicate questions</field>
-        <field name="interval_number">21</field>
-        <field name="interval_type">days</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">months</field>
         <field name="numbercall">-1</field>
-        <field name="nextcall" eval="(DateTime.now().replace(hour=2, minute=45) + timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S')" />
+        <field name="nextcall" eval="(DateTime.now().replace(day=7, hour=2, minute=45)).strftime('%Y-%m-%d %H:%M:%S')" />
         <field name="doall" eval="False"/>
         <field name="model_id" ref="base.model_res_users"/>
         <field name="code">model.notify_duplicated()</field>
