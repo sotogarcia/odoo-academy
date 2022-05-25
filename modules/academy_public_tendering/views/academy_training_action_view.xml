@@ -3,6 +3,8 @@
 <openerp>
     <data noupdate="0">
 
+<!--         <delete id="view_academy_training_action_public_tendering_form" model="ir.ui.view" />
+
         <record id="view_academy_training_action_public_tendering_form" model="ir.ui.view">
             <field name="name">view.academy.training.action.public.tendering.form</field>
             <field name="model">academy.training.action</field>
@@ -18,7 +20,7 @@
                     </page>
                 </xpath>
             </field>
-        </record>
+        </record> -->
 
     </data>
 </openerp>

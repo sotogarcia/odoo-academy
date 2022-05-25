@@ -10,7 +10,8 @@ import odoo.addons.academy_base.models.utils.custom_model_fields as custom
 from .utils.sql_m2m_through_view import ACADEMY_ACTIVITY_AVAILABLE_TESTS, \
     PARTIAL_ACADEMY_TESTS_QUESTION_TRAINING_MODULE, \
     ACADEMY_TESTS_QUESTION_TRAINING_ACTIVITY_REL
-
+from odoo.exceptions import UserError
+from odoo.tools.translate import _
 from logging import getLogger
 
 _logger = getLogger(__name__)
@@ -102,3 +103,23 @@ class AcademyTrainingActivity(models.Model):
 
         if not no_open and template:
             return module_obj._template_act_window(template)
+
+    def view_test_attempts(self):
+        self.ensure_one()
+        test_ids = self.mapped('test_ids.id')
+
+        if not test_ids:
+            msg = _('There are no tests associated with this training '
+                    'activity')
+            raise UserError(msg)
+
+        return {
+            'model': 'ir.actions.act_window',
+            'type': 'ir.actions.act_window',
+            'name': _('Test attempts'),
+            'res_model': 'academy.tests.attempt',
+            'target': 'current',
+            'view_mode': 'tree',
+            'domain': [('test_id', 'in', test_ids)],
+            'context': {}
+        }

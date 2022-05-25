@@ -134,3 +134,18 @@ class AcademyCompetencyUnit(models.Model):
 
         rec = super(AcademyCompetencyUnit, self).copy(default)
         return rec
+
+    def view_details(self):
+        self.ensure_one()
+
+        return {
+            'model': 'ir.actions.act_window',
+            'type': 'ir.actions.act_window',
+            'name': self.competency_name,
+            'res_model': 'academy.competency.unit',
+            'target': 'current',
+            'view_mode': 'form',
+            'res_id': self.id,
+            'domain': [],
+            'context': {}
+        }

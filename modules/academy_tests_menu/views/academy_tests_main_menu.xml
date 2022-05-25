@@ -106,8 +106,6 @@
             <field name="search_view_id" ref="academy_tests.view_attachment_search" />
         </record>
 
-        <delete id="action_academy_tests_question_import_wizard_new_test_act_window" model="ir.actions.act_window" />
-
         <record id="action_academy_tests_question_import_wizard_new_test_act_window" model="ir.actions.act_window">
             <field name="type">ir.actions.act_window</field>
             <field name="name">Create and import</field>
@@ -314,6 +312,20 @@
             <field name="action" ref="action_question_impugnment_act_window_all_impugnments" />
             <field name="parent_id" ref="menu_test_main_tracking_impugnments" />
             <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical')), (4, ref('academy_base.academy_group_teacher'))]"/>
+        </record>
+
+        <record id="menu_test_main_tracking_training" model="ir.ui.menu" >
+            <field name="name">Training</field>
+            <field name="sequence" eval="20" />
+            <field name="parent_id" ref="menu_test_main_tracking" />
+            <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical')), (4, ref('academy_base.academy_group_teacher'))]"/>
+        </record>
+
+        <record id="menu_training_actions" model="ir.ui.menu" >
+            <field name="name">Training actions</field>
+            <field name="sequence" eval="10" />
+            <field name="action" ref="academy_base.action_training_action_act_window" />
+            <field name="parent_id" ref="menu_test_main_tracking_training" />
         </record>
 
         <!--

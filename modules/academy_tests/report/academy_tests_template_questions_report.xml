@@ -68,7 +68,7 @@
         <record id="action_academy_tests_template_questions_report" model="ir.actions.report">
             <field name="name">Template questions report</field>
             <field name="model">academy.tests.random.template</field>
-            <field name="report_type">qweb-html</field>
+            <field name="report_type">qweb-pdf</field>
             <field name="report_name">academy_tests.view_report_academy_tests_template_questions_report_qweb</field>
             <field name="print_report_name">(object.name)</field>
             <field name="attachment_use" eval="False" />

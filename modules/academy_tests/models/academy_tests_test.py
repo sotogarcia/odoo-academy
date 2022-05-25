@@ -23,10 +23,12 @@ from re import split
 from odoo import models, fields, api
 from odoo.tools.translate import _
 
+from odoo.osv.expression import FALSE_DOMAIN
 import odoo.addons.academy_base.models.utils.custom_model_fields as custom
 from .utils.sql_operations import ACADEMY_TESTS_SHUFFLE
 from .utils.sql_operations import ACADEMY_TESTS_ARRANGE_BLOCKS
 from .utils.sql_inverse_searches import QUESTION_COUNT_SEARCH
+from .utils.sql_inverse_searches import SEARCH_TEST_ATTEMPT_COUNT
 from .utils.sql_m2m_through_view import ACADEMY_ENROLMENT_AVAILABLE_TESTS
 from .utils.sql_m2m_through_view import ACADEMY_TESTS_TEST_TOPIC_IDS_SQL
 from .utils.sql_m2m_through_view import ACADEMY_TESTS_TEST_TEST_BLOCK_REL
@@ -405,6 +407,49 @@ class AcademyTestsTest(models.Model):
 
     # -------------------------- MANAGEMENT FIELDS ----------------------------
 
+    attempt_count = fields.Integer(
+        string='Attempt count',
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        help='Show number of test attempts',
+        compute='_compute_attempt_count',
+        search='_search_attempt_count'
+    )
+
+    @api.depends('attempt_ids')
+    def _compute_attempt_count(self):
+        for record in self:
+            record.attempt_count = len(record.attempt_ids)
+
+    def _search_attempt_count(self, operator, value):
+        domain = FALSE_DOMAIN
+        operator, value = self._ensure_search_attempt_count_(operator, value)
+        query = SEARCH_TEST_ATTEMPT_COUNT.format(operator, value)
+
+        self.env.cr.execute(query)
+        rows = self.env.cr.dictfetchall()
+
+        if rows:
+            test_ids = [row['test_id'] for row in rows]
+            domain = [('id', 'in', test_ids)]
+
+        return domain
+
+    @staticmethod
+    def _ensure_search_attempt_count_(operator, value):
+        if isinstance(value, bool):
+            if not operator == '=':
+                value = not value
+
+            if value:
+                operator = '>'
+
+            value = 0
+
+        return operator, value
+
     question_count = fields.Integer(
         string='Number of questions',
         required=False,
@@ -538,6 +583,21 @@ class AcademyTestsTest(models.Model):
         translate=False,
         compute='_compute_lang',
         store=False
+    )
+
+    attempt_ids = fields.One2many(
+        string='Attempts',
+        required=False,
+        readonly=False,
+        index=True,
+        default=None,
+        help='Related test attempts',
+        comodel_name='academy.tests.attempt',
+        inverse_name='test_id',
+        domain=[],
+        context={},
+        auto_join=False,
+        limit=None
     )
 
     # -------------------------- PYTHON CONSTRAINS ----------------------------
@@ -969,3 +1029,24 @@ class AcademyTestsTest(models.Model):
         print(classes)
 
         return ' '.join(classes)
+
+    def view_test_attempts(self):
+        self.ensure_one()
+
+        form_xid = 'academy_tests.view_academy_tests_attempt_form'
+        form_id = self.env.ref(form_xid).id
+
+        tree_xid = 'academy_tests.view_academy_tests_attempt_test_tree'
+        tree_id = self.env.ref(tree_xid).id
+
+        return {
+            'model': 'ir.actions.act_window',
+            'type': 'ir.actions.act_window',
+            'name': _('Test attempts'),
+            'res_model': 'academy.tests.attempt',
+            'target': 'current',
+            'view_mode': 'tree',
+            'views': [(tree_id, 'tree'), (form_id, 'form')],
+            'domain': [('test_id', '=', self.id)],
+            'context': {}
+        }

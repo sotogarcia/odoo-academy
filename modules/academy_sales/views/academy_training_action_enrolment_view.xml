@@ -12,21 +12,17 @@
             <field name="inherit_id" ref="academy_base.view_academy_training_action_enrolment_form" />
             <field name="active" eval="True" />
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='training_action_id']" position="after">
-                    <field name="product_id" class="oe_field_product_id" 
-                        domain="[('training_action_ids', '=', training_action_id)]" />
-                </xpath>
                 <xpath expr="//div[@name='button_box']" position="inside">
 
-                    <field name="finalized" class="oe_field_sale_ids" invisible="1" />
+                    <field name="finalized" class="oe_field_finalized" invisible="1" />
 
                     <button name="invoice" type="object"
-                        attrs="{'invisible': [('sale_ids', '&lt;&gt;', False)]}"
+                        attrs="{'invisible': [('order_line_ids', '&lt;&gt;', False)]}"
                         class="oe_stat_button oe_read_only" icon="fa-file-text-o">
                         Invoice
                     </button>
                     <button name="renounce" type="object"
-                        attrs="{'invisible': ['|', ('finalized', '=', True), ('sale_ids', '&lt;&gt;', False)]}"
+                        attrs="{'invisible': ['|', ('finalized', '=', True), ('order_line_ids', '&lt;&gt;', False)]}"
                         class="oe_stat_button oe_read_only" icon="fa-undo">
                         Renounce
                     </button>
@@ -44,7 +40,7 @@
 
                 <xpath expr="//notebook/*[last()]" position="after">
                     <page string="Invoicing" class="oe_page_invoicing" accesskey="I">
-                        <field name="sale_ids" class="oe_field_sale_ids" />
+                        <field name="order_line_ids" class="oe_field_order_line_ids" />
                     </page>
                 </xpath>
 

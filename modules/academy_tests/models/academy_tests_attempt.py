@@ -10,7 +10,14 @@ from odoo.tools.translate import _
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
 import odoo.addons.academy_base.models.utils.custom_model_fields as custom
 from .utils.sql_inverse_searches import ATTEMPTS_CLOSED_SEARCH
+from .utils.sql_inverse_searches import REQUEST_ATTEMPT_PASSED_SEARCH
 from odoo.osv.expression import FALSE_DOMAIN, TRUE_DOMAIN
+# from .utils.sql_m2m_through_view import \
+#     ACADEMY_TESTS_ATTEMPT_TRAINING_ACTION_REL
+# from .utils.sql_m2m_through_view import \
+#     ACADEMY_TESTS_ATTEMPT_TRAINING_ACTIVITY_REL
+# from .utils.sql_m2m_through_view import \
+#     ACADEMY_TESTS_ATTEMPT_TRAINING_MODULE_REL
 
 from logging import getLogger
 from datetime import datetime
@@ -148,7 +155,7 @@ class AcademyTestsAttempt(models.Model):
         default=None,
         help=False,
         comodel_name='academy.tests.attempt.answer',
-        relation='academy_tests_attempt_attempt_answer_rel',
+        relation='academy_tests_attempt_final_answer_helper',
         column1='attempt_id',
         column2='attempt_answer_id',
         domain=[],
@@ -158,7 +165,7 @@ class AcademyTestsAttempt(models.Model):
     )
 
     right = fields.Float(
-        string='Right',
+        string='Right (awarded)',
         required=True,
         readonly=False,
         index=False,
@@ -168,7 +175,7 @@ class AcademyTestsAttempt(models.Model):
     )
 
     wrong = fields.Float(
-        string='Wrong',
+        string='Wrong (awarded)',
         required=True,
         readonly=False,
         index=False,
@@ -178,7 +185,7 @@ class AcademyTestsAttempt(models.Model):
     )
 
     blank = fields.Float(
-        string='Blank',
+        string='Blank (awarded)',
         required=True,
         readonly=False,
         index=False,
@@ -308,3 +315,307 @@ class AcademyTestsAttempt(models.Model):
             result.append((record.id, name))
 
         return result
+
+    # ------------------------- RELATED TEST FIELDS ---------------------------
+
+    tag_ids = fields.Many2many(
+        string='Tags',
+        readonly=False,
+        related='test_id.tag_ids'
+    )
+
+    topic_ids = custom.Many2many(
+        string='Topics',
+        readonly=True,
+        related='test_id.topic_ids'
+    )
+
+    # ------------------------ RELATED RESUME FIELDS --------------------------
+
+    resume_id = fields.Many2one(
+        string='Resume',
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help=False,
+        comodel_name='academy.tests.attempt.resume.helper',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False,
+        compute='_compute_resume_id'
+    )
+
+    @api.depends('test_id')
+    def _compute_resume_id(self):
+        resume_obj = self.env['academy.tests.attempt.resume.helper']
+
+        for record in self:
+            record.resume_id = resume_obj.browse(record.id)
+
+    questions = fields.Integer(
+        string='Questions',
+        related='resume_id.questions',
+        help='Number of questions in test'
+    )
+
+    answered = fields.Integer(
+        string='Answered',
+        related='resume_id.answered',
+        help='Number of final answered questions'
+    )
+
+    right_count = fields.Integer(
+        string='Right',
+        related='resume_id.right',
+        help='Number of final right answers'
+    )
+
+    wrong_count = fields.Integer(
+        string='Wrong',
+        related='resume_id.wrong',
+        help='Number of final wrong answers'
+    )
+
+    answer_count = fields.Integer(
+        string='Answer',
+        related='resume_id.answer',
+        help='Number of final answers marked as answered'
+    )
+
+    doubt_count = fields.Integer(
+        string='Doubt',
+        related='resume_id.doubt',
+        help='Number of final answers marked as doubt'
+    )
+
+    right_points = fields.Float(
+        string='Right points',
+        related="resume_id.right_points",
+        help='Final score obtained based on right answers'
+    )
+
+    wrong_points = fields.Float(
+        string='Wrong points',
+        related="resume_id.wrong_points",
+        help='Final score obtained based on wrong answers'
+    )
+
+    blank_points = fields.Float(
+        string='Blank points',
+        related="resume_id.blank_points",
+        help='Final score obtained based on blank answers'
+    )
+
+    final_points = fields.Float(
+        string='Final points',
+        related="resume_id.final_points",
+        help='Final attempt score'
+    )
+
+    max_points = fields.Float(
+        string='Maximum points',
+        related="resume_id.max_points",
+        help='Maximum number of points the student can obtain'
+    )
+
+    passed = fields.Boolean(
+        string='Passed',
+        required=False,
+        readonly=True,
+        index=False,
+        default=False,
+        help=('True if the final points are greater than or equal to half of '
+              'the total score'),
+        compute='_compute_passed',
+        search='_search_passed'
+    )
+
+    @api.depends('test_id')
+    def _compute_passed(self):
+        for record in self:
+            record.passed = record.final_points >= (record.max_points / 2.0)
+
+    def _search_passed(self, operator, value):
+        result_domain = FALSE_DOMAIN
+
+        where_value = value if operator == '=' else not value
+        query = REQUEST_ATTEMPT_PASSED_SEARCH.format(where_value)
+
+        self.env.cr.execute(query)
+        rows = self.env.cr.dictfetchall()
+        if rows:
+            ids = [row['id'] for row in rows]
+            result_domain = [('id', 'in', ids)]
+            print(result_domain)
+
+        return result_domain
+
+    # ------------------------ RELATED TRAINING ITEMS -------------------------
+
+    training_action_ids = fields.Many2many(
+        string='Training actions',
+        required=False,
+        readonly=True,
+        index=True,
+        default=None,
+        help='Allow users to search attempts by training action',
+        comodel_name='academy.training.action',
+        relation='academy_tests_attempt_training_action_rel',
+        column1='attempt_id',
+        column2='training_action_id',
+        domain=[],
+        context={},
+        limit=None,
+        compute='_compute_training_action_ids',
+        search='_search_training_action_ids'
+    )
+
+    @api.depends('test_id')
+    def _compute_training_action_ids(self):
+        for record in self:
+            ids = record.mapped('test_id.training_action_ids.id')
+            if ids:
+                record.training_action_ids = [(6, 0, ids)]
+            else:
+                record.training_action_ids = [(5, 0, 0)]
+
+    def _search_training_action_ids(self, operator, value):
+        domain = FALSE_DOMAIN
+
+        action_set = self.env['academy.training.action']
+        action_domain = [('action_name', operator, value)]
+        action_set = action_set.search(action_domain)
+
+        if action_set:
+            test_ids = action_set.mapped('test_ids.id')
+            domain = [('test_id', 'in', test_ids)]
+
+        return domain
+
+    training_activity_ids = fields.Many2many(
+        string='Training activities',
+        required=False,
+        readonly=True,
+        index=True,
+        default=None,
+        help='Allow users to search attempts by training activity',
+        comodel_name='academy.training.activity',
+        relation='academy_tests_attempt_training_activity_rel',
+        column1='attempt_id',
+        column2='training_activity_id',
+        domain=[],
+        context={},
+        limit=None,
+        compute='_compute_training_activity_ids',
+        search='_search_training_activity_ids'
+    )
+
+    @api.depends('test_id')
+    def _compute_training_activity_ids(self):
+        for record in self:
+            ids = record.mapped('test_id.training_activity_ids.id')
+            if ids:
+                record.training_activity_ids = [(6, 0, ids)]
+            else:
+                record.training_activity_ids = [(5, 0, 0)]
+
+    def _search_training_activity_ids(self, operator, value):
+        domain = FALSE_DOMAIN
+
+        activity_set = self.env['academy.training.activity']
+        activity_domain = [('name', operator, value)]
+        activity_set = activity_set.search(activity_domain)
+
+        if activity_set:
+            test_ids = activity_set.mapped('test_ids.id')
+            domain = [('test_id', 'in', test_ids)]
+
+        return domain
+
+    competency_unit_ids = fields.Many2many(
+        string='Competency units',
+        required=False,
+        readonly=True,
+        index=True,
+        default=None,
+        help='Allow users to search attempts by competency units',
+        comodel_name='academy.training.module',
+        relation='academy_tests_attempt_competency_unit_rel',
+        column1='attempt_id',
+        column2='competency_unit_id',
+        domain=[],
+        context={},
+        limit=None,
+        compute='_compute_competency_unit_ids',
+        search='_search_competency_unit_ids'
+    )
+
+    @api.depends('test_id')
+    def _compute_competency_unit_ids(self):
+        for record in self:
+            ids = record.mapped('test_id.competency_unit_ids.id')
+            if ids:
+                record.competency_unit_ids = [(6, 0, ids)]
+            else:
+                record.competency_unit_ids = [(5, 0, 0)]
+
+    def _search_competency_unit_ids(self, operator, value):
+        domain = FALSE_DOMAIN
+
+        competency_set = self.env['academy.competency.unit']
+        competency_domain = [('competency_name', operator, value)]
+        competency_set = competency_set.search(competency_domain)
+
+        if competency_set:
+            test_ids = competency_set.mapped('competency_test_ids.id')
+            domain = [('test_id', 'in', test_ids)]
+
+        return domain
+
+    training_module_ids = fields.Many2many(
+        string='Training modules',
+        required=False,
+        readonly=True,
+        index=True,
+        default=None,
+        help='Allow users to search attempts by training module',
+        comodel_name='academy.training.module',
+        relation='academy_tests_attempt_training_module_rel',
+        column1='attempt_id',
+        column2='training_module_id',
+        domain=[],
+        context={},
+        limit=None,
+        compute='_compute_training_module_ids',
+        search='_search_training_module_ids'
+    )
+
+    @api.depends('test_id')
+    def _compute_training_module_ids(self):
+        for record in self:
+            ids = record.mapped('test_id.training_module_ids.id')
+            if ids:
+                record.training_module_ids = [(6, 0, ids)]
+            else:
+                record.training_module_ids = [(5, 0, 0)]
+
+    def _search_training_module_ids(self, operator, value):
+        domain = FALSE_DOMAIN
+
+        module_set = self.env['academy.training.module']
+        module_domain = [('name', operator, value)]
+        module_set = module_set.search(module_domain)
+
+        if module_set:
+            test_ids = module_set.mapped('test_ids.id')
+            domain = [('test_id', 'in', test_ids)]
+
+        return domain
+
+    test_owner_id = fields.Many2one(
+        string='Test owner',
+        readonly=True,
+        related="test_id.owner_id"
+    )

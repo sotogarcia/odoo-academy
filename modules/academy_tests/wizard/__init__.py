@@ -28,4 +28,3 @@ from . import academy_tests_update_questions_wizard
 from . import academy_tests_remove_duplicate_questions_wizard
 from . import academy_tests_question_request_set_wizard
 
-

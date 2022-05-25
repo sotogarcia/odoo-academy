@@ -8,15 +8,15 @@ stores the final academy answer for each question in academy tests attempt.
 from odoo import models, fields
 
 from odoo.tools import drop_view_if_exists
-from .utils.view_academy_tests_attempt_attempt_answer_rel import \
-    ACADEMY_TESTS_ATTEMPT_ATTEMPT_ANSWER_REL_MODEL
+from .utils.view_academy_tests_attempt_final_answer_helper import \
+    ACADEMY_TESTS_ATTEMPT_FINAL_ANSWER_HELPER
 
 from logging import getLogger
 
 _logger = getLogger(__name__)
 
 
-class AcademyTestsAttemptAttemptAnswerRel(models.Model):
+class AcademyTestsAttemptFinalAnswerHelper(models.Model):
     """ Builds a view with the final answer of each question in an attempt.
     This view will be used as middle table in many2many field to show final
     attempt answers by attempt.
@@ -28,29 +28,17 @@ class AcademyTestsAttemptAttemptAnswerRel(models.Model):
     required, all other can be usefull in a future.
     """
 
-    _name = 'academy.tests.attempt.attempt.answer.rel'
-    _description = u'Academy tests attempt attempt answer rel'
+    _name = 'academy.tests.attempt.final.answer.helper'
+    _description = u'Academy tests attempt final answer helper'
+
+    _inherit = ['academy.abstract.attempt.answer']
 
     _rec_name = 'attempt_id'
     _order = 'attempt_id ASC, sequence ASC'
 
     _auto = False
 
-    _view_sql = ACADEMY_TESTS_ATTEMPT_ATTEMPT_ANSWER_REL_MODEL
-
-    attempt_id = fields.Many2one(
-        string='Attempt',
-        required=True,
-        readonly=True,
-        index=False,
-        default=None,
-        help=False,
-        comodel_name='academy.tests.attempt',
-        domain=[],
-        context={},
-        ondelete='cascade',
-        auto_join=False
-    )
+    _view_sql = ACADEMY_TESTS_ATTEMPT_FINAL_ANSWER_HELPER
 
     attempt_answer_id = fields.Many2one(
         string='Attempt answer',
@@ -60,20 +48,6 @@ class AcademyTestsAttemptAttemptAnswerRel(models.Model):
         default=None,
         help=False,
         comodel_name='academy.tests.attempt.answer',
-        domain=[],
-        context={},
-        ondelete='cascade',
-        auto_join=False
-    )
-
-    question_link_id = fields.Many2one(
-        string='Test-question link',
-        required=False,
-        readonly=True,
-        index=False,
-        default=None,
-        help=False,
-        comodel_name='academy.tests.test.question.rel',
         domain=[],
         context={},
         ondelete='cascade',
@@ -106,24 +80,6 @@ class AcademyTestsAttemptAttemptAnswerRel(models.Model):
         context={},
         ondelete='cascade',
         auto_join=False
-    )
-
-    instant = fields.Datetime(
-        string='Instant',
-        required=True,
-        readonly=False,
-        index=False,
-        default=fields.datetime.now(),
-        help=False
-    )
-
-    sequence = fields.Integer(
-        string='Sequence',
-        required=False,
-        readonly=True,
-        index=False,
-        default=0,
-        help=False
     )
 
     def init(self):

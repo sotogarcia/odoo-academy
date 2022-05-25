@@ -23,14 +23,49 @@
             <field name="priority" eval="16" />
             <field name="active" eval="True" />
             <field name="arch" type="xml">
-                <tree string="academy_tests_attempt_tree" create="1" delete="1" edit="1">
-                    <field name="display_name" class="oe_field_display_name" />
-                    <field name="test_id" />
-                    <field name="start" />
-                    <field name="available" />
-                    <field name="elapsed" />
-                    <field name="correction_type" />
+                <tree string="academy_tests_attempt_tree" create="1" delete="1" edit="1"
+                    decoration-success="passed" decoration-warning="not passed">
+                    <field name="resume_id" invisible="1" />
+                    <field name="available" widget="float_time" invisible="1" />
+                    <field name="training_action_ids" invisible="1" />
+                    <field name="training_activity_ids" invisible="1" />
+                    <field name="training_module_ids" invisible="1" />
+                    <field name="passed" invisible="1" />
+
+                    <field name="student_id" class="oe_field_student_id" />
+                    <field name="test_id" class="oe_field_test_id" />
+                    <field name="start" class="oe_field_start" />
+                    <field name="elapsed" class="oe_field_elapsed" widget="float_time"  />
+                    <field name="questions" class="oe_field_questions" />
+                    <field name="answered" class="oe_field_answered" />
+                    <field name="final_points" class="oe_field_final_points" />
                 </tree>
+            </field>
+        </record>
+
+        <record id="view_academy_tests_attempt_student_tree" model="ir.ui.view">
+            <field name="name">view.academy.tests.attempt.tree</field>
+            <field name="model">academy.tests.attempt</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="20" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="view_academy_tests_attempt_tree" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='student_id']" position="replace" />
+            </field>
+        </record>
+
+        <record id="view_academy_tests_attempt_test_tree" model="ir.ui.view">
+            <field name="name">view.academy.tests.attempt.tree</field>
+            <field name="model">academy.tests.attempt</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="20" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="view_academy_tests_attempt_tree" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='test_id']" position="replace" />
             </field>
         </record>
 
@@ -71,14 +106,35 @@
                                 placeholder="Student" options="{'no_create_edit': True}" />
                             <field name="test_id" class="od_field_test_id"
                                 placeholder="Test" options="{'no_create_edit': True}" />
-                            <field name="start" class="od_field_start"
-                                placeholder="Start date/time" />
+
+                            <separator colspan="4" string="Time" />
                             <field name="available" class="od_field_available"
                                 placeholder="Available time" widget="float_time" />
+                            <separator colspan="2" />
+                            <field name="start" class="od_field_start"
+                                placeholder="Start date/time" />
                             <field name="end" class="od_field_end"
                                 placeholder="End date/time" />
-                            <field name="correction_type" class="od_field_correction_type"
-                                placeholder="Correction type" />
+
+                            <separator colspan="4" string="Correction scale" />
+                            <field name="correction_type" class="oe_field_correction_type" />
+                            <field name="right" class="oe_field_right" />
+                            <field name="wrong" class="oe_field_wrong" />
+                            <field name="blank" class="oe_field_blank" />
+
+                            <separator colspan="4" string="Statistics" />
+                            <field name="questions" class="oe_field_questions" />
+                            <field name="answered" class="oe_field_answered" />
+                            <field name="right_count" class="oe_field_right_count" />
+                            <field name="wrong_count" class="oe_field_wrong_count" />
+                            <field name="answer_count" class="oe_field_answer_count" />
+                            <field name="doubt_count" class="oe_field_doubt_count" />
+
+                            <separator colspan="4" string="Score" />
+                            <field name="right_points" class="oe_field_right_points" />
+                            <field name="wrong_points" class="oe_field_wrong_points" />
+                            <field name="blank_points" class="oe_field_blank_points" />
+                            <field name="final_points" class="oe_field_final_points" />
                         </group>
 
                         <notebook>
@@ -113,15 +169,43 @@
                     <field name="student_id" />
                     <field name="test_id" />
                     <field name="start" />
-                    <field name="available" />
+                    <field name="available"/>
                     <field name="elapsed" />
                     <field name="correction_type" />
 
-                    <filter string="Opened"
-                        name="opened_attempts"
-                        domain="[('closed', '!=', True)]"
-                        context="{}"
-                        help="Attempts which have not been closed" />
+                    <field name="training_action_ids" />
+                    <field name="training_activity_ids" />
+                    <field name="competency_unit_ids" />
+                    <field name="training_module_ids" />
+
+                    <field name="tag_ids" />
+                    <field name="topic_ids" />
+
+                    <filter string="Current week" name="current_week" domain="[
+                        ('start', '&gt;=', ((context_today() - relativedelta(weeks=1, weekday=0)).strftime('%Y-%m-%d'))),
+                        ('start', '&lt;',  ((context_today() + relativedelta(weeks=0, weekday=0)).strftime('%Y-%m-%d')))
+                    ]" />
+
+                    <filter string="Last 8 days" name="last_eight_days" domain="[
+                        ('start','&gt;=', ((context_today() - relativedelta(days=8)).strftime('%Y-%m-%d'))),
+                        ('start','&lt;',  ((context_today() + relativedelta(days=1)).strftime('%Y-%m-%d')))
+                    ]"/>
+
+                    <filter string="Current month" name="current_month" domain="[
+                        ('start','&gt;=', (context_today().strftime('%Y-%m-01'))),
+                        ('start','&lt;', ((context_today() + relativedelta(months=1)).strftime('%Y-%m-01')))
+                    ]"/>
+
+                    <separator />
+
+                    <filter string="My tests" name="to_my_tests"
+                        domain="[('test_owner_id', '=', uid)]" />
+
+                    <separator />
+
+                    <filter string="Passed" name="attempt_passed" domain="[('passed', '=', True)]"/>
+                    <filter string="Failing" name="attempt_failing" domain="[('passed', '&lt;&gt;', True)]"/>
+
                 </search>
             </field>
         </record>
@@ -134,7 +218,7 @@
             <field name="view_mode">tree,form</field>
             <field name="target">current</field>
             <field name="domain">[]</field>
-            <field name="context">{'group_by': ['student_id', 'test_id']}</field>
+            <field name="context">{'search_default_to_my_tests': 1, 'search_default_last_eight_days': 1}</field>
             <field name="search_view_id" ref="view_academy_tests_attempt_search" />
             <field name="help" type="html">
                <p class="oe_view_nocontent_create">

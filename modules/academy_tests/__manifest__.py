@@ -60,7 +60,6 @@
         'security/academy_tests_test_kind.xml',
         'security/academy_tests_attempt.xml',
         'security/academy_tests_attempt_answer.xml',
-        'security/academy_tests_attempt_attempt_answer_rel.xml',
         'security/academy_tests_correction_scale.xml',
         'security/academy_tests_random_template_training_action_rel.xml',
         'security/academy_tests_random_template_scheduled.xml',
@@ -74,6 +73,11 @@
         'security/academy_tests_question_request.xml',
         'security/academy_tests_question_request_set.xml',
         'security/academy_tests_test_block.xml',
+        'security/academy_tests_attempt_resume_helper.xml',
+        'security/academy_tests_test_training_module_helper.xml',
+        'security/academy_tests_attempt_final_answer_helper.xml',
+        'security/academy_tests_attempt_sanitized_answer_helper.xml',
+        'security/ir_attachment.xml',
 
         # This must be before academy_tests_tets_view.xml
         'report/academy_test_report.xml',
@@ -146,7 +150,7 @@
         'wizard/academy_tests_remove_duplicate_questions_wizard_view.xml',
         'wizard/academy_tests_question_request_set_wizard_view.xml',
 
-        'wizard/academy_tests_question_append_wizard_link_view.xml',
+        'wizard/academy_tests_question_append_wizard_link_view.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

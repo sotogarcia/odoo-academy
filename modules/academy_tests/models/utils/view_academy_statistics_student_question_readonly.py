@@ -41,7 +41,7 @@ ACADEMY_STATISTICS_STUDENT_QUESTION_READONLY_MODEL = '''
                 (rel.user_action <> 'answer' OR NOT rel.is_correct)::INTEGER
             )::INTEGER AS blank_doubt_wrong
         FROM
-            academy_tests_attempt_attempt_answer_rel AS rel
+            academy_tests_attempt_final_answer_helper AS rel
         INNER JOIN academy_tests_attempt AS attempt
             ON rel.attempt_id = attempt."id"
         LEFT JOIN academy_tests_attempt_answer AS answer

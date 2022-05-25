@@ -9,6 +9,8 @@ from odoo import models, fields
 import odoo.addons.academy_base.models.utils.custom_model_fields as custom
 from .utils.sql_m2m_through_view import \
     ACADEMY_TESTS_TEST_AVAILABLE_IN_COMPETENCY_UNIT_REL
+from odoo.exceptions import UserError
+from odoo.tools.translate import _
 
 from logging import getLogger
 
@@ -54,6 +56,29 @@ class AcademyCompetencyUnit(models.Model):
         sql=ACADEMY_TESTS_TEST_AVAILABLE_IN_COMPETENCY_UNIT_REL
     )
 
+    test_block_id = fields.Many2one(
+        string='Test block',
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help='Test block will be added to questions in templates',
+        comodel_name='academy.tests.test.block',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False
+    )
+
+    number_of_questions = fields.Integer(
+        string='Number of questions',
+        required=True,
+        readonly=False,
+        index=False,
+        default=0,
+        help='Number of questions will be added in templates'
+    )
+
     def create_test_template(self, no_open=False):
         template_obj = self.env['academy.tests.random.template']
         module_obj = self.env['academy.training.module']
@@ -64,3 +89,23 @@ class AcademyCompetencyUnit(models.Model):
 
         if not no_open and template:
             return module_obj._template_act_window(template)
+
+    def view_test_attempts(self):
+        self.ensure_one()
+        test_ids = self.mapped('competency_test_ids.id')
+
+        if not test_ids:
+            msg = _('There are no tests associated with this competence unit')
+            raise UserError(msg)
+
+        return {
+            'model': 'ir.actions.act_window',
+            'type': 'ir.actions.act_window',
+            'name': _('Test attempts'),
+            'res_model': 'academy.tests.attempt',
+            'target': 'current',
+            'view_mode': 'tree',
+            'domain': [('test_id', 'in', test_ids)],
+            'context': {}
+        }
+

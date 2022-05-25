@@ -101,7 +101,7 @@ class ResUsers(models.Model):
         impugnment_set = self.env['academy.tests.question.impugnment']
         impugnment_set = impugnment_set.search(impugnment_domain)
 
-        owner_ids = impugnment_set.mapped('question_id.owner_id.id')
+        owner_ids = impugnment_set.mapped('owner_id.id')
         owner_ids = list(dict.fromkeys(owner_ids))
 
         user_domain = [('id', 'in', owner_ids)]

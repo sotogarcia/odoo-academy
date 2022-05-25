@@ -18,33 +18,18 @@ class AcademyTrainingActionEnrolment(models.Model):
 
     _inherit = ['academy.training.action.enrolment']
 
-    product_id = fields.Many2one(
-        string='Product',
-        required=False,
-        readonly=False,
-        index=False,
-        default=None,
-        help=False,
-        comodel_name='product.product',
-        domain=[],
-        context={},
-        ondelete='cascade',
-        auto_join=False
-    )
-
-    sale_ids = fields.Many2many(
-        string='Sales',
+    order_line_ids = fields.One2many(
+        string='Order lines',
         required=False,
         readonly=True,
-        index=False,
+        index=True,
         default=None,
-        help='Service sales for this enrolment',
-        comodel_name='sale.order',
-        relation='academy_training_action_enrolment_sale_order_rel',
-        column1='enrolment_id',
-        column2='sale_order_id',
+        help='Sale order lines for this enrolment',
+        comodel_name='sale.order.line',
+        inverse_name='enrolment_id',
         domain=[],
         context={},
+        auto_join=False,
         limit=None
     )
 

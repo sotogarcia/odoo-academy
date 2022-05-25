@@ -13,7 +13,7 @@ ATTEMPTS_CLOSED_SEARCH = '''
             ata."id",
             COUNT(*) AS no_stored
         FROM academy_tests_attempt AS ata
-        INNER JOIN academy_tests_attempt_attempt_answer_rel AS rel
+        INNER JOIN academy_tests_attempt_final_answer_helper AS rel
             ON ata."id" = rel.attempt_id and rel.attempt_answer_id IS NULL
         GROUP BY ata."id"
     ) SELECT
@@ -117,4 +117,48 @@ REQUEST_SUPPLIED_COUNT_SEARCH = '''
     GROUP BY
         request_id
     HAVING COUNT ( question_id ) {} {}
+'''
+
+# INVERSE SEARCH: academy_tests.field_academy_tests_attempt__passed
+# Raw sentence used to search passed attempts
+# -----------------------------------------------------------------------------
+REQUEST_ATTEMPT_PASSED_SEARCH = '''
+    SELECT
+        "id"
+    FROM
+        academy_tests_attempt_resume_helper
+    WHERE
+        (final_points >= ( max_points / 2.0 )) = {}
+'''
+
+
+# INVERSE SEARCH: academy_tests.field_academy_tests__attempt_count
+# Raw sentence used to search tests by number of attempts
+# -----------------------------------------------------------------------------
+SEARCH_TEST_ATTEMPT_COUNT = '''
+    SELECT
+        test_id,
+        COUNT(*)::INTEGER AS num
+    FROM
+        academy_tests_attempt
+    GROUP BY
+        test_id
+    HAVING
+        COUNT(*) {} {}
+'''
+
+
+# INVERSE SEARCH: academy_tests.field_academy_student__attempt_count
+# Raw sentence used to search students by number of attempts
+# -----------------------------------------------------------------------------
+SEARCH_STUDENT_ATTEMPT_COUNT = '''
+    SELECT
+    student_id,
+    COUNT( * ) :: INTEGER AS num
+    FROM
+        academy_tests_attempt
+    GROUP BY
+        student_id
+    HAVING
+        COUNT(*) {} {}
 '''

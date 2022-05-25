@@ -780,3 +780,34 @@ ACADEMY_TESTS_TEST_TEST_BLOCK_REL = '''
     WHERE
         test_block_id IS NOT NULL
 '''
+
+
+# Many2manyThroughView: attempts by training action, activity and module
+# -----------------------------------------------------------------------------
+
+# ACADEMY_TESTS_ATTEMPT_TRAINING_ACTION_REL = '''
+#     SELECT
+#         ata."id" as attempt_id,
+#         rel.training_action_id
+#     FROM
+#         academy_tests_test_available_in_training_action_rel AS rel
+#         INNER JOIN academy_tests_attempt AS ata ON rel.test_id = ata.test_id
+#  '''
+
+# ACADEMY_TESTS_ATTEMPT_TRAINING_ACTIVITY_REL = '''
+#     SELECT
+#         ata."id" as attempt_id,
+#         rel.training_activity_id
+#     FROM
+#         academy_tests_test_available_in_training_activity_rel AS rel
+#         INNER JOIN academy_tests_attempt AS ata ON rel.test_id = ata.test_id;
+#  '''
+
+# ACADEMY_TESTS_ATTEMPT_TRAINING_MODULE_REL = '''
+#     SELECT
+#         ata."id" as attempt_id,
+#         rel.training_module_id
+#     FROM
+#         academy_tests_test_available_in_training_module_rel AS rel
+#         INNER JOIN academy_tests_attempt AS ata ON rel.test_id = ata.test_id
+# '''

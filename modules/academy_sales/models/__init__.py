@@ -6,5 +6,6 @@
 
 from . import academy_training_action
 from . import academy_training_module
+from . import sale_order_line
 from . import academy_training_action_enrolment
 from . import product_product

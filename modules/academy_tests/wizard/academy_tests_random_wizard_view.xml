@@ -39,7 +39,7 @@
                     <group col="6">
 
                         <field name="test_id" class="oe_field_test_id" colspan="4"
-                            context="{'search_default_filter': 'my_tests'}"
+                            context="{'search_default_filter': 'my_tests', 'search_default_my_tests': 1}"
                             invisible="context.get('create_new_test', False)" />
 
                         <field name="overwrite" class="oe_field_overwrite"

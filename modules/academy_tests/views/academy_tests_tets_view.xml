@@ -68,6 +68,12 @@
                                     Shuffle
                                 </button>
 
+                                <button name="view_test_attempts" type="object"
+                                    class="oe_stat_button oe_read_only" icon="fa-line-chart"
+                                    help="View related test attempts">
+                                    <field name="attempt_count" widget="statinfo" string="Attempts" />
+                                </button>
+
                                 <button name="show_questions" type="object"
                                     class="oe_stat_button oe_read_only" icon="fa-list-ol">
                                     <field name="question_count" widget="statinfo" string="Questions" />
@@ -109,21 +115,38 @@
 
                             <page string="Details" class="oe_page_description" accesskey="D">
                                 <group col="4">
+                                    <separator string="Description" colspan="4" />
+                                    <field name="description" class="oe_field_description"
+                                        placeholder="Enter new description" colspan="4" />
+
+                                    <separator string="Classification" colspan="4" />
                                     <field name="code" class="oe_field_code"
                                         placeholder="Enter new code" />
                                     <field name="tag_ids" class="oe_field_tag_ids"
                                         widget="many2many_tags" />
 
-                                    <field name="test_kind_id" class="oe_field_test_kind_id" />
-                                    <field name="repeat_images" class="oe_field_repeat_images" />
-
                                     <separator string="Proprietary" colspan="4" />
-
-                                    <field name="owner_id" class="oe_field_owner_id" options="{'no_create': True}"
-                                        groups="academy_base.academy_group_technical" />
+                                    <field name="owner_id" class="oe_field_owner_id" colspan="4"
+                                        options="{'no_create': True}" groups="academy_base.academy_group_technical" />
                                     <field name="authorship" class="oe_field_authorship" />
                                     <field name="first_use_id" class="oe_field_first_use_id"
                                         attrs="{'invisible': [('authorship', '=', True)]}" />
+
+                                   <separator colspan="4" string="Topics" />
+                                    <field name="topic_ids" class="oe_field_topic_ids"
+                                         options="{'no_create': True}" nolabel="1" colspan="4">
+                                        <tree>
+                                            <field name="name" class="oe_field_name" string="Name" />
+                                        </tree>
+                                    </field>
+                                </group>
+                            </page>
+
+                            <page string="Options" class="oe_page_options" accesskey="O">
+                                <group col="4">
+                                    <separator string="Presentation" colspan="4" />
+                                    <field name="test_kind_id" class="oe_field_test_kind_id" />
+                                    <field name="repeat_images" class="oe_field_repeat_images" />
 
                                     <separator string="Realization" colspan="4" />
 
@@ -133,32 +156,59 @@
                                         placeholder="Enter new time" widget="float_time"  />
                                     <field name="lock_time" class="oe_field_lock_time" />
 
-                                    <separator string="Description" colspan="4" />
-
-                                    <field name="description" class="oe_field_description"
-                                        placeholder="Enter new description" colspan="4" />
-
                                     <separator colspan="4" string="Blocks" />
                                     <field name="test_block_ids" class="oe_field_test_block_ids"
                                         widget="many2many_tags" />
                                     <field name="auto_arrange_blocks" class="oe_field_auto_arrange_blocks" />
                                     <field name="restart_numbering" class="oe_field_restart_numbering" />
                                     <field name="block_starts_page" class="oe_field_block_starts_page" />
+
                                 </group>
 
                             </page>
 
-                            <page id="available" string="Related" class="oe_page_tests" accesskey="A" groups="academy_base.academy_group_manager">
-                                <separator string="Topics" />
-                                <field name="topic_ids" class="oe_field_topic_ids"
-                                     options="{'no_create': True}" nolabel="1">
-                                    <tree>
-                                        <field name="name" class="oe_field_name" string="Name" />
+                            <page id="available" string="Availability" class="oe_page_tests" accesskey="A">
+                                <separator string="Available in training actions" />
+                                <field name="training_action_ids" class="oe_field_training_action_ids">
+                                    <tree string="Training actions">
+                                        <field name="action_code" class="oe_field_action_code" />
+                                        <field name="action_name" class="oe_field_action_name" />
+                                        <field name="start" class="oe_field_start" />
+                                        <field name="end" class="oe_field_end" />
                                     </tree>
                                 </field>
 
-                                <separator string="Available in" />
-                                <field name="available_in" class="oe_field_available_in" />
+                                <separator string="Available in training activities"
+                                    groups="academy_base.academy_group_technical" />
+                                <field name="training_activity_ids" class="oe_field_training_activity_ids"
+                                    groups="academy_base.academy_group_technical">
+                                    <tree string="Training activities">
+                                        <field name="activity_code" class="oe_field_activity_code" />
+                                        <field name="name" class="oe_field_name" />
+                                        <field name="training_action_count" class="oe_field_training_action_count" />
+                                    </tree>
+                                </field>
+
+                                <separator string="Available in competency units" />
+                                <field name="competency_unit_ids" class="oe_field_competency_unit_ids">
+                                    <tree string="Competency units">
+                                        <field name="competency_code" class="oe_field_competency_code" />
+                                        <field name="competency_name" class="oe_field_competency_name" />
+                                        <field name="training_activity_id" class="oe_field_training_activity_id" />
+                                        <field name="training_module_id" class="oe_field_training_module_id" />
+                                    </tree>
+                                </field>
+
+                                <separator string="Available in training modules"
+                                    groups="academy_base.academy_group_technical" />
+                                <field name="training_module_ids" class="oe_field_training_module_ids"
+                                    groups="academy_base.academy_group_technical">
+                                    <tree string="Training modules">
+                                        <field name="module_code" class="oe_field_module_code" />
+                                        <field name="name" class="oe_field_name" />
+                                        <field name="training_unit_count" class="oe_field_training_unit_count" />
+                                    </tree>
+                                </field>
                             </page>
                         </notebook>
                     </sheet>

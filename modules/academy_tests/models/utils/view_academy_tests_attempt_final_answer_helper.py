@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """ Raw SQL sentences will be used in inverse search methods
 
-MODEL: academy_tests.model_academy_tests_attempt_attempt_answer_rel
+MODEL: academy_tests.model_academy_tests_attempt_final_answer_helper
 Relationship between attempt and its last answers
 
 Return the last attempt answer by attempt and question-link with some
@@ -12,7 +12,7 @@ This view will be used:
 """
 
 
-ACADEMY_TESTS_ATTEMPT_ATTEMPT_ANSWER_REL_MODEL = '''
+ACADEMY_TESTS_ATTEMPT_FINAL_ANSWER_HELPER = '''
 WITH sorted AS (
     -- Returns ID and inverse ordinal for attempt answer, these will be
     -- used in the ``finals`` query to get the last attempt answer by
