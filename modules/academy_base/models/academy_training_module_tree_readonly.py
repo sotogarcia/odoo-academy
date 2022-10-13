@@ -8,7 +8,8 @@ allows to quick search module dependencies.
 from odoo import models, fields
 from odoo.tools import drop_view_if_exists
 
-from .utils.raw_sql import ACADEMY_TRAINING_MODULE_TREE_READONLY
+from .utils.view_academy_training_module_tree_readonly import \
+    ACADEMY_TRAINING_MODULE_TREE_READONLY
 
 from logging import getLogger
 

@@ -3,6 +3,18 @@
 
 MODEL: academy_tests.model_academy_tests_answers_table
 This model will be used to build and display as report a test answers table
+
+
+┌───────────────────┐
+│ _answers_table    │
+├───────────────────┤
+│ id                │   - Virtual ID. This should not be used in relationships
+│ question_id       │
+│ sequence          │   - partitioned by test and ordered by link.sequence
+│ name              │
+│ description       │
+│ link_id           │
+└───────────────────┘
 """
 
 

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <!-- Tree view for "academy.testabstract.question.statistics" -->
+        <record id="view_academy_tests_abstract_question_statistics_tree" model="ir.ui.view">
+            <field name="name">view.academy.tests.abstract.question.statistics.tree</field>
+            <field name="model">academy.tests.abstract.question.statistics</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <tree string="academy_tests_abstract_question_statistics_tree" create="0" delete="0">
+                    <field name="id" />
+                    <field name="question_id" />
+                    <field name="last_time" />
+                    <field name="retries" />
+                    <field name="blank_percent" />
+                    <field name="right_percent" />
+                    <field name="wrong_percent" />
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form view for "academy.testabstract.question.statistics" -->
+        <record id="view_academy_tests_abstract_question_statistics_form" model="ir.ui.view">
+            <field name="name">view.academy.tests.abstract.question.statistics.form</field>
+            <field name="model">academy.tests.abstract.question.statistics</field>
+            <field name="type">form</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <form string="academy_tests_abstract_question_statistics_form" create="0" delete="0" edit="0">
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="id" class="oe_edit_only" />
+                            <h1>
+                                <field name="id" />
+                            </h1>
+                        </div>
+
+                        <group col="6">
+                            <field name="question_id" colspan="6" />
+                            <field name="first_time" />
+                            <field name="last_time" />
+                            <field name="retries" />
+
+                            <separator colspan="6" string="Count" />
+                            <field name="blank_count" />
+                            <field name="answer_count" />
+                            <field name="doubt_count" />
+                            <field name="right_count" />
+                            <field name="wrong_count" />
+                            <field name="answer_doubt_count" />
+                            <field name="wrong_blank_count" />
+                            <field name="wrong_doubt_count" />
+                            <field name="wrong_blank_doubt_count" />
+
+                            <separator colspan="6" string="Percent" />
+                            <field name="blank_percent" />
+                            <field name="answer_percent" />
+                            <field name="doubt_percent" />
+                            <field name="right_percent" />
+                            <field name="wrong_percent" />
+                            <field name="answer_doubt_percent" />
+                            <field name="wrong_blank_percent" />
+                            <field name="wrong_doubt_percent" />
+                            <field name="wrong_blank_doubt_percent" />
+                        </group>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search view for "academy.testabstract.question.statistics" -->
+        <record id="view_academy_tests_abstract_question_statistics_search" model="ir.ui.view">
+            <field name="name">view.academy.tests.abstract.question.statistics.search</field>
+            <field name="model">academy.tests.abstract.question.statistics</field>
+            <field name="type">search</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <search string="academy_tests_abstract_question_statistics_search">
+                    <field name="id" />
+                    <field name="question_id" />
+                    <field name="first_time" />
+                    <field name="last_time" />
+                    <field name="retries" />
+                </search>
+            </field>
+        </record>
+
+    </data>
+</openerp>

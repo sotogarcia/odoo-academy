@@ -27,7 +27,44 @@
                     <field name="topic_id" />
                     <field name="topic_version_id" domain="[('topic_id', '=', topic_id)]" string="Version" />
                     <field name="category_ids" widget="many2many_tags" domain="[('topic_id', '=', topic_id)]" string="Categories" />
+                    <field name="question_count" class="oe_field_question_count oe_read_only" />
                 </tree>
+            </field>
+        </record>
+
+        <record id="view_academy_tests_topic_training_module_link_form" model="ir.ui.view">
+            <field name="name">view.academy.tests.topic.training.module.link.form</field>
+            <field name="model">academy.tests.topic.training.module.link</field>
+            <field name="type">form</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <form string="Caption" create="1" delete="1" edit="1">
+                    <sheet>
+                        <div class="oe_title w-100">
+                            <label for="topic_id" class="oe_edit_only" />
+                            <h1>
+                                <field name="display_name" class="oe_field_display_name" readonly="1" />
+                            </h1>
+                        </div>
+
+                        <group col="4">
+                            <field name="training_module_id" colspan="4" />
+                            <field name="topic_id" colspan="4" />
+                            <field name="topic_version_id"
+                                domain="[('topic_id', '=', topic_id)]" string="Version" />
+                            <field name="question_count"
+                                class="oe_field_question_count oe_read_only" />
+                        </group>
+
+                        <group string="Categories">
+                            <field name="category_ids" widget="many2many_tags"
+                                nolabel="1" domain="[('topic_id', '=', topic_id)]" />
+                        </group>
+
+                    </sheet>
+                </form>
             </field>
         </record>
 

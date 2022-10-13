@@ -122,7 +122,7 @@
             <field name="name">Correction scales</field>
             <field name="sequence" eval="10" />
             <field name="action" ref="action_scale_of_correction_act_window" />
-            <field name="parent_id" ref="menu_test_settings_top" />
+            <field name="parent_id" ref="academy_tests.menu_test_advanced" />
         </record>
 
     </data>

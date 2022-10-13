@@ -169,9 +169,11 @@
 
                             </page>
 
-                            <page string="Description" class="oe_page_description" accesskey="D">
-                                <field name="description" class="oe_field_description"
-                                    placeholder="Enter new description" />
+                            <page id="setup" string="Setup" class="oe_page_setup" accesskey="S">
+                                <group col="4">
+                                    <field name="description" class="oe_field_description"
+                                        placeholder="Enter new description" colspan="4" />
+                                </group>
                             </page>
 
                             <page string="Dependency" class="oe_page_description" accesskey="E">
@@ -624,20 +626,6 @@
                     <field name="level_id" class="oe_field_level_id"
                         options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"
                         invisible="context.get('hide_level', False)" />
-
-                    <button name="save"
-                            string="Apply"
-                            special="save"
-                            icon="fa-check"
-                            help="Apply current changes"
-                            class="oe_edit_only" />
-
-                    <button name="cancel"
-                            string="Cancel"
-                            special="cancel"
-                            icon="fa-undo"
-                            help="Cancel current changes"
-                            class="oe_edit_only" />
 
                     <button name="open_form_view"
                              string="Open in form"

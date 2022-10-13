@@ -7,28 +7,44 @@
             <xpath expr="." position="inside">
                 <link rel="stylesheet" href="/academy_tests/static/src/css/styles-backend.css" />
                 <script type="text/javascript" src="/academy_tests/static/src/js/academy_tests.js" />
+
+                <script type="text/javascript" src="/academy_tests/static/src/js/listview_button.js"></script>
             </xpath>
         </template>
 
+        <record id="menu_test_monitoring" model="ir.ui.menu" >
+            <field name="name">Tests</field>
+            <field name="sequence" eval="35" />
+            <field name="parent_id" ref="academy_base.menu_academy_monitoring" />
+            <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical')), (4, ref('academy_base.academy_group_teacher'))]"/>
+        </record>
+
         <record id="menu_test_top" model="ir.ui.menu" >
-            <field name="name">Test</field>
+            <field name="name">Tests</field>
             <field name="sequence" eval="15" />
             <field name="parent_id" ref="academy_base.menu_academy_resources" />
             <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical')), (4, ref('academy_base.academy_group_teacher'))]"/>
         </record>
 
         <record id="menu_test_utilities" model="ir.ui.menu" >
-            <field name="name">Utilities</field>
-            <field name="sequence" eval="15" />
-            <field name="parent_id" ref="academy_base.menu_academy_resources" />
+            <field name="name">Tests</field>
+            <field name="sequence" eval="25" />
+            <field name="parent_id" ref="academy_base.menu_academy_tools" />
             <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical')), (4, ref('academy_base.academy_group_teacher'))]"/>
         </record>
 
         <record id="menu_test_settings_top" model="ir.ui.menu" >
-            <field name="name">Test</field>
+            <field name="name">Tests</field>
             <field name="sequence" eval="10" />
             <field name="parent_id" ref="academy_base.menu_academy_settings" />
             <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical')), (4, ref('academy_base.academy_group_teacher'))]"/>
+        </record>
+
+        <record id="menu_test_advanced" model="ir.ui.menu" >
+            <field name="name">Tests</field>
+            <field name="sequence" eval="50" />
+            <field name="parent_id" ref="academy_base.menu_academy_advanced" />
+            <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
         </record>
 
     </data>

@@ -83,13 +83,12 @@ class AcademyPublicTenderingOffer(models.Model):
         default=None,
         help=False,
         comodel_name='academy.public.tendering.process',
-        inverse_name='public_tendering_public_offer_id',
+        inverse_name='public_offer_id',
         domain=[],
         context={},
         auto_join=False,
         limit=None
     )
-
 
     bulletin_board_url = fields.Char(
         string='Bulletin Board',

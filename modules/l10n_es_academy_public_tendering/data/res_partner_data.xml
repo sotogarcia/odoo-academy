@@ -72,7 +72,7 @@
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
         <record id="res_partner_galician_healthcare_service" model="res.partner">
 
-            <field name="name">Servizo Galego de Saúde</field>
+            <field name="name">Servicio Gallego de Salud</field>
 
             <field name="street">Edificio Administrativo San Lázaro</field>
             <field name="street2">Rúa San Lázaro, s/n</field>

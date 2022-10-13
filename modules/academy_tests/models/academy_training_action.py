@@ -4,14 +4,10 @@
 This module extends the academy.training.action Odoo model
 """
 
-from odoo import models, fields
-
-import odoo.addons.academy_base.models.utils.custom_model_fields as custom
-from .utils.sql_m2m_through_view import ACADEMY_ACTION_AVAILABLE_TESTS
-
-from odoo.exceptions import UserError
+from odoo import models, fields, api
 from odoo.tools.translate import _
 from logging import getLogger
+import odoo.addons.academy_base.models.utils.custom_model_fields as custom
 
 _logger = getLogger(__name__)
 
@@ -22,38 +18,89 @@ class AcademyTrainingAction(models.Model):
 
     _inherit = 'academy.training.action'
 
-    test_ids = fields.Many2many(
-        string='Training action tests',
+    assignment_ids = fields.One2many(
+        string='Test assignments',
         required=False,
         readonly=False,
-        index=False,
+        index=True,
         default=None,
-        help='Choose the tests will be available in this training action',
-        comodel_name='academy.tests.test',
-        relation='academy_tests_test_training_action_rel',
-        column1='training_action_id',
-        column2='test_id',
+        comodel_name='academy.tests.test.training.assignment',
+        inverse_name='training_action_id',
         domain=[],
         context={},
-        limit=None
+        auto_join=False,
+        limit=None,
+        help=('List of test assignments that have been created for this '
+              'training action')
     )
 
-    available_test_ids = custom.Many2manyThroughView(
-        string='Training action available tests',
+    assignment_count = fields.Integer(
+        string='Nº assignments',
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        store=False,
+        compute='_compute_assignment_count',
+        help=('Show the number of test assignments that have been created for'
+              'this training action')
+    )
+
+    @api.depends('assignment_ids')
+    def _compute_assignment_count(self):
+        for record in self:
+            record.assignment_count = \
+                len(record.assignment_ids)
+
+    attempt_count = fields.Integer(
+        string='Attempt count',
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        help='Show number of test attempts',
+        store=False,
+        compute='_compute_attempt_count'
+    )
+
+    @api.depends('assignment_ids')
+    def _compute_attempt_count(self):
+        for record in self:
+            summands = self.mapped('assignment_ids.attempt_count')
+            record.attempt_count = sum(summands)
+
+    template_ids = fields.One2many(
+        string='Templates',
         required=False,
         readonly=False,
-        index=False,
+        index=True,
         default=None,
-        help='Choose the tests will be available in this training activity',
-        comodel_name='academy.tests.test',
-        relation='academy_tests_test_available_in_training_action_rel',
-        column1='training_action_id',
-        column2='test_id',
+        comodel_name='academy.tests.random.template',
+        inverse_name='training_action_id',
         domain=[],
         context={},
+        auto_join=False,
         limit=None,
-        sql=ACADEMY_ACTION_AVAILABLE_TESTS
+        help=('List of test templates available to be used in this training '
+              'action')
     )
+
+    template_count = fields.Integer(
+        string='Nº templates',
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        store=False,
+        compute='_compute_template_count',
+        help=('Show the number of test templates available to be used in this '
+              'training action')
+    )
+
+    @api.depends('template_ids')
+    def _compute_template_count(self):
+        for record in self:
+            record.template_count = len(record.template_ids)
 
     def create_test_template(self, no_open=False):
         template_obj = self.env['academy.tests.random.template']
@@ -69,20 +116,18 @@ class AcademyTrainingAction(models.Model):
 
     def view_test_attempts(self):
         self.ensure_one()
-        test_ids = self.mapped('test_ids.id')
 
-        if not test_ids:
-            msg = _('There are no tests associated with this training '
-                    'activity')
-            raise UserError(msg)
+        assignment_ids = self.mapped('assignment_ids.id')
+        irf = self.env.ref('academy_tests.ir_filter_assignment_attempts')
 
         return {
-            'model': 'ir.actions.act_window',
+            'name': _('Attempts of «{}»').format(self.name),
+            'view_mode': 'tree,pivot,form',
+            'view_mode': 'pivot,tree,form,graph',
+            'res_model': 'academy.tests.attempt.resume.helper',
             'type': 'ir.actions.act_window',
-            'name': _('Test attempts'),
-            'res_model': 'academy.tests.attempt',
+            'nodestroy': True,
             'target': 'current',
-            'view_mode': 'tree',
-            'domain': [('test_id', 'in', test_ids)],
-            'context': {}
+            'domain': [('assignment_id', 'in', assignment_ids)],
+            'context': irf.context
         }

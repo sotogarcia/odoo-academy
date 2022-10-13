@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="academy_tests_test_block_supplementary" model="academy.tests.test.block">
+            <field name="name">Supplementary questions</field>
+            <field name="description"><![CDATA[Supplementary questions fulfill the function of replacing any other ordinary question that is cancelled]]></field>
+            <field name="preamble"><![CDATA[Supplementary questions fulfill the function of replacing any other ordinary question that is cancelled. The question that has been canceled will not be taken into account, it is the first reserve question that will take its place.]]></field>
+            <field name="active" eval="True" />
+        </record>
+
+    </data>
+</openerp>

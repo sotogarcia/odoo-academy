@@ -13,9 +13,9 @@ _logger = getLogger(__name__)
 
 
 USER_ACTIONS = [
-    ('blank', 'Leave blank'),
-    ('doubt', 'Doubt'),
-    ('answer', 'Answer'),
+    ('blank', 'Blank answer'),
+    ('doubt', 'Unsure answer'),
+    ('answer', 'Sure answer'),
 ]
 
 
@@ -178,6 +178,6 @@ class AcademyAbstractAttemptAnswer(models.AbstractModel):
         if user_action == 'blank':
             values['answer_id'] = None
 
-        result = super(AcademyTestsAttemptAnswer, self).write(values)
+        result = super(AcademyAbstractAttemptAnswer, self).write(values)
 
         return result

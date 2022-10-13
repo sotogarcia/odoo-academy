@@ -44,7 +44,19 @@
             <field name="arch" type="xml">
                 <form string="academy_training_activity_form" create="1" delete="1" edit="1">
                     <sheet>
-                        <div class="oe_button_box" name="button_box"/>
+                        <div class="oe_button_box" name="button_box">
+
+                            <button name="show_training_modules" type="object" class="oe_stat_button" icon="fa-list-ul">
+                                <field name="training_module_count" widget="statinfo" string="Modules" />
+                            </button>
+                            <!-- <button name="show_competency_units" type="object" class="oe_stat_button" icon="fa-list-ul">
+                                <field name="competency_unit_count" widget="statinfo" string="Competencies" />
+                            </button> -->
+                            <button name="show_training_actions" type="object" class="oe_stat_button" icon="fa-th-list">
+                                <field name="training_action_count" widget="statinfo" string="Actions" />
+                            </button>
+                        </div>
+
                         <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
 
                         <field name="image_1920" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}'/>
@@ -60,27 +72,30 @@
 
                         <field name="id" class="oe_field_id" invisible="1" />
 
-                        <group col="2">
+                        <group col="4">
                             <field name="activity_code" class="oe_field_activity_code"
                                 placeholder="Enter new code" />
                             <field name="professional_family_id" class="oe_field_professional_family_id" />
                             <field name="professional_area_id" class="oe_field_professional_area_id" />
                             <field name="qualification_level_id" class="oe_field_qualification_level_id" />
-                            <field name="general_competence" class="oe_field_general_competence"
-                                placeholder="General competence name"/>
                             <field name="professional_field_id" class="oe_field_professional_field" />
                             <field name="professional_sector_ids" class="oe_field_professional_sector_ids" widget="many2many_tags" />
+                            <separator colspan="4" />
+                            <field name="general_competence" class="oe_field_general_competence"
+                                placeholder="General competence name" colspan="4" />
                         </group>
 
                         <notebook>
-                            <page string="Description" class="oe_page_description" accesskey="D">
-                                <field name="description" class="oe_field_description"
-                                    placeholder="Enter new description" />
-                            </page>
                             <page string="Competency units" class="oe_page_compentency_units" accesskey="C">
-                                <field name="competency_unit_ids" class="oe_field_competency_unit_ids"
-                                    context="{'tree_view_ref' : 'academy_base.view_academy_competency_unit_embed_tree',
-                                              'default_training_activity_id' : id, 'append_to_training_activity' : True}" />
+                                <field name="competency_unit_ids" class="oe_field_competency_unit_ids" colspan="2" nolabel="1"
+                                    context="{'tree_view_ref': 'academy_base.view_academy_competency_unit_inline_edit_tree'}" />
+                            </page>
+                            <page id="setup" string="Setup" class="oe_page_setup" accesskey="S">
+                                <group col="4">
+                                    <field name="description" class="oe_field_description"
+                                        placeholder="Enter new description" colspan="4" />
+                                    <field name="owner_id" class="oe_field_owner_id" />
+                                </group>
                             </page>
 
                             <page string="Resources" class="oe_page_available_resources" accesskey="R">
@@ -89,10 +104,6 @@
 
                                 <field name="available_resource_ids" nolabel="1"
                                     class="oe_field_available_resource_ids oe_read_only" />
-                            </page>
-
-                            <page string="Actions" class="oe_page_actions" accesskey="A">
-                                <field name="training_action_ids" class="oe_field_training_actions_ids" />
                             </page>
 
                         </notebook>
@@ -214,7 +225,7 @@
         <!-- Main menu for model.name -->
         <record id="menu_academy_training_activity" model="ir.ui.menu" >
             <field name="name">Training activities</field>
-            <field name="sequence" eval="20" />
+            <field name="sequence" eval="10" />
             <field name="action" ref="action_academy_training_activity_act_window" />
             <field name="parent_id" ref="academy_base.menu_academy_catalog" />
             <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>

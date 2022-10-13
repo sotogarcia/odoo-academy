@@ -4,6 +4,7 @@
 
 from logging import getLogger
 from odoo import models, fields, api
+from odoo.osv.expression import OR, AND
 
 # pylint: disable=locally-disabled, C0103
 _logger = getLogger(__name__)
@@ -34,6 +35,21 @@ class AcademyAbstractOwner(models.AbstractModel):
         track_visibility='onchange'
     )
 
+    root_id = fields.Many2one(
+        string='Real owner',
+        required=True,
+        readonly=False,
+        index=True,
+        default=lambda self: self._default_owner_id(),
+        help='Real object owner',
+        comodel_name='res.users',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False,
+        track_visibility='onchange'
+    )
+
     def _default_owner_id(self):
         """ Compute the default owner for new questions; this will be
         the current user or the root user.
@@ -42,17 +58,17 @@ class AcademyAbstractOwner(models.AbstractModel):
 
         return self.env.context.get('uid', 1)
 
-    def _get_user(self, owner_id):
-        """ Get res.users model related with given owner_id
+    def _get_user(self, uid):
+        """ Get res.users model related with given uid
 
         Arguments:
-            owner_id {int} -- ID of the owner to which user will be browse
+            uid {int} -- ID of the owner to which user will be browse
 
         Returns:
             recordset -- single item recorset with the user
         """
 
-        return self.env['res.users'].browse(owner_id)
+        return self.env['res.users'].browse(uid)
 
     def _is_follower(self, user_item):
         """ Check if given user is follows current self (single) record
@@ -89,6 +105,9 @@ class AcademyAbstractOwner(models.AbstractModel):
             user_item = self.env['res.users'].browse(uid)
             if not user_item.has_group(self._min_group_allowed):
                 values['owner_id'] = uid
+
+        # It's mandatory
+        values['root_id'] = values.get('owner_id', 1)
 
     def _pop_owner(self, values):
         """ Removes ``owner_id`` key and value from given values dictionary

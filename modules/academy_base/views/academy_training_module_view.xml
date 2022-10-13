@@ -21,7 +21,7 @@
             <field name="model">academy.training.module</field>
             <field name="type">tree</field>
             <field name="mode">primary</field>
-            <field name="priority" eval="16" />
+            <field name="priority" eval="25" />
             <field name="active" eval="True" />
             <field name="arch" type="xml">
                 <tree string="academy_training_module_tree" create="1" delete="1" edit="1">
@@ -39,12 +39,13 @@
             <field name="model">academy.training.module</field>
             <field name="type">form</field>
             <field name="mode">primary</field>
-            <field name="priority" eval="16" />
+            <field name="priority" eval="25" />
             <field name="active" eval="True" />
             <field name="arch" type="xml">
                 <form string="academy_training_module_form" create="1" delete="1" edit="1">
                     <sheet>
                         <div class="oe_button_box" name="button_box"/>
+
                         <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
 
                         <field name="image_1920" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}'/>
@@ -64,9 +65,12 @@
                         </group>
 
                         <notebook>
-                            <page string="Description" class="oe_page_description" accesskey="D">
-                                <field name="description" nolabel="1" class="oe_field_description"
-                                    placeholder="Enter new description" />
+                            <page id="setup" string="Setup" class="oe_page_setup" accesskey="S">
+                                <group col="4">
+                                    <field name="description" class="oe_field_description"
+                                        placeholder="Enter new description" colspan="4" />
+                                    <field name="owner_id" class="oe_field_owner_id" />
+                                </group>
                             </page>
                             <page string="Resources" class="oe_page_resources" accesskey="R">
                                 <field name="module_resource_ids"
@@ -93,12 +97,13 @@
             <field name="model">academy.training.module</field>
             <field name="type">search</field>
             <field name="mode">primary</field>
-            <field name="priority" eval="16" />
+            <field name="priority" eval="25" />
             <field name="active" eval="True" />
             <field name="arch" type="xml">
                 <search string="academy_training_module_search">
                     <field name="name" />
                     <field name="module_code" />
+                    <field name="training_activity_ids" />
 
                     <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
 
@@ -113,7 +118,7 @@
             <field name="model">academy.training.module</field>
             <field name="type">kanban</field>
             <field name="mode">primary</field>
-            <field name="priority" eval="16" />
+            <field name="priority" eval="25" />
             <field name="active" eval="True" />
             <field name="arch" type="xml">
                 <kanban create="1" delete="1" edit="1">
@@ -121,7 +126,8 @@
                     <field name="image_128"/>
                     <field name="name" />
                     <field name="hours" />
-                    <field name="module_code" />s
+                    <field name="owner_id" />
+                    <field name="module_code" />
 
                     <templates>
                         <t t-name="kanban-box">
@@ -137,8 +143,9 @@
                                 <div class="oe_kanban_details">
                                     <strong class="oe_partner_heading"><field name="name"/></strong>
                                     <ul>
-                                       <li><strong>Code:&#160;</strong><field name="module_code" /></li>
-                                       <li><strong>Lifespan:&#160;</strong><field name="hours" widget="float_time" />&#160;hours</li>
+                                        <li><strong>Code:&#160;</strong><field name="module_code" /></li>
+                                        <li><strong>Owner:&#160;</strong><field name="owner_id" /></li>
+                                        <li><strong>Lifespan:&#160;</strong><field name="hours" widget="float_time" />&#160;hours</li>
                                      </ul>
                                 </div>
                             </div>
@@ -182,6 +189,11 @@
             <field name="active" eval="True" />
             <field name="inherit_id" ref="academy_base.view_academy_training_module_form" />
             <field name="arch" type="xml">
+                <xpath expr="//div[@name='button_box']" position="inside">
+                    <button name="view_training_units" type="object" class="oe_stat_button" icon="fa-list-ul">
+                        <field name="training_unit_count" widget="statinfo" string="Units" />
+                    </button>
+                </xpath>
                 <xpath expr="//notebook/page" position="after">
                    <page string="Training units" class="oe_page_training_units" accesskey="U">
                         <field name="training_unit_ids" class="oe_field_training_unit_ids"
@@ -195,7 +207,6 @@
                     <field name="hours" class="oe_field_hours"
                         placeholder="Total of hours from all units in module"
                         attrs="{'invisible': [('training_unit_count', '=', 0)]}"/>
-                    <field name="training_unit_count" class="oe_field_training_unit_count" string="Units" />
                 </xpath>
             </field>
         </record>
@@ -266,7 +277,7 @@
         <!-- Main menu for model.name -->
         <record id="menu_training_module" model="ir.ui.menu" >
             <field name="name">Training modules</field>
-            <field name="sequence" eval="30" />
+            <field name="sequence" eval="15" />
             <field name="action" ref="action_training_module_act_window" />
             <field name="parent_id" ref="academy_base.menu_academy_catalog" />
             <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
@@ -283,7 +294,7 @@
             <field name="model">academy.training.module</field>
             <field name="type">tree</field>
             <field name="mode">primary</field>
-            <field name="priority" eval="16" />
+            <field name="priority" eval="30" />
             <field name="active" eval="True" />
             <field name="inherit_id" ref="academy_base.view_academy_training_module_tree" />
             <field name="arch" type="xml">
@@ -302,7 +313,7 @@
             <field name="model">academy.training.module</field>
             <field name="type">form</field>
             <field name="mode">primary</field>
-            <field name="priority" eval="16" />
+            <field name="priority" eval="30" />
             <field name="active" eval="True" />
             <field name="inherit_id" ref="academy_base.view_academy_training_module_form" />
             <field name="arch" type="xml">
@@ -322,7 +333,7 @@
             <field name="model">academy.training.module</field>
             <field name="type">kanban</field>
             <field name="mode">primary</field>
-            <field name="priority" eval="16" />
+            <field name="priority" eval="30" />
             <field name="active" eval="True" />
             <field name="inherit_id" ref="academy_base.view_academy_training_module_kanban" />
             <field name="arch" type="xml">
@@ -383,7 +394,7 @@
             <field name="name">Training units</field>
             <field name="sequence" eval="35" />
             <field name="action" ref="action_training_module_units_act_window" />
-            <field name="parent_id" ref="academy_base.menu_academy_catalog" />
+            <field name="parent_id" ref="academy_base.menu_academy_settings_helper" />
             <field name="groups_id" eval="[(4, ref('academy_base.academy_group_manager'))]"/>
         </record>
 

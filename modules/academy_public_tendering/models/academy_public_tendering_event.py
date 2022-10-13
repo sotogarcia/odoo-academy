@@ -111,6 +111,15 @@ class AcademyPublicTenderingEvent(models.Model):
         auto_join=False
     )
 
+    @api.onchange('event_type_id')
+    def _onchange_event_type_id(self):
+        type_obj = self.env['academy.public.tendering.event.type']
+        type_rows = type_obj.search_read([], ['name'])
+        types = [item['name'] for item in type_rows]
+
+        if self.event_type_id and (not self.name or self.name in types):
+            self.name = self.event_type_id.name
+
     def _ensure_name(self, value_dict, type_id=False):
         """ If record name field value has not been set this method gets the
         name of the event type to assign it as record name
@@ -124,8 +133,6 @@ class AcademyPublicTenderingEvent(models.Model):
             value_dict['name'] = type_set.name
 
         return value_dict
-
-
 
     @api.model
     def create(self, values):
@@ -141,7 +148,6 @@ class AcademyPublicTenderingEvent(models.Model):
             type_id = value_dict.get(field_name)
             self._ensure_name(value_dict, type_id)
 
-
         # STEP 2: Call parent create method to create record
         result = super(AcademyPublicTenderingEvent, self).create(values)
 
@@ -153,7 +159,6 @@ class AcademyPublicTenderingEvent(models.Model):
         result.notify_creation()
 
         return result
-
 
     def write(self, values):
         """ Touches related tendering processes to ensure state_id
@@ -174,7 +179,6 @@ class AcademyPublicTenderingEvent(models.Model):
 
         return result
 
-
     def notify_creation(self):
         """ Appends mail message to the parent process notifying new
         related event has been created
@@ -190,7 +194,6 @@ class AcademyPublicTenderingEvent(models.Model):
             body = body_format.format(record.name, process.name)
             process.message_post(
                 body=body, subject=subject, subtype_id=subtype.id)
-
 
     def notify_update(self):
         """ Appends mail message to the parent process notifying existing

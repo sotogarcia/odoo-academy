@@ -12,15 +12,12 @@
             <field name="active" eval="True" />
             <field name="inherit_id" ref="academy_base.view_academy_training_action_form" />
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='training_action_enrolment_ids']" position="after">
-
-                    <group col="2" string="Selling prices">
-                        <field name="product_ids" class="oe_field_product_ids" nolabel="1" colspan="2" />
-
+                <xpath expr="//page[@id='setup']/*[last()]" position="after">
+                    <group col="4" string="Selling">
+                        <field name="product_ids" class="oe_field_product_ids" nolabel="1" colspan="4" />
                         <field name="default_product_id" class="oe_field_default_product_id"
-                               string="Default" domain="[('id', 'in', product_ids)]" />
+                               string="Default" domain="[('id', 'in', product_ids)]" cospan="2" />
                     </group>
-
                 </xpath>
             </field>
         </record>

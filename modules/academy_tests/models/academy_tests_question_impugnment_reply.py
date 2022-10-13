@@ -21,7 +21,7 @@ class AcademyTestsQuestionImpugnmentReply(models.Model):
     _description = u'Academy tests question impugnment reply'
 
     _rec_name = 'id'
-    _order = 'write_date DESC, create_date DESC'
+    _order = 'write_date ASC, create_date ASC'
 
     description = fields.Text(
         string='Description',

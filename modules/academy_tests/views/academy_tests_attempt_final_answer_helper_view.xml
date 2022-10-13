@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <!-- Tree view for "academy.tests.attempt.final.answer.helper" -->
+        <record id="view_academy_tests_attempt_final_answer_helper_tree" model="ir.ui.view">
+            <field name="name">view.academy.tests.attempt.final.answer.helper.tree</field>
+            <field name="model">academy.tests.attempt.final.answer.helper</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <tree string="academy_tests_attempt_final_answer_helper_tree" create="0" delete="0" edit="0"
+                    decoration-success="is_correct" decoration-warning="user_action == 'blank'" decoration-danger="user_action != 'blank' and not is_correct">
+                    <field name="sequence" class="oe_field_sequence" />
+                    <field name="user_action" class="oe_field_user_action" string="Choice" />
+                    <field name="is_correct" class="oe_field_is_correct" string="Correct" />
+                    <field name="instant" class="oe_field_instant" string="Registered" />
+                    <field name="retries" class="oe_field_retries" string="Tries" />
+                    <field name="answer_count" class="oe_field_answer_count" string="Sure" />
+                    <field name="doubt_count" class="oe_field_doubt_count" string="Unsure" />
+                    <field name="blank_count" class="oe_field_blank_count" string="Unanswered" />
+                    <field name="right_count" class="oe_field_right_count" string="Well" />
+                    <field name="wrong_count" class="oe_field_wrong_count" string="Bad" />
+                    <field name="aptly" class="oe_field_aptly" widget="percentage" />
+
+                    <button name="show_question"
+                            string="Question"
+                            type="object"
+                            default_focus="0"
+                            icon="fa-question-circle"
+                            help="Show the related question details" />
+
+                    <button name="show_attempt_answers"
+                            string="Attempt"
+                            type="object"
+                            default_focus="0"
+                            icon="fa-list"
+                            help="Show the related question attempt" />
+                </tree>
+            </field>
+        </record>
+
+
+        <!-- Tree view for "academy.tests.attempt.final.answer.helper" -->
+        <record id="view_academy_tests_attempt_final_answer_helper_form" model="ir.ui.view">
+            <field name="name">view.academy.tests.attempt.final.answer.helper.form</field>
+            <field name="model">academy.tests.attempt.final.answer.helper</field>
+            <field name="type">form</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <form string="Final answer" create="0" delete="0" edit="0">
+                    <sheet>
+                        <div class="w-100">
+                            <label for="html" class="oe_edit_only" />
+                            <div class="border border-info rounded px-3 pt-3">
+                                <field name="html" class="text-info" />
+                            </div>
+                        </div>
+
+                        <group col="6">
+                            <separator colspan="6" string="Details" class="mt-4" />
+                            <field name="instant" class="oe_field_instant" string="Registered" />
+                            <field name="user_action" class="oe_field_user_action" string="Choice" />
+                            <field name="is_correct" class="oe_field_is_correct" string="Correct" />
+
+                            <separator colspan="6" string="Retries" />
+                            <field name="right_count" class="oe_field_right_count" string="Well" />
+                            <field name="wrong_count" class="oe_field_wrong_count" string="Bad" />
+                            <field name="blank_count" class="oe_field_blank_count" string="Unanswered" />
+
+                            <separator colspan="6" string="Hits" class="mt-4" />
+                            <field name="aptly" class="oe_field_aptly" widget="percentage" />
+                            <field name="answer_count" class="oe_field_answer_count" string="Sure" />
+                            <field name="doubt_count" class="oe_field_doubt_count" string="Unsure" />
+
+
+                        </group>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</openerp>

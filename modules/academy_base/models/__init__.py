@@ -5,6 +5,8 @@
 ###############################################################################
 
 from . import academy_abstract_observable
+from . import academy_abstract_training
+from . import academy_abstract_owner
 
 from . import academy_training_methodology
 from . import academy_application_scope
@@ -37,3 +39,4 @@ from . import academy_training_action_enrolment
 from . import academy_training_lesson
 
 from . import res_partner
+from . import academy_abstract_training_reference

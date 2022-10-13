@@ -138,6 +138,7 @@ class AcademyTestsCategory(models.Model):
         index=False,
         default=0,
         help='Show number of questions',
+        store=False,
         compute=lambda self: self.compute_question_count()
     )
 

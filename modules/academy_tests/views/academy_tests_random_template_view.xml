@@ -26,7 +26,7 @@
                 <tree string="academy_tests_random_template_tree" create="1" delete="1" edit="1">
                     <field name="name" class="oe_field_name" string="Name" />
                     <field name="owner_id" class="oe_field_owner_id" />
-                    <field name="context_ref" class="oe_field_context_ref" />
+                    <field name="training_ref" class="oe_field_context_ref" />
                     <field name="scheduled_count" class="oe_field_scheduled_count" />
                 </tree>
             </field>
@@ -46,14 +46,19 @@
 
                         <div class="oe_button_box clearfix" name="button_box">
                             <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+
                             <button name="view_tests" type="object"
-                                class="oe_stat_button oe_read_only" icon="fa-files-o">
-                                View test
+                                class="oe_stat_button oe_read_only" icon="fa-files-o"
+                                help="View tests have been created with this template">
+                                <field name="test_count" widget="statinfo" string="View tests" />
                             </button>
+
                             <button name="edit_lines" type="object"
-                                class="oe_stat_button oe_read_only" icon="fa-pencil-square-o">
-                                Edit lines
+                                class="oe_stat_button oe_read_only" icon="fa-pencil-square-o"
+                                help="View and edit lines in template">
+                                <field name="lines_count" widget="statinfo" string="Edit lines" />
                             </button>
+
                             <button name="new_test" type="object"
                                 class="oe_stat_button oe_read_only" icon="fa-file-text-o">
                                 New test
@@ -88,19 +93,23 @@
                                     placeholder="Add or manage lines" widget="one2many" />
                             </page>
                             <page string="Test setup" class="oe_page_test_setup" accesskey="T">
-                                <group col="6">
-                                    <group col="2" colspan="2">
-                                        <field name="time_by" class="oe_field_time_by" />
-                                        <field name="available_time" class="oe_field_available_time"
-                                            widget="float_time" />
-                                        <field name="lock_time" class="oe_field_lock_time" />
-                                    </group>
-                                    <group col="2" colspan="4">
-                                        <field name="correction_scale_id"
-                                            class="oe_field_correction_scale_id" />
-                                        <field name="test_kind_id" class="oe_field_test_kind_id" />
-                                        <field name="name_pattern" class="oe_field_name_pattern" />
-                                    </group>
+
+                                <group col="4">
+                                    <field name="test_kind_id" class="oe_field_test_kind_id" />
+                                    <field name="owner_id" class="oe_field_owner_id" options="{'no_create': True}"
+                                        groups="academy_base.academy_group_technical" />
+
+                                    <separator colspan="4" />
+                                    <field name="name_pattern" class="oe_field_name_pattern" colspan="4" />
+
+                                    <separator string="Realization" colspan="4" />
+
+                                    <field name="correction_scale_id" class="oe_field_correction_scale_id" />
+                                    <field name="time_by" class="oe_field_time_by" />
+                                    <field name="available_time" class="oe_field_available_time"
+                                        placeholder="Enter new time" widget="float_time"  />
+                                    <field name="lock_time" class="oe_field_lock_time" />
+
                                 </group>
 
                                 <group string="Preamble">
@@ -119,6 +128,8 @@
 
                                     <ul>
                                         <li><code>{template}</code> for template name</li>
+                                        <li><code>{training}</code> for related training name (if it has been set)</li>
+                                        <li><code>{uid}</code> for the active username</li>
                                         <li><code>{owner}</code> for owner name</li>
                                         <li><code>{scale}</code> for correction scale name</li>
                                         <li><code>{kind}</code> for test kind name</li>
@@ -135,15 +146,12 @@
 
                             </page>
                             <page string="Options" class="oe_page_options" accesskey="O">
-                                <group col="4" groups="academy_base.academy_group_technical">
-                                    <field name="owner_id" class="oe_field_owner_id" options="{'no_create': True}"
-                                        groups="academy_base.academy_group_technical" />
-                                    <separator colspan="2" />
-                                </group>
-                                <group col="4">
-                                    <field name="incremental" class="oe_field_incremental" colspan="2"/>
+                                <group col="6" groups="academy_base.academy_group_technical">
+                                    <field name="training_ref" class="oe_field_context_ref" colspan="4"
+                                        readonly="context.get('default_training_ref', False)" />
+                                    <field name="self_assignment" class="oe_field_self_assignment" />
+                                    <field name="incremental" class="oe_field_incremental" colspan="4"/>
                                     <field name="skip_faulty_lines" class="oe_field_skip_faulty_lines" colspan="2"/>
-                                    <field name="context_ref" class="oe_field_context_ref" />
                                 </group>
                             </page>
                             <page string="Scheduled tasks" class="oe_page_sheduled_tasks" accesskey="S" groups="academy_base.academy_group_technical">
@@ -177,10 +185,13 @@
                     <field name="image_128"/>
                     <field name="name" />
                     <field name="description" />
+                    <field name="test_count" />
 
                     <templates>
                         <t t-name="kanban-box">
                             <div class="oe_kanban_global_click">
+
+                                <!-- o_kanban_image -->
                                 <div class="o_kanban_image">
                                     <t t-if="record.image_128.raw_value">
                                         <field name="image_128" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}' />
@@ -189,7 +200,9 @@
                                         <img t-att-src="_s + &quot;/academy_tests/static/src/img/document-gear.png&quot;" class="o_kanban_image" alt="Image for this test" />
                                     </t>
                                 </div>
+                                <!-- o_kanban_image -->
 
+                                <!-- oe_kanban_details -->
                                 <div class="oe_kanban_details">
                                     <h4 class="o_ellipsis" t-att-title="record.name.raw_value"><field name="name"/></h4>
                                     <p class="o_ellipsis">
@@ -198,14 +211,45 @@
                                         </t>
                                         <t t-if="!record.description.raw_value">- No description -</t>
                                     </p>
-                                </div>
 
-                                <div class="d-flex p-2">
-                                    <div class="p-2 font-weight-bold">Criteria:</div>
-                                    <div class="p-2"><field name="lines_count" /></div>
-                                    <div class="p-2 font-weight-bold">Questions:</div>
-                                    <div class="p-2"><field name="quantity" /></div>
+                                    <ul>
+                                        <li class="o_ellipsis">
+                                            <strong>Training type:&#160;</strong>
+                                            <field name="training_type" />
+                                        </li>
+                                        <li class="o_ellipsis d-flex justify-content-between">
+                                            <div>
+                                                <strong class="font-weight-bold">Criteria:</strong>
+                                                <span><field name="lines_count" /></span>
+                                            </div>
+                                            <div>
+                                                <strong class="font-weight-bold">Questions:</strong>
+                                                <span><field name="quantity" /></span>
+                                            </div>
+                                        </li>
+                                    </ul>
+
+                                    <!-- btn-toolbar -->
+                                    <div name="kanban-box-toolbar" class="btn-toolbar d-flex w-100 justify-content-end align-self-end mt-3" role="toolbar" aria-label="Download as document">
+                                        <div class="btn-group" role="group" aria-label="Tests">
+                                            <t t-if="record.test_count.raw_value > 0">
+                                            <button name="view_tests" type="object"
+                                                class="btn btn-sm btn-light oe_read_only" title="View tests have been created with this template">
+                                                <i class="fa fa-list-ol d-inline-block" aria-hidden="false"></i>
+                                            </button>
+                                            </t>
+                                            <button name="new_test" type="object"
+                                                class="btn btn-sm btn-light oe_read_only" title="Create new test from template">
+                                                <i class="fa fa-cog d-inline-block mr-2" aria-hidden="false"></i>
+                                                New test
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <!-- btn-toolbar -->
+
                                 </div>
+                                <!-- oe_kanban_details -->
+
                             </div>
                         </t>
                     </templates>

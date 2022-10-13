@@ -210,7 +210,7 @@ class AcademyTestsRandomTemplateScheduled(models.Model):
         self.ensure_one()
 
         for target_id in target_ids:
-            self.template_id.new_test(gui=False, context_ref=target_id)
+            self.template_id.new_test(gui=False, training_ref=target_id)
 
     def new_test(self):
 

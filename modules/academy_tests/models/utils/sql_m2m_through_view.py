@@ -3,6 +3,55 @@
 """
 
 # Many2manyThroughView:
+# - academy_tests.field_academy_tests_question__topic_module_link_ids
+# - academy_tests.field_academy_tests_topic_training_module_link__question_ids
+# Raw sentence used to create new model based on SQL VIEW
+# Computes all question dependencies based on chosen topics and categories
+# -----------------------------------------------------------------------------
+ACADEMY_TESTS_TOPIC_TRAINING_MODULE_LINK_QUESTION_REL = '''
+    WITH questions AS (
+
+        -- List all questions with their topic, version and categories
+        SELECT
+            atq."id" AS question_id,
+            atq.topic_id,
+            vrel.topic_version_id AS version_id,
+            crel.category_id
+        FROM
+            academy_tests_question AS atq
+        INNER JOIN academy_tests_question_category_rel AS crel
+            ON crel.question_id = atq."id"
+        INNER JOIN academy_tests_question_topic_version_rel AS vrel
+            ON vrel.question_id = atq."id"
+
+    ), topic_module_links AS (
+
+        -- List all links with their topic, version and categories
+        SELECT
+            link."id" AS topic_module_link_id,
+            topic_id,
+            topic_version_id AS version_id,
+            rel.category_id
+        FROM academy_tests_topic_training_module_link AS link
+        JOIN academy_tests_category_tests_topic_training_module_link_rel AS rel
+            ON rel.tests_topic_training_module_link_id = link."id"
+
+    )
+
+    -- INNER JOIN when matching topic, version and categories
+    SELECT DISTINCT
+        topic_module_link_id,
+        question_id
+    FROM
+        questions AS atq
+    INNER JOIN topic_module_links AS tml
+        ON tml.topic_id = atq.topic_id
+        AND tml.version_id = atq.version_id
+        AND tml.category_id = atq.category_id
+'''
+
+
+# Many2manyThroughView:
 # - academy_tests.field_academy_tests_question__dependent_ids
 # - academy_tests.field_academy_tests_test_question_rel__dependent_ids
 # Raw sentence used to create new model based on SQL VIEW
@@ -275,343 +324,7 @@ ACADEMY_TRAINING_ACTIVITY_TEST_CATEGORY_REL = '''
         ON atc."id" = acu.training_activity_id
 '''
 
-# Many2manyThroughView:
-# - academy_tests.field_academy_training_module__available_test_ids
-# Tests available by training module (uses module tree)
-# -----------------------------------------------------------------------------
 
-ACADEMY_MODULE_AVAILABLE_TESTS = '''
-    WITH linked_to_training_units AS (
-        SELECT
-            test_id,
-            atm.training_module_id
-        FROM
-            academy_tests_test_training_module_rel AS rel
-        INNER JOIN academy_training_module AS atm
-            ON rel.training_module_id = atm."id"
-        WHERE atm.training_module_id IS NOT NULL
-    ), linked_to_training_modules AS (
-        SELECT
-            test_id,
-            atm."id" as training_module_id
-        FROM
-            academy_tests_test_training_module_rel AS rel
-        INNER JOIN academy_training_module AS atm
-            ON rel.training_module_id = atm."id"
-        WHERE atm.training_module_id IS NULL
-
-    )
-    SELECT * FROM linked_to_training_modules
-    UNION
-    SELECT * FROM linked_to_training_units
-'''
-
-# Many2manyThroughView:
-# - academy_tests.field_academy_competency_unit__competency_available_test_ids
-# Tests available by competency unit
-# -----------------------------------------------------------------------------
-
-ACADEMY_TESTS_TEST_AVAILABLE_IN_COMPETENCY_UNIT_REL = '''
-    WITH linked_to_training_units AS (
-        SELECT
-            test_id,
-            acu."id" AS competency_unit_id
-        FROM
-            academy_tests_test_training_module_rel AS rel
-        INNER JOIN academy_training_module AS atm
-            ON rel.training_module_id = atm."id"
-        INNER JOIN academy_competency_unit AS acu
-            ON acu.training_module_id = atm.training_module_id
-        WHERE atm.training_module_id IS NOT NULL
-    ), linked_to_training_modules AS (
-        SELECT
-            test_id,
-            acu."id" AS competency_unit_id
-        FROM
-            academy_tests_test_training_module_rel AS rel
-        INNER JOIN academy_training_module AS atm
-            ON rel.training_module_id = atm."id"
-        INNER JOIN academy_competency_unit AS acu
-            ON acu.training_module_id = atm."id"
-        WHERE atm.training_module_id IS NULL
-    )
-    SELECT
-        test_id,
-        competency_unit_id
-    FROM linked_to_training_units
-    UNION
-        SELECT
-            test_id,
-            competency_unit_id
-        FROM linked_to_training_modules
-    UNION
-        SELECT
-            test_id,
-            competency_unit_id
-        FROM academy_tests_test_competency_unit_rel
-'''
-
-# Many2manyThroughView:
-# - academy_tests.field_academy_training_activity__available_test_ids
-# Tests available by training activity
-# -----------------------------------------------------------------------------
-
-ACADEMY_ACTIVITY_AVAILABLE_TESTS = '''
-    WITH linked_to_training_units AS (
-        SELECT
-            test_id,
-            acu."training_activity_id"
-        FROM
-            academy_tests_test_training_module_rel AS rel
-        INNER JOIN academy_training_module AS atm
-            ON rel.training_module_id = atm."id"
-        INNER JOIN academy_competency_unit AS acu
-            ON acu.training_module_id = atm.training_module_id
-        WHERE atm.training_module_id IS NOT NULL
-    ), linked_to_training_modules AS (
-        SELECT
-            test_id,
-            acu."training_activity_id"
-        FROM
-            academy_tests_test_training_module_rel AS rel
-        INNER JOIN academy_training_module AS atm
-            ON rel.training_module_id = atm."id"
-        INNER JOIN academy_competency_unit AS acu
-            ON acu.training_module_id = atm."id"
-        WHERE atm.training_module_id IS NULL
-    ), linked_to_competency_units AS (
-        SELECT
-            test_id,
-            training_activity_id
-        FROM academy_tests_test_competency_unit_rel AS rel
-        INNER JOIN academy_competency_unit AS acu
-            ON acu."id" = rel.competency_unit_id
-    )
-    SELECT test_id, training_activity_id FROM linked_to_training_units
-    UNION
-    SELECT test_id, training_activity_id FROM linked_to_training_modules
-    UNION
-    SELECT test_id, training_activity_id FROM linked_to_competency_units
-    UNION
-    SELECT test_id, training_activity_id FROM
-        academy_tests_test_training_activity_rel
-'''
-
-
-# Many2manyThroughView:
-# - academy_tests.field_academy_training_action__available_test_ids
-# Tests available by training action
-# -----------------------------------------------------------------------------
-
-ACADEMY_ACTION_AVAILABLE_TESTS = '''
-    WITH linked_to_training_units AS (
-        SELECT
-            test_id,
-            atc."id" as training_action_id
-        FROM
-            academy_tests_test_training_module_rel AS rel
-        INNER JOIN academy_training_module AS atm
-            ON rel.training_module_id = atm."id"
-        INNER JOIN academy_competency_unit AS acu
-            ON acu.training_module_id = atm.training_module_id
-        INNER JOIN academy_training_action AS atc
-            ON acu.training_activity_id = atc.training_activity_id
-        WHERE atm.training_module_id IS NOT NULL
-    ), linked_to_training_modules AS (
-        SELECT
-            test_id,
-            atc."id" as training_action_id
-        FROM
-            academy_tests_test_training_module_rel AS rel
-        INNER JOIN academy_training_module AS atm
-            ON rel.training_module_id = atm."id"
-        INNER JOIN academy_competency_unit AS acu
-            ON acu.training_module_id = atm."id"
-        INNER JOIN academy_training_action AS atc
-            ON acu.training_activity_id = atc.training_activity_id
-        WHERE atm.training_module_id IS NULL
-    ), linked_to_competency_units AS (
-        SELECT
-            test_id,
-            atc."id" as training_action_id
-        FROM academy_tests_test_competency_unit_rel AS rel
-        INNER JOIN academy_competency_unit AS acu
-            ON acu."id" = rel.competency_unit_id
-        INNER JOIN academy_training_action AS atc
-            ON acu.training_activity_id = atc.training_activity_id
-    ), linked_to_training_activities AS (
-        SELECT
-            test_id,
-            atc."id" as training_action_id
-        FROM academy_tests_test_training_activity_rel AS rel
-        INNER JOIN academy_training_action AS atc
-            ON rel.training_activity_id = atc.training_activity_id
-    )
-    SELECT test_id, training_action_id FROM linked_to_training_units
-    UNION
-    SELECT test_id, training_action_id FROM linked_to_training_modules
-    UNION
-    SELECT test_id, training_action_id FROM linked_to_competency_units
-    UNION
-    SELECT test_id, training_action_id FROM linked_to_training_activities
-    UNION
-    SELECT test_id, training_action_id FROM academy_tests_test_training_action_rel
-'''
-
-# Many2manyThroughView:
-# - academy_tests.field_academy_tests_test__available_in_enrolment_ids
-# Tests available by enrolment
-# -----------------------------------------------------------------------------
-
-ACADEMY_ENROLMENT_AVAILABLE_TESTS = '''
-    WITH linked_to_training_units AS (
-        SELECT
-            test_id,
-            rel2.action_enrolment_id AS enrolment_id
-        FROM
-            academy_tests_test_training_module_rel AS rel
-        INNER JOIN academy_training_module AS atm
-            ON rel.training_module_id = atm."id"
-        INNER JOIN academy_action_enrolment_training_module_rel AS rel2
-            ON rel2.training_module_id = atm.training_module_id
-        WHERE atm.training_module_id IS NOT NULL
-    ), linked_to_training_modules AS (
-        SELECT
-            test_id,
-            rel2.action_enrolment_id AS enrolment_id
-        FROM
-            academy_tests_test_training_module_rel AS rel
-        INNER JOIN academy_training_module AS atm
-            ON rel.training_module_id = atm."id"
-        INNER JOIN academy_action_enrolment_training_module_rel AS rel2
-            ON rel2.training_module_id = atm."id"
-        WHERE atm.training_module_id IS NULL
-    ), linked_to_competency_units AS (
-        SELECT
-            test_id,
-            rel2.action_enrolment_id AS enrolment_id
-        FROM academy_tests_test_competency_unit_rel AS rel
-        INNER JOIN academy_competency_unit AS acu
-            ON acu."id" = rel.competency_unit_id
-        INNER JOIN academy_action_enrolment_training_module_rel AS rel2
-            ON rel2.training_module_id = acu.training_module_id
-        INNER JOIN academy_training_action AS atc
-            ON atc.training_activity_id = acu.training_activity_id
-        INNER JOIN academy_training_action_enrolment AS tae
-            ON tae.training_action_id = atc."id"
-    ), linked_to_training_activities AS (
-        SELECT
-            test_id,
-            tae."id" AS enrolment_id
-        FROM academy_tests_test_training_activity_rel AS rel
-        INNER JOIN academy_training_action AS atc
-            ON rel.training_activity_id = atc.training_activity_id
-        INNER JOIN academy_training_action_enrolment AS tae
-            ON tae.training_action_id = atc."id"
-    ), linked_to_training_actions AS (
-        SELECT
-            test_id,
-            tae."id" AS enrolment_id
-        FROM academy_tests_test_training_action_rel AS rel
-        INNER JOIN academy_training_action_enrolment AS tae
-            ON tae.training_action_id = rel."training_action_id"
-    )
-    SELECT test_id, enrolment_id FROM linked_to_training_units
-    UNION
-    SELECT test_id, enrolment_id FROM linked_to_training_modules
-    UNION
-    SELECT test_id, enrolment_id FROM linked_to_competency_units
-    UNION
-    SELECT test_id, enrolment_id FROM linked_to_training_activities
-    UNION
-    SELECT test_id, enrolment_id FROM linked_to_training_actions
-    UNION
-    SELECT test_id, enrolment_id FROM
-        academy_tests_test_training_action_enrolment_rel
-'''
-
-# Many2manyThroughView:
-# - academy_tests.field_academy_student__available_test_ids
-# Tests available by student
-# -----------------------------------------------------------------------------
-
-ACADEMY_STUDENT_AVAILABLE_TESTS = '''
-    WITH linked_to_training_units AS (
-        SELECT
-            test_id,
-            tae.student_id
-        FROM
-            academy_tests_test_training_module_rel AS rel
-        INNER JOIN academy_training_module AS atm
-            ON rel.training_module_id = atm."id"
-        INNER JOIN academy_action_enrolment_training_module_rel AS rel2
-            ON rel2.training_module_id = atm.training_module_id
-        INNER JOIN academy_training_action_enrolment AS tae
-            ON tae."id" = rel2.action_enrolment_id
-        WHERE atm.training_module_id IS NOT NULL
-    ), linked_to_training_modules AS (
-        SELECT
-            test_id,
-            tae.student_id
-        FROM
-            academy_tests_test_training_module_rel AS rel
-        INNER JOIN academy_training_module AS atm
-            ON rel.training_module_id = atm."id"
-        INNER JOIN academy_action_enrolment_training_module_rel AS rel2
-            ON rel2.training_module_id = atm."id"
-        INNER JOIN academy_training_action_enrolment AS tae
-            ON tae."id" = rel2.action_enrolment_id
-        WHERE atm.training_module_id IS NULL
-    ), linked_to_competency_units AS (
-        SELECT
-            test_id,
-            tae.student_id
-        FROM academy_tests_test_competency_unit_rel AS rel
-        INNER JOIN academy_competency_unit AS acu
-            ON acu."id" = rel.competency_unit_id
-        INNER JOIN academy_action_enrolment_training_module_rel AS rel2
-            ON rel2.training_module_id = acu.training_module_id
-        INNER JOIN academy_training_action AS atc
-            ON atc.training_activity_id = acu.training_activity_id
-        INNER JOIN academy_training_action_enrolment AS tae
-            ON tae.training_action_id = atc."id"
-    ), linked_to_training_activities AS (
-        SELECT
-            test_id,
-            tae.student_id
-        FROM academy_tests_test_training_activity_rel AS rel
-        INNER JOIN academy_training_action AS atc
-            ON rel.training_activity_id = atc.training_activity_id
-        INNER JOIN academy_training_action_enrolment AS tae
-            ON tae.training_action_id = atc."id"
-    ), linked_to_training_actions AS (
-        SELECT
-            test_id,
-            tae.student_id
-        FROM academy_tests_test_training_action_rel AS rel
-        INNER JOIN academy_training_action_enrolment AS tae
-            ON tae.training_action_id = rel."training_action_id"
-    )
-    SELECT test_id, student_id
-        FROM linked_to_training_units
-    UNION
-    SELECT test_id, student_id
-        FROM linked_to_training_modules
-    UNION
-    SELECT test_id, student_id
-        FROM linked_to_competency_units
-    UNION
-    SELECT test_id, student_id
-        FROM linked_to_training_activities
-    UNION
-    SELECT test_id, student_id
-        FROM linked_to_training_actions
-    UNION
-    SELECT test_id, student_id
-        FROM academy_tests_test_training_action_enrolment_rel AS rel
-    INNER JOIN academy_training_action_enrolment AS tae
-        ON tae."id" = rel."enrolment_id"
-'''
 
 
 # Many2manyThroughView: Following SQL sentences will used to search available
@@ -675,7 +388,7 @@ PARTIAL_ACADEMY_TESTS_QUESTION_TRAINING_MODULE = '''
 
 ACADEMY_TESTS_QUESTION_TRAINING_MODULE_REL = '''
     {}
-    SELECT
+    SELECT DISTINCT
         training_module_id,
         question_id
     FROM
@@ -684,7 +397,7 @@ ACADEMY_TESTS_QUESTION_TRAINING_MODULE_REL = '''
 
 ACADEMY_TESTS_QUESTION_TRAINING_ACTIVITY_REL = '''
     {}
-    SELECT
+    SELECT DISTINCT
         training_activity_id,
         question_id
     FROM
@@ -781,33 +494,188 @@ ACADEMY_TESTS_TEST_TEST_BLOCK_REL = '''
         test_block_id IS NOT NULL
 '''
 
-
-# Many2manyThroughView: attempts by training action, activity and module
+# Many2manyThroughView: ???
 # -----------------------------------------------------------------------------
 
-# ACADEMY_TESTS_ATTEMPT_TRAINING_ACTION_REL = '''
-#     SELECT
-#         ata."id" as attempt_id,
-#         rel.training_action_id
-#     FROM
-#         academy_tests_test_available_in_training_action_rel AS rel
-#         INNER JOIN academy_tests_attempt AS ata ON rel.test_id = ata.test_id
-#  '''
+ACADEMY_TESTS_TEST_TRAINING_ASSIGNMENT_STUDENT_REL = '''
+    WITH training_enrolments AS (
 
-# ACADEMY_TESTS_ATTEMPT_TRAINING_ACTIVITY_REL = '''
-#     SELECT
-#         ata."id" as attempt_id,
-#         rel.training_activity_id
-#     FROM
-#         academy_tests_test_available_in_training_activity_rel AS rel
-#         INNER JOIN academy_tests_attempt AS ata ON rel.test_id = ata.test_id;
-#  '''
+        SELECT DISTINCT
+            tta."id" AS assignment_id,
+            tta.training_ref,
+            tae.student_id
+        FROM
+            academy_tests_test_training_assignment AS tta
+        INNER JOIN academy_training_action_enrolment AS tae
+            ON tae."id" = tta.enrolment_id
 
-# ACADEMY_TESTS_ATTEMPT_TRAINING_MODULE_REL = '''
-#     SELECT
-#         ata."id" as attempt_id,
-#         rel.training_module_id
-#     FROM
-#         academy_tests_test_available_in_training_module_rel AS rel
-#         INNER JOIN academy_tests_attempt AS ata ON rel.test_id = ata.test_id
-# '''
+    ), training_actions AS (
+
+        SELECT DISTINCT
+            tta."id" AS assignment_id,
+            tta.training_ref,
+            tae.student_id
+        FROM
+            academy_tests_test_training_assignment AS tta
+        INNER JOIN academy_training_action AS ata
+            ON ata."id" = tta."training_action_id"
+        INNER JOIN academy_training_action_enrolment AS tae
+            ON tae.training_action_id = ata."id"
+        WHERE ata.active
+
+    ), training_activities as (
+
+        SELECT DISTINCT
+            tta."id" AS assignment_id,
+            tta.training_ref,
+            tae.student_id
+        FROM
+            academy_tests_test_training_assignment AS tta
+        INNER JOIN academy_training_activity AS atc
+            ON atc."id" = tta.training_activity_id
+        INNER JOIN academy_training_action AS ata
+            ON ata.training_activity_id = atc."id"
+        INNER JOIN academy_training_action_enrolment AS tae
+            ON tae.training_action_id = ata."id"
+        WHERE ata.active AND atc.active
+
+    ), competency_units AS (
+
+        SELECT DISTINCT
+            tta."id" AS assignment_id,
+            tta.training_ref,
+            tae.student_id
+        FROM
+            academy_tests_test_training_assignment AS tta
+        INNER JOIN academy_competency_unit AS acu
+            ON acu."id" = tta.competency_unit_id
+        INNER JOIN academy_training_activity AS atc
+            ON atc."id" = acu.training_activity_id
+        INNER JOIN academy_training_action AS ata
+            ON ata.training_activity_id = atc."id"
+        INNER JOIN academy_training_action_enrolment AS tae
+            ON tae.training_action_id = ata."id"
+        WHERE ata.active AND atc.active AND acu.active
+
+    ), training_modules AS (
+
+        SELECT DISTINCT
+            tta."id" AS assignment_id,
+            tta.training_ref,
+            tae.student_id
+        FROM
+            academy_tests_test_training_assignment AS tta
+        INNER JOIN academy_training_module_tree_readonly AS tree
+            ON tree.requested_module_id = tta."training_module_id"
+        INNER JOIN academy_training_module AS atm
+            ON atm."id" = tree.responded_module_id
+        INNER JOIN academy_competency_unit AS acu
+            ON acu.training_module_id = atm."id"
+        INNER JOIN academy_training_activity AS atc
+            ON atc."id" = acu.training_activity_id
+        INNER JOIN academy_training_action AS ata
+            ON ata.training_activity_id = atc."id"
+        INNER JOIN academy_training_action_enrolment AS tae
+            ON tae.training_action_id = ata."id"
+        WHERE ata.active AND atc.active AND acu.active AND atm.active
+
+    )
+    SELECT assignment_id, student_id FROM training_enrolments UNION ALL
+    SELECT assignment_id, student_id FROM training_actions UNION ALL
+    SELECT assignment_id, student_id FROM training_activities UNION ALL
+    SELECT assignment_id, student_id FROM competency_units UNION ALL
+    SELECT assignment_id, student_id FROM training_modules
+'''
+
+
+
+# Many2manyThroughView:
+# Allow to recursive get enrolment related items
+# -----------------------------------------------------------------------------
+ACADEMY_TRAINING_AVAILABLE_ITEMS_REL = '''
+    WITH enrolments AS (
+        SELECT
+            tae."id" AS enrolment_id,
+            ass."id" AS related_id
+        FROM
+            academy_training_action_enrolment AS tae
+            INNER JOIN academy_action_enrolment_competency_unit_rel AS rel
+                ON rel.action_enrolment_id = tae."id"
+            INNER JOIN {related} AS ass
+                ON ass.enrolment_id = tae."id" AND (
+                    ass.secondary_id IS NULL OR
+                    ass.secondary_id = rel.competency_unit_id
+                )
+    ), actions AS(
+        SELECT
+            tae."id" AS enrolment_id,
+            ass."id" AS related_id
+        FROM
+            academy_training_action_enrolment AS tae
+            INNER JOIN academy_action_enrolment_competency_unit_rel AS rel
+                ON rel.action_enrolment_id = tae."id"
+            INNER JOIN academy_training_action AS ata
+                ON ata."id" = tae.training_action_id
+            INNER JOIN {related} AS ass
+                ON ass.training_action_id = ata."id" AND (
+                    ass.secondary_id IS NULL OR
+                    ass.secondary_id = rel.competency_unit_id
+                )
+            WHERE ata.active IS TRUE
+    ), activities AS (
+        SELECT
+            tae."id" AS enrolment_id,
+            ass."id" AS related_id
+        FROM
+            academy_training_action_enrolment AS tae
+            INNER JOIN academy_action_enrolment_competency_unit_rel AS rel
+                ON rel.action_enrolment_id = tae."id"
+            INNER JOIN academy_training_action AS ata
+                ON ata."id" = tae.training_action_id
+            inner join academy_training_activity AS atc
+                ON atc."id" = ata.training_activity_id
+            INNER JOIN {related} AS ass
+                ON ass.training_activity_id = atc."id" AND (
+                    ass.secondary_id IS NULL OR
+                    ass.secondary_id = rel.competency_unit_id
+                )
+            WHERE ata.active IS TRUE AND atc.active IS TRUE
+    )
+    , competencies AS (
+        SELECT
+            tae."id" AS enrolment_id,
+            ass."id" AS related_id
+        FROM
+            academy_training_action_enrolment AS tae
+            INNER JOIN academy_action_enrolment_competency_unit_rel AS rel
+                ON rel.action_enrolment_id = tae."id"
+            INNER JOIN academy_competency_unit AS acu
+                ON acu."id" = rel.competency_unit_id
+            INNER JOIN {related} AS ass
+                ON ass.competency_unit_id = acu."id"
+            WHERE acu.active IS TRUE
+    ), modules AS (
+      SELECT
+            tae."id" AS enrolment_id,
+            ass."id" AS related_id
+        FROM
+            academy_training_action_enrolment AS tae
+            INNER JOIN academy_action_enrolment_competency_unit_rel AS rel
+                ON rel.action_enrolment_id = tae."id"
+            INNER JOIN academy_competency_unit AS acu
+                ON acu."id" = rel.competency_unit_id
+            INNER JOIN academy_training_module_tree_readonly AS tree
+                ON tree.requested_module_id = acu.training_module_id
+            INNER JOIN academy_training_module AS atm
+                ON atm."id" = tree.responded_module_id
+            INNER JOIN {related} AS ass
+                ON ass."training_module_id" = atm."id"
+            WHERE acu.active IS TRUE AND atm.active IS TRUE
+    ), training AS (
+        SELECT * FROM enrolments UNION DISTINCT
+        SELECT * FROM actions UNION DISTINCT
+        SELECT * FROM activities UNION DISTINCT
+        SELECT * FROM competencies UNION DISTINCT
+        SELECT * FROM modules
+    ) SELECT * FROM training
+'''

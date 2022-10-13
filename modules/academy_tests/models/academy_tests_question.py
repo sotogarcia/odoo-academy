@@ -21,13 +21,18 @@ from io import BytesIO
 
 from .utils.libuseful import prepare_text, fix_established, is_numeric
 import odoo.addons.academy_base.models.utils.custom_model_fields as custom
-from .utils.sql_operations import ACADEMY_QUESTION_ENSURE_CHECKSUMS, \
-    FIND_MOST_USED_QUESTION_FIELD_VALUE_FOR_SQL, \
-    FIND_MOST_USED_QUESTION_CATEGORY_VALUE_SQL
-from .utils.sql_m2m_through_view import ACADEMY_TESTS_QUESTION_DEPENDENCY_REL,\
-    ACADEMY_TESTS_QUESTION_DUPLICATED_REL
-from .utils.sql_inverse_searches import ANSWER_COUNT_SEARCH, \
-    UNCATEGORIZED_QUESTION_SEARCH
+
+from .utils.sql_operations import ACADEMY_QUESTION_ENSURE_CHECKSUMS
+from .utils.sql_operations import FIND_MOST_USED_QUESTION_FIELD_VALUE_FOR_SQL
+from .utils.sql_operations import FIND_MOST_USED_QUESTION_CATEGORY_VALUE_SQL
+
+from .utils.sql_m2m_through_view import ACADEMY_TESTS_QUESTION_DEPENDENCY_REL
+from .utils.sql_m2m_through_view import ACADEMY_TESTS_QUESTION_DUPLICATED_REL
+from .utils.sql_m2m_through_view import \
+    ACADEMY_TESTS_TOPIC_TRAINING_MODULE_LINK_QUESTION_REL
+
+from .utils.sql_inverse_searches import ANSWER_COUNT_SEARCH
+from .utils.sql_inverse_searches import UNCATEGORIZED_QUESTION_SEARCH
 
 _logger = getLogger(__name__)
 
@@ -416,7 +421,7 @@ class AcademyTestsQuestion(models.Model):
     )
 
     color = fields.Integer(
-        string='Color index',
+        string='Color Index',
         required=True,
         readonly=True,
         index=False,
@@ -424,22 +429,6 @@ class AcademyTestsQuestion(models.Model):
         help='Display color based on dependency and status',
         store=False,
         compute=lambda self: self._compute_color()
-    )
-
-    student_statistics_ids = fields.One2many(
-        string='Student statistics',
-        required=False,
-        readonly=True,
-        index=True,
-        default=None,
-        comodel_name='academy.statistics.student.question.readonly',
-        inverse_name='question_id',
-        domain=[],
-        context={},
-        auto_join=False,
-        limit=None,
-        help=('Show the statistics related with the students who answered the '
-              'question')
     )
 
     changelog_entry_ids = fields.One2many(
@@ -455,6 +444,23 @@ class AcademyTestsQuestion(models.Model):
         context={},
         auto_join=False,
         limit=None
+    )
+
+    topic_module_link_ids = custom.Many2manyThroughView(
+        string='Links module-topic',
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help='List all module-topic links this question is related to',
+        comodel_name='academy.tests.topic.training.module.link',
+        relation='academy_tests_topic_training_module_link_question_rel',
+        column1='question_id',
+        column2='topic_module_link_id',
+        domain=[],
+        context={},
+        limit=None,
+        sql=ACADEMY_TESTS_TOPIC_TRAINING_MODULE_LINK_QUESTION_REL
     )
 
     def _compute_color(self):
@@ -485,6 +491,7 @@ class AcademyTestsQuestion(models.Model):
         index=False,
         default=0,
         help='Number of attachments',
+        store=False,
         compute=lambda self: self._compute_dependency_count()
     )
 
@@ -500,6 +507,7 @@ class AcademyTestsQuestion(models.Model):
         index=False,
         default=0,
         help='Number of attachments',
+        store=False,
         compute=lambda self: self._compute_dependent_count()
     )
 
@@ -514,6 +522,7 @@ class AcademyTestsQuestion(models.Model):
         readonly=True,
         index=False,
         default=0,
+        store=False,
         help='Show the number of current impugnments to this question',
         compute=lambda self: self._compute_impugnment_count()
     )
@@ -592,6 +601,7 @@ class AcademyTestsQuestion(models.Model):
         readonly=False,
         index=False,
         default=0,
+        store=False,
         help='Number of attachments',
         compute=lambda self: self._compute_attachment_count()
     )
@@ -608,6 +618,7 @@ class AcademyTestsQuestion(models.Model):
         index=False,
         default=0,
         help='Number of answers',
+        store=False,
         compute=lambda self: self._compute_answer_count(),
         search='_search_answer_count'
     )
@@ -642,6 +653,7 @@ class AcademyTestsQuestion(models.Model):
         index=False,
         default=0,
         help='Number of categories',
+        store=False,
         compute=lambda self: self._compute_category_count()
     )
 
@@ -657,6 +669,7 @@ class AcademyTestsQuestion(models.Model):
         index=False,
         default=False,
         help='Show if question has been categorized',
+        store=False,
         compute='_compute_uncategorized',
         search='_search_uncategorized',
     )
@@ -851,7 +864,7 @@ class AcademyTestsQuestion(models.Model):
         attachment_set = self.mapped('ir_attachment_ids')
         values = {'res_model': None, 'res_id': 0, 'public': True}
 
-        attachment_set.write(values)
+        attachment_set.sudo().write(values)
 
     def name_get(self):
         ''' Compute display_name field value.

@@ -63,15 +63,10 @@
                                     <span>Text edit</span>
                                 </button>
 
-                                <button name="shuffle" type="object"
-                                    class="oe_stat_button oe_read_only" icon="fa-random">
-                                    Shuffle
-                                </button>
-
-                                <button name="view_test_attempts" type="object"
-                                    class="oe_stat_button oe_read_only" icon="fa-line-chart"
+                                <button name="view_training_assignments" type="object"
+                                    class="oe_stat_button oe_read_only" icon="fa-graduation-cap"
                                     help="View related test attempts">
-                                    <field name="attempt_count" widget="statinfo" string="Attempts" />
+                                    <field name="assignment_count" widget="statinfo" string="Training" />
                                 </button>
 
                                 <button name="show_questions" type="object"
@@ -148,14 +143,6 @@
                                     <field name="test_kind_id" class="oe_field_test_kind_id" />
                                     <field name="repeat_images" class="oe_field_repeat_images" />
 
-                                    <separator string="Realization" colspan="4" />
-
-                                    <field name="correction_scale_id" class="oe_field_correction_scale_id" />
-                                    <field name="time_by" class="oe_field_time_by" />
-                                    <field name="available_time" class="oe_field_available_time"
-                                        placeholder="Enter new time" widget="float_time"  />
-                                    <field name="lock_time" class="oe_field_lock_time" />
-
                                     <separator colspan="4" string="Blocks" />
                                     <field name="test_block_ids" class="oe_field_test_block_ids"
                                         widget="many2many_tags" />
@@ -167,49 +154,6 @@
 
                             </page>
 
-                            <page id="available" string="Availability" class="oe_page_tests" accesskey="A">
-                                <separator string="Available in training actions" />
-                                <field name="training_action_ids" class="oe_field_training_action_ids">
-                                    <tree string="Training actions">
-                                        <field name="action_code" class="oe_field_action_code" />
-                                        <field name="action_name" class="oe_field_action_name" />
-                                        <field name="start" class="oe_field_start" />
-                                        <field name="end" class="oe_field_end" />
-                                    </tree>
-                                </field>
-
-                                <separator string="Available in training activities"
-                                    groups="academy_base.academy_group_technical" />
-                                <field name="training_activity_ids" class="oe_field_training_activity_ids"
-                                    groups="academy_base.academy_group_technical">
-                                    <tree string="Training activities">
-                                        <field name="activity_code" class="oe_field_activity_code" />
-                                        <field name="name" class="oe_field_name" />
-                                        <field name="training_action_count" class="oe_field_training_action_count" />
-                                    </tree>
-                                </field>
-
-                                <separator string="Available in competency units" />
-                                <field name="competency_unit_ids" class="oe_field_competency_unit_ids">
-                                    <tree string="Competency units">
-                                        <field name="competency_code" class="oe_field_competency_code" />
-                                        <field name="competency_name" class="oe_field_competency_name" />
-                                        <field name="training_activity_id" class="oe_field_training_activity_id" />
-                                        <field name="training_module_id" class="oe_field_training_module_id" />
-                                    </tree>
-                                </field>
-
-                                <separator string="Available in training modules"
-                                    groups="academy_base.academy_group_technical" />
-                                <field name="training_module_ids" class="oe_field_training_module_ids"
-                                    groups="academy_base.academy_group_technical">
-                                    <tree string="Training modules">
-                                        <field name="module_code" class="oe_field_module_code" />
-                                        <field name="name" class="oe_field_name" />
-                                        <field name="training_unit_count" class="oe_field_training_unit_count" />
-                                    </tree>
-                                </field>
-                            </page>
                         </notebook>
                     </sheet>
                     <div class="oe_chatter">
@@ -237,42 +181,86 @@
                     <field name="topic_id" />
                     <field name="description" />
                     <field name="question_count" />
+                    <field name="assignment_count" />
+                    <field name="random_template_id" />
 
                     <field name="image_128"/>
                     <field name="name" />
                     <field name="description" />
+                    <field name="assignment_count" />
 
                     <templates>
                         <t t-name="kanban-box">
-                            <div class="oe_kanban_global_click">
-                                <div class="o_kanban_image">
-                                    <t t-if="record.image_128.raw_value">
-                                        <field name="image_128" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}' />
-                                    </t>
-                                    <t t-else="">
-                                        <img t-att-src="_s + &quot;/academy_tests/static/src/img/test-kanban-icon.png&quot;" class="o_kanban_image" alt="Image for this test" />
-                                    </t>
-                                </div>
+                            <div class="oe_kanban_global_click oe_kanban_academy_tests_test d-flex flex-column h-100 justify-content-end">
+                                <div class="flex-fill align-top">
+                                    <div class="o_kanban_image">
+                                        <t t-if="record.image_128.raw_value">
+                                            <field name="image_128" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}' />
+                                        </t>
+                                        <t t-else="">
+                                            <img t-att-src="_s + &quot;/academy_tests/static/src/img/test-kanban-icon.png&quot;" class="o_kanban_image" alt="Image for this test" />
+                                        </t>
+                                    </div>
 
-                                <div class="oe_kanban_details">
-                                    <h4 class="o_ellipsis" t-att-title="record.name.raw_value"><field name="name"/></h4>
-                                    <ul>
-                                        <li class="o_ellipsis">
-                                            <t t-if="record.description.raw_value">
-                                                <t t-esc="record.description.raw_value" />
-                                            </t>
-                                            <t t-if="!record.description.raw_value">- No description -</t>
-                                        </li>
-                                        <li class="o_ellipsis" t-att-title="record.topic_id.name"><strong>Topic:&#160;</strong>
-                                            <field name="topic_id" />
-                                            <tag t-if="record.topic_count &gt; 1">&#160;(<t t-esc="record.topic_count - 1" /> more)</tag>
-                                        </li>
-                                        <li class="o_ellipsis" >
-                                            <strong>Questions:</strong>&#160;<field name="question_count" />
-                                        </li>
-                                    </ul>
+                                    <div class="oe_kanban_details">
+                                        <h4 class="o_ellipsis" t-att-title="record.name.raw_value">
+                                            <strong class="oe_partner_heading">
+                                                <field name="name"/>
+                                            </strong>
+                                        </h4>
+                                        <ul>
+                                            <li class="o_ellipsis">
+                                                <t t-if="record.description.raw_value">
+                                                    <t t-esc="record.description.raw_value" />
+                                                </t>
+                                                <t t-if="!record.description.raw_value">- No description -</t>
+                                            </li>
+                                            <li class="o_ellipsis" t-att-title="record.topic_id.name"><strong>Topic:&#160;</strong>
+                                                <field name="topic_id" />
+                                                <tag t-if="record.topic_count &gt; 1">&#160;(<t t-esc="record.topic_count - 1" /> more)</tag>
+                                            </li>
+                                            <li class="o_ellipsis d-flex flex-row justify-content-between" >
+                                                <div><strong>Questions:</strong>&#160;<field name="question_count" /></div>
+                                                <t t-if="record.assignment_count.raw_value > 0">
+                                                <div><strong>Used:</strong>&#160;<field name="assignment_count" />&#160;times</div>
+                                                </t>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
-                            </div>
+                                <div class="btn-toolbar d-flex w-100 justify-content-between align-self-end mt-3" role="toolbar" aria-label="Download as document">
+                                    <div class="btn-group" role="group" aria-label="Download">
+                                        <button name="download_as_moodle_xml" type="object"
+                                            class="btn btn-sm btn-light oe_read_only" title="Download as a Moodle XML compatible document">
+                                            <i class="fa fa-file-code-o d-inline-block mr-1" aria-hidden="false"></i>
+                                            Moodle
+                                        </button>
+                                        <button name="save_as_docx" type="object"
+                                            class="btn btn-sm btn-light oe_read_only" title="Download as Microsoft Word document">
+                                            <i class="fa fa-file-word-o d-inline-block mr-1" aria-hidden="false"></i>
+                                            Word
+                                        </button>
+                                        <button name="%(action_report_full_printable_test)d" type="action"
+                                            class="btn btn-sm btn-light oe_read_only" default_focus="1" title="Download as PDF document">
+                                            <i class="fa fa-file-pdf-o d-inline-block mr-1" aria-hidden="false"></i>
+                                            PDF
+                                        </button>
+                                    </div>
+                                    <div class="btn-group" role="group" aria-label="Attempts">
+                                        <t t-if="record.assignment_count.raw_value > 0">
+                                        <button name="view_training_assignments" type="object"
+                                            class="btn btn-sm btn-light oe_read_only" title="View test attempt assignments and statistics">
+                                            <i class="fa fa-th-list d-inline-block" aria-hidden="false"></i>
+                                        </button>
+                                        </t>
+                                        <button name="new_assignment_to_training" type="object"
+                                            class="btn btn-sm btn-light oe_read_only" title="Assign this test to an existin training item">
+                                            <i class="fa fa-graduation-cap d-inline-block mr-1" aria-hidden="false"></i>
+                                            Assign
+                                        </button>
+                                    </div>
+                                </div>
+                            </div> <!-- oe_kanban_global_click -->
                         </t>
                     </templates>
 
@@ -313,7 +301,6 @@
                     <field name="owner_id" />
                     <field name="create_date" />
                     <field name="test_kind_id" />
-                    <field name="available_in" />
 
                     <field name="id" string="Test ID" />
 
@@ -322,6 +309,14 @@
                         domain="[('owner_id', '=', uid)]"
                         context="{}"
                         help="List only the own tests" />
+
+                    <separator />
+                    <filter string="Unused"
+                        name="unused_tests"
+                        domain="[('assignment_ids', '=', False)]"
+                        context="{}"
+                        help="List only the tests do not have been used" />
+
                 </search>
             </field>
         </record>

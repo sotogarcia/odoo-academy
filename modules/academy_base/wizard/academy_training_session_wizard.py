@@ -543,21 +543,21 @@ class AcademyTrainingSessionWizard(models.TransientModel):
         following = False if sequence == 1 else True
 
         if self.training_action_id:
-            teacher_id = self.training_action_id.tuttor_id
+            teacher_id = self.training_action_id.owner_id
         else:
             teacher_id = None
 
         values = {
-            'session_wizard_id' : self.id,
-            'training_unit_id'  : unit.id,
-            'sequence'          : sequence,
-            'following'         : following,
-            'start_date'        : start_date,
-            'start_time'        : 9.0,
-            'duration'          : 5.0,
-            'maximum'           : unit.ownhours - imparted,
-            'incomplete'        : 'next',
-            'teacher_id'        : teacher_id.id if teacher_id else None
+            'session_wizard_id': self.id,
+            'training_unit_id': unit.id,
+            'sequence': sequence,
+            'following': following,
+            'start_date': start_date,
+            'start_time': 9.0,
+            'duration': 5.0,
+            'maximum': unit.ownhours - imparted,
+            'incomplete': 'next',
+            'teacher_id': teacher_id.id if teacher_id else None
         }
 
         return (0, 0, values)

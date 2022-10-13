@@ -106,7 +106,7 @@ class AcademyProfessionalQualification(models.Model):
         default=None,
         help='Enter new internal code',
         size=30,
-        translate=True,
+        translate=False,
     )
 
     qualification_level_id = fields.Many2one(

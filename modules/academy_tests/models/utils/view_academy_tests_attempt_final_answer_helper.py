@@ -13,66 +13,101 @@ This view will be used:
 
 
 ACADEMY_TESTS_ATTEMPT_FINAL_ANSWER_HELPER = '''
-WITH sorted AS (
-    -- Returns ID and inverse ordinal for attempt answer, these will be
-    -- used in the ``finals`` query to get the last attempt answer by
-    -- attempt and question-link
+WITH academy_tests_attempt_sanitized_answer AS (
+
+    {} -- Requires SUBQUERY_ACADEMY_TESTS_ATTEMPT_SANITIZED_ANSWER
+
+), attempt_answer_one_or_zero_values_for_statistics AS (
+
+    -- This query generates one record for attempt answer to all
+    -- the questions, assigning values 1 or 0 based on different
+    -- conditions. These values will be used later, in aggregate
+    -- functions, to generate statistics.
+
     SELECT
-        ataa."id" AS attempt_answer_id,
-        ( ROW_NUMBER ( ) OVER w ) :: INTEGER AS rn
+        attempt_id,
+        question_link_id,
+        ("id" IS NOT NULL)::INTEGER AS answered,
+        (user_action = 'doubt')::INTEGER AS doubt,
+        (user_action = 'blank')::INTEGER AS blank,
+        (user_action = 'answer')::INTEGER AS answer,
+        (user_action <> 'blank' AND is_correct)::INTEGER AS "right",
+        (user_action <> 'blank' AND not is_correct)::INTEGER AS "wrong"
     FROM
-        academy_tests_attempt_answer AS ataa
-    WINDOW w AS (
-        PARTITION BY ataa.attempt_id, ataa.question_link_id
-        ORDER BY ataa.instant DESC
-    )
-), finals AS (
-    -- Get the last attempt answer record by attempt and question-link
+        academy_tests_attempt_sanitized_answer
+
+), attempt_answer_statistics AS (
+
     SELECT
-        ataa.*
-    FROM
-        academy_tests_attempt_answer AS ataa
-    INNER JOIN sorted
-        ON ataa."id" = attempt_answer_id
-    WHERE
-        rn = 1
-), stats AS (
-    -- Computes the number of retries, right answers ratio, and wrong
-    -- answers ratio by attempt and question-link
-    SELECT
-        ataa.attempt_id,
-        ataa.question_link_id,
-        COUNT ( * )::INTEGER AS retries,
-        (SUM ( COALESCE ( is_correct, FALSE ) :: INTEGER ) :: DECIMAL / COUNT ( * ))::DECIMAL AS aptly,
-        (1 - SUM ( COALESCE ( is_correct, FALSE ) :: INTEGER ) :: DECIMAL / COUNT ( * ))::DECIMAL AS wrongly
-    FROM
-        academy_tests_attempt_answer AS ataa
-        INNER JOIN academy_tests_answer AS ans ON ans."id" = ataa.answer_id
-    GROUP BY
-        ataa.attempt_id,
-        ataa.question_link_id
+        attempt_id,
+        question_link_id,
+
+        SUM(answered)::INTEGER AS retries,
+        SUM(doubt)::INTEGER AS doubt_count,
+        SUM(blank)::INTEGER AS blank_count,
+        SUM(answer)::INTEGER AS answer_count,
+        SUM("right")::INTEGER AS right_count,
+        SUM("wrong")::INTEGER AS wrong_count,
+
+        CASE WHEN SUM(answered) = 0
+            THEN 0.0
+            ELSE (SUM("right") / SUM(answered)::FLOAT)
+        END::FLOAT AS aptly,
+
+        CASE WHEN SUM(answered) = 0
+            THEN 1.0
+            ELSE ((SUM("wrong") + SUM(blank)) / SUM(answered)::FLOAT)
+        END::FLOAT AS wrongly
+
+    FROM attempt_answer_one_or_zero_values_for_statistics
+    GROUP BY attempt_id, question_link_id
+
 )
+
 SELECT
-    atp."id" as attempt_id,
-    fns."id" as attempt_answer_id,
-    rel.test_id,
-    rel."id" as question_link_id,
-    rel.question_id,
-    rel."sequence",
-    COALESCE(user_action, 'blank')::VARCHAR as user_action,
-    answer_id,
-    COALESCE(fns.instant, atp.create_date) as instant,
-    COALESCE ( is_correct, FALSE ) :: BOOLEAN AS is_correct,
-    COALESCE(retries, 1)::INTEGER AS retries,
-    COALESCE(aptly, 0.0)::NUMERIC AS aptly,
-    COALESCE(wrongly, 0.0)::NUMERIC AS wrongly
-FROM academy_tests_attempt AS atp
-INNER JOIN academy_tests_test_question_rel as rel
-    ON atp."test_id" = rel.test_id
-LEFT JOIN finals AS fns
-    ON fns.question_link_id = rel."id" AND atp."id" = fns."attempt_id"
-LEFT JOIN stats AS sts
-    ON sts.question_link_id = rel."id" AND atp."id" = sts."attempt_id"
-LEFT JOIN academy_tests_answer AS ans
-    ON ans."id" = fns.answer_id
+    ROW_NUMBER( ) OVER ( wnd )::INTEGER AS "id",
+    asa.create_uid,
+    asa.create_date,
+    asa.write_uid,
+    asa.write_date,
+
+    asa.active,
+    asa.attempt_id,
+    attempt_answer_id,
+    asa.question_link_id,
+    asa.answer_id,
+
+    asa.instant,
+    asa.user_action,
+    asa.is_correct,
+
+    retries,
+
+    answer_count,
+    doubt_count,
+
+    blank_count,
+    right_count,
+    wrong_count,
+
+    aptly,
+    wrongly,
+
+    -- Kept for backwards compatibility
+    link.test_id,
+    link.question_id,
+    link."sequence"
+
+FROM
+    academy_tests_attempt_sanitized_answer AS asa
+    INNER JOIN academy_tests_test_question_rel AS link
+        ON link."id" = asa.question_link_id
+    INNER JOIN attempt_answer_statistics AS aas
+        ON asa.attempt_id = aas.attempt_id
+    AND asa.question_link_id = aas.question_link_id
+WHERE
+    "leading" = 1
+WINDOW wnd AS (
+    ORDER BY  asa.attempt_id, "sequence" ASC
+)
 '''

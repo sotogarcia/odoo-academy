@@ -4,15 +4,10 @@
 This module extends the academy.competency.unit Odoo model
 """
 
-from odoo import models, fields
-
-import odoo.addons.academy_base.models.utils.custom_model_fields as custom
-from .utils.sql_m2m_through_view import \
-    ACADEMY_TESTS_TEST_AVAILABLE_IN_COMPETENCY_UNIT_REL
-from odoo.exceptions import UserError
+from odoo import models, fields, api
 from odoo.tools.translate import _
-
 from logging import getLogger
+import odoo.addons.academy_base.models.utils.custom_model_fields as custom
 
 _logger = getLogger(__name__)
 
@@ -23,38 +18,81 @@ class AcademyCompetencyUnit(models.Model):
 
     _inherit = 'academy.competency.unit'
 
-    competency_test_ids = fields.Many2many(
-        string='Competency unit tests',
-        required=False,
+    number_of_questions = fields.Integer(
+        string='Number of questions',
+        required=True,
         readonly=False,
         index=False,
-        default=None,
-        help='Choose the tests will be available in this competency unit',
-        comodel_name='academy.tests.test',
-        relation='academy_tests_test_competency_unit_rel',
-        column1='competency_unit_id',
-        column2='test_id',
-        domain=[],
-        context={},
-        limit=None
+        default=0,
+        help='Number of questions will be added in templates'
     )
 
-    competency_available_test_ids = custom.Many2manyThroughView(
-        string='Competency unit available tests',
+    assignment_ids = fields.One2many(
+        string='Test assignments',
         required=False,
         readonly=False,
-        index=False,
+        index=True,
         default=None,
-        help='Choose the tests will be available in this competency unit',
-        comodel_name='academy.tests.test',
-        relation='academy_tests_test_available_in_competency_unit_rel',
-        column1='competency_unit_id',
-        column2='test_id',
+        comodel_name='academy.tests.test.training.assignment',
+        inverse_name='competency_unit_id',
         domain=[],
         context={},
+        auto_join=False,
         limit=None,
-        sql=ACADEMY_TESTS_TEST_AVAILABLE_IN_COMPETENCY_UNIT_REL
+        help=('List of test assignments that have been created for this '
+              'training action enrollment')
     )
+
+    assignment_count = fields.Integer(
+        string='Nº assignments',
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        store=False,
+        compute='_compute_assignment_count',
+        help=('Show the number of test assignments that have been created for'
+              'this training action enrollment')
+    )
+
+    @api.depends('assignment_ids')
+    def _compute_assignment_count(self):
+        for record in self:
+            record.assignment_count = \
+                len(record.assignment_ids)
+
+    template_ids = fields.One2many(
+        string='Templates',
+        required=False,
+        readonly=False,
+        index=True,
+        default=None,
+        comodel_name='academy.tests.random.template',
+        inverse_name='competency_unit_id',
+        domain=[],
+        context={},
+        auto_join=False,
+        limit=None,
+        help=('List of test templates available to be used in this training '
+              'action enrollment')
+    )
+
+    template_count = fields.Integer(
+        string='Nº templates',
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        store=False,
+        compute='_compute_template_count',
+        help=('Show the number of test templates available to be used in this '
+              'training action enrollment')
+    )
+
+    @api.depends('template_ids')
+    def _compute_template_count(self):
+        for record in self:
+            record.template_count = len(record.template_ids)
 
     test_block_id = fields.Many2one(
         string='Test block',
@@ -70,14 +108,26 @@ class AcademyCompetencyUnit(models.Model):
         auto_join=False
     )
 
-    number_of_questions = fields.Integer(
-        string='Number of questions',
-        required=True,
-        readonly=False,
+    questions_ratio = fields.Char(
+        string='Req/Av',
+        required=False,
+        readonly=True,
         index=False,
-        default=0,
-        help='Number of questions will be added in templates'
+        default=None,
+        size=15,
+        translate=False,
+        store=False,
+        compute='_compute_questions_ratio',
+        help=('Number of required questions to create a default test and the '
+              'total number of related questions available in database')
     )
+
+    @api.depends('number_of_questions', 'available_question_count')
+    def _compute_questions_ratio(self):
+        for record in self:
+            req = record.number_of_questions
+            av = record.available_question_count
+            record.questions_ratio = '{} / {}'.format(req, av)
 
     def create_test_template(self, no_open=False):
         template_obj = self.env['academy.tests.random.template']
@@ -90,22 +140,9 @@ class AcademyCompetencyUnit(models.Model):
         if not no_open and template:
             return module_obj._template_act_window(template)
 
-    def view_test_attempts(self):
-        self.ensure_one()
-        test_ids = self.mapped('competency_test_ids.id')
+    def check_competency_unit(self):
+        xid = 'academy_tests.mail_template_check_competency_unit'
+        mail_template = self.env.ref(xid)
 
-        if not test_ids:
-            msg = _('There are no tests associated with this competence unit')
-            raise UserError(msg)
-
-        return {
-            'model': 'ir.actions.act_window',
-            'type': 'ir.actions.act_window',
-            'name': _('Test attempts'),
-            'res_model': 'academy.tests.attempt',
-            'target': 'current',
-            'view_mode': 'tree',
-            'domain': [('test_id', 'in', test_ids)],
-            'context': {}
-        }
-
+        for record in self:
+            mail_template.send_mail(record.id)

@@ -71,6 +71,11 @@ class AcademyTestsQuestionImpugnment(models.Model):
         track_visibility='onchange'
     )
 
+    html = fields.Html(
+        string='Html',
+        related='question_id.html'
+    )
+
     active = fields.Boolean(
         string='Active',
         required=False,

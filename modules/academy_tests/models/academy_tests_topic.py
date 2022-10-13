@@ -30,7 +30,10 @@ class AcademyTestsTopic(models.Model):
     _rec_name = 'name'
     _order = 'name ASC'
 
-    _inherit = ['mail.thread']
+    _inherit = [
+        'academy.abstract.owner',
+        'mail.thread'
+    ]
 
     name = fields.Char(
         string='Name',
@@ -127,6 +130,7 @@ class AcademyTestsTopic(models.Model):
         index=False,
         default=0,
         help='Show number of categories',
+        store=False,
         compute=lambda self: self.compute_category_count()
     )
 
@@ -149,6 +153,7 @@ class AcademyTestsTopic(models.Model):
         index=False,
         default=0,
         help='Show number of questions',
+        store=False,
         compute=lambda self: self.compute_question_count()
     )
 

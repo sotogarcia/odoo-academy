@@ -3,24 +3,75 @@
 <openerp>
     <data noupdate="0">
 
-    <record id="view_academy_training_action_enrolment_form" model="ir.ui.view">
-        <field name="name">view.academy.training.action.enrolment.form</field>
-        <field name="model">academy.training.action.enrolment</field>
-        <field name="type">form</field>
-        <field name="mode">extension</field>
-        <field name="priority" eval="16" />
-        <field name="active" eval="True" />
-        <field name="inherit_id" ref="academy_base.view_academy_training_action_enrolment_form" />
-        <field name="arch" type="xml">
-            <xpath expr="//notebook/*[last()]" position="after">
-                <page string="Tests" class="oe_page_tests" accesskey="T">
-                    <field name="test_ids" class="oe_field_test_ids oe_edit_only" />
-                    <field name="available_test_ids" class="oe_field_test_ids oe_read_only" />
-                </page>
-            </xpath>
-        </field>
-    </record>
+        <record id="view_academy_training_action_enrolment_form" model="ir.ui.view">
+            <field name="name">view.academy.training.action.enrolment.form</field>
+            <field name="model">academy.training.action.enrolment</field>
+            <field name="type">form</field>
+            <field name="mode">extension</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="academy_base.view_academy_training_action_enrolment_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//div[@name='button_box']" position="inside">
+                    <button name="view_test_templates" type="object"
+                        class="oe_stat_button oe_read_only" icon="fa-cog"
+                        help="View related test templates">
+                        <field name="available_template_count" widget="statinfo" string="Templates" />
+                    </button>
+                    <button name="view_test_attempts" type="object"
+                        class="oe_stat_button oe_read_only" icon="fa-line-chart"
+                        help="View related test attempts">
+                        <field name="attempt_count" widget="statinfo" string="Attempts" />
+                    </button>
+                    <button name="view_test_assignments" type="object"
+                        class="oe_stat_button oe_read_only" icon="fa-list-ol"
+                        help="View related tests">
+                        <field name="available_assignment_count" widget="statinfo" string="Tests" />
+                    </button>
+                </xpath>
+                <xpath expr="//page[@id='setup']/*[last()]" position="after">
+                    <group col="4" string="Tests">
+                        <field name="random_template_id" class="oe_field_test_template_id" />
+                    </group>
+                </xpath>
+            </field>
+        </record>
 
+        <record id="view_academy_training_action_enrolment_kanban" model="ir.ui.view">
+            <field name="name">view.academy.training.action.enrolment.kanban</field>
+            <field name="model">academy.training.action.enrolment</field>
+            <field name="type">kanban</field>
+            <field name="mode">extension</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="academy_base.view_academy_training_action_enrolment_kanban" />
+            <field name="arch" type="xml">
+                <xpath expr="//kanban/*[1]" position="before">
+                    <field name="available_assignment_count" invisible="1" />
+                </xpath>
+                <xpath expr="//div[@name='kanban-box-toolbar']" position="inside">
+                    <div class="btn-group mr-1" role="group" aria-label="Attempts">
+                        <t t-if="record.available_assignment_count.raw_value > 0">
+                        <button name="view_test_attempts" type="object"
+                            class="btn btn-sm btn-light oe_read_only" title="View full list of the enrolment test attempts">
+                            <i class="fa fa-line-chart d-inline-block mr-1" aria-hidden="false"></i>
+                            Attempts
+                        </button>
+                        <button name="view_test_assignments" type="object"
+                            class="btn btn-sm btn-light oe_read_only" title="View test assignments for this enrolment">
+                            <i class="fa fa-list-ol d-inline-block mr-1" aria-hidden="false"></i>
+                            Assignments
+                        </button>
+                        </t>
+                        <button name="new_assignment_to_test" type="object"
+                            class="btn btn-sm btn-light oe_read_only" title="Assign this test to an existin training item">
+                            <i class="fa fa-graduation-cap d-inline-block mr-1" aria-hidden="false"></i>
+                            Assign
+                        </button>
+                    </div>
+                </xpath>
+            </field>
+        </record>
 
     </data>
 </openerp>

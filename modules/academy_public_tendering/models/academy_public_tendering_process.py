@@ -25,11 +25,14 @@ class AptPublicTendering(models.Model):
     _name = 'academy.public.tendering.process'
     _description = u'Public tendering'
 
-    _inherit = ['image.mixin', 'mail.thread']
+    _inherit = [
+        'image.mixin',
+        'mail.thread',
+        'academy.abstract.owner'
+    ]
 
     _rec_name = 'name'
     _order = 'name ASC'
-
 
     name = fields.Char(
         string='Denomination',
@@ -64,7 +67,7 @@ class AptPublicTendering(models.Model):
         track_visibility='onchange'
     )
 
-    public_tendering_public_offer_id = fields.Many2one(
+    public_offer_id = fields.Many2one(
         string='Public offer',
         required=True,
         readonly=False,

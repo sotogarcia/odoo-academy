@@ -39,7 +39,7 @@ class ResPartner(models.Model):
         readonly=True,
         index=False,
         default=False,
-        help='Check if partner is an student',
+        help='Check if partner is a student',
         compute='_compute_is_student',
         search='_search_is_student'
     )
@@ -61,15 +61,13 @@ class ResPartner(models.Model):
     def _search_is_student(self, operator, value):
         operator = self._check_operator(operator)
 
-        print(operator, value)
-
         if value:
             operator = '!=' if operator == '=' else '='
             value = not value
 
         return [('student_id', operator, value)]
 
-    def got_to_student(self):
+    def go_to_student(self):
         self.ensure_one()
 
         return {

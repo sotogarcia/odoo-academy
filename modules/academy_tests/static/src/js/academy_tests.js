@@ -34,12 +34,17 @@ odoo.define('academy_tests.QuestionKanbanView', function(require) {
             }
 
             if(question_id !== false) {
+
                 this.do_action({
                     type: 'ir.actions.act_window',
                     res_model: 'academy.tests.question.append.wizard',
                     views: [[false, 'form']],
                     target: 'new',
-                    context: {'default_question_ids': [(4, question_id)]}
+                    context: {
+                        'default_question_link_ids': [
+                            (0, 0, {'question_id': question_id})
+                        ]
+                    }
                 });
             } // if
 

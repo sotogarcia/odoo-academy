@@ -52,6 +52,8 @@
                     </header>
 
                     <field name="random_template_id" invisible="1" />
+                    <field name="training_ref" invisible="1" />
+                    <field name="training_type" invisible="1" />
 
                     <group states="step1" col="8">
                         <field name="name" class="oe_field_name" string="Name"
@@ -153,50 +155,10 @@
                         <separator colspan="2" />
                     </group>
 
-                    <group col="4" string="Test block" states="step5">
-                        <field name="test_block_id" class="oe_field_test_block" />
+                    <group col="6" states="step5">
+                        <separator colspan="6" string="Test block" />
+                        <field name="test_block_id" class="oe_field_test_block" colspan="4" />
                     </group>
-
-                    <group col="6" colspan="2" states="step5" string="Restrictions">
-
-                        <field name="stock_by" class="oe_field_stock_by" />
-                        <field name="stock" class="oe_field_stock"
-                            widget="percentage"
-                            attrs="{'readonly': [('stock_by', '=', False)]}"/>
-                        <separator colspan="2" />
-
-                        <separator colspan="6" />
-
-                        <field name="answered_by" class="oe_field_answered_by" />
-                        <field name="answered" class="oe_field_answered"
-                            widget="percentage"
-                            attrs="{'readonly': [('answered_by', '=', False)]}"/>
-                        <separator colspan="2" />
-
-                        <field name="restrict_by" class="oe_field_restrict_by" />
-                        <field name="supply" class="oe_field_answered"
-                            widget="percentage"
-                            attrs="{'readonly': [('restrict_by', '=', False)]}"/>
-                        <field name="ratio" class="oe_field_mistaken"
-                            widget="percentage"
-                            attrs="{'readonly': [('restrict_by', '=', False)]}"/>
-                    </group>
-
-                    <separator states="step5" />
-
-                    <div class="alert alert-info" role="alert" states="step5">
-                        <h4 style="margin-top: 0.25em;">
-                            <span class="fa fa-info-circle" style="margin-right: 0.5em"></span>
-                            <span style="font-variant: small-caps">Information</span>
-                        </h4>
-                        <ol style="list-style-type: none; padding: 0px; margin: 0px">
-                            <li>The stock percentage will be calculated on the number of questions required by this line.</li>
-                            <li>The percentage of answered questions will be calculated on the total number of available questions.</li>
-                            <li>The percentage of answered questions, with the given restrictions, will be calculated on the total number of available questions.</li>
-                            <li>With the training actions, the ratio will be compared with the average of all enrolled students.</li>
-                            <li>If the context has not been supplied, all the answered questions in the database will be used.</li>
-                        </ol>
-                    </div>
 
                     <!-- Required to trigger onchange events -->
                     <field name="type_count" invisible="1" />

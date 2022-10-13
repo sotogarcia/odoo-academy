@@ -384,8 +384,11 @@ class AcademyTestsQuestionImport(models.TransientModel):
             raise ValidationError(message)
 
         if self.env.context.get('create_new_test', False):
-            values = {'name': self.name}
             test_obj = self.env['academy.tests.test']
+
+            values = {'name': self.name}
+            self.append_owner(values, self.owner_id)
+
             self.test_id = test_obj.create(values)
 
         content = self.clear_text(self.content)

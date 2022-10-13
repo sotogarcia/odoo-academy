@@ -56,7 +56,7 @@ class Many2manyThroughView(Many2many):
 
             self._notify_the_update()
             self._drop_relation_if_exists(model.env.cr)
-            self._create_view(model.env.cr)
+            self._create_view(model.env.cr, model)
             self._add_rules(model.env.cr)
 
     # ------------------------- AUXILIARY METHODS -----------------------------
@@ -249,7 +249,7 @@ class Many2manyThroughView(Many2many):
             sql = sql.format(name=name, act=action, rel=self.relation)
             cursor.execute(sql)
 
-    def _create_view(self, cursor):
+    def _create_view(self, cursor, model):
         """ It gets VIEW select statement from class constant and
         fills the col1 and col2 string arguments in SQL statement whith
         the names of the columns supplied in field definition.
@@ -260,10 +260,17 @@ class Many2manyThroughView(Many2many):
         Finally it executes SQL command to create the middle view.
         """
 
-        select_sql = self.sql
+        select_sql = self._resolve_lambda(self.sql, model)
         select_sql = select_sql.format(col1=self.column1, col2=self.column2)
 
         create_sql = 'CREATE VIEW {} AS {};'.format(
             self.relation, select_sql)
 
         cursor.execute(create_sql)
+
+    @staticmethod
+    def _resolve_lambda(target, model):
+        if callable(target) and target.__name__ == "<lambda>":
+            target = target(model)
+
+        return target

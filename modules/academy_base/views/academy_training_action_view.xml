@@ -28,7 +28,8 @@
                     <field name="action_name" string="Name" />
                     <field name="start" class="oe_field_start" />
                     <field name="end" class="oe_field_end" />
-                    <field name="tuttor_id" />
+                    <field name="owner_id" class="oe_field_owner_id" string="Tuttor" />
+                    <field name="enrolment_count" class="oe_field_training_action_enrolment_count" />
                 </tree>
             </field>
         </record>
@@ -45,13 +46,17 @@
                 <form string="academy_training_action_form" create="1" delete="1" edit="1">
                     <sheet>
                         <div class="oe_button_box" name="button_box">
-                            <button name="session_wizard" type="object" class="oe_stat_button" icon="fa-calendar">
-                                <div class="o_field_widget o_stat_info">
-                                    <span class="o_stat_text">New session</span>
-                                </div>
+
+                            <button name="show_training_action_enrolments" type="object"
+                                class="oe_stat_button oe_read_only" icon="fa-id-card-o"
+                                help="View training action enrollments">
+                                <field name="enrolment_count" widget="statinfo" string="Enrollments" />
                             </button>
-                            <button name="show_enrolments" type="object" class="oe_stat_button" icon="fa-user-o">
-                                <field name="training_action_enrolment_count" class="oe_field_training_action_enrolment_count" />&#160;students
+
+                            <button name="session_wizard" type="object"
+                                class="oe_stat_button oe_read_only" icon="fa-calendar"
+                                help="View training action enrollments">
+                                <field name="lesson_count" widget="statinfo" string="New session" />
                             </button>
 
                             <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
@@ -71,7 +76,8 @@
                         </div>
 
                         <group col="2">
-                            <field name="training_activity_id" class="oe_field_training_activity_id" />
+                            <field name="training_activity_id" class="oe_field_training_activity_id"
+                                readonly="context.get('default_training_activity_id', False)" />
                             <field name="application_scope_id" class="od_field_application_scope" />
                         </group>
 
@@ -80,12 +86,16 @@
                             <field name="start" class="oe_field_start" />
                             <field name="seating" class="oe_field_seating" />
                             <field name="end" class="oe_field_end" />
-                            <field name="tuttor_id" class="od_field_tuttor_id" />
                             <field name="description" class="oe_field_description"
                                     placeholder="Enter new description" colspan="4" />
                         </group>
 
                         <notebook>
+                            <page string="Competency units" class="oe_page_competency_units" accesskey="C">
+                                <field name="competency_unit_ids" class="oe_field_competency_unit_ids"
+                                    colspan="2" nolabel="1" readonly="1"
+                                    context="{'tree_view_ref': 'academy_base.view_academy_competency_unit_list_only_tree'}" />
+                            </page>
                             <page string="Data" class="oe_page_data" accesskey="T">
 
                                 <group col="4">
@@ -106,15 +116,10 @@
                                 </group>
 
                             </page>
-
-                            <page string="Competency units" class="oe_page_competency_units" accesskey="C">
-                                <field name="competency_unit_ids" class="oe_field_competency_unit_ids"
-                                    context="{'tree_view_ref' : 'academy_base.view_academy_competency_unit_embed_tree',
-                                              'default_training_activity_id' : id, 'append_to_training_activity' : True}" />
-                            </page>
-                            <page string="Enrolments" class="oe_page_students" accesskey="S">
-                                <field name="training_action_enrolment_ids" class="oe_field_training_action_enrolment_ids"
-                                    context="{'training_action_id': id}" />
+                            <page id="setup" string="Setup" class="oe_page_setup" accesskey="S">
+                                <group col="4">
+                                    <field name="owner_id" class="oe_field_owner_id" string="Tuttor" />
+                                </group>
                             </page>
 
                             <page string="Resources" class="oe_page_available_resources" accesskey="R">
@@ -153,24 +158,36 @@
 
                     <templates>
                         <t t-name="kanban-box">
-                            <div class="oe_kanban_global_click oe_kanban_academy_training_action">
-                                <div class="o_kanban_image">
-                                    <t t-if="record.image_128.raw_value">
-                                        <field name="image_128" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}' />
-                                    </t>
-                                    <t t-else="">
-                                        <img t-att-src="_s + &quot;/academy_base/static/src/img/training-action.png&quot;" class="o_kanban_image" alt="Training action photo" />
-                                    </t>
+                            <div class="oe_kanban_global_click oe_kanban_academy_training_action d-flex flex-column justify-content-end">
+                                <div class="flex-fill align-top">
+                                    <div class="o_kanban_image">
+                                        <t t-if="record.image_128.raw_value">
+                                            <field name="image_128" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}' />
+                                        </t>
+                                        <t t-else="">
+                                            <img t-att-src="_s + &quot;/academy_base/static/src/img/training-action.png&quot;" class="o_kanban_image" alt="Training action photo" />
+                                        </t>
+                                    </div>
+                                    <div class="oe_kanban_details">
+                                        <h4><strong class="oe_partner_heading"><field name="action_name"/></strong></h4>
+                                        <ul>
+                                            <li class="o_ellipsis"><strong>Lifespan:&#160;</strong><field name="start" widget="date" />&#160;-&#160;<field name="end" widget="date" /></li>
+                                            <li class="o_ellipsis"><strong>Training activity:&#160;</strong><field name="training_activity_id" /></li>
+                                            <li class="o_ellipsis"><strong>Application scope:&#160;</strong><field name="application_scope_id" /></li>
+                                            <li class="o_ellipsis"><strong>Nº enrolments:&#160;</strong><field name="enrolment_count" /></li>
+                                         </ul>
+                                    </div>
                                 </div>
-                                <div class="oe_kanban_details">
-                                    <h4><strong class="oe_partner_heading"><field name="action_name"/></strong></h4>
-                                    <ul>
-                                        <li class="o_ellipsis"><strong>Lifespan:&#160;</strong><field name="start" widget="date" />&#160;-&#160;<field name="end" widget="date" /></li>
-                                        <li class="o_ellipsis"><strong>Training activity:&#160;</strong><field name="training_activity_id" /></li>
-                                        <li class="o_ellipsis"><strong>Application scope:&#160;</strong><field name="application_scope_id" /></li>
-                                     </ul>
+                                <div name="kanban-box-toolbar" class="btn-toolbar d-flex w-100 justify-content-end align-self-end mt-3" role="toolbar" aria-label="Training action commands">
+                                    <div class="btn-group" role="group" aria-label="Management">
+                                        <button name="show_training_action_enrolments" type="object"
+                                            class="btn btn-sm btn-light oe_read_only" title="View training action enrollments">
+                                            <i class="fa fa-id-card-o d-inline-block mr-1" aria-hidden="false"></i>
+                                            Enrolments
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
+                            </div> <!-- oe_kanban_global_click -->
                         </t>
                     </templates>
                 </kanban>

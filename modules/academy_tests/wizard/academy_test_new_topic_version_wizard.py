@@ -196,8 +196,6 @@ class AcademyTestNewTopicVersion(models.TransientModel):
         rows = version_obj.search_read(
             domain, ['id', 'name'], limit=1, order='sequence DESC')
 
-        print(rows)
-
         return rows[0]['id'] if rows else None
 
     @staticmethod
@@ -237,7 +235,6 @@ class AcademyTestNewTopicVersion(models.TransientModel):
 
         for question_item in question_set:
             result_set += question_item.copy(defaults)
-        print(domain)
 
         return result_set
 

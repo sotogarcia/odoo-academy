@@ -24,6 +24,7 @@
         'data/mail_message_subtype_data.xml',
         'data/res_groups_data.xml',
         'data/ir_sequence_data.xml',
+        'data/ir_actions_server_data.xml',
         'data/academy_training_methodology_data.xml',
         'data/academy_training_modality_data.xml',
         'data/academy_application_scope_data.xml',
@@ -142,3 +143,6 @@
 
     'license': 'AGPL-3'
 }
+
+
+# Se da de baja el mismo día o al día siguiente

@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-30 11:43+0000\n"
-"PO-Revision-Date: 2022-03-30 13:44+0200\n"
+"POT-Creation-Date: 2022-07-21 07:56+0000\n"
+"PO-Revision-Date: 2022-07-21 09:56+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es\n"
@@ -82,11 +82,6 @@ msgid "Impugnments"
 msgstr "Impugnaciones"
 
 #. module: academy_tests_menu
-#: model:ir.ui.menu,name:academy_tests_menu.menu_test_main_tracking_students_journal
-msgid "Journal"
-msgstr "Diario"
-
-#. module: academy_tests_menu
 #: model:ir.actions.act_window,name:academy_tests_menu.action_manage_attachments_act_window_all_attachments
 msgid "Manage attachments"
 msgstr "Gestionar adjuntos"
@@ -95,6 +90,11 @@ msgstr "Gestionar adjuntos"
 #: model:ir.ui.menu,name:academy_tests_menu.menu_test_main_questions_utilities_manual_categorize
 msgid "Manual categorize"
 msgstr "Categorizar manualmente"
+
+#. module: academy_tests_menu
+#: model:ir.ui.menu,name:academy_tests_menu.menu_test_main_tracking_students_journal
+msgid "Manual registration"
+msgstr "Registro manual"
 
 #. module: academy_tests_menu
 #: model:ir.ui.menu,name:academy_tests_menu.menu_test_main_questions_attachments_my_questions
@@ -122,7 +122,7 @@ msgstr "Preguntas"
 #: model:ir.ui.menu,name:academy_tests_menu.menu_test_main_tracking_students
 #: model:ir.ui.menu,name:academy_tests_menu.menu_test_main_tracking_students_students
 msgid "Students"
-msgstr "Estudiantes"
+msgstr "Alumnos"
 
 #. module: academy_tests_menu
 #: model:ir.ui.menu,name:academy_tests_menu.menu_test_main_tests_utilities_templates
@@ -134,7 +134,7 @@ msgstr "Plantillas"
 #: model:ir.actions.act_window,name:academy_tests_menu.action_tests_act_window_my_tests
 #: model:ir.ui.menu,name:academy_tests_menu.menu_test_main_tests
 msgid "Tests"
-msgstr "Tests"
+msgstr ""
 
 #. module: academy_tests_menu
 #: model_terms:ir.actions.act_window,help:academy_tests_menu.action_question_impugnment_act_window_all_impugnments
@@ -166,6 +166,16 @@ msgstr "A mis preguntas"
 #: model:ir.ui.menu,name:academy_tests_menu.menu_test_main_tracking
 msgid "Tracking"
 msgstr "Seguimiento"
+
+#. module: academy_tests_menu
+#: model:ir.ui.menu,name:academy_tests_menu.menu_test_main_tracking_training
+msgid "Training"
+msgstr "Formación"
+
+#. module: academy_tests_menu
+#: model:ir.ui.menu,name:academy_tests_menu.menu_training_actions
+msgid "Training actions"
+msgstr "Acciones formativas"
 
 #. module: academy_tests_menu
 #: model:ir.ui.menu,name:academy_tests_menu.menu_test_main_questions_utilities

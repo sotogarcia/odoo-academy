@@ -62,5 +62,5 @@ class AcademyProfessionalField(models.Model):
         default=None,
         help='Enter new code',
         size=8,
-        translate=True
+        translate=False
     )

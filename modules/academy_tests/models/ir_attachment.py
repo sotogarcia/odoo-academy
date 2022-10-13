@@ -18,7 +18,10 @@ class IrAttachment(models.Model):
     """
 
     _name = 'ir.attachment'
-    _inherit = ['ir.attachment']
+    _inherit = [
+        'ir.attachment',
+        'academy.abstract.owner'
+    ]
 
     owner_id = fields.Many2one(
         string='Owner',
@@ -31,8 +34,7 @@ class IrAttachment(models.Model):
         domain=[],
         context={},
         ondelete='cascade',
-        auto_join=False,
-        track_visibility='onchange'
+        auto_join=False
     )
 
     question_ids = fields.Many2many(

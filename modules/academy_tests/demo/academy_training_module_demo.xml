@@ -3,8 +3,10 @@
 <openerp>
     <data noupdate="0">
 
-        <record id="academy_base.academy_training_module_odoo" model="academy.training.module">
-            <field name="test_ids" eval="[(4, ref('academy_tests.academy_tests_demo_1'), None)]" />
+        <record id="academy_tests_test_training_assignment_tests_demo_1" model="academy.tests.test.training.assignment">
+            <field name="training_ref" eval="'academy.training.module,'+str(ref('academy_base.academy_training_module_odoo'))" />
+            <field name="test_id" ref="academy_tests.academy_tests_demo_1" />
+            <field name="owner_id" ref="academy_base.res_users_demo_teacher" />
         </record>
 
     </data>

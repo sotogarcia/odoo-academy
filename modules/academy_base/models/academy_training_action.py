@@ -37,7 +37,14 @@ class AcademyTrainingAction(models.Model):
     _rec_name = 'action_name'
     _order = 'action_name ASC'
 
-    _inherit = ['image.mixin', 'mail.thread', 'academy.abstract.observable']
+    _inherit = [
+        'image.mixin',
+        'mail.thread',
+        'academy.abstract.observable',
+        'academy.abstract.training',
+        'academy.abstract.owner'
+    ]
+
     _inherits = {'academy.training.activity': 'training_activity_id'}
 
     action_name = fields.Char(
@@ -86,7 +93,7 @@ class AcademyTrainingAction(models.Model):
         required=True,
         readonly=False,
         index=False,
-        default=lambda self: self._utc_o_clock(),
+        default=lambda self: self._utc_o_clock(offset=720),
         help='Stop date of an event, without time for full day events',
     )
 
@@ -220,28 +227,13 @@ class AcademyTrainingAction(models.Model):
         readonly=False,
         index=False,
         default=None,
-        help=False,
+        help='Show the number of enrolments related with the training action',
         comodel_name='academy.training.action.enrolment',
         inverse_name='training_action_id',
         domain=[],
         context={},
         auto_join=False,
         limit=None
-    )
-
-    tuttor_id = fields.Many2one(
-        string='Tutor',
-        required=False,
-        readonly=False,
-        index=False,
-        default=None,
-        help='Choose which teacher will oversee this group',
-        comodel_name='academy.teacher',
-        domain=[],
-        context={},
-        ondelete='cascade',
-        auto_join=False,
-        track_visibility='onchange'
     )
 
     action_resource_ids = fields.Many2many(
@@ -294,8 +286,8 @@ class AcademyTrainingAction(models.Model):
         sql=ACADEMY_TRAINING_ACTION_STUDENT_REL
     )
 
-    training_action_enrolment_count = fields.Integer(
-        string='Number of enrolments',
+    enrolment_count = fields.Integer(
+        string='Nº enrolments',
         required=False,
         readonly=True,
         index=False,
@@ -304,10 +296,40 @@ class AcademyTrainingAction(models.Model):
         compute='_compute_training_action_enrolment_count'
     )
 
+    lesson_ids = fields.One2many(
+        string='Lessons',
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help=False,
+        comodel_name='academy.training.lesson',
+        inverse_name='training_action_id',
+        domain=[],
+        context={},
+        auto_join=False,
+        limit=None
+    )
+
+    lesson_count = fields.Integer(
+        string='Nº lessons',
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        help='Show the number of related lessons',
+        compute='_compute_lesson_count'
+    )
+
+    @api.depends('lesson_ids')
+    def _compute_lesson_count(self):
+        for record in self:
+            record.lesson_count = len(record.lesson_ids)
+
     @api.depends('training_action_enrolment_ids')
     def _compute_training_action_enrolment_count(self):
         for record in self:
-            record.training_action_enrolment_count = \
+            record.enrolment_count = \
                 len(record.training_action_enrolment_ids)
 
     @api.onchange('training_action_enrolment_ids')
@@ -316,14 +338,18 @@ class AcademyTrainingAction(models.Model):
 
     # ------------------------------ CONSTRAINS -------------------------------
 
-    @api.constrains('end')
-    def _check_end(self):
-        """ Ensures end field value is greater then start value """
-        message = 'End date must be greater then start date'
-
-        for record in self:
-            if record.end <= record.start:
-                raise ValidationError(message)
+    _sql_constraints = [
+        (
+            'unique_action_code',
+            'UNIQUE(action_code)',
+            _(u'The given action code already exists')
+        ),
+        (
+            'check_date_order',
+            '"start" < "end"',
+            _(u'End date must be greater then start date')
+        ),
+    ]
 
     # -------------------------- OVERLOADED METHODS ---------------------------
 
@@ -410,7 +436,7 @@ class AcademyTrainingAction(models.Model):
 
         return domain
 
-    def show_enrolments(self):
+    def show_training_action_enrolments(self):
 
         self.ensure_one()
 
@@ -421,7 +447,7 @@ class AcademyTrainingAction(models.Model):
         domain = AND([domain, [('training_action_id', '=', self.id)]])
 
         action_values = {
-            'name': '{} {}'.format(_('Enroled in'), self.name),
+            'name': '{} {}'.format(_('Enrolled in'), self.name),
             'type': action.type,
             'help': action.help,
             'domain': domain,

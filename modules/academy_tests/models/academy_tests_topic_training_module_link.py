@@ -8,6 +8,11 @@ Odoo model which stores all needed attributes and behavior.
 from odoo import models, fields, api
 from odoo.tools.translate import _
 
+import odoo.addons.academy_base.models.utils.custom_model_fields as custom
+
+from .utils.sql_m2m_through_view import \
+    ACADEMY_TESTS_TOPIC_TRAINING_MODULE_LINK_QUESTION_REL
+
 from logging import getLogger
 
 _logger = getLogger(__name__)
@@ -106,6 +111,39 @@ class AcademyTestsTopicTrainingModuleLink(models.Model):
         compute=lambda self: self.compute_category_count()
     )
 
+    question_ids = custom.Many2manyThroughView(
+        string='Questions',
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help='List all questions that match the chosen topics and categories',
+        comodel_name='academy.tests.question',
+        relation='academy_tests_topic_training_module_link_question_rel',
+        column1='topic_module_link_id',
+        column2='question_id',
+        domain=[],
+        context={},
+        limit=None,
+        sql=ACADEMY_TESTS_TOPIC_TRAINING_MODULE_LINK_QUESTION_REL
+    )
+
+    question_count = fields.Integer(
+        string='Nº questions',
+        required=True,
+        readonly=True,
+        index=False,
+        default=0,
+        store=False,
+        help='Show the number of related questions',
+        compute='_compute_question_count'
+    )
+
+    @api.depends('question_ids')
+    def _compute_question_count(self):
+        for record in self:
+            record.question_count = len(record.question_ids)
+
     _sql_constraints = [
         (
             'unique_topic_id_training_module_id',
@@ -117,7 +155,7 @@ class AcademyTestsTopicTrainingModuleLink(models.Model):
     @api.depends('category_ids')
     def compute_category_count(self):
         for record in self:
-            record.topic_category_count = len(record.category_ids)
+            record.category_count = len(record.category_ids)
 
     @api.onchange('topic_id')
     def _onchange_topic_id(self):
@@ -152,3 +190,19 @@ class AcademyTestsTopicTrainingModuleLink(models.Model):
 
         length = len(self.topic_id.category_ids)
         return self.topic_id.category_ids if length <= 3 else None
+
+    @api.depends('topic_id', 'training_module_id')
+    def name_get(self):
+        pattern = _('Training module {}')
+        result = []
+
+        for link in self:
+            if isinstance(link.id, models.NewId):
+                name = _('New link')
+            else:
+                module = link.training_module_id
+                code = module.module_code or pattern.format(module.id)
+                name = '{} - {}'.format(code, link.topic_id.name)
+                result.append((link.id, name))
+
+        return result

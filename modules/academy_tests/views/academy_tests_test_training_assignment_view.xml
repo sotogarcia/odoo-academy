@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <!-- VIEWS: "Test assignment"
+
+            - Model·········: academy.tests.test.training.assignment
+            - _rec_name·····: id
+            - Domain········: []
+            - Context·······: {}
+            - Parent menu ··: academy_tests.menu_test_top
+            - View priority·: 16    Sequence····: 10
+            - Action help···: No test assignments have been stored yet
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+        <!-- Tree view for "academy.tests.test.training.assignment" -->
+        <record id="view_academy_tests_test_training_assignment_tree" model="ir.ui.view">
+            <field name="name">view.academy.tests.test.training.assignment.tree</field>
+            <field name="model">academy.tests.test.training.assignment</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <tree string="academy_tests_test_training_assignment_tree" create="1" delete="1" edit="1">
+                    <field name="name" class="oe_field_name"
+                        placeholder="Enter new name" />
+                    <field name="training_ref" class="oe_field_training_id"
+                        invisible="context.get('default_training_ref', False)" />
+                    <field name="test_id" class="oe_field_test_id"
+                        invisible="context.get('default_test_id', False)" />
+                    <field name="owner_id" class="oe_field_owner_id" />
+                    <field name="release" class="oe_field_release" />
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form view for "academy.tests.test.training.assignment" -->
+        <record id="view_academy_tests_test_training_assignment_form" model="ir.ui.view">
+            <field name="name">view.academy.tests.test.training.assignment.form</field>
+            <field name="model">academy.tests.test.training.assignment</field>
+            <field name="type">form</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <form string="academy_tests_test_training_assignment_form" create="1" delete="1" edit="1">
+                    <sheet>
+                        <field name="active" invisible="1" />
+                        <field name="training_type" invisible="1" />
+                        <field name="enrolment_id" invisible="1" />
+                        <field name="training_action_id" invisible="1" />
+                        <field name="training_activity_id" invisible="1" />
+                        <field name="competency_unit_id" invisible="1" />
+                        <field name="training_module_id" invisible="1" />
+                        <field name="secondary_activity_id" invisible="1" />
+
+                        <div class="oe_button_box" name="button_box">
+                            <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+
+                            <button name="view_test_attempts" type="object"
+                                class="oe_stat_button oe_read_only" icon="fa-line-chart"
+                                help="View related test attempts">
+                                <field name="attempt_count" widget="statinfo" string="Attempts" />
+                            </button>
+
+                            <button name="view_students" type="object"
+                                class="oe_stat_button oe_read_only" icon="fa-id-card-o">
+                                <field name="student_count"  widget="statinfo" string="Students" />
+                            </button>
+                        </div>
+
+                        <div class="w-100">
+
+                            <label for="name" class="oe_edit_only" />
+                            <h1>
+                                <field name="name" class="oe_field_name"
+                                    placeholder="Enter new name" />
+                            </h1>
+                        </div>
+
+                        <group col="4" class="mt-4">
+                            <field name="test_id" class="oe_field_test_id" colspan="4"
+                                readonly="context.get('default_test_id', 0)" required="1"
+                                options="{'no_open': False, 'no_create': True, 'no_quick_create': True, 'no_create_edit': True }" />
+                            <field name="training_ref" class="oe_field_training_id" colspan="4"
+                                readonly="context.get('default_training_ref', 0)" required="1"
+                                options="{'no_open': False, 'no_create': True, 'no_quick_create': True, 'no_create_edit': True }" />
+                            <field name="secondary_id" class="oe_field_secondary_id" colspan="4"
+                                domain="[('training_activity_id', '=', secondary_activity_id)]"
+                                attrs="{'readonly': [
+                                    ('training_type', '&lt;&gt;', 'action'),
+                                    ('training_type', '&lt;&gt;', 'activity'),
+                                    ('training_type', '&lt;&gt;', 'enrolment')
+                                ]}" options="{'no_open': False, 'no_create': True, 'no_quick_create': True, 'no_create_edit': True }" />
+
+                            <separator colspan="4" class="mt-4" />
+                            <field name="release" class="oe_field_release" />
+                            <field name="expiration" class="oe_field_expiration" />
+                            <field name="owner_id" class="oe_field_owner_id" />
+
+                            <separator colspan="4" string="Realization" class="mt-4" />
+                            <field name="correction_scale_id" class="oe_field_correction_scale_id" />
+                            <field name="time_by" class="oe_field_time_by" />
+                            <field name="available_time" class="oe_field_available_time" widget="float_time" />
+                            <field name="lock_time" class="oe_field_lock_time" />
+
+                        </group>
+
+                    </sheet>
+
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- kanban view for "academy.tests.test.training.assignment" -->
+        <record id="view_academy_tests_test_training_assignment_kanban" model="ir.ui.view">
+            <field name="name">view.academy.tests.test.training.assignment.kanban</field>
+            <field name="model">academy.tests.test.training.assignment</field>
+            <field name="type">kanban</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <kanban create="1" delete="1" edit="1">
+                    <field name="display_name" />
+                    <field name="secondary_id" />
+                    <field name="release" />
+                    <field name="training_type" />
+                    <field name="attempt_count" />
+                    <field name="owner_id" />
+                    <field name="random_template_id" />
+
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click oe_kanban_academy_training_action">
+                                <div class="oe_kanban_details d-flex flex-column h-100 justify-content-end">
+                                    <h4 class="flex-fill align-top">
+                                        <strong class="oe_partner_heading">
+                                            <field name="display_name"/>
+                                        </strong>
+                                    </h4>
+                                    <ul>
+                                        <li class="o_ellipsis">
+                                            <strong>Training type:&#160;</strong>
+                                            <field name="training_type" />
+                                        </li>
+                                        <li class="o_ellipsis">
+                                            <strong>Sub-assignment:&#160;</strong>
+                                            <t t-if="record.secondary_id.raw_value">
+                                                <field name="secondary_id" />
+                                            </t>
+                                            <t t-else="">
+                                                ---
+                                            </t>
+                                        </li>
+                                            <li class="o_ellipsis">
+                                            <strong>Owner:&#160;</strong>
+                                            <field name="owner_id" />
+                                        </li>
+                                        <li class="o_ellipsis">
+                                            <strong>Released:&#160;</strong>
+                                            <field name="release" widget="datetime" />
+                                        </li>
+                                        <li class="o_ellipsis">
+                                            <strong>Students:&#160;</strong>
+                                            <field name="student_count" />
+                                            &#160;
+                                            <strong>Attempts:&#160;</strong>
+                                            <field name="attempt_count" />
+                                        </li>
+                                    </ul>
+                                    <div class="btn-toolbar d-flex w-100 justify-content-between align-self-end mt-3" role="toolbar" aria-label="Download as document">
+                                        <div class="btn-group" role="group" aria-label="Download">
+                                            <button name="download_as_moodle_xml" type="object"
+                                                class="btn btn-sm btn-light oe_read_only" title="Download as a Moodle XML compatible document">
+                                                <i class="fa fa-file-code-o d-inline-block mr-1" aria-hidden="false"></i>
+                                                Moodle
+                                            </button>
+                                            <button name="save_as_docx" type="object"
+                                                class="btn btn-sm btn-light oe_read_only" title="Download as Microsoft Word document">
+                                                <i class="fa fa-file-word-o d-inline-block mr-1" aria-hidden="false"></i>
+                                                Word
+                                            </button>
+                                            <button name="download_as_pdf" type="object"
+                                                class="btn btn-sm btn-light oe_read_only" default_focus="1" title="Download as PDF document">
+                                                <i class="fa fa-file-pdf-o d-inline-block mr-1" aria-hidden="false"></i>
+                                                PDF
+                                            </button>
+                                        </div>
+                                        <div class="btn-group" role="group" aria-label="Attempts">
+                                            <button name="view_test_attempts" type="object"
+                                                class="btn btn-sm btn-light oe_read_only" title="View test attempt assignments and statistics">
+                                                <i class="fa fa-line-chart d-inline-block mr-1" aria-hidden="false"></i>
+                                                Stats
+                                            </button>
+                                        </div>
+                                        <t t-if="record.random_template_id.raw_value &amp;&amp; context['default_test_id'] == undefined &amp;&amp; context['default_training_ref'] != undefined">
+                                        <div class="btn-group" role="group" aria-label="Attempts">
+                                            <button name="new_from_template" type="object"
+                                                class="btn btn-sm btn-light oe_read_only" title="Create new test assignment using the same template">
+                                                <i class="fa fa-cogs d-inline-block mr-1" aria-hidden="false"></i>
+                                            </button>
+                                        </div>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Search view for "academy.tests.test.training.assignment" -->
+        <record id="view_academy_tests_test_training_assignment_search" model="ir.ui.view">
+            <field name="name">view.academy.tests.test.training.assignment.search</field>
+            <field name="model">academy.tests.test.training.assignment</field>
+            <field name="type">search</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <search string="academy_tests_test_training_assignment_search">
+                    <field name="training_ref" class="oe_field_training_id" />
+                    <field name="test_id" class="oe_field_test_id" />
+                    <field name="owner_id" class="oe_field_owner_id" />
+                    <field name="release" class="oe_field_release" />
+                    <field name="training_type" class="oe_field_training_type" />
+
+                    <filter string="My assignments"
+                        name="my_assignments"
+                        domain="[('owner_id', '=', uid)]"/>
+
+                    <filter string="Released" name="released" domain="[
+                        ('release','&gt;=', (context_today().strftime('%Y-%m-%d')))
+                    ]" />
+
+                    <filter string="Last 8 days" name="last_eight_days" domain="[
+                        ('release','&gt;=', ((context_today() - relativedelta(days=8)).strftime('%Y-%m-%d'))),
+                        ('release','&lt;',  ((context_today() + relativedelta(days=1)).strftime('%Y-%m-%d')))
+                    ]"/>
+
+
+                    <separator />
+
+                    <filter name="group_by_training_type" string="Group by training type"
+                        context="{'group_by':'training_type'}"  />
+
+                    <separator />
+
+                    <filter string="My tests"
+                        name="my_tests"
+                        domain="[('test_id.owner_id', '=', uid)]"/>
+
+                </search>
+            </field>
+        </record>
+
+        <!-- Main window action for model.name -->
+        <record id="action_test_assignment_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Test assignment</field>
+            <field name="res_model">academy.tests.test.training.assignment</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="target">current</field>
+            <field name="domain">[]</field>
+            <field name="context">{'search_default_my_assignments': 1}</field>
+            <field name="search_view_id" ref="view_academy_tests_test_training_assignment_search" />
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to add new test assignment
+                </p><p>
+                    No test assignments have been stored yet
+                </p>
+            </field>
+        </record>
+
+        <!-- Main menu for model.name -->
+        <record id="menu_test_assignment" model="ir.ui.menu" >
+            <field name="name">Test assignment</field>
+            <field name="sequence" eval="10" />
+            <field name="action" ref="action_test_assignment_act_window" />
+            <field name="parent_id" ref="academy_tests.menu_test_settings_top" />
+        </record>
+
+    </data>
+</openerp>

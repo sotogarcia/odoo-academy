@@ -8,6 +8,9 @@ all student attributes and behavior.
 from odoo import models, fields, api
 from odoo.tools.translate import _
 from .utils.custom_model_fields import Many2manyThroughView
+from odoo.exceptions import ValidationError
+from odoo.osv.expression import OR
+from odoo.osv.expression import FALSE_DOMAIN
 
 from logging import getLogger
 
@@ -15,7 +18,7 @@ _logger = getLogger(__name__)
 
 
 class AcademyStudent(models.Model):
-    """ A student is a partner who can be enroled on training actions
+    """ A student is a partner who can be enrolled on training actions
     """
 
     _name = 'academy.student'
@@ -89,6 +92,32 @@ class AcademyStudent(models.Model):
     def _onchange_enrolment_ids(self):
         self.enrolment_count = len(self.enrolment_ids)
 
+    _sql_constraints = [
+        (
+            'unique_partner',
+            'UNIQUE(res_partner_id)',
+            _(u'There is already a student for this contact')
+        )
+    ]
+
+    @api.constrains('res_partner_id')
+    def _check_res_partner_id(self):
+        partner_obj = self.env['res.partner']
+        msg = _('There is already a student with that VAT number or email')
+
+        for record in self:
+            if record.res_partner_id:
+                leafs = [FALSE_DOMAIN]
+
+                if record.vat:
+                    leafs.append([('vat', '=ilike', record.vat)])
+
+                if record.email:
+                    leafs.append([('email', '=ilike', record.email)])
+
+                if partner_obj.search_count(OR(leafs)) > 1:
+                    raise ValidationError(msg)
+
     def edit_enrolments(self):
         self.ensure_one()
 
@@ -96,12 +125,27 @@ class AcademyStudent(models.Model):
                     'view_academy_training_action_enrolment_edit_by_user_tree')
         return {
             'name': _('Enrolments for «{}»').format(self.name),
-            'view_mode': 'tree',
-            'view_id': self.env.ref(view_xid).id,
+            'view_mode': 'kanban,tree,form',
             'view_type': 'form',
             'res_model': 'academy.training.action.enrolment',
             'type': 'ir.actions.act_window',
             'nodestroy': True,
             'target': 'current',
             'domain': [('student_id', '=', self.id)],
+            'context': {'tree_view_ref': view_xid}
+        }
+
+    def go_to_contact(self):
+        self.ensure_one()
+
+        return {
+            'name': self.res_partner_id.name,
+            'view_mode': 'form',
+            'view_id': False,
+            'view_type': 'form',
+            'res_model': 'res.partner',
+            'res_id': self.res_partner_id.id,
+            'type': 'ir.actions.act_window',
+            'nodestroy': True,
+            'target': 'main',
         }

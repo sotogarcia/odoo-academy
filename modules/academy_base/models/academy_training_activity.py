@@ -14,6 +14,8 @@ from .utils.raw_sql import ACADEMY_TRAINING_ACTIVITY_TRAINING_MODULE_REL, \
     ACADEMY_TRAINING_ACTIVITY_TRAINING_UNIT_REL, \
     ACADEMY_TRAINING_ACTIVITY_AVAILABLE_RESOURCE_REL
 
+from odoo.tools.translate import _
+
 # pylint: disable=locally-disabled, C0103
 _logger = getLogger(__name__)
 
@@ -30,7 +32,12 @@ class AcademyTrainingActivity(models.Model):
     _rec_name = 'name'
     _order = 'name ASC'
 
-    _inherit = ['image.mixin', 'mail.thread']
+    _inherit = [
+        'image.mixin',
+        'mail.thread',
+        'academy.abstract.training',
+        'academy.abstract.owner'
+    ]
 
     name = fields.Char(
         string='Name',
@@ -112,7 +119,7 @@ class AcademyTrainingActivity(models.Model):
         default=None,
         help='Reference code that identifies the activity',
         size=30,
-        translate=True
+        translate=False
     )
 
     general_competence = fields.Text(
@@ -253,6 +260,23 @@ class AcademyTrainingActivity(models.Model):
         sql=ACADEMY_TRAINING_ACTIVITY_AVAILABLE_RESOURCE_REL
     )
 
+    # This no needs an SQL statement
+    training_module_ids = Many2manyThroughView(
+        string='Modules',
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help='Training activities in which module is used',
+        comodel_name='academy.training.module',
+        relation='academy_competency_unit',
+        column1='training_activity_id',
+        column2='training_module_id',
+        domain=[],
+        context={},
+        limit=None
+    )
+
     # -------------------------- MANAGEMENT FIELDS ----------------------------
 
     @api.onchange('professional_field_id')
@@ -273,7 +297,19 @@ class AcademyTrainingActivity(models.Model):
         readonly=True,
         index=False,
         default=0,
-        help=False,
+        help='Show the number of competency units in the training activity',
+        compute=lambda self: self._compute_competency_unit_count()
+    )
+
+    # The number of modules should be the same as the number of competencies
+    # pylint: disable=W0212
+    training_module_count = fields.Integer(
+        string='Number of training modules',
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        help='Show the number of training modules in the training activity',
         compute=lambda self: self._compute_competency_unit_count()
     )
 
@@ -281,6 +317,7 @@ class AcademyTrainingActivity(models.Model):
     def _compute_competency_unit_count(self):
         for record in self:
             record.competency_unit_count = len(record.competency_unit_ids)
+            record.training_module_count = record.competency_unit_count
 
     # pylint: disable=W0212
     training_action_count = fields.Integer(
@@ -322,3 +359,53 @@ class AcademyTrainingActivity(models.Model):
         """ Observer notify method, will be called by action
         """
         self._compute_training_action_count()
+
+    def show_training_actions(self):
+        self.ensure_one()
+
+        return {
+            'model': 'ir.actions.act_window',
+            'type': 'ir.actions.act_window',
+            'name': _('Training actions'),
+            'res_model': 'academy.training.action',
+            'target': 'current',
+            'view_mode': 'kanban,tree,form',
+            'domain': [('training_activity_id', '=', self.id)],
+            'context': {
+                'default_training_activity_id': self.id
+            }
+        }
+
+    def show_competency_units(self):
+        self.ensure_one()
+
+        return {
+            'model': 'ir.actions.act_window',
+            'type': 'ir.actions.act_window',
+            'name': _('Competency units'),
+            'res_model': 'academy.competency.unit',
+            'target': 'current',
+            'view_mode': 'kanban,tree,form',
+            'domain': [('training_activity_id', '=', self.id)],
+            'context': {
+                'default_training_activity_id': self.id
+            }
+        }
+
+    def show_training_modules(self):
+        self.ensure_one()
+
+        mids = self.mapped('competency_unit_ids.training_module_id.id')
+
+        return {
+            'model': 'ir.actions.act_window',
+            'type': 'ir.actions.act_window',
+            'name': _('Training modules'),
+            'res_model': 'academy.training.module',
+            'target': 'current',
+            'view_mode': 'kanban,tree,form',
+            'domain': [('id', 'in', mids)],
+            'context': {
+                'default_training_activity_id': self.id
+            }
+        }

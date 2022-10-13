@@ -12,7 +12,6 @@ from odoo.osv.expression import AND, FALSE_DOMAIN, TRUE_DOMAIN
 from odoo import models, fields, api
 from odoo.exceptions import UserError
 from odoo.tools.translate import _
-from enum import Enum
 
 
 _logger = getLogger(__name__)
@@ -26,36 +25,12 @@ WIZARD_LINE_STATES = [
     ('step5', _('Special'))
 ]
 
-RESTRICT_BY = [
-    ('answer', _('Answered')),
-    ('wrong', _('Mistaken')),
-    ('blank', _('Blank')),
-    ('doubt', _('Doubt')),
-    ('answer_doubt', _('Answered/Doubt')),
-    ('blank_wrong', _('Mistaken/Blank')),
-    ('doubt_wrong', _('Mistaken/Doubt')),
-    ('blank_doubt', _('Blank/Doubt')),
-    ('blank_doubt_wrong', _('Mistaken/Blank/Doubt'))
-]
-
-ACTION_MODEL = 'academy.training.action'
-ENROLMENT_MODEL = 'academy.training.action.enrolment'
-STATS_MODEL = 'academy.statistics.student.question.readonly'
-
 CHECK_ANSWER_VALUES = ('CHECK(minimum_answers > 1 AND maximum_answers > 1 AND '
                        'minimum_answers <= maximum_answers)')
 
 
-class LogDomain(Enum):
-    NONE = 0
-    STOCK = 1
-    ANSWERED = 3
-    RESTRICTED = 5
-    FINAL = 9
-
-
 # pylint: disable=locally-disabled, R0903, W0212
-class AcademyTestsRandomWizardLine(models.Model):
+class AcademyTestsRandomTemplateLine(models.Model):
     """ This model is the representation of the academy tests random line
     """
 
@@ -360,83 +335,6 @@ class AcademyTestsRandomWizardLine(models.Model):
         help='Get the criteria from the context has been given in the wizard'
     )
 
-    # ----------- SETUP REQUERIMENTS ------------
-
-    stock_by = fields.Selection(
-        string='Stock by',
-        required=False,
-        readonly=False,
-        index=False,
-        default=None,
-        help='Choose how minimum question stock will be computed',
-        selection=[
-            ('pct', 'Percent')
-        ]
-    )
-
-    stock = fields.Float(
-        string='Stock',
-        required=True,
-        readonly=False,
-        index=False,
-        default=1.0,
-        digits=(16, 2),
-        help='Minimum number of questions required to make new test'
-    )
-
-    answered_by = fields.Selection(
-        string='Raised by',
-        required=False,
-        readonly=False,
-        index=False,
-        default=None,
-        help='Choose how minimum answered questions will be computed',
-        selection=[
-            ('pct', 'Percent')
-        ]
-    )
-
-    answered = fields.Float(
-        string='Raised',
-        required=True,
-        readonly=False,
-        index=False,
-        default=1.0,
-        help='Minimum number of answered questions required to make new test'
-    )
-
-    restrict_by = fields.Selection(
-        string='Restrict by',
-        required=False,
-        readonly=False,
-        index=False,
-        default=None,
-        help=('Choose how the minimum number of questions will be calculated, '
-              'according to the given restriction'),
-        selection=RESTRICT_BY
-    )
-
-    supply = fields.Float(
-        string='Supply',
-        required=True,
-        readonly=False,
-        index=False,
-        default=1.0,
-        help=('Minimum number of  mistakes/doubts/blanks required to '
-              'make new test')
-    )
-
-    ratio = fields.Float(
-        string='Ratio',
-        required=True,
-        readonly=False,
-        index=False,
-        default=0.5,
-        digits=(16, 2),
-        help=('Percentaje of mistakes/doubts/blanks required to use a '
-              'question in test')
-    )
-
     minimum_answers = fields.Integer(
         string='Minimum',
         required=True,
@@ -605,6 +503,18 @@ class AcademyTestsRandomWizardLine(models.Model):
             sign = -1 if record.exclude_questions else 1
             record.question_count = len(record.question_ids) * sign
 
+    training_ref = fields.Reference(
+        string='Training',
+        help='Choose training item to which the test will be assigned',
+        related='random_template_id.training_ref'
+    )
+
+    training_type = fields.Selection(
+        string='Training type',
+        related='random_template_id.training_type'
+
+    )
+
     _sql_constraints = [
         (
             'CHECK_ANSWER_VALUES',
@@ -632,12 +542,13 @@ class AcademyTestsRandomWizardLine(models.Model):
             'target': 'new'
         }
 
-    def _get_context_ref(self):
-        self.ensure_one()
-        return self.random_template_id.context_ref
+    def _log_operation(self, method, data):
+        message = 'RANDOM WIZARD LINE «{}» - {}: {}'
 
-    def _is_an_action(self, item):
-        return isinstance(item, type(self.env['academy.training.action']))
+        name = self.name
+        message = message.format(name, method, data)
+
+        _logger.debug(message)
 
     def _append_in(self, domains, source, target, exclude, nm=False):
         """ Appends new domain to the given list. Later, these domains can be
@@ -708,7 +619,7 @@ class AcademyTestsRandomWizardLine(models.Model):
             domain = [('ir_attachment_ids', operator, False)]
             domains.append(domain)
 
-    def _append_tests(self, domains, context_ref):
+    def _append_tests(self, domains):
         """ Appends new domain to the given list with the needed leaft to allow
         filtering using tests
 
@@ -719,17 +630,19 @@ class AcademyTestsRandomWizardLine(models.Model):
             domains {list} -- list to which new domain will be appened
         """
 
+        training_ref = self.random_template_id.training_ref
+
         if self.tests_by_context:
 
             domain = False
             test_ids = False
 
-            if context_ref:
-                path = 'available_test_ids.question_ids.id'
-                test_ids = context_ref.mapped(path)
+            if training_ref:
+                path = 'available_assignment_ids.test_id.question_ids.id'
+                test_ids = training_ref.mapped(path)
 
             if test_ids:
-                operator = '!=' if self.exclude_tests else '='
+                operator = 'not in' if self.exclude_tests else 'in'
                 domain = [('test_ids', operator, test_ids)]
             elif not self.exclude_tests:
                 domain = FALSE_DOMAIN
@@ -740,7 +653,7 @@ class AcademyTestsRandomWizardLine(models.Model):
             self._append_in(domains, 'test_ids.question_ids', 'test_ids',
                             'exclude_tests', nm=True)
 
-    def _append_questions(self, domains, context_ref):
+    def _append_questions(self, domains):
         """ Appends new domain to the given list with the needed leaft to allow
         filtering using questions
 
@@ -748,19 +661,18 @@ class AcademyTestsRandomWizardLine(models.Model):
             domains {list} -- list to which new domain will be appened
         """
 
+        self.ensure_one()
+
+        training_ref = self.random_template_id.training_ref
+
         if self.questions_by_context:
 
             domain = False
             question_ids = False
 
-            if context_ref:
-
-                if self._is_an_action(context_ref):
-                    path = 'training_activity_id.available_question_ids.id'
-                else:
-                    path = 'training_module_ids.available_question_ids.id'
-
-                question_ids = context_ref.mapped(path)
+            if training_ref:
+                question_set = training_ref.available_question_ids
+                question_ids = question_set.mapped('id')
 
             if question_ids:
                 operator = 'not in' if self.exclude_questions else 'in'
@@ -774,7 +686,16 @@ class AcademyTestsRandomWizardLine(models.Model):
             self._append_in(
                 domains, 'question_ids', 'id', 'exclude_questions')
 
-    def _compute_domain(self, extra, context_ref):
+    @staticmethod
+    def _accumulate_domain(base_domain, accumulate_ids):
+        if accumulate_ids:
+            domain = AND([base_domain, [('id', 'not in', accumulate_ids)]])
+        else:
+            domain = base_domain.copy()
+
+        return domain
+
+    def _compute_domain(self, extra):
         """ Make two valid domains for record, one without restrictions and
         another with them.
 
@@ -801,8 +722,8 @@ class AcademyTestsRandomWizardLine(models.Model):
         self._append_authorship(domains)
         self._append_attachments(domains)
 
-        self._append_tests(domains, context_ref)
-        self._append_questions(domains, context_ref)
+        self._append_tests(domains)
+        self._append_questions(domains)
 
         if self.categorization_ids:
             exclude = self.exclude_categorization
@@ -813,7 +734,7 @@ class AcademyTestsRandomWizardLine(models.Model):
 
         return AND(domains)
 
-    def compute_domains(self, extra, context_ref):
+    def compute_domains(self, extra, training_ref):
         """ Execute _compute_domain over all lines in the recordset.
 
         Arguments:
@@ -825,303 +746,38 @@ class AcademyTestsRandomWizardLine(models.Model):
         domains = []
 
         for record in self:
-            domain = self._compute_domain(extra, context_ref)
+            domain = self._compute_domain(extra)
             domains.append(domain)
 
         return domains
 
-    def _get_student_ids_from_context(self, context_ref):
-        """ Reads context field from template, and maps the ID of the all
-        students.
-
-        NOTE: context can be an action or an enrolment
-
-        Returns:
-            list -- list of ID's of the all students from the context item
-        """
-
-        student_ids = []
-
-        if context_ref:
-
-            if self._is_an_action(context_ref):
-                enrolment_set = context_ref.training_action_enrolment_ids
-            else:
-                enrolment_set = context_ref
-
-            if enrolment_set:
-                student_ids = enrolment_set.mapped('student_id.id')
-
-        return student_ids
-
-    def _log_operation(self, data, restrict):
-        message = 'RANDOM WIZARD LINE «{}» - {}: {}'
-
-        name = self.name
-
-        if restrict == LogDomain.STOCK:
-            message = message.format(name, 'Checking stock', data)
-
-        if restrict == LogDomain.ANSWERED:
-            message = message.format(name, 'Checking answered', data)
-
-        elif restrict == LogDomain.RESTRICTED:
-            message = message.format(name, 'Checking restrictions', data)
-
-        elif restrict == LogDomain.FINAL:
-            message = message.format(name, 'Perform final search', data)
-
-        else:
-            message = message.format(name, 'Other', data)
-
-        _logger.debug(message)
-
-    def _statistics_domain(self, context_ref):
-        """ Use academy.statistics.student.question.readonly to get the ID only
-        from those questions whose student is in a given context. Then use this
-        ID's to make a domain like [('id', 'in', ids)] which can be used with
-        academy.tests.question.
-
-        If context is not set, all statistics will be used to build the domain.
-
-        Arguments:
-            domain {list} -- Odoo valid domain which will be extended with the
-            new created
-
-        Returns:
-            list -- Odoo valid domain (given domain & new created)
-        """
-
-        if context_ref:
-
-            student_ids = self._get_student_ids_from_context(context_ref)
-            if student_ids:
-                result = [('student_id', 'in', student_ids)]
-
-            else:
-                _logger.debug(_('There are no students in the given context'))
-                result = FALSE_DOMAIN
-
-        else:
-            _logger.debug(_('There is no context to apply restrictions'))
-            result = TRUE_DOMAIN
-
-        self._log_operation(result, LogDomain.ANSWERED)
-
-        return result
-
-    def _get_stock(self, domain):
-        """ Uses non restricted domain to search all available questions.
-
-        Later resut will be used to compute percents in restrictions.
-
-        Arguments:
-            domain {list} -- Odoo valid domain
-
-        Returns:
-            int -- number of records has been found
-        """
-
-        question_set = self.env['academy.tests.question']
-
-        self._log_operation(domain, LogDomain.STOCK)
-        quantity = question_set.search_count(domain)
-
-        return quantity or 0
-
-    def _assert_stock(self, quantity):
-        """ Check if are there enough questions to supply the given percentage
-
-        Arguments:
-            quantity {int} -- Total number of questions, without restrictions
-        """
-
-        if not quantity >= (self.stock * self.quantity):
-            raise UserError(_('Not enough questions in stock'))
-
-    @staticmethod
-    def _start_counting(result_set):
-        """ Initialize the counters will be needed to log given restrictions
-
-        Arguments:
-            result_set {recordset} -- Full statistics recordset
-
-        Returns:
-            tuple -- all the needed initial values
-        """
-        return 0, 0, len(result_set)
-
-    @staticmethod
-    def _finish_counting(total, meets, fails, ratio):
-        """ Collects the values from all counters related with restrictions to
-        create a text string to display them
-
-        Arguments:
-            total {int} -- Full statistics recordset length (no resticted)
-            meets {float} -- meets rate
-            fails {float} -- fails rate
-            ratio {float} -- given ratio field value for self
-
-        Returns:
-            str -- message to present all given values
-        """
-
-        msg = _('{} aggregate records have been retrieved, {:.2f}% are '
-                'greater or equal to {:.2f} and {:.2f}% are less than it')
-
-        meets = meets / total * 100
-        fails = fails / total * 100
-        ratio = ratio * 100
-
-        return msg.format(total, meets, ratio, fails)
-
-    def _read_question_ids(self, result_set, ratio=False):
-        """ Read question_id column from given aggregate (read_group) results
-
-        Arguments:
-            result_set {recordset} -- aggregate (read_group) recordset
-
-        Keyword Arguments:
-            ratio {mixed} -- ratio that must exceed the computed value from
-            the given records (default: {False})
-
-        Returns:
-            list -- list with the obtained IDs. All the values will be unique.
-        """
-
-        results = []
-
-        if ratio is not False and ratio >= 0:
-            meets, fails, total = self._start_counting(result_set)
-
-            for item in result_set:
-                if item['computed'] >= ratio:
-                    results.append(item['question_id'][0])
-                    meets += 1
-                else:
-                    fails += 1
-
-            msg = self._finish_counting(total, meets, fails, ratio)
-            self._log_operation(msg, LogDomain.RESTRICTED)
-
-        else:
-            for item in result_set:
-                results.append(item['question_id'][0])
-
-        return list(set(results)) if results else []
-
-    def _assert_answer(self, domain, quantity):
-        """ Check if are there enough answered questions to supply the given
-        percentaje
-
-        Arguments:
-            domain {list} -- Odoo valid domain
-            quantity {int} -- Total number of questions, without restrictions
-        """
-
-        statistics_set = self.env[STATS_MODEL]
-
-        statistics_set = statistics_set.read_group(
-            domain, ['question_id'], ['question_id'], lazy=False)
-
-        results = self._read_question_ids(statistics_set, ratio=False)
-
-        if not len(statistics_set) >= (self.answered * quantity):
-            raise UserError(_('Not enough questions answered'))
-
-        return results
-
-    def _assert_restricted(self, domain, quantity):
-        """ Check if are there enough questions that meet the constraints, to
-        supply the given percentaje
-
-        Arguments:
-            domain {list} -- Odoo valid domain
-            quantity {int} -- Total number of questions, without restrictions
-
-        Returns:
-            list -- Odoo domain has been used to perform the search
-        """
-
-        statistics_set = self.env[STATS_MODEL]
-
-        field = 'computed:avg({}_percent)'.format(self.restrict_by)
-        statistics_set = statistics_set.read_group(
-            domain, [field], ['question_id'], lazy=False)
-
-        results = self._read_question_ids(statistics_set, self.ratio)
-
-        if not len(results) >= (self.supply * quantity):
-            msg = _('The ratio indicated in the restrictions is not reached')
-            raise UserError(msg)
-
-        return results
-
-    def _assert_restrictions(self, domain, context_ref):
-        available = self._get_stock(domain)
-
-        if self.stock_by == 'pct':
-            self._assert_stock(available)
-
-        if self.answered_by or self.restrict_by:
-            statistics = self._statistics_domain(context_ref)
-
-            if self.answered_by:
-                question_ids = self._assert_answer(statistics, available)
-
-            if self.restrict_by:
-                question_ids = self._assert_restricted(statistics, available)
-
-            if question_ids:
-                domain = AND([domain, [('id', 'in', question_ids)]])
-
-    def _perform_search(self, extra, context_ref):
+    def _perform_search(self, extra):
         """ Performs search for a single template record, that is why the first
         line is an ``ensure_one``.
 
-        This method will be calle for each record from the ``perform_search``
-        public method.
-
-        Keyword Arguments:
-            extra {list} -- Odoo valid domain will be merged as extra leafs in
+        Args:
+            extra (list): Odoo valid domain will be merged as extra leafs in
             new computed domain (default: {None})
-            random {bool} -- True to use SORT BY RANDOM() (default: {True})
 
         Returns:
-            recordset -- found question recordset for this single line
+            recordset:  found question recordset for this single line
         """
 
         self.ensure_one()
 
         question_set = self.env['academy.tests.question']
+        if self.quantity <= 0:
+            return question_set
 
         ctx = {'sort_by_random': True}
         question_set = question_set.with_context(ctx)
 
-        domain = self._compute_domain(extra, context_ref)
-        self._assert_restrictions(domain, context_ref)
-
-        self._log_operation(domain, LogDomain.FINAL)
+        domain = self._compute_domain(extra)
+        self._log_operation('_perform_search', domain)
 
         return question_set.search(domain, limit=self.quantity)
 
-    @staticmethod
-    def _initialize_domains(extra):
-        if not isinstance(extra, (list, tuple)):
-            extra = []
-
-        domain = extra.copy()
-
-        return extra, domain
-
-    def _assert_expected_questions(self, record_set, allow_partial):
-        msg = _('RANDOM WIZARD LINE «{}»: There is not enough questions')
-
-        if not allow_partial and len(record_set) != self.quantity:
-            raise UserError(msg.format(self.name))
-
-    def perform_search(
-            self, extra=None, context_ref=None, allow_partial=False):
+    def perform_search(self, extra=None):
         """ Performs search for all lines in given recorset. This method
         calls a private ``_perform_search`` method by earch record.
 
@@ -1139,82 +795,30 @@ class AcademyTestsRandomWizardLine(models.Model):
         """
 
         result_set = self.env['academy.tests.question']
-
-        ids = []
-        extra, domain = self._initialize_domains(extra)
+        base_domain = (extra or []).copy()
+        accumulate_ids = []
 
         for record in self:
-            record_set = record._perform_search(domain, context_ref)
+            domain = self._accumulate_domain(base_domain, accumulate_ids)
+            record_set = record._perform_search(domain)
 
-            record._assert_expected_questions(record_set, allow_partial)
-            ids.extend(record_set.mapped('id'))
-            if ids:
-                domain = AND([extra, [('id', 'not in', ids)]])
+            accumulate_ids.extend(record_set.mapped('id'))
+            if accumulate_ids:
+                domain = AND([extra, [('id', 'not in', accumulate_ids)]])
 
             result_set += record_set
 
         return result_set
 
-    def perform_search_count(self, extra=None, context_ref=None):
+    def perform_search_count(self, extra=None, training_ref=None):
         self.ensure_one()
 
-        if not context_ref:
-            context_ref = self.random_template_id.context_ref
+        if not training_ref:
+            training_ref = self.random_template_id.training_ref
 
         question_set = self.env['academy.tests.question']
-        domain = self._compute_domain(extra or [], context_ref)
+        domain = self._compute_domain(extra or [])
 
-        self._log_operation(domain, LogDomain.FINAL)
+        self._log_operation('perform_search_count', domain)
 
         return question_set.search_count(domain)
-
-    def build_link_operations(
-            self, extra=None, context_ref=None, allow_partial=False):
-        """ Performs search for all lines in given recorset. This method
-        calls a private ``_perform_search`` method by earch record.
-
-        This uses resulted question IDs to exclude them when it will perform
-        the next line search
-
-        Keyword Arguments:
-            extra {list} -- Odoo valid domain will be merged as extra leafs in
-            new computed domain (default: {None})
-            random {bool} -- True to allow return found questions when the
-            required quantity has not been reached
-
-        Returns:
-            recordset -- found question recordset using all lines
-        """
-
-        ids = []
-        extra, domain = self._initialize_domains(extra)
-
-        request_id = self.env.context.get('request_id', None)
-
-        operations = []
-        sequence = 10
-
-        for record in self:
-            record_set = record._perform_search(domain, context_ref)
-
-            record._assert_expected_questions(record_set, allow_partial)
-            ids.extend(record_set.mapped('id'))
-            if ids:
-                domain = AND([extra, [('id', 'not in', ids)]])
-
-            if record.test_block_id:
-                test_block_id = record.test_block_id.id
-            else:
-                test_block_id = None
-
-            for question_item in record_set:
-                link = {
-                    'sequence': sequence,
-                    'question_id': question_item.id,
-                    'request_id': request_id,
-                    'test_block_id': test_block_id
-                }
-                operations.append((0, None, link))
-                sequence += 10
-
-        return operations

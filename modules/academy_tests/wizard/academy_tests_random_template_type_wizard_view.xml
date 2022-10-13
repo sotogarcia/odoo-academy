@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="view_academy_tests_random_template_type_wizard_form" model="ir.ui.view">
+            <field name="name">Random template type wizard</field>
+            <field name="model">academy.tests.random.template.type.wizard</field>
+            <field name="type">form</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <form string="view_academy_tests_random_template_type_wizard_form" create="1" delete="1" edit="1">
+                    <header>
+                        <button name="new_template" type="object"
+                            string="New template" class="btn btn-primary pull-right" />
+                    </header>
+
+                    <group col="4">
+                        <field name="training_ref" class="oe_field_training_ref"
+                            readonly="1" options="{'no_open': True}" colspan="4" />
+                        <field name="kind" class="oe_field_kind flex-row" widget="radio" />
+                        <separator colspan="4" />
+                        <field name="supplementary" class="oe_field_supplementary" />
+                        <field name="block_id" class="oe_field_block_id" />
+                    </group>
+
+                    <div class="alert alert-info mt-5" role="alert" colspan="2">
+                        <dl>
+                            <dt>Basic</dt>
+                            <dd>One line of criteria will be generated for each competence unit or training module</dd>
+                            <dt>Extended</dt>
+                            <dd>One line of criteria will be generated for each relationship between training module and test topic</dd>
+                        </dl>
+                    </div>
+
+                    <footer />
+
+                </form>
+            </field>
+        </record>
+
+    </data>
+</openerp>

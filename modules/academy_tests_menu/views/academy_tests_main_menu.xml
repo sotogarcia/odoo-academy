@@ -284,7 +284,7 @@
         </record>
 
         <record id="menu_test_main_tracking_students_journal" model="ir.ui.menu" >
-            <field name="name">Journal</field>
+            <field name="name">Manual registration</field>
             <field name="sequence" eval="20" />
             <field name="parent_id" ref="menu_test_main_tracking_students" />
             <field name="action" ref="academy_laravel_frontend.action_test_journal_act_window" />

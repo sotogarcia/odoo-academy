@@ -25,7 +25,7 @@
             <field name="arch" type="xml">
                 <tree string="academy_public_tendering_process_tree" create="1" delete="1" edit="1">
                     <field name="name" />
-                    <field name="public_tendering_public_offer_id" />
+                    <field name="public_offer_id" />
                     <field name="approval" />
                     <field name="announcement" />
                     <field name="target_date" />
@@ -49,7 +49,7 @@
             <field name="inherit_id" ref="view_academy_public_tendering_process_tree" />
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='hiring_type_id']" position="replace" />
-                <xpath expr="//field[@name='public_tendering_public_offer_id']" position="replace" />
+                <xpath expr="//field[@name='public_offer_id']" position="replace" />
             </field>
         </record>
 
@@ -67,23 +67,25 @@
                         <div class="oe_button_box" name="button_box"/>
                         <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
 
-                        <div class="d-flex flex-row justify-content-between">
-                            <div class="oe_title mr-3">
-                                <field name="active" invisible="1"/>
-                                <label for="name" class="oe_edit_only" />
-                                <h1>
-                                    <field name="name" class="oe_field_name"
-                                        placeholder="Enter new name" />
-                                </h1>
+                        <div class="row academy-tests-test-data">
+                            <div class="col-10">
+                                <div class="oe_title">
+                                    <field name="active" invisible="1"/>
+                                    <label for="name" class="oe_edit_only" />
+                                    <h1>
+                                        <field name="name" class="oe_field_name"
+                                            placeholder="Enter new name" />
+                                    </h1>
+                                </div>
                             </div>
-                            <div>
+                            <div class="col-2">
                                 <field name="image_1920" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}'/>
                             </div>
-                        </div>
+                        </div><!-- row -->
 
                         <group col="2" string="Administration">
                             <group col="2">
-                                <field name="public_tendering_public_offer_id"
+                                <field name="public_offer_id"
                                     readonly="context.get('default_public_tendering_public_offer_id', False)"/>
                                 <field name="announcement" />
                             </group>
@@ -128,9 +130,12 @@
                                               'default_academy_public_tendering_process_id': id}"
                                     widget="one2many" />
                             </page>
-                            <page string="Description" class="oe_page_description" accesskey="D">
-                                <field name="description" class="oe_field_description"
-                                    placeholder="Enter new description" />
+                            <page id="setup" string="Setup" class="oe_page_setup" accesskey="S">
+                                <group col="4">
+                                    <field name="description" class="oe_field_description"
+                                        placeholder="Enter new description" colspan="4" />
+                                    <field name="owner_id" class="oe_field_owner_id" />
+                                </group>
                             </page>
                             <page string="Attachments" class="oe_page_attachments" accesskey="A">
                                 <field name="ir_attachment_ids" class="oe_field_ir_atachment_ids" widget="one2many"
@@ -249,7 +254,7 @@
                     <field name="name" />
                     <field name="state_id" />
 
-                    <field name="public_tendering_public_offer_id" />
+                    <field name="public_offer_id" />
                     <field name="target_date" />
 
                     <field name="hiring_type_id" />
@@ -263,7 +268,7 @@
                     <group expand="0" name="group_by" string="Group By">
                         <filter name="group_by_state_id" string="State" context="{'group_by': 'state_id'}" />
 
-                        <filter name="group_by_public_tendering_public_offer_id" string="Administration" domain="[]" context="{'group_by' : 'public_tendering_public_offer_id'}" />
+                        <filter name="group_by_public_tendering_public_offer_id" string="Administration" domain="[]" context="{'group_by' : 'public_offer_id'}" />
                         <filter name="group_by_target_date" string="Due date" domain="[]" context="{'group_by': 'target_date'}" />
 
                         <filter name="group_by_employment_group_id" string="Group" context="{'group_by': 'employment_group_id'}" />
@@ -297,10 +302,10 @@
 
         <!-- Main menu for model.name -->
         <record id="menu_academy_public_tendering_process" model="ir.ui.menu" >
-            <field name="name">Tendering processes</field>
+            <field name="name">Public examination</field>
             <field name="sequence" eval="10" />
             <field name="action" ref="action_academy_public_tendering_act_window" />
-            <field name="parent_id" ref="menu_academy_public_tendering" />
+            <field name="parent_id" ref="menu_tendering_monitoring" />
             <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical')), (4, ref('academy_base.academy_group_teacher'))]" />
         </record>
 

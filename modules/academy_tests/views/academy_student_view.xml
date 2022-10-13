@@ -13,18 +13,48 @@
             <field name="active" eval="True" />
             <field name="inherit_id" ref="academy_base.view_academy_student_form" />
             <field name="arch" type="xml">
-                <xpath expr="//div[@name='button_box']" position="inside">
+                <xpath expr="//div[@name='button_box']/*[1]" position="before">
                     <button name="view_test_attempts" type="object"
                         class="oe_stat_button oe_read_only" icon="fa-line-chart"
                         help="View related test attempts">
                         <field name="attempt_count" widget="statinfo" string="Attempts" />
                     </button>
+                    <button name="view_test_assignments" type="object"
+                        class="oe_stat_button oe_read_only" icon="fa-list-ol"
+                        help="View related tests">
+                        <field name="assignment_count" widget="statinfo" string="Tests" />
+                    </button>
                 </xpath>
-                <xpath expr="//notebook" position="inside">
-                    <page string="Tests" class="oe_page_tests" accesskey="T">
-                        <field name="available_test_ids"
-                               class="oe_field_available_test_ids" />
-                    </page>
+            </field>
+        </record>
+
+        <record id="view_academy_student_kanban" model="ir.ui.view">
+            <field name="name">view.academy.student.kanban</field>
+            <field name="model">academy.student</field>
+            <field name="type">kanban</field>
+            <field name="mode">extension</field>
+            <field name="priority" eval="16" />
+            <field name="inherit_id" ref="academy_base.view_academy_student_kanban" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <xpath expr="//kanban/*[1]" position="before">
+                    <field name="assignment_count" invisible="1" />
+                </xpath>
+                <xpath expr="//div[@name='kanban-box-toolbar']/*[1]" position="after">
+                    <div class="btn-group mr-1" role="group" aria-label="Attempts">
+                        <t t-if="record.assignment_count.raw_value > 0">
+                        <button name="view_test_attempts" type="object"
+                            class="btn btn-sm btn-light oe_read_only" title="View full list of the user test attempts">
+                            <i class="fa fa-line-chart d-inline-block mr-1" aria-hidden="false"></i>
+                            Attempts
+                        </button>
+                        <button name="view_test_assignments" type="object"
+                            class="btn btn-sm btn-light oe_read_only" title="View test assignments for this user">
+                            <i class="fa fa-list-ol d-inline-block mr-1" aria-hidden="false"></i>
+                            Assignments
+                        </button>
+                        </t>
+                    </div>
                 </xpath>
             </field>
         </record>

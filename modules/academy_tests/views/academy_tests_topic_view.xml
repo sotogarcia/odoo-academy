@@ -65,10 +65,6 @@
                         <group col="4">
                             <field name="category_count" class="oe_field_category_count" string="Categories" />
                             <field name="question_count" class="oe_field_question_count" string="Questions" />
-                            <field name="provisional" class="oe_field_provisional" />
-                            <separator colspan="2" />
-                            <field name="description" class="oe_field_description"
-                                placeholder="Enter new description" colspan="4" />
                         </group>
 
                         <notebook>
@@ -80,7 +76,15 @@
                                 <field name="topic_version_ids" class="oe_field_topic_version_ids" string="Versions"
                                     context="{'tree_view_ref': 'academy_tests.view_academy_tests_topic_version_x2many_tree',
                                     'default_topic_id': id}" />
-                                </page>
+                            </page>
+                            <page id="setup" string="Setup" class="oe_page_setup" accesskey="S">
+                                <group col="4">
+                                    <field name="description" class="oe_field_description"
+                                        placeholder="Enter new description" colspan="4" />
+                                    <field name="owner_id" class="oe_field_owner_id" />
+                                    <field name="provisional" class="oe_field_provisional" />
+                                </group>
+                            </page>
                         </notebook>
                     </sheet>
                     <div class="oe_chatter">
@@ -136,6 +140,15 @@
 
         <!-- Main menu for model.name -->
         <record id="menu_topics" model="ir.ui.menu" >
+            <field name="name">Topics</field>
+            <field name="sequence" eval="15" />
+            <field name="action" ref="action_topics_act_window" />
+            <field name="parent_id" ref="menu_test_advanced" />
+            <field name="groups_id" eval="[(4, ref('academy_base.academy_group_teacher')), (4, ref('academy_base.academy_group_technical'))]" />
+        </record>
+
+        <!-- Main menu for model.name -->
+        <record id="menu_topics_in_settings" model="ir.ui.menu" >
             <field name="name">Topics</field>
             <field name="sequence" eval="15" />
             <field name="action" ref="action_topics_act_window" />

@@ -8,6 +8,8 @@ from odoo import models, fields
 from odoo.tools import drop_view_if_exists
 from .utils.view_academy_statistics_student_question_readonly import \
     ACADEMY_STATISTICS_STUDENT_QUESTION_READONLY_MODEL
+from .utils.subquery_academy_tests_attempt_sanitized_answer import \
+    SUBQUERY_ACADEMY_TESTS_ATTEMPT_SANITIZED_ANSWER
 
 from logging import getLogger
 
@@ -292,14 +294,18 @@ class AcademyStatisticsStudentQuestionReadonly(models.Model):
             sql = BASE_SQL.format(table=self._table, action=action)
             self.env.cr.execute(sql)
 
+    @staticmethod
+    def _build_view_sql():
+        outer = ACADEMY_STATISTICS_STUDENT_QUESTION_READONLY_MODEL
+        inner = SUBQUERY_ACADEMY_TESTS_ATTEMPT_SANITIZED_ANSWER
+        return outer.format(inner)
+
     def init(self):
+        sentence = 'CREATE or REPLACE VIEW {} as ( {} )'
+
         drop_view_if_exists(self.env.cr, self._table)
 
-        self.env.cr.execute('''CREATE or REPLACE VIEW {} as (
-            {}
-        )'''.format(
-            self._table,
-            ACADEMY_STATISTICS_STUDENT_QUESTION_READONLY_MODEL)
-        )
+        query = self._build_view_sql()
+        self.env.cr.execute(sentence.format(self._table, query))
 
         self.prevent_actions()

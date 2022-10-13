@@ -257,21 +257,22 @@ class AcademyTestsRandomLineCategorization(models.Model):
         """
 
         domains = []
-        operator = '!=' if exclude else '='
+        op_id = '!=' if exclude else '='
+        op_ids = 'not in' if exclude else 'in'
 
         for record in self:
 
             line = []
 
-            line.append([('topic_id', operator, record.topic_id.id)])
+            line.append([('topic_id', op_id, record.topic_id.id)])
 
             if record.topic_version_ids:
                 ids = record.topic_version_ids.mapped('id')
-                line.append([(VERSION_IDS, operator, ids)])
+                line.append([(VERSION_IDS, op_ids, ids)])
 
             if record.category_ids:
                 ids = record.category_ids.mapped('id')
-                line.append([('category_ids', operator, ids)])
+                line.append([('category_ids', op_ids, ids)])
 
             line = OR(line) if exclude else AND(line)
 
@@ -279,13 +280,3 @@ class AcademyTestsRandomLineCategorization(models.Model):
 
         return AND(domains) if exclude else OR(domains)
 
-    # def get_matches(self, exclude):
-    #     """ Search for questions that match the criteria on all lines in the
-    #     recordset at the same time
-    #     """
-    #     domain = self.get_domain(exclude)
-
-    #     message = 'Random wizard: Applying categorization {}'
-    #     _logger.debug(message.format(domain))
-
-    #     return self.env['academy.tests.question'].search(domain)

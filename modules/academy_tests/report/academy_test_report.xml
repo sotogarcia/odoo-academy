@@ -70,7 +70,7 @@
                         </t>
 
                         <!-- IMAGE-ATTACHMENTS:: BEGIN -->
-                        <t t-set="display_image_ids" t-value="question_id.ir_attachment_image_ids" />
+                        <t t-set="display_image_ids" t-value="question_id.ir_attachment_image_ids.sorted(key=lambda x: x.name)" />
 
                         <t t-if="o.repeat_images or not previous_attachment_ids or previous_attachment_ids != question_id.ir_attachment_ids">
 
@@ -251,7 +251,7 @@
             <field name="attachment">(object.name+'.html')</field>
             <field name="paperformat_id" ref="base.paperformat_euro" />
             <field name="help">Show a test preview as Web page</field>
-            <field name="binding_model_id" ref="academy_tests.model_academy_tests_test" />
+            <field name="binding_model_id" />
         </record>
 
 

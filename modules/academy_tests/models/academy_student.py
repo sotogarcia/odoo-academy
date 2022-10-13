@@ -8,8 +8,6 @@ from odoo import models, fields, api
 from odoo.tools.translate import _
 from odoo.osv.expression import FALSE_DOMAIN
 from .utils.sql_inverse_searches import SEARCH_STUDENT_ATTEMPT_COUNT
-import odoo.addons.academy_base.models.utils.custom_model_fields as custom
-from .utils.sql_m2m_through_view import ACADEMY_STUDENT_AVAILABLE_TESTS
 
 from logging import getLogger
 
@@ -21,39 +19,6 @@ class AcademyStudent(models.Model):
     """
 
     _inherit = 'academy.student'
-
-    available_test_ids = custom.Many2manyThroughView(
-        string='Student available tests',
-        required=False,
-        readonly=False,
-        index=False,
-        default=None,
-        help='Choose the tests will be available to this student',
-        comodel_name='academy.tests.test',
-        relation='academy_tests_test_available_in_student_rel',
-        column1='student_id',
-        column2='test_id',
-        domain=[],
-        context={},
-        limit=None,
-        sql=ACADEMY_STUDENT_AVAILABLE_TESTS
-    )
-
-    question_statistics_ids = fields.One2many(
-        string='Question statistics',
-        required=False,
-        readonly=True,
-        index=False,
-        default=None,
-        comodel_name='academy.statistics.student.question.readonly',
-        inverse_name='student_id',
-        domain=[],
-        context={},
-        auto_join=False,
-        limit=None,
-        help=('Show the statistics related with the questions answered by the '
-              'student')
-    )
 
     attempt_ids = fields.One2many(
         string='Attempts',
@@ -76,6 +41,7 @@ class AcademyStudent(models.Model):
         readonly=True,
         index=False,
         default=0,
+        store=False,
         help='Show number of test attempts',
         compute='_compute_attempt_count',
         search='_search_attempt_count'
@@ -100,24 +66,59 @@ class AcademyStudent(models.Model):
 
         return domain
 
+    assignment_count = fields.Integer(
+        string='Nº assignments',
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        store=False,
+        help='Show the number or test assignments for this training',
+        compute='_compute_assignment_count'
+    )
+
+    def _compute_assignment_count(self):
+        assignment_obj = self.env['academy.tests.test.training.assignment']
+
+        for record in self:
+            domain = [('student_ids', '=', record.id)]
+            result = assignment_obj.search_count(domain)
+            record.assignment_count = result
+
     def view_test_attempts(self):
         self.ensure_one()
 
-        form_xid = 'academy_tests.view_academy_tests_attempt_form'
-        form_id = self.env.ref(form_xid).id
-
-        tree_xid = 'academy_tests.view_academy_tests_attempt_student_tree'
-        tree_id = self.env.ref(tree_xid).id
+        irf = self.env.ref('academy_tests.ir_filter_student_attempts')
 
         return {
             'name': _('Attempts of «{}»').format(self.name),
-            'view_mode': 'tree,form',
-            'views': [(tree_id, 'tree'), (form_id, 'form')],
-            'view_type': 'form',
-            'res_model': 'academy.tests.attempt',
+            'view_mode': 'tree,pivot,form',
+            'view_mode': 'pivot,tree,form,graph',
+            'res_model': 'academy.tests.attempt.resume.helper',
             'type': 'ir.actions.act_window',
             'nodestroy': True,
             'target': 'current',
             'domain': [('student_id', '=', self.id)],
-            'context': {'default_student_id': self.id}
+            'context': irf.context
+        }
+
+    def view_test_assignments(self):
+        self.ensure_one()
+
+        path = 'enrolment_ids.available_assignment_ids.id'
+        assignment_ids = self.mapped(path)
+
+        return {
+            'model': 'ir.actions.act_window',
+            'type': 'ir.actions.act_window',
+            'name': _('Test assignments'),
+            'res_model': 'academy.tests.test.training.assignment',
+            'target': 'current',
+            'view_mode': 'kanban,tree,form',
+            'domain': [('id', 'in', assignment_ids)],
+            'context': {
+                'name_get': 'training',
+                'search_default_my_assignments': 1,
+                'create': False
+            },
         }

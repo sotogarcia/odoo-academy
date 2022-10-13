@@ -20,6 +20,27 @@
             </field>
         </record>
 
+        <!-- Form view for "academy.training.action.enrolment" -->
+        <record id="view_academy_training_action_enrolment_with_process_kanban" model="ir.ui.view">
+            <field name="name">view.academy.training.action.enrolment.with.process.kanban</field>
+            <field name="model">academy.training.action.enrolment</field>
+            <field name="type">kanban</field>
+            <field name="mode">extension</field>
+            <field name="priority" eval="16" />
+            <field name="inherit_id" ref="academy_base.view_academy_training_action_enrolment_kanban" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <xpath expr="//kanban/field[@name='training_action_id']" position="after">
+                    <field name="public_tendering_process_id" class="oe_field_public_tendering_id" />
+                </xpath>
+                <xpath expr="//ul[@id='enrolment-details']/*[1]" position="before">
+                    <t t-if="record.public_tendering_process_id.raw_value">
+                    <li class="o_ellipsis"><strong>Process:&#160;</strong><field name="public_tendering_process_id" /></li>
+                    </t>
+                </xpath>
+            </field>
+        </record>
+
         <record id="view_academy_training_action_enrolment_search" model="ir.ui.view">
             <field name="name">view.academy.training.action.enrolment.search</field>
             <field name="model">academy.training.action.enrolment</field>
@@ -30,6 +51,21 @@
             <field name="inherit_id" ref="academy_base.view_academy_training_action_enrolment_search" />
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='training_action_id']" position="before">
+                    <field name="public_tendering_process_id" />
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_academy_training_action_enrolment_tree" model="ir.ui.view">
+            <field name="name">view.academy.training.action.enrolment.tree</field>
+            <field name="model">academy.training.action.enrolment</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="academy_base.view_academy_training_action_enrolment_tree" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='training_action_id']" position="after">
                     <field name="public_tendering_process_id" />
                 </xpath>
             </field>

@@ -4,13 +4,14 @@
 This module extends the academy.training.activity Odoo model
 """
 
-from odoo import models, fields
-
+from odoo import models, fields, api
 import odoo.addons.academy_base.models.utils.custom_model_fields as custom
-from .utils.sql_m2m_through_view import ACADEMY_ACTIVITY_AVAILABLE_TESTS, \
-    PARTIAL_ACADEMY_TESTS_QUESTION_TRAINING_MODULE, \
+
+from .utils.sql_m2m_through_view import \
+    PARTIAL_ACADEMY_TESTS_QUESTION_TRAINING_MODULE
+from .utils.sql_m2m_through_view import \
     ACADEMY_TESTS_QUESTION_TRAINING_ACTIVITY_REL
-from odoo.exceptions import UserError
+
 from odoo.tools.translate import _
 from logging import getLogger
 
@@ -26,54 +27,98 @@ class AcademyTrainingActivity(models.Model):
 
     _inherit = 'academy.training.activity'
 
-    test_ids = fields.Many2many(
-        string='Activity tests',
+    available_time = fields.Float(
+        string='Default time',
         required=False,
         readonly=False,
         index=False,
-        default=None,
-        help='Choose the tests will be available in this training activity',
-        comodel_name='academy.tests.test',
-        relation='academy_tests_test_training_activity_rel',
-        column1='training_activity_id',
-        column2='test_id',
-        domain=[],
-        context={},
-        limit=None
+        default=0.5,
+        digits=(16, 2),
+        help=('Default available time to complete exercises. This value will '
+              'be used to create new templates')
     )
 
-    available_test_ids = custom.Many2manyThroughView(
-        string='Activity available tests',
+    correction_scale_id = fields.Many2one(
+        string='Default correction scale',
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='Choose the tests will be available in this training activity',
-        comodel_name='academy.tests.test',
-        relation='academy_tests_test_available_in_training_activity_rel',
-        column1='training_activity_id',
-        column2='test_id',
+        comodel_name='academy.tests.correction.scale',
         domain=[],
         context={},
+        ondelete='cascade',
+        auto_join=False,
+        help=('Choose the default correction scale will be used on the new ',
+              'created templates')
+    )
+
+    assignment_ids = fields.One2many(
+        string='Test assignments',
+        required=False,
+        readonly=False,
+        index=True,
+        default=None,
+        comodel_name='academy.tests.test.training.assignment',
+        inverse_name='training_activity_id',
+        domain=[],
+        context={},
+        auto_join=False,
         limit=None,
-        sql=ACADEMY_ACTIVITY_AVAILABLE_TESTS
+        help=('List of test assignments that have been created for this '
+              'training action enrollment')
     )
 
-    template_link_ids = fields.Many2many(
-        string='Random templates',
+    assignment_count = fields.Integer(
+        string='Nº assignments',
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        store=False,
+        compute='_compute_assignment_count',
+        help=('Show the number of test assignments that have been created for'
+              'this training action enrollment')
+    )
+
+    @api.depends('assignment_ids')
+    def _compute_assignment_count(self):
+        for record in self:
+            record.assignment_count = \
+                len(record.assignment_ids)
+
+    template_ids = fields.One2many(
+        string='Templates',
         required=False,
         readonly=False,
-        index=False,
+        index=True,
         default=None,
-        help='Choose random template',
         comodel_name='academy.tests.random.template',
-        relation='academy_tests_random_template_training_activity_rel',
-        column1='training_activity_id',
-        column2='random_template_id',
+        inverse_name='training_activity_id',
         domain=[],
         context={},
-        limit=None
+        auto_join=False,
+        limit=None,
+        help=('List of test templates available to be used in this training '
+              'action enrollment')
     )
+
+    template_count = fields.Integer(
+        string='Nº templates',
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        store=False,
+        compute='_compute_template_count',
+        help=('Show the number of test templates available to be used in this '
+              'training action enrollment')
+    )
+
+    @api.depends('template_ids')
+    def _compute_template_count(self):
+        for record in self:
+            record.template_count = len(record.template_ids)
 
     available_question_ids = custom.Many2manyThroughView(
         string='Available questions',
@@ -103,23 +148,3 @@ class AcademyTrainingActivity(models.Model):
 
         if not no_open and template:
             return module_obj._template_act_window(template)
-
-    def view_test_attempts(self):
-        self.ensure_one()
-        test_ids = self.mapped('test_ids.id')
-
-        if not test_ids:
-            msg = _('There are no tests associated with this training '
-                    'activity')
-            raise UserError(msg)
-
-        return {
-            'model': 'ir.actions.act_window',
-            'type': 'ir.actions.act_window',
-            'name': _('Test attempts'),
-            'res_model': 'academy.tests.attempt',
-            'target': 'current',
-            'view_mode': 'tree',
-            'domain': [('test_id', 'in', test_ids)],
-            'context': {}
-        }

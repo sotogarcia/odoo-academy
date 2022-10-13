@@ -29,15 +29,12 @@ from .utils.sql_operations import ACADEMY_TESTS_SHUFFLE
 from .utils.sql_operations import ACADEMY_TESTS_ARRANGE_BLOCKS
 from .utils.sql_inverse_searches import QUESTION_COUNT_SEARCH
 from .utils.sql_inverse_searches import SEARCH_TEST_ATTEMPT_COUNT
-from .utils.sql_m2m_through_view import ACADEMY_ENROLMENT_AVAILABLE_TESTS
 from .utils.sql_m2m_through_view import ACADEMY_TESTS_TEST_TOPIC_IDS_SQL
 from .utils.sql_m2m_through_view import ACADEMY_TESTS_TEST_TEST_BLOCK_REL
 from .utils.libuseful import prepare_text, fix_established, is_numeric, \
     eval_domain
 
 _logger = getLogger(__name__)
-
-LONG_NAME = 'academy_tests_test_available_in_training_action_enrolment_rel'
 
 
 # pylint: disable=locally-disabled, R0903, W0212
@@ -106,10 +103,16 @@ class AcademyTestsTest(models.Model):
         required=False,
         readonly=False,
         index=False,
-        default=None,
+        default=lambda self: self.default_preamble(),
         help='What it is said before beginning to test',
         translate=True
     )
+
+    @api.model
+    def default_preamble(self):
+        return _('This exercise poses different questions, presenting a set '
+                 'of alternative answers for each of them, among which you '
+                 'must select the only correct one.')
 
     question_ids = fields.One2many(
         string='Questions',
@@ -141,6 +144,38 @@ class AcademyTestsTest(models.Model):
         limit=None,
     )
 
+    assignment_ids = fields.One2many(
+        string='Training assignments',
+        required=False,
+        readonly=False,
+        index=True,
+        default=None,
+        help='False',
+        comodel_name='academy.tests.test.training.assignment',
+        inverse_name='test_id',
+        domain=[],
+        context={},
+        auto_join=False,
+        limit=None
+    )
+
+    assignment_count = fields.Integer(
+        string='Nº assignments',
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        help='Show the number or training assignments for this test',
+        store=False,
+        compute='_compute_assignment_count'
+    )
+
+    @api.depends('assignment_ids')
+    def _compute_assignment_count(self):
+        for record in self:
+            record.assignment_count = \
+                len(record.assignment_ids)
+
     random_template_id = fields.Many2one(
         string='Template',
         required=False,
@@ -157,10 +192,10 @@ class AcademyTestsTest(models.Model):
 
     test_kind_id = fields.Many2one(
         string='Kind of test',
-        required=False,
+        required=True,
         readonly=False,
         index=False,
-        default=None,
+        default=lambda self: self.default_test_kind_id(),
         help='Choose the kind for this test',
         comodel_name='academy.tests.test.kind',
         domain=[],
@@ -168,6 +203,9 @@ class AcademyTestsTest(models.Model):
         ondelete='cascade',
         auto_join=False
     )
+
+    def default_test_kind_id(self):
+        return self.env.ref('academy_tests.academy_tests_test_kind_common')
 
     first_use_id = fields.Many2one(
         string='First use',
@@ -181,149 +219,6 @@ class AcademyTestsTest(models.Model):
         context={},
         ondelete='cascade',
         auto_join=False
-    )
-
-    training_action_ids = fields.Many2many(
-        string='Training actions',
-        required=False,
-        readonly=False,
-        index=False,
-        default=None,
-        help=('Choose the training actions in which this test will ',
-              'be available'),
-        comodel_name='academy.training.action',
-        relation='academy_tests_test_training_action_rel',
-        column1='test_id',
-        column2='training_action_id',
-        domain=[],
-        context={},
-        limit=None
-    )
-
-    training_activity_ids = fields.Many2many(
-        string='Training activities',
-        required=False,
-        readonly=False,
-        index=False,
-        default=None,
-        help=('Choose the training activities in which this test will ',
-              'be available'),
-        comodel_name='academy.training.activity',
-        relation='academy_tests_test_training_activity_rel',
-        column1='test_id',
-        column2='training_activity_id',
-        domain=[],
-        context={},
-        limit=None
-    )
-
-    training_module_ids = fields.Many2many(
-        string='Training modules',
-        required=False,
-        readonly=False,
-        index=False,
-        default=None,
-        help=('Choose the training modules in which this test will ',
-              'be available'),
-        comodel_name='academy.training.module',
-        relation='academy_tests_test_training_module_rel',
-        column1='test_id',
-        column2='training_module_id',
-        domain=[('training_module_id', '=', False)],
-        context={},
-        limit=None
-    )
-
-    competency_unit_ids = fields.Many2many(
-        string='Competency units',
-        required=False,
-        readonly=False,
-        index=False,
-        default=None,
-        help=('Choose the competency units in which this test will ',
-              'be available'),
-        comodel_name='academy.competency.unit',
-        relation='academy_tests_test_competency_unit_rel',
-        column1='test_id',
-        column2='competency_unit_id',
-        domain=[],
-        context={},
-        limit=None
-    )
-
-    lesson_ids = fields.Many2many(
-        string='Lessons',
-        required=False,
-        readonly=False,
-        index=False,
-        default=None,
-        help='Choose the lessons in which this test will be available',
-        comodel_name='academy.training.lesson',
-        relation='academy_tests_test_training_lesson_rel',
-        column1='test_id',
-        column2='lesson_id',
-        domain=[],
-        context={},
-        limit=None
-    )
-
-    time_by = fields.Selection(
-        string='Time by',
-        required=False,
-        readonly=False,
-        index=False,
-        default='test',
-        help=False,
-        selection=[('test', 'Test'), ('question', 'Question')]
-    )
-
-    available_time = fields.Float(
-        string='Time',
-        required=False,
-        readonly=False,
-        index=False,
-        default=0.5,
-        digits=(16, 2),
-        help='Available time to complete the exercise'
-    )
-
-    lock_time = fields.Boolean(
-        string='Lock time',
-        required=False,
-        readonly=False,
-        index=False,
-        default=True,
-        help=('Check to not allow the user to continue with ',
-              'the test once the time has passed')
-    )
-
-    correction_scale_id = fields.Many2one(
-        string='Correction scale',
-        required=False,
-        readonly=False,
-        index=False,
-        default=None,
-        help='Choose the scale of correction',
-        comodel_name='academy.tests.correction.scale',
-        domain=[],
-        context={},
-        ondelete='cascade',
-        auto_join=False
-    )
-
-    available_in = fields.One2many(
-        string='Available in',
-        required=False,
-        readonly=True,
-        index=False,
-        default=None,
-        help='This test is directly related to',
-        comodel_name='academy.tests.test.availability',
-        inverse_name='test_id',
-        domain=[],
-        context={},
-        auto_join=False,
-        limit=None
     )
 
     authorship = fields.Boolean(
@@ -413,6 +308,7 @@ class AcademyTestsTest(models.Model):
         readonly=True,
         index=False,
         default=0,
+        store=False,
         help='Show number of test attempts',
         compute='_compute_attempt_count',
         search='_search_attempt_count'
@@ -456,10 +352,10 @@ class AcademyTestsTest(models.Model):
         readonly=False,
         index=False,
         default=0,
-        help='Number of questions in test',
+        store=False,
+        help='Show the number of questions in test',
         compute='_compute_question_count',
-        search='_search_question_count',
-        store=False
+        search='_search_question_count'
     )
 
     @api.depends('question_ids')
@@ -491,7 +387,7 @@ class AcademyTestsTest(models.Model):
         readonly=True,
         index=False,
         default=None,
-        help=False,
+        help='Topics from all the questions in the test',
         comodel_name='academy.tests.topic',
         relation='academy_tests_test_topic_rel',
         column1='test_id',
@@ -508,6 +404,7 @@ class AcademyTestsTest(models.Model):
         readonly=True,
         index=False,
         default=0,
+        store=False,
         help='Display the number of topics related with test',
         compute=lambda self: self._compute_topic_count()
     )
@@ -555,23 +452,6 @@ class AcademyTestsTest(models.Model):
 
                 topic_obj = self.env['academy.tests.topic']
                 record.topic_id = topic_obj.browse(topic_id)
-
-    available_in_enrolment_ids = custom.Many2manyThroughView(
-        string='Enrolments',
-        required=False,
-        readonly=False,
-        index=False,
-        default=None,
-        help='Choose the enrolments in which this test will be available',
-        comodel_name='academy.training.action.enrolment',
-        relation=LONG_NAME,
-        column1='test_id',
-        column2='enrolment_id',
-        domain=[],
-        context={},
-        limit=None,
-        sql=ACADEMY_ENROLMENT_AVAILABLE_TESTS
-    )
 
     lang = fields.Char(
         string='Language',
@@ -675,7 +555,7 @@ class AcademyTestsTest(models.Model):
         link_ids = self.mapped('question_ids.id')
 
         return {
-            'name': self.name,
+            'name': _('Questions links'),
             'view_mode': 'kanban,tree,form,pivot',
             'res_model': 'academy.tests.test.question.rel',
             'type': 'ir.actions.act_window',
@@ -769,6 +649,7 @@ class AcademyTestsTest(models.Model):
     def shuffle(self):
         dep_msg = _('This test has dependent questions, '
                     'it must be sorted manually')
+
         for record in self:
 
             if not record.question_ids:
@@ -975,8 +856,6 @@ class AcademyTestsTest(models.Model):
 
     def request_for_questions(self):
 
-        print(self)
-
         self.ensure_one()
 
         rset_domain = [('test_id', '=', self.id)]
@@ -1012,6 +891,25 @@ class AcademyTestsTest(models.Model):
             'target': 'self',
         }
 
+    def download_as_pdf(self):
+        self.ensure_one()
+
+        report_xid = 'academy_tests.action_report_full_printable_test'
+        report_act = self.env.ref(report_xid)
+        doc_ids = [self.id]
+
+        return report_act.report_action(docids=doc_ids, data={}, config=False)
+
+    def redirect_to_preview(self):
+        self.ensure_one()
+
+        relative_url = '/academy_tests/test/preview?test_id={}'
+        return {
+            'type': 'ir.actions.act_url',
+            'url': relative_url.format(self.id),
+            'target': 'new',
+        }
+
     def compute_block_classes(self, block):
         self.ensure_one()
 
@@ -1026,27 +924,49 @@ class AcademyTestsTest(models.Model):
         if block or self.block_starts_page:
             classes.extend(['invisible', 'm-0', 'border-0'])
 
-        print(classes)
-
         return ' '.join(classes)
 
-    def view_test_attempts(self):
+    def view_training_assignments(self):
         self.ensure_one()
-
-        form_xid = 'academy_tests.view_academy_tests_attempt_form'
-        form_id = self.env.ref(form_xid).id
-
-        tree_xid = 'academy_tests.view_academy_tests_attempt_test_tree'
-        tree_id = self.env.ref(tree_xid).id
 
         return {
             'model': 'ir.actions.act_window',
             'type': 'ir.actions.act_window',
-            'name': _('Test attempts'),
-            'res_model': 'academy.tests.attempt',
+            'name': _('Training assignments'),
+            'res_model': 'academy.tests.test.training.assignment',
             'target': 'current',
-            'view_mode': 'tree',
-            'views': [(tree_id, 'tree'), (form_id, 'form')],
+            'view_mode': 'kanban,tree,form',
             'domain': [('test_id', '=', self.id)],
-            'context': {}
+            'context': {
+                'name_get': 'training',
+                'default_test_id': self.id
+            }
+        }
+
+    def new_from_template(self, gui=True):
+        self.ensure_one()
+
+        if not self.random_template_id:
+            msg = _('This test was not created from a template')
+            raise UserError(msg)
+
+        result = self.random_template_id.new_test(gui=gui)
+        if isinstance(result, dict) and 'target' in result.keys():
+            result['target'] = 'main'
+
+        return result
+
+    def new_assignment_to_training(self):
+        self.ensure_one()
+
+        return {
+            'model': 'ir.actions.act_window',
+            'type': 'ir.actions.act_window',
+            'name': _('New assignment'),
+            'res_model': 'academy.tests.test.training.assignment',
+            'target': 'new',
+            'view_mode': 'form',
+            'context': {
+                'default_test_id': self.id
+            }
         }

@@ -10,7 +10,7 @@
 
         <record id="academy_application_scope_unemployed" model="academy.application.scope">
             <field name="name">Unemployed</field>
-            <field name="description">Training whose purpose is promote insertion or reintegration of unemployed into labor market</field>
+            <field name="description">Training whose purpose is promote insertion or reintegration of unemployed into labour market</field>
         </record>
 
         <record id="academy_application_scope_corporate" model="academy.application.scope">

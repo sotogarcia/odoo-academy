@@ -20,7 +20,9 @@ FIND_MOST_USED_QUESTION_FIELD_VALUE_FOR_SQL = '''
         FROM academy_tests_question as atq
         INNER JOIN academy_tests_topic AS atp
             ON atp."id" = atq.topic_id
-        WHERE owner_id = {owner} AND atq.active IS TRUE and atp.active IS TRUE
+        WHERE atq.owner_id = {owner}
+            AND atq.active IS TRUE
+            AND atp.active IS TRUE
         ORDER BY atq.write_date DESC
         LIMIT 3
     ) as sub
@@ -301,8 +303,19 @@ ACADEMY_QUESTION_ENSURE_CHECKSUMS = '''
                 ON atq."id" = ans.question_id
         GROUP BY
             atq."id"
-    ),
-    attachments AS (
+    ), versions AS (
+        SELECT
+            atq."id" AS question_id,
+            ARRAY_AGG (
+                rel."topic_version_id" ORDER BY rel."topic_version_id" ASC
+            ) :: INT [] AS version_ids
+        FROM
+            academy_tests_question AS atq
+            INNER JOIN academy_tests_question_topic_version_rel AS rel
+                ON rel."question_id" = atq."id"
+        GROUP BY
+            atq."id"
+    ), attachments AS (
         SELECT
             atq."id" AS question_id,
             ARRAY_AGG (
@@ -320,11 +333,14 @@ ACADEMY_QUESTION_ENSURE_CHECKSUMS = '''
             COALESCE(NULLIF( "preamble", '' ), 'Empty')::VARCHAR AS preamble,
             "name",
             answers,
+            COALESCE(version_ids, ARRAY[0]::INT[])::INT[] AS version_ids,
             COALESCE(attachment_ids, ARRAY[0]::INT[])::INT[] AS attachment_ids
         FROM
             academy_tests_question AS atq
             INNER JOIN answers AS ans
                 ON ans."question_id" = atq."id"
+            LEFT JOIN versions AS vers
+                ON vers."question_id" = atq."id"
             LEFT JOIN attachments AS att
                 ON att."question_id" = atq."id"
     ), computed_md5 AS (
@@ -334,6 +350,7 @@ ACADEMY_QUESTION_ENSURE_CHECKSUMS = '''
                 preamble || '; ' ||
                 "name" || '; ' ||
                 ARRAY_TO_STRING(answers::VARCHAR[], '; ')::VARCHAR || '; ' ||
+                ARRAY_TO_STRING(version_ids, '; ')::VARCHAR ||
                 ARRAY_TO_STRING(attachment_ids, '; ')::VARCHAR
             ))::VARCHAR AS md5
         FROM value_list

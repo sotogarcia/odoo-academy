@@ -63,9 +63,9 @@ class ResUsers(models.Model):
         readonly=True,
         index=False,
         default=0,
+        store=False,
         help='Show number of duplicate questions',
-        compute='_compute_duplicate_question_count',
-        store=False
+        compute='_compute_duplicate_question_count'
     )
 
     @api.depends('duplicate_question_ids')
@@ -80,22 +80,52 @@ class ResUsers(models.Model):
 
     @api.model
     def notify_uncategorized(self):
-        user_set = self.search([('uncategorized_questions_ids', '!=', False)])
+        msg = 'Sending mail to %s notifying uncategorized questions'
         mail_template = self.env.ref(UTPL)
+        common_domain = [('provisional', '=', True)]
 
-        for user_item in user_set:
+        category_set = self.env['academy.tests.category']
+        category_set = category_set.search(common_domain)
+        category_ids = category_set.mapped('id')
+
+        topic_set = self.env['academy.tests.topic']
+        topic_set = topic_set.search(common_domain)
+        topic_ids = topic_set.mapped('id')
+
+        question_domain = [
+            '|',
+            ('topic_id', 'in', topic_ids),
+            ('category_ids', 'in', category_ids)
+        ]
+        question_obj = self.env['academy.tests.question']
+        question_set = question_obj.search(question_domain)
+
+        manager_set = question_set.mapped('owner_id')
+
+        for user_item in manager_set:
+            _logger.info(msg, user_item.name)
             mail_template.send_mail(user_item.id)
 
     @api.model
     def notify_duplicated(self):
-        user_set = self.search([('duplicate_question_ids', '!=', False)])
+        msg = 'Sending mail to %s notifying  duplicate questions'
         mail_template = self.env.ref(DTPL)
+        question_obj = self.env['academy.tests.question']
 
-        for user_item in user_set:
+        question_obj.ensure_checksums()
+
+        domain = [('duplicated_ids', '!=', False)]
+        question_set = question_obj.search(domain)
+
+        manager_set = question_set.mapped('owner_id')
+
+        for user_item in manager_set.sorted('name'):
+            _logger.info(msg, user_item.name)
             mail_template.send_mail(user_item.id)
 
     @api.model
     def notify_impugnments(self):
+        msg = 'Sending mail to %s notifying impugnments'
 
         impugnment_domain = [('state', 'in', ['open', 'reply'])]
         impugnment_set = self.env['academy.tests.question.impugnment']
@@ -109,5 +139,6 @@ class ResUsers(models.Model):
         user_set = user_set.search(user_domain)
 
         mail_template = self.env.ref(ITPL)
-        for user_item in user_set:
+        for user_item in user_set.sorted('name'):
+            _logger.info(msg, user_item.name)
             mail_template.send_mail(user_item.id)

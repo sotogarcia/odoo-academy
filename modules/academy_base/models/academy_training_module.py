@@ -10,6 +10,7 @@ from odoo import models, fields, api
 from .utils.custom_model_fields import Many2manyThroughView
 from .utils.raw_sql import ACADEMY_TRAINING_MODULE_AVAILABLE_RESOURCE_REL, \
     ACADEMY_TRAINING_MODULE_USED_IN_TRAINING_ACTION_REL
+from odoo.tools.translate import _
 
 from logging import getLogger
 
@@ -25,7 +26,12 @@ class AcademyTrainingModule(models.Model):
     _name = 'academy.training.module'
     _description = u'Academy training module'
 
-    _inherit = ['image.mixin', 'mail.thread']
+    _inherit = [
+        'image.mixin',
+        'mail.thread',
+        'academy.abstract.training',
+        'academy.abstract.owner'
+    ]
 
     _rec_name = 'name'
     _order = 'name ASC'
@@ -91,6 +97,38 @@ class AcademyTrainingModule(models.Model):
         limit=None
     )
 
+    competency_unit_ids = fields.One2many(
+        string='Competency units',
+        required=False,
+        readonly=True,
+        index=True,
+        default=None,
+        help='List all competency units which use this training module',
+        comodel_name='academy.competency.unit',
+        inverse_name='training_module_id',
+        domain=[],
+        context={},
+        auto_join=False,
+        limit=None
+    )
+
+    tree_ids = Many2manyThroughView(
+        string='Module tree',
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help='List this module and all its training units',
+        comodel_name='academy.training.module',
+        relation='academy_training_module_tree_readonly',
+        column1='requested_module_id',
+        column2='responded_module_id',
+        domain=[],
+        context={},
+        limit=None
+        # sql= academy_training_module_tree_readonly model wil be used
+    )
+
     module_code = fields.Char(
         string='Code',
         required=False,
@@ -99,8 +137,7 @@ class AcademyTrainingModule(models.Model):
         default=None,
         help='Enter code for training module',
         size=30,
-        translate=True,
-        old_name='code'
+        translate=False,
     )
 
     ownhours = fields.Float(
@@ -172,6 +209,23 @@ class AcademyTrainingModule(models.Model):
         help='Choose the unit order'
     )
 
+    # This no needs an SQL statement
+    training_activity_ids = Many2manyThroughView(
+        string='Activities',
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help='Training activities in which module is used',
+        comodel_name='academy.training.activity',
+        relation='academy_competency_unit',
+        column1='training_module_id',
+        column2='training_activity_id',
+        domain=[],
+        context={},
+        limit=None
+    )
+
     # --------------------------- COMPUTED FIELDS -----------------------------
 
     hours = fields.Float(
@@ -205,7 +259,7 @@ class AcademyTrainingModule(models.Model):
         readonly=True,
         index=False,
         default=0,
-        help='Number of training units in module',
+        help='Show the number of training units in the training module',
         compute='_compute_training_unit_count',
     )
 
@@ -279,3 +333,17 @@ class AcademyTrainingModule(models.Model):
             result = model_or_id.id
 
         return result
+
+    def view_training_units(self):
+        return {
+            'model': 'ir.actions.act_window',
+            'type': 'ir.actions.act_window',
+            'name': _('Training units'),
+            'res_model': 'academy.training.module',
+            'target': 'current',
+            'view_mode': 'kanban,tree,form',
+            'domain': [('training_module_id', '=', self.id)],
+            'context': {
+                'default_training_module_id': self.id
+            }
+        }

@@ -62,7 +62,7 @@ class AcademyProfessionalSector(models.Model):
         default=None,
         help='Enter new code',
         size=8,
-        translate=True
+        translate=False
     )
 
     professional_field_id = fields.Many2one(

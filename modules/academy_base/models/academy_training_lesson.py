@@ -67,7 +67,7 @@ class AcademyTrainingLesson(models.Model):
         default=lambda self: self._default_code(),
         help='Enter new name',
         size=30,
-        translate=True,
+        translate=False,
     )
 
     description = fields.Text(

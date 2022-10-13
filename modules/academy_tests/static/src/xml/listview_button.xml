@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates id="template" xml:space="preserve">
+
+    <t t-extend="ListView.buttons">
+        <t t-jquery="div.o_list_buttons" t-operation="append">            
+            <t t-if="widget &amp;&amp; 'activateTemplateBaseButton' in widget &amp;&amp; widget.activateTemplateBaseButton()">
+                <button type="button" class="btn btn-secondary o_create_template_from_training">
+                    Template base
+                </button>      
+            </t>      
+        </t>
+    </t>
+
+    <t t-extend="KanbanView.buttons">
+        <t t-jquery="button" t-operation="after">
+            <t t-if="widget &amp;&amp; 'activateTemplateBaseButton' in widget &amp;&amp; widget.activateTemplateBaseButton()">
+                <button type="button" class="btn btn-secondary o_create_template_from_training">
+                    Template base
+                </button>
+            </t>
+        </t>
+    </t>
+
+</templates>

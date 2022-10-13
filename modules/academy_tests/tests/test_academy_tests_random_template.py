@@ -204,7 +204,7 @@ class TestAcademyTestsRandomTemplate(TransactionCase):
             template = self._get_template(lines=1)
 
             template.random_line_ids[0].quantity = len(question_set)
-            template.context_ref = cref
+            template.training_ref = cref
 
             if tests is not None:
                 template.random_line_ids[0].tests_by_context = tests
@@ -235,7 +235,7 @@ class TestAcademyTestsRandomTemplate(TransactionCase):
                 ctx).search([('topic_id', '=', qtopic.id)], limit=1)
 
             values = {
-                'name': datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f'),
+                'name': datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f'),
                 'topic_id': qtopic.id,
                 'topic_version_ids': [(4, qversion.id, 0)],
                 'category_ids': [(4, qcategory.id, 0)],
@@ -515,7 +515,7 @@ class TestAcademyTestsRandomTemplate(TransactionCase):
 
     def test_context(self):
         action = self.env.ref('academy_base.academy_training_action_demo')
-        test_set = action.mapped('available_test_ids')
+        test_set = action.mapped('available_assignment_ids.test_id')
         question_set = test_set.mapped('question_ids.question_id')
 
         # STEP 1: Tests in an action
@@ -540,7 +540,7 @@ class TestAcademyTestsRandomTemplate(TransactionCase):
 
         enrolment_xid = 'academy_base.academy_training_action_enrolment_demo'
         enrolment = self.env.ref(enrolment_xid)
-        test_set = action.mapped('available_test_ids')
+        test_set = action.mapped('available_assignment_ids.test_id')
         question_set = test_set.mapped('question_ids.question_id')
 
         # STEP 5: Tests in an enrolment

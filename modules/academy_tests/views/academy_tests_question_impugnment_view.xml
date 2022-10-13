@@ -63,24 +63,29 @@
                             </h1>
                         </div>
 
-                        <group col="2" string="Question">
-                            <field name="question_id" class="oe_field_question_id" options="{'no_create': True}" />
-                        </group>
-
                         <group col="4" string="Creation">
                             <field name="owner_id" class="oe_field_owner_id" />
                             <field name="student_id" class="oe_field_student_id" />
                         </group>
 
-                        <group string="Description">
-                            <field name="description" class="oe_field_create_uid"
-                                nolabel="1" />
+                        <separator string="Question" />
+                        <group col="2" class="oe_edit_only">
+                            <field name="question_id" class="oe_field_question_id"
+                                options="{'no_create': True}" />
+                        </group>
+                        <group col="2" class="oe_read_only">
+                            <field name="html" class="oe_field_html border py-2 px-3"
+                                colspan="2" nolabel="1" />
                         </group>
 
-                        <group string="Replies">
-                            <field name="reply_ids" class="oe_field_reply_ids"
-                                nolabel="1" />
-                        </group>
+                        <separator string="Description" />
+                        <field name="description" class="oe_field_create_uid"
+                            nolabel="1" />
+
+                        <separator string="Replies" />
+                        <field name="reply_ids" class="oe_field_reply_ids"
+                            nolabel="1" />
+
                     </sheet>
                     <div class="oe_chatter">
                         <field name="message_follower_ids" widget="mail_followers"/>
@@ -210,7 +215,7 @@
             <field name="name">Impugnments</field>
             <field name="sequence" eval="30" />
             <field name="action" ref="action_question_impugnment_act_window" />
-            <field name="parent_id" ref="academy_base.menu_academy_monitoring" />
+            <field name="parent_id" ref="academy_tests.menu_test_monitoring" />
             <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical')), (4, ref('academy_base.academy_group_teacher'))]"/>
         </record>
 

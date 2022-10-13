@@ -26,7 +26,6 @@ class AcademyPublicTenderingVacancyPositionCorps(models.Model):
     _rec_name = 'name'
     _order = 'name ASC'
 
-
     name = fields.Char(
         string='Name',
         required=True,

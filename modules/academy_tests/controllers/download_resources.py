@@ -30,6 +30,7 @@ from odoo.http import content_disposition
 import mimetypes
 import os
 from odoo.tools.translate import _
+from odoo.exceptions import AccessError
 
 _logger = logging.getLogger(__name__)
 
@@ -183,6 +184,27 @@ class TestAttachments(http.Controller):
             assert test_set, _('The requested test was not found')
 
         return test_set
+
+    @http.route('/academy_tests/test/preview', type='http', auth="public")
+    def test_preview(self, test_id, **kw):
+
+        try:
+            test_set = self._browse_for_test(test_id)
+            xid = 'academy_tests.action_report_preview_test'
+            report = request.env.ref(xid)
+            html = report.render_qweb_html(test_set.id)[0]
+        except AssertionError as ae:
+            return Response(str(ae), status=404)
+        except Exception as ex:
+            _logger.error(ex)
+            return Response('Unable to display preview. See logs.', status=404)
+
+        httpheaders = [
+            ('Content-Type', 'text/html; charset=utf-8'),
+            ('Content-Length', len(html))
+        ]
+
+        return request.make_response(html, headers=httpheaders)
 
     def _search_for_questions(self, question_str, verify=True):
         question_set = request.env['academy.tests.question']

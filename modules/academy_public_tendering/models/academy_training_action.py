@@ -19,7 +19,6 @@ from odoo import models, fields
 _logger = getLogger(__name__)
 
 
-
 # pylint: disable=locally-disabled, R0903
 class AcademyTrainingAction(models.Model):
     """ This model extends academy.training.action model from academy_base

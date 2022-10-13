@@ -24,7 +24,6 @@
             <field name="active" eval="True" />
             <field name="arch" type="xml">
                 <tree string="academy_training_action_enrolment_tree" create="1" delete="1" edit="1">
-                    <field name="display_name" />
                     <field name="student_id" />
                     <field name="training_action_id" />
                     <field name="register" />
@@ -48,7 +47,9 @@
                             <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
                         </div>
 
-                        <div class="oe_title" id="academy-academy-training-action-enrolment-title">
+                        <field name="training_activity_id" invisible="1" />
+
+                        <div class="w-100" id="academy-academy-training-action-enrolment-title">
                             <field name="active" invisible="1"/>
                             <label for="display_name" class="oe_edit_only" />
                             <h1>
@@ -59,7 +60,7 @@
                         <group col="2">
                             <field name="student_id" class="oe_field_student_id" />
                             <field name="training_action_id" class="oe_field_training_action_id"
-                                    invisible="context.get('training_action_id', False)" />
+                                   readonly="context.get('default_training_activity_id', False)" />
                         </group>
 
                         <group col="4">
@@ -67,42 +68,46 @@
                                 placeholder="Enter new date/time" />
                             <field name="deregister" class="oe_field_deregister"
                                 placeholder="Enter new date/time" />
+
+                            <separator colspan="4" string="Student" class="mt-4" />
+
+                            <field name="student_name" class="oe_field_student_name"
+                                placeholder="Enter new name" readonly="1" string="Name" />
+                            <field name="phone" class="oe_field_phone"
+                                placeholder="Enter new phone" readonly="1" />
+                            <field name="email" class="oe_field_email"
+                                placeholder="Enter new email address" readonly="1" />
+                            <field name="zip" class="oe_field_zip"
+                                placeholder="Enter new zip code" readonly="1" />
+
+                            <separator colspan="4" string="Training action" class="mt-4" />
+                            <field name="action_name" class="oe_field_action_name"
+                                placeholder="Enter new name" readonly="1" string="Training action" />
+                            <field name="action_code" class="oe_field_action_code"
+                                placeholder="Enter new code" readonly="1" />
+                            <field name="start" class="oe_field_start"
+                                placeholder="Enter new date/time" readonly="1" />
+                            <field name="end" class="oe_field_end"
+                                placeholder="Enter new date/time" readonly="1" />
                         </group>
 
                         <notebook>
-                            <page string="Description" class="oe_page_description" accesskey="D">
-                                <field name="description" class="oe_field_description"
-                                    placeholder="Enter new description" />
+                            <page string="Competencies" class="oe_page_competencies" accesskey="M">
+                                <field name="competency_unit_ids" class="oe_field_competency_unit_ids"
+                                    colspan="2" nolabel="1" widget="many2many" options="{'no_create': True}"
+                                    domain="[('training_activity_id', '=', training_activity_id)]"
+                                    context="{'tree_view_ref': 'academy_base.view_academy_competency_unit_append_existing_tree'}" />
                             </page>
-                            <page string="Student" class="oe_page_student" accesskey="S">
+                            <page id="setup" string="Setup" class="oe_page_setup" accesskey="S">
                                 <group col="4">
-                                    <field name="student_name" class="oe_field_student_name"
-                                        placeholder="Enter new name" readonly="1" string="Student" />
-                                    <field name="phone" class="oe_field_phone"
-                                        placeholder="Enter new phone" readonly="1" />
-                                    <field name="email" class="oe_field_email"
-                                        placeholder="Enter new email address" readonly="1" />
-                                    <field name="zip" class="oe_field_zip"
-                                        placeholder="Enter new zip code" readonly="1" />
+                                    <field name="description" class="oe_field_description"
+                                        placeholder="Enter new description" colspan="4" />
+                                    <field name="owner_id" class="oe_field_owner_id" />
                                 </group>
-                            </page>
-                            <page string="Action" class="oe_page_action" accesskey="A">
-                                <group col="4">
-                                    <field name="action_name" class="oe_field_action_name"
-                                        placeholder="Enter new name" readonly="1" string="Training action" />
-                                    <field name="action_code" class="oe_field_action_code"
-                                        placeholder="Enter new code" readonly="1" />
-                                    <field name="start" class="oe_field_start"
-                                        placeholder="Enter new date/time" readonly="1" />
-                                    <field name="end" class="oe_field_end"
-                                        placeholder="Enter new date/time" readonly="1" />
-                                </group>
-                            </page>
-                            <page string="Modules" class="oe_page_modules" accesskey="M">
-                                <field name="training_module_ids" class="oe_field_training_module_ids" />
                             </page>
                             <page string="Resources" class="oe_page_resources" accesskey="R">
-                                <field name="available_resource_ids" class="oe_field_available_resource_ids" nolabel="1" />
+                                <field name="available_resource_ids" colspan="2"
+                                    class="oe_field_available_resource_ids" nolabel="1" />
                             </page>
                         </notebook>
                     </sheet>
@@ -132,28 +137,31 @@
 
                     <templates>
                         <t t-name="kanban-box">
-                            <div class="oe_kanban_global_click oe_kanban_academy_training_action_enrolment">
-                                <div class="o_kanban_image">
-                                    <t t-if="record.image_128.raw_value">
-                                        <field name="image_128" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}' />
-                                    </t>
-                                    <t t-else="">
-                                        <img t-att-src="_s + &quot;/academy_base/static/src/img/training-action.png&quot;" class="o_kanban_image" alt="Training action enrolment photo" />
-                                    </t>
-                                </div>
-                                <div class="oe_kanban_details">
-                                    <h4><strong class="oe_partner_heading"><field name="display_name" /></strong></h4>
-                                    <ul>
-                                        <li class="o_ellipsis"><strong>Action:&#160;</strong><field name="training_action_id" /></li>
-                                        <li class="o_ellipsis"><strong>Student:&#160;</strong><field name="student_id" /></li>
-                                        <t t-if="!record.deregister.raw_value">
-                                            <li class="o_ellipsis"><strong>Register:&#160;</strong><field name="register" widget="date" /></li>
+                            <div class="oe_kanban_global_click oe_kanban_academy_training_action d-flex flex-column justify-content-end">
+                                <div class="flex-fill align-top">
+                                    <div class="o_kanban_image">
+                                        <t t-if="record.image_128.raw_value">
+                                            <field name="image_128" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}' />
                                         </t>
                                         <t t-else="">
-                                            <li class="o_ellipsis"><strong>Interval:&#160;</strong><field name="register" widget="date" />&#160;-&#160;<field name="deregister" widget="date" /></li>
+                                            <img t-att-src="_s + &quot;/academy_base/static/src/img/training-action.png&quot;" class="o_kanban_image" alt="Training action enrolment photo" />
                                         </t>
-                                     </ul>
+                                    </div>
+                                    <div class="oe_kanban_details">
+                                        <h4><strong class="oe_partner_heading"><field name="display_name" /></strong></h4>
+                                        <ul id="enrolment-details">
+                                            <li class="o_ellipsis"><strong>Action:&#160;</strong><field name="training_action_id" /></li>
+                                            <li class="o_ellipsis"><strong>Student:&#160;</strong><field name="student_id" /></li>
+                                            <t t-if="!record.deregister.raw_value">
+                                                <li class="o_ellipsis"><strong>Register:&#160;</strong><field name="register" widget="date" /></li>
+                                            </t>
+                                            <t t-else="">
+                                                <li class="o_ellipsis"><strong>Interval:&#160;</strong><field name="register" widget="date" />&#160;-&#160;<field name="deregister" widget="date" /></li>
+                                            </t>
+                                         </ul>
+                                    </div>
                                 </div>
+                                <div name="kanban-box-toolbar" class="btn-toolbar d-flex w-100 justify-content-end align-self-end mt-3" role="toolbar" aria-label="Enrolment commands" />
                             </div>
                         </t>
                     </templates>
@@ -178,7 +186,7 @@
                     <separator />
 
                     <field name="training_action_id" />
-                    <field name="training_module_ids" />
+                    <field name="competency_unit_ids" />
 
                     <separator />
 
@@ -225,9 +233,9 @@
         <!-- Main menu for model.name -->
         <record id="menu_training_action_enrolment" model="ir.ui.menu" >
             <field name="name">Enrolments</field>
-            <field name="sequence" eval="15" />
+            <field name="sequence" eval="20" />
             <field name="action" ref="action_training_action_enrolment_act_window" />
-            <field name="parent_id" ref="academy_base.menu_academy_monitoring" />
+            <field name="parent_id" ref="academy_base.menu_academy_advanced" />
             <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
         </record>
 
@@ -243,7 +251,7 @@
             <field name="arch" type="xml">
                 <tree string="view_academy_training_action_enrolment_embed_tree" create="1" delete="1" edit="1">
                     <field name="training_action_id" class="oe_field_training_action_id" />
-                    <field name="training_module_ids" class="oe_field_training_module_ids" />
+                    <field name="competency_unit_ids" class="oe_field_competency_unit_ids" />
                     <field name="register" class="oe_field_register" />
                     <field name="deregister" class="oe_field_deregister" />
                 </tree>
@@ -263,7 +271,7 @@
             <field name="arch" type="xml">
                 <tree string="view_academy_training_action_enrolment_edit_by_user_tree" create="1" delete="1" edit="1" editable="top">
                     <field name="training_action_id" class="oe_field_training_action_id" />
-                    <field name="training_module_ids" class="oe_field_training_module_ids" widget="many2many_tags" />
+                    <field name="competency_unit_ids" class="oe_field_competency_unit_ids" widget="many2many_tags" />
                     <field name="register" class="oe_field_register" />
                     <field name="deregister" class="oe_field_deregister" />
                 </tree>

@@ -36,6 +36,7 @@
         'data/ir_sequence.xml',
         'data/ir_cron.xml',
         'data/ir_actions_server_data.xml',
+        'data/academy_tests_test_block_data.xml',
 
         'data/academy_tests_topic_data.xml',
         'data/academy_tests_topic_version_data.xml',
@@ -63,10 +64,8 @@
         'security/academy_tests_correction_scale.xml',
         'security/academy_tests_random_template_training_action_rel.xml',
         'security/academy_tests_random_template_scheduled.xml',
-        'security/academy_tests_test_availability.xml',
         'security/academy_tests_topic_version.xml',
         'security/academy_tests_random_line_categorization.xml',
-        'security/academy_statistics_student_question_readonly.xml',
         'security/academy_tests_question_changelog_entry.xml',
         'security/mail_message.xml',
         'security/academy_tests_uncategorized_questions_by_user.xml',
@@ -76,8 +75,8 @@
         'security/academy_tests_attempt_resume_helper.xml',
         'security/academy_tests_test_training_module_helper.xml',
         'security/academy_tests_attempt_final_answer_helper.xml',
-        'security/academy_tests_attempt_sanitized_answer_helper.xml',
         'security/ir_attachment.xml',
+        'security/academy_tests_test_training_assignment.xml',
 
         # This must be before academy_tests_tets_view.xml
         'report/academy_test_report.xml',
@@ -113,13 +112,16 @@
         'views/academy_tests_attempt_view.xml',
         'views/academy_tests_correction_scale_view.xml',
         'views/academy_tests_random_template_training_action_rel_view.xml',
-        'views/academy_tests_test_availability_view.xml',
 
         'views/academy_tests_random_template_scheduled_view.xml',
         'views/academy_tests_uncategorized_by_user_readonly_view.xml',
         'views/academy_tests_question_request_view.xml',
         'views/academy_tests_question_request_set_view.xml',
         'views/academy_tests_test_block_view.xml',
+        'views/academy_tests_attempt_resume_helper_view.xml',
+        'views/academy_tests_attempt_final_answer_helper_view.xml',
+
+        'views/academy_tests_test_training_assignment_view.xml',
 
         'report/academy_tests_report_assets.xml',
         'report/academy_test_answers_table_report.xml',
@@ -136,6 +138,8 @@
         'templates/required_questions_reminder.xml',
         'templates/verify_questions_reminder.xml',
         'templates/mail_template_you_have_impugnments.xml',
+        'templates/check_training_module.xml',
+        'templates/check_competency_unit.xml',
 
         'wizard/academy_tests_question_categorize_wizard_view.xml',
         'wizard/academy_tests_question_append_wizard_view.xml',
@@ -149,8 +153,8 @@
         'wizard/academy_tests_manual_categorization_wizard_view.xml',
         'wizard/academy_tests_remove_duplicate_questions_wizard_view.xml',
         'wizard/academy_tests_question_request_set_wizard_view.xml',
-
-        'wizard/academy_tests_question_append_wizard_link_view.xml'
+        'wizard/academy_tests_question_append_wizard_link_view.xml',
+        'wizard/academy_tests_random_template_type_wizard_view.xml'
     ],
     # only loaded in demonstration mode
     'demo': [
@@ -173,12 +177,14 @@
     ],
     'js': [
         'static/src/js/academy_tests.js',
+        'static/src/js/listview_button.js'
     ],
     'css': [
         'static/src/css/styles-backend.css',
         'static/src/css/academy_tests_report.css',
     ],
     'qweb': [
+        "static/src/xml/listview_button.xml"
     ],
     "external_dependencies": {
         "python": ['unidecode', 'dicttoxml', 'chardet', 'python-docx']

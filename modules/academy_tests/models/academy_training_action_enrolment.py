@@ -4,16 +4,14 @@
 This module extends the academy.training.action.enrolment Odoo model
 """
 
-from odoo import models, fields
-
-import odoo.addons.academy_base.models.utils.custom_model_fields as custom
-from .utils.sql_m2m_through_view import ACADEMY_ENROLMENT_AVAILABLE_TESTS
-
+from odoo import models, fields, api
+from odoo.tools.translate import _
 from logging import getLogger
+import odoo.addons.academy_base.models.utils.custom_model_fields as custom
+from .utils.sql_m2m_through_view import \
+    ACADEMY_TRAINING_AVAILABLE_ITEMS_REL
 
 _logger = getLogger(__name__)
-
-LONG_NAME = 'academy_tests_test_available_in_training_action_enrolment_rel'
 
 
 class AcademyTrainingActionEnrolment(models.Model):
@@ -22,36 +20,160 @@ class AcademyTrainingActionEnrolment(models.Model):
 
     _inherit = 'academy.training.action.enrolment'
 
-    test_ids = fields.Many2many(
-        string='Entolment tests',
+    assignment_ids = fields.One2many(
+        string='Test assignments',
         required=False,
         readonly=False,
-        index=False,
+        index=True,
         default=None,
-        help=('Choose the tests will be available in this training action '
-              'enrolment'),
-        comodel_name='academy.tests.test',
-        relation='academy_tests_test_training_action_enrolment_rel',
-        column1='enrolment_id',
-        column2='test_id',
+        comodel_name='academy.tests.test.training.assignment',
+        inverse_name='enrolment_id',
         domain=[],
         context={},
-        limit=None
+        auto_join=False,
+        limit=None,
+        help=('List of test assignments that have been created for this '
+              'training action enrollment')
     )
 
-    available_test_ids = custom.Many2manyThroughView(
-        string='Enrolment available tests',
+    assignment_count = fields.Integer(
+        string='Nº assignments',
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        store=False,
+        compute='_compute_assignment_count',
+        help=('Show the number of test assignments that have been created for'
+              'this training action enrollment')
+    )
+
+    @api.depends('assignment_ids')
+    def _compute_assignment_count(self):
+        for record in self:
+            record.assignment_count = \
+                len(record.assignment_ids)
+
+    template_ids = fields.One2many(
+        string='Templates',
         required=False,
         readonly=False,
+        index=True,
+        default=None,
+        comodel_name='academy.tests.random.template',
+        inverse_name='enrolment_id',
+        domain=[],
+        context={},
+        auto_join=False,
+        limit=None,
+        help=('List of test templates available to be used in this training '
+              'action enrollment')
+    )
+
+    template_count = fields.Integer(
+        string='Nº templates',
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        store=False,
+        compute='_compute_template_count',
+        help=('Show the number of test templates available to be used in this '
+              'training action enrollment')
+    )
+
+    @api.depends('template_ids')
+    def _compute_template_count(self):
+        for record in self:
+            record.template_count = len(record.template_ids)
+
+    available_assignment_ids = custom.Many2manyThroughView(
+        string='Available assignments',
+        required=False,
+        readonly=True,
         index=False,
         default=None,
-        help='Choose the tests will be available in this training activity',
-        comodel_name='academy.tests.test',
-        relation=LONG_NAME,
+        comodel_name='academy.tests.test.training.assignment',
+        relation='academy_training_action_enrolment_available_assignment_rel',
         column1='enrolment_id',
-        column2='test_id',
+        column2='related_id',
         domain=[],
         context={},
         limit=None,
-        sql=ACADEMY_ENROLMENT_AVAILABLE_TESTS
+        store=True,
+        help='List all available test assignments in this enrolment',
+        sql=lambda self: self.sql_available_assignment_ids()
     )
+
+    available_assignment_count = fields.Integer(
+        string='Nº available assignments',
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        store=False,
+        compute='_compute_available_assignment_count',
+        help=('Show the number of test assignments that have been created for'
+              'this enrolment')
+    )
+
+    @api.depends('assignment_ids')
+    def _compute_available_assignment_count(self):
+        for record in self:
+            assignment_set = record.available_assignment_ids
+            record.available_assignment_count = len(assignment_set)
+
+    def _compute_view_test_assignments_domain(self):
+        assignment_ids = self.mapped('available_assignment_ids.id')
+        return [('id', 'in', assignment_ids)]
+
+    attempt_count = fields.Integer(
+        string='Attempt count',
+        readonly=True,
+        related="student_id.attempt_count"
+    )
+
+    def sql_available_assignment_ids(self):
+        query = ACADEMY_TRAINING_AVAILABLE_ITEMS_REL
+
+        related = 'academy_tests_test_training_assignment'
+
+        return query.format(related=related)
+
+    def view_test_attempts(self):
+        self.ensure_one()
+
+        irf = self.env.ref('academy_tests.ir_filter_student_attempts')
+
+        return {
+            'name': _('Attempts of «{}»').format(self.display_name),
+            'view_mode': 'tree,pivot,form',
+            'view_mode': 'pivot,tree,form,graph',
+            'res_model': 'academy.tests.attempt.resume.helper',
+            'type': 'ir.actions.act_window',
+            'nodestroy': True,
+            'target': 'current',
+            'domain': [('student_id', '=', self.student_id.id)],
+            'context': irf.context
+        }
+
+    # def view_test_assignments(self):
+    #     self.ensure_one()
+
+    #     path = 'available_assignment_ids.id'
+    #     assignment_ids = self.mapped(path)
+
+    #     return {
+    #         'model': 'ir.actions.act_window',
+    #         'type': 'ir.actions.act_window',
+    #         'name': _('Test assignments'),
+    #         'res_model': 'academy.tests.test.training.assignment',
+    #         'target': 'current',
+    #         'view_mode': 'kanban,tree,form',
+    #         'domain': [('id', 'in', assignment_ids)],
+    #         'context': {
+    #             'name_get': 'training',
+    #             'search_default_my_assignments': 1,
+    #             'create': False
+    #         },
+    #     }

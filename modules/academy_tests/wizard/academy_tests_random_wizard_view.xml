@@ -104,7 +104,7 @@
                             <group col="4">
                                 <field name="incremental" class="oe_field_incremental" colspan="2"/>
                                 <field name="skip_faulty_lines" class="oe_field_skip_faulty_lines" colspan="2"/>
-                                <field name="context_ref" class="oe_field_context_ref" />
+                                <field name="training_ref" class="oe_field_context_ref" />
                             </group>
                         </page>
                     </notebook>

@@ -22,10 +22,13 @@ class AcademyCompetencyUnit(models.Model):
     _description = u'Academy competency unit'
 
     _rec_name = 'competency_name'
-    _order = ('professional_qualification_id ASC, '
-              'sequence ASC, competency_name ASC')
+    _order = ('sequence ASC, competency_name ASC')
 
     _inherits = {'academy.training.module': 'training_module_id'}
+
+    _inherit = [
+        'academy.abstract.training'
+    ]
 
     competency_code = fields.Char(
         string='Unit code',
@@ -35,7 +38,7 @@ class AcademyCompetencyUnit(models.Model):
         default=None,
         help='Reference code that identifies the competency unit',
         size=30,
-        translate=True
+        translate=False
     )
 
     competency_name = fields.Char(
@@ -117,6 +120,22 @@ class AcademyCompetencyUnit(models.Model):
         context={},
         ondelete='cascade',
         auto_join=False
+    )
+
+    competency_unit_resource_ids = fields.Many2many(
+        string='Competency unit resources',
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help=False,
+        comodel_name='academy.training.resource',
+        relation='academy_competency_unit_training_resource_rel',
+        column1='competency_unit_id',
+        column2='training_resource_id',
+        domain=[],
+        context={},
+        limit=None
     )
 
     # -------------------------- OVERLOADED METHODS ---------------------------

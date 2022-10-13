@@ -39,33 +39,21 @@ class AcademyTrainingActionEnrolment(models.Model):
         auto_join=False
     )
 
-    def name_get(self):
-        """ Computes special name joining student namen and item name.
+    # def name_get(self):
+    #     """ Uses public tendering process name in display name
+    #     """
+    #     result = []
 
-        By order, ``item`` name can be the module name, the process name or
-        the action name.
+    #     for record in self:
+    #         if not record.public_tendering_process_id:
+    #             _super = super(AcademyTrainingActionEnrolment, record)
+    #             name = _super.name_get()[0][1]
+    #         else:
+    #             student = record.student_id.name
+    #             process = record.public_tendering_process_id.name
 
-        Returns:
-            list -- list of tuples [(id, name)]
-        """
+    #             name = '{} - {}'.format(process, student)
 
-        result = []
+    #         result.append((record.id, name))
 
-        for record in self:
-            student = record.student_id.name
-            if len(record.training_module_ids) == 1:
-                item = record.training_module_ids.name
-            else:
-                if(record.public_tendering_process_id):
-                    item = record.public_tendering_process_id.name
-                else:
-                    item = record.training_action_id.name
-
-            if student and item:
-                name = '{} - {}'.format(item, student)
-            else:
-                name = _('New training action enrolment')
-
-            result.append((record.id, name))
-
-        return result
+    #     return result

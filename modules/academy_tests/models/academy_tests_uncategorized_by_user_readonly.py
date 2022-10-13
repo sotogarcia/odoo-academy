@@ -23,13 +23,15 @@ class AcademyTestsUncategorizedByUserReadonly(models.Model):
     _rec_name = 'owner_id'
     _order = 'owner_id ASC'
 
+    _inherit = []
+
     owner_id = fields.Many2one(
         string='Owner',
-        required=True,
+        required=False,
         readonly=True,
         index=False,
         default=None,
-        help='Show the owner of the questions',
+        help='Current owner',
         comodel_name='res.users',
         domain=[],
         context={},

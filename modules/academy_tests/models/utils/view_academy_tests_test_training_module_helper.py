@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ACADEMY_TESTS_TEST_TRAINING_MODULE_HELPER = '''
-     WITH linked AS (
+    WITH linked AS (
         SELECT
             tree.requested_module_id,
             tree.responded_module_id,

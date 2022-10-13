@@ -12,28 +12,61 @@
             <field name="active" eval="True" />
             <field name="inherit_id" ref="academy_base.view_academy_training_action_form" />
             <field name="arch" type="xml">
-                <xpath expr="//button[@name='session_wizard']" position="before">
-                    <button name="create_test_template"
-                            string="Template"
-                            type="object"
-                            default_focus="0"
-                            icon="fa-list-alt"
-                            help="Create new test template" />
-                    <button name="view_test_attempts"
-                            string="Attempts"
-                            type="object"
-                            default_focus="0"
-                            icon="fa-line-chart"
-                            help="View related test attempts" />
+                <xpath expr="//button[@name='show_training_action_enrolments']" position="before">
+                    <button name="view_test_templates" type="object"
+                        class="oe_stat_button oe_read_only" icon="fa-cog"
+                        help="View related test templates">
+                        <field name="available_template_count" widget="statinfo" string="Templates" />
+                    </button>
+                    <button name="view_test_attempts" type="object"
+                        class="oe_stat_button oe_read_only" icon="fa-line-chart"
+                        help="View related test attempts">
+                        <field name="attempt_count" widget="statinfo" string="Attempts" />
+                    </button>
+                    <button name="view_test_assignments" type="object"
+                        class="oe_stat_button oe_read_only" icon="fa-list-ol"
+                        help="View related tests">
+                        <field name="available_assignment_count" widget="statinfo" string="Tests" />
+                    </button>
                 </xpath>
-                <xpath expr="//notebook" position="inside">
-                    <page string="Tests" class="oe_page_tests" accesskey="T">
+                <xpath expr="//page[@id='setup']/*[last()]" position="after">
+                    <group col="4" string="Tests">
+                        <field name="random_template_id" class="oe_field_test_template_id" />
+                    </group>
+                </xpath>
+            </field>
+        </record>
 
-                        <separator string="Tests" />
-                        <field name="test_ids" class="oe_field_tests_ids oe_edit_only" />
-                        <field name="available_test_ids" class="oe_field_available_test_ids oe_read_only" />
-
-                    </page>
+        <record id="view_academy_training_action_kanban" model="ir.ui.view">
+            <field name="name">view.academy.training.action.kanban</field>
+            <field name="model">academy.training.action</field>
+            <field name="type">kanban</field>
+            <field name="mode">extension</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="academy_base.view_academy_training_action_kanban" />
+            <field name="arch" type="xml">
+                <xpath expr="//kanban/*[1]" position="before">
+                    <field name="assignment_count" invisible="1" />
+                </xpath>
+                <xpath expr="//div[@name='kanban-box-toolbar']/*[1]" position="after">
+                    <div class="btn-group ml-1" role="group" aria-label="Attempts">
+                        <t t-if="record.assignment_count.raw_value > 0">
+                        <button name="view_test_attempts" type="object"
+                            class="btn btn-sm btn-light oe_read_only" title="View full list of the user test attempts">
+                            <i class="fa fa-line-chart d-inline-block mr-1" aria-hidden="false"></i>
+                        </button>
+                        <button name="view_test_assignments" type="object"
+                            class="btn btn-sm btn-light oe_read_only" title="View test attempt assignments and statistics">
+                            <i class="fa fa-th-list d-inline-block" aria-hidden="false"></i>
+                        </button>
+                        </t>
+                        <button name="new_assignment_to_test" type="object"
+                            class="btn btn-sm btn-light oe_read_only" title="Assign this test to an existin training item">
+                            <i class="fa fa-list-ol d-inline-block mr-1" aria-hidden="false"></i>
+                            Assign
+                        </button>
+                    </div>
                 </xpath>
             </field>
         </record>

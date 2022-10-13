@@ -34,6 +34,8 @@
         'data/uom_uom_data.xml',
         'data/product_product_data.xml',
 
+        'security/sale_order_line.xml',
+
         'views/academy_training_action_enrolment_view.xml',
         'views/academy_training_action_view.xml',
         'views/academy_training_module_view.xml',

@@ -10,6 +10,9 @@ from odoo import models, fields
 from odoo.tools import drop_view_if_exists
 from .utils.view_academy_tests_attempt_final_answer_helper import \
     ACADEMY_TESTS_ATTEMPT_FINAL_ANSWER_HELPER
+from .utils.subquery_academy_tests_attempt_sanitized_answer import \
+    SUBQUERY_ACADEMY_TESTS_ATTEMPT_SANITIZED_ANSWER
+from odoo.tools.translate import _
 
 from logging import getLogger
 
@@ -37,8 +40,6 @@ class AcademyTestsAttemptFinalAnswerHelper(models.Model):
     _order = 'attempt_id ASC, sequence ASC'
 
     _auto = False
-
-    _view_sql = ACADEMY_TESTS_ATTEMPT_FINAL_ANSWER_HELPER
 
     attempt_answer_id = fields.Many2one(
         string='Attempt answer',
@@ -82,12 +83,131 @@ class AcademyTestsAttemptFinalAnswerHelper(models.Model):
         auto_join=False
     )
 
+    html = fields.Html(
+        string='Html',
+        related="question_id.html"
+    )
+
+    answer_id = fields.Many2one(
+        string='Answer',
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help=False,
+        comodel_name='academy.tests.answer',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False
+    )
+
+    sequence = fields.Integer(
+        string='Sequence',
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        help='Question sequence order'
+    )
+
+    is_correct = fields.Boolean(
+        string='Is correct?',
+        required=False,
+        readonly=True,
+        index=False,
+        default=False,
+        help='Checked means this is a right answer for the question',
+        track_visibility='onchange'
+    )
+
+    retries = fields.Integer(
+        string='Retry count',
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        help='Number of times the user has changed the answer'
+    )
+
+    answer_count = fields.Integer(
+        string='Answer count',
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        help='Number of times the user marked the question as sure answer'
+    )
+
+    doubt_count = fields.Integer(
+        string='Doubt count',
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        help='Number of times the user marked the question as doubt'
+    )
+
+    blank_count = fields.Integer(
+        string='Blank count',
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        help='Number of times the user left the question blank'
+    )
+
+    right_count = fields.Integer(
+        string='Right count',
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        help='Number of times the user marked the answer correctly'
+    )
+
+    wrong_count = fields.Integer(
+        string='Wrong count',
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        help='Number of times the user marked the answer incorrectly'
+    )
+
+    aptly = fields.Float(
+        string='Hit rate',
+        required=False,
+        readonly=True,
+        index=False,
+        default=0.0,
+        digits=(16, 2),
+        help='Percentage of times the user marked the right answer'
+    )
+
+    wrongly = fields.Float(
+        string='Error rate',
+        required=False,
+        readonly=True,
+        index=False,
+        default=0.0,
+        digits=(16, 2),
+        help='Percentage of times the user marked the wrong answer'
+    )
+
+    @staticmethod
+    def build_view_sql():
+        outer = ACADEMY_TESTS_ATTEMPT_FINAL_ANSWER_HELPER
+        inner = SUBQUERY_ACADEMY_TESTS_ATTEMPT_SANITIZED_ANSWER
+        return outer.format(inner)
+
     def init(self):
         sentence = 'CREATE or REPLACE VIEW {} as ( {} )'
 
         drop_view_if_exists(self.env.cr, self._table)
 
-        self.env.cr.execute(sentence.format(self._table, self._view_sql))
+        query = self.build_view_sql()
+        self.env.cr.execute(sentence.format(self._table, query))
 
         self.prevent_actions()
 
@@ -102,3 +222,36 @@ class AcademyTestsAttemptFinalAnswerHelper(models.Model):
         for action in actions:
             sql = BASE_SQL.format(table=self._table, action=action)
             self.env.cr.execute(sql)
+
+    def show_question(self):
+        self.ensure_one()
+
+        question_id = self.question_link_id.question_id.id
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Question #{}').format(question_id),
+            'view_mode': 'form',
+            'res_model': 'academy.tests.question',
+            'target': 'new',
+            'domain': [],
+            'context': {},
+            'res_id': question_id,
+            'flags': {'initial_mode': 'view'}
+        }
+
+    def show_attempt_answers(self):
+        self.ensure_one()
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Attempt answers'),
+            'view_mode': 'tree,form',
+            'res_model': 'academy.tests.attempt.answer',
+            'target': 'current',
+            'domain': [
+                ('attempt_id', '=', self.attempt_id.id),
+                ('question_link_id', '=', self.question_link_id.id)
+            ],
+            'context': {}
+        }
