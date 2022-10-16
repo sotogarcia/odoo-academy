@@ -91,7 +91,6 @@
             </field>
             <field name="lang">${object.owner_id.partner_id.lang}</field>
             <field name="auto_delete" eval="True"/>
-            <field name="user_signature" eval="False"/>
         </record>
 
     </data>

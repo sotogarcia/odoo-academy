@@ -101,3 +101,17 @@ class AcademyPublicTenderingPublicAdministration(models.Model):
         result = _super.create(values)
 
         return result
+
+    def create_company(self):
+        """ This method is called by a button that exists in the Odoo 15
+        partner form view, but does not exist in the analogous Odoo 13 view.
+
+        Returns:
+            dict: ir.actions.act_window
+        """
+
+        partners = self.mapped('res_partner_id')
+
+        if partners and hasattr(partners, 'create_company'):
+            method_ptr = getattr(partners, 'create_company')
+            return method_ptr()

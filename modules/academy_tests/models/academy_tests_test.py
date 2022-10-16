@@ -854,33 +854,6 @@ class AcademyTestsTest(models.Model):
     def _split_lines(content):
         return split(r"[\r\n]+", content)
 
-    def request_for_questions(self):
-
-        self.ensure_one()
-
-        rset_domain = [('test_id', '=', self.id)]
-        rset_obj = self.env['academy.tests.question.request.set']
-        rset_set = rset_obj.search(rset_domain)
-
-        act_window = {
-            'model': 'ir.actions.act_window',
-            'type': 'ir.actions.act_window',
-            'name': _('Request for questions'),
-            'res_model': 'academy.tests.question.request.set',
-            'target': 'new',
-            'view_mode': 'form',
-            'views': [(False, 'form')],
-            'domain': [],
-            'context': {}
-        }
-
-        if rset_set:
-            act_window['res_id'] = rset_set.id
-        else:
-            act_window['context'] = {'default_test_id': self.id}
-
-        return act_window
-
     def download_as_moodle_xml(self):
         self.ensure_one()
 

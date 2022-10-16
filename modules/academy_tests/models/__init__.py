@@ -50,13 +50,8 @@ from . import academy_tests_random_template_scheduled
 
 from . import academy_student
 
-from . import academy_tests_question_changelog_entry
-
 from . import academy_tests_uncategorized_by_user_readonly
 from . import res_users
-
-from . import academy_tests_question_request_set
-from . import academy_tests_question_request
 
 from . import academy_tests_test_block
 

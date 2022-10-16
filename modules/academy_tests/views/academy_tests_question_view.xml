@@ -276,7 +276,7 @@
                                         <div class="dropdown">
                                             <a class="btn btn-sm btn-outline-light dropdown-toggle" type="button"
                                                id="question_kanban_status_menu_button" data-toggle="dropdown"
-                                               aria-haspopup="true" aria-expanded="false" role='button'>
+                                               aria-haspopup="true" aria-expanded="false" role='button' title="Menu">
                                                 <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
                                             </a>
                                             <div class="dropdown-menu" aria-labelledby="question_kanban_status_menu_button" role='menu' id="question_kanban_status_menu_button">

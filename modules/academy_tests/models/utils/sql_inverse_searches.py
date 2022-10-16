@@ -105,20 +105,6 @@ UNCATEGORIZED_QUESTION_SEARCH = '''
 '''
 
 
-# INVERSE SEARCH: academy_tests.field_academy_tests_question_request__supplied
-# Raw sentence used to search question requests by number of supplied questions
-# -----------------------------------------------------------------------------
-REQUEST_SUPPLIED_COUNT_SEARCH = '''
-    SELECT
-        request_id,
-        COUNT ( question_id )
-    FROM
-        academy_tests_question_request_question_rel
-    GROUP BY
-        request_id
-    HAVING COUNT ( question_id ) {} {}
-'''
-
 # INVERSE SEARCH: academy_tests.field_academy_tests_attempt__passed
 # Raw sentence used to search passed attempts
 # -----------------------------------------------------------------------------

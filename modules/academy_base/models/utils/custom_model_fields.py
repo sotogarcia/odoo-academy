@@ -27,6 +27,8 @@ class Many2manyThroughView(Many2many):
     """ Custom Many2many field, it uses a SQL view as middle
     """
 
+    sql = None
+
     # pylint: disable=locally-disabled, R0913
     def __init__(self, comodel_name=Default, relation=Default, column1=Default,
                  column2=Default, string=Default, **kwargs):
@@ -123,7 +125,7 @@ class Many2manyThroughView(Many2many):
         #     return False
 
         # Relation has a related SQL statement
-        if not hasattr(self, 'sql'):
+        if not getattr(self, 'sql', None):
             _logger.debug('%s: Relation has a related SQL statement' % model)
             return False
 

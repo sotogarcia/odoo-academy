@@ -114,20 +114,6 @@ class AcademyTestsTestQuestionRel(models.Model):
         store=False
     )
 
-    request_id = fields.Many2one(
-        string='Request',
-        required=False,
-        readonly=True,
-        index=True,
-        default=None,
-        help='Show the request from which this link was created',
-        comodel_name='academy.tests.question.request',
-        domain=[],
-        context={},
-        ondelete='cascade',
-        auto_join=False
-    )
-
     test_block_id = fields.Many2one(
         string='Test block',
         required=False,

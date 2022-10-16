@@ -51,7 +51,7 @@
 
                         <div class="oe_title">
                             <field name="active" invisible="1"/>
-                            <label for="name" class="oe_edit_only" />
+                            <label for="competency_name" class="oe_edit_only" />
                             <h1>
                                 <field name="competency_name" class="oe_field_name"
                                     placeholder="Enter new name" />

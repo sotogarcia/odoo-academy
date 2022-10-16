@@ -58,13 +58,13 @@
                                 <templates>
                                     <t t-name="kanban-box">
                                         <div class="oe_kanban_global_click oe_import_wizard_attachments" style="position: relative">
-                                            <a t-if="!read_only_mode" type="delete" class="fa fa-times pull-right"/>
+                                            <a t-if="!read_only_mode" type="delete" class="fa fa-times pull-right" title="Delete" />
                                             <a t-if="!read_only_mode" class="fa fa-copy pull-right" href="javascript:void(0)"
-                                                t-att-data-markdown="'!['+record.name.raw_value+']('+record.id.raw_value+')'" />
+                                                t-att-data-markdown="'!['+record.name.raw_value+']('+record.id.raw_value+')'" title="Markdown" />
 
                                             <div class="o_kanban_image">
-                                                <img t-if="record.index_content.raw_value == 'image'" class="img img-responsive" t-att-src="'/web/image/'+record.id.raw_value+'/100x80'" />
-                                                <img t-else="" class="img img-responsive" src="/web/static/src/img/mimetypes/binary.png" />
+                                                <img alt="Attachment" t-if="record.index_content.raw_value == 'image'" class="img img-responsive" t-att-src="'/web/image/'+record.id.raw_value+'/100x80'" />
+                                                <img alt="Attachment" t-else="" class="img img-responsive" src="/web/static/src/img/mimetypes/binary.png" />
                                             </div>
 
                                             <div class="oe_kanban_details">

@@ -431,21 +431,6 @@ class AcademyTestsQuestion(models.Model):
         compute=lambda self: self._compute_color()
     )
 
-    changelog_entry_ids = fields.One2many(
-        string='Changelog entries',
-        required=False,
-        readonly=True,
-        index=True,
-        default=None,
-        help=False,
-        comodel_name='academy.tests.question.changelog.entry',
-        inverse_name='question_id',
-        domain=[],
-        context={},
-        auto_join=False,
-        limit=None
-    )
-
     topic_module_link_ids = custom.Many2manyThroughView(
         string='Links module-topic',
         required=False,

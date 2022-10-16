@@ -68,7 +68,7 @@
                         <field name="active" invisible="1"/>
 
                         <div class="oe_title">
-                            <label for="name" class="oe_edit_only" />
+                            <label for="action_name" class="oe_edit_only" />
                             <h1>
                                 <field name="action_name" class="oe_field_name"
                                     placeholder="Enter new name" />

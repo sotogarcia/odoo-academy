@@ -102,7 +102,6 @@
             <field name="report_name">${(object.name or 'email')}</field>
             <field name="report_template" ref="academy_tests.action_report_uncategorized_by_user" />
             <field name="auto_delete" eval="True"/>
-            <field name="user_signature" eval="False"/>
         </record>
 
     </data>

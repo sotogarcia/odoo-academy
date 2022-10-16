@@ -25,7 +25,7 @@
 
                     <separator string="Duplicate questions" />
                     <field name="duplicated_ids" class="oe_field_duplicate_ids"
-                        nolabel="1" domain="[('id', '&lt;&gt;', question_id.id)]">
+                        nolabel="1" domain="[('id', '&lt;&gt;', question_id)]">
                         <tree string="Duplicate questions" create="" delete="0" edit="0">
                             <field name="html" class="oe_field_html" widget="html" string="Statement" />
                         </tree>

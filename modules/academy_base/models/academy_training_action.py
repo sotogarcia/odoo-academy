@@ -346,7 +346,7 @@ class AcademyTrainingAction(models.Model):
         ),
         (
             'check_date_order',
-            '"start" < "end"',
+            'CHECK("start" < "end")',
             _(u'End date must be greater then start date')
         ),
     ]

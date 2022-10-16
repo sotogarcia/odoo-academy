@@ -22,7 +22,6 @@
     'depends': [
         'mail',
         'web',
-        'web_one2many_kanban',
         'academy_base',
     ],
 
@@ -66,11 +65,8 @@
         'security/academy_tests_random_template_scheduled.xml',
         'security/academy_tests_topic_version.xml',
         'security/academy_tests_random_line_categorization.xml',
-        'security/academy_tests_question_changelog_entry.xml',
         'security/mail_message.xml',
         'security/academy_tests_uncategorized_questions_by_user.xml',
-        'security/academy_tests_question_request.xml',
-        'security/academy_tests_question_request_set.xml',
         'security/academy_tests_test_block.xml',
         'security/academy_tests_attempt_resume_helper.xml',
         'security/academy_tests_test_training_module_helper.xml',
@@ -115,8 +111,6 @@
 
         'views/academy_tests_random_template_scheduled_view.xml',
         'views/academy_tests_uncategorized_by_user_readonly_view.xml',
-        'views/academy_tests_question_request_view.xml',
-        'views/academy_tests_question_request_set_view.xml',
         'views/academy_tests_test_block_view.xml',
         'views/academy_tests_attempt_resume_helper_view.xml',
         'views/academy_tests_attempt_final_answer_helper_view.xml',
@@ -129,14 +123,11 @@
         'report/academy_statistics_student_question_readonly_report.xml',
         'report/academy_tests_uncategorized_by_user_report.xml',
 
-        'report/academy_test_changelog_report.xml',
         'report/academy_tests_test_text_report.xml',
         'report/academy_tests_template_questions_report.xml',
 
         'templates/uncategorized_questions_by_user_and_topic.xml',
         'templates/duplicated_questions_by_user_and_topic.xml',
-        'templates/required_questions_reminder.xml',
-        'templates/verify_questions_reminder.xml',
         'templates/mail_template_you_have_impugnments.xml',
         'templates/check_training_module.xml',
         'templates/check_competency_unit.xml',
@@ -152,7 +143,6 @@
         'wizard/academy_tests_questions_by_teacher_wizard_view.xml',
         'wizard/academy_tests_manual_categorization_wizard_view.xml',
         'wizard/academy_tests_remove_duplicate_questions_wizard_view.xml',
-        'wizard/academy_tests_question_request_set_wizard_view.xml',
         'wizard/academy_tests_question_append_wizard_link_view.xml',
         'wizard/academy_tests_random_template_type_wizard_view.xml'
     ],

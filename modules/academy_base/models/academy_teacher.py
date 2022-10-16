@@ -6,7 +6,7 @@ all teacher attributes and behavior.
 """
 
 from odoo import models, fields
-
+from odoo.tools.translate import _
 from logging import getLogger
 
 _logger = getLogger(__name__)
@@ -74,3 +74,25 @@ class AcademyTeacher(models.Model):
         auto_join=False,
         limit=None
     )
+
+    _sql_constraints = [
+        (
+            'unique_user',
+            'UNIQUE(res_users_id)',
+            _('There is already a teacher for this user')
+        )
+    ]
+
+    def create_company(self):
+        """ This method is called by a button that exists in the Odoo 15
+        partner form view, but does not exist in the analogous Odoo 13 view.
+
+        Returns:
+            dict: ir.actions.act_window
+        """
+
+        partners = self.mapped('res_partner_id')
+
+        if partners and hasattr(partners, 'create_company'):
+            method_ptr = getattr(partners, 'create_company')
+            return method_ptr()
