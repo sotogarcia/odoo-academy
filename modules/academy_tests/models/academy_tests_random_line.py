@@ -51,7 +51,6 @@ class AcademyTestsRandomTemplateLine(models.Model):
         help="Name for this line",
         size=255,
         translate=True,
-        track_visibility='onchange'
     )
 
     description = fields.Text(

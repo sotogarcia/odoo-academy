@@ -23,7 +23,7 @@ class AcademyTestsAnswer(models.Model):
     _rec_name = 'name'
     _order = 'sequence ASC, id ASC'
 
-    _inherit = ['academy.abstract.spreadable', 'mail.thread']
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
     # ---------------------------- ENTITY FIELDS ------------------------------
 
@@ -36,7 +36,7 @@ class AcademyTestsAnswer(models.Model):
         help='Text for this answer',
         size=1024,
         translate=True,
-        track_visibility='onchange'
+        tracking=True
     )
 
     description = fields.Text(
@@ -57,7 +57,7 @@ class AcademyTestsAnswer(models.Model):
         default=True,
         help=('If the active field is set to false, it will allow you to '
               'hide record without removing it'),
-        track_visibility='onchange'
+        tracking=True
     )
 
     question_id = fields.Many2one(
@@ -81,7 +81,7 @@ class AcademyTestsAnswer(models.Model):
         index=False,
         default=False,
         help='Checked means this is a right answer for the question',
-        track_visibility='onchange'
+        tracking=True
     )
 
     sequence = fields.Integer(

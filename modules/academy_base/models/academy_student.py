@@ -24,7 +24,7 @@ class AcademyStudent(models.Model):
     _name = 'academy.student'
     _description = u'Academy student'
 
-    _inherit = ['mail.thread']
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _inherits = {'res.partner': 'res_partner_id'}
 
     res_partner_id = fields.Many2one(

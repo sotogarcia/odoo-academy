@@ -28,9 +28,10 @@ class AcademyTrainingModule(models.Model):
 
     _inherit = [
         'image.mixin',
-        'mail.thread',
         'academy.abstract.training',
-        'academy.abstract.owner'
+        'academy.abstract.owner',
+        'mail.thread',
+        'mail.activity.mixin'
     ]
 
     _rec_name = 'name'
@@ -211,7 +212,7 @@ class AcademyTrainingModule(models.Model):
 
     # This no needs an SQL statement
     training_activity_ids = Many2manyThroughView(
-        string='Activities',
+        string='Training activities',
         required=False,
         readonly=True,
         index=False,

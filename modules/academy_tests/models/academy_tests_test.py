@@ -49,10 +49,10 @@ class AcademyTestsTest(models.Model):
     _order = 'write_date DESC, create_date DESC'
 
     _inherit = [
-        'academy.abstract.spreadable',
         'academy.abstract.owner',
         'image.mixin',
-        'mail.thread'
+        'mail.thread',
+        'mail.activity.mixin'
     ]
 
     name = fields.Char(
@@ -64,7 +64,7 @@ class AcademyTestsTest(models.Model):
         help="Name for this test",
         size=255,
         translate=True,
-        track_visibility='onchange'
+        tracking=True
     )
 
     description = fields.Text(
@@ -253,7 +253,7 @@ class AcademyTestsTest(models.Model):
         domain=[],
         context={},
         limit=None,
-        track_visibility='onchange',
+        tracking=True,
     )
 
     test_block_ids = custom.Many2manyThroughView(
@@ -730,7 +730,7 @@ class AcademyTestsTest(models.Model):
         return {
             'name': _('Choose report'),
             'type': 'ir.actions.act_window',
-            'res_model': 'academy.test.choose.report.wizard',
+            'res_model': 'academy.tests.choose.report.wizard',
             'view_mode': 'form',
             'views': [(False, 'form')],
             'target': 'new',

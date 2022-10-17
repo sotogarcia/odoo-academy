@@ -88,7 +88,6 @@ class AcademyTestsTopicTrainingModuleLink(models.Model):
         domain=[],
         context={},
         limit=None,
-        track_visibility='onchange',
     )
 
     sequence = fields.Integer(

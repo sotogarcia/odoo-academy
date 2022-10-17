@@ -56,7 +56,7 @@ class AcademyTestNewTopicVersion(models.TransientModel):
     in selected categories
     """
 
-    _name = 'academy.test.new.topic.version.wizard'
+    _name = 'academy.tests.new.topic.version.wizard'
     _description = u'Academy test new topic version'
 
     _inherits = {'academy.tests.topic.version': 'topic_version_id'}
@@ -71,7 +71,7 @@ class AcademyTestNewTopicVersion(models.TransientModel):
         index=False,
         default=None,
         comodel_name='academy.tests.category',
-        relation='academy_test_new_topic_version_wizard_category_rel',
+        relation='academy_tests_new_topic_version_wizard_category_rel',
         column1='wizard_id',
         column2='category_id',
         domain=[],

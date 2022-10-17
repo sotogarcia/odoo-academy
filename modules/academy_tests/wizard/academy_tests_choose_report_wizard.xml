@@ -18,7 +18,7 @@
         <!-- Form view for "academy_tests_test" -->
         <record id="view_academy_tests_choose_report_form" model="ir.ui.view">
             <field name="name">view.academy_tests_choose_report.form</field>
-            <field name="model">academy.test.choose.report.wizard</field>
+            <field name="model">academy.tests.choose.report.wizard</field>
             <field name="type">form</field>
             <field name="mode">primary</field>
             <field name="priority" eval="16" />
@@ -49,7 +49,7 @@
         <record id="action_choose_the_report_wizard_act_window" model="ir.actions.act_window">
             <field name="type">ir.actions.act_window</field>
             <field name="name">Choose report</field>
-            <field name="res_model">academy.test.choose.report.wizard</field>
+            <field name="res_model">academy.tests.choose.report.wizard</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>
             <field name="domain">[]</field>
@@ -61,7 +61,7 @@
 
         <!-- Ensure full report is chosen by default in wizard -->
         <record id="ir_default_test_report" model="ir.default">
-            <field name="field_id" ref="academy_tests.field_academy_test_choose_report_wizard__chosen_report_id" />
+            <field name="field_id" ref="academy_tests.field_academy_tests_choose_report_wizard__chosen_report_id" />
             <field name="json_value" ref="academy_tests.action_report_full_printable_test" />
         </record>
 

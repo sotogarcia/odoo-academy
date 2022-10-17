@@ -42,7 +42,11 @@ class AcademyTrainingResource(models.Model):
     _rec_name = 'name'
     _order = 'name ASC'
 
-    _inherit = ['image.mixin', 'mail.thread']
+    _inherit = [
+        'image.mixin',
+        'mail.thread',
+        'mail.activity.mixin'
+    ]
 
     # ---------------------------- ENTITY FIELDS ------------------------------
 

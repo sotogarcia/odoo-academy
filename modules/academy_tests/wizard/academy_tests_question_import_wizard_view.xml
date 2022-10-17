@@ -59,16 +59,6 @@
                         <field name="check_categorization" class="oe_field_check_categorization"
                             string="Post check" />
 
-<!--                         <div class="alert alert-info mt-2 py-1" role="alert" colspan="2">
-                            Perform a manual categorization check on finish
-                        </div> -->
-
-
-<!--                         <div class="alert alert-info mt-2" role="alert" colspan="4"
-                            attrs="{'invisible': ['|', ('state', '&lt;&gt;', 'step1'), ('autocategorize', '=', False)]}">
-                            Only those questions for which there is a match with any of the keywords will be auto-categorized, the rest will be assigned the ones indicated manually.
-                        </div> -->
-
                         <separator colspan="4" />
 
                         <field name="tag_ids" class="oe_field_tag_ids"
@@ -89,16 +79,6 @@
                             options="{'no_create_edit': True, 'no_open': True}" />
 
                         <field name="authorship" class="oe_field_authorship" />
-                        <!-- <div colspan="2" class="pr-4">
-                            <div class="alert alert-warning mr-4" role="alert"
-                                attrs="{'invisible': [('authorship', '&lt;&gt;', True)]}">
-                                <i class="fa fa-exclamation-triangle text-danger" role="img" aria-label="Warning" title="Warning"/> Are these questions really yours?
-                            </div>
-                            <div class="alert alert-info mr-4" role="alert"
-                                attrs="{'invisible': [('authorship', '&lt;&gt;', False)]}">
-                                <i class="fa fa-info-circle text-primary" role="img" aria-label="Info" title="Information"/> Remember to mark the authorship on your questions.
-                            </div>
-                        </div> -->
 
                     </group>
 
@@ -114,8 +94,6 @@
                         <field name="content" nolabel="1" class="oe_field_content"
                             placeholder="Content" help="Enter new content will be processed" />
                     </group>
-
-                    <!-- attrs="{'invisible': [('state', '=', 'step2'), ('attachment_ids', '=', [])]}" -->
 
                     <group string="Attachments"  states="step2">
                         <field name="attachment_ids" class="oe_field_attachment_ids" colspan="4" nolabel="1">
@@ -172,18 +150,6 @@
             </field>
         </record>
 
-
-        <record id="action_academy_tests_question_import_wizard_act_window" model="ir.actions.act_window">
-            <field name="type">ir.actions.act_window</field>
-            <field name="name">Import questions</field>
-            <field name="res_model">academy.tests.question.import.wizard</field>
-            <field name="view_mode">form</field>
-            <field name="target">new</field>
-            <field name="domain">[]</field>
-            <field name="context">{}</field>
-            <field name="binding_model_id" ref="academy_tests.model_academy_tests_question" />
-        </record>
-
         <record id="action_academy_tests_question_import_wizard_act_window" model="ir.actions.act_window">
             <field name="type">ir.actions.act_window</field>
             <field name="name">Import a set of questions</field>
@@ -192,7 +158,20 @@
             <field name="target">new</field>
             <field name="domain">[]</field>
             <field name="context">{}</field>
+            <field name="binding_model_id" ref="academy_tests.model_academy_tests_question" />
+            <field name="binding_view_types">list,form</field>
+        </record>
+
+        <record id="action_academy_tests_question_import_to_test_wizard_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Import questions</field>
+            <field name="res_model">academy.tests.question.import.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
             <field name="binding_model_id" ref="academy_tests.model_academy_tests_test" />
+            <field name="binding_view_types">form</field>
         </record>
 
         <record id="menu_import_questions" model="ir.ui.menu" >

@@ -21,8 +21,8 @@ class AcademyTestsCategorizacionWizard(models.TransientModel):
 
     """
 
-    _name = 'academy.tests.categorization.wizard'
-    _description = u'academy.tests.categorization.wizard'
+    _name = 'academy.tests.manual.categorization.wizard'
+    _description = u'academy.tests.manual.categorization.wizard'
 
     _rec_name = 'id'
     _order = 'id DESC'

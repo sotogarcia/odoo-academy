@@ -32,7 +32,8 @@ class AcademyTestsTopic(models.Model):
 
     _inherit = [
         'academy.abstract.owner',
-        'mail.thread'
+        'mail.thread',
+        'mail.activity.mixin'
     ]
 
     name = fields.Char(
@@ -44,7 +45,7 @@ class AcademyTestsTopic(models.Model):
         help="Name for this topic",
         size=1024,
         translate=True,
-        track_visibility='onchange'
+        tracking=True
     )
 
     description = fields.Text(
@@ -158,7 +159,7 @@ class AcademyTestsTopic(models.Model):
     )
 
     training_activity_ids = fields.Many2many(
-        string='Activities',
+        string='Training activities',
         required=False,
         readonly=True,
         index=False,
@@ -400,7 +401,7 @@ class AcademyTestsTopic(models.Model):
         action = {
             'type': 'ir.actions.act_window',
             'name': 'New topic version wizard',
-            'res_model': 'academy.test.new.topic.version.wizard',
+            'res_model': 'academy.tests.new.topic.version.wizard',
             'view_mode': 'form',
             'target': 'new',
             'domain': [],

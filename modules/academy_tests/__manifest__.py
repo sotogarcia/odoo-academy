@@ -22,7 +22,7 @@
     'depends': [
         'mail',
         'web',
-        'academy_base',
+        'academy_base'
     ],
 
     # always loaded
@@ -62,7 +62,6 @@
         'security/academy_tests_attempt_answer.xml',
         'security/academy_tests_correction_scale.xml',
         'security/academy_tests_random_template_training_action_rel.xml',
-        'security/academy_tests_random_template_scheduled.xml',
         'security/academy_tests_topic_version.xml',
         'security/academy_tests_random_line_categorization.xml',
         'security/mail_message.xml',
@@ -73,6 +72,20 @@
         'security/academy_tests_attempt_final_answer_helper.xml',
         'security/ir_attachment.xml',
         'security/academy_tests_test_training_assignment.xml',
+
+        'security/academy_tests_question_import_wizard.xml',
+        'security/academy_tests_change_owner_wizard.xml',
+        'security/academy_tests_choose_report_wizard.xml',
+        'security/academy_tests_manual_categorization_wizard.xml',
+        'security/academy_tests_questions_by_teacher_wizard.xml',
+        'security/academy_tests_question_append_wizard.xml',
+        'security/academy_tests_question_append_wizard_link.xml',
+        'security/academy_tests_question_categorize_wizard.xml',
+        'security/academy_tests_random_template_type_wizard.xml',
+        'security/academy_tests_random_wizard.xml',
+        'security/academy_tests_remove_duplicate_questions_wizard.xml',
+        'security/academy_tests_update_questions_wizard.xml',
+        'security/academy_tests_new_topic_version_wizard.xml',
 
         # This must be before academy_tests_tets_view.xml
         'report/academy_test_report.xml',
@@ -109,7 +122,6 @@
         'views/academy_tests_correction_scale_view.xml',
         'views/academy_tests_random_template_training_action_rel_view.xml',
 
-        'views/academy_tests_random_template_scheduled_view.xml',
         'views/academy_tests_uncategorized_by_user_readonly_view.xml',
         'views/academy_tests_test_block_view.xml',
         'views/academy_tests_attempt_resume_helper_view.xml',
@@ -139,7 +151,7 @@
         'wizard/academy_tests_random_wizard_view.xml',
         'wizard/academy_tests_change_owner_wizard_view.xml',
         'wizard/academy_tests_choose_report_wizard.xml',
-        'wizard/academy_test_new_topic_version_wizard_view.xml',
+        'wizard/academy_tests_new_topic_version_wizard_view.xml',
         'wizard/academy_tests_questions_by_teacher_wizard_view.xml',
         'wizard/academy_tests_manual_categorization_wizard_view.xml',
         'wizard/academy_tests_remove_duplicate_questions_wizard_view.xml',

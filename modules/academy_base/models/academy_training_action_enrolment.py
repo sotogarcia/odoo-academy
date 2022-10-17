@@ -33,10 +33,11 @@ class AcademyTrainingActionEnrolment(models.Model):
     _order = 'code ASC'
 
     _inherit = [
-        'mail.thread',
         'image.mixin',
         'academy.abstract.training',
-        'academy.abstract.owner'
+        'academy.abstract.owner',
+        'mail.thread',
+        'mail.activity.mixin'
     ]
 
     # pylint: disable=locally-disabled, W0212

@@ -26,7 +26,7 @@ class AcademyTestChooseReportWizard(models.TransientModel):
 
     """
 
-    _name = 'academy.test.choose.report.wizard'
+    _name = 'academy.tests.choose.report.wizard'
     _description = u'Academy test choose report wizard'
 
     _rec_name = 'id'

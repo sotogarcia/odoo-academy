@@ -39,10 +39,11 @@ class AcademyTrainingAction(models.Model):
 
     _inherit = [
         'image.mixin',
-        'mail.thread',
         'academy.abstract.observable',
         'academy.abstract.training',
-        'academy.abstract.owner'
+        'academy.abstract.owner',
+        'mail.thread',
+        'mail.activity.mixin'
     ]
 
     _inherits = {'academy.training.activity': 'training_activity_id'}

@@ -24,7 +24,7 @@ class AcademyPublicTenderingEvent(models.Model):
     _name = 'academy.public.tendering.event'
     _description = u'Academy public tendering event'
 
-    _inherit = ['mail.thread']
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
     _rec_name = 'name'
     _order = 'date ASC, name ASC'

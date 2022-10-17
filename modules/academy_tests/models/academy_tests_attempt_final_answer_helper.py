@@ -118,7 +118,6 @@ class AcademyTestsAttemptFinalAnswerHelper(models.Model):
         index=False,
         default=False,
         help='Checked means this is a right answer for the question',
-        track_visibility='onchange'
     )
 
     retries = fields.Integer(

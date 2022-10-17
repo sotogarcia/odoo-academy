@@ -34,9 +34,10 @@ class AcademyTrainingActivity(models.Model):
 
     _inherit = [
         'image.mixin',
-        'mail.thread',
         'academy.abstract.training',
-        'academy.abstract.owner'
+        'academy.abstract.owner',
+        'mail.thread',
+        'mail.activity.mixin'
     ]
 
     name = fields.Char(

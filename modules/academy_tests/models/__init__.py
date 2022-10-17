@@ -6,7 +6,6 @@
 ###############################################################################
 
 from . import academy_abstract_training
-from . import academy_abstract_spreadable
 from . import academy_abstract_attempt_answer
 from . import academy_abstract_attempt
 
@@ -45,8 +44,6 @@ from . import academy_training_lesson
 from . import academy_training_action_enrolment
 from . import academy_tests_test
 from . import academy_tests_random_template_training_action_rel
-
-from . import academy_tests_random_template_scheduled
 
 from . import academy_student
 

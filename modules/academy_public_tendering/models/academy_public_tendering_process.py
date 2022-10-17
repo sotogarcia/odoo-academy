@@ -27,8 +27,9 @@ class AptPublicTendering(models.Model):
 
     _inherit = [
         'image.mixin',
+        'academy.abstract.owner',
         'mail.thread',
-        'academy.abstract.owner'
+        'mail.activity.mixin'
     ]
 
     _rec_name = 'name'
@@ -43,7 +44,7 @@ class AptPublicTendering(models.Model):
         help='Name for this academy public tendering',
         size=255,
         translate=True,
-        track_visibility='always'
+        tracking=True
     )
 
     description = fields.Text(
@@ -64,7 +65,7 @@ class AptPublicTendering(models.Model):
         default=True,
         help=('If the active field is set to false, it will allow you '
               'to hide record without removing it.'),
-        track_visibility='onchange'
+        tracking=True
     )
 
     public_offer_id = fields.Many2one(
@@ -158,7 +159,7 @@ class AptPublicTendering(models.Model):
         index=False,
         default=fields.Date.today(),
         help='Choose the approval date',
-        track_visibility='onchange',
+        tracking=True,
         compute=lambda self: self._compute_state_date('approval')
     )
 
@@ -169,7 +170,7 @@ class AptPublicTendering(models.Model):
         index=False,
         default=fields.Date.today(),
         help='Choose the Announcement date',
-        track_visibility='onchange',
+        tracking=True,
         compute=lambda self: self._compute_state_date('announcement')
     )
 
@@ -190,7 +191,7 @@ class AptPublicTendering(models.Model):
         index=False,
         # default=lambda self: self.default_submissions_deadline(),
         help='Choose the due date for tendering proccess',
-        track_visibility='onchange'
+        tracking=True
     )
 
     vacancy_position_ids = fields.One2many(
@@ -270,7 +271,7 @@ class AptPublicTendering(models.Model):
         domain=[],
         context={},
         limit=None,
-        track_visibility='onchange'
+        tracking=True
     )
 
     training_action_id = fields.Many2one(
@@ -301,7 +302,7 @@ class AptPublicTendering(models.Model):
         auto_join=False,
         group_expand='_read_group_state_ids',
         store=True,
-        track_visibility='onchange'
+        tracking=True
     )
 
     public_process_event_ids = fields.One2many(

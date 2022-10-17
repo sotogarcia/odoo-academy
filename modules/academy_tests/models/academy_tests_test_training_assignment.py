@@ -41,7 +41,8 @@ class AcademyTestsTestTrainingAssignment(models.Model):
     _inherit = [
         'academy.abstract.training.reference',
         'academy.abstract.owner',
-        'mail.thread'
+        'mail.thread',
+        'mail.activity.mixin'
     ]
 
     name = fields.Char(
@@ -70,7 +71,7 @@ class AcademyTestsTestTrainingAssignment(models.Model):
         default=True,
         help=('If the active field is set to false, it will allow you to '
               'hide record without removing it'),
-        track_visibility='onchange'
+        tracking=True
     )
 
     test_id = fields.Many2one(

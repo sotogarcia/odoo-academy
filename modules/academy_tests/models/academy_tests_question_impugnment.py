@@ -28,7 +28,11 @@ class AcademyTestsQuestionImpugnment(models.Model):
     _name = 'academy.tests.question.impugnment'
     _description = u'Academy tests, question impugnment'
 
-    _inherit = ['academy.abstract.owner', 'mail.thread']
+    _inherit = [
+        'academy.abstract.owner',
+        'mail.thread',
+        'mail.activity.mixin'
+    ]
 
     _rec_name = 'name'
     _order = 'write_date DESC, create_date DESC'
@@ -42,7 +46,7 @@ class AcademyTestsQuestionImpugnment(models.Model):
         help='Short impugnment description',
         size=255,
         translate=True,
-        track_visibility='onchange'
+        tracking=True
     )
 
     description = fields.Text(
@@ -53,7 +57,7 @@ class AcademyTestsQuestionImpugnment(models.Model):
         default=None,
         help='Long impugnment description',
         translate=True,
-        track_visibility='onchange'
+        tracking=True
     )
 
     question_id = fields.Many2one(
@@ -68,7 +72,7 @@ class AcademyTestsQuestionImpugnment(models.Model):
         context={},
         ondelete='cascade',
         auto_join=False,
-        track_visibility='onchange'
+        tracking=True
     )
 
     html = fields.Html(
@@ -98,7 +102,7 @@ class AcademyTestsQuestionImpugnment(models.Model):
         context={},
         ondelete='cascade',
         auto_join=False,
-        track_visibility='onchange'
+        tracking=True
     )
 
     reply_ids = fields.One2many(
@@ -114,7 +118,7 @@ class AcademyTestsQuestionImpugnment(models.Model):
         context={},
         auto_join=False,
         limit=None,
-        track_visibility='onchange'
+        tracking=True
     )
 
     state = fields.Selection(
@@ -126,7 +130,7 @@ class AcademyTestsQuestionImpugnment(models.Model):
         help='Display current impugnment state',
         selection=STATES,
         group_expand='_expand_states',
-        track_visibility='onchange'
+        tracking=True
     )
 
     student_name = fields.Char(
@@ -144,7 +148,7 @@ class AcademyTestsQuestionImpugnment(models.Model):
         default=None,
         help='Display date of the last reply',
         compute='_compute_reply_date',
-        track_visibility='onchange'
+        tracking=True
     )
 
     @api.depends('reply_ids')

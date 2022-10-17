@@ -31,8 +31,7 @@ class AcademyAbstractOwner(models.AbstractModel):
         domain=[],
         context={},
         ondelete='cascade',
-        auto_join=False,
-        track_visibility='onchange'
+        auto_join=False
     )
 
     root_id = fields.Many2one(
@@ -46,8 +45,7 @@ class AcademyAbstractOwner(models.AbstractModel):
         domain=[],
         context={},
         ondelete='cascade',
-        auto_join=False,
-        track_visibility='onchange'
+        auto_join=False
     )
 
     def _default_owner_id(self):

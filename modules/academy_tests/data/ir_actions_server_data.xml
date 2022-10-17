@@ -3,14 +3,6 @@
 <openerp>
     <data noupdate="0">
 
-<!--         <record id="action_download_as_word_document" model="ir.actions.server">
-            <field name="type">ir.actions.server</field>
-            <field name="name">Download as Word document</field>
-            <field name="model_id" ref="academy_tests.model_academy_tests_test" />
-            <field name="sequence" eval="5" />
-            <field name="code">action = self.to_docx(cr, uid, context=context)</field>
-        </record> -->
-
         <record id="action_remove_duplicate_questions" model="ir.actions.server">
             <field name="type">ir.actions.server</field>
             <field name="name">Remove duplicates</field>

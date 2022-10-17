@@ -23,7 +23,7 @@ class AcademyPublicTenderingOffer(models.Model):
     _name = 'academy.public.tendering.public.offer'
     _description = u'Academy public tendering public offer'
 
-    _inherit = ['image.mixin', 'mail.thread']
+    _inherit = ['image.mixin', 'mail.thread', 'mail.activity.mixin']
 
     _rec_name = 'name'
     _order = 'name ASC'
@@ -57,7 +57,7 @@ class AcademyPublicTenderingOffer(models.Model):
         default=True,
         help=('If the active field is set to false, it will allow you '
               'to hide record without removing it.'),
-        track_visibility='onchange'
+        tracking=True
     )
 
     public_administration_id = fields.Many2one(
@@ -72,7 +72,7 @@ class AcademyPublicTenderingOffer(models.Model):
         context={},
         ondelete='cascade',
         auto_join=False,
-        track_visibility='always'
+        tracking=True
     )
 
     tendering_process_ids = fields.One2many(
@@ -139,9 +139,8 @@ class AcademyPublicTenderingOffer(models.Model):
         index=False,
         default=fields.Date.today(),
         help='Choose the approval date',
-        track_visibility='onchange',
+        tracking=True,
     )
-
 
     @api.depends('tendering_process_ids')
     def _compute_total_of_vacancies(self):
@@ -153,12 +152,10 @@ class AcademyPublicTenderingOffer(models.Model):
 
             record.total_of_vacancies = sum(vacancy_ids.mapped('quantity'))
 
-
     @api.depends('tendering_process_ids')
     def _compute_total_of_processes(self):
         for record in self:
             record.total_of_processes = len(record.tendering_process_ids)
-
 
     def update_approval(self):
         for record in self:

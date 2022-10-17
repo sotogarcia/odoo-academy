@@ -101,6 +101,9 @@
         'security/academy_training_resource_kind.xml',
 
         'security/res_users.xml',
+
+        "security/academy_training_session_wizard.xml",
+        "security/academy_training_session_wizard_line.xml",
     ],
 
     'qweb': [

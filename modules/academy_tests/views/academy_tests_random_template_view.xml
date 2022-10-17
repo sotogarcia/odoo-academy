@@ -154,9 +154,6 @@
                                     <field name="skip_faulty_lines" class="oe_field_skip_faulty_lines" colspan="2"/>
                                 </group>
                             </page>
-                            <page string="Scheduled tasks" class="oe_page_sheduled_tasks" accesskey="S" groups="academy_base.academy_group_technical">
-                                <field name="scheduled_ids" class="oe_field_scheduled_ids" />
-                            </page>
                         </notebook>
 
                     </sheet>

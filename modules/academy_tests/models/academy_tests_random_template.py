@@ -43,7 +43,8 @@ class AcademyTestsRandomTemplate(models.Model):
         'academy.abstract.training.reference',
         'academy.abstract.owner',
         'image.mixin',
-        'mail.thread'
+        'mail.thread',
+        'mail.activity.mixin'
     ]
 
     _rec_name = 'name'
@@ -142,22 +143,6 @@ class AcademyTestsRandomTemplate(models.Model):
         help='Show number of lines',
         store=False,
         compute='_compute_line_count'
-    )
-
-    scheduled_ids = fields.One2many(
-        string='Scheduled tasks',
-        required=False,
-        readonly=False,
-        index=False,
-        default=None,
-        help='Schedule this template',
-        comodel_name='academy.tests.random.template.scheduled',
-        inverse_name='template_id',
-        domain=[],
-        context={},
-        auto_join=False,
-        limit=None,
-        copy=False
     )
 
     scheduled_count = fields.Integer(
@@ -334,11 +319,6 @@ class AcademyTestsRandomTemplate(models.Model):
         for record in self:
             record.test_count = len(record.test_ids)
 
-    @api.depends('scheduled_ids')
-    def _compute_scheduled_count(self):
-        for record in self:
-            record.scheduled_count = len(record.scheduled_ids)
-
     @api.onchange('training_ref')
     def _onchange_training_ref(self):
         default_scale = self.default_correction_scale_id()
@@ -350,10 +330,6 @@ class AcademyTestsRandomTemplate(models.Model):
                 record.correction_scale_id = training.correction_scale_id
             else:
                 record.correction_scale_id = default_scale
-
-    @api.onchange('scheduled_ids')
-    def _onchange_scheduled_ids(self):
-        self._compute_scheduled_count()
 
     def default_test_kind_id(self):
         return self.env.ref('academy_tests.academy_tests_test_kind_common')
@@ -390,6 +366,12 @@ class AcademyTestsRandomTemplate(models.Model):
         md_set = md_obj.search(md_domain)
 
         return [('model_id', '=', md_set.res_id)]
+
+    def _valid_field_parameter(self, field, name):
+        extra = ['wizard']
+        _super = super(AcademyTestsRandomTemplate, self)
+
+        return name in extra or _super._valid_field_parameter(field, name)
 
     # ---------------------------- PUBIC METHODS ------------------------------
 

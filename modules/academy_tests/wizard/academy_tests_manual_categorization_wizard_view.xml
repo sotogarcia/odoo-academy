@@ -3,9 +3,9 @@
 <openerp>
     <data noupdate="0">
 
-        <record id="view_academy_tests_categorization_wizard_form" model="ir.ui.view">
+        <record id="view_academy_tests_manual_categorization_wizard_form" model="ir.ui.view">
             <field name="name">Manual categorization wizard</field>
-            <field name="model">academy.tests.categorization.wizard</field>
+            <field name="model">academy.tests.manual.categorization.wizard</field>
             <field name="type">form</field>
             <field name="mode">primary</field>
             <field name="priority" eval="16" />
@@ -40,7 +40,7 @@
         <record id="action_manual_categorization_wizard_act_window" model="ir.actions.act_window">
             <field name="type">ir.actions.act_window</field>
             <field name="name">Manual categorization</field>
-            <field name="res_model">academy.tests.categorization.wizard</field>
+            <field name="res_model">academy.tests.manual.categorization.wizard</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>
             <field name="domain">[]</field>
@@ -62,7 +62,7 @@
         <record id="action_manual_categorization_wizard_bind_to_link_act_window" model="ir.actions.act_window">
             <field name="type">ir.actions.act_window</field>
             <field name="name">Manual categorization</field>
-            <field name="res_model">academy.tests.categorization.wizard</field>
+            <field name="res_model">academy.tests.manual.categorization.wizard</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>
             <field name="domain">[]</field>
@@ -74,7 +74,7 @@
         <record id="action_manual_categorization_wizard_bind_to_test_act_window" model="ir.actions.act_window">
             <field name="type">ir.actions.act_window</field>
             <field name="name">Manual categorization</field>
-            <field name="res_model">academy.tests.categorization.wizard</field>
+            <field name="res_model">academy.tests.manual.categorization.wizard</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>
             <field name="domain">[]</field>

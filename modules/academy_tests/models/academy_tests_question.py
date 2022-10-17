@@ -67,8 +67,8 @@ class AcademyTestsQuestion(models.Model):
 
     _inherit = [
         'academy.abstract.owner',
-        'academy.abstract.spreadable',
-        'mail.thread'
+        'mail.thread',
+        'mail.activity.mixin'
     ]
 
     _selectable = [
@@ -106,7 +106,7 @@ class AcademyTestsQuestion(models.Model):
         help='Text for this question',
         size=1024,
         translate=True,
-        track_visibility='onchange'
+        tracking=True
     )
 
     preamble = fields.Text(
@@ -151,7 +151,7 @@ class AcademyTestsQuestion(models.Model):
         context={},
         ondelete='cascade',
         auto_join=False,
-        track_visibility='onchange',
+        tracking=True,
     )
 
     topic_version_ids = fields.Many2many(
@@ -168,7 +168,7 @@ class AcademyTestsQuestion(models.Model):
         domain=[],
         context={},
         limit=None,
-        track_visibility='onchange'
+        tracking=True
     )
 
     category_ids = fields.Many2many(
@@ -185,7 +185,7 @@ class AcademyTestsQuestion(models.Model):
         domain=[],
         context={},
         limit=None,
-        track_visibility='onchange',
+        tracking=True,
     )
 
     answer_ids = fields.One2many(
@@ -218,7 +218,7 @@ class AcademyTestsQuestion(models.Model):
         domain=[],
         context={},
         limit=None,
-        track_visibility='onchange',
+        tracking=True,
     )
 
     level_id = fields.Many2one(
@@ -233,7 +233,7 @@ class AcademyTestsQuestion(models.Model):
         context={},
         ondelete='cascade',
         auto_join=False,
-        track_visibility='onchange',
+        tracking=True,
     )
 
     ir_attachment_ids = fields.Many2many(
@@ -324,7 +324,7 @@ class AcademyTestsQuestion(models.Model):
             ('draft', 'Draft'),
             ('ready', 'Ready')
         ],
-        track_visibility='onchange'
+        tracking=True
     )
 
     authorship = fields.Boolean(

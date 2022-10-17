@@ -23,7 +23,7 @@ class AcademyTeacher(models.Model):
     _rec_name = 'name'
     _order = 'name ASC'
 
-    _inherit = ['mail.thread']
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _inherits = {'res.users': 'res_users_id'}
 
     res_users_id = fields.Many2one(

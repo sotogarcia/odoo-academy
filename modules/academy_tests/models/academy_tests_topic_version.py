@@ -88,7 +88,7 @@ class AcademyTestsTopicVersion(models.Model):
     )
 
     training_activity_ids = fields.Many2many(
-        string='Activities',
+        string='Training activities',
         required=False,
         readonly=True,
         index=False,
