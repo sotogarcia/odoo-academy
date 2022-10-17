@@ -8,8 +8,6 @@ Odoo model which stores all needed attributes and behavior.
 from odoo import models, fields, api
 from odoo.tools.translate import _
 
-import odoo.addons.academy_base.models.utils.custom_model_fields as custom
-
 from .utils.sql_m2m_through_view import \
     ACADEMY_TESTS_TOPIC_TRAINING_MODULE_LINK_QUESTION_REL
 
@@ -110,7 +108,7 @@ class AcademyTestsTopicTrainingModuleLink(models.Model):
         compute=lambda self: self.compute_category_count()
     )
 
-    question_ids = custom.Many2manyThroughView(
+    question_ids = fields.Many2manyThroughView(
         string='Questions',
         required=False,
         readonly=True,

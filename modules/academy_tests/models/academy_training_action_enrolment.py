@@ -7,7 +7,6 @@ This module extends the academy.training.action.enrolment Odoo model
 from odoo import models, fields, api
 from odoo.tools.translate import _
 from logging import getLogger
-import odoo.addons.academy_base.models.utils.custom_model_fields as custom
 from .utils.sql_m2m_through_view import \
     ACADEMY_TRAINING_AVAILABLE_ITEMS_REL
 
@@ -87,7 +86,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         for record in self:
             record.template_count = len(record.template_ids)
 
-    available_assignment_ids = custom.Many2manyThroughView(
+    available_assignment_ids = fields.Many2manyThroughView(
         string='Available assignments',
         required=False,
         readonly=True,

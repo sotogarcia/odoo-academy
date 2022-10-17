@@ -33,12 +33,6 @@ msgid "# Record Rules"
 msgstr "# Reglas del registro"
 
 #. module: academy_base
-#: code:addons/academy_base/models/utils/custom_model_fields.py:0
-#, python-format
-msgid "%s: Left table and right table must exist before VIEW creation"
-msgstr "%s: La tabla izquierda y la tabla derecha deben existir antes de la creación de la vista"
-
-#. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_student_form
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_teacher_form
 msgid "(edit)"

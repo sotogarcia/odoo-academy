@@ -13,7 +13,6 @@ from odoo.tools.translate import _
 from odoo.exceptions import UserError
 from odoo.osv.expression import FALSE_DOMAIN
 
-from .utils.custom_model_fields import Many2manyThroughView
 from .utils.raw_sql import \
     ACADEMY_TRAINING_ACTION_ENROLMENT_AVAILABLE_RESOURCE_REL
 
@@ -171,7 +170,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         limit=None
     )
 
-    available_resource_ids = Many2manyThroughView(
+    available_resource_ids = fields.Many2manyThroughView(
         string='Available enrolment resources',
         required=False,
         readonly=True,

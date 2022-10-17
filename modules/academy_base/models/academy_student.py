@@ -7,7 +7,6 @@ all student attributes and behavior.
 
 from odoo import models, fields, api
 from odoo.tools.translate import _
-from .utils.custom_model_fields import Many2manyThroughView
 from odoo.exceptions import ValidationError
 from odoo.osv.expression import OR
 from odoo.osv.expression import FALSE_DOMAIN
@@ -66,7 +65,7 @@ class AcademyStudent(models.Model):
         compute='_compute_enrolment_count'
     )
 
-    training_action_ids = Many2manyThroughView(
+    training_action_ids = fields.Many2manyThroughView(
         string='Training actions',
         required=False,
         readonly=True,

@@ -7,7 +7,6 @@ This module extends the academy.training.module Odoo model
 from odoo import models, fields, api
 from odoo.tools.translate import _
 
-import odoo.addons.academy_base.models.utils.custom_model_fields as custom
 from .utils.sql_m2m_through_view import INHERITED_TOPICS_REL
 from .utils.sql_m2m_through_view import INHERITED_CATEGORIES_REL
 from .utils.sql_m2m_through_view import \
@@ -114,7 +113,7 @@ class AcademyTrainingModule(models.Model):
         limit=None,
     )
 
-    available_topic_ids = custom.Many2manyThroughView(
+    available_topic_ids = fields.Many2manyThroughView(
         string='Available topics',
         required=False,
         readonly=True,
@@ -131,7 +130,7 @@ class AcademyTrainingModule(models.Model):
         sql=INHERITED_TOPICS_REL
     )
 
-    available_categories_ids = custom.Many2manyThroughView(
+    available_categories_ids = fields.Many2manyThroughView(
         string='Available categories',
         required=False,
         readonly=True,
@@ -148,7 +147,7 @@ class AcademyTrainingModule(models.Model):
         sql=INHERITED_CATEGORIES_REL
     )
 
-    available_question_ids = custom.Many2manyThroughView(
+    available_question_ids = fields.Many2manyThroughView(
         string='Available questions',
         required=False,
         readonly=True,

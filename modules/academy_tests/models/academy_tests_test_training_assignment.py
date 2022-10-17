@@ -10,7 +10,6 @@ from logging import getLogger
 
 from .utils.sql_m2m_through_view import \
     ACADEMY_TESTS_TEST_TRAINING_ASSIGNMENT_STUDENT_REL
-import odoo.addons.academy_base.models.utils.custom_model_fields as custom
 
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
@@ -275,7 +274,7 @@ class AcademyTestsTestTrainingAssignment(models.Model):
         for record in self:
             record.attempt_count = len(record.attempt_ids)
 
-    student_ids = custom.Many2manyThroughView(
+    student_ids = fields.Many2manyThroughView(
         string='Students',
         required=False,
         readonly=True,

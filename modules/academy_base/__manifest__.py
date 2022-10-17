@@ -17,7 +17,8 @@
 
     'depends': [
         'base',
-        'mail'
+        'mail',
+        'm2m_through_view'
     ],
 
     'data': [

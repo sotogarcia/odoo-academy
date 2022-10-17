@@ -20,7 +20,6 @@ import mimetypes
 from io import BytesIO
 
 from .utils.libuseful import prepare_text, fix_established, is_numeric
-import odoo.addons.academy_base.models.utils.custom_model_fields as custom
 
 from .utils.sql_operations import ACADEMY_QUESTION_ENSURE_CHECKSUMS
 from .utils.sql_operations import FIND_MOST_USED_QUESTION_FIELD_VALUE_FOR_SQL
@@ -350,7 +349,7 @@ class AcademyTestsQuestion(models.Model):
         auto_join=False
     )
 
-    depends_on_ids = custom.Many2manyThroughView(
+    depends_on_ids = fields.Many2manyThroughView(
         string='Depends on',
         required=False,
         readonly=True,
@@ -367,7 +366,7 @@ class AcademyTestsQuestion(models.Model):
         sql=ACADEMY_TESTS_QUESTION_DEPENDENCY_REL
     )
 
-    dependent_ids = custom.Many2manyThroughView(
+    dependent_ids = fields.Many2manyThroughView(
         string='Dependents',
         required=False,
         readonly=True,
@@ -384,7 +383,7 @@ class AcademyTestsQuestion(models.Model):
         sql=ACADEMY_TESTS_QUESTION_DEPENDENCY_REL
     )
 
-    duplicated_ids = custom.Many2manyThroughView(
+    duplicated_ids = fields.Many2manyThroughView(
         string='Duplicates',
         required=False,
         readonly=True,
@@ -403,7 +402,7 @@ class AcademyTestsQuestion(models.Model):
 
     # This field can have a maximum of one record. It's used in some domains
     # to check if question is not the original.
-    original_ids = custom.Many2manyThroughView(
+    original_ids = fields.Many2manyThroughView(
         string='Original',
         required=False,
         readonly=True,
@@ -431,7 +430,7 @@ class AcademyTestsQuestion(models.Model):
         compute=lambda self: self._compute_color()
     )
 
-    topic_module_link_ids = custom.Many2manyThroughView(
+    topic_module_link_ids = fields.Many2manyThroughView(
         string='Links module-topic',
         required=False,
         readonly=True,

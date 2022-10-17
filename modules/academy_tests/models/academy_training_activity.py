@@ -5,7 +5,6 @@ This module extends the academy.training.activity Odoo model
 """
 
 from odoo import models, fields, api
-import odoo.addons.academy_base.models.utils.custom_model_fields as custom
 
 from .utils.sql_m2m_through_view import \
     PARTIAL_ACADEMY_TESTS_QUESTION_TRAINING_MODULE
@@ -120,7 +119,7 @@ class AcademyTrainingActivity(models.Model):
         for record in self:
             record.template_count = len(record.template_ids)
 
-    available_question_ids = custom.Many2manyThroughView(
+    available_question_ids = fields.Many2manyThroughView(
         string='Available questions',
         required=False,
         readonly=True,

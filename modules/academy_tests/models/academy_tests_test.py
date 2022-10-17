@@ -24,7 +24,6 @@ from odoo import models, fields, api
 from odoo.tools.translate import _
 
 from odoo.osv.expression import FALSE_DOMAIN
-import odoo.addons.academy_base.models.utils.custom_model_fields as custom
 from .utils.sql_operations import ACADEMY_TESTS_SHUFFLE
 from .utils.sql_operations import ACADEMY_TESTS_ARRANGE_BLOCKS
 from .utils.sql_inverse_searches import QUESTION_COUNT_SEARCH
@@ -256,7 +255,7 @@ class AcademyTestsTest(models.Model):
         tracking=True,
     )
 
-    test_block_ids = custom.Many2manyThroughView(
+    test_block_ids = fields.Many2manyThroughView(
         string='Test blocks',
         required=False,
         readonly=True,
@@ -381,7 +380,7 @@ class AcademyTestsTest(models.Model):
 
         return [('id', 'in', ids)]
 
-    topic_ids = custom.Many2manyThroughView(
+    topic_ids = fields.Many2manyThroughView(
         string='Topics',
         required=False,
         readonly=True,

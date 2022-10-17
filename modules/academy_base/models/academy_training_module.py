@@ -7,7 +7,6 @@ all training module attributes and behavior.
 
 from odoo import models, fields, api
 
-from .utils.custom_model_fields import Many2manyThroughView
 from .utils.raw_sql import ACADEMY_TRAINING_MODULE_AVAILABLE_RESOURCE_REL, \
     ACADEMY_TRAINING_MODULE_USED_IN_TRAINING_ACTION_REL
 from odoo.tools.translate import _
@@ -113,7 +112,7 @@ class AcademyTrainingModule(models.Model):
         limit=None
     )
 
-    tree_ids = Many2manyThroughView(
+    tree_ids = fields.Many2manyThroughView(
         string='Module tree',
         required=False,
         readonly=True,
@@ -167,7 +166,7 @@ class AcademyTrainingModule(models.Model):
         limit=None
     )
 
-    available_resource_ids = Many2manyThroughView(
+    available_resource_ids = fields.Many2manyThroughView(
         string='Available resources',
         required=False,
         readonly=True,
@@ -184,7 +183,7 @@ class AcademyTrainingModule(models.Model):
         sql=ACADEMY_TRAINING_MODULE_AVAILABLE_RESOURCE_REL
     )
 
-    used_in_action_ids = Many2manyThroughView(
+    used_in_action_ids = fields.Many2manyThroughView(
         string='Used in actions',
         required=False,
         readonly=True,
@@ -211,7 +210,7 @@ class AcademyTrainingModule(models.Model):
     )
 
     # This no needs an SQL statement
-    training_activity_ids = Many2manyThroughView(
+    training_activity_ids = fields.Many2manyThroughView(
         string='Training activities',
         required=False,
         readonly=True,

@@ -9,7 +9,6 @@ from logging import getLogger
 
 # pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
-from .utils.custom_model_fields import Many2manyThroughView
 from .utils.raw_sql import ACADEMY_TRAINING_ACTIVITY_TRAINING_MODULE_REL, \
     ACADEMY_TRAINING_ACTIVITY_TRAINING_UNIT_REL, \
     ACADEMY_TRAINING_ACTIVITY_AVAILABLE_RESOURCE_REL
@@ -194,7 +193,7 @@ class AcademyTrainingActivity(models.Model):
         limit=None,
     )
 
-    available_module_ids = Many2manyThroughView(
+    available_module_ids = fields.Many2manyThroughView(
         string='Training modules',
         required=False,
         readonly=True,
@@ -211,7 +210,7 @@ class AcademyTrainingActivity(models.Model):
         sql=ACADEMY_TRAINING_ACTIVITY_TRAINING_MODULE_REL
     )
 
-    available_unit_ids = Many2manyThroughView(
+    available_unit_ids = fields.Many2manyThroughView(
         string='Available training units',
         required=False,
         readonly=True,
@@ -244,7 +243,7 @@ class AcademyTrainingActivity(models.Model):
         limit=None
     )
 
-    available_resource_ids = Many2manyThroughView(
+    available_resource_ids = fields.Many2manyThroughView(
         string='Available activity resources',
         required=False,
         readonly=True,
@@ -262,7 +261,7 @@ class AcademyTrainingActivity(models.Model):
     )
 
     # This no needs an SQL statement
-    training_module_ids = Many2manyThroughView(
+    training_module_ids = fields.Many2manyThroughView(
         string='Modules',
         required=False,
         readonly=True,

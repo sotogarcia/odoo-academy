@@ -17,7 +17,6 @@ from odoo.exceptions import ValidationError
 from odoo.tools.safe_eval import safe_eval
 from odoo.osv.expression import AND
 
-from .utils.custom_model_fields import Many2manyThroughView
 from .utils.raw_sql import ACADEMY_TRAINING_ACTION_AVAILABLE_RESOURCE_REL, \
     ACADEMY_TRAINING_ACTION_STUDENT_REL
 
@@ -253,7 +252,7 @@ class AcademyTrainingAction(models.Model):
         limit=None
     )
 
-    available_resource_ids = Many2manyThroughView(
+    available_resource_ids = fields.Many2manyThroughView(
         string='Available action resources',
         required=False,
         readonly=True,
@@ -270,7 +269,7 @@ class AcademyTrainingAction(models.Model):
         sql=ACADEMY_TRAINING_ACTION_AVAILABLE_RESOURCE_REL
     )
 
-    student_ids = Many2manyThroughView(
+    student_ids = fields.Many2manyThroughView(
         string='Students',
         required=False,
         readonly=True,
