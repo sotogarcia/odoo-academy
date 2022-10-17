@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="academy_public_tendering_rss" model="ir.ui.menu" >
+            <field name="name">RSS feeds</field>
+            <field name="sequence" eval="16" />
+            <field name="parent_id" ref="academy_base.menu_academy_tools" />
+            <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
+        </record>
+
+    </data>
+</openerp>

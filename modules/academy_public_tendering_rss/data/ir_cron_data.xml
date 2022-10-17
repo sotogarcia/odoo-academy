@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="ir_cron_academy_public_tendering_rss_feed_consult_all" model="ir.cron">
+            <field name="name">Consult public tendering RSS feeds</field>
+            <field name="interval_number">6</field>
+            <field name="interval_type">hours</field>
+            <field name="numbercall">-1</field>
+            <field name="nextcall" eval="(DateTime.now().replace(hour=6, minute=15, second=0) + timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S')" />
+            <field name="doall" eval="True"/>
+            <field name="model_id" ref="academy_public_tendering_rss.model_academy_public_tendering_rss_feed"/>
+            <field name="code">model.consult_all()</field>
+            <field name="state">code</field>
+        </record>
+
+    </data>
+</openerp>

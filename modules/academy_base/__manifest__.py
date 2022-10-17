@@ -61,7 +61,6 @@
 
         'views/academy_teacher_view.xml',
 
-        'report/academy_base_report_assets.xml',
         'report/academy_training_activity_details_report.xml',
 
         'views/academy_training_resource_view.xml',
@@ -145,8 +144,15 @@
         "python": []
     },
 
+    # always loaded
+    "assets": {
+        'web.assets_backend': [
+            "academy_base/static/src/css/academy_base_view.css"
+        ],
+        'web.report_assets_common': [
+            'academy_tests/static/src/css/academy_training_activity_details_report.css'
+        ]
+    },
+
     'license': 'AGPL-3'
 }
-
-
-# Se da de baja el mismo día o al día siguiente

@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <!-- VIEWS: "RSS items"
+
+            - Model·········: academy_public_tendering_rss_item
+            - _rec_name·····: name
+            - Domain········: []
+            - Context·······: {}
+            - Parent menu ··: academy_public_tendering_rss.academy_public_tendering_rss
+            - View priority·: 16    Sequence····: 10
+            - Action help···: There is not RSS items
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+        <!-- Tree view for "academy_public_tendering_rss_item" -->
+        <record id="view_academy_public_tendering_rss_item_tree" model="ir.ui.view">
+            <field name="name">view.academy_public_tendering_rss_item.tree</field>
+            <field name="model">academy.public.tendering.rss.item</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <tree string="academy_public_tendering_rss_item_tree" create="0" delete="0" edit="1">
+                    <field name="feed_id" class="oe_field_feed_id" />
+                    <field name="name" class="oe_field_name" />
+                    <field name="published" class="oe_field_published" />
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form view for "academy_public_tendering_rss_item" -->
+        <record id="view_academy_public_tendering_rss_item_form" model="ir.ui.view">
+            <field name="name">view.academy_public_tendering_rss_item.form</field>
+            <field name="model">academy.public.tendering.rss.item</field>
+            <field name="type">form</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <form string="academy_public_tendering_rss_item_form" create="0" delete="0" edit="0">
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <widget name="web_ribbon" title="Archived" bg_color="bg-danger"
+                                    attrs="{'invisible': [('active', '=', True)]}"/>
+
+                            <button name="new_offer" type="object"
+                                class="oe_stat_button oe_read_only" icon="fa-plus-square">
+                                <field name="offer_count" widget="statinfo" string="Offers" />
+                            </button>
+                            <button name="new_process" type="object"
+                                class="oe_stat_button oe_read_only" icon="fa-plus-square">
+                                <field name="process_count" widget="statinfo" string="Processes" />
+                            </button>
+                            <button name="new_event" type="object"
+                                class="oe_stat_button oe_read_only" icon="fa-plus-square">
+                                <field name="event_count" widget="statinfo" string="Events" />
+                            </button>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="oe_title">
+                                    <field name="active" class="oe_field_active" invisible="1" />
+                                    <label for="name" class="oe_edit_only" />
+                                    <h1>
+                                        <field name="name" class="oe_field_name" />
+                                    </h1>
+                                </div>
+                            </div>
+                        </div>
+
+                        <group col="4">
+                            <field name="feed_id" class="oe_field_feed_id" />
+                            <field name="official" class="oe_field_official" />
+                            <field name="published" class="oe_field_published" />
+                            <separator colspan="2" />
+                            <field name="link" class="oe_field_link" colspan="4" widget="url" />
+                            <field name="guid" class="oe_field_guid" colspan="4" />
+                            <field name="description" class="oe_field_description" colspan="4" />
+                            <separator colspan="4" string="Summary"  attrs="{'invisible': [('body', '=', False)]}" />
+                            <field name="body" class="oe_field_body w-100 alert alert-info" role="alert"
+                                colspan="4" nolabel="1" attrs="{'invisible': [('body', '=', False)]}" />
+                        </group>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search view for "academy_public_tendering_rss_item" -->
+        <record id="view_academy_public_tendering_rss_item_search" model="ir.ui.view">
+            <field name="name">view.academy_public_tendering_rss_item.search</field>
+            <field name="model">academy.public.tendering.rss.item</field>
+            <field name="type">search</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <search string="academy_public_tendering_rss_item_search">
+                    <field name="name" />
+                    <field name="feed_id" />
+                    <field name="published" />
+
+                    <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
+
+                    <separator  />
+                    <filter string="Today"
+                        name="current_day"
+                        domain="[('safe_date', '&lt;=', (context_today().strftime('%Y-%m-%d')))]" />
+
+                    <filter string="Current Week"
+                        name="current_week"
+                        domain="[('safe_date', '&lt;=', ((context_today()+relativedelta(weeks=0, weekday=-1)).strftime('%Y-%m-%d'))), ('safe_date', '&gt;=', ((context_today()-relativedelta(weeks=1, weekday=0)).strftime('%Y-%m-%d')))]" />
+
+                    <separator />
+                    <filter string="RSS feed"
+                        name="group_rss_feed"
+                        context="{'group_by':'feed_id'}"/>
+                </search>
+            </field>
+        </record>
+
+        <!-- Main window action for model.name -->
+        <record id="action_rss_items_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">RSS items</field>
+            <field name="res_model">academy.public.tendering.rss.item</field>
+            <field name="view_mode">tree,form</field>
+            <field name="target">current</field>
+            <field name="domain">[]</field>
+            <field name="context">{'search_default_current_week': 1}</field>
+            <field name="search_view_id" ref="view_academy_public_tendering_rss_item_search" />
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to add new RSS items
+                </p><p>
+                    There is not RSS items
+                </p>
+            </field>
+        </record>
+
+        <!-- Main menu for model.name -->
+        <record id="menu_rss_items" model="ir.ui.menu" >
+            <field name="name">RSS items</field>
+            <field name="sequence" eval="10" />
+            <field name="action" ref="action_rss_items_act_window" />
+            <field name="parent_id" ref="academy_public_tendering_rss.academy_public_tendering_rss" />
+        </record>
+
+    </data>
+</openerp>

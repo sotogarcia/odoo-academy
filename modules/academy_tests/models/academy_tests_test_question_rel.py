@@ -197,8 +197,7 @@ class AcademyTestsTestQuestionRel(models.Model):
     @api.model
     def create(self, values):
         """ Ensure right sequence values. Allow to use given values valid to
-        create question as link values dictionary. Ensure related a valid state
-        in the related requests.
+        create question as link values dictionary.
         """
 
         test_id = self._get_text_id(values)
@@ -227,33 +226,6 @@ class AcademyTestsTestQuestionRel(models.Model):
 
         _super = super(AcademyTestsTestQuestionRel, self)
         result = _super.create(values)
-
-        request_set = result.mapped('request_id')
-        request_set.update_state()
-
-        return result
-
-    def write(self, values):
-        """ Ensure related a valid state in the related requests.
-        """
-        _super = super(AcademyTestsTestQuestionRel, self)
-        result = _super.write(values)
-
-        request_set = self.mapped('request_id')
-        request_set.update_state()
-
-        return result
-
-    def unlink(self):
-        """ Ensure related a valid state in the related requests.
-        """
-
-        request_set = self.mapped('request_id')
-
-        _super = super(AcademyTestsTestQuestionRel, self)
-        result = _super.unlink()
-
-        request_set.update_state()
 
         return result
 

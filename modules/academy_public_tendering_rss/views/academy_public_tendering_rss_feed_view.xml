@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <!-- VIEWS: "RSS Feeds"
+
+            - Model·········: academy.public.tendering.rss.feed
+            - _rec_name·····: name
+            - Domain········: []
+            - Context·······: {}
+            - Parent menu ··: academy_public_tendering_rss.academy_public_tendering_rss
+            - View priority·: 16    Sequence····: 10
+            - Action help···: There is not RSS feeds
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+        <!-- Tree view for "academy.public.tendering.rss.feed" -->
+        <record id="view_academy_public_tendering_rss_feed_tree" model="ir.ui.view">
+            <field name="name">view.academy.public.tendering.rss.feed.tree</field>
+            <field name="model">academy.public.tendering.rss.feed</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <tree string="academy_public_tendering_rss_feed_tree" create="1" delete="1" edit="1">
+                    <field name="name" class="od_field_name" />
+                    <field name="source" class="od_field_source" />
+                    <field name="published" class="od_field_published" />
+                    <field name="consulted" class="od_field_consulted" />
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form view for "academy.public.tendering.rss.feed" -->
+        <record id="view_academy_public_tendering_rss_feed_form" model="ir.ui.view">
+            <field name="name">view.academy.public.tendering.rss.feed.form</field>
+            <field name="model">academy.public.tendering.rss.feed</field>
+            <field name="type">form</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <form string="academy_public_tendering_rss_feed_form" create="1" delete="1" edit="1">
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <widget name="web_ribbon" title="Archived" bg_color="bg-danger"
+                                    attrs="{'invisible': [('active', '=', True)]}"/>
+
+                            <button name="consult" type="object"
+                                class="oe_stat_button oe_read_only" icon="fa-refresh">
+                                <span>Consult</span>
+                            </button>
+                        </div>
+
+                        <div class="oe_title">
+                            <field name="active" invisible="1" />
+                            <label for="name" class="oe_edit_only" />
+                            <h1>
+                                <field name="name" class="oe_field_name" />
+                            </h1>
+                        </div>
+
+                        <group col="4">
+                            <field name="source" colspan="4" class="oe_field_source" widget="url" />
+                            <field name="official" class="oe_field_official" />
+
+                            <separator colspan="4" />
+
+                            <field name="title" colspan="4" class="oe_field_title" />
+                            <field name="link" colspan="4" class="oe_field_link" widget="url" />
+
+                            <separator colspan="4" />
+
+                            <field name="lang" class="oe_field_lang" />
+                            <field name="publisher" class="oe_field_publisher" />
+
+                            <field name="published" class="oe_field_published" />
+                            <field name="consulted" class="oe_field_consulted" />
+
+                            <field name="description" colspan="4" class="oe_field_description" />
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_academy_public_tendering_rss_feed_kanban" model="ir.ui.view">
+            <field name="name">view.academy.public.tendering.rss.feed</field>
+            <field name="model">academy.public.tendering.rss.feed</field>
+            <field name="type">kanban</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_mobile" group_create="0" group_delete="0" group_edit="0"
+                    archivable="1" records_draggable="0" default_order="consulted">
+
+                    <field name="name" />
+                    <field name="source" />
+                    <field name="publisher" />
+                    <field name="consulted" />
+
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click oe_kanban_academy_tests_test d-flex flex-column h-100 justify-content-end">
+                                <div class="flex-fill align-top">
+                                    <div class="o_kanban_image">
+                                        <t t-if="record.image_128.raw_value">
+                                            <field name="image_128" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}' />
+                                        </t>
+                                        <t t-else="">
+                                            <img t-att-src="_s + &quot;/academy_public_tendering_rss/static/src/img/rss-kanban-icon.png&quot;" class="o_kanban_image" alt="Image for this test" />
+                                        </t>
+                                    </div>
+
+                                    <div class="oe_kanban_details">
+                                        <h4 class="o_ellipsis" t-att-title="record.name.raw_value">
+                                            <strong class="oe_partner_heading">
+                                                <field name="name" class="text-truncate" />
+                                            </strong>
+                                        </h4>
+                                        <ul>
+                                            <li class="o_ellipsis">
+                                                <field name="source" class="oe_field_source" />&#160;
+                                            </li>
+                                            <li class="o_ellipsis">
+                                                <field name="publisher" class="oe_field_publisher" />&#160;
+                                            </li>
+                                            <li class="o_ellipsis">
+                                                <strong>Consulted:</strong>&#160;
+                                                <field name="consulted" class="oe_field_consulted" />
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Search view for "academy.public.tendering.rss.feed" -->
+        <record id="view_academy_public_tendering_rss_feed_search" model="ir.ui.view">
+            <field name="name">view.academy.public.tendering.rss.feed.search</field>
+            <field name="model">academy.public.tendering.rss.feed</field>
+            <field name="type">search</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <search string="academy_public_tendering_rss_feed_search">
+                    <field name="name" />
+                    <field name="published" />
+                    <field name="consulted" />
+                </search>
+            </field>
+        </record>
+
+        <!-- Main window action for model.name -->
+        <record id="action_rss_feeds_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">RSS Feeds</field>
+            <field name="res_model">academy.public.tendering.rss.feed</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="target">current</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="search_view_id" ref="view_academy_public_tendering_rss_feed_search" />
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to add new RSS Feeds
+                </p><p>
+                    There is not RSS feeds
+                </p>
+            </field>
+        </record>
+
+        <!-- Main menu for model.name -->
+        <record id="menu_rss_feeds" model="ir.ui.menu" >
+            <field name="name">RSS Feeds</field>
+            <field name="sequence" eval="10" />
+            <field name="action" ref="action_rss_feeds_act_window" />
+            <field name="parent_id" ref="academy_public_tendering_rss.academy_public_tendering_rss" />
+        </record>
+
+    </data>
+</openerp>

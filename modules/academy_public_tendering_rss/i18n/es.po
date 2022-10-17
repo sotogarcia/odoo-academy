@@ -1,0 +1,790 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* academy_public_tendering_rss
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 13.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-10-06 11:56+0000\n"
+"PO-Revision-Date: 2022-10-06 15:19+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"Language: es\n"
+"X-Generator: Poedit 2.3\n"
+
+#. module: academy_public_tendering_rss
+#: code:addons/academy_public_tendering_rss/models/academy_public_tendering_rss_feed.py:0
+#, python-format
+msgid "0 bytes of content have been read from {}"
+msgstr ""
+
+#. module: academy_public_tendering_rss
+#: model_terms:ir.ui.view,arch_db:academy_public_tendering_rss.view_academy_public_tendering_rss_feed_form
+msgid "<span>Consult</span>"
+msgstr "Consultar"
+
+#. module: academy_public_tendering_rss
+#: model_terms:ir.ui.view,arch_db:academy_public_tendering_rss.view_academy_public_tendering_rss_feed_kanban
+msgid "<strong>Consulted:</strong>"
+msgstr ""
+
+#. module: academy_public_tendering_rss
+#: model:ir.model,name:academy_public_tendering_rss.model_academy_public_tendering_rss_feed
+msgid "Academy public tendering RSS feed"
+msgstr "Fuente RSS de Licitaciones Públicas"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model,name:academy_public_tendering_rss.model_academy_public_tendering_rss_item
+msgid "Academy public tendering RSS item"
+msgstr "Elemento RSS de Licitación Pública"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model,name:academy_public_tendering_rss.model_academy_public_tendering_event
+msgid "Academy public tendering event"
+msgstr "Evento de Licitación Pública"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model,name:academy_public_tendering_rss.model_academy_public_tendering_public_offer
+msgid "Academy public tendering public offer"
+msgstr "Oferta de Licitación Pública"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__message_needaction
+msgid "Action Needed"
+msgstr "Accion necesaria"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__active
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_item__active
+msgid "Active"
+msgstr "Activo"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,help:academy_public_tendering_rss.field_academy_public_tendering_rss_item__description
+msgid "Additional information in the RSS element"
+msgstr "Información adicional en el elemento RSS"
+
+#. module: academy_public_tendering_rss
+#: code:addons/academy_public_tendering_rss/models/academy_public_tendering_rss_feed.py:0
+#, python-format
+msgid "All RSS ({} / {}) feeds have been processed"
+msgstr "Todas las fuentes RSS ({} / {}) han sido procesadas"
+
+#. module: academy_public_tendering_rss
+#: code:addons/academy_public_tendering_rss/models/academy_public_tendering_rss_feed.py:0
+#, python-format
+msgid "All public tendering RSS feeds ({}) will be consulted"
+msgstr "Se consultarán todos los canales RSS de oposiciones públicas ({})"
+
+#. module: academy_public_tendering_rss
+#: model_terms:ir.ui.view,arch_db:academy_public_tendering_rss.view_academy_public_tendering_rss_feed_form
+#: model_terms:ir.ui.view,arch_db:academy_public_tendering_rss.view_academy_public_tendering_rss_item_form
+#: model_terms:ir.ui.view,arch_db:academy_public_tendering_rss.view_academy_public_tendering_rss_item_search
+msgid "Archived"
+msgstr "Archivado"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__message_attachment_count
+msgid "Attachment Count"
+msgstr "Recuento de adjuntos"
+
+#. module: academy_public_tendering_rss
+#: model:academy.public.tendering.rss.feed,name:academy_public_tendering_rss.academy_public_tendering_rss_feed_madrid_city
+msgid "Ayuntamiento de Madrid"
+msgstr ""
+
+#. module: academy_public_tendering_rss
+#: model:academy.public.tendering.rss.feed,name:academy_public_tendering_rss.academy_public_tendering_rss_feed_boe
+msgid "BOE"
+msgstr ""
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_item__body
+msgid "Body"
+msgstr "Cuerpo"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,help:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__active
+#: model:ir.model.fields,help:academy_public_tendering_rss.field_academy_public_tendering_rss_item__active
+msgid "Check it to show this attempt or uncheck to archivate"
+msgstr "Marcar para mostrar este intento o desmarcar para archivar"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,help:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__official
+#: model:ir.model.fields,help:academy_public_tendering_rss.field_academy_public_tendering_rss_item__official
+msgid "Checked if the feed corresponds to an official journal"
+msgstr "Marcado si la fuente corresponde a un diario oficial"
+
+#. module: academy_public_tendering_rss
+#: model_terms:ir.actions.act_window,help:academy_public_tendering_rss.action_rss_feeds_act_window
+msgid "Click to add new RSS Feeds"
+msgstr "Clic para agregar nuevas fuentes RSS"
+
+#. module: academy_public_tendering_rss
+#: model_terms:ir.actions.act_window,help:academy_public_tendering_rss.action_rss_items_act_window
+msgid "Click to add new RSS items"
+msgstr "Clic para agregar nuevos elementos RSS"
+
+#. module: academy_public_tendering_rss
+#: model:ir.actions.server,name:academy_public_tendering_rss.ir_cron_academy_public_tendering_rss_feed_consult_all_ir_actions_server
+#: model:ir.cron,cron_name:academy_public_tendering_rss.ir_cron_academy_public_tendering_rss_feed_consult_all
+#: model:ir.cron,name:academy_public_tendering_rss.ir_cron_academy_public_tendering_rss_feed_consult_all
+msgid "Consult public tendering RSS feeds"
+msgstr "Consultar los RSS de las oposiciones públicas"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__consulted
+msgid "Consulted"
+msgstr "Consultada"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__create_uid
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_item__create_uid
+msgid "Created by"
+msgstr "Creado por"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__create_date
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_item__create_date
+msgid "Created on"
+msgstr "Creado en"
+
+#. module: academy_public_tendering_rss
+#: model_terms:ir.ui.view,arch_db:academy_public_tendering_rss.view_academy_public_tendering_rss_item_search
+msgid "Current Week"
+msgstr "Esta semana"
+
+#. module: academy_public_tendering_rss
+#: model:academy.public.tendering.rss.feed,name:academy_public_tendering_rss.academy_public_tendering_rss_feed_doga
+msgid "DOGA"
+msgstr ""
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,help:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__consulted
+msgid "Date and time it was last consulted"
+msgstr "Fecha y hora de la última consulta"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,help:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__published
+#: model:ir.model.fields,help:academy_public_tendering_rss.field_academy_public_tendering_rss_item__published
+msgid "Date and time it was published"
+msgstr "Fecha y hora en que se publicó"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__description
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_item__description
+msgid "Description"
+msgstr "Descripción"
+
+#. module: academy_public_tendering_rss
+#: model:academy.public.tendering.rss.feed,description:academy_public_tendering_rss.academy_public_tendering_rss_feed_doga
+msgid ""
+"Diario núm, 191 correspondiente al Jueves, 6 de octubre de 2022 - IV. "
+"Oposiciones y concursos"
+msgstr ""
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__display_name
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_item__display_name
+msgid "Display Name"
+msgstr "Nombre para mostrar"
+
+#. module: academy_public_tendering_rss
+#: model:academy.public.tendering.rss.feed,description:academy_public_tendering_rss.academy_public_tendering_rss_feed_boe
+msgid ""
+"Disposiciones relativas a Oposiciones ingresadas en los últimos dos meses "
+"en la base de datos del Boletín Oficial del Estado"
+msgstr ""
+
+#. module: academy_public_tendering_rss
+#: model:academy.public.tendering.rss.feed,description:academy_public_tendering_rss.academy_public_tendering_rss_feed_madrid_city
+msgid "Empleo - Oposiciones"
+msgstr ""
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_item__event_count
+msgid "Event count"
+msgstr "Nº de eventos"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_item__event_ids
+#: model_terms:ir.ui.view,arch_db:academy_public_tendering_rss.view_academy_public_tendering_rss_item_form
+msgid "Events"
+msgstr "Eventos"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__message_follower_ids
+msgid "Followers"
+msgstr "Seguidores"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__message_channel_ids
+msgid "Followers (Channels)"
+msgstr "Seguidores (Canales)"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Seguidores (Partners)"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_item__guid
+msgid "GUID"
+msgstr ""
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,help:academy_public_tendering_rss.field_academy_public_tendering_rss_item__guid
+msgid "GUID in the RSS element"
+msgstr "GUID en el elemento RSS"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,help:academy_public_tendering_rss.field_academy_public_tendering_rss_item__body
+msgid "HTML"
+msgstr ""
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_item__guid_hash
+msgid "Hash"
+msgstr ""
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,help:academy_public_tendering_rss.field_academy_public_tendering_rss_item__guid_hash
+msgid "Hash to allow to check if item already exists"
+msgstr "Hash para permitir verificar si el artículo ya existe"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__id
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_item__id
+msgid "ID"
+msgstr ""
+
+#. module: academy_public_tendering_rss
+#: model:academy.public.tendering.rss.feed,name:academy_public_tendering_rss.academy_public_tendering_rss_feed_inap
+msgid "INAP"
+msgstr ""
+
+#. module: academy_public_tendering_rss
+#: model:academy.public.tendering.rss.feed,title:academy_public_tendering_rss.academy_public_tendering_rss_feed_doga
+msgid "IV. Oposiciones y concursos - DOG - Diario Oficial de Galicia"
+msgstr ""
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,help:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__message_needaction
+#: model:ir.model.fields,help:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__message_unread
+msgid "If checked, new messages require your attention."
+msgstr "Si está marcado, los nuevos mensajes requieren su atención."
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,help:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__message_has_error
+#: model:ir.model.fields,help:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si está marcada, algunos mensajes tienen un error de entrega."
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__image_1920
+msgid "Image"
+msgstr ""
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__image_1024
+msgid "Image 1024"
+msgstr ""
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__image_128
+msgid "Image 128"
+msgstr ""
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__image_256
+msgid "Image 256"
+msgstr ""
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__image_512
+msgid "Image 512"
+msgstr ""
+
+#. module: academy_public_tendering_rss
+#: model_terms:ir.ui.view,arch_db:academy_public_tendering_rss.view_academy_public_tendering_rss_feed_kanban
+msgid "Image for this test"
+msgstr "Imagen para esta fuente"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__message_is_follower
+msgid "Is Follower"
+msgstr "Es seguidor"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__official
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_item__official
+msgid "Is official"
+msgstr "Es oficial"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__item_count
+msgid "Item count"
+msgstr "Nº de elementos"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__item_ids
+msgid "Items"
+msgstr "Elementos"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,help:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__item_ids
+msgid "Items in RSS feed"
+msgstr "Elementos en la fuente RSS"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,help:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__options
+msgid "JSON string with some extra information"
+msgstr "Cadena JSON con información adicional"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__lang
+msgid "Language"
+msgstr "Idioma"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_feed____last_update
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_item____last_update
+msgid "Last Modified on"
+msgstr "Última modificación el"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__write_uid
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_item__write_uid
+msgid "Last Updated by"
+msgstr "Última actualización por"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__write_date
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_item__write_date
+msgid "Last Updated on"
+msgstr "Ultima actualización en"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__link
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_item__link
+msgid "Link"
+msgstr "Enlace"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,help:academy_public_tendering_rss.field_academy_public_tendering_rss_item__event_ids
+msgid "List all events related with this RSS item"
+msgstr "Listar todos los eventos relacionados con este elemento RSS"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,help:academy_public_tendering_rss.field_academy_public_tendering_rss_item__offer_ids
+msgid "List all offers related with this RSS item"
+msgstr "Listar todas las ofertas relacionadas con este elemento RSS"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,help:academy_public_tendering_rss.field_academy_public_tendering_rss_item__process_ids
+msgid "List all processes related with this RSS item"
+msgstr "Listar todos los procesos relacionados con este elemento RSS"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__message_main_attachment_id
+msgid "Main Attachment"
+msgstr "Adjunto principal"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__message_has_error
+msgid "Message Delivery error"
+msgstr "Error de entrega de mensajes"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__message_ids
+msgid "Messages"
+msgstr "Mensajes"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,help:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__name
+msgid "Name will be used to identify the RSS feed"
+msgstr "El nombre se usará para identificar la fuente RSS"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Número de acciones"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__message_has_error_counter
+msgid "Number of errors"
+msgstr "Número de errores"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,help:academy_public_tendering_rss.field_academy_public_tendering_rss_item__event_count
+msgid "Number of events related with this RSS item"
+msgstr "Número de eventos relacionados con este elemento RSS"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,help:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__item_count
+msgid "Number of items in RSS feed"
+msgstr "Número de elementos en la fuente RSS"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,help:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__message_needaction_counter
+msgid "Number of messages which requires an action"
+msgstr "Número de mensajes que requieren una acción"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,help:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Número de mensajes con error de entrega"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,help:academy_public_tendering_rss.field_academy_public_tendering_rss_item__offer_count
+msgid "Number of offers related with this RSS item"
+msgstr "Número de ofertas relacionadas con este elemento RSS"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,help:academy_public_tendering_rss.field_academy_public_tendering_rss_item__process_count
+msgid "Number of processes related with this RSS item"
+msgstr "Número de procesos relacionados con este elemento RSS"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,help:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__message_unread_counter
+msgid "Number of unread messages"
+msgstr "Número de mensajes no leídos"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_item__offer_count
+msgid "Offer count"
+msgstr "Nº  de ofertas"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_item__offer_ids
+#: model_terms:ir.ui.view,arch_db:academy_public_tendering_rss.view_academy_public_tendering_rss_item_form
+msgid "Offers"
+msgstr "Ofertas"
+
+#. module: academy_public_tendering_rss
+#: model:academy.public.tendering.rss.feed,title:academy_public_tendering_rss.academy_public_tendering_rss_feed_boe
+msgid "Oposiciones - BOE - Boletín Oficial del Estado"
+msgstr ""
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__options
+msgid "Options"
+msgstr "Opciones"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,help:academy_public_tendering_rss.field_academy_public_tendering_rss_item__feed_id
+msgid "Parent RSS feed"
+msgstr "Fuente RSS padre"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_item__process_ids
+msgid "Process"
+msgstr "Procesos"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_item__process_count
+msgid "Process count"
+msgstr "Nº de procesos"
+
+#. module: academy_public_tendering_rss
+#: model_terms:ir.ui.view,arch_db:academy_public_tendering_rss.view_academy_public_tendering_rss_item_form
+msgid "Processes"
+msgstr "Procesos"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model,name:academy_public_tendering_rss.model_academy_public_tendering_process
+msgid "Public tendering"
+msgstr "Licitación publica"
+
+#. module: academy_public_tendering_rss
+#: model:academy.public.tendering.rss.feed,description:academy_public_tendering_rss.academy_public_tendering_rss_feed_inap
+#: model:academy.public.tendering.rss.feed,title:academy_public_tendering_rss.academy_public_tendering_rss_feed_inap
+msgid "Publicador de contenidos"
+msgstr ""
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,help:academy_public_tendering_rss.field_academy_public_tendering_rss_item__safe_date
+msgid "Publish date if available or create date"
+msgstr "Fecha de publicación si está disponible o fecha de creación"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__published
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_item__published
+msgid "Published"
+msgstr "Publicada"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__publisher
+msgid "Publisher"
+msgstr "Editor"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,help:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__publisher
+msgid "Publisher email address"
+msgstr "Dirección de correo electrónico del editor"
+
+#. module: academy_public_tendering_rss
+#: model:ir.actions.act_window,name:academy_public_tendering_rss.action_rss_feeds_act_window
+#: model:ir.ui.menu,name:academy_public_tendering_rss.menu_rss_feeds
+msgid "RSS Feeds"
+msgstr "Fuentes RSS"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_event__rss_item_id
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_process__rss_item_id
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_public_offer__rss_item_id
+msgid "RSS Item"
+msgstr "Elemento RSS"
+
+#. module: academy_public_tendering_rss
+#: code:addons/academy_public_tendering_rss/models/academy_public_tendering_rss_item.py:0
+#: model:ir.model.constraint,message:academy_public_tendering_rss.constraint_academy_public_tendering_rss_item_UNIQUE_GUID
+#, python-format
+msgid "RSS entry already exists"
+msgstr "La entrada RSS ya existe"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_item__feed_id
+#: model_terms:ir.ui.view,arch_db:academy_public_tendering_rss.view_academy_public_tendering_rss_item_search
+msgid "RSS feed"
+msgstr "Fuente RSS"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,help:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__title
+msgid "RSS feed title"
+msgstr "Título de la fuente RSS"
+
+#. module: academy_public_tendering_rss
+#: code:addons/academy_public_tendering_rss/models/academy_public_tendering_rss_feed.py:0
+#, python-format
+msgid "RSS feed will be updated from {}"
+msgstr "La fuente RSS se actualizará desde {}"
+
+#. module: academy_public_tendering_rss
+#: code:addons/academy_public_tendering_rss/models/academy_public_tendering_rss_feed.py:0
+#, python-format
+msgid "RSS feed {} updated. Published: {}, consulted: {}"
+msgstr "Fuente RSS {} actualizada. Publicada: {}, consultada: {}"
+
+#. module: academy_public_tendering_rss
+#: model:ir.ui.menu,name:academy_public_tendering_rss.academy_public_tendering_rss
+msgid "RSS feeds"
+msgstr "Fuentes RSS"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,help:academy_public_tendering_rss.field_academy_public_tendering_rss_item__name
+msgid "RSS item title"
+msgstr "Título del elemento RSS"
+
+#. module: academy_public_tendering_rss
+#: model:ir.actions.act_window,name:academy_public_tendering_rss.action_rss_items_act_window
+#: model:ir.ui.menu,name:academy_public_tendering_rss.menu_rss_items
+msgid "RSS items"
+msgstr "Elementos RSS"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__reader
+msgid "Reader"
+msgstr "Lector"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,help:academy_public_tendering_rss.field_academy_public_tendering_event__rss_item_id
+#: model:ir.model.fields,help:academy_public_tendering_rss.field_academy_public_tendering_process__rss_item_id
+#: model:ir.model.fields,help:academy_public_tendering_rss.field_academy_public_tendering_public_offer__rss_item_id
+msgid "Related RSS item"
+msgstr "Elemento RSS relacionado"
+
+#. module: academy_public_tendering_rss
+#: code:addons/academy_public_tendering_rss/models/academy_public_tendering_rss_feed.py:0
+#, python-format
+msgid "Request GET {} has failed"
+msgstr "La solicitud GET {} ha fallado"
+
+#. module: academy_public_tendering_rss
+#: code:addons/academy_public_tendering_rss/models/academy_public_tendering_rss_feed.py:0
+#, python-format
+msgid "Request GET {} has failed. System says: {}"
+msgstr "La solicitud GET {} ha fallado. El sistema dice: {}"
+
+#. module: academy_public_tendering_rss
+#: code:addons/academy_public_tendering_rss/models/academy_public_tendering_rss_feed.py:0
+#, python-format
+msgid "Request GET {}. Response code: {}"
+msgstr "Solicitud GET {}. Código de respuesta: {}"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Error de entrega de SMS"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_item__safe_date
+msgid "Safe date"
+msgstr "Fecha segura"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__name
+msgid "Short name"
+msgstr "Nombre corto"
+
+#. module: academy_public_tendering_rss
+#: code:addons/academy_public_tendering_rss/models/academy_public_tendering_rss_feed.py:0
+#, python-format
+msgid "Some RRS feeds could not be read, Only {} of {} have been processed"
+msgstr ""
+"No se pudieron leer algunas fuentes RSS, solo {} de {} se han procesado"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,help:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__description
+msgid "Some additional information to distinguish the news feed"
+msgstr "Alguna información adicional para distinguir la fuente de noticias"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__source
+msgid "Source"
+msgstr "Fuente"
+
+#. module: academy_public_tendering_rss
+#: model_terms:ir.ui.view,arch_db:academy_public_tendering_rss.view_academy_public_tendering_rss_item_form
+msgid "Summary"
+msgstr "Resumen"
+
+#. module: academy_public_tendering_rss
+#: code:addons/academy_public_tendering_rss/models/academy_public_tendering_rss_feed.py:0
+#: model:ir.model.constraint,message:academy_public_tendering_rss.constraint_academy_public_tendering_rss_feed_unique_source
+#, python-format
+msgid "The source already exists"
+msgstr "La fuente ya existe"
+
+#. module: academy_public_tendering_rss
+#: code:addons/academy_public_tendering_rss/models/academy_public_tendering_rss_feed.py:0
+#, python-format
+msgid "There are {} items in feed, {} will be added to database"
+msgstr "Hay {} elementos en la fuente, {} serán agregados a la base de datos"
+
+#. module: academy_public_tendering_rss
+#: code:addons/academy_public_tendering_rss/models/academy_public_tendering_rss_item.py:0
+#: model:ir.model.constraint,message:academy_public_tendering_rss.constraint_academy_public_tendering_rss_item_UNIQUE_GUID_HASH
+#, python-format
+msgid "There is an RSS entry with the same hash"
+msgstr "Hay una entrada RSS con el mismo hash"
+
+#. module: academy_public_tendering_rss
+#: code:addons/academy_public_tendering_rss/models/academy_public_tendering_rss_feed.py:0
+#, python-format
+msgid "There is no any public tendering RSS feeds to consult"
+msgstr "No hay fuentes RSS de oposiciones públicas para consultar"
+
+#. module: academy_public_tendering_rss
+#: model_terms:ir.actions.act_window,help:academy_public_tendering_rss.action_rss_feeds_act_window
+msgid "There is not RSS feeds"
+msgstr "No hay fuentes RSS"
+
+#. module: academy_public_tendering_rss
+#: model_terms:ir.actions.act_window,help:academy_public_tendering_rss.action_rss_items_act_window
+msgid "There is not RSS items"
+msgstr "No hay elementos RSS"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__title
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_item__name
+msgid "Title"
+msgstr "Título"
+
+#. module: academy_public_tendering_rss
+#: model_terms:ir.ui.view,arch_db:academy_public_tendering_rss.view_academy_public_tendering_rss_item_search
+msgid "Today"
+msgstr "Hoy"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,help:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__source
+msgid "URL of the RSS feed"
+msgstr "URL de la fuente RSS"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,help:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__link
+msgid "URL of the main site"
+msgstr "URL del sitio principal"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,help:academy_public_tendering_rss.field_academy_public_tendering_rss_item__link
+msgid "URL referenced in the RSS element"
+msgstr "URL referenciada en el elemento RSS"
+
+#. module: academy_public_tendering_rss
+#: code:addons/academy_public_tendering_rss/models/academy_public_tendering_rss_feed.py:0
+#, python-format
+msgid "Unable to read RSS feed link {}. System sais: {}"
+msgstr "No se puede leer la fuente RSS {}. El sistema dice: {}"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__message_unread
+msgid "Unread Messages"
+msgstr "Mensajes no leídos"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__message_unread_counter
+msgid "Unread Messages Counter"
+msgstr "Contador de mensajes no leídos"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__website_message_ids
+msgid "Website Messages"
+msgstr "Mensajes del sitio web"
+
+#. module: academy_public_tendering_rss
+#: model:ir.model.fields,help:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__website_message_ids
+msgid "Website communication history"
+msgstr "Historial de comunicación del sitio web"
+
+#. module: academy_public_tendering_rss
+#: model_terms:ir.ui.view,arch_db:academy_public_tendering_rss.view_academy_public_tendering_rss_feed_form
+msgid "academy_public_tendering_rss_feed_form"
+msgstr ""
+
+#. module: academy_public_tendering_rss
+#: model_terms:ir.ui.view,arch_db:academy_public_tendering_rss.view_academy_public_tendering_rss_feed_search
+msgid "academy_public_tendering_rss_feed_search"
+msgstr ""
+
+#. module: academy_public_tendering_rss
+#: model_terms:ir.ui.view,arch_db:academy_public_tendering_rss.view_academy_public_tendering_rss_feed_tree
+msgid "academy_public_tendering_rss_feed_tree"
+msgstr ""
+
+#. module: academy_public_tendering_rss
+#: model_terms:ir.ui.view,arch_db:academy_public_tendering_rss.view_academy_public_tendering_rss_item_form
+msgid "academy_public_tendering_rss_item_form"
+msgstr ""
+
+#. module: academy_public_tendering_rss
+#: model_terms:ir.ui.view,arch_db:academy_public_tendering_rss.view_academy_public_tendering_rss_item_search
+msgid "academy_public_tendering_rss_item_search"
+msgstr ""
+
+#. module: academy_public_tendering_rss
+#: model_terms:ir.ui.view,arch_db:academy_public_tendering_rss.view_academy_public_tendering_rss_item_tree
+msgid "academy_public_tendering_rss_item_tree"
+msgstr ""
+
+#. module: academy_public_tendering_rss
+#: model:academy.public.tendering.rss.feed,title:academy_public_tendering_rss.academy_public_tendering_rss_feed_madrid_city
+msgid "www.madrid.es - Empleo - Oposiciones"
+msgstr ""
+
+#. module: academy_public_tendering_rss
+#: code:addons/academy_public_tendering_rss/models/academy_public_tendering_rss_feed.py:0
+#, python-format
+msgid "{} bytes of content have been read from {}"
+msgstr "Se han leído {} bytes de contenido de {}"
+
+#. module: academy_public_tendering_rss
+#: code:addons/academy_public_tendering_rss/models/academy_public_tendering_rss_feed.py:0
+#, python-format
+msgid "{} will be used as specific reader"
+msgstr "{} se usará como lector específico"

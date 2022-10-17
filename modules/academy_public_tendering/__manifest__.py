@@ -87,5 +87,13 @@
     ],
     'css': [
     ],
-}
 
+    # always loaded
+    "assets": {
+        "web.assets_backend": [
+            "academy_public_tendering/static/src/css/styles-backend.css",
+            "academy_public_tendering/static/src/js/academy_public_tendering.js"
+        ]
+    },
+
+}

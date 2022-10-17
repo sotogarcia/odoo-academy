@@ -129,7 +129,6 @@
 
         'views/academy_tests_test_training_assignment_view.xml',
 
-        'report/academy_tests_report_assets.xml',
         'report/academy_test_answers_table_report.xml',
         'report/academy_training_activity_details_with_topics_report.xml',
         'report/academy_statistics_student_question_readonly_report.xml',
@@ -190,6 +189,19 @@
     ],
     "external_dependencies": {
         "python": ['unidecode', 'dicttoxml', 'chardet', 'python-docx']
+    },
+
+    # always loaded
+    "assets": {
+        'web.assets_backend': [
+            "academy_tests/static/src/css/styles-backend.css",
+            "academy_tests/static/src/js/academy_tests.js",
+            "academy_tests/static/src/js/listview_button.js",
+        ],
+        'web.report_assets_common': [
+            'academy_tests/static/src/css/academy_tests_report.css',
+            'academy_tests/static/src/css/academy_training_activity_details_with_topics_relationships_report.css'
+        ]
     },
 
     'license': 'AGPL-3'

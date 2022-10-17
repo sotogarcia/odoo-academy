@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="academy_public_tendering_rss_feed_boe" model="academy.public.tendering.rss.feed">
+            <field name="name">BOE</field>
+            <field name="source"><![CDATA[https://www.boe.es/rss/canal_per.php?l=p&c=140]]></field>
+            <field name="reader">_boe_reader</field>
+            <field name="official" eval="1" />
+        </record>
+
+        <record id="academy_public_tendering_rss_feed_inap" model="academy.public.tendering.rss.feed">
+            <field name="name">INAP</field>
+            <field name="source"><![CDATA[https://www.inap.es/inicio/-/asset_publisher/b8gXDDTZ5SRr/rss]]></field>
+            <field name="reader">_inap_reader</field>
+            <field name="official" eval="0" />
+        </record>
+
+        <record id="academy_public_tendering_rss_feed_madrid_city" model="academy.public.tendering.rss.feed">
+            <field name="name">Ayuntamiento de Madrid</field>
+            <field name="source"><![CDATA[https://www.madrid.es/ContentPublisher/jsp/apl/obtenerRSS.jsp?tipoContenido=Oposiciones&idCanal=4ac5c5dee78fe410VgnVCM1000000b205a0aRCRD&tema=3f50c5dee78fe410VgnVCM1000000b205a0aRCRD]]></field>
+            <field name="official" eval="0" />
+            <field name="reader">_madrid_city_reader</field>
+        </record>
+
+        <record id="academy_public_tendering_rss_feed_doga" model="academy.public.tendering.rss.feed">
+            <field name="name">DOGA</field>
+            <field name="source"><![CDATA[https://www.xunta.gal/diario-oficial-galicia/rss/Seccion7_es.rss]]></field>
+            <field name="reader">_doga_reader</field>
+            <field name="official" eval="1" />
+        </record>
+
+    </data>
+</openerp>

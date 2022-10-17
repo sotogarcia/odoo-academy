@@ -34,7 +34,6 @@ class AcademyAbstractAttemptAnswer(models.AbstractModel):
     _name = 'academy.abstract.attempt.answer'
     _description = u'Academy tests attempt answer'
 
-    _rec_name = 'id'
     _order = 'instant DESC'
 
     active = fields.Boolean(

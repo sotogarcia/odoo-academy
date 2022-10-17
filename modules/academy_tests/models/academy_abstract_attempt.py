@@ -24,7 +24,6 @@ class AcademyAbstractAttempt(models.AbstractModel):
     _name = 'academy.abstract.attempt'
     _description = u'Academy abstract attempt'
 
-    _rec_name = 'id'
     _order = 'start DESC'
 
     description = fields.Text(

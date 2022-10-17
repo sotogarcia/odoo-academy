@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <!-- Search view for "academy.tests.question" -->
+        <record id="view_academy_question_law_search" model="ir.ui.view">
+            <field name="name">view.academy.tests.question.law.search</field>
+            <field name="model">academy.tests.question</field>
+            <field name="type">search</field>
+            <field name="mode">extension</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="academy_tests.view_academy_question_search" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='topic_id']" position="attributes">
+                    <attribute name="string">Topic (Law)</attribute>
+                </xpath>
+                <xpath expr="//field[@name='category_ids']" position="attributes">
+                    <attribute name="string">Category (Article)</attribute>
+                </xpath>
+                <xpath expr="//field[@name='category_ids']" position="after">
+                    <field name="law" string="Pattern (Law:Articles)" class="oe_field_law" />
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <!-- Form view for "academy.public.tendering.public.offer" -->
+        <record id="view_academy_public_tendering_public_offer_form" model="ir.ui.view">
+            <field name="name">view.academy.public.tendering.public.offer.form</field>
+            <field name="model">academy.public.tendering.public.offer</field>
+            <field name="type">form</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="academy_public_tendering.view_academy_public_tendering_public_offer_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='active']" position="after">
+                    <field name="rss_item_id" invisible="1" />
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>

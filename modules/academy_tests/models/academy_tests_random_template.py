@@ -552,7 +552,6 @@ class AcademyTestsRandomTemplate(models.Model):
 
     @staticmethod
     def append_links(m2m_operations, line, question_set, sequence):
-        request_id = line.env.context.get('request_id', None)
 
         if line.test_block_id:
             test_block_id = line.test_block_id.id
@@ -563,7 +562,6 @@ class AcademyTestsRandomTemplate(models.Model):
             link = {
                 'sequence': sequence,
                 'question_id': question.id,
-                'request_id': request_id,
                 'test_block_id': test_block_id
             }
             m2m_operations.append((0, None, link))

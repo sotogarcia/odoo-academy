@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="access_academy_public_tendering_rss_academy_public_tendering_rss_item_academy_base_academy_group_manager" model="ir.model.access">
+            <field name="name">Academy Public Tendering RSS feed Access Rights</field>
+            <field name="model_id" ref="academy_public_tendering_rss.model_academy_public_tendering_rss_item"/>
+            <field name="group_id" ref="academy_base.academy_group_manager"/>
+            <field name="perm_read" eval="True" />
+            <field name="perm_create" eval="True" />
+            <field name="perm_write" eval="True" />
+            <field name="perm_unlink" eval="True" />
+            <field name="active" eval="True" />
+        </record>
+
+    </data>
+</openerp>

@@ -3,12 +3,6 @@
 <openerp>
     <data noupdate="0">
 
-        <template id="academy_training_action_assets" name="website assets for my training action views" inherit_id="web.assets_backend">
-            <xpath expr="." position="inside">
-            <link rel="stylesheet" href="academy_base/static/src/css/academy_base_view.css"/>
-            </xpath>
-        </template>
-
         <record id="menu_academy" model="ir.ui.menu" >
             <field name="name">Academy</field>
             <field name="sequence" eval="10" />
