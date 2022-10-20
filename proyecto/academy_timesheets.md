@@ -2,7 +2,7 @@
 
 Se parte de la siguiente premisa: el tiempo continuado en el que un determinado
 docente (academy.teacher) y uno o más alumnos (academy.student) comparten el 
-estudio de una la materia (academy.training.action) tendrá un modelo asociado
+estudio de una la materia (academy.competency.unit) tendrá un modelo asociado
 que corresponderá a una lección (academy.training.lesson).
 
 > NOTA: habría que valorar la posibilidad de que lecciones consecutivas, en una 
