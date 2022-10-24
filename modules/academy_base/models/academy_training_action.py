@@ -37,10 +37,10 @@ class AcademyTrainingAction(models.Model):
     _order = 'action_name ASC'
 
     _inherit = [
-        'image.mixin',
         'academy.abstract.observable',
         'academy.abstract.training',
         'academy.abstract.owner',
+        'image.mixin',
         'mail.thread',
         'mail.activity.mixin'
     ]

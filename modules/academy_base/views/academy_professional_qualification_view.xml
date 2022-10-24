@@ -57,6 +57,7 @@
                             </h1>
                         </div>
                         <group col="2">
+                            <field name="qualification_code" class="oe_field_qualification_code" placeholder="Code" />
                             <field name="professional_family_id" class="oe_field_professional_family_id" />
                             <field name="professional_area_id" class="oe_field_professional_area_id" />
                             <field name="qualification_code" class="oe_field_qualification_code" />

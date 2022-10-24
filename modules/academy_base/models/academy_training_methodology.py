@@ -6,6 +6,7 @@ all training methodology attributes and behavior.
 """
 
 from odoo import models, fields
+from odoo.tools.translate import _
 
 from logging import getLogger
 
@@ -51,3 +52,11 @@ class AcademyTrainingMethodology(models.Model):
         default=True,
         help='Enables/disables the record'
     )
+
+    _sql_constraints = [
+        (
+            'unique_name',
+            'UNIQUE("name")',
+            _('Another record with the same name already exists')
+        )
+    ]

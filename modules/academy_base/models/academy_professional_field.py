@@ -6,6 +6,7 @@ all professional field attributes and behavior.
 """
 
 from odoo import models, fields
+from odoo.tools.translate import _
 
 from logging import getLogger
 
@@ -64,3 +65,16 @@ class AcademyProfessionalField(models.Model):
         size=8,
         translate=False
     )
+
+    _sql_constraints = [
+        (
+            'unique_name',
+            'UNIQUE("name")',
+            _('Another record with the same name already exists')
+        ),
+        (
+            'unique_code',
+            'UNIQUE("code")',
+            _('Another record with the same code already exists')
+        ),
+    ]

@@ -36,22 +36,22 @@ msgstr ""
 #. module: academy_public_tendering_rss
 #: model:ir.model,name:academy_public_tendering_rss.model_academy_public_tendering_rss_feed
 msgid "Academy public tendering RSS feed"
-msgstr "Fuente RSS de Licitaciones Públicas"
+msgstr "Fuente RSS de oposiciones"
 
 #. module: academy_public_tendering_rss
 #: model:ir.model,name:academy_public_tendering_rss.model_academy_public_tendering_rss_item
 msgid "Academy public tendering RSS item"
-msgstr "Elemento RSS de Licitación Pública"
+msgstr "Elemento RSS de oposición"
 
 #. module: academy_public_tendering_rss
 #: model:ir.model,name:academy_public_tendering_rss.model_academy_public_tendering_event
 msgid "Academy public tendering event"
-msgstr "Evento de Licitación Pública"
+msgstr "Evento de oposición"
 
 #. module: academy_public_tendering_rss
 #: model:ir.model,name:academy_public_tendering_rss.model_academy_public_tendering_public_offer
 msgid "Academy public tendering public offer"
-msgstr "Oferta de Licitación Pública"
+msgstr "Oferta de oposición"
 
 #. module: academy_public_tendering_rss
 #: model:ir.model.fields,field_description:academy_public_tendering_rss.field_academy_public_tendering_rss_feed__message_needaction
@@ -499,7 +499,7 @@ msgstr "Procesos"
 #. module: academy_public_tendering_rss
 #: model:ir.model,name:academy_public_tendering_rss.model_academy_public_tendering_process
 msgid "Public tendering"
-msgstr "Licitación publica"
+msgstr "Oposición"
 
 #. module: academy_public_tendering_rss
 #: model:academy.public.tendering.rss.feed,description:academy_public_tendering_rss.academy_public_tendering_rss_feed_inap

@@ -6,6 +6,7 @@ all competency unit attributes and behavior.
 """
 
 from odoo import models, fields, api
+from odoo.tools.translate import _
 
 from logging import getLogger
 
@@ -27,12 +28,14 @@ class AcademyCompetencyUnit(models.Model):
     _inherits = {'academy.training.module': 'training_module_id'}
 
     _inherit = [
-        'academy.abstract.training'
+        'academy.abstract.training',
+        'mail.thread',
+        'mail.activity.mixin'
     ]
 
     competency_code = fields.Char(
         string='Unit code',
-        required=False,
+        required=True,
         readonly=False,
         index=False,
         default=None,
@@ -168,3 +171,23 @@ class AcademyCompetencyUnit(models.Model):
             'domain': [],
             'context': {}
         }
+
+    # -------------------------- MODEL CONTRAINTS -----------------------------
+
+    _sql_constraints = [
+        (
+            'unique_competency_code',
+            'UNIQUE("competency_code")',
+            _('Another record with the same code already exists')
+        ),
+        (
+            'unique_module_by_activity',
+            'UNIQUE("training_activity_id", "training_module_id")',
+            _('Another competency has the same module in this activity')
+        ),
+        (
+            'unique_competency_name_by_activity',
+            'UNIQUE("training_activity_id", "competency_name")',
+            _('Another record with the same name already exists')
+        )
+    ]

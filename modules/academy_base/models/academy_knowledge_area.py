@@ -6,6 +6,7 @@ all Knowledge Area attributes and behavior.
 """
 
 from odoo import models, fields
+from odoo.tools.translate import _
 
 from logging import getLogger
 
@@ -54,7 +55,7 @@ class AcademyKnowledgeArea(models.Model):
 
     knowle_code = fields.Char(
         string='Code',
-        required=False,
+        required=True,
         readonly=False,
         index=False,
         default=None,
@@ -72,3 +73,16 @@ class AcademyKnowledgeArea(models.Model):
         help='Enter new description',
         translate=True
     )
+
+    _sql_constraints = [
+        (
+            'unique_name',
+            'UNIQUE("name")',
+            _('Another record with the same name already exists')
+        ),
+        (
+            'unique_knowle_code',
+            'UNIQUE("knowle_code")',
+            _('Another record with the same code already exists')
+        ),
+    ]

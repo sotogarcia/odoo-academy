@@ -4,6 +4,7 @@
     <data noupdate="0">
 
         <record id="academy_competency_unit_office" model="academy.competency.unit">
+            <field name="competency_code">UC2010_2</field>
             <field name="competency_name">Manage Microsoft Office software and files in computer support</field>
             <field name="description">The latest versions of the Microsoft Office appliances for PC</field>
             <field name="active">True</field>
@@ -14,6 +15,7 @@
         </record>
 
         <record id="academy_competency_unit_libre" model="academy.competency.unit">
+            <field name="competency_code">UC0050_2</field>
             <field name="competency_name">Manage LibreOffice software and files in computer support</field>
             <field name="description">The latest versions of the LibreOffice appliances for PC</field>
             <field name="active">True</field>
@@ -24,6 +26,7 @@
         </record>
 
         <record id="academy_competency_unit_mswin" model="academy.competency.unit">
+            <field name="competency_code">UC0010_2</field>
             <field name="competency_name">Manage the latest Microsoft operating system</field>
             <field name="description">The latest version of the Microsoft operating system for PC</field>
             <field name="active">True</field>
@@ -34,6 +37,7 @@
         </record>
 
         <record id="academy_competency_unit_odoo" model="academy.competency.unit">
+            <field name="competency_code">UC1500_2</field>
             <field name="competency_name">Learn Odoo ERP for Absolute Beginners</field>
             <field name="description">Gain comprehensive understanding of Odoo ERP system. Initiate your Odoo ERP with the basic functionalities.</field>
             <field name="active">True</field>

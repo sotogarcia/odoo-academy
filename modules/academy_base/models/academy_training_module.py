@@ -131,7 +131,7 @@ class AcademyTrainingModule(models.Model):
 
     module_code = fields.Char(
         string='Code',
-        required=False,
+        required=True,
         readonly=False,
         index=False,
         default=None,
@@ -267,6 +267,24 @@ class AcademyTrainingModule(models.Model):
     def _compute_training_unit_count(self):
         for record in self:
             record.training_unit_count = len(record.training_unit_ids)
+
+    _sql_constraints = [
+        (
+            'unique_module_code',
+            'UNIQUE("module_code")',
+            _('Another record with the same code already exists')
+        ),
+        (
+            'unique_unit_name_by_module',
+            'UNIQUE("training_module_id", "name")',
+            _('Another unit with the same name already exists in module')
+        ),
+        (
+            'check_positive_ownhours',
+            'CHECK("ownhours" >= 0)',
+            _('The number of hours must be greater than or equal to zero')
+        )
+    ]
 
     # ----------------- AUXILIARY FIELD METHODS AND EVENTS --------------------
 

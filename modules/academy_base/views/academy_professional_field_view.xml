@@ -24,8 +24,9 @@
             <field name="active" eval="True" />
             <field name="arch" type="xml">
                 <tree string="academy_professional_field_tree" create="1" delete="1" edit="1">
-                    <field name="name" />
-                    <field name="description" />
+                    <field name="code" class="oe_field_code" />
+                    <field name="name" class="oe_field_name" />
+                    <field name="description" class="oe_field_description" />
                 </tree>
             </field>
         </record>
@@ -48,15 +49,17 @@
 
                         <div class="oe_title">
                             <field name="active" invisible="1"/>
-                            <label for="name" class="oe_edit_only" />
+                            <label for="name" class="oe_edit_only" placeholder="Name" />
                             <h1>
                                 <field name="name" class="oe_field_name"
                                     placeholder="Enter new name" />
                             </h1>
                         </div>
                         <group col="2">
+                            <field name="code" class="oe_field_code"
+                                placeholder="Code" />
                             <field name="description" class="oe_field_description"
-                                    placeholder="Enter new description" />
+                                    placeholder="Description" />
                         </group>
                     </sheet>
                 </form>
@@ -75,6 +78,7 @@
                 <search string="academy_professional_field_search">
 
                     <field name="name" />
+                    <field name="code" />
 
                     <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
 

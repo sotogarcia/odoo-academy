@@ -6,6 +6,7 @@ all professional family attributes and behavior.
 """
 
 from odoo import models, fields, api
+from odoo.tools.translate import _
 
 from logging import getLogger
 
@@ -103,3 +104,11 @@ class AcademyProfessionalFamily(models.Model):
     def _compute_professional_area_count(self):
         for record in self:
             record.professional_area_count = len(record.professional_area_ids)
+
+    _sql_constraints = [
+        (
+            'unique_name',
+            'UNIQUE("name")',
+            _('Another record with the same name already exists')
+        )
+    ]

@@ -6,6 +6,7 @@ stores all professional qualification attributes and behavior.
 """
 
 from odoo import models, fields, api
+from odoo.tools.translate import _
 
 from logging import getLogger
 
@@ -141,3 +142,16 @@ class AcademyProfessionalQualification(models.Model):
     def _compute_competency_unit_count(self):
         for record in self:
             record.competency_unit_count = len(record.competency_unit_ids)
+
+    _sql_constraints = [
+        (
+            'unique_name',
+            'UNIQUE("name")',
+            _('Another record with the same name already exists')
+        ),
+        (
+            'unique_qualification_code',
+            'UNIQUE("qualification_code")',
+            _('Another record with the same code already exists')
+        )
+    ]

@@ -24,9 +24,10 @@
             <field name="active" eval="True" />
             <field name="arch" type="xml">
                 <tree string="academy_professional_sector_tree" create="1" delete="1" edit="1">
-                    <field name="name" />
-                    <field name="description" />
-                    <field name="professional_field_id" />
+                    <field name="code" class="oe_field_code" />
+                    <field name="name" class="oe_field_name" />
+                    <field name="description" class="oe_field_description" />
+                    <field name="professional_field_id" class="oe_field_professional_field_id" />
                 </tree>
             </field>
         </record>
@@ -56,6 +57,7 @@
                             </h1>
                         </div>
                         <group col="2">
+                            <field name="code" class="oe_field_code" />
                             <field name="professional_field_id" />
                             <field name="description" class="oe_field_description"
                                 placeholder="Enter new description" />
@@ -78,6 +80,7 @@
 
                     <field name="name" />
                     <field name="professional_field_id" />
+                    <field name="code" class="oe_field_code" />
 
                     <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
 

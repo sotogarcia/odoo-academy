@@ -6,6 +6,7 @@ all professional sector attributes and behavior.
 """
 
 from odoo import models, fields
+from odoo.tools.translate import _
 
 from logging import getLogger
 
@@ -67,7 +68,7 @@ class AcademyProfessionalSector(models.Model):
 
     professional_field_id = fields.Many2one(
         string='Professional field',
-        required=False,
+        required=True,
         readonly=False,
         index=False,
         default=None,
@@ -78,3 +79,16 @@ class AcademyProfessionalSector(models.Model):
         ondelete='cascade',
         auto_join=False
     )
+
+    _sql_constraints = [
+        (
+            'unique_name',
+            'UNIQUE("name")',
+            _('Another record with the same name already exists')
+        ),
+        (
+            'unique_code',
+            'UNIQUE("code")',
+            _('Another record with the same code already exists')
+        )
+    ]

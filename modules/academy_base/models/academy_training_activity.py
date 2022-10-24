@@ -352,6 +352,16 @@ class AcademyTrainingActivity(models.Model):
         for record in self:
             record.training_resource_count = len(record.training_resource_ids)
 
+    # -------------------------- MODEL CONTRAINTS -----------------------------
+
+    _sql_constraints = [
+        (
+            'unique_activity_code',
+            'UNIQUE("activity_code")',
+            _('Another record with the same code already exists')
+        )
+    ]
+
     # ---------------------------- PUBLIC FIELDS ------------------------------
 
     # pylint: disable=locally-disabled, W0613

@@ -6,6 +6,7 @@ all Professional Area attributes and behavior.
 """
 
 from odoo import models, fields
+from odoo.tools.translate import _
 
 from logging import getLogger
 
@@ -60,3 +61,11 @@ class AcademyProfessionalCategory(models.Model):
         default=0,
         help='Choose professional category order'
     )
+
+    _sql_constraints = [
+        (
+            'unique_name',
+            'UNIQUE("name")',
+            _('Another record with the same name already exists')
+        )
+    ]
