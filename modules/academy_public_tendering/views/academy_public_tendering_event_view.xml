@@ -24,16 +24,16 @@
             <field name="active" eval="True" />
             <field name="arch" type="xml">
                 <tree string="academy_public_tendering_event_tree" create="1" delete="1" edit="1">
-                    <field name="academy_public_tendering_process_id"
-                                class="oe_field_academy_public_tendering_process_id" />
+                    <field name="tendering_process_id"
+                                class="oe_field_process_id" />
                     <field name="date" class="oe_field_date" />
                     <field name="event_type_id" class="oe_field_event_type_id" />
                     <field name="name" class="oe_field_name" required="0" />
                     <field name="description" class="oe_field_description" />
                     <field name="ir_atachment_id" class="oe_field_url" />
                     <field name="active" class="oe_field_active" invisible="1"  />
-                    <field name="academy_public_tendering_process_id" invisible="1"
-                        class="oe_field_academy_public_tendering_process_id" />
+                    <field name="tendering_process_id" invisible="1"
+                        class="oe_field_process_id" />
                 </tree>
             </field>
         </record>
@@ -51,7 +51,7 @@
                <xpath expr="//tree" position="attributes">
                    <attribute name="editable">bottom</attribute>
                </xpath>
-               <xpath expr="//field[@name='academy_public_tendering_process_id']" position="replace" />
+               <xpath expr="//field[@name='tendering_process_id']" position="replace" />
             </field>
         </record>
 
@@ -81,8 +81,8 @@
                         <group col="2">
                             <field name="date" class="oe_field_date" />
                             <field name="event_type_id" class="oe_field_event_type_id" />
-                            <field name="academy_public_tendering_process_id"
-                                class="oe_field_academy_public_tendering_process_id" />
+                            <field name="tendering_process_id"
+                                class="oe_field_process_id" />
                             <field name="ir_atachment_id" class="oe_field_url" />
                             <field name="description" class="oe_field_description" />
                         </group>
@@ -109,7 +109,13 @@
             <field name="arch" type="xml">
                 <search string="academy_public_tendering_event_search">
                     <field name="name" />
-                    <!-- ··· -->
+                    <field name="date" />
+                    <field name="event_type_id" />
+                    <field name="tendering_process_id" />
+
+                    <separator/>
+
+                    <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
                 </search>
             </field>
         </record>

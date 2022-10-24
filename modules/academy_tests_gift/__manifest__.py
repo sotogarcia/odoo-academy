@@ -4,16 +4,14 @@
     'summary': """
         Tests and questions in GIFT format """,
     'description': """
-        Manage tests and questions in GIFT format, this format has been 
+        Manage tests and questions in GIFT format, this format has been
         been developed within the Moodle Community
     """,
 
     'author': "Jorge Soto Garcia",
     'website': "https://github.com/sotogarcia",
 
-    # Categories can be used to filter modules in modules listing
-    # Check https://github.com/odoo/odoo/blob/master/openerp/addons/base/module/module_data.xml
-    # for the full list
+    'license': 'LGPL-3',
     'category': 'Academy',
     'version': '13.0.1.0.0',
 

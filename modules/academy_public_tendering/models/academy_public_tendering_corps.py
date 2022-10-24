@@ -4,20 +4,18 @@
 #    __openerp__.py file at the root folder of this module.                   #
 ###############################################################################
 
-from odoo import models, fields, api
+from odoo import models, fields
 from odoo.tools.translate import _
+
 from logging import getLogger
 
 
 _logger = getLogger(__name__)
 
 
-class AcademyPublicTenderingVacancyPositionCorps(models.Model):
-    """ The summary line for a class docstring should fit on one line.
-
-    Fields:
-      name (Char): Human readable name which will identify each record.
-
+class AcademyPublicTenderingCorps(models.Model):
+    """ Professional profiles in which public administration positions are
+    classified.
     """
 
     _name = 'academy.public.tendering.corps'
@@ -84,3 +82,11 @@ class AcademyPublicTenderingVacancyPositionCorps(models.Model):
         ondelete='cascade',
         auto_join=False
     )
+
+    _sql_constraints = [
+        (
+            'unique_name',
+            'UNIQUE("name")',
+            _('Another record with the same name already exists')
+        )
+    ]

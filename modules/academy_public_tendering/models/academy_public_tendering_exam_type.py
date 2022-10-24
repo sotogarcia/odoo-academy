@@ -4,20 +4,18 @@
 #    __openerp__.py file at the root folder of this module.                   #
 ###############################################################################
 
-from odoo import models, fields, api, api
+from odoo import models, fields
 from odoo.tools.translate import _
+
 from logging import getLogger
 
 
 _logger = getLogger(__name__)
 
 
-class AptKind(models.Model):
-    """ Kind for vacancy position
-
-    Fields:
-      name (Char): Human readable name which will identify each record.
-
+class AcademyPublicTenderingExamType(models.Model):
+    """ Type of exam
+    This can be: Open exam, Concourse, Concourse/Exam
     """
 
     _name = 'academy.public.tendering.exam.type'
@@ -56,3 +54,11 @@ class AptKind(models.Model):
         help=('If the active field is set to false, it will allow you '
               'to hide record without removing it.')
     )
+
+    _sql_constraints = [
+        (
+            'unique_name',
+            'UNIQUE("name")',
+            _('Another record with the same name already exists')
+        )
+    ]

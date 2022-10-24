@@ -28,7 +28,7 @@ class AcademyTrainingAction(models.Model):
     _name = 'academy.training.action'
     _inherit = 'academy.training.action'
 
-    public_tendering_process_ids = fields.Many2many(
+    tendering_process_ids = fields.Many2many(
         string='Public tendering process',
         required=False,
         readonly=False,

@@ -127,7 +127,7 @@
                             <page string="Vacancies" class="oe_page_vacancies" accesskey="V">
                                 <field name="vacancy_position_ids" class="oe_field_vacancy_position_ids"
                                     context="{'tree_view_ref' : 'academy_public_tendering.view_academy_public_tendering_vacancy_position_tree_x2many',
-                                              'default_academy_public_tendering_process_id': id}"
+                                              'default_tendering_process_id': id}"
                                     widget="one2many" />
                             </page>
                             <page id="setup" string="Setup" class="oe_page_setup" accesskey="S">
@@ -263,6 +263,10 @@
 
                     <field name="access_system_id" />
                     <field name="exam_type_id" />
+
+                    <separator/>
+
+                    <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
 
 
                     <group expand="0" name="group_by" string="Group By">

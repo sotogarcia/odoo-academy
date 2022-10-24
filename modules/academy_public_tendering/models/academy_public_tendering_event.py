@@ -6,7 +6,7 @@
 
 from odoo import models, fields, api
 from odoo.tools.translate import _
-from odoo.exceptions import ValidationError
+
 from logging import getLogger
 
 
@@ -14,11 +14,7 @@ _logger = getLogger(__name__)
 
 
 class AcademyPublicTenderingEvent(models.Model):
-    """ The summary line for a class docstring should fit on one line.
-
-    Fields:
-      name (Char): Human readable name which will identify each record.
-
+    """ Each of the state changes in a public tendering process
     """
 
     _name = 'academy.public.tendering.event'
@@ -97,7 +93,7 @@ class AcademyPublicTenderingEvent(models.Model):
         auto_join=False
     )
 
-    academy_public_tendering_process_id = fields.Many2one(
+    tendering_process_id = fields.Many2one(
         string='Public tendering',
         required=True,
         readonly=False,
@@ -154,7 +150,7 @@ class AcademyPublicTenderingEvent(models.Model):
         # STEP 3: Update state and dates in the related processes
         model = self.env.context.get('model', False)
         if model != 'academy.public.tendering.process':
-            result.academy_public_tendering_process_id.touch()
+            result.tendering_process_id.touch()
 
         result.notify_creation()
 
@@ -173,7 +169,7 @@ class AcademyPublicTenderingEvent(models.Model):
         # STEP 3: Update state and dates in the related processes
         model = self.env.context.get('model', False)
         if model != 'academy.public.tendering.process':
-            self.academy_public_tendering_process_id.touch()
+            self.tendering_process_id.touch()
 
         self.notify_update()
 
@@ -187,7 +183,7 @@ class AcademyPublicTenderingEvent(models.Model):
         for record in self:
             xid = 'academy_public_tendering_event_created'
             subtype = record.env.ref('academy_public_tendering.' + xid)
-            process = record.academy_public_tendering_process_id
+            process = record.tendering_process_id
 
             subject = _('Process event created')
             body_format = _('Event «{}» has been registered for process «{}»')
@@ -203,7 +199,7 @@ class AcademyPublicTenderingEvent(models.Model):
         for record in self:
             xid = 'academy_public_tendering_event_written'
             subtype = record.env.ref('academy_public_tendering.' + xid)
-            process = record.academy_public_tendering_process_id
+            process = record.tendering_process_id
 
             subject = _('Process event updated')
             body_format = _('Event «{}» for process «{}» has been updated')

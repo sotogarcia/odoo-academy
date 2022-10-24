@@ -6,6 +6,7 @@
 
 from odoo import models, fields, api
 from odoo.tools.safe_eval import safe_eval
+
 from logging import getLogger
 
 
@@ -13,11 +14,8 @@ _logger = getLogger(__name__)
 
 
 class AcademyPublicTenderingOffer(models.Model):
-    """ The summary line for a class docstring should fit on one line.
-
-    Fields:
-      name (Char): Human readable name which will identify each record.
-
+    """ Allow to group all the processes organized by a public administration
+    in the same period, usually one year.
     """
 
     _name = 'academy.public.tendering.public.offer'

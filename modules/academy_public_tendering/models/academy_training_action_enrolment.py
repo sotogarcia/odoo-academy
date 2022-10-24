@@ -10,7 +10,6 @@ from logging import getLogger
 
 # pylint: disable=locally-disabled, E0401
 from odoo import models, fields
-from odoo.tools.translate import _
 
 
 # pylint: disable=locally-disabled, C0103

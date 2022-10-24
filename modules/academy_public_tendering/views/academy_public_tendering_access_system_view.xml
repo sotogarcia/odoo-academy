@@ -65,7 +65,10 @@
             <field name="arch" type="xml">
                 <search string="academy_public_tendering_access_system_search">
                     <field name="name" />
-                    <!-- ··· -->
+
+                    <separator/>
+
+                    <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
                 </search>
             </field>
         </record>

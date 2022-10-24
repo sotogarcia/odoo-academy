@@ -5,20 +5,16 @@
 #    __openerp__.py file at the root folder of this module.                   #
 ###############################################################################
 
-from odoo import models, fields, api, api
-from odoo.tools.translate import _
+from odoo import models, fields, api
+
 from logging import getLogger
 
 
 _logger = getLogger(__name__)
 
 
-class AptVacancyPosition(models.Model):
-    """ The summary line for a class docstring should fit on one line.
-
-    Fields:
-      name (Char): Human readable name which will identify each record.
-
+class AcademyPublicTenderingVacancyPosition(models.Model):
+    """ Number of jobs related to a selective process to which you can apply
     """
 
     _name = 'academy.public.tendering.vacancy.position'
@@ -68,8 +64,7 @@ class AptVacancyPosition(models.Model):
               'to hide record without removing it.')
     )
 
-
-    academy_public_tendering_vacancy_position_type_id = fields.Many2one(
+    vacancy_position_type_id = fields.Many2one(
         string='Vacancy position type',
         required=True,
         readonly=False,
@@ -92,7 +87,7 @@ class AptVacancyPosition(models.Model):
         help=False
     )
 
-    academy_public_tendering_process_id = fields.Many2one(
+    tendering_process_id = fields.Many2one(
         string='Public tendering',
         required=True,
         readonly=False,
@@ -106,7 +101,11 @@ class AptVacancyPosition(models.Model):
         auto_join=False
     )
 
-
+    @api.onchange('vacancy_position_type_id')
+    def _onchange_vacancy_position_type_id(self):
+        for record in self:
+            vptype = record.vacancy_position_type_id
+            record.name = vptype.name if vptype else None
 
     def _ensure_name(self, value_dict, type_id=False):
         """ If record name field value has not been set this method gets the
@@ -122,7 +121,6 @@ class AptVacancyPosition(models.Model):
 
         return value_dict
 
-
     @api.model
     def create(self, values):
         """ Touches related tendering processes to ensure state_id
@@ -134,26 +132,26 @@ class AptVacancyPosition(models.Model):
 
         # STEP 1: Use event type name as event name if it has not been set
         for value_dict in values:
-            field_name = 'academy_public_tendering_vacancy_position_type_id'
+            field_name = 'vacancy_position_type_id'
             type_id = value_dict.get(field_name)
             self._ensure_name(value_dict, type_id)
 
-
         # STEP 2: Call parent create method to create record
-        result = super(AptVacancyPosition, self).create(values)
+        _super = super(AcademyPublicTenderingVacancyPosition, self)
+        result = _super.create(values)
 
         return result
-
 
     def write(self, values):
         """ Touches related tendering processes to ensure state_id
         """
 
         # STEP 1: Use event type name as event name if it has not been set
-        type_id = self.academy_public_tendering_vacancy_position_type_id.id
+        type_id = self.vacancy_position_type_id.id
         self._ensure_name(values, type_id)
 
         # STEP 2: Call parent create method to write record
-        result = super(AptVacancyPosition, self).write(values)
+        _super = super(AcademyPublicTenderingVacancyPosition, self)
+        result = _super.write(values)
 
         return result

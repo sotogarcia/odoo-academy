@@ -70,7 +70,11 @@
             <field name="arch" type="xml">
                 <search string="academy_public_tendering_employment_group_search">
                     <field name="name" />
-                    <!-- ··· -->
+                    <field name="qualification_level_id" />
+
+                    <separator/>
+
+                    <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
                 </search>
             </field>
         </record>

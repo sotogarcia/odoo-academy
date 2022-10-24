@@ -6,6 +6,7 @@
 
 from odoo import models, fields, api
 from odoo.tools.translate import _
+
 from logging import getLogger
 
 
@@ -13,11 +14,7 @@ _logger = getLogger(__name__)
 
 
 class AcademyPublicTenderingEventType(models.Model):
-    """ The summary line for a class docstring should fit on one line.
-
-    Fields:
-      name (Char): Human readable name which will identify each record.
-
+    """ Allow to group similar public tendering process events
     """
 
     _name = 'academy.public.tendering.event.type'
@@ -25,7 +22,6 @@ class AcademyPublicTenderingEventType(models.Model):
 
     _rec_name = 'name'
     _order = 'sequence ASC, name ASC'
-
 
     name = fields.Char(
         string='Name',
@@ -128,6 +124,13 @@ class AcademyPublicTenderingEventType(models.Model):
         limit=None
     )
 
+    _sql_constraints = [
+        (
+            'unique_name',
+            'UNIQUE("name")',
+            _('Another record with the same name already exists')
+        )
+    ]
 
     @api.model
     def create(self, values):
@@ -146,7 +149,6 @@ class AcademyPublicTenderingEventType(models.Model):
             process_set.touch()
 
         return result
-
 
     # def write(self, values):
     #     """ Touches all tendering processes to ensure state_id, both those

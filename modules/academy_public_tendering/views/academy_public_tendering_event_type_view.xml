@@ -79,7 +79,10 @@
             <field name="arch" type="xml">
                 <search string="academy_public_tendering_event_type_search">
                     <field name="name" />
-                    <!-- ··· -->
+
+                    <separator/>
+
+                    <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
                 </search>
             </field>
         </record>

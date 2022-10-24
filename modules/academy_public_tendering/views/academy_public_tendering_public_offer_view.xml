@@ -206,6 +206,10 @@
                 <search string="academy_public_tendering_public_offer_search">
                     <field name="name" />
                     <field name="public_administration_id" />
+
+                    <separator/>
+
+                    <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
                 </search>
             </field>
         </record>

@@ -4,20 +4,19 @@
 #    __openerp__.py file at the root folder of this module.                   #
 ###############################################################################
 
-from odoo import models, fields, api, api
+from odoo import models, fields
 from odoo.tools.translate import _
+
 from logging import getLogger
 
 
 _logger = getLogger(__name__)
 
 
-class AcaemyPublicTenderingAccessSystemClass(models.Model):
-    """ Class of public employee
+class AcaemyPublicTenderingAccessSystem(models.Model):
+    """ Indicates which citizens can take the exam
 
-    Fields:
-      name (Char): Human readable name which will identify each record.
-
+    This can be: Open, Internal promotion, Consolidation
     """
 
     _name = 'academy.public.tendering.access.system'
@@ -56,3 +55,11 @@ class AcaemyPublicTenderingAccessSystemClass(models.Model):
         help=('If the active field is set to false, it will allow you '
               'to hide record without removing it.')
     )
+
+    _sql_constraints = [
+        (
+            'unique_name',
+            'UNIQUE("name")',
+            _('Another record with the same name already exists')
+        )
+    ]

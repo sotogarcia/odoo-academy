@@ -348,8 +348,8 @@ msgid "Choose a type for this event"
 msgstr "Elegir un tipo para este evento"
 
 #. module: academy_public_tendering
-#: model:ir.model.fields,help:academy_public_tendering.field_academy_public_tendering_event__academy_public_tendering_process_id
-#: model:ir.model.fields,help:academy_public_tendering.field_academy_public_tendering_vacancy_position__academy_public_tendering_process_id
+#: model:ir.model.fields,help:academy_public_tendering.field_academy_public_tendering_event__process_id
+#: model:ir.model.fields,help:academy_public_tendering.field_academy_public_tendering_vacancy_position__process_id
 msgid "Choose academy public tendering to which this vacancy belongs"
 msgstr "Elija la oposición a la que pertenece está vacante"
 
@@ -1557,16 +1557,15 @@ msgstr "Ofertas públicas"
 
 #. module: academy_public_tendering
 #: model:ir.model,name:academy_public_tendering.model_academy_public_tendering_process
-#: model:ir.model.fields,field_description:academy_public_tendering.field_academy_public_tendering_event__academy_public_tendering_process_id
-#: model:ir.model.fields,field_description:academy_public_tendering.field_academy_public_tendering_vacancy_position__academy_public_tendering_process_id
+#: model:ir.model.fields,field_description:academy_public_tendering.field_academy_public_tendering_event__process_id
+#: model:ir.model.fields,field_description:academy_public_tendering.field_academy_public_tendering_vacancy_position__process_id
 #: model:ir.model.fields,field_description:academy_public_tendering.field_academy_training_action_enrolment__public_tendering_process_id
 msgid "Public tendering"
 msgstr "Oposición"
 
 #. module: academy_public_tendering
-#: model:ir.model.fields,field_description:academy_public_tendering.field_academy_training_action__public_tendering_process_ids
-#: model:ir.model.fields,field_description:academy_public_tendering.field_academy_training_action_enrolment__public_tendering_process_ids
-#: model:ir.model.fields,field_description:academy_public_tendering.field_academy_training_lesson__public_tendering_process_ids
+#: model:ir.model.fields,field_description:academy_public_tendering.field_academy_training_action__tendering_process_ids
+#: model:ir.model.fields,field_description:academy_public_tendering.field_academy_training_action_enrolment__tendering_process_ids
 msgid "Public tendering process"
 msgstr "Proceso de oposición"
 
@@ -2094,7 +2093,7 @@ msgid "Vacancy position"
 msgstr "Vacante"
 
 #. module: academy_public_tendering
-#: model:ir.model.fields,field_description:academy_public_tendering.field_academy_public_tendering_vacancy_position__academy_public_tendering_vacancy_position_type_id
+#: model:ir.model.fields,field_description:academy_public_tendering.field_academy_public_tendering_vacancy_position__vacancy_position_type_id
 msgid "Vacancy position type"
 msgstr "Tipo de puesto vacante"
 

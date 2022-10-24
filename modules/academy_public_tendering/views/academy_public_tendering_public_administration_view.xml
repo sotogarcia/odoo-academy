@@ -117,6 +117,7 @@
                                     />
                                 </div>
                                 <field name="category_id" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}" placeholder="Tags..."/>
+                                <field name="public_administration_type_id" class="oe_field_public_administration_type_id" />
                             </group>
                         </group>
 
@@ -242,9 +243,8 @@
                             <page name='internal_notes' string="Internal Notes">
                                 <field name="comment" placeholder="Internal note..."/>
                             </page>
-                            <page string="Public offers" class="oe_page_title" autofocus="autofocus" accesskey="O">
-                                <field name="public_offer_ids" class="oe_field_public_offer_ids"
-                                    context="{'tree_view_ref' : 'academy_public_tendering.view_academy_public_tendering_public_offer_tree_x2many'}" />
+                            <page string="Public offers" class="oe_page_lessons" accesskey="L">
+                                <field name="public_offer_ids" class="oe_field_public_offer_ids" />
                             </page>
                         </notebook>
                     </sheet>

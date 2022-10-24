@@ -25,7 +25,7 @@
             <field name="arch" type="xml">
                 <tree string="academy_public_tendering_vacancy_position_tree" create="1" delete="1" edit="1">
                     <field name="sequence" class="od_field_sequence" widget="handle" />
-                    <field name="academy_public_tendering_vacancy_position_type_id" class="oe-field-academy-public-tendering-vacancy-position-type" />
+                    <field name="vacancy_position_type_id" class="oe-field-academy-public-tendering-vacancy-position-type" />
                     <field name="name" class="oe_field_name" required="0" string="Name" />
                     <field name="quantity" class="oe_field_total_of_vacancies" />
                 </tree>
@@ -66,15 +66,15 @@
                             </h1>
                         </div>
 
-                        <group col="1" string="Description">
-                            <field name="academy_public_tendering_process_id"
-                                class="oe_field_academy_public_tendering_process_id" />
-                            <field name="academy_public_tendering_vacancy_position_type_id"
-                                class="oe_field_academy_public_tendering_vacancy_position_type_id" />
+                        <group col="2" string="Description">
+                            <field name="tendering_process_id"
+                                class="oe_field_process_id" />
+                            <field name="vacancy_position_type_id"
+                                class="oe_field_vacancy_position_type_id" />
                             <field name="quantity" class="oe_field_quantity"
                                 placeholder="Enter new quantity" />
                             <field name="description" class="oe_field_description" nolabel="1"
-                                placeholder="Enter new description" />
+                                placeholder="Enter new description" colspan="2" />
                         </group>
 
                     </sheet>
@@ -93,7 +93,13 @@
             <field name="arch" type="xml">
                 <search string="academy_public_tendering_vacancy_position_search">
                     <field name="name" />
-                    <field name="academy_public_tendering_vacancy_position_type_id" />
+                    <field name="vacancy_position_type_id" />
+                    <field name="quantity" />
+                    <field name="tendering_process_id" />
+
+                    <separator/>
+
+                    <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
                 </search>
             </field>
         </record>

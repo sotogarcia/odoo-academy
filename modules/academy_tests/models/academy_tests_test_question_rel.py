@@ -105,10 +105,6 @@ class AcademyTestsTestQuestionRel(models.Model):
 
     index = fields.Integer(
         string='Index',
-        required=False,
-        readonly=True,
-        index=False,
-        default=1,
         help='Show the order of the question in the test',
         related="sequence",
         store=False

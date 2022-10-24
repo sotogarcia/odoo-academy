@@ -4,20 +4,17 @@
 #    __openerp__.py file at the root folder of this module.                   #
 ###############################################################################
 
-from odoo import models, fields, api, api
+from odoo import models, fields
 from odoo.tools.translate import _
+
 from logging import getLogger
 
 
 _logger = getLogger(__name__)
 
 
-class AptGroup(models.Model):
-    """ Group for vacancy position
-
-    Fields:
-      name (Char): Human readable name which will identify each record.
-
+class AcademyPublicTenderingEmploymentGroup(models.Model):
+    """ Group of public administration corps that require a similar degree
     """
 
     _name = 'academy.public.tendering.employment.group'
@@ -57,7 +54,7 @@ class AptGroup(models.Model):
               'to hide record without removing it.')
     )
 
-    qualification_level_id= fields.Many2one(
+    qualification_level_id = fields.Many2one(
         string='Qualification level',
         required=True,
         readonly=False,
@@ -81,4 +78,10 @@ class AptGroup(models.Model):
 
         return imd_set.res_id if imd_set else None
 
-
+    _sql_constraints = [
+        (
+            'unique_name',
+            'UNIQUE("name")',
+            _('Another record with the same name already exists')
+        )
+    ]

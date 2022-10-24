@@ -5,6 +5,7 @@
 ###############################################################################
 
 from odoo import models, fields, api
+
 from logging import getLogger
 
 
@@ -12,11 +13,7 @@ _logger = getLogger(__name__)
 
 
 class AcademyPublicTenderingPublicAdministration(models.Model):
-    """ The summary line for a class docstring should fit on one line.
-
-    Fields:
-      name (Char): Human readable name which will identify each record.
-
+    """ Every different organization that can coordinate a selective process
     """
 
     _name = 'academy.public.tendering.public.administration'

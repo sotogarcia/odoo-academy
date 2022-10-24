@@ -6,7 +6,6 @@
 
 from odoo import models, fields, api
 from odoo.tools.translate import _
-from odoo.exceptions import AccessDenied
 
 from logging import getLogger
 from datetime import datetime, timedelta
@@ -14,12 +13,8 @@ from datetime import datetime, timedelta
 _logger = getLogger(__name__)
 
 
-class AptPublicTendering(models.Model):
-    """ Public tendering information
-
-    Fields:
-      name (Char): Human readable name which will identify each record.
-
+class AcademyPublicTenderingProcess(models.Model):
+    """ All information about the public examination process
     """
 
     _name = 'academy.public.tendering.process'
@@ -202,7 +197,7 @@ class AptPublicTendering(models.Model):
         default=None,
         help='Add offered tendering process',
         comodel_name='academy.public.tendering.vacancy.position',
-        inverse_name='academy_public_tendering_process_id',
+        inverse_name='tendering_process_id',
         domain=[],
         context={},
         auto_join=False,
@@ -313,7 +308,7 @@ class AptPublicTendering(models.Model):
         default=None,
         help='Register new related events',
         comodel_name='academy.public.tendering.event',
-        inverse_name='academy_public_tendering_process_id',
+        inverse_name='tendering_process_id',
         domain=[],
         context={},
         auto_join=False,
@@ -335,6 +330,14 @@ class AptPublicTendering(models.Model):
         compute=lambda self: self._compute_last_event_id()
     )
 
+    _sql_constraints = [
+        (
+            'unique_name',
+            'UNIQUE("name")',
+            _('Another record with the same name already exists')
+        )
+    ]
+
     def _track_subtype(self, init_values):
         xid = 'academy_public_tendering.academy_public_tendering_state_change'
 
@@ -343,7 +346,8 @@ class AptPublicTendering(models.Model):
         if('state_id' in init_values.keys()):
             return self.env.ref(xid).copy()
 
-        return super(AptPublicTendering, self)._track_subtype(init_values)
+        _super = super(AcademyPublicTenderingProcess, self)
+        return _super._track_subtype(init_values)
 
     # ----------------------- AUXILIAR FIELD METHODS --------------------------
 
@@ -503,7 +507,7 @@ class AptPublicTendering(models.Model):
                     event_set.create([{
                         'date': in_date,
                         'event_type_id': etype_set.id,
-                        'academy_public_tendering_process_id': record.id,
+                        'tendering_process_id': record.id,
                     }])
 
             record.touch()
@@ -584,7 +588,8 @@ class AptPublicTendering(models.Model):
         """ Once record has been created its state is computed and stored
         """
 
-        result = super(AptPublicTendering, self).create(values)
+        _super = super(AcademyPublicTenderingProcess, self)
+        result = _super.create(values)
 
         result._ensure_state_id()
 
@@ -600,7 +605,8 @@ class AptPublicTendering(models.Model):
         time becouse each one of them can have a different state value
         """
 
-        result = super(AptPublicTendering, self).write(values)
+        _super = super(AcademyPublicTenderingProcess, self)
+        result = _super.write(values)
 
         if 'state_id' not in values:
             self._ensure_state_id()

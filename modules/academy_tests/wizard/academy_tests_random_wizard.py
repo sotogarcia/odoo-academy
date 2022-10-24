@@ -240,8 +240,9 @@ class AcademyTestsRandomWizard(models.TransientModel):
         message = 'Garbage collector: removing random template {}'
         _logger.info(message.format(message))
 
-        if self._inherited_line_set_is_no_longer_needed():
-            self._remove_inherited_line_set()
+        for record in self:
+            if record._inherited_line_set_is_no_longer_needed():
+                record._remove_inherited_line_set()
 
         result = super(AcademyTestsRandomWizard, self).unlink()
 

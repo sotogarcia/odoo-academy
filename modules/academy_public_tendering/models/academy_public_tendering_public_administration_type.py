@@ -4,8 +4,9 @@
 #    __openerp__.py file at the root folder of this module.                   #
 ###############################################################################
 
-from odoo import models, fields, api
+from odoo import models, fields
 from odoo.tools.translate import _
+
 from logging import getLogger
 
 
@@ -13,11 +14,7 @@ _logger = getLogger(__name__)
 
 
 class AcademyPublicTenderingPublicAdministrationType(models.Model):
-    """ The summary line for a class docstring should fit on one line.
-
-    Fields:
-      name (Char): Human readable name which will identify each record.
-
+    """ Allow to group similar public administrations
     """
 
     _name = 'academy.public.tendering.public.administration.type'
@@ -65,3 +62,11 @@ class AcademyPublicTenderingPublicAdministrationType(models.Model):
         default=0,
         help='Choose the position for this element'
     )
+
+    _sql_constraints = [
+        (
+            'unique_name',
+            'UNIQUE("name")',
+            _('Another record with the same name already exists')
+        )
+    ]

@@ -24,7 +24,7 @@
                     <field name="blank_count" class="oe_field_blank_count" string="Unanswered" />
                     <field name="right_count" class="oe_field_right_count" string="Well" />
                     <field name="wrong_count" class="oe_field_wrong_count" string="Bad" />
-                    <field name="aptly" class="oe_field_aptly" widget="percentage" />
+                    <field name="aptly" class="oe_field_aptly" widget="percent" />
 
                     <button name="show_question"
                             string="Question"
@@ -74,7 +74,7 @@
                             <field name="blank_count" class="oe_field_blank_count" string="Unanswered" />
 
                             <separator colspan="6" string="Hits" class="mt-4" />
-                            <field name="aptly" class="oe_field_aptly" widget="percentage" />
+                            <field name="aptly" class="oe_field_aptly" widget="percent" />
                             <field name="answer_count" class="oe_field_answer_count" string="Sure" />
                             <field name="doubt_count" class="oe_field_doubt_count" string="Unsure" />
 

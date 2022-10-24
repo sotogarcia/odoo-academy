@@ -72,7 +72,12 @@
             <field name="arch" type="xml">
                 <search string="academy_public_tendering_corps_search">
                     <field name="name" />
-                    <!-- ··· -->
+                    <field name="employment_group_id" />
+                    <field name="specialization_id" />
+
+                    <separator/>
+
+                    <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
                 </search>
             </field>
         </record>

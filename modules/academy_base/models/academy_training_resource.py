@@ -420,7 +420,7 @@ class AcademyTrainingResource(models.Model):
         for record in self:
             record.historical_count = len(record.historical_ids)
 
-    def button_snapshot(self, values):
+    def button_snapshot(self):
         """
             Update all record(s) in recordset, with new value comes as {values}
             return True on success, False otherwise

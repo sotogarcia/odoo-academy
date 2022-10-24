@@ -13,6 +13,8 @@
     'author': 'Jorge Soto Garcia',
     'website': 'https://github.com/sotogarcia',
 
+    'license': 'LGPL-3',
+
     'category': 'Academy',
     'version': '13.0.1.0.0',
 

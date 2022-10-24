@@ -4,8 +4,9 @@
 #    __openerp__.py file at the root folder of this module.                   #
 ###############################################################################
 
-from odoo import models, fields, api
+from odoo import models, fields
 from odoo.tools.translate import _
+
 from logging import getLogger
 
 
@@ -13,7 +14,8 @@ _logger = getLogger(__name__)
 
 
 class AcademyPublicTenderingRequiredSpecialization(models.Model):
-    """ Academy Public Tendering Publis Specialization
+    """ Required degree to access the public oppositions related to an
+    employment group.
     """
 
     _name = 'academy.public.tendering.required.specialization'
@@ -21,7 +23,6 @@ class AcademyPublicTenderingRequiredSpecialization(models.Model):
 
     _rec_name = 'name'
     _order = 'name ASC'
-
 
     name = fields.Char(
         string='Name',
@@ -53,3 +54,11 @@ class AcademyPublicTenderingRequiredSpecialization(models.Model):
         help=('If the active field is set to false, it will allow you '
               'to hide record without removing it.')
     )
+
+    _sql_constraints = [
+        (
+            'unique_name',
+            'UNIQUE("name")',
+            _('Another record with the same name already exists')
+        )
+    ]
