@@ -5,6 +5,9 @@ __pycache__/
 # C extensions
 *.so
 
+# Visual paradigm
+*.bak_000f
+
 # Distribution / packaging
 .Python
 env/
