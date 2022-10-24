@@ -13,9 +13,6 @@ from odoo.tools.translate import _
 from odoo.exceptions import UserError
 from odoo.osv.expression import FALSE_DOMAIN
 
-from .utils.raw_sql import \
-    ACADEMY_TRAINING_ACTION_ENROLMENT_AVAILABLE_RESOURCE_REL
-
 # pylint: disable=locally-disabled, C0103
 _logger = getLogger(__name__)
 
@@ -154,39 +151,6 @@ class AcademyTrainingActionEnrolment(models.Model):
         related="training_action_id.action_name"
     )
 
-    enrolment_resource_ids = fields.Many2many(
-        string='Enrolment resources',
-        required=False,
-        readonly=False,
-        index=False,
-        default=None,
-        help=False,
-        comodel_name='academy.training.resource',
-        relation='academy_training_action_enrolment_training_resource_rel',
-        column1='enrolment_id',
-        column2='training_resource_id',
-        domain=[],
-        context={},
-        limit=None
-    )
-
-    available_resource_ids = fields.Many2manyThroughView(
-        string='Available enrolment resources',
-        required=False,
-        readonly=True,
-        index=False,
-        default=None,
-        help=False,
-        comodel_name='academy.training.resource',
-        relation='academy_training_action_enrolment_available_resource_rel',
-        column1='enrolment_id',
-        column2='training_resource_id',
-        domain=[],
-        context={},
-        limit=None,
-        sql=ACADEMY_TRAINING_ACTION_ENROLMENT_AVAILABLE_RESOURCE_REL
-    )
-
     finalized = fields.Boolean(
         string='Finalized',
         required=True,
@@ -308,14 +272,6 @@ class AcademyTrainingActionEnrolment(models.Model):
             if unit_ids:
                 record.competency_unit_ids = [(6, 0, unit_ids)]
 
-        competency_ids = self.mapped(path)
-        if competency_ids:
-            domain = [('id', 'in', competency_ids)]
-        else:
-            domain = FALSE_DOMAIN
-
-        return {'domain': {'competency_unit_ids': domain}}
-
     # -------------------------- OVERLOADED METHODS ---------------------------
 
     @api.returns('self', lambda value: value.id)
@@ -377,7 +333,6 @@ class AcademyTrainingActionEnrolment(models.Model):
                 'type': 'ir.actions.act_window',
                 'res_model': 'academy.student',
                 'target': 'current',
-                'nodestroy': True,
                 'domain': [('id', 'in', student_set.mapped('id'))]
             }
 

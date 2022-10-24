@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 15.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-24 01:33+0000\n"
-"PO-Revision-Date: 2022-10-24 03:46+0200\n"
+"POT-Creation-Date: 2022-10-24 23:02+0000\n"
+"PO-Revision-Date: 2022-10-25 01:06+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -18,11 +18,6 @@ msgstr ""
 "X-Generator: Poedit 2.3\n"
 
 #. module: academy_public_tendering
-#: model:ir.model.fields,field_description:academy_public_tendering.field_academy_public_tendering_public_administration__meeting_count
-msgid "# Meetings"
-msgstr ""
-
-#. module: academy_public_tendering
 #: model_terms:ir.ui.view,arch_db:academy_public_tendering.view_academy_public_tendering_public_administration_form
 msgid "), are you sure to create a new one?"
 msgstr "), Estás seguro de crear uno nuevo?"
@@ -31,33 +26,31 @@ msgstr "), Estás seguro de crear uno nuevo?"
 #: model_terms:ir.ui.view,arch_db:academy_public_tendering.view_academy_public_tendering_public_administration_form
 msgid ""
 "<span class=\"o_form_label o_td_label\" name=\"address_name\">\n"
-"                                    <b attrs=\"{'invisible': ['|', ('parent_id', '=', False), ('type', '!=', "
-"'contact')]}\">Company Address</b>\n"
-"                                    <b attrs=\"{'invisible': ['|', ('parent_id', '=', False), ('type', '!=', "
-"'invoice')]}\">Invoice Address</b>\n"
-"                                    <b attrs=\"{'invisible': ['|', ('parent_id', '=', False), ('type', '!=', "
-"'delivery')]}\">Delivery Address</b>\n"
-"                                    <b attrs=\"{'invisible': ['|', ('parent_id', '=', False), ('type', '!=', "
-"'other')]}\">Other Address</b>\n"
-"                                    <b attrs=\"{'invisible': ['|', ('parent_id', '=', False), ('type', '!=', "
-"'private')]}\">Private Address</b>\n"
-"                                    <b attrs=\"{'invisible': ['&amp;', ('parent_id', '!=', False), ('type', '!=', "
-"False)]}\">Address</b>\n"
+"                                    <b attrs=\"{'invisible': ['|', ('parent_id', '=', False), ('type', '!=', 'contact')]}\">Company "
+"Address</b>\n"
+"                                    <b attrs=\"{'invisible': ['|', ('parent_id', '=', False), ('type', '!=', 'invoice')]}\">Invoice "
+"Address</b>\n"
+"                                    <b attrs=\"{'invisible': ['|', ('parent_id', '=', False), ('type', '!=', 'delivery')]}\">Delivery "
+"Address</b>\n"
+"                                    <b attrs=\"{'invisible': ['|', ('parent_id', '=', False), ('type', '!=', 'other')]}\">Other Address</"
+"b>\n"
+"                                    <b attrs=\"{'invisible': ['|', ('parent_id', '=', False), ('type', '!=', 'private')]}\">Private "
+"Address</b>\n"
+"                                    <b attrs=\"{'invisible': ['&amp;', ('parent_id', '!=', False), ('type', '!=', False)]}\">Address</b>\n"
 "                                </span>"
 msgstr ""
 "<span class=\"o_form_label o_td_label\" name=\"address_name\">\n"
-"                                    <b attrs=\"{'invisible': ['|', ('parent_id', '=', False), ('type', '!=', "
-"'contact')]}\">Company Address</b>\n"
-"                                    <b attrs=\"{'invisible': ['|', ('parent_id', '=', False), ('type', '!=', "
-"'invoice')]}\">Dirección de facturación</b>\n"
-"                                    <b attrs=\"{'invisible': ['|', ('parent_id', '=', False), ('type', '!=', "
-"'delivery')]}\">Dirección de entrega</b>\n"
-"                                    <b attrs=\"{'invisible': ['|', ('parent_id', '=', False), ('type', '!=', "
-"'other')]}\">Otra dirección</b>\n"
-"                                    <b attrs=\"{'invisible': ['|', ('parent_id', '=', False), ('type', '!=', "
-"'private')]}\">Dirección privada</b>\n"
-"                                    <b attrs=\"{'invisible': ['&amp;', ('parent_id', '!=', False), ('type', '!=', "
-"False)]}\">Dirección</b>"
+"                                    <b attrs=\"{'invisible': ['|', ('parent_id', '=', False), ('type', '!=', 'contact')]}\">Company "
+"Address</b>\n"
+"                                    <b attrs=\"{'invisible': ['|', ('parent_id', '=', False), ('type', '!=', 'invoice')]}\">Dirección de "
+"facturación</b>\n"
+"                                    <b attrs=\"{'invisible': ['|', ('parent_id', '=', False), ('type', '!=', 'delivery')]}\">Dirección de "
+"entrega</b>\n"
+"                                    <b attrs=\"{'invisible': ['|', ('parent_id', '=', False), ('type', '!=', 'other')]}\">Otra dirección</"
+"b>\n"
+"                                    <b attrs=\"{'invisible': ['|', ('parent_id', '=', False), ('type', '!=', 'private')]}\">Dirección "
+"privada</b>\n"
+"                                    <b attrs=\"{'invisible': ['&amp;', ('parent_id', '!=', False), ('type', '!=', False)]}\">Dirección</b>"
 
 #. module: academy_public_tendering
 #: model_terms:ir.ui.view,arch_db:academy_public_tendering.view_academy_public_tendering_public_offer_form
@@ -162,7 +155,6 @@ msgstr "Especialidad requerida"
 
 #. module: academy_public_tendering
 #: model:ir.actions.server,name:academy_public_tendering.ir_cron_academy_public_tendering_update_states_daily_ir_actions_server
-#: model:ir.cron,cron_name:academy_public_tendering.ir_cron_academy_public_tendering_update_states_daily
 #: model:ir.cron,name:academy_public_tendering.ir_cron_academy_public_tendering_update_states_daily
 msgid "Academy public tendering: Update states"
 msgstr "Oposición: actualización de estados"
@@ -281,6 +273,11 @@ msgid "Administrations"
 msgstr "Administraciones"
 
 #. module: academy_public_tendering
+#: model:academy.public.tendering.vacancy.position,name:academy_public_tendering.academy_public_tendering_vacancy_position_1
+msgid "Administrative"
+msgstr "Administrativo"
+
+#. module: academy_public_tendering
 #: model:ir.model.fields,help:academy_public_tendering.field_academy_public_tendering_public_administration__lang
 msgid "All the emails and documents sent to this contact will be translated in this language."
 msgstr "Todos los correos y documento enviados a este contacto serán traducidos a este idioma."
@@ -291,6 +288,8 @@ msgid "An existing process event has been updated"
 msgstr "Se actualizó un evento de proceso existente"
 
 #. module: academy_public_tendering
+#: model:academy.public.tendering.event,description:academy_public_tendering.academy_public_tendering_event_announcement
+#: model:academy.public.tendering.event,name:academy_public_tendering.academy_public_tendering_event_announcement
 #: model:academy.public.tendering.event.type,name:academy_public_tendering.academy_public_tendering_event_type_announcement
 msgid "Announcement"
 msgstr "Convocatoria"
@@ -349,6 +348,7 @@ msgstr "Publicación"
 #: model_terms:ir.ui.view,arch_db:academy_public_tendering.view_academy_public_tendering_process_form
 #: model_terms:ir.ui.view,arch_db:academy_public_tendering.view_academy_public_tendering_process_search
 #: model_terms:ir.ui.view,arch_db:academy_public_tendering.view_academy_public_tendering_public_administration_form
+#: model_terms:ir.ui.view,arch_db:academy_public_tendering.view_academy_public_tendering_public_administration_search
 #: model_terms:ir.ui.view,arch_db:academy_public_tendering.view_academy_public_tendering_public_administration_type_form
 #: model_terms:ir.ui.view,arch_db:academy_public_tendering.view_academy_public_tendering_public_administration_type_search
 #: model_terms:ir.ui.view,arch_db:academy_public_tendering.view_academy_public_tendering_public_offer_form
@@ -447,6 +447,11 @@ msgstr ""
 #: model:academy.public.tendering.employment.group,name:academy_public_tendering.academy_public_tendering_employment_group_c2
 msgid "C2"
 msgstr ""
+
+#. module: academy_public_tendering
+#: model:academy.public.tendering.hiring.type,name:academy_public_tendering.academy_public_tendering_hiring_type_career
+msgid "Career civil servants"
+msgstr "Funcionarios de carrera"
 
 #. module: academy_public_tendering
 #: model:ir.model.fields,field_description:academy_public_tendering.field_academy_public_tendering_public_administration__channel_ids
@@ -603,8 +608,8 @@ msgstr "Servicio Civil"
 
 #. module: academy_public_tendering
 #: model_terms:ir.actions.act_window,help:academy_public_tendering.action_access_systems_act_window
-msgid "Click to add new Access systems"
-msgstr "Pulsar para añadir un nuevo sistema de acceso"
+msgid "Click to add new access systems"
+msgstr "Haga clic para agregar nuevos sistemas de acceso"
 
 #. module: academy_public_tendering
 #: model_terms:ir.actions.act_window,help:academy_public_tendering.action_academy_public_tendering_corps_act_window
@@ -758,6 +763,11 @@ msgid "Corps"
 msgstr "Cuerpo"
 
 #. module: academy_public_tendering
+#: model:academy.public.tendering.public.offer,name:academy_public_tendering.academy_public_tendering_public_offer_sansa_2016
+msgid "Council of Saint Saturnine, 2016"
+msgstr "Concello de San Sadurniño, 2016"
+
+#. module: academy_public_tendering
 #: model:ir.model.fields,help:academy_public_tendering.field_academy_public_tendering_public_administration__message_bounce
 msgid "Counter of the number of bounced emails for this contact"
 msgstr "Recuento de correos rechazados para este contacto"
@@ -851,6 +861,11 @@ msgid "Definitive admitted list"
 msgstr "Lista de admitidos definitivas"
 
 #. module: academy_public_tendering
+#: model:academy.public.tendering.event.type,name:academy_public_tendering.academy_public_tendering_event_type_definitive_pass_list
+msgid "Definitive pass list"
+msgstr "Lista de aprobados definitiva"
+
+#. module: academy_public_tendering
 #: model_terms:ir.ui.view,arch_db:academy_public_tendering.view_academy_public_tendering_public_administration_form
 msgid "Delivery"
 msgstr "Entrega"
@@ -924,11 +939,11 @@ msgstr "Vencimiento"
 #. module: academy_public_tendering
 #: model:ir.model.fields,help:academy_public_tendering.field_academy_public_tendering_public_administration__partner_share
 msgid ""
-"Either customer (not a user), either shared user. Indicated the current partner is a customer without access or with "
-"a limited access created for sharing data."
+"Either customer (not a user), either shared user. Indicated the current partner is a customer without access or with a limited access "
+"created for sharing data."
 msgstr ""
-"Cualquiera de los clientes (no un usuario), cualquiera de los usuarios compartidos. Indica que el socio actual es un "
-"cliente sin acceso o con un acceso limitado creado para compartir datos."
+"Cualquiera de los clientes (no un usuario), cualquiera de los usuarios compartidos. Indica que el socio actual es un cliente sin acceso o "
+"con un acceso limitado creado para compartir datos."
 
 #. module: academy_public_tendering
 #: model:ir.model.fields,field_description:academy_public_tendering.field_academy_public_tendering_public_administration__email
@@ -1232,11 +1247,6 @@ msgid "If checked, some messages have a delivery error."
 msgstr "Si está marcado, algunos mensajes tienen un error de entrega."
 
 #. module: academy_public_tendering
-#: model:ir.model.fields,help:academy_public_tendering.field_academy_public_tendering_public_administration__team_id
-msgid "If set, this Sales Team will be used for sales and assignments related to this partner"
-msgstr "Si está establecido, este equipo de ventas se usará para ventas y asignaciones relacionadas con este partner"
-
-#. module: academy_public_tendering
 #: model:ir.model.fields,help:academy_public_tendering.field_academy_public_tendering_access_system__active
 #: model:ir.model.fields,help:academy_public_tendering.field_academy_public_tendering_corps__active
 #: model:ir.model.fields,help:academy_public_tendering.field_academy_public_tendering_employment_group__active
@@ -1256,9 +1266,7 @@ msgstr "Si el campo se establece a falso, le permitirá ocultar el registro sin 
 #. module: academy_public_tendering
 #: model:ir.model.fields,help:academy_public_tendering.field_academy_public_tendering_public_administration__is_blacklisted
 msgid "If the email address is on the blacklist, the contact won't receive mass mailing anymore, from any list"
-msgstr ""
-"Si la dirección de correo electrónico está en la lista negra, el contacto ya no recibirá correos masivos de ninguna "
-"lista"
+msgstr "Si la dirección de correo electrónico está en la lista negra, el contacto ya no recibirá correos masivos de ninguna lista"
 
 #. module: academy_public_tendering
 #: model:ir.model.fields,field_description:academy_public_tendering.field_academy_public_tendering_process__image_1920
@@ -1345,8 +1353,8 @@ msgstr "Factura"
 #: model:ir.model.fields,help:academy_public_tendering.field_academy_public_tendering_public_administration__type
 msgid "Invoice & Delivery addresses are used in sales orders. Private addresses are only visible by authorized users."
 msgstr ""
-"Las direcciones de facturación y entrega se utilizan en pedidos de ventas. Las direcciones privadas solo son "
-"visibles para usuarios autorizados."
+"Las direcciones de facturación y entrega se utilizan en pedidos de ventas. Las direcciones privadas solo son visibles para usuarios "
+"autorizados."
 
 #. module: academy_public_tendering
 #: model:ir.model.fields,field_description:academy_public_tendering.field_academy_public_tendering_event__message_is_follower
@@ -1441,16 +1449,6 @@ msgid "Last event"
 msgstr "Último evento"
 
 #. module: academy_public_tendering
-#: model:ir.model.fields,field_description:academy_public_tendering.field_academy_public_tendering_public_administration__calendar_last_notif_ack
-msgid "Last notification marked as read from base Calendar"
-msgstr "Última notificación marcada como leída del Calendario base"
-
-#. module: academy_public_tendering
-#: model:academy.public.tendering.event.type,name:academy_public_tendering.academy_public_tendering_event_type_definitive_pass_list
-msgid "Listas provisionales de admitidos/excluidos"
-msgstr ""
-
-#. module: academy_public_tendering
 #: model:academy.public.tendering.public.administration.type,name:academy_public_tendering.academy_public_tendering_public_administration_type_local
 msgid "Local"
 msgstr ""
@@ -1467,11 +1465,6 @@ msgstr ""
 #: model:ir.model.fields,field_description:academy_public_tendering.field_academy_public_tendering_public_offer__message_main_attachment_id
 msgid "Main Attachment"
 msgstr "Adjunto principal"
-
-#. module: academy_public_tendering
-#: model:ir.model.fields,field_description:academy_public_tendering.field_academy_public_tendering_public_administration__meeting_ids
-msgid "Meetings"
-msgstr "Reuniones"
 
 #. module: academy_public_tendering
 #: model:ir.model.fields,field_description:academy_public_tendering.field_academy_public_tendering_event__message_has_error
@@ -1520,7 +1513,7 @@ msgstr "Fecha límite de mi actividad"
 #. module: academy_public_tendering
 #: model_terms:ir.ui.view,arch_db:academy_public_tendering.view_academy_public_tendering_process_kanban
 msgid "N/D"
-msgstr ""
+msgstr "N/D"
 
 #. module: academy_public_tendering
 #: model:ir.model.fields,field_description:academy_public_tendering.field_academy_public_tendering_access_system__name
@@ -1583,17 +1576,14 @@ msgid "Name for this vacancy position"
 msgstr "Nombre para este puesto vacante"
 
 #. module: academy_public_tendering
+#: model:academy.public.tendering.event,description:academy_public_tendering.academy_public_tendering_event_offer
+msgid "New offer have been published"
+msgstr "Se ha publicado nueva oferta"
+
+#. module: academy_public_tendering
 #: model:mail.message.subtype,description:academy_public_tendering.academy_public_tendering_event_created
 msgid "New process event has been created"
 msgstr "Se ha creado un nuevo evento de proceso"
-
-#. module: academy_public_tendering
-#: model:ir.model.fields,field_description:academy_public_tendering.field_academy_public_tendering_event__activity_calendar_event_id
-#: model:ir.model.fields,field_description:academy_public_tendering.field_academy_public_tendering_process__activity_calendar_event_id
-#: model:ir.model.fields,field_description:academy_public_tendering.field_academy_public_tendering_public_administration__activity_calendar_event_id
-#: model:ir.model.fields,field_description:academy_public_tendering.field_academy_public_tendering_public_offer__activity_calendar_event_id
-msgid "Next Activity Calendar Event"
-msgstr "Próximo evento del calendario de actividades"
 
 #. module: academy_public_tendering
 #: model:ir.model.fields,field_description:academy_public_tendering.field_academy_public_tendering_event__activity_date_deadline
@@ -1618,11 +1608,6 @@ msgstr "Resumen de actividad siguiente"
 #: model:ir.model.fields,field_description:academy_public_tendering.field_academy_public_tendering_public_offer__activity_type_id
 msgid "Next Activity Type"
 msgstr "Siguiente tipo de actividad"
-
-#. module: academy_public_tendering
-#: model_terms:ir.ui.view,arch_db:academy_public_tendering.view_academy_public_tendering_public_administration_search
-msgid "Non active"
-msgstr "No activo"
 
 #. module: academy_public_tendering
 #: model:ir.model.fields,field_description:academy_public_tendering.field_academy_public_tendering_public_administration__email_normalized
@@ -1685,6 +1670,7 @@ msgid "Nº of vacancies"
 msgstr "Nº de vacantes"
 
 #. module: academy_public_tendering
+#: model:academy.public.tendering.event,name:academy_public_tendering.academy_public_tendering_event_offer
 #: model:academy.public.tendering.event.type,name:academy_public_tendering.academy_public_tendering_event_type_job_offer
 msgid "Offer"
 msgstr "Oferta"
@@ -1694,6 +1680,11 @@ msgstr "Oferta"
 #: model:ir.model.fields,field_description:academy_public_tendering.field_academy_public_tendering_public_offer__official_journal_url
 msgid "Official journal"
 msgstr "Diario oficial"
+
+#. module: academy_public_tendering
+#: model:academy.public.tendering.public.offer,description:academy_public_tendering.academy_public_tendering_public_offer_sansa_2016
+msgid "One administrative job position"
+msgstr "Un puesto vacante de administrativo"
 
 #. module: academy_public_tendering
 #: model:academy.public.tendering.access.system,name:academy_public_tendering.academy_public_tendering_access_system_open
@@ -1741,11 +1732,6 @@ msgid "Pass list by exam"
 msgstr "Lista de aprobados por examen"
 
 #. module: academy_public_tendering
-#: model:academy.public.tendering.hiring.type,name:academy_public_tendering.academy_public_tendering_hiring_type_career
-msgid "Personal funcionario"
-msgstr ""
-
-#. module: academy_public_tendering
 #: model:ir.model.fields,field_description:academy_public_tendering.field_academy_public_tendering_public_administration__phone
 msgid "Phone"
 msgstr "Teléfono"
@@ -1754,11 +1740,6 @@ msgstr "Teléfono"
 #: model_terms:ir.ui.view,arch_db:academy_public_tendering.view_academy_public_tendering_public_administration_form
 msgid "Phone:"
 msgstr "Teléfono:"
-
-#. module: academy_public_tendering
-#: model:ir.model.fields,field_description:academy_public_tendering.field_academy_public_tendering_public_administration__property_product_pricelist
-msgid "Pricelist"
-msgstr "Tarifa"
 
 #. module: academy_public_tendering
 #: code:addons/academy_public_tendering/models/academy_public_tendering_event.py:0
@@ -1812,6 +1793,11 @@ msgid "Public offer"
 msgstr "Oferta pública"
 
 #. module: academy_public_tendering
+#: model:academy.public.tendering.process,description:academy_public_tendering.academy_public_tendering_process_1
+msgid "Public offer of employment for the year 2016 in the municipality of Saint Saturnine"
+msgstr "Oferta pública de empleo para el año 2016 en el municipio de San Sadurniño"
+
+#. module: academy_public_tendering
 #: model:ir.actions.act_window,name:academy_public_tendering.action_offers_act_window
 #: model:ir.model.fields,field_description:academy_public_tendering.field_academy_public_tendering_public_administration__public_offer_ids
 #: model:ir.ui.menu,name:academy_public_tendering.menu_offers
@@ -1835,7 +1821,6 @@ msgstr "Oposición"
 
 #. module: academy_public_tendering
 #: model:ir.model.fields,field_description:academy_public_tendering.field_academy_training_action__tendering_process_ids
-#: model:ir.model.fields,field_description:academy_public_tendering.field_academy_training_lesson__tendering_process_ids
 msgid "Public tendering process"
 msgstr "Proceso de oposición"
 
@@ -1941,6 +1926,11 @@ msgid "Results by exam"
 msgstr "Resultados del examen"
 
 #. module: academy_public_tendering
+#: model:academy.public.tendering.process,name:academy_public_tendering.academy_public_tendering_process_1
+msgid "Saint Saturnine, 2016"
+msgstr "San Sadurniño, 2016"
+
+#. module: academy_public_tendering
 #: model_terms:ir.ui.view,arch_db:academy_public_tendering.view_academy_public_tendering_public_administration_form
 msgid "Sales"
 msgstr "Ventas"
@@ -1949,11 +1939,6 @@ msgstr "Ventas"
 #: model_terms:ir.ui.view,arch_db:academy_public_tendering.view_academy_public_tendering_public_administration_form
 msgid "Sales & Purchase"
 msgstr "Ventas y compras"
-
-#. module: academy_public_tendering
-#: model:ir.model.fields,field_description:academy_public_tendering.field_academy_public_tendering_public_administration__team_id
-msgid "Sales Team"
-msgstr "Equipo de ventas"
 
 #. module: academy_public_tendering
 #: model:ir.model.fields,field_description:academy_public_tendering.field_academy_public_tendering_public_administration__user_id
@@ -1968,8 +1953,7 @@ msgstr "Proceso de selección en el que los candidatos no deben cumplir requisit
 #. module: academy_public_tendering
 #: model:academy.public.tendering.vacancy.position.type,description:academy_public_tendering.academy_public_tendering_vacancy_position_type_disabilities_public_access
 msgid "Selection process in which the candidates must meet certain requirements related to disabilities"
-msgstr ""
-"Proceso de selección en el que los candidatos deben cumplir ciertos requisitos relacionados con la discapacidad"
+msgstr "Proceso de selección en el que los candidatos deben cumplir ciertos requisitos relacionados con la discapacidad"
 
 #. module: academy_public_tendering
 #: model:ir.model.fields,field_description:academy_public_tendering.field_academy_public_tendering_public_administration__self
@@ -2002,11 +1986,6 @@ msgstr "Compartir socio"
 #: model:ir.model.fields,help:academy_public_tendering.field_academy_public_tendering_process__state_id
 msgid "Show last event type"
 msgstr "Mostrar el último tipo de evento"
-
-#. module: academy_public_tendering
-#: model_terms:ir.ui.view,arch_db:academy_public_tendering.view_academy_public_tendering_public_administration_search
-msgid "Show only non active training resources"
-msgstr "Mostra sólo los recursos formativos no activos"
 
 #. module: academy_public_tendering
 #: model:ir.model.fields,help:academy_public_tendering.field_academy_public_tendering_public_administration__student_id
@@ -2163,6 +2142,11 @@ msgid "Takeover date"
 msgstr "Toma de posesión"
 
 #. module: academy_public_tendering
+#: model:ir.model.fields,field_description:academy_public_tendering.field_academy_public_tendering_public_administration__vat
+msgid "Tax ID"
+msgstr ""
+
+#. module: academy_public_tendering
 #: model:academy.public.tendering.hiring.type,name:academy_public_tendering.academy_public_tendering_hiring_type_temporary
 msgid "Temporary staff"
 msgstr "Personal temporal"
@@ -2175,7 +2159,7 @@ msgstr "Oposición"
 #. module: academy_public_tendering
 #: model:ir.actions.act_window,name:academy_public_tendering.action_academy_public_tendering_act_window
 msgid "Tendering processes"
-msgstr "Oposiciónes"
+msgstr "Oposiciones"
 
 #. module: academy_public_tendering
 #: model:ir.model.fields,help:academy_public_tendering.field_academy_public_tendering_public_administration__country_code
@@ -2188,12 +2172,10 @@ msgstr ""
 
 #. module: academy_public_tendering
 #: model:ir.model.fields,help:academy_public_tendering.field_academy_public_tendering_public_administration__vat
-msgid ""
-"The Tax Identification Number. Complete it if the contact is subjected to government taxes. Used in some legal "
-"statements."
+msgid "The Tax Identification Number. Complete it if the contact is subjected to government taxes. Used in some legal statements."
 msgstr ""
-"El número de identificación fiscal. Complete este campo si el contacto está sujeto a impuestos gubernamentales. "
-"Usado en algunas declaraciones legales."
+"El número de identificación fiscal. Complete este campo si el contacto está sujeto a impuestos gubernamentales. Usado en algunas "
+"declaraciones legales."
 
 #. module: academy_public_tendering
 #: model:ir.model.fields,help:academy_public_tendering.field_academy_public_tendering_event__ir_atachment_id
@@ -2216,6 +2198,11 @@ msgstr "El atributo de cantidad debe tener un valor positivo"
 #: model:mail.message.subtype,description:academy_public_tendering.academy_public_tendering_state_change
 msgid "The state of the public tendering process has changed"
 msgstr "El estado del proceso de oposición ha cambiado"
+
+#. module: academy_public_tendering
+#: model_terms:ir.actions.act_window,help:academy_public_tendering.action_access_systems_act_window
+msgid "There are no access systems yet"
+msgstr "Aún no hay sistemas de acceso"
 
 #. module: academy_public_tendering
 #: model_terms:ir.actions.act_window,help:academy_public_tendering.action_academy_public_tendering_corps_act_window
@@ -2283,23 +2270,11 @@ msgid "There are no vacancy positions yet"
 msgstr "Todavía no hay plazas"
 
 #. module: academy_public_tendering
-#: model_terms:ir.actions.act_window,help:academy_public_tendering.action_access_systems_act_window
-msgid "There are still no access systems"
-msgstr "Todavía no hay sistemas de acceso"
-
-#. module: academy_public_tendering
 #: model:ir.model.fields,help:academy_public_tendering.field_academy_public_tendering_public_administration__email_normalized
-msgid ""
-"This field is used to search on email address as the primary email field can contain more than strictly an email "
-"address."
+msgid "This field is used to search on email address as the primary email field can contain more than strictly an email address."
 msgstr ""
-"Este campo se usa para buscar en la dirección de correo electrónico, ya que el campo de correo electrónico principal "
-"puede contener más de una dirección de correo electrónico."
-
-#. module: academy_public_tendering
-#: model:ir.model.fields,help:academy_public_tendering.field_academy_public_tendering_public_administration__property_product_pricelist
-msgid "This pricelist will be used, instead of the default one, for sales to the current partner"
-msgstr "Esta tarifa se utilizará, en lugar de la por defecto, para las ventas de la empresa actual"
+"Este campo se usa para buscar en la dirección de correo electrónico, ya que el campo de correo electrónico principal puede contener más "
+"de una dirección de correo electrónico."
 
 #. module: academy_public_tendering
 #: model:ir.model.fields,field_description:academy_public_tendering.field_academy_public_tendering_public_administration__tz
@@ -2403,11 +2378,6 @@ msgid "Users"
 msgstr "Usuarios"
 
 #. module: academy_public_tendering
-#: model:ir.model.fields,field_description:academy_public_tendering.field_academy_public_tendering_public_administration__vat
-msgid "VAT/Tax ID"
-msgstr "IVA/identificación fiscal"
-
-#. module: academy_public_tendering
 #: model:ir.model.fields,field_description:academy_public_tendering.field_academy_public_tendering_process__total_of_vacancies
 #: model_terms:ir.ui.view,arch_db:academy_public_tendering.view_academy_public_tendering_process_form
 msgid "Vacancies"
@@ -2454,8 +2424,7 @@ msgid ""
 "If the timezone is not set, UTC (Coordinated Universal Time) is used.\n"
 "Anywhere else, time values are computed according to the time offset of your web client."
 msgstr ""
-"Al imprimir documentos y exportar / importar datos, los valores de tiempo se calculan de acuerdo con esta zona "
-"horaria.\n"
+"Al imprimir documentos y exportar / importar datos, los valores de tiempo se calculan de acuerdo con esta zona horaria.\n"
 "Si la zona horaria no está configurada, se utiliza UTC (hora universal coordinada).\n"
 "En cualquier otro caso, los valores de tiempo se calculan de acuerdo con el desplazamiento de tiempo de su navegador."
 
@@ -2695,9 +2664,21 @@ msgid "e.g. https://www.odoo.com"
 msgstr "p.ej. https://www.odoo.com"
 
 #. module: academy_public_tendering
+#: model:academy.public.tendering.process,bulletin_board_url:academy_public_tendering.academy_public_tendering_process_1
+#: model:academy.public.tendering.public.offer,bulletin_board_url:academy_public_tendering.academy_public_tendering_public_offer_sansa_2016
+msgid "https://sede.sansadurnino.gal/opencms/es/procedimientosytramites/index.html#empleo_publico"
+msgstr ""
+
+#. module: academy_public_tendering
+#: model:academy.public.tendering.process,official_journal_url:academy_public_tendering.academy_public_tendering_process_1
+#: model:academy.public.tendering.public.offer,official_journal_url:academy_public_tendering.academy_public_tendering_public_offer_sansa_2016
+msgid "https://www.boe.es/boe/dias/2016/11/23/pdfs/BOE-A-2016-11039.pdf"
+msgstr ""
+
+#. module: academy_public_tendering
 #: model_terms:ir.ui.view,arch_db:academy_public_tendering.view_academy_public_tendering_process_kanban
 msgid "vac."
-msgstr "vac."
+msgstr ""
 
 #. module: academy_public_tendering
 #: model_terms:ir.ui.view,arch_db:academy_public_tendering.view_academy_public_tendering_public_offer_tree_x2many

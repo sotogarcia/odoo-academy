@@ -211,7 +211,6 @@ class AcademyTrainingModule(models.Model):
             'res_model': 'academy.tests.random.template',
             'res_id': template.id,
             'type': 'ir.actions.act_window',
-            'nodestroy': True,
             'target': 'current',
         }
 

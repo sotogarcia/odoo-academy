@@ -112,7 +112,6 @@
         'views/academy_competency_unit_view.xml',
         'views/academy_training_action_view.xml',
         'views/academy_training_activity_view.xml',
-        'views/academy_training_lesson_view.xml',
         'views/academy_training_action_enrolment_view.xml',
         'views/academy_student_view.xml',
 

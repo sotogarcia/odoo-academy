@@ -9,9 +9,8 @@ from logging import getLogger
 
 # pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
-from .utils.raw_sql import ACADEMY_TRAINING_ACTIVITY_TRAINING_MODULE_REL, \
-    ACADEMY_TRAINING_ACTIVITY_TRAINING_UNIT_REL, \
-    ACADEMY_TRAINING_ACTIVITY_AVAILABLE_RESOURCE_REL
+from .utils.raw_sql import ACADEMY_TRAINING_ACTIVITY_TRAINING_MODULE_REL
+from .utils.raw_sql import ACADEMY_TRAINING_ACTIVITY_TRAINING_UNIT_REL
 
 from odoo.tools.translate import _
 
@@ -21,8 +20,7 @@ _logger = getLogger(__name__)
 
 # pylint: disable=locally-disabled, R0903
 class AcademyTrainingActivity(models.Model):
-    """ This describes the activity offered, its modules, training units
-     and available resources.
+    """ This describes the activity offered, its modules and training units
     """
 
     _name = 'academy.training.activity'
@@ -58,6 +56,17 @@ class AcademyTrainingActivity(models.Model):
         default=None,
         help='Enter new description',
         translate=True
+    )
+
+    activity_code = fields.Char(
+        string='Activity code',
+        required=True,
+        readonly=False,
+        index=False,
+        default=None,
+        help='Reference code that identifies the activity',
+        size=30,
+        translate=False
     )
 
     active = fields.Boolean(
@@ -109,17 +118,6 @@ class AcademyTrainingActivity(models.Model):
         context={},
         ondelete='cascade',
         auto_join=False
-    )
-
-    activity_code = fields.Char(
-        string='Activity code',
-        required=False,
-        readonly=False,
-        index=False,
-        default=None,
-        help='Reference code that identifies the activity',
-        size=30,
-        translate=False
     )
 
     general_competence = fields.Text(
@@ -227,39 +225,6 @@ class AcademyTrainingActivity(models.Model):
         sql=ACADEMY_TRAINING_ACTIVITY_TRAINING_UNIT_REL
     )
 
-    activity_resource_ids = fields.Many2many(
-        string='Activity resources',
-        required=False,
-        readonly=False,
-        index=False,
-        default=None,
-        help=False,
-        comodel_name='academy.training.resource',
-        relation='academy_training_activity_training_resource_rel',
-        column1='training_activity_id',
-        column2='training_resource_id',
-        domain=[],
-        context={},
-        limit=None
-    )
-
-    available_resource_ids = fields.Many2manyThroughView(
-        string='Available activity resources',
-        required=False,
-        readonly=True,
-        index=False,
-        default=None,
-        help=False,
-        comodel_name='academy.training.resource',
-        relation='academy_training_activity_available_resource_rel',
-        column1='training_activity_id',
-        column2='training_resource_id',
-        domain=[],
-        context={},
-        limit=None,
-        sql=ACADEMY_TRAINING_ACTIVITY_AVAILABLE_RESOURCE_REL
-    )
-
     # This no needs an SQL statement
     training_module_ids = fields.Many2manyThroughView(
         string='Modules',
@@ -335,22 +300,6 @@ class AcademyTrainingActivity(models.Model):
     def _compute_training_action_count(self):
         for record in self:
             record.training_action_count = len(record.training_action_ids)
-
-    # pylint: disable=W0212
-    training_resource_count = fields.Integer(
-        string='Resources',
-        required=False,
-        readonly=True,
-        index=False,
-        default=0,
-        help=False,
-        compute=lambda self: self._compute_training_resource_count()
-    )
-
-    @api.depends('training_resource_ids')
-    def _compute_training_resource_count(self):
-        for record in self:
-            record.training_resource_count = len(record.training_resource_ids)
 
     # -------------------------- MODEL CONTRAINTS -----------------------------
 

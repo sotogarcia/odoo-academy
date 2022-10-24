@@ -6,7 +6,7 @@
 
         <record id="academy_public_tendering_process_1" model="academy.public.tendering.process">
             <field name="name">Saint Saturnine, 2016</field>
-            <field name="description">Public offer of employment for the year 2020 in the municipality of Saint Saturnine</field>
+            <field name="description">Public offer of employment for the year 2016 in the municipality of Saint Saturnine</field>
             <field name="active">True</field>
             <field name="target_date">2017-05-23</field>
             <field name="hiring_type_id" ref="academy_public_tendering_hiring_type_career" />

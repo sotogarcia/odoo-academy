@@ -89,7 +89,7 @@
             <field name="name">Manage attachments</field>
             <field name="sequence" eval="5" />
             <field name="action" ref="action_manage_attachments_act_window" />
-            <field name="parent_id" ref="academy_base.menu_academy_resources" />
+            <field name="parent_id" ref="academy_tests.menu_test_top" />
             <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical')), (4, ref('academy_base.academy_group_teacher'))]"/>
         </record>
 

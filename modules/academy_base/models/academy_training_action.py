@@ -13,12 +13,10 @@ from odoo.tools.translate import _
 
 # pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
-from odoo.exceptions import ValidationError
 from odoo.tools.safe_eval import safe_eval
 from odoo.osv.expression import AND
 
-from .utils.raw_sql import ACADEMY_TRAINING_ACTION_AVAILABLE_RESOURCE_REL, \
-    ACADEMY_TRAINING_ACTION_STUDENT_REL
+from .utils.raw_sql import ACADEMY_TRAINING_ACTION_STUDENT_REL
 
 # pylint: disable=locally-disabled, C0103
 _logger = getLogger(__name__)
@@ -90,7 +88,7 @@ class AcademyTrainingAction(models.Model):
     # pylint: disable=locally-disabled, w0212
     end = fields.Datetime(
         string='End',
-        required=True,
+        required=False,
         readonly=False,
         index=False,
         default=lambda self: self._utc_o_clock(offset=720),
@@ -236,39 +234,6 @@ class AcademyTrainingAction(models.Model):
         limit=None
     )
 
-    action_resource_ids = fields.Many2many(
-        string='Action resources',
-        required=False,
-        readonly=False,
-        index=False,
-        default=None,
-        help=False,
-        comodel_name='academy.training.resource',
-        relation='academy_training_action_training_resource_rel',
-        column1='training_action_id',
-        column2='training_resource_id',
-        domain=[],
-        context={},
-        limit=None
-    )
-
-    available_resource_ids = fields.Many2manyThroughView(
-        string='Available action resources',
-        required=False,
-        readonly=True,
-        index=False,
-        default=None,
-        help=False,
-        comodel_name='academy.training.resource',
-        relation='academy_training_action_available_resource_rel',
-        column1='training_action_id',
-        column2='training_resource_id',
-        domain=[],
-        context={},
-        limit=None,
-        sql=ACADEMY_TRAINING_ACTION_AVAILABLE_RESOURCE_REL
-    )
-
     student_ids = fields.Many2manyThroughView(
         string='Students',
         required=False,
@@ -295,36 +260,6 @@ class AcademyTrainingAction(models.Model):
         help='Show number of enrolments',
         compute='_compute_training_action_enrolment_count'
     )
-
-    lesson_ids = fields.One2many(
-        string='Lessons',
-        required=False,
-        readonly=False,
-        index=False,
-        default=None,
-        help=False,
-        comodel_name='academy.training.lesson',
-        inverse_name='training_action_id',
-        domain=[],
-        context={},
-        auto_join=False,
-        limit=None
-    )
-
-    lesson_count = fields.Integer(
-        string='Nº lessons',
-        required=False,
-        readonly=True,
-        index=False,
-        default=0,
-        help='Show the number of related lessons',
-        compute='_compute_lesson_count'
-    )
-
-    @api.depends('lesson_ids')
-    def _compute_lesson_count(self):
-        for record in self:
-            record.lesson_count = len(record.lesson_ids)
 
     @api.depends('training_action_enrolment_ids')
     def _compute_training_action_enrolment_count(self):

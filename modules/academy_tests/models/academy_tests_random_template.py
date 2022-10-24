@@ -1069,7 +1069,6 @@ class AcademyTestsRandomTemplate(models.Model):
             'res_model': action.res_model,
             'res_id': test_item.id,
             'type': 'ir.actions.act_window',
-            'nodestroy': True,
             'target': 'current',
             'domain': action.domain,
             'context': action.context,
@@ -1104,7 +1103,6 @@ class AcademyTestsRandomTemplate(models.Model):
             'res_model': action.res_model,
             'res_id': None,
             'type': 'ir.actions.act_window',
-            'nodestroy': True,
             'target': 'current',
             'domain': AND([domain, [('id', 'in', test_ids)]]),
             'context': action.context,
@@ -1126,7 +1124,6 @@ class AcademyTestsRandomTemplate(models.Model):
             'view_type': 'form',
             'res_model': 'academy.tests.random.line',
             'type': 'ir.actions.act_window',
-            'nodestroy': True,
             'target': 'current',
             'domain': [('random_template_id', '=', self.id)],
         }

@@ -33,7 +33,6 @@
         'data/academy_knowledge_area_data.xml',
         'data/academy_qualification_level_data.xml',
         'data/academy_professional_family_data.xml',
-        'data/academy_training_resource_kind_data.xml',
         'data/academy_professional_field_data.xml',
         'data/academy_professional_sector_data.xml',
 
@@ -58,21 +57,12 @@
 
         'views/academy_training_action_enrolment_view.xml',
         'views/academy_student_view.xml',
-        'views/academy_training_lesson_view.xml',
 
         'views/academy_teacher_view.xml',
 
         'report/academy_training_activity_details_report.xml',
 
-        'views/academy_training_resource_view.xml',
-        'views/academy_training_resource_kind_view.xml',
-
         'views/res_partner_view.xml',
-
-        'wizard/academy_training_session_wizard_view.xml',
-        'wizard/academy_training_session_wizard_line_view.xml',
-
-        'security/academy_base.xml',
 
         'security/academy_training_methodology.xml',
         'security/academy_application_scope.xml',
@@ -93,18 +83,11 @@
         'security/academy_training_action.xml',
 
         'security/academy_training_action_enrolment.xml',
-        'security/academy_training_lesson.xml',
 
         'security/academy_teacher.xml',
         'security/academy_student.xml',
-        'security/academy_training_resource.xml',
-        'security/academy_training_resource_file.xml',
-        'security/academy_training_resource_kind.xml',
 
         'security/res_users.xml',
-
-        "security/academy_training_session_wizard.xml",
-        "security/academy_training_session_wizard_line.xml",
     ],
 
     'qweb': [
@@ -127,10 +110,7 @@
 
         'demo/academy_training_action.xml',
 
-        'demo/ir_atachment.xml',
-        'demo/academy_training_resource.xml',
-        'demo/academy_training_action_enrolment_demo.xml',
-        'demo/academy_training_lesson_demo.xml',
+        'demo/academy_training_action_enrolment_demo.xml'
     ],
 
     'js': [

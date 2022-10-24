@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 """ ResUsers
-
-This module extend res.users model to link to own training resources
 """
 
-from odoo import models, fields
+from odoo import models
 from odoo.tools.translate import _
 
 
@@ -20,21 +18,6 @@ class ResUsers(models.Model):
 
     _name = 'res.users'
     _inherit = ['res.users']
-
-    training_resource_ids = fields.One2many(
-        string='Training resources',
-        required=False,
-        readonly=False,
-        index=False,
-        default=None,
-        help='Choose the training resources which he/she must update',
-        comodel_name='academy.training.resource',
-        inverse_name='updater_id',
-        domain=[],
-        context={},
-        auto_join=False,
-        limit=None
-    )
 
     def convert_to_teacher(self):
         """ Convert user in teacher
@@ -73,7 +56,6 @@ class ResUsers(models.Model):
                 'view_id': False,
                 'res_model': 'academy.teacher',
                 'res_id': None,
-                'nodestroy': True,
                 'target': 'current',
                 'domain': [('res_users_id', 'in', self.mapped('id'))],
             }

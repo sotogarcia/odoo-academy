@@ -96,7 +96,6 @@ class AcademyStudent(models.Model):
             'view_mode': 'pivot,tree,form,graph',
             'res_model': 'academy.tests.attempt.resume.helper',
             'type': 'ir.actions.act_window',
-            'nodestroy': True,
             'target': 'current',
             'domain': [('student_id', '=', self.id)],
             'context': irf.context

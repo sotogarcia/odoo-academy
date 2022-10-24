@@ -31,12 +31,7 @@ from . import academy_student
 from . import res_users
 from . import academy_teacher
 
-from . import academy_training_resource
-from . import academy_training_resource_file
-from . import academy_training_resource_kind
-
 from . import academy_training_action_enrolment
-from . import academy_training_lesson
 
 from . import res_partner
 from . import academy_abstract_training_reference

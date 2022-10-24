@@ -125,7 +125,6 @@ class AcademyTrainingAction(models.Model):
             'view_mode': 'pivot,tree,form,graph',
             'res_model': 'academy.tests.attempt.resume.helper',
             'type': 'ir.actions.act_window',
-            'nodestroy': True,
             'target': 'current',
             'domain': [('assignment_id', 'in', assignment_ids)],
             'context': irf.context

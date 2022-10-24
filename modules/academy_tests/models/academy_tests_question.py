@@ -1424,7 +1424,6 @@ class AcademyTestsQuestion(models.Model):
             'view_id': view.id,
             'res_id': res_id,
             'type': 'ir.actions.act_window',
-            'nodestroy': True,
             'target': 'new',
             'domain': '[]',
             'context': self.env.context,

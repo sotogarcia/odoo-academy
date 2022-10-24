@@ -40,7 +40,6 @@ from . import academy_tests_test_kind
 from . import academy_tests_attempt
 from . import academy_tests_attempt_answer
 
-from . import academy_training_lesson
 from . import academy_training_action_enrolment
 from . import academy_tests_test
 from . import academy_tests_random_template_training_action_rel

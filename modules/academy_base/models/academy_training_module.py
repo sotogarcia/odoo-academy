@@ -7,8 +7,7 @@ all training module attributes and behavior.
 
 from odoo import models, fields, api
 
-from .utils.raw_sql import ACADEMY_TRAINING_MODULE_AVAILABLE_RESOURCE_REL, \
-    ACADEMY_TRAINING_MODULE_USED_IN_TRAINING_ACTION_REL
+from .utils.raw_sql import ACADEMY_TRAINING_MODULE_USED_IN_TRAINING_ACTION_REL
 from odoo.tools.translate import _
 
 from logging import getLogger
@@ -150,39 +149,6 @@ class AcademyTrainingModule(models.Model):
         help='Length in hours'
     )
 
-    module_resource_ids = fields.Many2many(
-        string='Module resources',
-        required=False,
-        readonly=False,
-        index=False,
-        default=None,
-        help=False,
-        comodel_name='academy.training.resource',
-        relation='academy_training_module_training_resource_rel',
-        column1='training_module_id',
-        column2='training_resource_id',
-        domain=[],
-        context={},
-        limit=None
-    )
-
-    available_resource_ids = fields.Many2manyThroughView(
-        string='Available resources',
-        required=False,
-        readonly=True,
-        index=False,
-        default=None,
-        help=False,
-        comodel_name='academy.training.resource',
-        relation='academy_training_module_available_resource_rel',
-        column1='training_module_id',
-        column2='training_resource_id',
-        domain=[],
-        context={},
-        limit=None,
-        sql=ACADEMY_TRAINING_MODULE_AVAILABLE_RESOURCE_REL
-    )
-
     used_in_action_ids = fields.Many2manyThroughView(
         string='Used in actions',
         required=False,
@@ -296,48 +262,6 @@ class AcademyTrainingModule(models.Model):
         result = super(AcademyTrainingModule, self).create(values)
 
         return result
-
-    # --------------------------- PUBLIC METHODS ------------------------------
-
-    def get_imparted_hours_in(self, action_id):
-        """ Get all hours assigned an a given action (id) for this recordset
-
-        @param action_id (recordset/int) : academy.training.action record or id
-
-        @return (float): total time length
-        """
-
-        result = 0
-
-        for record in self:
-            result = result + self.get_imparted_hours_for(action_id, record.id)
-
-        return result
-
-    @api.model
-    def get_imparted_hours_for(self, action_id, module_id):
-        """ Get all hours assigned for given module (id) an a given action (id)
-
-        @param action_id (recordset/int): academy.training.action record or id
-        @param module_id (recordset/int): academy.training.module record or id
-
-        @return (float): total time length
-        """
-
-        action_id = self._get_id(action_id) or -1
-        module_id = self._get_id(module_id) or -1
-
-        lesson_domain = [
-            '&',
-            ('training_action_id', '=', action_id),
-            ('training_module_id', '=', module_id),
-        ]
-
-        lesson_obj = self.env['academy.training.lesson']
-        lesson_set = lesson_obj.search(
-            lesson_domain, offset=0, limit=None, order=None, count=False)
-
-        return sum(lesson_set.mapped('duration') or [0])
 
     # -------------------------- AUXILIARY METHODS ----------------------------
 

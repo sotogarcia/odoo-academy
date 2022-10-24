@@ -78,7 +78,6 @@ class ResPartner(models.Model):
             'res_model': 'academy.student',
             'res_id': self.student_id.id,
             'type': 'ir.actions.act_window',
-            'nodestroy': True,
             'target': 'main',
         }
 

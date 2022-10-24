@@ -60,21 +60,6 @@ class AcademyTeacher(models.Model):
         limit=None
     )
 
-    training_lesson_ids = fields.One2many(
-        string='Training lessons',
-        required=False,
-        readonly=True,
-        index=False,
-        default=None,
-        help=False,
-        comodel_name='academy.training.lesson',
-        inverse_name='teacher_id',
-        domain=[],
-        context={},
-        auto_join=False,
-        limit=None
-    )
-
     _sql_constraints = [
         (
             'unique_user',

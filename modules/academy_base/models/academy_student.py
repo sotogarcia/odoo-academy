@@ -128,10 +128,12 @@ class AcademyStudent(models.Model):
             'view_type': 'form',
             'res_model': 'academy.training.action.enrolment',
             'type': 'ir.actions.act_window',
-            'nodestroy': True,
             'target': 'current',
             'domain': [('student_id', '=', self.id)],
-            'context': {'tree_view_ref': view_xid}
+            'context': {
+                'tree_view_ref': view_xid,
+                'default_student_id': self.id
+            }
         }
 
     def go_to_contact(self):
@@ -145,7 +147,6 @@ class AcademyStudent(models.Model):
             'res_model': 'res.partner',
             'res_id': self.res_partner_id.id,
             'type': 'ir.actions.act_window',
-            'nodestroy': True,
             'target': 'main',
         }
 

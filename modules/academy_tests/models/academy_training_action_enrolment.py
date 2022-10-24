@@ -150,7 +150,6 @@ class AcademyTrainingActionEnrolment(models.Model):
             'view_mode': 'pivot,tree,form,graph',
             'res_model': 'academy.tests.attempt.resume.helper',
             'type': 'ir.actions.act_window',
-            'nodestroy': True,
             'target': 'current',
             'domain': [('student_id', '=', self.student_id.id)],
             'context': irf.context

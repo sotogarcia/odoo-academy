@@ -53,12 +53,6 @@
                                 <field name="enrolment_count" widget="statinfo" string="Enrollments" />
                             </button>
 
-                            <button name="session_wizard" type="object"
-                                class="oe_stat_button oe_read_only" icon="fa-calendar"
-                                help="View training action enrollments">
-                                <field name="lesson_count" widget="statinfo" string="New session" />
-                            </button>
-
                             <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
                         </div>
 
@@ -121,15 +115,6 @@
                                     <field name="owner_id" class="oe_field_owner_id" string="Tuttor" />
                                 </group>
                             </page>
-
-                            <page string="Resources" class="oe_page_available_resources" accesskey="R">
-                                <field name="action_resource_ids" nolabel="1"
-                                       class="oe_field_action_resource_ids oe_edit_only" />
-
-                                <field name="available_resource_ids" nolabel="1"
-                                       class="oe_field_available_resource_ids oe_read_only" />
-                            </page>
-
                         </notebook>
                     </sheet>
 

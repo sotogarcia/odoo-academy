@@ -243,7 +243,7 @@
                             <page name='internal_notes' string="Internal Notes">
                                 <field name="comment" placeholder="Internal note..."/>
                             </page>
-                            <page string="Public offers" class="oe_page_lessons" accesskey="L">
+                            <page string="Public offers" class="oe_page_offers" accesskey="L">
                                 <field name="public_offer_ids" class="oe_field_public_offer_ids" />
                             </page>
                         </notebook>
@@ -316,11 +316,8 @@
 
                     <field name="public_administration_type_id" />
 
-                    <filter string="Non active"
-                        name="non_active_training_resources"
-                        domain="[('active', '=', False)]"
-                        context="{}"
-                        help="Show only non active training resources" />
+                    <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
+
 
                 </search>
             </field>

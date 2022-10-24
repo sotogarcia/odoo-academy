@@ -267,12 +267,6 @@
                             <page string="Modules/units" class="oe_page_modules_units" accesskey="M">
                                 <field name="training_unit_ids" class="oe_field_training_units_ids" />
                             </page>
-                            <page string="Lessons" class="oe_page_lessons" accesskey="L">
-                                <field name="training_lesson_ids" class="oe_field_training_lesson_ids" />
-                            </page>
-                            <page string="Resources" class="oe_page_lessons" accesskey="L">
-                                <field name="training_resource_ids" class="oe_field_training_resource_ids" />
-                            </page>
                         </notebook>
                     </sheet>
                 </form>

@@ -105,10 +105,6 @@
                                     <field name="owner_id" class="oe_field_owner_id" />
                                 </group>
                             </page>
-                            <page string="Resources" class="oe_page_resources" accesskey="R">
-                                <field name="available_resource_ids" colspan="2"
-                                    class="oe_field_available_resource_ids" nolabel="1" />
-                            </page>
                         </notebook>
                     </sheet>
 
