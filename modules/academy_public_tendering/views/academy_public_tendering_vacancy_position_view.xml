@@ -58,6 +58,13 @@
             <field name="arch" type="xml">
                 <form string="academy_public_tendering_vacancy_position_form" create="1" delete="1" edit="1">
                     <sheet>
+                        <field name="active" invisible="1" />
+
+                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger"
+                            attrs="{'invisible': [('active', '=', True)]}"/>
+
+                        <div class="oe_button_box" name="button_box" />
+
                         <div class="oe_title">
                             <label for="name" class="oe_edit_only" />
                             <h1>

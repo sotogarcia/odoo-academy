@@ -6,6 +6,7 @@
 ###############################################################################
 
 from odoo import models, fields, api
+from odoo.tools.translate import _
 
 from logging import getLogger
 
@@ -100,6 +101,14 @@ class AcademyPublicTenderingVacancyPosition(models.Model):
         ondelete='cascade',
         auto_join=False
     )
+
+    _sql_constraints = [
+        (
+            'positive_quantity',
+            'CHECK(quantity > 0)',
+            _(u'The quantity attribute must have a positive value')
+        )
+    ]
 
     @api.onchange('vacancy_position_type_id')
     def _onchange_vacancy_position_type_id(self):
