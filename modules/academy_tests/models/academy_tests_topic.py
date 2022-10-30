@@ -8,11 +8,11 @@ all academy tests topic attributes and behavior.
 from odoo import models, fields, api
 from odoo.tools.translate import _
 from odoo.osv.expression import FALSE_DOMAIN
+from odoo.exceptions import UserError, ValidationError
 
-from .utils.sql_m2m_through_view import \
-    INHERITED_TOPICS_REL as SEARCH_MODULES, \
-    ACADEMY_TRAINING_ACTIVITY_TEST_TOPIC_REL as SEARCH_ACTIVITIES, \
-    ACADEMY_COMPETENCY_UNIT_TEST_TOPIC_REL as SEARCH_COMPETENCIES
+
+from .utils.libuseful import fix_established, is_numeric
+from .utils.sql_inverse_searches import TOPIC_QUESTION_COUNT_SEARCH
 
 import re
 from logging import getLogger
@@ -124,6 +124,40 @@ class AcademyTestsTopic(models.Model):
 
     # -------------------------- MANAGEMENT FIELDS ----------------------------
 
+    question_count = fields.Integer(
+        string='Question count',
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        help=False,
+        compute='_compute_question_count',
+        search='_search_question_count',
+    )
+
+    @api.depends('question_ids')
+    def _compute_question_count(self):
+        for record in self:
+            record.question_count = len(record.question_ids)
+
+    def _search_question_count(self, operator, operand):
+        supported = ['=', '!=', '<=', '<', '>', '>=']
+
+        assert operator in supported, \
+            UserError(_('Search operator not supported'))
+
+        assert is_numeric(operand) or operand in [True, False], \
+            UserError(_('Search value not supported'))
+
+        operator, operand = fix_established(operator, operand)
+
+        sql = TOPIC_QUESTION_COUNT_SEARCH.format(operator, operand)
+
+        self.env.cr.execute(sql)
+        ids = self.env.cr.fetchall()
+
+        return [('id', 'in', ids)]
+
     category_count = fields.Integer(
         string='Number of categories',
         required=False,
@@ -132,11 +166,11 @@ class AcademyTestsTopic(models.Model):
         default=0,
         help='Show number of categories',
         store=False,
-        compute=lambda self: self.compute_category_count()
+        compute='_compute_category_count'
     )
 
     @api.depends('category_ids')
-    def compute_category_count(self):
+    def _compute_category_count(self):
         """ Computes `category_count` field value, this will be the number
         of categories related with this topic
         """
@@ -145,7 +179,7 @@ class AcademyTestsTopic(models.Model):
 
     @api.onchange('category_ids')
     def _onchange_category_ids(self):
-        self.compute_category_count()
+        self._compute_category_count()
 
     question_count = fields.Integer(
         string='Number of questions',
@@ -334,6 +368,20 @@ class AcademyTestsTopic(models.Model):
             _(u'There is already another topic with the same name')
         )
     ]
+
+    @api.constrains('topic_version_ids')
+    def _check_topic_version_ids(self):
+        msg = _('Topic {} must have at least one version')
+        for record in self:
+            if not record.topic_version_ids:
+                raise ValidationError(msg.format(record.name))
+
+    @api.constrains('category_ids')
+    def _check_category_ids(self):
+        msg = _('Topic {} must have at least one category')
+        for record in self:
+            if not record.category_ids:
+                raise ValidationError(msg.format(record.name))
 
     # --------------------------- PUBLIC METHODS ------------------------------
 

@@ -114,6 +114,7 @@
                     <field name="training_activity_ids" />
                     <field name="competency_unit_ids" />
                     <field name="training_module_ids" />
+                    <field name="question_count" string="Questions" />
                     <field name="id" string="Topic ID" />
 
                     <filter name="inactive" string="Archived"

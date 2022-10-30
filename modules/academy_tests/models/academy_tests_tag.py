@@ -5,7 +5,7 @@ This module contains the academy.tests.tag Odoo model which stores
 all academy tests tag attributes and behavior.
 """
 
-from odoo import models, fields
+from odoo import models, fields, api
 from odoo.tools.translate import _
 
 from logging import getLogger
@@ -22,6 +22,10 @@ class AcademyTestsTag(models.Model):
 
     _rec_name = 'name'
     _order = 'name ASC'
+
+    _inherit = [
+        'academy.abstract.owner'
+    ]
 
     name = fields.Char(
         string='Name',
@@ -69,6 +73,53 @@ class AcademyTestsTag(models.Model):
         context={},
         limit=None,
     )
+
+    question_count = fields.Integer(
+        string='Question count',
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        help=False,
+        compute='_compute_question_count',
+        search='_search_question_count',
+    )
+
+    @api.depends('question_ids')
+    def _compute_question_count(self):
+        for record in self:
+            record.question_count = len(record.question_ids)
+
+    test_ids = fields.Many2many(
+        string='Tests',
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help='Tests relating to this tag',
+        comodel_name='academy.tests.test',
+        relation='academy_tests_test_tag_rel',
+        column1='tag_id',
+        column2='test_id',
+        domain=[],
+        context={},
+        limit=None,
+    )
+
+    test_count = fields.Integer(
+        string='Test count',
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        help=False,
+        compute='_compute_test_count'
+    )
+
+    @api.depends('test_ids')
+    def _compute_test_count(self):
+        for record in self:
+            record.test_count = len(record.test_ids)
 
     # --------------------------- SQL_CONTRAINTS ------------------------------
 

@@ -9,11 +9,10 @@ from odoo import models, fields, api
 from odoo.tools.translate import _
 from odoo.exceptions import ValidationError
 from odoo.osv.expression import FALSE_DOMAIN
+from odoo.exceptions import UserError
 
-from .utils.sql_m2m_through_view import \
-    INHERITED_CATEGORIES_REL as SEARCH_MODULES, \
-    ACADEMY_TRAINING_ACTIVITY_TEST_CATEGORY_REL as SEARCH_ACTIVITIES, \
-    ACADEMY_COMPETENCY_UNIT_TEST_CATEGORY_REL as SEARCH_COMPETENCIES
+from .utils.libuseful import fix_established, is_numeric
+from .utils.sql_inverse_searches import CATEGORY_QUESTION_COUNT_SEARCH
 
 from logging import getLogger
 import re
@@ -88,6 +87,17 @@ class AcademyTestsCategory(models.Model):
         auto_join=False,
     )
 
+    keywords = fields.Char(
+        string='Keywords',
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help='Comma separated keywords',
+        size=1024,
+        translate=False
+    )
+
     question_ids = fields.Many2many(
         string='Questions',
         required=False,
@@ -104,33 +114,6 @@ class AcademyTestsCategory(models.Model):
         limit=None,
     )
 
-    keywords = fields.Char(
-        string='Keywords',
-        required=False,
-        readonly=False,
-        index=False,
-        default=None,
-        help='Comma separated keywords',
-        size=1024,
-        translate=False
-    )
-
-    question_ids = fields.Many2many(
-        string='Questions',
-        required=False,
-        readonly=True,
-        index=False,
-        default=None,
-        help='List the related questions',
-        comodel_name='academy.tests.question',
-        relation='academy_tests_question_category_rel',
-        column1='category_id',
-        column2='question_id',
-        domain=[],
-        context={},
-        limit=None
-    )
-
     question_count = fields.Integer(
         string='Number of questions',
         required=False,
@@ -139,8 +122,34 @@ class AcademyTestsCategory(models.Model):
         default=0,
         help='Show number of questions',
         store=False,
-        compute=lambda self: self.compute_question_count()
+        compute='_compute_question_count'
     )
+
+    @api.depends('question_ids')
+    def _compute_question_count(self):
+        """ Computes `question_count` field value, this will be the number
+        of categories related with this topic
+        """
+        for record in self:
+            record.question_count = len(record.question_ids)
+
+    def _search_question_count(self, operator, operand):
+        supported = ['=', '!=', '<=', '<', '>', '>=']
+
+        assert operator in supported, \
+            UserError(_('Search operator not supported'))
+
+        assert is_numeric(operand) or operand in [True, False], \
+            UserError(_('Search value not supported'))
+
+        operator, operand = fix_established(operator, operand)
+
+        sql = CATEGORY_QUESTION_COUNT_SEARCH.format(operator, operand)
+
+        self.env.cr.execute(sql)
+        ids = self.env.cr.fetchall()
+
+        return [('id', 'in', ids)]
 
     provisional = fields.Boolean(
         string='Provisional',
@@ -310,14 +319,6 @@ class AcademyTestsCategory(models.Model):
                 result = [('id', 'in', category_ids)]
 
         return result
-
-    @api.depends('question_ids')
-    def compute_question_count(self):
-        """ Computes `question_count` field value, this will be the number
-        of categories related with this topic
-        """
-        for record in self:
-            record.question_count = len(record.question_ids)
 
     # --------------------------- SQL_CONTRAINTS ------------------------------
 

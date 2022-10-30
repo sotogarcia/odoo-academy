@@ -28,6 +28,7 @@
                     <field name="topic_id" class="oe_field_topic_id" />
                     <field name="description" class="oe_field_description" />
                     <field name="provisional" class="oe_field_provisional" />
+                    <field name="question_count" class="oe_field_question_count" string="Questions" />
                 </tree>
             </field>
         </record>
@@ -60,6 +61,7 @@
                         <group>
                             <field name="topic_id" class="oe_field_topic_id" />
                             <field name="provisional" class="oe_field_provisional" />
+                            <field name="question_count" class="oe_field_question_count" string="Questions" />
                             <field name="description" class="oe_field_description" />
                         </group>
 
@@ -84,6 +86,7 @@
                     <field name="training_activity_ids" />
                     <field name="competency_unit_ids" />
                     <field name="training_module_ids" />
+                    <field name="question_count" string="Questions" />
                     <field name="id" string="Version ID" />
 
                     <filter string="Group by topic"

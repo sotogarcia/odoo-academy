@@ -139,8 +139,7 @@ class AcademyAbstractOwner(models.AbstractModel):
         new_item = followers_obj.create({
             'res_model': self._name,
             'res_id': self.id,
-            'partner_id': user_item.partner_id.id,
-            'channel_id': None
+            'partner_id': user_item.partner_id.id
         })
 
         return new_item

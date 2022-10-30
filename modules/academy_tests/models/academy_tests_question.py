@@ -427,7 +427,7 @@ class AcademyTestsQuestion(models.Model):
         default=10,
         help='Display color based on dependency and status',
         store=False,
-        compute=lambda self: self._compute_color()
+        compute='_compute_color'
     )
 
     topic_module_link_ids = fields.Many2manyThroughView(
@@ -466,6 +466,20 @@ class AcademyTestsQuestion(models.Model):
         )
     ]
 
+    @api.constrains('topic_version_ids')
+    def _check_topic_version_ids(self):
+        msg = _('Topic {} must have at least one version')
+        for record in self:
+            if not record.topic_version_ids:
+                raise ValidationError(msg.format(record.name))
+
+    @api.constrains('category_ids')
+    def _check_category_ids(self):
+        msg = _('Topic {} must have at least one category')
+        for record in self:
+            if not record.category_ids:
+                raise ValidationError(msg.format(record.name))
+
     # -------------------------- MANAGEMENT FIELDS ----------------------------
 
     dependency_count = fields.Integer(
@@ -476,7 +490,7 @@ class AcademyTestsQuestion(models.Model):
         default=0,
         help='Number of attachments',
         store=False,
-        compute=lambda self: self._compute_dependency_count()
+        compute='_compute_dependency_count'
     )
 
     @api.depends('depends_on_ids')
@@ -492,7 +506,7 @@ class AcademyTestsQuestion(models.Model):
         default=0,
         help='Number of attachments',
         store=False,
-        compute=lambda self: self._compute_dependent_count()
+        compute='_compute_dependent_count'
     )
 
     @api.depends('dependent_ids')
@@ -508,7 +522,7 @@ class AcademyTestsQuestion(models.Model):
         default=0,
         store=False,
         help='Show the number of current impugnments to this question',
-        compute=lambda self: self._compute_impugnment_count()
+        compute='_compute_impugnment_count'
     )
 
     @api.depends('impugnment_ids')
@@ -523,7 +537,7 @@ class AcademyTestsQuestion(models.Model):
         index=False,
         default=0,
         help='Show the number of duplicate questions',
-        compute=lambda self: self._compute_duplicated_count()
+        compute='_compute_duplicated_count'
     )
 
     @api.depends('duplicated_ids')
@@ -587,7 +601,7 @@ class AcademyTestsQuestion(models.Model):
         default=0,
         store=False,
         help='Number of attachments',
-        compute=lambda self: self._compute_attachment_count()
+        compute='_compute_attachment_count'
     )
 
     @api.depends('ir_attachment_ids')
@@ -603,7 +617,7 @@ class AcademyTestsQuestion(models.Model):
         default=0,
         help='Number of answers',
         store=False,
-        compute=lambda self: self._compute_answer_count(),
+        compute='_compute_answer_count',
         search='_search_answer_count'
     )
 
@@ -638,7 +652,7 @@ class AcademyTestsQuestion(models.Model):
         default=0,
         help='Number of categories',
         store=False,
-        compute=lambda self: self._compute_category_count()
+        compute='_compute_category_count'
     )
 
     @api.depends('category_ids')
@@ -1222,7 +1236,7 @@ class AcademyTestsQuestion(models.Model):
         item.ensure_one()
 
         if isinstance(item.id, models.NewId):
-            return item._origin.id
+            return 0
         else:
             return item.id
 
@@ -1237,8 +1251,8 @@ class AcademyTestsQuestion(models.Model):
 
             values = record._get_values_for_template()
 
-            html = view_obj.render_template(template_xid, values)
-            output += html.decode('utf8')
+            html = view_obj._render_template(template_xid, values)
+            output += html  # .decode('utf8')
 
         return output
 
@@ -1256,7 +1270,7 @@ class AcademyTestsQuestion(models.Model):
 
         for record in self:
             lines = []
-            index = record.id if editable else index + 1
+            index = record._get_real_id() if editable else index + 1
 
             # STEP 1: Append description line (one or more)
             desc_line = prepare_text(record.description or '', '>')

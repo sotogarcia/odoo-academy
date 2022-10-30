@@ -125,6 +125,10 @@ Para impartir una lección es necesario un espacio, ya sea físico o virtual.
 - Un centro puede pertenecer a una determinada compañía (res.company)
 - Puede haber diferentes tipos de aulas
 
+
+> NOTA: Convendría contar con un IWMS (Integrated Workplace Management System)
+> Si no existe en Odoo, quizá habría que plantearse la posibilidad de crearlo
+    
 ## Permisos
 
 Será el técnico de formación (academy_base.academy_group_technical) o grupo de

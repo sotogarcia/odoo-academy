@@ -12,8 +12,8 @@
 
         <record id="menu_test_top" model="ir.ui.menu" >
             <field name="name">Tests</field>
-            <field name="sequence" eval="15" />
-            <field name="parent_id"  />
+            <field name="sequence" eval="25" />
+            <field name="parent_id" ref="academy_base.menu_academy" />
             <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical')), (4, ref('academy_base.academy_group_teacher'))]"/>
         </record>
 

@@ -50,6 +50,84 @@ ANSWER_COUNT_SEARCH = '''
     WHERE COALESCE(quantity, 0)::INTEGER {} {}
 '''
 
+# INVERSE SEARCH: academy_tests.field_academy_tests_topic__question_count
+# Raw sentence used to search topics by number of questions
+# -----------------------------------------------------------------------------
+
+TOPIC_QUESTION_COUNT_SEARCH = '''
+    WITH topic_question_quantity AS (
+        SELECT
+            topic_id,
+            COUNT ( * ) :: INTEGER AS quantity
+        FROM
+            academy_tests_question AS atq
+        GROUP BY
+            topic_id
+    )
+    SELECT
+        att."id" AS topic_id
+    FROM
+        academy_tests_topic AS att
+    LEFT JOIN topic_question_quantity AS cmp
+        ON att."id" = cmp.topic_id
+    WHERE
+        COALESCE ( quantity, 0 ) :: INTEGER {} {}
+'''
+
+
+# INVERSE SEARCH: academy_tests.field_academy_tests_category__question_count
+# Raw sentence used to search categories by number of questions
+# -----------------------------------------------------------------------------
+
+CATEGORY_QUESTION_COUNT_SEARCH = '''
+    WITH category_question_quantity AS (
+
+        SELECT
+            category_id,
+            COUNT ( * ) :: INTEGER AS quantity
+        FROM
+            academy_tests_question_category_rel AS rel
+        GROUP BY
+            category_id
+
+    )
+    SELECT
+        atc."id" AS category_id
+    FROM
+        academy_tests_category AS atc
+    LEFT JOIN category_question_quantity AS cmp
+        ON atc."id" = cmp.category_id
+    WHERE
+        COALESCE ( quantity, 0 ) :: INTEGER {} {}
+'''
+
+
+# INVERSE SEARCH: academy_tests.field_academy_tests_category__question_count
+# Raw sentence used to search categories by number of questions
+# -----------------------------------------------------------------------------
+
+VERSION_QUESTION_COUNT_SEARCH = '''
+    WITH category_question_quantity AS (
+
+        SELECT
+            topic_version_id,
+            COUNT ( * ) :: INTEGER AS quantity
+        FROM
+            academy_tests_question_topic_version_rel AS rel
+        GROUP BY
+            topic_version_id
+
+    )
+    SELECT
+        ttv."id" AS topic_version_id
+    FROM
+        academy_tests_topic_version AS ttv
+    LEFT JOIN category_question_quantity AS cmp
+        ON ttv."id" = cmp.topic_version_id
+    WHERE
+        COALESCE ( quantity, 0 ) :: INTEGER {} {}
+'''
+
 
 # INVERSE SEARCH: academy_tests.field_academy_tests_test__question_count
 # Raw sentence used to search test by number of questions

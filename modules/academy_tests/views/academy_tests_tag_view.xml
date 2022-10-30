@@ -25,6 +25,8 @@
             <field name="arch" type="xml">
                 <tree string="academy_tag_tree" create="1" delete="1" edit="1" >
                     <field name="name" class="oe_field_name" />
+                    <field name="question_count" class="oe_field_question_count" string="Questions" />
+                    <field name="test_count" class="oe_field_test_count" string="Tests" />
                 </tree>
             </field>
         </record>
@@ -55,9 +57,11 @@
                             </h1>
                         </div>
 
-                        <group col="2">
+                        <group col="4">
+                            <field name="question_count" class="oe_field_question_count" string="Questions" />
+                            <field name="test_count" class="oe_field_test_count" string="Tests" />
                             <field name="description" class="oe_field_description"
-                                placeholder="Enter new description" />
+                                placeholder="Enter new description" colspan="4" />
                         </group>
                     </sheet>
                 </form>

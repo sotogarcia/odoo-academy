@@ -274,8 +274,8 @@ class AcademyTestsTestQuestionRel(models.Model):
 
             values = record._get_values_for_template()
 
-            html = view_obj.render_template(template_xid, values)
-            output += html.decode('utf8')
+            html = view_obj._render_template(template_xid, values)
+            output += html  # .decode('utf8')
 
         return output
 

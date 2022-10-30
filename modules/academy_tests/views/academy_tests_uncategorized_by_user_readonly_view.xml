@@ -67,13 +67,5 @@
             </field>
         </record>
 
-        <!-- Main menu for model.name -->
-        <record id="menu_academy_tests_uncategorized_by_user_readonly" model="ir.ui.menu" >
-            <field name="name">Uncategorized questions</field>
-            <field name="sequence" eval="10" />
-            <field name="action" ref="action_academy_tests_uncategorized_by_user_readonly_act_window" />
-            <field name="parent_id" ref="academy_tests.menu_test_settings_top" />
-        </record>
-
     </data>
 </openerp>
