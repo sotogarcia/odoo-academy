@@ -28,7 +28,7 @@
                     <field name="action_name" string="Name" />
                     <field name="start" class="oe_field_start" />
                     <field name="end" class="oe_field_end" />
-                    <field name="owner_id" class="oe_field_owner_id" string="Tuttor" />
+                    <field name="manager_id" class="oe_field_manager_id" string="Tuttor" />
                     <field name="enrolment_count" class="oe_field_training_action_enrolment_count" />
                 </tree>
             </field>
@@ -60,6 +60,7 @@
 
                         <field name="id" invisible="1"/>
                         <field name="active" invisible="1"/>
+                        <field name="prerogative" invisible="1" />
 
                         <div class="oe_title">
                             <label for="action_name" class="oe_edit_only" />
@@ -112,7 +113,13 @@
                             </page>
                             <page id="setup" string="Setup" class="oe_page_setup" accesskey="S">
                                 <group col="4">
-                                    <field name="owner_id" class="oe_field_owner_id" string="Tuttor" />
+                                    <group col="4" colspan="4" string="Ownership"
+                                        attrs="{'invisible': [('prerogative', '&lt;', '1')]}">
+                                        <field name="owner_id" class="oe_field_owner_id"
+                                            attrs="{'readonly': [('prerogative', '&lt;', '3')]}" />
+                                        <field name="subrogate_id" class="oe_field_subrogate_id"
+                                            attrs="{'readonly': [('prerogative', '&lt;', '2')]}" />
+                                    </group>
                                 </group>
                             </page>
                         </notebook>
@@ -140,6 +147,10 @@
                     <field name="action_name" />
                     <field name="seating" />
                     <field name="end" />
+                    <field name="manager_id" />
+                    <field name="training_activity_id" />
+                    <field name="application_scope_id" />
+                    <field name="enrolment_count" />
 
                     <templates>
                         <t t-name="kanban-box">
@@ -160,6 +171,7 @@
                                             <li class="o_ellipsis"><strong>Training activity:&#160;</strong><field name="training_activity_id" /></li>
                                             <li class="o_ellipsis"><strong>Application scope:&#160;</strong><field name="application_scope_id" /></li>
                                             <li class="o_ellipsis"><strong>Nº enrolments:&#160;</strong><field name="enrolment_count" /></li>
+                                            <li class="o_ellipsis" groups="record_ownership.record_ownership_consultant"><strong>Tuttor:&#160;</strong><field name="manager_id" /></li>
                                          </ul>
                                     </div>
                                 </div>

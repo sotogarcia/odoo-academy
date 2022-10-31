@@ -70,7 +70,8 @@
                             </h1>
                         </div>
 
-                        <field name="id" class="oe_field_id" invisible="1" />
+                        <field name="id" invisible="1" />
+                        <field name="prerogative" invisible="1" />
 
                         <group col="4">
                             <field name="activity_code" class="oe_field_activity_code"
@@ -79,7 +80,8 @@
                             <field name="professional_area_id" class="oe_field_professional_area_id" />
                             <field name="qualification_level_id" class="oe_field_qualification_level_id" />
                             <field name="professional_field_id" class="oe_field_professional_field" />
-                            <field name="professional_sector_ids" class="oe_field_professional_sector_ids" widget="many2many_tags" />
+                            <field name="professional_sector_ids" class="oe_field_professional_sector_ids"
+                                domain="[('professional_field_id', '=', id)]" widget="many2many_tags" />
                             <separator colspan="4" />
                             <field name="general_competence" class="oe_field_general_competence"
                                 placeholder="General competence name" colspan="4" />
@@ -94,7 +96,13 @@
                                 <group col="4">
                                     <field name="description" class="oe_field_description"
                                         placeholder="Enter new description" colspan="4" />
-                                    <field name="owner_id" class="oe_field_owner_id" />
+                                    <group col="4" colspan="4" string="Ownership"
+                                        attrs="{'invisible': [('prerogative', '&lt;', '1')]}">
+                                        <field name="owner_id" class="oe_field_owner_id"
+                                            attrs="{'readonly': [('prerogative', '&lt;', '3')]}" />
+                                        <field name="subrogate_id" class="oe_field_subrogate_id"
+                                            attrs="{'readonly': [('prerogative', '&lt;', '2')]}" />
+                                    </group>
                                 </group>
                             </page>
                         </notebook>
@@ -125,6 +133,7 @@
                     <field name="qualification_level_id" />
 
                     <field name="training_action_count" />
+                    <field name="manager_id" />
 
                     <templates>
                         <t t-name="kanban-box">
@@ -144,6 +153,7 @@
                                         <li class="o_ellipsis"><strong>Professional family:&#160;</strong><field name="professional_family_id" /></li>
                                         <li class="o_ellipsis"><strong>Qualification level:&#160;</strong><field name="qualification_level_id" /></li>
                                         <li class="o_ellipsis"><strong>Training actions:&#160;</strong><field name="training_action_count" /></li>
+                                        <li class="o_ellipsis" groups="record_ownership.record_ownership_consultant"><strong>Manager:&#160;</strong><field name="manager_id" /></li>
                                      </ul>
                                 </div>
                                 <div class="row">

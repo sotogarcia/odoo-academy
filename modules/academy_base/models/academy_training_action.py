@@ -16,8 +16,6 @@ from odoo import models, fields, api
 from odoo.tools.safe_eval import safe_eval
 from odoo.osv.expression import AND
 
-from .utils.raw_sql import ACADEMY_TRAINING_ACTION_STUDENT_REL
-
 # pylint: disable=locally-disabled, C0103
 _logger = getLogger(__name__)
 
@@ -35,9 +33,7 @@ class AcademyTrainingAction(models.Model):
     _order = 'action_name ASC'
 
     _inherit = [
-        'academy.abstract.observable',
-        'academy.abstract.training',
-        'academy.abstract.owner',
+        'ownership.mixin',
         'image.mixin',
         'mail.thread',
         'mail.activity.mixin'
@@ -54,6 +50,7 @@ class AcademyTrainingAction(models.Model):
         help='Enter new name',
         size=1024,
         translate=True,
+        tracking=True
     )
 
     description = fields.Text(
@@ -82,7 +79,8 @@ class AcademyTrainingAction(models.Model):
         readonly=False,
         index=False,
         default=lambda self: self._utc_o_clock(),
-        help='Start date of an event, without time for full day events'
+        help='Start date of an event, without time for full day events',
+        tracking=True
     )
 
     # pylint: disable=locally-disabled, w0212
@@ -93,6 +91,7 @@ class AcademyTrainingAction(models.Model):
         index=False,
         default=lambda self: self._utc_o_clock(offset=720),
         help='Stop date of an event, without time for full day events',
+        tracking=True
     )
 
     application_scope_id = fields.Many2one(
@@ -166,7 +165,8 @@ class AcademyTrainingAction(models.Model):
         column2='training_modality_id',
         domain=[],
         context={},
-        limit=None
+        limit=None,
+        tracking=True
     )
 
     training_methodology_ids = fields.Many2many(
@@ -182,7 +182,8 @@ class AcademyTrainingAction(models.Model):
         column2='training_methodology_id',
         domain=[],
         context={},
-        limit=None
+        limit=None,
+        tracking=True
     )
 
     training_activity_id = fields.Many2one(
@@ -196,7 +197,8 @@ class AcademyTrainingAction(models.Model):
         domain=[],
         context={},
         ondelete='cascade',
-        auto_join=False
+        auto_join=False,
+        tracking=True
     )
 
     action_code = fields.Char(
@@ -207,7 +209,8 @@ class AcademyTrainingAction(models.Model):
         default=None,
         help='Enter new internal code',
         size=30,
-        translate=False
+        translate=False,
+        tracking=True
     )
 
     seating = fields.Integer(
@@ -216,7 +219,8 @@ class AcademyTrainingAction(models.Model):
         readonly=False,
         index=False,
         default=20,
-        help='Maximum number of signups allowed'
+        help='Maximum number of signups allowed',
+        tracking=True
     )
 
     training_action_enrolment_ids = fields.One2many(
@@ -234,7 +238,7 @@ class AcademyTrainingAction(models.Model):
         limit=None
     )
 
-    student_ids = fields.Many2manyThroughView(
+    student_ids = fields.Many2manyView(
         string='Students',
         required=False,
         readonly=True,
@@ -242,13 +246,12 @@ class AcademyTrainingAction(models.Model):
         default=None,
         help='Show the students have been enrolled in this training action',
         comodel_name='academy.student',
-        relation='academy_training_action_student_rel',
+        relation='academy_training_action_enrolment',
         column1='training_action_id',
         column2='student_id',
         domain=[],
         context={},
-        limit=None,
-        sql=ACADEMY_TRAINING_ACTION_STUDENT_REL
+        limit=None
     )
 
     enrolment_count = fields.Integer(

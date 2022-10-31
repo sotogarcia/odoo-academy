@@ -392,7 +392,7 @@ msgid "Academy training module"
 msgstr "Módulo formativo"
 
 #. module: academy_base
-#: model:ir.model,name:academy_base.model_academy_training_module_tree_readonly
+#: model:ir.model,name:academy_base.model_academy_training_module_rel
 msgid "Academy training module tree readonly"
 msgstr "Árbol de módulos (sólo lectura)"
 
@@ -1728,7 +1728,7 @@ msgstr "Enseñanza directa"
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_methodology__display_name
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_modality__display_name
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_module__display_name
-#: model:ir.model.fields,field_description:academy_base.field_academy_training_module_tree_readonly__display_name
+#: model:ir.model.fields,field_description:academy_base.field_academy_training_module_rel__display_name
 msgid "Display Name"
 msgstr "Nombre para mostrar"
 
@@ -2605,7 +2605,7 @@ msgstr "Hidrología"
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_methodology__id
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_modality__id
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_module__id
-#: model:ir.model.fields,field_description:academy_base.field_academy_training_module_tree_readonly__id
+#: model:ir.model.fields,field_description:academy_base.field_academy_training_module_rel__id
 msgid "ID"
 msgstr ""
 
@@ -3046,7 +3046,7 @@ msgstr "Lenguajes y sistemas informáticos"
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_methodology____last_update
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_modality____last_update
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_module____last_update
-#: model:ir.model.fields,field_description:academy_base.field_academy_training_module_tree_readonly____last_update
+#: model:ir.model.fields,field_description:academy_base.field_academy_training_module_rel____last_update
 msgid "Last Modified on"
 msgstr "Última modificación el"
 
@@ -3463,7 +3463,7 @@ msgid "Module tree"
 msgstr "Árbol de módulos"
 
 #. module: academy_base
-#: model:ir.model.fields,help:academy_base.field_academy_training_module_tree_readonly__requested_module_id
+#: model:ir.model.fields,help:academy_base.field_academy_training_module_rel__requested_module_id
 msgid "Module will be searched"
 msgstr "Módulo que será buscado"
 
@@ -4013,7 +4013,7 @@ msgid "Parapsychology"
 msgstr "Parapsicología"
 
 #. module: academy_base
-#: model:ir.model.fields,field_description:academy_base.field_academy_training_module_tree_readonly__parent_module_id
+#: model:ir.model.fields,field_description:academy_base.field_academy_training_module_rel__parent_module_id
 msgid "Parent"
 msgstr "Padre"
 
@@ -4023,7 +4023,7 @@ msgid "Parent module"
 msgstr "Módulo principal"
 
 #. module: academy_base
-#: model:ir.model.fields,help:academy_base.field_academy_training_module_tree_readonly__parent_module_id
+#: model:ir.model.fields,help:academy_base.field_academy_training_module_rel__parent_module_id
 msgid "Parent module for the searched one"
 msgstr "Módulo padre para el buscado"
 
@@ -4647,7 +4647,7 @@ msgid "Related Partner"
 msgstr "Socio relacionado"
 
 #. module: academy_base
-#: model:ir.model.fields,field_description:academy_base.field_academy_training_module_tree_readonly__requested_module_id
+#: model:ir.model.fields,field_description:academy_base.field_academy_training_module_rel__requested_module_id
 msgid "Requested"
 msgstr "Buscado"
 
@@ -4657,7 +4657,7 @@ msgid "Res Users Settings"
 msgstr ""
 
 #. module: academy_base
-#: model:ir.model.fields,field_description:academy_base.field_academy_training_module_tree_readonly__responded_module_id
+#: model:ir.model.fields,field_description:academy_base.field_academy_training_module_rel__responded_module_id
 msgid "Responded"
 msgstr "Encontrado"
 
@@ -5418,7 +5418,7 @@ msgid "Thermodynamics"
 msgstr "Termodinámica"
 
 #. module: academy_base
-#: model:ir.model.fields,help:academy_base.field_academy_training_module_tree_readonly__responded_module_id
+#: model:ir.model.fields,help:academy_base.field_academy_training_module_rel__responded_module_id
 msgid "This can be the module itself or its units"
 msgstr "Puede ser el propio módulo o sus unidades"
 

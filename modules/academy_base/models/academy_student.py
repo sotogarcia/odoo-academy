@@ -65,7 +65,8 @@ class AcademyStudent(models.Model):
         compute='_compute_enrolment_count'
     )
 
-    training_action_ids = fields.Many2manyThroughView(
+    # This does not need any sql middle view
+    training_action_ids = fields.Many2manyView(
         string='Training actions',
         required=False,
         readonly=True,
@@ -73,13 +74,12 @@ class AcademyStudent(models.Model):
         default=None,
         help='Show training actions in which this student has been enrolled',
         comodel_name='academy.training.action',
-        relation='academy_training_action_student_rel',
+        relation='academy_training_action_enrolment',
         column1='student_id',
         column2='training_action_id',
         domain=[],
         context={},
-        limit=None,
-        # sql=must be empty. View will be created in training.action
+        limit=None
     )
 
     @api.depends('enrolment_ids')

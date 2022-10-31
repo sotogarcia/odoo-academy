@@ -14,7 +14,7 @@
 
     'license': 'LGPL-3',
     'category': 'Academy',
-    'version': '13.0.1.0.0',
+    'version': '15.0.1.0.0',
 
     # any module necessary for this one to work correctly
     'depends': [
@@ -53,16 +53,15 @@
         'security/academy_tests_test_question_rel.xml',
         'security/academy_tests_question_type.xml',
         'security/academy_tests_topic.xml',
-        'security/academy_tests_random_line.xml',
-        'security/academy_tests_random_template.xml',
+
         'security/academy_tests_topic_training_module_link.xml',
         'security/academy_tests_test_kind.xml',
         'security/academy_tests_attempt.xml',
         'security/academy_tests_attempt_answer.xml',
         'security/academy_tests_correction_scale.xml',
-        'security/academy_tests_random_template_training_action_rel.xml',
+
         'security/academy_tests_topic_version.xml',
-        'security/academy_tests_random_line_categorization.xml',
+
         'security/mail_message.xml',
         'security/academy_tests_uncategorized_questions_by_user.xml',
         'security/academy_tests_test_block.xml',
@@ -80,8 +79,7 @@
         'security/academy_tests_question_append_wizard.xml',
         'security/academy_tests_question_append_wizard_link.xml',
         'security/academy_tests_question_categorize_wizard.xml',
-        'security/academy_tests_random_template_type_wizard.xml',
-        'security/academy_tests_random_wizard.xml',
+
         'security/academy_tests_remove_duplicate_questions_wizard.xml',
         'security/academy_tests_update_questions_wizard.xml',
         'security/academy_tests_new_topic_version_wizard.xml',
@@ -102,9 +100,7 @@
         'views/academy_tests_tets_view.xml',
         'views/academy_tests_topic_view.xml',
         'views/ir_attachment_view.xml',
-        'views/academy_tests_random_line_categorization_view.xml',
-        'views/academy_tests_random_line_view.xml',
-        'views/academy_tests_random_template_view.xml',
+
         'views/academy_tests_topic_version_view.xml',
 
         'views/academy_tests_topic_training_module_link_view.xml',
@@ -118,7 +114,7 @@
         'views/academy_tests_attempt_answer_view.xml',
         'views/academy_tests_attempt_view.xml',
         'views/academy_tests_correction_scale_view.xml',
-        'views/academy_tests_random_template_training_action_rel_view.xml',
+
 
         'views/academy_tests_uncategorized_by_user_readonly_view.xml',
         'views/academy_tests_test_block_view.xml',
@@ -133,7 +129,6 @@
         'report/academy_tests_uncategorized_by_user_report.xml',
 
         'report/academy_tests_test_text_report.xml',
-        'report/academy_tests_template_questions_report.xml',
 
         'templates/uncategorized_questions_by_user_and_topic.xml',
         'templates/duplicated_questions_by_user_and_topic.xml',
@@ -145,7 +140,7 @@
         'wizard/academy_tests_question_append_wizard_view.xml',
         'wizard/academy_tests_question_import_wizard_view.xml',
         'wizard/academy_tests_update_questions_wizard_view.xml',
-        'wizard/academy_tests_random_wizard_view.xml',
+
         'wizard/academy_tests_change_owner_wizard_view.xml',
         'wizard/academy_tests_choose_report_wizard.xml',
         'wizard/academy_tests_new_topic_version_wizard_view.xml',
@@ -153,7 +148,6 @@
         'wizard/academy_tests_manual_categorization_wizard_view.xml',
         'wizard/academy_tests_remove_duplicate_questions_wizard_view.xml',
         'wizard/academy_tests_question_append_wizard_link_view.xml',
-        'wizard/academy_tests_random_template_type_wizard_view.xml'
     ],
     # only loaded in demonstration mode
     'demo': [
@@ -167,23 +161,19 @@
         'demo/academy_tests_answer_demo.xml',
         'demo/academy_tests_test_question_rel_demo.xml',
         'demo/academy_training_module_demo.xml',
-        'demo/academy_tests_random_template_demo.xml',
-        'demo/academy_tests_random_line_demo.xml',
-        'demo/academy_tests_random_line_categorization_demo.xml',
+
         'demo/academy_tests_attempt_demo.xml',
         'demo/academy_tests_attempt_answer_demo.xml',
         'demo/academy_tests_topic_training_module_link_demo.xml'
     ],
     'js': [
-        'static/src/js/academy_tests.js',
-        'static/src/js/listview_button.js'
+
     ],
     'css': [
         'static/src/css/styles-backend.css',
         'static/src/css/academy_tests_report.css',
     ],
     'qweb': [
-        "static/src/xml/listview_button.xml"
     ],
     "external_dependencies": {
         "python": ['unidecode', 'dicttoxml', 'chardet', 'python-docx']
@@ -193,8 +183,7 @@
     "assets": {
         'web.assets_backend': [
             "academy_tests/static/src/css/styles-backend.css",
-            "academy_tests/static/src/js/academy_tests.js",
-            "academy_tests/static/src/js/listview_button.js",
+            "academy_tests/static/src/js/academy_tests.js"
         ],
         'web.report_assets_common': [
             'academy_tests/static/src/css/academy_tests_report.css',

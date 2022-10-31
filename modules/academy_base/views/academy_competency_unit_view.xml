@@ -71,7 +71,7 @@
                                 <group col="4">
                                     <field name="description" class="oe_field_description"
                                         placeholder="Enter new description" colspan="4" />
-                                    <field name="owner_id" class="oe_field_owner_id oe_read_only" />
+                                    <field name="manager_id" class="oe_field_manager_id oe_read_only" />
                                 </group>
                             </page>
                         </notebook>

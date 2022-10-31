@@ -182,7 +182,6 @@
                     <field name="description" />
                     <field name="question_count" />
                     <field name="assignment_count" />
-                    <field name="random_template_id" />
 
                     <field name="image_128"/>
                     <field name="name" />

@@ -87,12 +87,6 @@ class AcademyTestsTestTrainingAssignment(models.Model):
         auto_join=False
     )
 
-    random_template_id = fields.Many2one(
-        string='Template ',
-        readonly=True,
-        related="test_id.random_template_id"
-    )
-
     secondary_id = fields.Many2one(
         string='Sub-assignment',
         required=False,
@@ -535,40 +529,6 @@ class AcademyTestsTestTrainingAssignment(models.Model):
         self.ensure_one()
 
         return self.test_id.download_as_moodle_xml()
-
-    def new_from_template(self, gui=True):
-        self.ensure_one()
-
-        now = fields.datetime.now()
-        available = self.expiration - self.release
-
-        release = max(self.release, now)
-        expiration = release + available
-
-        context = self.env.context
-        training_ref = self.training_ref
-        training_ref = context.get('default_training_ref', training_ref)
-
-        test_id = self.test_id.new_from_template(gui=False)
-        assignment = self.copy({
-            'test_id': test_id.id,
-            'release': release,
-            'expiration': expiration,
-            'owner_id': self.env.context.get('uid', self.owner_id.id),
-            'training_ref': training_ref
-        })
-
-        if gui:
-            return {
-                'model': 'ir.actions.act_window',
-                'type': 'ir.actions.act_window',
-                'name': assignment.name,
-                'res_model': self._name,
-                'target': 'current',
-                'view_mode': 'form',
-                'res_id': assignment.id,
-                'context': {}
-            }
 
     def download_as_pdf(self):
         self.ensure_one()

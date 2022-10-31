@@ -9,8 +9,6 @@ from logging import getLogger
 
 # pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
-from .utils.raw_sql import ACADEMY_TRAINING_ACTIVITY_TRAINING_MODULE_REL
-from .utils.raw_sql import ACADEMY_TRAINING_ACTIVITY_TRAINING_UNIT_REL
 
 from odoo.tools.translate import _
 
@@ -31,8 +29,7 @@ class AcademyTrainingActivity(models.Model):
 
     _inherit = [
         'image.mixin',
-        'academy.abstract.training',
-        'academy.abstract.owner',
+        'ownership.mixin',
         'mail.thread',
         'mail.activity.mixin'
     ]
@@ -45,7 +42,8 @@ class AcademyTrainingActivity(models.Model):
         default=None,
         help=False,
         size=1024,
-        translate=True
+        translate=True,
+        tracking=True
     )
 
     description = fields.Text(
@@ -66,7 +64,8 @@ class AcademyTrainingActivity(models.Model):
         default=None,
         help='Reference code that identifies the activity',
         size=30,
-        translate=False
+        translate=False,
+        tracking=True
     )
 
     active = fields.Boolean(
@@ -191,7 +190,7 @@ class AcademyTrainingActivity(models.Model):
         limit=None,
     )
 
-    available_module_ids = fields.Many2manyThroughView(
+    available_module_ids = fields.Many2manyView(
         string='Training modules',
         required=False,
         readonly=True,
@@ -199,16 +198,15 @@ class AcademyTrainingActivity(models.Model):
         default=None,
         help=False,
         comodel_name='academy.training.module',
-        relation='academy_training_activity_training_module_rel',
+        relation='academy_competency_unit',
         column1='training_activity_id',
         column2='training_module_id',
         domain=[],
         context={},
         limit=None,
-        sql=ACADEMY_TRAINING_ACTIVITY_TRAINING_MODULE_REL
     )
 
-    available_unit_ids = fields.Many2manyThroughView(
+    available_unit_ids = fields.Many2manyView(
         string='Available training units',
         required=False,
         readonly=True,
@@ -221,12 +219,11 @@ class AcademyTrainingActivity(models.Model):
         column2='training_unit_id',
         domain=[],
         context={},
-        limit=None,
-        sql=ACADEMY_TRAINING_ACTIVITY_TRAINING_UNIT_REL
+        limit=None
     )
 
     # This no needs an SQL statement
-    training_module_ids = fields.Many2manyThroughView(
+    training_module_ids = fields.Many2manyView(
         string='Modules',
         required=False,
         readonly=True,
@@ -243,17 +240,6 @@ class AcademyTrainingActivity(models.Model):
     )
 
     # -------------------------- MANAGEMENT FIELDS ----------------------------
-
-    @api.onchange('professional_field_id')
-    def _onchange_professional_field_id(self):
-        _id = self.professional_field_id.id
-        domain = [('professional_field_id', '=', _id)]
-
-        return {
-            'domain': {
-                'professional_sector_ids': domain
-            }
-        }
 
     # pylint: disable=W0212
     competency_unit_count = fields.Integer(

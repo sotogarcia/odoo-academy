@@ -6,8 +6,6 @@ all training module attributes and behavior.
 """
 
 from odoo import models, fields, api
-
-from .utils.raw_sql import ACADEMY_TRAINING_MODULE_USED_IN_TRAINING_ACTION_REL
 from odoo.tools.translate import _
 
 from logging import getLogger
@@ -26,8 +24,7 @@ class AcademyTrainingModule(models.Model):
 
     _inherit = [
         'image.mixin',
-        'academy.abstract.training',
-        'academy.abstract.owner',
+        'ownership.mixin',
         'mail.thread',
         'mail.activity.mixin'
     ]
@@ -45,7 +42,8 @@ class AcademyTrainingModule(models.Model):
         default=None,
         help='Enter new name',
         size=1024,
-        translate=True
+        translate=True,
+        tracking=True
     )
 
     description = fields.Text(
@@ -68,7 +66,7 @@ class AcademyTrainingModule(models.Model):
     )
 
     training_module_id = fields.Many2one(
-        string='Training module',
+        string='Parent module',
         required=False,
         readonly=False,
         index=False,
@@ -78,7 +76,8 @@ class AcademyTrainingModule(models.Model):
         domain=[('training_module_id', '=', False)],
         context={},
         ondelete='cascade',
-        auto_join=False
+        auto_join=False,
+        tracking=True
     )
 
     training_unit_ids = fields.One2many(
@@ -111,7 +110,7 @@ class AcademyTrainingModule(models.Model):
         limit=None
     )
 
-    tree_ids = fields.Many2manyThroughView(
+    tree_ids = fields.Many2manyView(
         string='Module tree',
         required=False,
         readonly=True,
@@ -119,13 +118,13 @@ class AcademyTrainingModule(models.Model):
         default=None,
         help='List this module and all its training units',
         comodel_name='academy.training.module',
-        relation='academy_training_module_tree_readonly',
+        relation='academy_training_module_rel',
         column1='requested_module_id',
         column2='responded_module_id',
         domain=[],
         context={},
         limit=None
-        # sql= academy_training_module_tree_readonly model wil be used
+        # sql= academy_training_module_rel model wil be used
     )
 
     module_code = fields.Char(
@@ -137,6 +136,7 @@ class AcademyTrainingModule(models.Model):
         help='Enter code for training module',
         size=30,
         translate=False,
+        tracking=True
     )
 
     ownhours = fields.Float(
@@ -146,24 +146,8 @@ class AcademyTrainingModule(models.Model):
         index=False,
         default=0.0,
         digits=(16, 2),
-        help='Length in hours'
-    )
-
-    used_in_action_ids = fields.Many2manyThroughView(
-        string='Used in actions',
-        required=False,
-        readonly=True,
-        index=False,
-        default=None,
-        help=False,
-        comodel_name='academy.training.action',
-        relation='academy_training_module_used_in_training_action_rel',
-        column1='training_module_id',
-        column2='training_action_id',
-        domain=[],
-        context={},
-        limit=None,
-        sql=ACADEMY_TRAINING_MODULE_USED_IN_TRAINING_ACTION_REL
+        help='Length in hours',
+        tracking=True
     )
 
     sequence = fields.Integer(
@@ -175,8 +159,7 @@ class AcademyTrainingModule(models.Model):
         help='Choose the unit order'
     )
 
-    # This no needs an SQL statement
-    training_activity_ids = fields.Many2manyThroughView(
+    training_activity_ids = fields.Many2manyView(
         string='Training activities',
         required=False,
         readonly=True,

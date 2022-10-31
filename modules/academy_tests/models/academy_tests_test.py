@@ -175,20 +175,6 @@ class AcademyTestsTest(models.Model):
             record.assignment_count = \
                 len(record.assignment_ids)
 
-    random_template_id = fields.Many2one(
-        string='Template',
-        required=False,
-        readonly=True,
-        index=False,
-        default=None,
-        help='Template has been used to Populate this tests',
-        comodel_name='academy.tests.random.template',
-        domain=[],
-        context={},
-        ondelete='cascade',
-        auto_join=False
-    )
-
     test_kind_id = fields.Many2one(
         string='Kind of test',
         required=True,
@@ -914,19 +900,6 @@ class AcademyTestsTest(models.Model):
                 'default_test_id': self.id
             }
         }
-
-    def new_from_template(self, gui=True):
-        self.ensure_one()
-
-        if not self.random_template_id:
-            msg = _('This test was not created from a template')
-            raise UserError(msg)
-
-        result = self.random_template_id.new_test(gui=gui)
-        if isinstance(result, dict) and 'target' in result.keys():
-            result['target'] = 'main'
-
-        return result
 
     def new_assignment_to_training(self):
         self.ensure_one()

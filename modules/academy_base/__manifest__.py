@@ -14,12 +14,13 @@
 
     'license': 'LGPL-3',
     'category': 'Academy',
-    'version': '13.0.1.0.0',
+    'version': '15.0.1.0.0',
 
     'depends': [
         'base',
         'mail',
-        'm2m_through_view'
+        'record_ownership',
+        'base_field_m2m_view'
     ],
 
     'data': [
@@ -74,9 +75,10 @@
         'security/academy_professional_category.xml',
         'security/academy_professional_family.xml',
         'security/academy_professional_qualification.xml',
-        'security/academy_training_module_tree_readonly.xml',
+        'security/academy_training_module_rel.xml',
         'security/academy_professional_field.xml',
         'security/academy_professional_sector.xml',
+        'security/academy_training_activity_training_unit_rel.xml',
 
         'security/academy_training_module.xml',
         'security/academy_training_activity.xml',

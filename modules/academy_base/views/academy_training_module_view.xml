@@ -59,6 +59,8 @@
                             </h1>
                         </div>
 
+                        <field name="prerogative" invisible="1" />
+
                         <group col="2">
                             <field name="module_code" class="oe_field_module_code"
                                 placeholder="Enter new code" />
@@ -69,7 +71,13 @@
                                 <group col="4">
                                     <field name="description" class="oe_field_description"
                                         placeholder="Enter new description" colspan="4" />
-                                    <field name="owner_id" class="oe_field_owner_id" />
+                                    <group col="4" colspan="4" string="Ownership"
+                                        attrs="{'invisible': [('prerogative', '&lt;', '1')]}">
+                                        <field name="owner_id" class="oe_field_owner_id"
+                                            attrs="{'readonly': [('prerogative', '&lt;', '3')]}" />
+                                        <field name="subrogate_id" class="oe_field_subrogate_id"
+                                            attrs="{'readonly': [('prerogative', '&lt;', '2')]}" />
+                                    </group>
                                 </group>
                             </page>
                         </notebook>
@@ -119,7 +127,7 @@
                     <field name="image_128"/>
                     <field name="name" />
                     <field name="hours" />
-                    <field name="owner_id" />
+                    <field name="manager_id" />
                     <field name="module_code" />
 
                     <templates>
@@ -136,9 +144,9 @@
                                 <div class="oe_kanban_details">
                                     <strong class="oe_partner_heading"><field name="name"/></strong>
                                     <ul>
-                                        <li><strong>Code:&#160;</strong><field name="module_code" /></li>
-                                        <li><strong>Owner:&#160;</strong><field name="owner_id" /></li>
-                                        <li><strong>Lifespan:&#160;</strong><field name="hours" widget="float_time" />&#160;hours</li>
+                                        <li class="o_ellipsis"><strong>Code:&#160;</strong><field name="module_code" /></li>
+                                        <li class="o_ellipsis" groups="record_ownership.record_ownership_consultant"><strong>Manager:&#160;</strong><field name="manager_id" /></li>
+                                        <li class="o_ellipsis"><strong>Lifespan:&#160;</strong><field name="hours" widget="float_time" />&#160;hours</li>
                                      </ul>
                                 </div>
                             </div>
@@ -314,8 +322,7 @@
             <field name="inherit_id" ref="academy_base.view_academy_training_module_form" />
             <field name="arch" type="xml">
                 <xpath expr="//sheet/group/field[1]" position="after">
-                    <field name="training_module_id" class="oe_field_training_module_id" required="1"
-                        attrs="{'readonly': [('training_module_id', '&lt;&gt;', False)]}" />
+                    <field name="training_module_id" class="oe_field_training_module_id" required="1" />
                 </xpath>
                  <xpath expr="//field[@name='module_code']" position="after">
                     <field name="ownhours" class="oe_field_ownhours" />

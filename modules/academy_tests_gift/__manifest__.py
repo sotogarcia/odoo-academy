@@ -13,7 +13,7 @@
 
     'license': 'LGPL-3',
     'category': 'Academy',
-    'version': '13.0.1.0.0',
+    'version': '15.0.1.0.0',
 
     # any module necessary for this one to work correctly
     'depends': ['academy_base', 'academy_tests'],

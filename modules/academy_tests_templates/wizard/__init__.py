@@ -4,4 +4,8 @@
 #    __openerp__.py file at the root folder of this module.                   #
 ###############################################################################
 
-from . import test_academy_tests_random_template
+
+from . import academy_tests_question_import_wizard
+from . import academy_tests_random_wizard
+
+from . import academy_tests_random_template_type_wizard

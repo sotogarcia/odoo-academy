@@ -28,7 +28,6 @@ class AcademyCompetencyUnit(models.Model):
     _inherits = {'academy.training.module': 'training_module_id'}
 
     _inherit = [
-        'academy.abstract.training',
         'mail.thread',
         'mail.activity.mixin'
     ]
@@ -41,7 +40,8 @@ class AcademyCompetencyUnit(models.Model):
         default=None,
         help='Reference code that identifies the competency unit',
         size=30,
-        translate=False
+        translate=False,
+        tracking=True
     )
 
     competency_name = fields.Char(
@@ -53,6 +53,7 @@ class AcademyCompetencyUnit(models.Model):
         help='Enter new name',
         size=1024,
         translate=True,
+        tracking=True
     )
 
     description = fields.Text(
@@ -94,7 +95,8 @@ class AcademyCompetencyUnit(models.Model):
         domain=[('training_module_id', '=', False)],
         context={},
         ondelete='cascade',
-        auto_join=False
+        auto_join=False,
+        tracking=True
     )
 
     training_activity_id = fields.Many2one(
@@ -108,7 +110,8 @@ class AcademyCompetencyUnit(models.Model):
         domain=[],
         context={},
         ondelete='cascade',
-        auto_join=False
+        auto_join=False,
+        tracking=True
     )
 
     professional_qualification_id = fields.Many2one(

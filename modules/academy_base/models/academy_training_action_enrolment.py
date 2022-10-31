@@ -30,8 +30,7 @@ class AcademyTrainingActionEnrolment(models.Model):
 
     _inherit = [
         'image.mixin',
-        'academy.abstract.training',
-        'academy.abstract.owner',
+        'ownership.mixin',
         'mail.thread',
         'mail.activity.mixin'
     ]
@@ -46,6 +45,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         help='Enter new code',
         size=30,
         translate=False,
+        tracking=True
     )
 
     description = fields.Text(
@@ -78,7 +78,8 @@ class AcademyTrainingActionEnrolment(models.Model):
         domain=[],
         context={},
         ondelete='cascade',
-        auto_join=False
+        auto_join=False,
+        tracking=True
     )
 
     training_action_id = fields.Many2one(
@@ -92,7 +93,8 @@ class AcademyTrainingActionEnrolment(models.Model):
         domain=[],
         context={},
         ondelete='cascade',
-        auto_join=False
+        auto_join=False,
+        tracking=True
     )
 
     competency_unit_ids = fields.Many2many(
@@ -118,7 +120,8 @@ class AcademyTrainingActionEnrolment(models.Model):
         readonly=False,
         index=False,
         default=lambda self: fields.Date.context_today(self),
-        help='Date in which student has been enrolled'
+        help='Date in which student has been enrolled',
+        tracking=True
     )
 
     deregister = fields.Date(
@@ -127,7 +130,8 @@ class AcademyTrainingActionEnrolment(models.Model):
         readonly=False,
         index=False,
         default=None,
-        help='Date in which student has been unsubscribed'
+        help='Date in which student has been unsubscribed',
+        tracking=True
     )
 
     # It is necessary to keep the difference with the name of the activity
