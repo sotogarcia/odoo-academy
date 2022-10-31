@@ -1,0 +1,42 @@
+<?xml version= "1.0" encoding= "UTF-8"?>
+
+<openerp>
+    <data noupdate= "0 ">
+
+        <record id="access_civil_service_recruitment_model_civil_service_recruitment_public_administration_civil_service_recruitment_consultant" model="ir.model.access">
+            <field name="name">access_civil_service_recruitment_model_civil_service_recruitment_public_administration_civil_service_recruitment_consultant</field>
+            <field name="model_id" ref="civil_service_recruitment.model_civil_service_recruitment_public_administration" />
+            <field name="group_id" ref="civil_service_recruitment.civil_service_recruitment_consultant"/>
+            <field name="perm_create" eval="False" />
+            <field name="perm_read" eval="False" />
+            <field name="perm_write" eval="False" />
+            <field name="perm_unlink" eval="False" />
+            <field name="active" eval="True" />
+        </record>
+
+        <record id="access_civil_service_recruitment_model_civil_service_recruitment_public_administration_civil_service_recruitment_technical" model="ir.model.access">
+            <field name="name">access_civil_service_recruitment_model_civil_service_recruitment_public_administration_civil_service_recruitment_technical</field>
+            <field name="model_id" ref="civil_service_recruitment.model_civil_service_recruitment_public_administration" />
+            <field name="group_id" ref="civil_service_recruitment.civil_service_recruitment_technical"/>
+            <field name="perm_create" eval="False" />
+            <field name="perm_read" eval="True" />
+            <field name="perm_write" eval="False" />
+            <field name="perm_unlink" eval="False" />
+            <field name="active" eval="True" />
+        </record>
+
+        <record id="access_civil_service_recruitment_model_civil_service_recruitment_public_administration_civil_service_recruitment_manager" model="ir.model.access">
+            <field name="name">access_civil_service_recruitment_model_civil_service_recruitment_public_administration_civil_service_recruitment_manager</field>
+            <field name="model_id" ref="civil_service_recruitment.model_civil_service_recruitment_public_administration" />
+            <field name="group_id" ref="civil_service_recruitment.civil_service_recruitment_manager"/>
+            <field name="perm_create" eval="True" />
+            <field name="perm_read" eval="True" />
+            <field name="perm_write" eval="True" />
+            <field name="perm_unlink" eval="True" />
+            <field name="active" eval="True" />
+        </record>
+
+
+    </data>
+</openerp>
+

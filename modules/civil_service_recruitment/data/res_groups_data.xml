@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <!-- Category: all the other module groups are child of this
+        ============================================================ -->
+        <record id="module_category_civil_service_recruitment" model="ir.module.category">
+            <field name="name">CS Recruitment</field>
+            <field name="sequence" eval="10" />
+            <field name="visible" eval="True" />
+            <field name="description">Civil service recruitment</field>
+        </record>
+
+        <!-- User who only can read data -->
+        <record id="civil_service_recruitment_consultant" model="res.groups">
+            <field name="name">Consultant</field>
+            <field name="comment">Users who can only read the catalog</field>
+            <field name="category_id" ref="module_category_civil_service_recruitment"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="civil_service_recruitment_technical" model="res.groups">
+            <field name="name">Technical</field>
+            <field name="comment">Users who can read and manage full catalog of processes</field>
+            <field name="category_id" ref="module_category_civil_service_recruitment"/>
+            <field name="implied_ids" eval="[(4, ref('civil_service_recruitment_consultant'))]"/>
+        </record>
+
+        <record id="civil_service_recruitment_manager" model="res.groups">
+            <field name="name">Manager</field>
+            <field name="comment">Users who can create/edit information in all models</field>
+            <field name="category_id" ref="module_category_civil_service_recruitment"/>
+            <field name="implied_ids" eval="[(4, ref('civil_service_recruitment_technical'))]"/>
+            <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]" />
+        </record>
+
+    </data>
+</openerp>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+        
+        <!-- Submenu inside academy settings menu
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
+
+        <record id="menu_civil_service_recruitment" model="ir.ui.menu" >
+            <field name="name">CS Recruitment</field>
+            <field name="sequence" eval="10" />
+            <field name="parent_id" />
+            <field name="groups_id" eval="[(4, ref('civil_service_recruitment.civil_service_recruitment_consultant'))]"/>
+        </record>
+
+
+        <record id="menu_civil_service_recruitment_top" model="ir.ui.menu" >
+            <field name="name">CS Recruitment</field>
+            <field name="sequence" eval="10" />
+            <field name="parent_id" ref="civil_service_recruitment.menu_civil_service_recruitment"/>
+            <field name="groups_id" eval="[(4, ref('civil_service_recruitment.civil_service_recruitment_consultant'))]"/>
+        </record>
+
+        <record id="menu_tendering_monitoring" model="ir.ui.menu" >
+            <field name="name">CS Recruitment</field>
+            <field name="sequence" eval="25" />
+            <field name="parent_id" ref="civil_service_recruitment.menu_civil_service_recruitment_top" />
+            <field name="groups_id" eval="[(4, ref('civil_service_recruitment.civil_service_recruitment_manager'))]"/>
+        </record>
+
+        <record id="menu_tendering_catalog" model="ir.ui.menu" >
+            <field name="name">CS Recruitment</field>
+            <field name="sequence" eval="25" />
+            <field name="parent_id" ref="civil_service_recruitment.menu_civil_service_recruitment_top" />
+            <field name="groups_id" eval="[(4, ref('civil_service_recruitment.civil_service_recruitment_consultant'))]"/>
+        </record>
+
+    </data>
+</openerp>

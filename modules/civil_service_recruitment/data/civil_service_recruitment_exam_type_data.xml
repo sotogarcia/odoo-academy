@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="civil_service_recruitment_exam_type_exam" model="civil.service.recruitment.exam.type">
+            <field name="name">Open exam</field>
+        </record>
+
+        <record id="civil_service_recruitment_exam_type_concourse" model="civil.service.recruitment.exam.type">
+            <field name="name">Concourse</field>
+        </record>
+
+        <record id="civil_service_recruitment_exam_type_concourse_exam" model="civil.service.recruitment.exam.type">
+            <field name="name">Concourse/Exam</field>
+        </record>
+
+    </data>
+</openerp>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="civil_service_recruitment_vacancy_1" model="civil.service.recruitment.vacancy.position">
+            <field name="name">Administrative</field>
+            <field name="active">True</field>
+            <field name="process_id" ref="civil_service_recruitment.civil_service_recruitment_process_1" />
+            <field name="vacancy_type_id" ref="civil_service_recruitment_vacancy_type_general_public_access" />
+            <field name="quantity">1</field>
+        </record>
+
+    </data>
+</openerp>

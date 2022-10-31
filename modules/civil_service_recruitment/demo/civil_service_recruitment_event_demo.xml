@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="civil_service_recruitment_event_offer" model="civil.service.recruitment.event">
+            <field name="name">Offer</field>
+            <field name="description">New offer have been published</field>
+            <field name="active" eval="True" />
+            <field name="date">2016-10-02</field>
+            <field name="event_type_id" ref="civil_service_recruitment_event_type_job_offer" />
+            <field name="process_id" ref="civil_service_recruitment_process_1" />
+        </record>
+
+        <record id="civil_service_recruitment_event_announcement" model="civil.service.recruitment.event">
+            <field name="name">Announcement</field>
+            <field name="description">Announcement</field>
+            <field name="active" eval="True" />
+            <field name="date">2016-11-23</field>
+            <field name="event_type_id" ref="civil_service_recruitment_event_type_announcement" />
+            <field name="process_id" ref="civil_service_recruitment_process_1" />
+        </record>
+
+    </data>
+</openerp>

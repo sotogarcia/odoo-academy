@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="civil_service_recruitment_state_change" model="mail.message.subtype">
+            <field name="name">Process state changed</field>
+            <field name="res_model">civil.service.recruitment</field>
+            <field name="relation_field">state_id</field>
+            <field name="default" eval="True"/>
+            <field name="description">The state of the civil service recruitment process has changed</field>
+        </record>
+
+
+        <record id="civil_service_recruitment_event_created" model="mail.message.subtype">
+            <field name="name">Process event created</field>
+            <field name="res_model">civil.service.recruitment.event</field>
+            <field name="relation_field">create_date</field>
+            <field name="default" eval="True"/>
+            <field name="description">New process event has been created</field>
+        </record>
+
+        <record id="civil_service_recruitment_event_written" model="mail.message.subtype">
+            <field name="name">Process event updated</field>
+            <field name="res_model">civil.service.recruitment.event</field>
+            <field name="relation_field">create_date</field>
+            <field name="default" eval="True"/>
+            <field name="description">An existing process event has been updated</field>
+        </record>
+
+    </data>
+</openerp>

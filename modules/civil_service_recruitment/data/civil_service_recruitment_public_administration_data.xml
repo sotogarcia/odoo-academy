@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="civil_service_recruitment_public_administration_european_commission" model="civil.service.recruitment.public.administration">
+            <field name="res_partner_id" ref="res_partner_european_commission" />
+            <field name="administration_type_id" ref="civil_service_recruitment_public_administration_type_others" />
+        </record>
+
+    </data>
+</openerp>

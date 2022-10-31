@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="civil_service_recruitment_public_corps_administrative" model="civil.service.recruitment.public.corps">
+            <field name="name">General Administrative Corps</field>
+            <field name="active" eval="True" />
+            <field name="group_id" ref='civil_service_recruitment_employment_group_c1' />
+        </record>
+
+        <record id="civil_service_recruitment_public_corps_administrative_assistant" model="civil.service.recruitment.public.corps">
+            <field name="name">General Auxiliary Corps of Administration</field>
+            <field name="active" eval="True" />
+            <field name="group_id" ref='civil_service_recruitment_employment_group_c2' />
+        </record>
+
+    </data>
+</openerp>
+
+
