@@ -63,8 +63,13 @@
             <field name="active" eval="True" />
             <field name="arch" type="xml">
                 <form string="civil_service_recruitment_process_form" create="1" delete="1" edit="1">
+                    <header>
+                         <field name="state" widget="statusbar" clickable="1" />
+                    </header>
+
                     <sheet>
                         <field name="active" invisible="1" />
+                        <field name="prerogative" invisible="1" />
 
                         <widget name="web_ribbon" title="Archived" bg_color="bg-danger"
                             attrs="{'invisible': [('active', '=', True)]}"/>
@@ -131,14 +136,20 @@
                             <page string="Vacancies" class="oe_page_vacancies" accesskey="V">
                                 <field name="vacancy_ids" class="oe_field_vacancy_ids"
                                     context="{'tree_view_ref' : 'civil_service_recruitment.view_civil_service_recruitment_vacancy_tree_x2many',
-                                              'default_tendering_process_id': id}"
+                                              'default_selection_process_id': id}"
                                     widget="one2many" />
                             </page>
                             <page id="setup" string="Setup" class="oe_page_setup" accesskey="S">
                                 <group col="4">
                                     <field name="description" class="oe_field_description"
                                         placeholder="Enter new description" colspan="4" />
-                                    <field name="owner_id" class="oe_field_owner_id" />
+                                    <group col="4" colspan="4" string="Ownership"
+                                        attrs="{'invisible': [('prerogative', '&lt;', '1')]}">
+                                        <field name="owner_id" class="oe_field_owner_id"
+                                            attrs="{'readonly': [('prerogative', '&lt;', '3')]}" />
+                                        <field name="subrogate_id" class="oe_field_subrogate_id"
+                                            attrs="{'readonly': [('prerogative', '&lt;', '2')]}" />
+                                    </group>
                                 </group>
                             </page>
                             <page string="Attachments" class="oe_page_attachments" accesskey="A">
@@ -189,7 +200,7 @@
                                         <field name="image_128" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}' />
                                     </t>
                                     <t t-else="">
-                                        <img t-att-src="_s + &quot;/civil_service_recruitment/static/src/img/civil_service_recruitment.png&quot;" class="o_kanban_image" alt="Image for civil service recruitment"/>
+                                        <img t-att-src="_s + &quot;/civil_service_recruitment/static/src/img/selection_process.png&quot;" class="o_kanban_image" alt="Image for civil service recruitment process"/>
                                     </t>
                                 </div>
                                 <div class="oe_kanban_details">
@@ -199,7 +210,7 @@
                                             <strong>Approval</strong>
                                             <span>
                                                 <t t-if="record.approval.raw_value"><field name="approval" widget="date" /></t>
-                                                <t t-if="!record.approval.raw_value">N/D</t>
+                                                <t t-if="!record.approval.raw_value">N/A</t>
                                             </span>
                                         </li>
 
@@ -207,7 +218,7 @@
                                             <strong>Announcement</strong>
                                             <span>
                                                 <t t-if="record.announcement.raw_value"><field name="announcement" widget="date" /></t>
-                                                <t t-if="!record.announcement.raw_value">N/D</t>
+                                                <t t-if="!record.announcement.raw_value">N/A</t>
                                             </span>
                                         </li>
 
@@ -216,7 +227,7 @@
                                             <strong t-if="!record.finished.raw_value">Due date</strong>
                                             <span t-if="!record.finished.raw_value">
                                                 <t t-if="record.target_date.raw_value"><field name="target_date" widget="date" /></t>
-                                                <t t-if="!record.target_date.raw_value">N/D</t>
+                                                <t t-if="!record.target_date.raw_value">N/A</t>
                                             </span>
 
                                             <strong t-if="record.finished.raw_value">Finished</strong>
@@ -285,7 +296,7 @@
         <!-- Main window action for model.name -->
         <record id="action_civil_service_recruitment_act_window" model="ir.actions.act_window">
             <field name="type">ir.actions.act_window</field>
-            <field name="name">Tendering processes</field>
+            <field name="name">Selection processes</field>
             <field name="res_model">civil.service.recruitment.process</field>
             <field name="view_mode">kanban,tree,form</field>
             <field name="target">current</field>
@@ -304,10 +315,10 @@
         <!-- Main menu for model.name -->
         <record id="menu_civil_service_recruitment_process" model="ir.ui.menu" >
             <field name="name">Public examination</field>
-            <field name="sequence" eval="10" />
+            <field name="sequence" eval="15" />
             <field name="action" ref="action_civil_service_recruitment_act_window" />
-            <field name="parent_id" ref="menu_tendering_monitoring" />
-            <field name="groups_id" eval="[(4, ref('civil_service_recruitment.civil_service_recruitment_technical'))]" />
+            <field name="parent_id" ref="menu_civil_service_recruitment" />
+            <field name="groups_id" eval="[(4, ref('civil_service_recruitment.civil_service_recruitment_group_technical'))]" />
         </record>
 
     </data>

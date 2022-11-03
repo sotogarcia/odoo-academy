@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="access_academy_company_switch_wizard_base_group_multi_company" model="ir.model.access">
+            <field name="name">academy_company_switch_wizard base_group_multi_company</field>
+            <field name="model_id" ref="academy_base.model_academy_company_switch_wizard"/>
+            <field name="group_id" ref="base.group_multi_company"/>
+            <field name="perm_read" eval="True" />
+            <field name="perm_create" eval="True" />
+            <field name="perm_write" eval="True" />
+            <field name="perm_unlink" eval="True" />
+            <field name="active" eval="True" />
+        </record>
+
+
+    </data>
+</openerp>

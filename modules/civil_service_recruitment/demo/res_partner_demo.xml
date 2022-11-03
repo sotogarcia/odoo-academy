@@ -23,11 +23,12 @@
             <field name="vat">ESP1507700A</field>
 
             <field name="is_company" eval="True" />
-<!--            <field name="supplier" eval="False" />-->
-<!--            <field name="customer" eval="False" />-->
             <field name="category_id" eval="[(4, ref('civil_service_recruitment.res_partner_category_civil_service'))]" />
 
             <!-- <field name="lang">es_ES</field> -->
+            <!-- <field name="supplier" eval="False" /> -->
+            <!-- <field name="customer" eval="False" /> -->
+
             <field name="type">contact</field>
             <field name="tz">Europe/Madrid</field>
 

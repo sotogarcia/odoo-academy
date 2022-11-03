@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="pais_vasco" model="res.country.region">
+        	<field name="name">País Vasco</field>
+        </record>
+
+        <record id="castilla_la_mancha" model="res.country.region">
+        	<field name="name">Castilla-La Mancha</field>
+        </record>
+
+        <record id="comunidad_valenciana" model="res.country.region">
+        	<field name="name">Comunidad Valenciana</field>
+        </record>
+
+        <record id="andalucia" model="res.country.region">
+        	<field name="name">Andalucía</field>
+        </record>
+
+        <record id="principado_de_asturias" model="res.country.region">
+        	<field name="name">Principado de Asturias</field>
+        </record>
+
+        <record id="castilla_y_leon" model="res.country.region">
+        	<field name="name">Castilla y León</field>
+        </record>
+
+        <record id="extremadura" model="res.country.region">
+        	<field name="name">Extremadura</field>
+        </record>
+
+        <record id="islas_baleares" model="res.country.region">
+        	<field name="name">Islas Baleares</field>
+        </record>
+
+        <record id="cataluna" model="res.country.region">
+        	<field name="name">Cataluña</field>
+        </record>
+
+        <record id="cantabria" model="res.country.region">
+        	<field name="name">Cantabria</field>
+        </record>
+
+        <record id="ceuta" model="res.country.region">
+        	<field name="name">Ceuta</field>
+        </record>
+
+        <record id="aragon" model="res.country.region">
+        	<field name="name">Aragón</field>
+        </record>
+
+        <record id="la_rioja" model="res.country.region">
+        	<field name="name">La Rioja</field>
+        </record>
+
+        <record id="canarias" model="res.country.region">
+        	<field name="name">Canarias</field>
+        </record>
+
+        <record id="galicia" model="res.country.region">
+        	<field name="name">Galicia</field>
+        </record>
+
+        <record id="comunidad_de_madrid" model="res.country.region">
+        	<field name="name">Comunidad de Madrid</field>
+        </record>
+
+        <record id="melilla" model="res.country.region">
+        	<field name="name">Melilla</field>
+        </record>
+
+        <record id="region_de_murcia" model="res.country.region">
+        	<field name="name">Región de Murcia</field>
+        </record>
+
+        <record id="comunidad_foral_de_navarra" model="res.country.region">
+        	<field name="name">Comunidad Foral de Navarra</field>
+        </record>
+
+    </data>
+</openerp>

@@ -44,6 +44,10 @@
             <field name="active" eval="True" />
             <field name="arch" type="xml">
                 <form string="academy_training_action_form" create="1" delete="1" edit="1">
+                    <header>
+                         <field name="state" widget="statusbar" clickable="1" />
+                    </header>
+
                     <sheet>
                         <div class="oe_button_box" name="button_box">
 
@@ -68,6 +72,7 @@
                                 <field name="action_name" class="oe_field_name"
                                     placeholder="Enter new name" />
                             </h1>
+                            <field name="company_id" groups="base.group_multi_company"/>
                         </div>
 
                         <group col="2">

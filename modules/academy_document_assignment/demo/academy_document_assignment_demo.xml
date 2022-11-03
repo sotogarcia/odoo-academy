@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="academy_document_assignment_doc" model="academy.document.assignment">
+            <field name="name">Sample DOC</field>
+            <field name="description">Microsoft Word document sample</field>
+            <field name="active" eval="1" />
+            <field name="file_id" ref="dms.file_30_demo" />
+            <field name="training_ref" eval="'academy.training.module,%d' % ref('academy_base.academy_training_unit_msw2010')" />
+            <field name="release">2020-06-01 19:00:00</field>
+            <field name="expiration">2020-06-30 21:00:00</field>
+        </record>
+
+        <record id="academy_document_assignment_odt" model="academy.document.assignment">
+            <field name="name">Sample ODT</field>
+            <field name="description">LibreOffice Writer Document Sample</field>
+            <field name="active" eval="1" />
+            <field name="file_id" ref="dms.file_31_demo" />
+            <field name="training_ref" eval="'academy.training.module,%d' % ref('academy_base.academy_training_unit_lbw5')" />
+            <field name="release">2020-06-01 19:00:00</field>
+            <field name="expiration">2020-06-30 21:00:00</field>
+        </record>
+
+    </data>
+</openerp>
+

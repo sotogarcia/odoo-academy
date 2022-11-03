@@ -9,8 +9,10 @@ from logging import getLogger
 
 # pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
-
 from odoo.tools.translate import _
+from odoo.exceptions import UserError
+from .utils.libuseful import is_numeric, fix_established
+from .utils.sql_inverse_searches import TRAINING_ACTION_COUNT_SEARCH
 
 # pylint: disable=locally-disabled, C0103
 _logger = getLogger(__name__)
@@ -33,6 +35,19 @@ class AcademyTrainingActivity(models.Model):
         'mail.thread',
         'mail.activity.mixin'
     ]
+
+    state = fields.Selection(
+        string='Status',
+        required=True,
+        readonly=False,
+        index=True,
+        default='draft',
+        help='Crurrent record state',
+        selection=[
+            ('draft', 'Draft'),
+            ('approve', 'Approved')
+        ]
+    )
 
     name = fields.Char(
         string='Name',
@@ -278,14 +293,34 @@ class AcademyTrainingActivity(models.Model):
         index=False,
         default=0,
         help=False,
-        store=True,
-        compute=lambda self: self._compute_training_action_count()
+        store=False,
+        compute='_compute_training_action_count',
+        search='_search_training_action_count'
     )
 
     @api.depends('training_action_ids')
     def _compute_training_action_count(self):
         for record in self:
             record.training_action_count = len(record.training_action_ids)
+
+    @api.model
+    def _search_training_action_count(self, operator, value):
+        supported = ['=', '!=', '<=', '<', '>', '>=']
+
+        assert operator in supported, \
+            UserError(_('Search operator not supported'))
+
+        assert is_numeric(value) or value in [True, False], \
+            UserError(_('Search value not supported'))
+
+        operator, value = fix_established(operator, value)
+
+        sql = TRAINING_ACTION_COUNT_SEARCH.format(operator, value)
+
+        self.env.cr.execute(sql)
+        ids = self.env.cr.fetchall()
+
+        return [('id', 'in', ids)]
 
     # -------------------------- MODEL CONTRAINTS -----------------------------
 
@@ -297,13 +332,40 @@ class AcademyTrainingActivity(models.Model):
         )
     ]
 
+    # -------------------------- OVERWRITTEN METHODS --------------------------
+
+    @api.model
+    def create(self, values):
+        parent = super(AcademyTrainingActivity, self)
+        result_set = parent.create(values)
+
+        result_set._reconcile_training_actions_state(values)
+
+        return result_set
+
+    def write(self, values):
+        parent = super(AcademyTrainingActivity, self)
+        result = parent.write(values)
+
+        self._reconcile_training_actions_state(values)
+
+        return result
+
+    def _reconcile_training_actions_state(self, values):
+        state = values.get('state', False)
+
+        if state == 'draft':
+            enrolment_set = self.mapped('training_action_ids')
+            enrolment_set.write({'state': state})
+
     # ---------------------------- PUBLIC FIELDS ------------------------------
 
     # pylint: disable=locally-disabled, W0613
     def update_from_external(self, crud, fieldname, recordset):
         """ Observer notify method, will be called by action
         """
-        self._compute_training_action_count()
+        pass
+        # self._compute_training_action_count()
 
     def show_training_actions(self):
         self.ensure_one()

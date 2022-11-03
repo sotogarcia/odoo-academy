@@ -10,8 +10,7 @@ from logging import getLogger
 # pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
 from odoo.tools.translate import _
-from odoo.exceptions import UserError
-from odoo.osv.expression import FALSE_DOMAIN
+from odoo.exceptions import UserError, ValidationError
 
 # pylint: disable=locally-disabled, C0103
 _logger = getLogger(__name__)
@@ -34,6 +33,28 @@ class AcademyTrainingActionEnrolment(models.Model):
         'mail.thread',
         'mail.activity.mixin'
     ]
+
+    _check_company_auto = True
+
+    company_id = fields.Many2one(
+        string='Company',
+        store=True,
+        readonly=True,
+        related="training_action_id.company_id"
+    )
+
+    state = fields.Selection(
+        string='Status',
+        required=True,
+        readonly=False,
+        index=True,
+        default='draft',
+        help='Crurrent record state',
+        selection=[
+            ('draft', 'Draft'),
+            ('approve', 'Approved')
+        ]
+    )
 
     # pylint: disable=locally-disabled, W0212
     code = fields.Char(
@@ -275,6 +296,18 @@ class AcademyTrainingActionEnrolment(models.Model):
             unit_ids = record.mapped(path)
             if unit_ids:
                 record.competency_unit_ids = [(6, 0, unit_ids)]
+
+    # ------------------------------ CONSTRAINS -------------------------------
+
+    @api.constrains('state')
+    def _check_state(self):
+        message = _('Enrolment cannot be approved while the training action '
+                    'is in draft status')
+
+        for record in self:
+            action = record.training_action_id
+            if record.state != 'draft' and action.state == 'draft':
+                raise ValidationError(message)
 
     # -------------------------- OVERLOADED METHODS ---------------------------
 

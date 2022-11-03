@@ -18,6 +18,7 @@
             <field name="bulletin_board_url">https://sede.sansadurnino.gal/opencms/es/procedimientosytramites/index.html#empleo_publico</field>
             <field name="official_journal_url">https://www.boe.es/boe/dias/2016/11/23/pdfs/BOE-A-2016-11039.pdf</field>
             <field name="image_128" type="base64" file="civil_service_recruitment/static/src/img/res_partner_sansa_city_hall.png" />
+            <field name="state">approve</field>
         </record>
 
 

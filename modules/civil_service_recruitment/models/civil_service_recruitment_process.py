@@ -30,6 +30,19 @@ class CivilServiceRecruitmentProcess(models.Model):
     _rec_name = 'name'
     _order = 'name ASC'
 
+    state = fields.Selection(
+        string='Status',
+        required=True,
+        readonly=False,
+        index=True,
+        default='draft',
+        help='Crurrent record state',
+        selection=[
+            ('draft', 'Draft'),
+            ('approve', 'Approved')
+        ]
+    )
+
     name = fields.Char(
         string='Denomination',
         required=True,
@@ -69,7 +82,7 @@ class CivilServiceRecruitmentProcess(models.Model):
         readonly=False,
         index=False,
         default=None,
-        help='Choose the related tendering public offer',
+        help='Choose the related public offer',
         comodel_name='civil.service.recruitment.public.offer',
         domain=[],
         context={},
@@ -83,7 +96,7 @@ class CivilServiceRecruitmentProcess(models.Model):
         readonly=False,
         index=False,
         default=lambda self: self._default_employment_group_id(),
-        help='Choose employment group for this tendering process',
+        help='Choose employment group for this selection process',
         comodel_name='civil.service.recruitment.employment.group',
         domain=[],
         context={},
@@ -111,7 +124,7 @@ class CivilServiceRecruitmentProcess(models.Model):
         readonly=False,
         index=False,
         default=lambda self: self._default_exam_type_id(),
-        help='Choose type of exam for this tendering process',
+        help='Choose type of exam for this selection process',
         comodel_name='civil.service.recruitment.exam.type',
         domain=[],
         context={},
@@ -125,7 +138,7 @@ class CivilServiceRecruitmentProcess(models.Model):
         readonly=False,
         index=False,
         default=lambda self: self._default_hiring_type_id(),
-        help='Choose hiring type for this tendering process',
+        help='Choose hiring type for this selection process',
         comodel_name='civil.service.recruitment.hiring.type',
         domain=[],
         context={},
@@ -139,7 +152,7 @@ class CivilServiceRecruitmentProcess(models.Model):
         readonly=False,
         index=False,
         default=None,
-        help='Choose access system for this tendering process',
+        help='Choose access system for this selection process',
         comodel_name='civil.service.recruitment.access.system',
         domain=[],
         context={},
@@ -185,7 +198,7 @@ class CivilServiceRecruitmentProcess(models.Model):
         readonly=False,
         index=False,
         # default=lambda self: self.default_submissions_deadline(),
-        help='Choose the due date for tendering proccess',
+        help='Choose the due date for selection process',
         tracking=True
     )
 
@@ -195,7 +208,7 @@ class CivilServiceRecruitmentProcess(models.Model):
         readonly=False,
         index=False,
         default=None,
-        help='Add offered tendering process',
+        help='Add offered selection process',
         comodel_name='civil.service.recruitment.vacancy.position',
         inverse_name='process_id',
         domain=[],

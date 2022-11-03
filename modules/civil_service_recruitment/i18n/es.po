@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 15.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-24 23:02+0000\n"
-"PO-Revision-Date: 2022-10-25 01:06+0200\n"
+"POT-Creation-Date: 2022-11-01 16:26+0000\n"
+"PO-Revision-Date: 2022-11-01 17:37+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -85,17 +85,12 @@ msgstr "<strong>Publicación</strong>"
 #. module: civil_service_recruitment
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_public_administration_kanban
 msgid "<strong>Email: </strong>"
-msgstr "<strong>Correo electrónico: </strong>"
+msgstr "<strong>Email: </strong>"
 
 #. module: civil_service_recruitment
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_public_administration_kanban
 msgid "<strong>Phone: </strong>"
 msgstr "<strong>Teléfono: </strong>"
-
-#. module: civil_service_recruitment
-#: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_academy_training_action_enrolment_with_process_kanban
-msgid "<strong>Process: </strong>"
-msgstr "<strong>Procesos: </strong>"
 
 #. module: civil_service_recruitment
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_process_kanban
@@ -123,53 +118,6 @@ msgid "A2"
 msgstr ""
 
 #. module: civil_service_recruitment
-#: model:ir.model,name:civil_service_recruitment.model_civil_service_recruitment_public_administration
-msgid "Civil service recruitment administration"
-msgstr "Administración pública"
-
-#. module: civil_service_recruitment
-#: model:ir.model,name:civil_service_recruitment.model_civil_service_recruitment_public_corps
-msgid "Civil service recruitment corps"
-msgstr "Cuerpo"
-
-#. module: civil_service_recruitment
-#: model:ir.model,name:civil_service_recruitment.model_civil_service_recruitment_event
-#: model:ir.model,name:civil_service_recruitment.model_civil_service_recruitment_event_type
-msgid "Civil service recruitment event"
-msgstr "Evento de oposición"
-
-#. module: civil_service_recruitment
-#: model:ir.model,name:civil_service_recruitment.model_civil_service_recruitment_public_administration_type
-msgid "Civil service recruitment public administration type"
-msgstr "Academia: Tipo de administración pública"
-
-#. module: civil_service_recruitment
-#: model:ir.model,name:civil_service_recruitment.model_civil_service_recruitment_public_offer
-msgid "Civil service recruitment public offer"
-msgstr "Oferta de oposición"
-
-#. module: civil_service_recruitment
-#: model:ir.model,name:civil_service_recruitment.model_civil_service_recruitment_required_specialization
-msgid "Civil service recruitment required specialization"
-msgstr "Especialidad requerida"
-
-#. module: civil_service_recruitment
-#: model:ir.actions.server,name:civil_service_recruitment.ir_cron_civil_service_recruitment_update_states_daily_ir_actions_server
-#: model:ir.cron,name:civil_service_recruitment.ir_cron_civil_service_recruitment_update_states_daily
-msgid "Civil service recruitment: Update states"
-msgstr "Oposición: actualización de estados"
-
-#. module: civil_service_recruitment
-#: model:ir.model,name:civil_service_recruitment.model_academy_training_action
-msgid "Academy training action"
-msgstr "Acción formativa"
-
-#. module: civil_service_recruitment
-#: model:ir.model,name:civil_service_recruitment.model_academy_training_action_enrolment
-msgid "Academy training action enrolment"
-msgstr "Alta en la acción formativa"
-
-#. module: civil_service_recruitment
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_process__access_system_id
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_process_search
 msgid "Access system"
@@ -191,7 +139,6 @@ msgstr "Acción necesaria"
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_access_system__active
-#: model:ir.model.fields,field_description:civil_service_recruitment.model_civil_service_recruitment_public_corps__active
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_employment_group__active
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_event__active
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_event_type__active
@@ -200,10 +147,11 @@ msgstr "Acción necesaria"
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_process__active
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_administration__active
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_administration_type__active
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_corps__active
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_offer__active
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_required_specialization__active
-#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy__active
-#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy_type__active
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy_position__active
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy_position_type__active
 msgid "Active"
 msgstr "Activo"
 
@@ -246,7 +194,7 @@ msgstr "Icono de tipo de actividad"
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_process__vacancy_ids
-msgid "Add offered tendering process"
+msgid "Add offered selection process"
 msgstr "Añadir proceso a la oferta"
 
 #. module: civil_service_recruitment
@@ -260,7 +208,7 @@ msgid "Address Type"
 msgstr "Tipo de dirección"
 
 #. module: civil_service_recruitment
-#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_offer__public_administration_id
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_offer__administration_id
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_process_form
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_process_search
 msgid "Administration"
@@ -301,25 +249,25 @@ msgstr "Convocatoria"
 
 #. module: civil_service_recruitment
 #: code:addons/civil_service_recruitment/models/civil_service_recruitment_access_system.py:0
-#: code:addons/civil_service_recruitment/models/civil_service_recruitment_public_corps.py:0
 #: code:addons/civil_service_recruitment/models/civil_service_recruitment_employment_group.py:0
 #: code:addons/civil_service_recruitment/models/civil_service_recruitment_event_type.py:0
 #: code:addons/civil_service_recruitment/models/civil_service_recruitment_exam_type.py:0
 #: code:addons/civil_service_recruitment/models/civil_service_recruitment_hiring_type.py:0
 #: code:addons/civil_service_recruitment/models/civil_service_recruitment_process.py:0
 #: code:addons/civil_service_recruitment/models/civil_service_recruitment_public_administration_type.py:0
+#: code:addons/civil_service_recruitment/models/civil_service_recruitment_public_corps.py:0
 #: code:addons/civil_service_recruitment/models/civil_service_recruitment_required_specialization.py:0
-#: code:addons/civil_service_recruitment/models/civil_service_recruitment_vacancy_type.py:0
+#: code:addons/civil_service_recruitment/models/civil_service_recruitment_vacancy_position_type.py:0
 #: model:ir.model.constraint,message:civil_service_recruitment.constraint_civil_service_recruitment_access_system_unique_name
-#: model:ir.model.constraint,message:civil_service_recruitment.constraint_civil_service_recruitment_public_corps_unique_name
 #: model:ir.model.constraint,message:civil_service_recruitment.constraint_civil_service_recruitment_employment_group_unique_name
 #: model:ir.model.constraint,message:civil_service_recruitment.constraint_civil_service_recruitment_event_type_unique_name
 #: model:ir.model.constraint,message:civil_service_recruitment.constraint_civil_service_recruitment_exam_type_unique_name
 #: model:ir.model.constraint,message:civil_service_recruitment.constraint_civil_service_recruitment_hiring_type_unique_name
 #: model:ir.model.constraint,message:civil_service_recruitment.constraint_civil_service_recruitment_process_unique_name
 #: model:ir.model.constraint,message:civil_service_recruitment.constraint_civil_service_recruitment_public_administration_type_unique_name
+#: model:ir.model.constraint,message:civil_service_recruitment.constraint_civil_service_recruitment_public_corps_unique_name
 #: model:ir.model.constraint,message:civil_service_recruitment.constraint_civil_service_recruitment_required_specialization_unique_name
-#: model:ir.model.constraint,message:civil_service_recruitment.constraint_civil_service_recruitment_vacancy_type_unique_name
+#: model:ir.model.constraint,message:civil_service_recruitment.constraint_civil_service_recruitment_vacancy_position_type_unique_name
 #, python-format
 msgid "Another record with the same name already exists"
 msgstr "Ya existe otro registro con el mismo nombre"
@@ -333,8 +281,6 @@ msgstr "Publicación"
 #. module: civil_service_recruitment
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_access_system_form
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_access_system_search
-#: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_public_corps_form
-#: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_public_corps_search
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_employment_group_form
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_employment_group_search
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_event_form
@@ -351,6 +297,8 @@ msgstr "Publicación"
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_public_administration_search
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_public_administration_type_form
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_public_administration_type_search
+#: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_public_corps_form
+#: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_public_corps_search
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_public_offer_form
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_public_offer_search
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_required_specialization_form
@@ -430,7 +378,7 @@ msgstr "Lista negra"
 #. module: civil_service_recruitment
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_administration__message_bounce
 msgid "Bounce"
-msgstr "Rechazaar"
+msgstr "Rechazar"
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_process__bulletin_board_url
@@ -449,6 +397,11 @@ msgid "C2"
 msgstr ""
 
 #. module: civil_service_recruitment
+#: model:ir.module.category,name:civil_service_recruitment.module_category_civil_service_recruitment
+msgid "CS Recruitment"
+msgstr ""
+
+#. module: civil_service_recruitment
 #: model:civil.service.recruitment.hiring.type,name:civil_service_recruitment.civil_service_recruitment_hiring_type_career
 msgid "Career civil servants"
 msgstr "Funcionarios de carrera"
@@ -459,24 +412,19 @@ msgid "Channels"
 msgstr "Canales"
 
 #. module: civil_service_recruitment
-#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_public_administration__is_student
-msgid "Check if partner is a student"
-msgstr "Marcar si el partner es un alumno"
-
-#. module: civil_service_recruitment
 #: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_public_administration__is_company
 msgid "Check if the contact is a company, otherwise it is a person"
 msgstr "Marcar si el contacto es una empresa, de lo contrario es una persona"
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_event_type__unique
-msgid "Check it this event type can not be repeated in the same civil service recruitment"
-msgstr "Marcar si el tipo de evento se puede repetir en una misma oposición"
+msgid "Check it this event type can not be repeated in the same civil service recruitment process"
+msgstr "Marcar si el tipo de evento se puede repetir en un mismo proceso selectivo"
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_event_type__is_stage
-msgid "Check it this event type is a civil service recruitment state"
-msgstr "Macar si este tipo de evento es un estado de oposición"
+msgid "Check it this event type is a civil service recruitment process state"
+msgstr "Macar si este tipo de evento es un estado del proceso selectivo"
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_public_administration__employee
@@ -489,15 +437,15 @@ msgid "Choose a type for this event"
 msgstr "Elegir un tipo para este evento"
 
 #. module: civil_service_recruitment
-#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_event__tendering_process_id
-#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_vacancy__tendering_process_id
-msgid "Choose civil service recruitment to which this vacancy belongs"
-msgstr "Elegir oposición a la que pertenece esta vacante"
+#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_process__access_system_id
+msgid "Choose access system for this selection process"
+msgstr "Elegir un sistema de acceso para este proceso selectivo"
 
 #. module: civil_service_recruitment
-#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_process__access_system_id
-msgid "Choose access system for this tendering process"
-msgstr "Elegir un sistema de acceso para esta oposición"
+#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_event__process_id
+#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_vacancy_position__process_id
+msgid "Choose civil service recruitment to which this vacancy belongs"
+msgstr "Elegir el proceso selectivo al que pertenece esta vacante"
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_process__finished
@@ -505,34 +453,24 @@ msgid "Choose date in which process has finished"
 msgstr "Elegir la fecha en la cual finalizará el proceso"
 
 #. module: civil_service_recruitment
-#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_process__employment_group_id
-msgid "Choose employment group for this tendering process"
-msgstr "Elegir el grupo para la oposición"
+#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_process__group_id
+msgid "Choose employment group for this selection process"
+msgstr "Elija el grupo de empleo para este proceso selectivo"
 
 #. module: civil_service_recruitment
-#: model:ir.model.fields,help:civil_service_recruitment.model_civil_service_recruitment_public_corps__employment_group_id
+#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_public_corps__group_id
 msgid "Choose employment group to which this record belongs"
-msgstr "Elegir el grupo de empleo al cual pertenece este registro"
+msgstr "Elegir el grupo de empleo al que pertenece este registro"
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_process__hiring_type_id
-msgid "Choose hiring type for this tendering process"
-msgstr "Elegir el tipo de contratación para la oposición"
+msgid "Choose hiring type for this selection process"
+msgstr "Elegir el tipo de contratación para el proceso selectivo"
 
 #. module: civil_service_recruitment
-#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_employment_group__qualification_level_id
-msgid "Choose minimun required qualification level"
-msgstr "Elegir el nivel de cualificación mínimo requerido"
-
-#. module: civil_service_recruitment
-#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_public_administration__public_offer_ids
+#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_public_administration__offer_ids
 msgid "Choose or create related public offers"
-msgstr "Elegir o crear ofertas relacionadas"
-
-#. module: civil_service_recruitment
-#: model:ir.model.fields,help:civil_service_recruitment.field_academy_training_action_enrolment__civil_service_recruitment_process_id
-msgid "Choose civil service recruitment in which the student will be enrolled"
-msgstr "Elegir la oposición en la que el alumno se matriculará"
+msgstr "Elegir o crear las ofertas públicas relacionadas"
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_public_administration__res_partner_id
@@ -545,9 +483,9 @@ msgid "Choose the Announcement date"
 msgstr "Elija la fecha de convocatoria"
 
 #. module: civil_service_recruitment
-#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_public_offer__public_administration_id
-msgid "Choose the administration related with tendering"
-msgstr "Elegir la administración relacionada con la oposición"
+#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_public_offer__administration_id
+msgid "Choose the administration related with the selection process"
+msgstr "Elegir la administración relacionada con el proceso selectivo"
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_process__approval
@@ -556,13 +494,8 @@ msgid "Choose the approval date"
 msgstr "Elija la fecha de aprobación"
 
 #. module: civil_service_recruitment
-#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_process__training_action_id
-msgid "Choose the default training action for civil service recruitment"
-msgstr "Elegir la acción formativa predeterminada para la oposición"
-
-#. module: civil_service_recruitment
 #: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_process__target_date
-msgid "Choose the due date for tendering proccess"
+msgid "Choose the due date for selection process"
 msgstr "Elegir la fecha de vencimiento del proceso"
 
 #. module: civil_service_recruitment
@@ -571,14 +504,14 @@ msgid "Choose the position for this element"
 msgstr "Elegir la posición para este elemento"
 
 #. module: civil_service_recruitment
-#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_process__public_offer_id
-msgid "Choose the related tendering public offer"
-msgstr "Elija la oferta pública relacionada"
+#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_process__offer_id
+msgid "Choose the related public offer"
+msgstr "Elegir la oferta pública relacionada"
 
 #. module: civil_service_recruitment
-#: model:ir.model.fields,help:civil_service_recruitment.model_civil_service_recruitment_public_corps__specialization_id
+#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_public_corps__specialization_id
 msgid "Choose the required specialization"
-msgstr "Elegir la especialidad requerida"
+msgstr "Elegir la especialización requerida"
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_event_type__sequence
@@ -586,14 +519,14 @@ msgid "Choose this event type order position"
 msgstr "Elegir el orden para este tipo de evento"
 
 #. module: civil_service_recruitment
-#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_public_administration__public_administration_type_id
+#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_public_administration__administration_type_id
 msgid "Choose type for this administration"
 msgstr "Elegir el tipo para esta administración"
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_process__exam_type_id
-msgid "Choose type of exam for this tendering process"
-msgstr "Elegir el tipo de examen para esta oposición"
+msgid "Choose type of exam for this selection process"
+msgstr "Elegir el tipo de examen para este proceso selectivo"
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_administration__city
@@ -604,7 +537,89 @@ msgstr "Ciudad"
 #. module: civil_service_recruitment
 #: model:res.partner.category,name:civil_service_recruitment.res_partner_category_civil_service
 msgid "Civil Service"
-msgstr "Servicio Civil"
+msgstr "Funcionariado"
+
+#. module: civil_service_recruitment
+#: model:ir.ui.menu,name:civil_service_recruitment.menu_civil_service_recruitment
+#: model:ir.ui.menu,name:civil_service_recruitment.menu_civil_service_settings
+msgid "Civil service"
+msgstr "Funcionariado"
+
+#. module: civil_service_recruitment
+#: model:ir.model,name:civil_service_recruitment.model_civil_service_recruitment_process
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_event__process_id
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy_position__process_id
+#: model:ir.module.category,description:civil_service_recruitment.module_category_civil_service_recruitment
+msgid "Civil service recruitment"
+msgstr "Empleo público"
+
+#. module: civil_service_recruitment
+#: model:ir.model,name:civil_service_recruitment.model_civil_service_recruitment_public_administration
+msgid "Civil service recruitment administration"
+msgstr "Administración pública"
+
+#. module: civil_service_recruitment
+#: model:ir.model,name:civil_service_recruitment.model_civil_service_recruitment_public_corps
+msgid "Civil service recruitment corps"
+msgstr "Empleo público: cuerpo"
+
+#. module: civil_service_recruitment
+#: model:ir.model,name:civil_service_recruitment.model_civil_service_recruitment_event
+#: model:ir.model,name:civil_service_recruitment.model_civil_service_recruitment_event_type
+msgid "Civil service recruitment event"
+msgstr "Empleo público: evento"
+
+#. module: civil_service_recruitment
+#: model:ir.model,name:civil_service_recruitment.model_civil_service_recruitment_public_administration_type
+msgid "Civil service recruitment public administration type"
+msgstr "Empleo público: Tipo de administración pública"
+
+#. module: civil_service_recruitment
+#: model:ir.model,name:civil_service_recruitment.model_civil_service_recruitment_public_offer
+msgid "Civil service recruitment public offer"
+msgstr "Empleo público: Oferta pública"
+
+#. module: civil_service_recruitment
+#: model:ir.model,name:civil_service_recruitment.model_civil_service_recruitment_required_specialization
+msgid "Civil service recruitment required specialization"
+msgstr "Empleo público: Especialidad requerida"
+
+#. module: civil_service_recruitment
+#: model:ir.model,name:civil_service_recruitment.model_civil_service_recruitment_access_system
+msgid "Civil service recruitment, access system of public employee"
+msgstr "Empleo público: sistema de acceso"
+
+#. module: civil_service_recruitment
+#: model:ir.model,name:civil_service_recruitment.model_civil_service_recruitment_employment_group
+msgid "Civil service recruitment, employment group of vacancy"
+msgstr "Empleo público, grupo de empleo"
+
+#. module: civil_service_recruitment
+#: model:ir.model,name:civil_service_recruitment.model_civil_service_recruitment_hiring_type
+msgid "Civil service recruitment, hiring type of public employee"
+msgstr "Empleo público, tipo de contratación"
+
+#. module: civil_service_recruitment
+#: model:ir.model,name:civil_service_recruitment.model_civil_service_recruitment_exam_type
+msgid "Civil service recruitment, kind of vacancy"
+msgstr "Empleo público, tipo de puesto vacante"
+
+#. module: civil_service_recruitment
+#: model:ir.model,name:civil_service_recruitment.model_civil_service_recruitment_vacancy_position
+msgid "Civil service recruitment, vacancy"
+msgstr "Empleo público, vacante"
+
+#. module: civil_service_recruitment
+#: model:ir.model,name:civil_service_recruitment.model_civil_service_recruitment_vacancy_position_type
+msgid "Civil service recruitment, vacancy type"
+msgstr "Empleo público, tipo de puesto vacante"
+
+#. module: civil_service_recruitment
+#: model:ir.actions.server,name:civil_service_recruitment.ir_cron_civil_service_recruitment_update_states_daily_ir_actions_server
+#: model:ir.cron,cron_name:civil_service_recruitment.ir_cron_civil_service_recruitment_update_states_daily
+#: model:ir.cron,name:civil_service_recruitment.ir_cron_civil_service_recruitment_update_states_daily
+msgid "Civil service recruitment: Update states"
+msgstr "Empleo público: actualización de estados"
 
 #. module: civil_service_recruitment
 #: model_terms:ir.actions.act_window,help:civil_service_recruitment.action_access_systems_act_window
@@ -612,19 +627,24 @@ msgid "Click to add new access systems"
 msgstr "Haga clic para agregar nuevos sistemas de acceso"
 
 #. module: civil_service_recruitment
-#: model_terms:ir.actions.act_window,help:civil_service_recruitment.action_civil_service_recruitment_public_corps_act_window
-msgid "Click to add new employees corps"
-msgstr "Haga click para añadir un nuevo cuerpo de empleados"
+#: model_terms:ir.actions.act_window,help:civil_service_recruitment.action_civil_service_recruitment_act_window
+msgid "Click to add new civil service recruitment processes"
+msgstr "Haga clic para añadir un nuevo proceso selectivo"
 
 #. module: civil_service_recruitment
-#: model_terms:ir.actions.act_window,help:civil_service_recruitment.action_vacancy_group_act_window
+#: model_terms:ir.actions.act_window,help:civil_service_recruitment.action_civil_service_recruitment_public_corps_act_window
+msgid "Click to add new employees corps"
+msgstr "Haga clic para añadir un nuevo cuerpo de empleados"
+
+#. module: civil_service_recruitment
+#: model_terms:ir.actions.act_window,help:civil_service_recruitment.action_employment_position_act_window
 msgid "Click to add new employment groups"
-msgstr "Haga clic para añadir un nuevo grupo de empleo"
+msgstr "Haga clic para agregar nuevos grupos de empleo"
 
 #. module: civil_service_recruitment
 #: model_terms:ir.actions.act_window,help:civil_service_recruitment.action_civil_service_recruitment_event_type_act_window
 msgid "Click to add new event types"
-msgstr "Haga click para añadir un nuevo tipo de evento"
+msgstr "Haga clic para añadir un nuevo tipo de evento"
 
 #. module: civil_service_recruitment
 #: model_terms:ir.actions.act_window,help:civil_service_recruitment.action_civil_service_recruitment_event_act_window
@@ -634,7 +654,7 @@ msgstr "Pulsar para añadir nuevos eventos"
 #. module: civil_service_recruitment
 #: model_terms:ir.actions.act_window,help:civil_service_recruitment.action_vacancy_kind_act_window
 msgid "Click to add new exam types"
-msgstr "Haga click para añadir un nuevo tipo de examen"
+msgstr "Haga clic para añadir un nuevo tipo de examen"
 
 #. module: civil_service_recruitment
 #: model_terms:ir.actions.act_window,help:civil_service_recruitment.action_hiring_type_act_window
@@ -654,27 +674,22 @@ msgstr "Pulsar para añadir nuevas administraciones"
 #. module: civil_service_recruitment
 #: model_terms:ir.actions.act_window,help:civil_service_recruitment.action_offers_act_window
 msgid "Click to add new public offers"
-msgstr "Haga click para añadir una nueva oferta pública"
-
-#. module: civil_service_recruitment
-#: model_terms:ir.actions.act_window,help:civil_service_recruitment.action_civil_service_recruitment_act_window
-msgid "Click to add new civil service recruitment processes"
-msgstr "Haga click para añadir una nueva oposición"
+msgstr "Haga clic para añadir una nueva oferta pública"
 
 #. module: civil_service_recruitment
 #: model_terms:ir.actions.act_window,help:civil_service_recruitment.action_civil_service_recruitment_required_specialization_act_window
 msgid "Click to add new required specializations"
-msgstr "Haga click para añadir una nueva specialidad"
-
-#. module: civil_service_recruitment
-#: model_terms:ir.actions.act_window,help:civil_service_recruitment.action_civil_service_recruitment_vacancy_type_act_window
-msgid "Click to add new vacancy types"
-msgstr "Haga clic para agregar un nuevo tipo de puesto vacante"
+msgstr "Haga clic para añadir una nueva especialidad"
 
 #. module: civil_service_recruitment
 #: model_terms:ir.actions.act_window,help:civil_service_recruitment.action_vacancys_act_window
 msgid "Click to add new vacancies"
 msgstr "Haga clic para agregar nuevos puestos vacantes"
+
+#. module: civil_service_recruitment
+#: model_terms:ir.actions.act_window,help:civil_service_recruitment.action_civil_service_recruitment_vacancy_type_act_window
+msgid "Click to add new vacancy types"
+msgstr "Haga clic para agregar un nuevo tipo de puesto vacante"
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_administration__color
@@ -713,6 +728,11 @@ msgid "Complete Address"
 msgstr "Dirección completa"
 
 #. module: civil_service_recruitment
+#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_process__prerogative
+msgid "Compute current user access rights to change authorship"
+msgstr "Calcular los derechos de acceso del usuario actual para cambiar la titularidad"
+
+#. module: civil_service_recruitment
 #: model:civil.service.recruitment.exam.type,name:civil_service_recruitment.civil_service_recruitment_exam_type_concourse
 msgid "Concourse"
 msgstr "Concurso"
@@ -726,6 +746,11 @@ msgstr "Concurso/Oposición"
 #: model:civil.service.recruitment.access.system,name:civil_service_recruitment.civil_service_recruitment_access_system_consolidation
 msgid "Consolidation"
 msgstr "Consolidación"
+
+#. module: civil_service_recruitment
+#: model:res.groups,name:civil_service_recruitment.civil_service_recruitment_group_consultant
+msgid "Consultant"
+msgstr "Consultor"
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_administration__child_ids
@@ -758,7 +783,7 @@ msgid "Contracted staff"
 msgstr "Personal contratado"
 
 #. module: civil_service_recruitment
-#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_process__public_corps_id
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_process__corps_id
 msgid "Corps"
 msgstr "Cuerpo"
 
@@ -790,7 +815,6 @@ msgstr "Crear empresa"
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_access_system__create_uid
-#: model:ir.model.fields,field_description:civil_service_recruitment.model_civil_service_recruitment_public_corps__create_uid
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_employment_group__create_uid
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_event__create_uid
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_event_type__create_uid
@@ -799,16 +823,16 @@ msgstr "Crear empresa"
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_process__create_uid
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_administration__create_uid
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_administration_type__create_uid
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_corps__create_uid
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_offer__create_uid
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_required_specialization__create_uid
-#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy__create_uid
-#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy_type__create_uid
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy_position__create_uid
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy_position_type__create_uid
 msgid "Created by"
 msgstr "Creado por"
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_access_system__create_date
-#: model:ir.model.fields,field_description:civil_service_recruitment.model_civil_service_recruitment_public_corps__create_date
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_employment_group__create_date
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_event__create_date
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_event_type__create_date
@@ -817,10 +841,11 @@ msgstr "Creado por"
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_process__create_date
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_administration__create_date
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_administration_type__create_date
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_corps__create_date
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_offer__create_date
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_required_specialization__create_date
-#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy__create_date
-#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy_type__create_date
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy_position__create_date
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy_position_type__create_date
 msgid "Created on"
 msgstr "Creado en"
 
@@ -831,8 +856,8 @@ msgstr "Límite de crédito"
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_process__owner_id
-msgid "Current owner"
-msgstr "Propietario actual"
+msgid "Current record owner"
+msgstr "Titular del registro actual"
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_event__date
@@ -844,16 +869,6 @@ msgstr "Fecha"
 #: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_event__date
 msgid "Date the event occurred"
 msgstr "Fecha en la cual ocurrió el evento"
-
-#. module: civil_service_recruitment
-#: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_process_form
-msgid "Default"
-msgstr "Por defecto"
-
-#. module: civil_service_recruitment
-#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_process__training_action_id
-msgid "Default training action"
-msgstr "Acción formativa predeterminada"
 
 #. module: civil_service_recruitment
 #: model:civil.service.recruitment.event.type,name:civil_service_recruitment.civil_service_recruitment_event_type_definitive_admitted_list
@@ -872,13 +887,12 @@ msgstr "Entrega"
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_process__name
-#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy__name
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy_position__name
 msgid "Denomination"
 msgstr "Denominación"
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_access_system__description
-#: model:ir.model.fields,field_description:civil_service_recruitment.model_civil_service_recruitment_public_corps__description
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_employment_group__description
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_event__description
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_event_type__description
@@ -886,10 +900,11 @@ msgstr "Denominación"
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_hiring_type__description
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_process__description
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_administration_type__description
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_corps__description
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_offer__description
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_required_specialization__description
-#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy__description
-#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy_type__description
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy_position__description
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy_position_type__description
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_public_offer_form
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_vacancy_form
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_vacancy_type_form
@@ -903,7 +918,6 @@ msgstr "Discapacitados"
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_access_system__display_name
-#: model:ir.model.fields,field_description:civil_service_recruitment.model_civil_service_recruitment_public_corps__display_name
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_employment_group__display_name
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_event__display_name
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_event_type__display_name
@@ -912,10 +926,11 @@ msgstr "Discapacitados"
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_process__display_name
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_administration__display_name
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_administration_type__display_name
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_corps__display_name
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_offer__display_name
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_required_specialization__display_name
-#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy__display_name
-#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy_type__display_name
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy_position__display_name
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy_position_type__display_name
 msgid "Display Name"
 msgstr "Nombre para mostrar"
 
@@ -927,7 +942,7 @@ msgstr "Entrega de documentación"
 #. module: civil_service_recruitment
 #: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_process__ir_attachment_ids
 msgid "Documents related with the civil service recruitment"
-msgstr "Documentos relacionados con la oposición"
+msgstr "Documentos relacionados con proceso selectivo"
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_process__target_date
@@ -948,7 +963,7 @@ msgstr ""
 #. module: civil_service_recruitment
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_administration__email
 msgid "Email"
-msgstr "Correo electrónico"
+msgstr "Email"
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_administration__employee
@@ -962,13 +977,13 @@ msgid "Employees corps"
 msgstr "Cuerpos de empleados"
 
 #. module: civil_service_recruitment
-#: model:ir.model.fields,field_description:civil_service_recruitment.model_civil_service_recruitment_public_corps__employment_group_id
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_corps__group_id
 msgid "Employment group"
 msgstr "Grupo de empleo"
 
 #. module: civil_service_recruitment
-#: model:ir.actions.act_window,name:civil_service_recruitment.action_vacancy_group_act_window
-#: model:ir.ui.menu,name:civil_service_recruitment.menu_vacancy_group
+#: model:ir.actions.act_window,name:civil_service_recruitment.action_employment_position_act_window
+#: model:ir.ui.menu,name:civil_service_recruitment.menu_employment_group
 msgid "Employment groups"
 msgstr "Grupos de empleo"
 
@@ -980,7 +995,6 @@ msgstr "New URL"
 #. module: civil_service_recruitment
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_access_system_form
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_access_system_tree
-#: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_public_corps_form
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_employment_group_form
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_exam_type_form
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_exam_type_tree
@@ -989,6 +1003,7 @@ msgstr "New URL"
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_process_form
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_public_administration_type_form
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_public_administration_type_tree
+#: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_public_corps_form
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_public_offer_form
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_required_specialization_form
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_required_specialization_tree
@@ -999,7 +1014,6 @@ msgstr "Nueva descripción"
 #. module: civil_service_recruitment
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_access_system_form
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_access_system_tree
-#: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_public_corps_form
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_employment_group_form
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_event_form
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_event_type_form
@@ -1010,6 +1024,7 @@ msgstr "Nueva descripción"
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_process_form
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_public_administration_type_form
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_public_administration_type_tree
+#: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_public_corps_form
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_public_offer_form
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_required_specialization_form
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_required_specialization_tree
@@ -1032,7 +1047,7 @@ msgstr "Tipo de evento"
 #: model:ir.actions.act_window,name:civil_service_recruitment.action_civil_service_recruitment_event_type_act_window
 #: model:ir.ui.menu,name:civil_service_recruitment.menu_civil_service_recruitment_event_type
 msgid "Event types"
-msgstr "Tipos de eventos de oposición"
+msgstr "Tipos de eventos"
 
 #. module: civil_service_recruitment
 #: code:addons/civil_service_recruitment/models/civil_service_recruitment_event.py:0
@@ -1048,8 +1063,8 @@ msgstr "El evento «{}» se ha registrado para el proceso «{}»"
 
 #. module: civil_service_recruitment
 #: model:ir.actions.act_window,name:civil_service_recruitment.action_civil_service_recruitment_event_act_window
-#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_event_type__public_process_event_ids
-#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_process__public_process_event_ids
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_event_type__event_ids
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_process__event_ids
 #: model:ir.ui.menu,name:civil_service_recruitment.menu_civil_service_recruitment_event
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_process_form
 msgid "Events"
@@ -1058,7 +1073,7 @@ msgstr "Eventos"
 #. module: civil_service_recruitment
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_process_form
 msgid "Exam"
-msgstr "Exámen"
+msgstr "Examen"
 
 #. module: civil_service_recruitment
 #: model:civil.service.recruitment.event.type,name:civil_service_recruitment.civil_service_recruitment_event_type_exam_dates_and_location
@@ -1124,7 +1139,7 @@ msgstr "Icono de Font awesome p.ej.: fa-tasks"
 #. module: civil_service_recruitment
 #: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_public_administration__email_formatted
 msgid "Format email address \"Name <email@domain>\""
-msgstr "Formato de dirección de correo electrónico  \"nombre <correo@dominio>\""
+msgstr "Formato de dirección de email \"nombre <correo@dominio>\""
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_administration__email_formatted
@@ -1157,7 +1172,7 @@ msgid "Geo Longitude"
 msgstr "Longitud geográfica"
 
 #. module: civil_service_recruitment
-#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_process__employment_group_id
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_process__group_id
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_process_search
 msgid "Group"
 msgstr "Grupo"
@@ -1189,7 +1204,6 @@ msgstr "Tipos de contratación"
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_access_system__id
-#: model:ir.model.fields,field_description:civil_service_recruitment.model_civil_service_recruitment_public_corps__id
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_employment_group__id
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_event__id
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_event_type__id
@@ -1198,10 +1212,11 @@ msgstr "Tipos de contratación"
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_process__id
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_administration__id
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_administration_type__id
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_corps__id
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_offer__id
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_required_specialization__id
-#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy__id
-#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy_type__id
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy_position__id
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy_position_type__id
 msgid "ID"
 msgstr ""
 
@@ -1248,7 +1263,6 @@ msgstr "Si está marcado, algunos mensajes tienen un error de entrega."
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_access_system__active
-#: model:ir.model.fields,help:civil_service_recruitment.model_civil_service_recruitment_public_corps__active
 #: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_employment_group__active
 #: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_event__active
 #: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_event_type__active
@@ -1256,17 +1270,18 @@ msgstr "Si está marcado, algunos mensajes tienen un error de entrega."
 #: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_hiring_type__active
 #: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_process__active
 #: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_public_administration_type__active
+#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_public_corps__active
 #: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_public_offer__active
 #: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_required_specialization__active
-#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_vacancy__active
-#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_vacancy_type__active
+#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_vacancy_position__active
+#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_vacancy_position_type__active
 msgid "If the active field is set to false, it will allow you to hide record without removing it."
 msgstr "Si el campo se establece a falso, le permitirá ocultar el registro sin eliminarlo."
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_public_administration__is_blacklisted
 msgid "If the email address is on the blacklist, the contact won't receive mass mailing anymore, from any list"
-msgstr "Si la dirección de correo electrónico está en la lista negra, el contacto ya no recibirá correos masivos de ninguna lista"
+msgstr "Si la dirección de email está en la lista negra, el contacto ya no recibirá correos masivos de ninguna lista"
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_process__image_1920
@@ -1306,8 +1321,8 @@ msgstr "Imagen 512"
 #. module: civil_service_recruitment
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_process_kanban
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_public_offer_kanban
-msgid "Image for civil service recruitment"
-msgstr "Imagen de la oposición"
+msgid "Image for civil service recruitment process"
+msgstr "Imagen para el proceso selectivo"
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_administration__industry_id
@@ -1375,11 +1390,6 @@ msgid "Is stage"
 msgstr "Es un estado"
 
 #. module: civil_service_recruitment
-#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_administration__is_student
-msgid "Is student"
-msgstr "Es alumno"
-
-#. module: civil_service_recruitment
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_administration__function
 msgid "Job Position"
 msgstr "Puesto de trabajo"
@@ -1391,7 +1401,6 @@ msgstr "Idioma"
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_access_system____last_update
-#: model:ir.model.fields,field_description:civil_service_recruitment.model_civil_service_recruitment_public_corps____last_update
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_employment_group____last_update
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_event____last_update
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_event_type____last_update
@@ -1400,16 +1409,16 @@ msgstr "Idioma"
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_process____last_update
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_administration____last_update
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_administration_type____last_update
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_corps____last_update
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_offer____last_update
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_required_specialization____last_update
-#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy____last_update
-#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy_type____last_update
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy_position____last_update
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy_position_type____last_update
 msgid "Last Modified on"
 msgstr "Última modificación el"
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_access_system__write_uid
-#: model:ir.model.fields,field_description:civil_service_recruitment.model_civil_service_recruitment_public_corps__write_uid
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_employment_group__write_uid
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_event__write_uid
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_event_type__write_uid
@@ -1418,16 +1427,16 @@ msgstr "Última modificación el"
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_process__write_uid
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_administration__write_uid
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_administration_type__write_uid
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_corps__write_uid
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_offer__write_uid
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_required_specialization__write_uid
-#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy__write_uid
-#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy_type__write_uid
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy_position__write_uid
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy_position_type__write_uid
 msgid "Last Updated by"
 msgstr "Última actualización por"
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_access_system__write_date
-#: model:ir.model.fields,field_description:civil_service_recruitment.model_civil_service_recruitment_public_corps__write_date
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_employment_group__write_date
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_event__write_date
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_event_type__write_date
@@ -1436,10 +1445,11 @@ msgstr "Última actualización por"
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_process__write_date
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_administration__write_date
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_administration_type__write_date
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_corps__write_date
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_offer__write_date
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_required_specialization__write_date
-#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy__write_date
-#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy_type__write_date
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy_position__write_date
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy_position_type__write_date
 msgid "Last Updated on"
 msgstr "Última actualización en"
 
@@ -1465,6 +1475,12 @@ msgstr ""
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_offer__message_main_attachment_id
 msgid "Main Attachment"
 msgstr "Adjunto principal"
+
+#. module: civil_service_recruitment
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_process__manager_id
+#: model:res.groups,name:civil_service_recruitment.civil_service_recruitment_group_manager
+msgid "Manager"
+msgstr "Administrador"
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_event__message_has_error
@@ -1512,12 +1528,11 @@ msgstr "Fecha límite de mi actividad"
 
 #. module: civil_service_recruitment
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_process_kanban
-msgid "N/D"
+msgid "N/A"
 msgstr "N/D"
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_access_system__name
-#: model:ir.model.fields,field_description:civil_service_recruitment.model_civil_service_recruitment_public_corps__name
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_employment_group__name
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_event__name
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_event_type__name
@@ -1525,9 +1540,10 @@ msgstr "N/D"
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_hiring_type__name
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_administration__name
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_administration_type__name
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_corps__name
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_offer__name
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_required_specialization__name
-#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy_type__name
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy_position_type__name
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_exam_type_tree
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_hiring_type_tree
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_public_administration_form
@@ -1540,7 +1556,7 @@ msgstr "Nombre"
 #. module: civil_service_recruitment
 #: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_process__name
 msgid "Name for this civil service recruitment"
-msgstr "Nombre para esta oposición"
+msgstr "Nombre para este proceso selectivo"
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_access_system__name
@@ -1571,9 +1587,9 @@ msgid "Name for this type"
 msgstr "Nombre para este tipo"
 
 #. module: civil_service_recruitment
-#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_vacancy__name
+#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_vacancy_position__name
 msgid "Name for this vacancy"
-msgstr "Nombre para este puesto vacante"
+msgstr "Nombre para esta vacante"
 
 #. module: civil_service_recruitment
 #: model:civil.service.recruitment.event,description:civil_service_recruitment.civil_service_recruitment_event_offer
@@ -1661,13 +1677,13 @@ msgstr "Cantidad de mensajes no leídos"
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_offer__total_of_processes
-msgid "Nº of processes"
-msgstr "Nº de procesos"
+msgid "N.º of processes"
+msgstr "N.º de procesos"
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_offer__total_of_vacancies
-msgid "Nº of vacancies"
-msgstr "Nº de vacantes"
+msgid "N.º of vacancies"
+msgstr "N.º de vacantes"
 
 #. module: civil_service_recruitment
 #: model:civil.service.recruitment.event,name:civil_service_recruitment.civil_service_recruitment_event_offer
@@ -1697,9 +1713,9 @@ msgid "Open exam"
 msgstr "Oposición"
 
 #. module: civil_service_recruitment
-#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_vacancy__sequence
-msgid "Order in which this vacancy will be displayed in the tender process view"
-msgstr "Orden en el que se mostrará esta posición vacante en la vista del proceso de oposición"
+#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_vacancy_position__sequence
+msgid "Order in which this vacancy will be displayed in the selection process view"
+msgstr "Orden en que se mostrará esta vacante en la vista del proceso selectivo"
 
 #. module: civil_service_recruitment
 #: model:civil.service.recruitment.public.administration.type,name:civil_service_recruitment.civil_service_recruitment_public_administration_type_others
@@ -1732,6 +1748,16 @@ msgid "Pass list by exam"
 msgstr "Lista de aprobados por examen"
 
 #. module: civil_service_recruitment
+#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_process__manager_id
+msgid "Person in charge of this record"
+msgstr "Titular de este registro"
+
+#. module: civil_service_recruitment
+#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_process__subrogate_id
+msgid "Person who assumes the obligations of the owner"
+msgstr "Persona que asume las obligaciones del titular"
+
+#. module: civil_service_recruitment
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_administration__phone
 msgid "Phone"
 msgstr "Teléfono"
@@ -1740,6 +1766,11 @@ msgstr "Teléfono"
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_public_administration_form
 msgid "Phone:"
 msgstr "Teléfono:"
+
+#. module: civil_service_recruitment
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_process__prerogative
+msgid "Prerogative"
+msgstr "Prerrogativa"
 
 #. module: civil_service_recruitment
 #: code:addons/civil_service_recruitment/models/civil_service_recruitment_event.py:0
@@ -1761,7 +1792,7 @@ msgid "Process state changed"
 msgstr "El estado del proceso cambió"
 
 #. module: civil_service_recruitment
-#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_offer__tendering_process_ids
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_offer__process_ids
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_public_offer_form
 msgid "Processes"
 msgstr "Procesos"
@@ -1788,7 +1819,7 @@ msgid "Public examination"
 msgstr "Procesos selectivos"
 
 #. module: civil_service_recruitment
-#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_process__public_offer_id
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_process__offer_id
 msgid "Public offer"
 msgstr "Oferta pública"
 
@@ -1799,60 +1830,11 @@ msgstr "Oferta pública de empleo para el año 2016 en el municipio de San Sadur
 
 #. module: civil_service_recruitment
 #: model:ir.actions.act_window,name:civil_service_recruitment.action_offers_act_window
-#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_administration__public_offer_ids
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_administration__offer_ids
 #: model:ir.ui.menu,name:civil_service_recruitment.menu_offers
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_public_administration_form
 msgid "Public offers"
 msgstr "Ofertas públicas"
-
-#. module: civil_service_recruitment
-#: model:ir.ui.menu,name:civil_service_recruitment.menu_tendering_catalog
-#: model:ir.ui.menu,name:civil_service_recruitment.menu_tendering_monitoring
-msgid "Public service"
-msgstr "Oposiciones"
-
-#. module: civil_service_recruitment
-#: model:ir.model,name:civil_service_recruitment.model_civil_service_recruitment_process
-#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_event__tendering_process_id
-#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy__tendering_process_id
-#: model:ir.model.fields,field_description:civil_service_recruitment.field_academy_training_action_enrolment__civil_service_recruitment_process_id
-msgid "Civil service recruitment"
-msgstr "Oposición"
-
-#. module: civil_service_recruitment
-#: model:ir.model.fields,field_description:civil_service_recruitment.field_academy_training_action__tendering_process_ids
-msgid "Civil service recruitment process"
-msgstr "Proceso de oposición"
-
-#. module: civil_service_recruitment
-#: model:ir.model,name:civil_service_recruitment.model_civil_service_recruitment_access_system
-msgid "Civil service recruitment, access system of public employee"
-msgstr "Oposición, sistema de acceso de empleado público"
-
-#. module: civil_service_recruitment
-#: model:ir.model,name:civil_service_recruitment.model_civil_service_recruitment_employment_group
-msgid "Civil service recruitment, employment group of vacancy"
-msgstr "Oposición, grupo de empleo de vacante"
-
-#. module: civil_service_recruitment
-#: model:ir.model,name:civil_service_recruitment.model_civil_service_recruitment_hiring_type
-msgid "Civil service recruitment, hiring type of public employee"
-msgstr "Oposición, tipo de contratación de empleado público"
-
-#. module: civil_service_recruitment
-#: model:ir.model,name:civil_service_recruitment.model_civil_service_recruitment_exam_type
-msgid "Civil service recruitment, kind of vacancy"
-msgstr "Oposición, tipo de puesto vacante"
-
-#. module: civil_service_recruitment
-#: model:ir.model,name:civil_service_recruitment.model_civil_service_recruitment_vacancy
-msgid "Civil service recruitment, vacancy"
-msgstr "Oposición, puesto vacante"
-
-#. module: civil_service_recruitment
-#: model:ir.model,name:civil_service_recruitment.model_civil_service_recruitment_vacancy_position_type
-msgid "Civil service recruitment, vacancy type"
-msgstr "Oposición, tipo de puesto vacante"
 
 #. module: civil_service_recruitment
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_public_administration_form
@@ -1860,24 +1842,9 @@ msgid "Purchase"
 msgstr "Compra"
 
 #. module: civil_service_recruitment
-#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_employment_group__qualification_level_id
-msgid "Qualification level"
-msgstr "Nivel de cualificación"
-
-#. module: civil_service_recruitment
-#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy__quantity
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy_position__quantity
 msgid "Quantity"
 msgstr "Cantidad"
-
-#. module: civil_service_recruitment
-#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_process__root_id
-msgid "Real object owner"
-msgstr "Propietario del objeto real"
-
-#. module: civil_service_recruitment
-#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_process__root_id
-msgid "Real owner"
-msgstr "Propietario real"
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_administration__ref
@@ -1891,8 +1858,8 @@ msgid "Register new related event"
 msgstr "Registrar un nuevo evento relacionado"
 
 #. module: civil_service_recruitment
-#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_event_type__public_process_event_ids
-#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_process__public_process_event_ids
+#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_event_type__event_ids
+#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_process__event_ids
 msgid "Register new related events"
 msgstr "Registrar nuevos eventos relacionados"
 
@@ -1963,7 +1930,7 @@ msgstr "Propio"
 #. module: civil_service_recruitment
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_event_type__sequence
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_administration_type__sequence
-#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy__sequence
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy_position__sequence
 msgid "Sequence"
 msgstr "Secuencia"
 
@@ -1986,11 +1953,6 @@ msgstr "Compartir socio"
 #: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_process__state_id
 msgid "Show last event type"
 msgstr "Mostrar el último tipo de evento"
-
-#. module: civil_service_recruitment
-#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_public_administration__student_id
-msgid "Show related student"
-msgstr "Mostrar el alumno relacionado"
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_administration__signup_expiration
@@ -2020,51 +1982,51 @@ msgstr "URL de registro"
 #. module: civil_service_recruitment
 #: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_process__description
 msgid "Something about this civil service recruitment"
-msgstr "Notas sobre esta oposición"
+msgstr "Observaciones sobre este proceso selectivo"
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_access_system__description
 #: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_hiring_type__description
 msgid "Something about this class"
-msgstr "Notas sobre esta clase"
+msgstr "Observaciones sobre esta clase"
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_event__description
 msgid "Something about this event"
-msgstr "Algo sobre este evento"
+msgstr "Observaciones sobre este evento"
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_employment_group__description
 msgid "Something about this group"
-msgstr "Notas sobre este grupo"
+msgstr "Observaciones sobre este grupo"
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_event_type__description
 #: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_exam_type__description
 #: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_required_specialization__description
 msgid "Something about this kind"
-msgstr "Notas sobre este tipo"
+msgstr "Observaciones sobre este tipo"
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_public_administration_type__description
 msgid "Something about this type"
-msgstr "Algo sobre este tipo"
+msgstr "Observaciones sobre este tipo"
 
 #. module: civil_service_recruitment
-#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_vacancy__description
+#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_vacancy_position__description
 msgid "Something about this vacancy"
-msgstr "Notas sobre este puesto vacante"
+msgstr "Observaciones sobre esta vacante"
 
 #. module: civil_service_recruitment
-#: model:ir.model.fields,help:civil_service_recruitment.model_civil_service_recruitment_public_corps__description
-#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_vacancy_type__description
+#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_public_corps__description
+#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_vacancy_position_type__description
 msgid "Something about this vacancy type"
-msgstr "Algo sobre este tipo de puesto vacante"
+msgstr "Observaciones sobre este tipo de vacante"
 
 #. module: civil_service_recruitment
-#: model:ir.model.fields,field_description:civil_service_recruitment.model_civil_service_recruitment_public_corps__specialization_id
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_corps__specialization_id
 msgid "Specialization"
-msgstr "Especialidad"
+msgstr "Especialización"
 
 #. module: civil_service_recruitment
 #: model:civil.service.recruitment.public.administration.type,name:civil_service_recruitment.civil_service_recruitment_public_administration_type_state
@@ -2112,14 +2074,14 @@ msgid "Street2"
 msgstr "Calle # 2"
 
 #. module: civil_service_recruitment
-#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_administration__student_id
-msgid "Student"
-msgstr "Alumno"
-
-#. module: civil_service_recruitment
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_public_administration_kanban
 msgid "Student photo"
 msgstr "Foto del alumno"
+
+#. module: civil_service_recruitment
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_process__subrogate_id
+msgid "Subrogate"
+msgstr "Subrogar a"
 
 #. module: civil_service_recruitment
 #: model:civil.service.recruitment.event.type,name:civil_service_recruitment.civil_service_recruitment_event_type_supply_forecast
@@ -2144,7 +2106,12 @@ msgstr "Toma de posesión"
 #. module: civil_service_recruitment
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_administration__vat
 msgid "Tax ID"
-msgstr ""
+msgstr "ID fiscal"
+
+#. module: civil_service_recruitment
+#: model:res.groups,name:civil_service_recruitment.civil_service_recruitment_group_technical
+msgid "Technical"
+msgstr "Técnico"
 
 #. module: civil_service_recruitment
 #: model:civil.service.recruitment.hiring.type,name:civil_service_recruitment.civil_service_recruitment_hiring_type_temporary
@@ -2152,13 +2119,8 @@ msgid "Temporary staff"
 msgstr "Personal temporal"
 
 #. module: civil_service_recruitment
-#: model:ir.ui.menu,name:civil_service_recruitment.menu_civil_service_recruitment_top
-msgid "Tendering"
-msgstr "Oposición"
-
-#. module: civil_service_recruitment
 #: model:ir.actions.act_window,name:civil_service_recruitment.action_civil_service_recruitment_act_window
-msgid "Tendering processes"
+msgid "Selection processes"
 msgstr "Oposiciones"
 
 #. module: civil_service_recruitment
@@ -2188,8 +2150,8 @@ msgid "The internal user in charge of this contact."
 msgstr "Usuario interno a cargo de este contacto."
 
 #. module: civil_service_recruitment
-#: code:addons/civil_service_recruitment/models/civil_service_recruitment_vacancy.py:0
-#: model:ir.model.constraint,message:civil_service_recruitment.constraint_civil_service_recruitment_vacancy_positive_quantity
+#: code:addons/civil_service_recruitment/models/civil_service_recruitment_vacancy_position.py:0
+#: model:ir.model.constraint,message:civil_service_recruitment.constraint_civil_service_recruitment_vacancy_position_positive_quantity
 #, python-format
 msgid "The quantity attribute must have a positive value"
 msgstr "El atributo de cantidad debe tener un valor positivo"
@@ -2197,7 +2159,7 @@ msgstr "El atributo de cantidad debe tener un valor positivo"
 #. module: civil_service_recruitment
 #: model:mail.message.subtype,description:civil_service_recruitment.civil_service_recruitment_state_change
 msgid "The state of the civil service recruitment process has changed"
-msgstr "El estado del proceso de oposición ha cambiado"
+msgstr "El estado del proceso selectivo ha cambiado"
 
 #. module: civil_service_recruitment
 #: model_terms:ir.actions.act_window,help:civil_service_recruitment.action_access_systems_act_window
@@ -2205,14 +2167,19 @@ msgid "There are no access systems yet"
 msgstr "Aún no hay sistemas de acceso"
 
 #. module: civil_service_recruitment
+#: model_terms:ir.actions.act_window,help:civil_service_recruitment.action_civil_service_recruitment_act_window
+msgid "There are no civil service recruitment processes yet"
+msgstr "Todavía no hay oposiciones"
+
+#. module: civil_service_recruitment
 #: model_terms:ir.actions.act_window,help:civil_service_recruitment.action_civil_service_recruitment_public_corps_act_window
 msgid "There are no employees corps yet"
 msgstr "Todavía no hay cuerpos de empleados"
 
 #. module: civil_service_recruitment
-#: model_terms:ir.actions.act_window,help:civil_service_recruitment.action_vacancy_group_act_window
+#: model_terms:ir.actions.act_window,help:civil_service_recruitment.action_employment_position_act_window
 msgid "There are no employment groups yet"
-msgstr "Todavía no hay grupos de empleo"
+msgstr "Aún no hay grupos de empleo"
 
 #. module: civil_service_recruitment
 #: model_terms:ir.actions.act_window,help:civil_service_recruitment.action_civil_service_recruitment_event_type_act_window
@@ -2250,19 +2217,9 @@ msgid "There are no public offers yet"
 msgstr "Todavía no hay ofertas"
 
 #. module: civil_service_recruitment
-#: model_terms:ir.actions.act_window,help:civil_service_recruitment.action_civil_service_recruitment_act_window
-msgid "There are no civil service recruitment processes yet"
-msgstr "Todavía no hay oposiciones"
-
-#. module: civil_service_recruitment
 #: model_terms:ir.actions.act_window,help:civil_service_recruitment.action_civil_service_recruitment_required_specialization_act_window
 msgid "There are no required specialization yet"
 msgstr "Todavía no hay especialidades"
-
-#. module: civil_service_recruitment
-#: model_terms:ir.actions.act_window,help:civil_service_recruitment.action_civil_service_recruitment_vacancy_type_act_window
-msgid "There are no vacancy types yet"
-msgstr "Todavía no hay tipos de plazas"
 
 #. module: civil_service_recruitment
 #: model_terms:ir.actions.act_window,help:civil_service_recruitment.action_vacancys_act_window
@@ -2270,11 +2227,16 @@ msgid "There are no vacancies yet"
 msgstr "Todavía no hay plazas"
 
 #. module: civil_service_recruitment
+#: model_terms:ir.actions.act_window,help:civil_service_recruitment.action_civil_service_recruitment_vacancy_type_act_window
+msgid "There are no vacancy types yet"
+msgstr "Todavía no hay tipos de plazas"
+
+#. module: civil_service_recruitment
 #: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_public_administration__email_normalized
 msgid "This field is used to search on email address as the primary email field can contain more than strictly an email address."
 msgstr ""
-"Este campo se usa para buscar en la dirección de correo electrónico, ya que el campo de correo electrónico principal puede contener más "
-"de una dirección de correo electrónico."
+"Este campo se usa para buscar en la dirección de email, ya que el campo de email principal puede contener más "
+"de una dirección de email."
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_administration__tz
@@ -2302,22 +2264,12 @@ msgid "Total number of vacancies"
 msgstr "Número total de vacantes"
 
 #. module: civil_service_recruitment
-#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_process__training_action_ids
-msgid "Training action"
-msgstr "Acción formativa"
-
-#. module: civil_service_recruitment
-#: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_process_form
-msgid "Training actions"
-msgstr "Acciones formativas"
-
-#. module: civil_service_recruitment
 #: model:civil.service.recruitment.event.type,name:civil_service_recruitment.civil_service_recruitment_event_type_courts
 msgid "Tribunal"
 msgstr ""
 
 #. module: civil_service_recruitment
-#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_administration__public_administration_type_id
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_administration__administration_type_id
 msgid "Type"
 msgstr "Tipo"
 
@@ -2378,10 +2330,27 @@ msgid "Users"
 msgstr "Usuarios"
 
 #. module: civil_service_recruitment
-#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_process__total_of_vacancies
+#: model:res.groups,comment:civil_service_recruitment.civil_service_recruitment_group_manager
+msgid "Users who can create/edit information in all models"
+msgstr "Usuarios que pueden crear/editar información en todos los modelos"
+
+#. module: civil_service_recruitment
+#: model:res.groups,comment:civil_service_recruitment.civil_service_recruitment_group_consultant
+msgid "Users who can only read the catalog"
+msgstr "Usuarios que solo pueden leer el catálogo"
+
+#. module: civil_service_recruitment
+#: model:res.groups,comment:civil_service_recruitment.civil_service_recruitment_group_technical
+msgid "Users who can read and manage full catalog of processes"
+msgstr "Usuarios que pueden leer y administrar el catálogo completo de procesos"
+
+#. module: civil_service_recruitment
+#: model:ir.actions.act_window,name:civil_service_recruitment.action_vacancys_act_window
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_process__vacancy_ids
+#: model:ir.ui.menu,name:civil_service_recruitment.menu_vacancys
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_process_form
 msgid "Vacancies"
-msgstr "Vacantes"
+msgstr "Puestos vacantes"
 
 #. module: civil_service_recruitment
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_process_form
@@ -2389,28 +2358,26 @@ msgid "Vacancy"
 msgstr "Vacante"
 
 #. module: civil_service_recruitment
-#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy__vacancy_type_id
-msgid "Vacancy type"
-msgstr "Tipo de puesto vacante"
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_process__total_of_vacancies
+msgid "Vacancy count"
+msgstr "N.º de vacantes"
 
 #. module: civil_service_recruitment
-#: model:ir.model.fields,help:civil_service_recruitment.model_civil_service_recruitment_public_corps__name
-#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_vacancy_type__name
+#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_vacancy_position__vacancy_type_id
+msgid "Vacancy type"
+msgstr "Tipo de vacante"
+
+#. module: civil_service_recruitment
+#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_public_corps__name
+#: model:ir.model.fields,help:civil_service_recruitment.field_civil_service_recruitment_vacancy_position_type__name
 msgid "Vacancy type name"
-msgstr "Nombre del tipo de puesto vacante"
+msgstr "Nombre del tipo de vacante"
 
 #. module: civil_service_recruitment
 #: model:ir.actions.act_window,name:civil_service_recruitment.action_civil_service_recruitment_vacancy_type_act_window
 #: model:ir.ui.menu,name:civil_service_recruitment.menu_civil_service_recruitment_vacancy_type
 msgid "Vacancy types"
 msgstr "Tipos de puesto vacante"
-
-#. module: civil_service_recruitment
-#: model:ir.actions.act_window,name:civil_service_recruitment.action_vacancys_act_window
-#: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_process__vacancy_ids
-#: model:ir.ui.menu,name:civil_service_recruitment.menu_vacancys
-msgid "Vacancies"
-msgstr "Puestos vacantes"
 
 #. module: civil_service_recruitment
 #: model:ir.model.fields,field_description:civil_service_recruitment.field_civil_service_recruitment_public_administration__website
@@ -2451,21 +2418,6 @@ msgstr ""
 #. module: civil_service_recruitment
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_access_system_tree
 msgid "civil_service_recruitment_access_system_tree"
-msgstr ""
-
-#. module: civil_service_recruitment
-#: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_public_corps_form
-msgid "civil_service_recruitment_public_corps_form"
-msgstr ""
-
-#. module: civil_service_recruitment
-#: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_public_corps_search
-msgid "civil_service_recruitment_public_corps_search"
-msgstr ""
-
-#. module: civil_service_recruitment
-#: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_public_corps_tree
-msgid "civil_service_recruitment_public_corps_tree"
 msgstr ""
 
 #. module: civil_service_recruitment
@@ -2574,6 +2526,21 @@ msgid "civil_service_recruitment_public_administration_type_tree"
 msgstr ""
 
 #. module: civil_service_recruitment
+#: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_public_corps_form
+msgid "civil_service_recruitment_public_corps_form"
+msgstr ""
+
+#. module: civil_service_recruitment
+#: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_public_corps_search
+msgid "civil_service_recruitment_public_corps_search"
+msgstr ""
+
+#. module: civil_service_recruitment
+#: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_public_corps_tree
+msgid "civil_service_recruitment_public_corps_tree"
+msgstr ""
+
+#. module: civil_service_recruitment
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_public_offer_form
 msgid "civil_service_recruitment_public_offer_form"
 msgstr ""
@@ -2635,7 +2602,7 @@ msgstr ""
 
 #. module: civil_service_recruitment
 #: model_terms:ir.ui.view,arch_db:civil_service_recruitment.view_civil_service_recruitment_public_administration_search
-msgid "academy_training_administration_search"
+msgid "civil_service_training_administration_search"
 msgstr ""
 
 #. module: civil_service_recruitment

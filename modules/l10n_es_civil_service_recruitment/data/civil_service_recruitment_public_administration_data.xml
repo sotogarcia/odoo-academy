@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+
+        <record id="civil_service_recruitment_public_administration_vigo_city_hall" model="civil.service.recruitment.public.administration">
+            <field name="res_partner_id" ref="res_partner_vigo_city_hall" />
+            <field name="administration_type_id" ref="civil_service_recruitment.civil_service_recruitment_public_administration_type_local" />
+            <field name="region_id" ref="galicia" />
+        </record>
+
+        <record id="civil_service_recruitment_public_administration_government_of_galicia" model="civil.service.recruitment.public.administration">
+            <field name="res_partner_id" ref="res_partner_government_of_galicia" />
+            <field name="administration_type_id" ref="civil_service_recruitment_public_administration_type_autonomic" />
+            <field name="region_id" ref="galicia" />
+        </record>
+
+
+        <record id="civil_service_recruitment_public_administration_galician_healthcare_service" model="civil.service.recruitment.public.administration">
+            <field name="res_partner_id" ref="res_partner_galician_healthcare_service" />
+            <field name="administration_type_id" ref="civil_service_recruitment_public_administration_type_autonomic" />
+            <field name="region_id" ref="galicia" />
+        </record>
+
+
+        <record id="civil_service_recruitment_public_administration_ministry_of_public_admon" model="civil.service.recruitment.public.administration">
+            <field name="res_partner_id" ref="res_partner_ministry_of_public_admon" />
+            <field name="administration_type_id" ref="civil_service_recruitment.civil_service_recruitment_public_administration_type_state" />
+            <field name="region_id" ref="comunidad_de_madrid" />
+        </record>
+
+
+        <record id="civil_service_recruitment_public_administration_ministry_of_justice" model="civil.service.recruitment.public.administration">
+            <field name="res_partner_id" ref="res_partner_ministry_of_justice" />
+            <field name="administration_type_id" ref="civil_service_recruitment.civil_service_recruitment_public_administration_type_state" />
+            <field name="region_id" ref="comunidad_de_madrid" />
+        </record>
+
+
+        <record id="civil_service_recruitment_public_administration_police" model="civil.service.recruitment.public.administration">
+            <field name="res_partner_id" ref="res_partner_police" />
+            <field name="administration_type_id" ref="civil_service_recruitment.civil_service_recruitment_public_administration_type_state" />
+            <field name="region_id" ref="comunidad_de_madrid" />
+        </record>
+
+
+        <record id="civil_service_recruitment_public_administration_civil_guard" model="civil.service.recruitment.public.administration">
+            <field name="res_partner_id" ref="res_partner_civil_guard" />
+            <field name="administration_type_id" ref="civil_service_recruitment.civil_service_recruitment_public_administration_type_state" />
+            <field name="region_id" ref="comunidad_de_madrid" />
+        </record>
+
+
+        <record id="civil_service_recruitment_public_administration_pontevedra_city_hall" model="civil.service.recruitment.public.administration">
+            <field name="res_partner_id" ref="res_partner_pontevedra_city_hall" />
+            <field name="administration_type_id" ref="civil_service_recruitment.civil_service_recruitment_public_administration_type_local" />
+            <field name="region_id" ref="galicia" />
+        </record>
+
+
+        <record id="civil_service_recruitment_public_administration_pontevedra_deputation" model="civil.service.recruitment.public.administration">
+            <field name="res_partner_id" ref="res_partner_pontevedra_deputation" />
+            <field name="administration_type_id" ref="civil_service_recruitment.civil_service_recruitment_public_administration_type_local" />
+            <field name="region_id" ref="galicia" />
+        </record>
+
+
+        <record id="civil_service_recruitment_public_administration_vigo_university" model="civil.service.recruitment.public.administration">
+            <field name="res_partner_id" ref="res_partner_vigo_university" />
+            <field name="administration_type_id" ref="civil_service_recruitment.civil_service_recruitment_public_administration_type_others" />
+            <field name="region_id" ref="galicia" />
+        </record>
+
+
+        <record id="civil_service_recruitment_public_administration_udc_university" model="civil.service.recruitment.public.administration">
+            <field name="res_partner_id" ref="res_partner_udc_university" />
+            <field name="administration_type_id" ref="civil_service_recruitment.civil_service_recruitment_public_administration_type_others" />
+            <field name="region_id" ref="galicia" />
+        </record>
+
+
+    </data>
+</openerp>

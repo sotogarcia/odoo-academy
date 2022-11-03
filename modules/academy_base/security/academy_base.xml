@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <!-- Company-restricted Records -->
+        <record model="ir.rule" id="academy_training_action_restricted_company_rule">
+            <field name="name">Academy Training Action: multi-company</field>
+            <field name="model_id" ref="model_academy_training_action"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">
+                [('company_id', 'in', company_ids)]
+            </field>
+        </record>
+
+        <!-- Company-restricted Records -->
+        <record model="ir.rule" id="academy_training_action_enrolment_restricted_company_rule">
+            <field name="name">Academy Training Action Enrolment: multi-company</field>
+            <field name="model_id" ref="model_academy_training_action_enrolment"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">
+                [('company_id', 'in', company_ids)]
+            </field>
+        </record>
+
+    </data>
+</openerp>

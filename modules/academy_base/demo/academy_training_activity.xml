@@ -12,6 +12,7 @@
             <field name="qualification_level_id" ref="academy_base.academy_qualification_level_03" />
             <field name="activity_code">ADGD0308</field>
             <field name="general_competence">Perform administrative management operations</field>
+            <field name="state">approve</field>
         </record>
 
         <record id="academy_training_activity_ms" model="academy.training.activity">
@@ -23,6 +24,7 @@
             <field name="qualification_level_id" ref="academy_base.academy_qualification_level_03" />
             <field name="activity_code">ADGD0100</field>
             <field name="general_competence">Perform basic computer operations with Microsoft Software</field>
+            <field name="state">draft</field>
         </record>
 
     </data>

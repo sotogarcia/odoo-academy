@@ -132,7 +132,7 @@ class CivilServiceRecruitmentVacancyPosition(models.Model):
 
     @api.model
     def create(self, values):
-        """ Touches related tendering processes to ensure state_id
+        """ Touches related selection processes to ensure state_id
         """
 
         # STEP 0: For backward compatibility, ``values`` may be a dictionary
@@ -152,7 +152,7 @@ class CivilServiceRecruitmentVacancyPosition(models.Model):
         return result
 
     def write(self, values):
-        """ Touches related tendering processes to ensure state_id
+        """ Touches related selection processes to ensure state_id
         """
 
         # STEP 1: Use event type name as event name if it has not been set

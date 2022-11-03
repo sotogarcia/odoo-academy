@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <!-- VIEWS: "Vacancy group"
+
+            - Model·········: civil.service.recruitment.employment.group
+            - _rec_name·····: name
+            - Domain········: []
+            - Context·······: {}
+            - Parent menu ··: base.menu_custom
+            - View priority·: 16    Sequence····: 10
+            - Action help···: There is no any group yet
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+        <!-- Tree view for "civil.service.recruitment.employment.group" -->
+        <record id="view_civil_service_recruitment_employment_group_tree" model="ir.ui.view">
+            <field name="name">view.civil.service.recruitment.employment.group.tree</field>
+            <field name="model">civil.service.recruitment.employment.group</field>
+            <field name="type">tree</field>
+            <field name="mode">extension</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="civil_service_recruitment.view_civil_service_recruitment_employment_group_tree" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="qualification_level_id" class="oe_field_qualification_level_id" />
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Form view for "civil.service.recruitment.employment.group" -->
+        <record id="view_civil_service_recruitment_employment_group_form" model="ir.ui.view">
+            <field name="name">view.civil.service.recruitment.employment.group.form</field>
+            <field name="model">civil.service.recruitment.employment.group</field>
+            <field name="type">form</field>
+            <field name="mode">extension</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="civil_service_recruitment.view_civil_service_recruitment_employment_group_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='description']" position="before">
+                    <field name="qualification_level_id" class="oe_field_qualification_level_id" />
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Search view for "civil.service.recruitment.employment.group" -->
+        <record id="view_civil_service_recruitment_employment_group_search" model="ir.ui.view">
+            <field name="name">view.civil.service.recruitment.employment.group.search</field>
+            <field name="model">civil.service.recruitment.employment.group</field>
+            <field name="type">search</field>
+            <field name="mode">extension</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="civil_service_recruitment.view_civil_service_recruitment_employment_group_search" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="qualification_level_id" />
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>

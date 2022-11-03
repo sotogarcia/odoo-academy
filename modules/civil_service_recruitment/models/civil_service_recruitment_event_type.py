@@ -69,7 +69,7 @@ class CivilServiceRecruitmentEventType(models.Model):
         readonly=False,
         index=False,
         default=False,
-        help=('Check it this event type is a civil service recruitment state')
+        help=('Check it this event type is a civil service recruitment process state')
     )
 
     unique = fields.Boolean(
@@ -134,7 +134,7 @@ class CivilServiceRecruitmentEventType(models.Model):
 
     @api.model
     def create(self, values):
-        """ Touches all tendering processes to ensure state_id, both those
+        """ Touches all selection processes to ensure state_id, both those
         which are related and those which are not
         """
         # STEP 0: For backward compatibility, ``vals_list`` may be a dictionary
@@ -151,7 +151,7 @@ class CivilServiceRecruitmentEventType(models.Model):
         return result
 
     # def write(self, values):
-    #     """ Touches all tendering processes to ensure state_id, both those
+    #     """ Touches all selection processes to ensure state_id, both those
     #     which are related and those which are not
     #     """
 

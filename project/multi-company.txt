@@ -1,0 +1,33 @@
+                    <header>
+                         <field name="state" widget="statusbar" clickable="1" />
+                    </header>
+
+    _check_company_auto = True
+
+    state = fields.Selection(
+        string='State',
+        required=True,
+        readonly=False,
+        index=True,
+        default='draft',
+        help='Crurrent record state',
+        selection=[
+            ('draft', 'Draft'),
+            ('approve', 'Approved')
+        ]
+    )
+
+    company_id = fields.Many2one(
+        string='Company',
+        required=True,
+        readonly=True,
+        index=True,
+        default=lambda self: self.env.company,
+        help='The company this record belongs to',
+        comodel_name='res.company',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False,
+        states={'draft': [('readonly', False)]}
+    )

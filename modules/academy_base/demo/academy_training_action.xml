@@ -15,6 +15,7 @@
             <field name="training_activity_id" ref="academy_base.academy_training_activity_ADGD0308" />
             <field name="action_code">AGE2020</field>
             <field name="seating">5</field>
+            <field name="state">approve</field>
         </record>
 
     </data>

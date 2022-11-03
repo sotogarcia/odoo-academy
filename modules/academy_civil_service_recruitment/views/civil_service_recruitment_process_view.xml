@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <!-- Form view for "civil.service.recruitment.process" -->
+        <record id="view_civil_service_recruitment_process_form" model="ir.ui.view">
+            <field name="name">view.civil.service.recruitment.process.form</field>
+            <field name="model">civil.service.recruitment.process</field>
+            <field name="type">form</field>
+            <field name="mode">extension</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref='civil_service_recruitment.view_civil_service_recruitment_process_form' />
+            <field name="arch" type="xml">
+                <xpath expr="//notebook/*[last()]" position="after">
+                    <page string="Training actions" class="oe_page_training_actions" accesskey="T">
+                        <field name="training_action_ids" class="oe_field_training_action_ids" />
+                        <group col="2">
+                            <field name="training_action_id" class="oe_field_training_action_id"
+                                domain="[('id', 'in', training_action_ids)]" string="Default" />
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Search view for "civil.service.recruitment.process" -->
+        <record id="view_civil_service_recruitment_process_search" model="ir.ui.view">
+            <field name="name">view.civil.service.recruitment.process.search</field>
+            <field name="model">civil.service.recruitment.process</field>
+            <field name="type">search</field>
+            <field name="mode">extension</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref='civil_service_recruitment.view_civil_service_recruitment_process_search' />
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='group_by']" position="before">
+                    <field name="training_action_ids" string="With training action" />
+                    <field name="training_action_id" string="Default training action" />
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>

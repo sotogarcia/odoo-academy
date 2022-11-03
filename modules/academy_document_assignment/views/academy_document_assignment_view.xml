@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <!-- VIEWS: "File assignment"
+
+            - Model·········: academy.document.assignment
+            - _rec_name·····: id
+            - Domain········: []
+            - Context·······: {}
+            - Parent menu ··: ??
+            - View priority·: 16    Sequence····: 10
+            - Action help···: No file assignments have been stored yet
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+        <!-- Tree view for "academy.document.assignment" -->
+        <record id="view_academy_document_assignment_tree" model="ir.ui.view">
+            <field name="name">view_academy_document_assignment_tree</field>
+            <field name="model">academy.document.assignment</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <tree string="academy.document.assignment_tree" create="1" delete="1" edit="1">
+                    <field name="name" class="oe_field_name"
+                        placeholder="Enter new name" />
+                    <field name="training_ref" class="oe_field_training_id"
+                        invisible="context.get('default_training_ref', False)" />
+                    <field name="file_id" class="oe_field_file_id"
+                        invisible="context.get('default_file_id', False)" />
+                    <field name="manager_id" class="oe_field_manager_id" />
+                    <field name="release" class="oe_field_release" />
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form view for "academy.document.assignment" -->
+        <record id="view_academy_document_assignment_form" model="ir.ui.view">
+            <field name="name">view_academy_document_assignment_form</field>
+            <field name="model">academy.document.assignment</field>
+            <field name="type">form</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <form string="academy.document.assignment_form" create="1" delete="1" edit="1">
+                    <sheet>
+                        <field name="active" invisible="1" />
+                        <field name="training_type" invisible="1" />
+                        <field name="enrolment_id" invisible="1" />
+                        <field name="training_action_id" invisible="1" />
+                        <field name="training_activity_id" invisible="1" />
+                        <field name="competency_unit_id" invisible="1" />
+                        <field name="training_module_id" invisible="1" />
+                        <field name="secondary_id" invisible="1" />
+
+                        <div class="oe_button_box" name="button_box">
+                            <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+                        </div>
+
+                        <div class="w-100">
+
+                            <label for="name" class="oe_edit_only" />
+                            <h1>
+                                <field name="name" class="oe_field_name"
+                                    placeholder="Enter new name" />
+                            </h1>
+                        </div>
+
+                        <field name='secondary_domain_id' invisible="1" />
+
+                        <group col="4" class="mt-4">
+                            <field name="file_id" class="oe_field_file_id" colspan="4"
+                                readonly="context.get('default_file_id', 0)" required="1"
+                                options="{'no_open': False, 'no_create': True, 'no_quick_create': True, 'no_create_edit': True }" />
+                            <field name="training_ref" class="oe_field_training_id" colspan="4"
+                                readonly="context.get('default_training_ref', 0)" required="1"
+                                options="{'no_open': False, 'no_create': True, 'no_quick_create': True, 'no_create_edit': True }" />
+                            <field name="secondary_id" class="oe_field_secondary_id" colspan="4"
+                                domain="[('training_activity_id', '=', secondary_domain_id)]"
+                                attrs="{'readonly': [
+                                    ('training_type', '&lt;&gt;', 'academy.training.action'),
+                                    ('training_type', '&lt;&gt;', 'academy.training.activity'),
+                                    ('training_type', '&lt;&gt;', 'academy.training.action.enrolment')
+                                ]}" options="{'no_open': False, 'no_create': True, 'no_quick_create': True, 'no_create_edit': True }" />
+
+                            <separator colspan="4" class="mt-4" />
+                            <field name="release" class="oe_field_release" />
+                            <field name="expiration" class="oe_field_expiration" />
+                            <field name="owner_id" class="oe_field_owner_id" />
+
+                        </group>
+
+                    </sheet>
+
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- kanban view for "academy.document.assignment" -->
+        <record id="view_academy_document_assignment_kanban" model="ir.ui.view">
+            <field name="name">view_academy_document_assignment_kanban</field>
+            <field name="model">academy.document.assignment</field>
+            <field name="type">kanban</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <kanban create="1" delete="1" edit="1">
+                    <field name="display_name" />
+                    <field name="secondary_id" />
+                    <field name="release" />
+                    <field name="training_type" />
+                    <field name="owner_id" />
+
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click oe_kanban_academy_training_action">
+                                <div class="oe_kanban_details d-flex flex-column h-100 justify-content-end">
+                                    <h4 class="flex-fill align-top">
+                                        <strong class="oe_partner_heading">
+                                            <field name="display_name"/>
+                                        </strong>
+                                    </h4>
+                                    <ul>
+                                        <li class="o_ellipsis">
+                                            <strong>Training type:&#160;</strong>
+                                            <field name="training_type" />
+                                        </li>
+                                        <li class="o_ellipsis">
+                                            <strong>Sub-assignment:&#160;</strong>
+                                            <t t-if="record.secondary_id.raw_value">
+                                                <field name="secondary_id" />
+                                            </t>
+                                            <t t-else="">
+                                                ---
+                                            </t>
+                                        </li>
+                                            <li class="o_ellipsis">
+                                            <strong>Owner:&#160;</strong>
+                                            <field name="owner_id" />
+                                        </li>
+                                        <li class="o_ellipsis">
+                                            <strong>Released:&#160;</strong>
+                                            <field name="release" widget="datetime" />
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Search view for "academy.document.assignment" -->
+        <record id="view_academy_document_assignment_search" model="ir.ui.view">
+            <field name="name">view_academy_document_assignment_search</field>
+            <field name="model">academy.document.assignment</field>
+            <field name="type">search</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <search string="academy.document.assignment_search">
+                    <field name="training_ref" class="oe_field_training_id" />
+                    <field name="file_id" class="oe_field_file_id" />
+                    <field name="owner_id" class="oe_field_owner_id" />
+                    <field name="release" class="oe_field_release" />
+                    <field name="training_type" class="oe_field_training_type" />
+
+                    <filter string="My assignments"
+                        name="my_assignments"
+                        domain="[('owner_id', '=', uid)]"/>
+
+                    <filter string="Released" name="released" domain="[
+                        ('release','&gt;=', (context_today().strftime('%Y-%m-%d')))
+                    ]" />
+
+                    <filter string="Last 8 days" name="last_eight_days" domain="[
+                        ('release','&gt;=', ((context_today() - relativedelta(days=8)).strftime('%Y-%m-%d'))),
+                        ('release','&lt;',  ((context_today() + relativedelta(days=1)).strftime('%Y-%m-%d')))
+                    ]"/>
+
+
+                    <separator />
+
+                    <filter name="group_by_training_type" string="Group by training type"
+                        context="{'group_by':'training_type'}"  />
+
+                    <separator />
+
+                    <filter string="My files"
+                        name="my_files"
+                        domain="[('owner_id', '=', uid)]"/>
+
+                </search>
+            </field>
+        </record>
+
+        <!-- Main window action for model.name -->
+        <record id="action_file_assignment_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">File assignment</field>
+            <field name="res_model">academy.document.assignment</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="target">current</field>
+            <field name="domain">[]</field>
+            <field name="context">{'search_default_my_assignments': 1}</field>
+            <field name="search_view_id" ref="view_academy_document_assignment_search" />
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to add new file assignment
+                </p><p>
+                    No file assignments have been stored yet
+                </p>
+            </field>
+        </record>
+
+        <!-- Main menu for model.name -->
+        <record id="menu_file_assignment" model="ir.ui.menu" >
+            <field name="name">File assignment</field>
+            <field name="sequence" eval="10" />
+            <field name="action" ref="action_file_assignment_act_window" />
+            <field name="parent_id" ref="academy_base.menu_academy_catalog" />
+        </record>
+
+    </data>
+</openerp>

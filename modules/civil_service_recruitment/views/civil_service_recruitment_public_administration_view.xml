@@ -270,7 +270,7 @@
 
                     <templates>
                         <t t-name="kanban-box">
-                            <div class="oe_kanban_global_click oe_kanban_civil_service_administration">
+                            <div class="oe_kanban_global_click oe_kanban_civil_service_administration ">
                                 <div class="o_kanban_image">
                                     <t t-if="record.image_128.raw_value">
                                         <field name="image_128" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}' />
@@ -366,8 +366,8 @@
             <field name="name">Administrations</field>
             <field name="sequence" eval="20" />
             <field name="action" ref="action_administrations_act_window" />
-            <field name="parent_id" ref="menu_civil_service_recruitment_top" />
-            <field name="groups_id" eval="[(4, ref('civil_service_recruitment.civil_service_recruitment_technical'))]" />
+            <field name="parent_id" ref="menu_civil_service_recruitment" />
+            <field name="groups_id" eval="[(4, ref('civil_service_recruitment.civil_service_recruitment_group_technical'))]" />
         </record>
 
     </data>

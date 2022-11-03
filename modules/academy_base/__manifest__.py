@@ -14,7 +14,7 @@
 
     'license': 'LGPL-3',
     'category': 'Academy',
-    'version': '15.0.1.0.0',
+    'version': '15.0.1.3',
 
     'depends': [
         'base',
@@ -36,6 +36,35 @@
         'data/academy_professional_family_data.xml',
         'data/academy_professional_field_data.xml',
         'data/academy_professional_sector_data.xml',
+
+        'security/academy_base.xml',
+        'security/academy_training_methodology.xml',
+        'security/academy_application_scope.xml',
+        'security/academy_knowledge_area.xml',
+        'security/academy_professional_area.xml',
+        'security/academy_training_modality.xml',
+        'security/academy_competency_unit.xml',
+        'security/academy_qualification_level.xml',
+        'security/academy_professional_category.xml',
+        'security/academy_professional_family.xml',
+        'security/academy_professional_qualification.xml',
+        'security/academy_training_module_rel.xml',
+        'security/academy_professional_field.xml',
+        'security/academy_professional_sector.xml',
+        'security/academy_training_activity_training_unit_rel.xml',
+
+        'security/academy_training_module.xml',
+        'security/academy_training_activity.xml',
+        'security/academy_training_action.xml',
+
+        'security/academy_training_action_enrolment.xml',
+
+        'security/academy_teacher.xml',
+        'security/academy_student.xml',
+
+        'security/res_users.xml',
+
+        'security/academy_company_switch_wizard.xml',
 
         'views/academy_base.xml',
 
@@ -65,31 +94,7 @@
 
         'views/res_partner_view.xml',
 
-        'security/academy_training_methodology.xml',
-        'security/academy_application_scope.xml',
-        'security/academy_knowledge_area.xml',
-        'security/academy_professional_area.xml',
-        'security/academy_training_modality.xml',
-        'security/academy_competency_unit.xml',
-        'security/academy_qualification_level.xml',
-        'security/academy_professional_category.xml',
-        'security/academy_professional_family.xml',
-        'security/academy_professional_qualification.xml',
-        'security/academy_training_module_rel.xml',
-        'security/academy_professional_field.xml',
-        'security/academy_professional_sector.xml',
-        'security/academy_training_activity_training_unit_rel.xml',
-
-        'security/academy_training_module.xml',
-        'security/academy_training_activity.xml',
-        'security/academy_training_action.xml',
-
-        'security/academy_training_action_enrolment.xml',
-
-        'security/academy_teacher.xml',
-        'security/academy_student.xml',
-
-        'security/res_users.xml',
+        'wizard/academy_company_switch_wizard_view.xml'
     ],
 
     'qweb': [

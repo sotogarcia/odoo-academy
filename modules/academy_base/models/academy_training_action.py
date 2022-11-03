@@ -10,6 +10,7 @@ from logging import getLogger
 from datetime import datetime, timedelta
 from pytz import timezone, utc
 from odoo.tools.translate import _
+from odoo.exceptions import ValidationError
 
 # pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
@@ -40,6 +41,35 @@ class AcademyTrainingAction(models.Model):
     ]
 
     _inherits = {'academy.training.activity': 'training_activity_id'}
+
+    _check_company_auto = True
+
+    company_id = fields.Many2one(
+        string='Company',
+        required=True,
+        readonly=True,
+        index=True,
+        default=lambda self: self.env.company,
+        help='The company this record belongs to',
+        comodel_name='res.company',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False
+    )
+
+    state = fields.Selection(
+        string='Status',
+        required=True,
+        readonly=False,
+        index=True,
+        default='draft',
+        help='Crurrent record state',
+        selection=[
+            ('draft', 'Draft'),
+            ('approve', 'Approved')
+        ]
+    )
 
     action_name = fields.Char(
         string='Action name',
@@ -223,7 +253,7 @@ class AcademyTrainingAction(models.Model):
         tracking=True
     )
 
-    training_action_enrolment_ids = fields.One2many(
+    enrolment_ids = fields.One2many(
         string='Action enrolments',
         required=False,
         readonly=False,
@@ -264,14 +294,14 @@ class AcademyTrainingAction(models.Model):
         compute='_compute_training_action_enrolment_count'
     )
 
-    @api.depends('training_action_enrolment_ids')
+    @api.depends('enrolment_ids')
     def _compute_training_action_enrolment_count(self):
         for record in self:
             record.enrolment_count = \
-                len(record.training_action_enrolment_ids)
+                len(record.enrolment_ids)
 
-    @api.onchange('training_action_enrolment_ids')
-    def _onchange_training_action_enrolment_ids(self):
+    @api.onchange('enrolment_ids')
+    def _onchange_enrolment_ids(self):
         self._compute_training_action_enrolment_count()
 
     # ------------------------------ CONSTRAINS -------------------------------
@@ -289,6 +319,16 @@ class AcademyTrainingAction(models.Model):
         ),
     ]
 
+    @api.constrains('state')
+    def _check_state(self):
+        message = _('Training action cannot be approved while the training '
+                    'activity is in draft status')
+
+        for record in self:
+            activity = record.training_activity_id
+            if record.state != 'draft' and activity.state == 'draft':
+                raise ValidationError(message)
+
     # -------------------------- OVERLOADED METHODS ---------------------------
 
     # @api.one
@@ -305,6 +345,30 @@ class AcademyTrainingAction(models.Model):
 
         rec = super(AcademyTrainingAction, self).copy(default)
         return rec
+
+    @api.model
+    def create(self, values):
+        parent = super(AcademyTrainingAction, self)
+        result_set = parent.create(values)
+
+        result_set._reconcile_enrolment_state(values)
+
+        return result_set
+
+    def write(self, values):
+        parent = super(AcademyTrainingAction, self)
+        result = parent.write(values)
+
+        self._reconcile_enrolment_state(values)
+
+        return result
+
+    def _reconcile_enrolment_state(self, values):
+        state = values.get('state', False)
+
+        if state == 'draft':
+            enrolment_set = self.mapped('enrolment_ids')
+            enrolment_set.write({'state': state})
 
     # --------------------------- PUBLIC METHODS ------------------------------
 

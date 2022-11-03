@@ -430,7 +430,7 @@ msgid "Action Needed"
 msgstr "Acción necesaria"
 
 #. module: academy_base
-#: model:ir.model.fields,field_description:academy_base.field_academy_training_action__training_action_enrolment_ids
+#: model:ir.model.fields,field_description:academy_base.field_academy_training_action__enrolment_ids
 msgid "Action enrolments"
 msgstr "Matrículas de la acción"
 
@@ -4813,7 +4813,7 @@ msgid "Show the number of competency units in the training activity"
 msgstr "Mostrar el número de unidades de competencia en la actividad formativa"
 
 #. module: academy_base
-#: model:ir.model.fields,help:academy_base.field_academy_training_action__training_action_enrolment_ids
+#: model:ir.model.fields,help:academy_base.field_academy_training_action__enrolment_ids
 msgid "Show the number of enrolments related with the training action"
 msgstr "Mostrar el número de matriculaciones relacionadas con la acción formativa"
 

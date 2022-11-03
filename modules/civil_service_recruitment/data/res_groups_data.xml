@@ -13,25 +13,25 @@
         </record>
 
         <!-- User who only can read data -->
-        <record id="civil_service_recruitment_consultant" model="res.groups">
+        <record id="civil_service_recruitment_group_consultant" model="res.groups">
             <field name="name">Consultant</field>
             <field name="comment">Users who can only read the catalog</field>
             <field name="category_id" ref="module_category_civil_service_recruitment"/>
             <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
         </record>
 
-        <record id="civil_service_recruitment_technical" model="res.groups">
+        <record id="civil_service_recruitment_group_technical" model="res.groups">
             <field name="name">Technical</field>
             <field name="comment">Users who can read and manage full catalog of processes</field>
             <field name="category_id" ref="module_category_civil_service_recruitment"/>
-            <field name="implied_ids" eval="[(4, ref('civil_service_recruitment_consultant'))]"/>
+            <field name="implied_ids" eval="[(4, ref('civil_service_recruitment_group_consultant'))]"/>
         </record>
 
-        <record id="civil_service_recruitment_manager" model="res.groups">
+        <record id="civil_service_recruitment_group_manager" model="res.groups">
             <field name="name">Manager</field>
             <field name="comment">Users who can create/edit information in all models</field>
             <field name="category_id" ref="module_category_civil_service_recruitment"/>
-            <field name="implied_ids" eval="[(4, ref('civil_service_recruitment_technical'))]"/>
+            <field name="implied_ids" eval="[(4, ref('civil_service_recruitment_group_technical'))]"/>
             <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]" />
         </record>
 

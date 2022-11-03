@@ -210,7 +210,7 @@ class OwnershipMixin(models.AbstractModel):
             user = user.browse(uid)
 
         manager_xid = 'record_ownership.record_ownership_manager'
-        if not user.has_group(manager_xid):
+        if not user or not user.has_group(manager_xid):
             if uid:
                 values['owner_id'] = uid
             else:
@@ -218,7 +218,7 @@ class OwnershipMixin(models.AbstractModel):
                 values['owner_id'] = root_user.id
 
         proxy_xid = 'record_ownership.record_ownership_proxy'
-        if not user.has_group(proxy_xid):
+        if not user or not user.has_group(proxy_xid):
             values.pop('subrogate_id', False)
 
     def _pop_owner(self, values):

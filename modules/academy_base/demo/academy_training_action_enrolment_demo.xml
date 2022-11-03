@@ -7,6 +7,7 @@
             <field name="student_id" ref="academy_base.academy_demo_student" />
             <field name="training_action_id" ref="academy_base.academy_training_action_demo" />
             <field name="competency_unit_ids" eval="[(4, ref('academy_base.academy_competency_unit_libre'), None), (4, ref('academy_base.academy_competency_unit_odoo'), None)]" />
+            <field name="state">approve</field>
         </record>
 
     </data>

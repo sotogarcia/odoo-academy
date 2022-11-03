@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="civil_service_recruitment.civil_service_recruitment_employment_group_a1" model="civil.service.recruitment.employment.group">
+            <field name="qualification_level_id" ref="academy_base.academy_qualification_level_level_isced_2011_7" />
+        </record>
+
+        <record id="civil_service_recruitment.civil_service_recruitment_employment_group_a2" model="civil.service.recruitment.employment.group">
+            <field name="qualification_level_id" ref="academy_base.academy_qualification_level_level_isced_2011_6" />
+        </record>
+
+        <record id="civil_service_recruitment.civil_service_recruitment_employment_group_b" model="civil.service.recruitment.employment.group">
+            <field name="qualification_level_id" ref="academy_base.academy_qualification_level_level_isced_2011_5" />
+        </record>
+
+        <record id="civil_service_recruitment.civil_service_recruitment_employment_group_c1" model="civil.service.recruitment.employment.group">
+            <field name="qualification_level_id" ref="academy_base.academy_qualification_level_level_isced_2011_3" />
+        </record>
+
+        <record id="civil_service_recruitment.civil_service_recruitment_employment_group_c2" model="civil.service.recruitment.employment.group">
+            <field name="qualification_level_id" ref="academy_base.academy_qualification_level_level_isced_2011_2" />
+        </record>
+
+        <record id="civil_service_recruitment.civil_service_recruitment_employment_group_d" model="civil.service.recruitment.employment.group">
+            <field name="qualification_level_id" ref="academy_base.academy_qualification_level_level_isced_2011_2" />
+        </record>
+
+        <record id="civil_service_recruitment.civil_service_recruitment_employment_group_e" model="civil.service.recruitment.employment.group">
+            <field name="qualification_level_id" ref="academy_base.academy_qualification_level_level_isced_2011_2" />
+        </record>
+
+    </data>
+</openerp>

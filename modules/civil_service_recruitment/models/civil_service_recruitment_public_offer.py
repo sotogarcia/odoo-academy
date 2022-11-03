@@ -26,6 +26,19 @@ class CivilServiceRecruitmentOffer(models.Model):
     _rec_name = 'name'
     _order = 'name ASC'
 
+    state = fields.Selection(
+        string='Status',
+        required=True,
+        readonly=False,
+        index=True,
+        default='draft',
+        help='Crurrent record state',
+        selection=[
+            ('draft', 'Draft'),
+            ('approve', 'Approved')
+        ]
+    )
+
     name = fields.Char(
         string='Name',
         required=True,
@@ -64,7 +77,7 @@ class CivilServiceRecruitmentOffer(models.Model):
         readonly=False,
         index=False,
         default=None,
-        help='Choose the administration related with tendering',
+        help='Choose the administration related with the selection process',
         comodel_name='civil.service.recruitment.public.administration',
         domain=[],
         context={},
@@ -160,7 +173,7 @@ class CivilServiceRecruitmentOffer(models.Model):
             record.process_ids.set_approval(self.approval)
 
     def show_processes(self):
-        """ Runs default view for tendering process with a filter to
+        """ Runs default view for selection process with a filter to
         show only current offer items
         """
 

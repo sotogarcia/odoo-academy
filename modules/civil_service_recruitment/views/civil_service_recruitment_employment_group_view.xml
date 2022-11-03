@@ -110,8 +110,8 @@
             <field name="name">Employment groups</field>
             <field name="sequence" eval="10" />
             <field name="action" ref="action_employment_position_act_window" />
-            <field name="parent_id" ref="menu_civil_service_recruitment_top" />
-            <field name="groups_id" eval="[(4, ref('civil_service_recruitment.civil_service_recruitment_manager'))]" />
+            <field name="parent_id" ref="menu_civil_service_settings" />
+            <field name="groups_id" eval="[(4, ref('civil_service_recruitment.civil_service_recruitment_group_manager'))]" />
         </record>
 
     </data>

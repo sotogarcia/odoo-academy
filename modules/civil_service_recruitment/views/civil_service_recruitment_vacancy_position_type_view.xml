@@ -9,7 +9,7 @@
             - _rec_name·····: name
             - Domain········: []
             - Context·······: {}
-            - Parent menu ··: menu_civil_service_recruitment_top
+            - Parent menu ··: menu_civil_service_settings
             - View priority·: 16    Sequence····: 10
             - Action help···: There is no any vacancy type yet
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -105,8 +105,8 @@
             <field name="name">Vacancy types</field>
             <field name="sequence" eval="10" />
             <field name="action" ref="action_civil_service_recruitment_vacancy_type_act_window" />
-            <field name="parent_id" ref="menu_civil_service_recruitment_top" />
-            <field name="groups_id" eval="[(4, ref('civil_service_recruitment.civil_service_recruitment_manager'))]" />
+            <field name="parent_id" ref="menu_civil_service_settings" />
+            <field name="groups_id" eval="[(4, ref('civil_service_recruitment.civil_service_recruitment_group_manager'))]" />
         </record>
 
     </data>
