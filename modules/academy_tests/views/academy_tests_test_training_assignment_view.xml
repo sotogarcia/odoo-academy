@@ -134,6 +134,7 @@
                     <field name="training_type" />
                     <field name="attempt_count" />
                     <field name="owner_id" />
+                    <field name="random_template_id" />
 
                     <templates>
                         <t t-name="kanban-box">
@@ -199,6 +200,14 @@
                                                 Stats
                                             </button>
                                         </div>
+                                        <t t-if="record.random_template_id.raw_value &amp;&amp; context['default_test_id'] == undefined &amp;&amp; context['default_training_ref'] != undefined">
+                                        <div class="btn-group" role="group" aria-label="Attempts">
+                                            <button name="new_from_template" type="object"
+                                                class="btn btn-sm btn-light oe_read_only" title="Create new test assignment using the same template">
+                                                <i class="fa fa-cogs d-inline-block mr-1" aria-hidden="false"></i>
+                                            </button>
+                                        </div>
+                                        </t>
                                     </div>
                                 </div>
                             </div>

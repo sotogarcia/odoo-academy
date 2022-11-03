@@ -53,6 +53,39 @@ class AcademyTrainingActionEnrolment(models.Model):
             record.assignment_count = \
                 len(record.assignment_ids)
 
+    template_ids = fields.One2many(
+        string='Templates',
+        required=False,
+        readonly=False,
+        index=True,
+        default=None,
+        comodel_name='academy.tests.random.template',
+        inverse_name='enrolment_id',
+        domain=[],
+        context={},
+        auto_join=False,
+        limit=None,
+        help=('List of test templates available to be used in this training '
+              'action enrollment')
+    )
+
+    template_count = fields.Integer(
+        string='Nº templates',
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        store=False,
+        compute='_compute_template_count',
+        help=('Show the number of test templates available to be used in this '
+              'training action enrollment')
+    )
+
+    @api.depends('template_ids')
+    def _compute_template_count(self):
+        for record in self:
+            record.template_count = len(record.template_ids)
+
     available_assignment_ids = fields.Many2manyThroughView(
         string='Available assignments',
         required=False,

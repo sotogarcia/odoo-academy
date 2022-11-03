@@ -12,6 +12,9 @@ from . import academy_tests_question_categorize_wizard
 from . import academy_tests_question_append_wizard
 from . import academy_tests_question_append_wizard_link
 
+from . import academy_tests_question_import_wizard
+from . import academy_tests_random_wizard
+
 from . import academy_tests_change_owner_wizard
 
 from . import academy_tests_choose_report_wizard
@@ -23,3 +26,5 @@ from . import academy_tests_manual_categorization_wizard
 from . import academy_tests_update_questions_wizard
 
 from . import academy_tests_remove_duplicate_questions_wizard
+
+from . import academy_tests_random_template_type_wizard

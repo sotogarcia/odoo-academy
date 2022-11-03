@@ -32,6 +32,9 @@ from . import academy_training_activity
 from . import academy_competency_unit
 from . import academy_training_module
 
+from . import academy_tests_random_line_categorization
+from . import academy_tests_random_line
+from . import academy_tests_random_template
 from . import academy_tests_test_kind
 
 from . import academy_tests_attempt
@@ -39,7 +42,7 @@ from . import academy_tests_attempt_answer
 
 from . import academy_training_action_enrolment
 from . import academy_tests_test
-
+from . import academy_tests_random_template_training_action_rel
 
 from . import academy_student
 

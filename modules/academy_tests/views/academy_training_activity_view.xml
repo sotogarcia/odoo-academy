@@ -13,6 +13,11 @@
             <field name="inherit_id" ref="academy_base.view_academy_training_activity_form" />
             <field name="arch" type="xml">
                 <xpath expr="//div[@name='button_box']/*[1]" position="before">
+                    <button name="view_test_templates" type="object"
+                        class="oe_stat_button oe_read_only" icon="fa-cog"
+                        help="View related test templates">
+                        <field name="available_template_count" widget="statinfo" string="Templates" />
+                    </button>
                     <button name="view_test_assignments" type="object"
                         class="oe_stat_button oe_read_only" icon="fa-list-ol"
                         help="View related tests">
@@ -21,6 +26,7 @@
                 </xpath>
                 <xpath expr="//page[@id='setup']/*[last()]" position="after">
                     <group col="4" string="Tests">
+                        <field name="random_template_id" class="oe_field_test_template_id" />
                         <field name="correction_scale_id" class="oe_field_correction_scale_id" string="Correction scale" />
                         <field name="available_time" class="oe_field_available_time" widget="float_time" />
                     </group>

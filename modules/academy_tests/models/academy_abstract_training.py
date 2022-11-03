@@ -21,6 +21,20 @@ class AcademyAbstractTraining(models.AbstractModel):
 
     _inherit = ['academy.abstract.training']
 
+    random_template_id = fields.Many2one(
+        string='Default template',
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help='Choose a test template will be used as default',
+        comodel_name='academy.tests.random.template',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False
+    )
+
     available_assignment_ids = fields.Many2many(
         string='Available assignments',
         required=False,
@@ -67,6 +81,24 @@ class AcademyAbstractTraining(models.AbstractModel):
         for record in self:
             assignment_set = record.get_available('assignment_ids')
             record.available_assignment_count = len(assignment_set)
+
+    available_template_count = fields.Integer(
+        string='Nº available templates',
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        store=False,
+        compute='_compute_available_template_count',
+        help=('Show the number of test templates available to be used in this '
+              'training action')
+    )
+
+    @api.depends('template_ids')
+    def _compute_available_template_count(self):
+        for record in self:
+            template_set = record.get_available('template_ids')
+            record.available_template_count = len(template_set)
 
     available_question_ids = fields.Many2many(
         string='Questions',
@@ -147,6 +179,52 @@ class AcademyAbstractTraining(models.AbstractModel):
                 'name_get': 'test',
                 'default_training_ref': '{},{}'.format(self._name, self.id),
                 'search_default_my_assignments': 1
+            }
+        }
+
+    def view_test_templates(self):
+        self.ensure_one()
+
+        inverse_name = self.get_inverse_field_name()
+        domain = [(inverse_name, '=', self.id)]
+
+        template_set = self.get_available('template_ids')
+        if template_set:
+            template_ids = template_set.mapped('id')
+            domain = OR([domain, [('id', 'in', template_ids)]])
+
+        return {
+            'model': 'ir.actions.act_window',
+            'type': 'ir.actions.act_window',
+            'name': _('Test templates'),
+            'res_model': 'academy.tests.random.template',
+            'target': 'current',
+            'view_mode': 'kanban,tree,form',
+            'domain': domain,
+            'context': {
+                'name_get': 'test',
+                'default_training_ref': '{},{}'.format(self._name, self.id),
+                'search_default_my_templates': 1
+            }
+        }
+
+    def view_available_questions(self):
+        self_name = self.get_name()
+        view_name = _('Questions in {}').format(self_name)
+
+        question_id = self.available_question_ids.mapped('id')
+
+        return {
+            'model': 'ir.actions.act_window',
+            'type': 'ir.actions.act_window',
+            'name': view_name,
+            'res_model': 'academy.tests.random.template',
+            'target': 'current',
+            'view_mode': 'kanban,tree,form',
+            'domain': [('id', 'in', question_id)],
+            'context': {
+                'name_get': 'test',
+                'search_default_my_questions': 1
             }
         }
 
