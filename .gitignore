@@ -6,7 +6,7 @@ __pycache__/
 *.so
 
 # Visual paradigm
-*.bak_000f
+project/*.bak_*
 
 # Distribution / packaging
 .Python

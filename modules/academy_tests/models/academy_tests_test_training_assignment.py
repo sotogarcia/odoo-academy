@@ -8,9 +8,6 @@ from odoo import models, fields, api
 from odoo.tools.translate import _
 from logging import getLogger
 
-from .utils.sql_m2m_through_view import \
-    ACADEMY_TESTS_TEST_TRAINING_ASSIGNMENT_STUDENT_REL
-
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
@@ -38,8 +35,7 @@ class AcademyTestsTestTrainingAssignment(models.Model):
     _order = 'release DESC'
 
     _inherit = [
-        'academy.abstract.training.reference',
-        'academy.abstract.owner',
+        'ownership.mixin',
         'mail.thread',
         'mail.activity.mixin'
     ]
@@ -274,7 +270,7 @@ class AcademyTestsTestTrainingAssignment(models.Model):
         for record in self:
             record.attempt_count = len(record.attempt_ids)
 
-    student_ids = fields.Many2manyThroughView(
+    student_ids = fields.Many2manyView(
         string='Students',
         required=False,
         readonly=True,
@@ -288,7 +284,6 @@ class AcademyTestsTestTrainingAssignment(models.Model):
         domain=[],
         context={},
         limit=None,
-        sql=ACADEMY_TESTS_TEST_TRAINING_ASSIGNMENT_STUDENT_REL
     )
 
     student_count = fields.Integer(
@@ -316,6 +311,115 @@ class AcademyTestsTestTrainingAssignment(models.Model):
         auto_join=False,
         store=False,
         compute='_compute_secondary_activity_id'
+    )
+
+    # NEW: this field was added after migration
+    training_ref = fields.Reference(
+        string='Training',
+        required=True,
+        readonly=False,
+        index=True,
+        default=0,
+        help='Training element: Enrolment, Action, Activity,...',
+        selection=[
+            ('academy.training.action.enrolment', 'Enrolment'),
+            ('academy.training.action', 'Training action'),
+            ('academy.training.activity', 'Training activity'),
+            ('academy.competency.unit', 'Competency unit'),
+            ('academy.training.module', 'Training module')
+        ]
+    )
+
+    # NEW: this field was added after migration
+    training_type = fields.Selection(
+        string='Training type',
+        required=True,
+        readonly=False,
+        index=True,
+        default=False,
+        help='Type of training: Enrolment, Action, Activity,...',
+        selection=[
+            ('academy.training.action.enrolment', 'Enrolment'),
+            ('academy.training.action', 'Training action'),
+            ('academy.training.activity', 'Training activity'),
+            ('academy.competency.unit', 'Competency unit'),
+            ('academy.training.module', 'Training module')
+        ]
+    )
+
+    # NEW: this field was added after migration
+    enrolment_id = fields.Many2one(
+        string='Enrolment',
+        required=False,
+        readonly=True,
+        index=True,
+        default=None,
+        help=False,
+        comodel_name='academy.training.action.enrolment',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False
+    )
+
+    # NEW: this field was added after migration
+    training_action_id = fields.Many2one(
+        string='Training action',
+        required=False,
+        readonly=True,
+        index=True,
+        default=None,
+        help=False,
+        comodel_name='academy.training.action',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False
+    )
+
+    # NEW: this field was added after migration
+    training_activity_id = fields.Many2one(
+        string='Training activity',
+        required=False,
+        readonly=True,
+        index=True,
+        default=None,
+        help=False,
+        comodel_name='academy.training.activity',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False
+    )
+
+    # NEW: this field was added after migration
+    competency_unit_id = fields.Many2one(
+        string='Competency unit',
+        required=False,
+        readonly=True,
+        index=True,
+        default=None,
+        help=False,
+        comodel_name='academy.competency.unit',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False
+    )
+
+    # NEW: this field was added after migration
+    training_module_id = fields.Many2one(
+        string='Training module',
+        required=False,
+        readonly=True,
+        index=True,
+        default=None,
+        help=False,
+        comodel_name='academy.training.module',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False
     )
 
     @api.depends('training_ref')

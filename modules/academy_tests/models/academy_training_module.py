@@ -7,21 +7,11 @@ This module extends the academy.training.module Odoo model
 from odoo import models, fields, api
 from odoo.tools.translate import _
 
-from .utils.sql_m2m_through_view import INHERITED_TOPICS_REL
-from .utils.sql_m2m_through_view import INHERITED_CATEGORIES_REL
-from .utils.sql_m2m_through_view import \
-    PARTIAL_ACADEMY_TESTS_QUESTION_TRAINING_MODULE
-from .utils.sql_m2m_through_view import \
-    ACADEMY_TESTS_QUESTION_TRAINING_MODULE_REL
-
 from logging import getLogger
 from datetime import datetime
 import re
 
 _logger = getLogger(__name__)
-
-AVAILABLE_QUESTIONS = ACADEMY_TESTS_QUESTION_TRAINING_MODULE_REL.format(
-    PARTIAL_ACADEMY_TESTS_QUESTION_TRAINING_MODULE)
 
 
 class AcademyTrainingModule(models.Model):
@@ -113,7 +103,7 @@ class AcademyTrainingModule(models.Model):
         limit=None,
     )
 
-    available_topic_ids = fields.Many2manyThroughView(
+    available_topic_ids = fields.Many2manyView(
         string='Available topics',
         required=False,
         readonly=True,
@@ -126,11 +116,10 @@ class AcademyTrainingModule(models.Model):
         column2='test_topic_id',
         domain=[],
         context={},
-        limit=None,
-        sql=INHERITED_TOPICS_REL
+        limit=None
     )
 
-    available_categories_ids = fields.Many2manyThroughView(
+    available_categories_ids = fields.Many2manyView(
         string='Available categories',
         required=False,
         readonly=True,
@@ -143,11 +132,10 @@ class AcademyTrainingModule(models.Model):
         column2='test_category_id',
         domain=[],
         context={},
-        limit=None,
-        sql=INHERITED_CATEGORIES_REL
+        limit=None
     )
 
-    available_question_ids = fields.Many2manyThroughView(
+    available_question_ids = fields.Many2manyView(
         string='Available questions',
         required=False,
         readonly=True,
@@ -160,8 +148,7 @@ class AcademyTrainingModule(models.Model):
         column2='question_id',
         domain=[],
         context={},
-        limit=None,
-        sql=AVAILABLE_QUESTIONS
+        limit=None
     )
 
     @staticmethod
@@ -278,3 +265,44 @@ class AcademyTrainingModule(models.Model):
 
         if not no_open and template:
             return self._template_act_window(template)
+
+    def view_test_templates(self):
+        pass
+
+    def view_test_assignments(self):
+        pass
+
+    def new_assignment_to_test(self):
+        pass
+
+    available_template_count = fields.Integer(
+        string='Available template count',
+        required=False,
+        readonly=False,
+        index=False,
+        default=0,
+        help=False
+    )
+
+    available_assignment_count = fields.Integer(
+        string='Available assignment count',
+        required=False,
+        readonly=False,
+        index=False,
+        default=0,
+        help=False
+    )
+
+    random_template_id = fields.Many2one(
+        string='Random template',
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help=False,
+        comodel_name='academy.tests.random.template',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False
+    )

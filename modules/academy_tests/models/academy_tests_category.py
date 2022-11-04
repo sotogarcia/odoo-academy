@@ -206,7 +206,7 @@ class AcademyTestsCategory(models.Model):
         default=None,
         help='List all training modules that use this topic',
         comodel_name='academy.training.module',
-        relation='academy_training_module_test_category_rel',
+        relation='academy_computed_training_module_test_category_rel',
         column1='test_category_id',
         column2='training_module_id',
         domain=[],

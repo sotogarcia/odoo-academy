@@ -124,7 +124,6 @@ class AcademyTrainingModule(models.Model):
         domain=[],
         context={},
         limit=None
-        # sql= academy_training_module_rel model wil be used
     )
 
     module_code = fields.Char(

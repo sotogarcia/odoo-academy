@@ -24,7 +24,7 @@ class AcademyTestsTag(models.Model):
     _order = 'name ASC'
 
     _inherit = [
-        'academy.abstract.owner'
+        'ownership.mixin'
     ]
 
     name = fields.Char(

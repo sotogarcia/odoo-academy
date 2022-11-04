@@ -31,7 +31,7 @@ class AcademyTestsTopic(models.Model):
     _order = 'name ASC'
 
     _inherit = [
-        'academy.abstract.owner',
+        'ownership.mixin',
         'mail.thread',
         'mail.activity.mixin'
     ]
@@ -238,7 +238,7 @@ class AcademyTestsTopic(models.Model):
         default=None,
         help='List all training modules that use this topic',
         comodel_name='academy.training.module',
-        relation='academy_training_module_test_topic_rel',
+        relation='academy_computed_training_module_test_topic_rel',
         column1='test_topic_id',
         column2='training_module_id',
         domain=[],

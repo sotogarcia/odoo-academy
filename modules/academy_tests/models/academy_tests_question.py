@@ -25,11 +25,6 @@ from .utils.sql_operations import ACADEMY_QUESTION_ENSURE_CHECKSUMS
 from .utils.sql_operations import FIND_MOST_USED_QUESTION_FIELD_VALUE_FOR_SQL
 from .utils.sql_operations import FIND_MOST_USED_QUESTION_CATEGORY_VALUE_SQL
 
-from .utils.sql_m2m_through_view import ACADEMY_TESTS_QUESTION_DEPENDENCY_REL
-from .utils.sql_m2m_through_view import ACADEMY_TESTS_QUESTION_DUPLICATED_REL
-from .utils.sql_m2m_through_view import \
-    ACADEMY_TESTS_TOPIC_TRAINING_MODULE_LINK_QUESTION_REL
-
 from .utils.sql_inverse_searches import ANSWER_COUNT_SEARCH
 from .utils.sql_inverse_searches import UNCATEGORIZED_QUESTION_SEARCH
 
@@ -65,7 +60,7 @@ class AcademyTestsQuestion(models.Model):
     _order = 'write_date DESC, create_date DESC'
 
     _inherit = [
-        'academy.abstract.owner',
+        'ownership.mixin',
         'mail.thread',
         'mail.activity.mixin'
     ]
@@ -349,7 +344,7 @@ class AcademyTestsQuestion(models.Model):
         auto_join=False
     )
 
-    depends_on_ids = fields.Many2manyThroughView(
+    depends_on_ids = fields.Many2manyView(
         string='Depends on',
         required=False,
         readonly=True,
@@ -363,10 +358,9 @@ class AcademyTestsQuestion(models.Model):
         domain=[],
         context={},
         limit=None,
-        sql=ACADEMY_TESTS_QUESTION_DEPENDENCY_REL
     )
 
-    dependent_ids = fields.Many2manyThroughView(
+    dependent_ids = fields.Many2manyView(
         string='Dependents',
         required=False,
         readonly=True,
@@ -380,10 +374,9 @@ class AcademyTestsQuestion(models.Model):
         domain=[],
         context={},
         limit=None,
-        sql=ACADEMY_TESTS_QUESTION_DEPENDENCY_REL
     )
 
-    duplicated_ids = fields.Many2manyThroughView(
+    duplicated_ids = fields.Many2manyView(
         string='Duplicates',
         required=False,
         readonly=True,
@@ -397,12 +390,11 @@ class AcademyTestsQuestion(models.Model):
         domain=[],
         context={},
         limit=None,
-        sql=ACADEMY_TESTS_QUESTION_DUPLICATED_REL
     )
 
     # This field can have a maximum of one record. It's used in some domains
     # to check if question is not the original.
-    original_ids = fields.Many2manyThroughView(
+    original_ids = fields.Many2manyView(
         string='Original',
         required=False,
         readonly=True,
@@ -416,7 +408,6 @@ class AcademyTestsQuestion(models.Model):
         domain=[],
         context={},
         limit=None,
-        sql=ACADEMY_TESTS_QUESTION_DUPLICATED_REL
     )
 
     color = fields.Integer(
@@ -430,7 +421,7 @@ class AcademyTestsQuestion(models.Model):
         compute='_compute_color'
     )
 
-    topic_module_link_ids = fields.Many2manyThroughView(
+    topic_module_link_ids = fields.Many2manyView(
         string='Links module-topic',
         required=False,
         readonly=True,
@@ -444,7 +435,6 @@ class AcademyTestsQuestion(models.Model):
         domain=[],
         context={},
         limit=None,
-        sql=ACADEMY_TESTS_TOPIC_TRAINING_MODULE_LINK_QUESTION_REL
     )
 
     def _compute_color(self):

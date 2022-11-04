@@ -138,7 +138,7 @@ class AcademyAbstractAttempt(models.AbstractModel):
     )
 
     # This must be a Many2manyThroughView because middle relation is a VIEW
-    attempt_final_answer_ids = fields.Many2manyThroughView(
+    attempt_final_answer_ids = fields.Many2manyView(
         string='Final answers',
         required=False,
         readonly=True,

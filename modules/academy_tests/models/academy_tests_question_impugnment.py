@@ -29,7 +29,7 @@ class AcademyTestsQuestionImpugnment(models.Model):
     _description = u'Academy tests, question impugnment'
 
     _inherit = [
-        'academy.abstract.owner',
+        'ownership.mixin',
         'mail.thread',
         'mail.activity.mixin'
     ]

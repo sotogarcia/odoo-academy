@@ -51,54 +51,7 @@ ACADEMY_TESTS_TOPIC_TRAINING_MODULE_LINK_QUESTION_REL = '''
 '''
 
 
-# Many2manyThroughView:
-# - academy_tests.field_academy_tests_question__dependent_ids
-# - academy_tests.field_academy_tests_test_question_rel__dependent_ids
-# Raw sentence used to create new model based on SQL VIEW
-# Complex recursive SQL allows to quick navigate in question dependecy tree
-# -----------------------------------------------------------------------------
-ACADEMY_TESTS_QUESTION_DEPENDENCY_REL = '''
-    WITH RECURSIVE questions AS (
-        SELECT
-            "id",
-            depends_on_id,
-            ARRAY[]::INT[] AS depends_on_ids,
-            1::INT AS "sequence",
-            ARRAY[1]::INT[] AS "sequences"
-        FROM academy_tests_question
-        WHERE "depends_on_id" IS NULL
 
-        UNION ALL
-
-        SELECT
-            atq."id",
-            atq."depends_on_id",
-            array_append(
-                depends_on_ids, atq."depends_on_id") AS depends_on_ids,
-            "sequence"+1 AS "sequence",
-            array_append(sequences, "sequence" + 1)
-        FROM  academy_tests_question AS atq
-        INNER JOIN questions
-            ON atq."depends_on_id" = questions."id"
-    ),
-
-    unpacked AS (
-        SELECT
-            "id" AS question_id,
-            unnest(depends_on_ids) AS depends_on_id,
-                    unnest(sequences) AS "sequence"
-        FROM questions
-    )
-    SELECT DISTINCT
-        unpacked.question_id,
-        unpacked.depends_on_id
-    FROM
-        unpacked
-    INNER JOIN academy_tests_question AS atq
-        ON atq."id" = question_id
-    WHERE
-        unpacked."depends_on_id" IS NOT NULL
-'''
 
 
 # Many2manyThroughView:
@@ -132,7 +85,7 @@ INHERITED_TOPICS_REL = '''
         tree."requested_module_id" as training_module_id,
         link."topic_id" as test_topic_id
     FROM
-        academy_training_module_tree_readonly AS tree
+        academy_training_module_rel AS tree
     INNER JOIN academy_tests_topic_training_module_link AS link
         ON tree."responded_module_id" = link."training_module_id"
 '''
@@ -143,7 +96,7 @@ ACADEMY_COMPETENCY_UNIT_TEST_TOPIC_REL = '''
         acu."id" as competency_unit_id,
         link."topic_id" AS test_topic_id
     FROM
-        academy_training_module_tree_readonly AS tree
+        academy_training_module_rel AS tree
     INNER JOIN academy_tests_topic_training_module_link AS link
         ON tree."responded_module_id" = link."training_module_id"
     INNER JOIN academy_competency_unit AS acu
@@ -155,7 +108,7 @@ ACADEMY_TRAINING_ACTIVITY_TEST_TOPIC_REL = '''
         atc."id" as training_activity_id,
         link."topic_id" AS test_topic_id
     FROM
-        academy_training_module_tree_readonly AS tree
+        academy_training_module_rel AS tree
     INNER JOIN academy_tests_topic_training_module_link AS link
         ON tree."responded_module_id" = link."training_module_id"
     INNER JOIN academy_competency_unit AS acu
@@ -176,7 +129,7 @@ INHERITED_CATEGORIES_REL = '''
             link."topic_id",
             link_rel."category_id"
         FROM
-            academy_training_module_tree_readonly AS tree
+            academy_training_module_rel AS tree
         INNER JOIN academy_tests_topic_training_module_link AS link
             ON tree."responded_module_id" = link."training_module_id"
         LEFT JOIN academy_tests_category_tests_topic_training_module_link_rel
@@ -226,7 +179,7 @@ ACADEMY_COMPETENCY_UNIT_TEST_CATEGORY_REL = '''
             link."topic_id",
             link_rel."category_id"
         FROM
-            academy_training_module_tree_readonly AS tree
+            academy_training_module_rel AS tree
         INNER JOIN academy_tests_topic_training_module_link AS link
             ON tree."responded_module_id" = link."training_module_id"
         LEFT JOIN academy_tests_category_tests_topic_training_module_link_rel
@@ -278,7 +231,7 @@ ACADEMY_TRAINING_ACTIVITY_TEST_CATEGORY_REL = '''
             link."topic_id",
             link_rel."category_id"
         FROM
-            academy_training_module_tree_readonly AS tree
+            academy_training_module_rel AS tree
         INNER JOIN academy_tests_topic_training_module_link AS link
             ON tree."responded_module_id" = link."training_module_id"
         LEFT JOIN academy_tests_category_tests_topic_training_module_link_rel
@@ -346,7 +299,7 @@ PARTIAL_ACADEMY_TESTS_QUESTION_TRAINING_MODULE = '''
             INNER JOIN
             academy_tests_category_tests_topic_training_module_link_rel AS rel
                 ON rel.tests_topic_training_module_link_id = link."id"
-            INNER JOIN academy_training_module_tree_readonly AS tree
+            INNER JOIN academy_training_module_rel AS tree
                 ON responded_module_id = link.training_module_id
     ), question_data AS (
         -- Topic, version and category by question
@@ -565,7 +518,7 @@ ACADEMY_TESTS_TEST_TRAINING_ASSIGNMENT_STUDENT_REL = '''
             tae.student_id
         FROM
             academy_tests_test_training_assignment AS tta
-        INNER JOIN academy_training_module_tree_readonly AS tree
+        INNER JOIN academy_training_module_rel AS tree
             ON tree.requested_module_id = tta."training_module_id"
         INNER JOIN academy_training_module AS atm
             ON atm."id" = tree.responded_module_id
@@ -664,7 +617,7 @@ ACADEMY_TRAINING_AVAILABLE_ITEMS_REL = '''
                 ON rel.action_enrolment_id = tae."id"
             INNER JOIN academy_competency_unit AS acu
                 ON acu."id" = rel.competency_unit_id
-            INNER JOIN academy_training_module_tree_readonly AS tree
+            INNER JOIN academy_training_module_rel AS tree
                 ON tree.requested_module_id = acu.training_module_id
             INNER JOIN academy_training_module AS atm
                 ON atm."id" = tree.responded_module_id

@@ -7,7 +7,7 @@ ACADEMY_TESTS_TEST_TRAINING_MODULE_HELPER = '''
             tree.responded_module_id,
             link.topic_id,
             link_rel.category_id
-        FROM academy_training_module_tree_readonly tree
+        FROM academy_training_module_rel tree
         JOIN academy_tests_topic_training_module_link link
             ON tree.responded_module_id = link.training_module_id
         LEFT JOIN

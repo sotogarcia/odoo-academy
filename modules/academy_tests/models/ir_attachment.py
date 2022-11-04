@@ -13,14 +13,14 @@ _logger = getLogger(__name__)
 
 class IrAttachment(models.Model):
     """ Appends owner_id field. This do not inherit from abstract model
-    'academy.abstract.owner' because field value cant not be required or
+    'ownership.mixin' because field value cant not be required or
     Odoo breaks with some other model operations.
     """
 
     _name = 'ir.attachment'
     _inherit = [
         'ir.attachment',
-        'academy.abstract.owner'
+        'ownership.mixin'
     ]
 
     owner_id = fields.Many2one(

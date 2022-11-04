@@ -28,8 +28,7 @@ from .utils.sql_operations import ACADEMY_TESTS_SHUFFLE
 from .utils.sql_operations import ACADEMY_TESTS_ARRANGE_BLOCKS
 from .utils.sql_inverse_searches import QUESTION_COUNT_SEARCH
 from .utils.sql_inverse_searches import SEARCH_TEST_ATTEMPT_COUNT
-from .utils.sql_m2m_through_view import ACADEMY_TESTS_TEST_TOPIC_IDS_SQL
-from .utils.sql_m2m_through_view import ACADEMY_TESTS_TEST_TEST_BLOCK_REL
+
 from .utils.libuseful import prepare_text, fix_established, is_numeric, \
     eval_domain
 
@@ -48,7 +47,7 @@ class AcademyTestsTest(models.Model):
     _order = 'write_date DESC, create_date DESC'
 
     _inherit = [
-        'academy.abstract.owner',
+        'ownership.mixin',
         'image.mixin',
         'mail.thread',
         'mail.activity.mixin'
@@ -255,7 +254,7 @@ class AcademyTestsTest(models.Model):
         tracking=True,
     )
 
-    test_block_ids = fields.Many2manyThroughView(
+    test_block_ids = fields.Many2manyView(
         string='Test blocks',
         required=False,
         readonly=True,
@@ -269,7 +268,6 @@ class AcademyTestsTest(models.Model):
         domain=[],
         context={},
         limit=None,
-        sql=ACADEMY_TESTS_TEST_TEST_BLOCK_REL
     )
 
     auto_arrange_blocks = fields.Boolean(
@@ -380,7 +378,7 @@ class AcademyTestsTest(models.Model):
 
         return [('id', 'in', ids)]
 
-    topic_ids = fields.Many2manyThroughView(
+    topic_ids = fields.Many2manyView(
         string='Topics',
         required=False,
         readonly=True,
@@ -394,7 +392,6 @@ class AcademyTestsTest(models.Model):
         domain=[],
         context={},
         limit=None,
-        sql=ACADEMY_TESTS_TEST_TOPIC_IDS_SQL
     )
 
     topic_count = fields.Integer(

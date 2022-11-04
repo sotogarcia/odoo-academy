@@ -20,8 +20,9 @@
     'depends': [
         'mail',
         'web',
-        'academy_base',
-        'ks_percent_field'
+        'base_field_m2m_view',
+        'ks_percent_field',
+        'academy_base'
     ],
 
     # always loaded
@@ -85,6 +86,19 @@
         'security/academy_tests_remove_duplicate_questions_wizard.xml',
         'security/academy_tests_update_questions_wizard.xml',
         'security/academy_tests_new_topic_version_wizard.xml',
+
+        'security/academy_tests_question_dependency_rel.xml',
+        'security/academy_tests_question_duplicated_rel.xml',
+        'security/academy_tests_topic_training_module_link_question_rel.xml',
+        'security/academy_tests_test_test_block_rel.xml',
+        'security/academy_tests_test_training_assignment_student_rel.xml',
+        'security/academy_tests_question_training_activity_rel.xml',
+        'security/academy_training_module_test_topic_rel.xml',
+        'security/academy_training_module_test_category_rel.xml',
+        'security/academy_tests_question_training_module_rel.xml',
+        'security/academy_res_users_duplicated_questions_rel.xml',
+        'security/academy_tests_test_topic_rel.xml',
+        'security/academy_training_action_enrolment_available_assignment_rel.xml',
 
         # This must be before academy_tests_tets_view.xml
         'report/academy_test_report.xml',

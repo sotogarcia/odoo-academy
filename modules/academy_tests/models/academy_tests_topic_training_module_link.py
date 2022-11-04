@@ -8,9 +8,6 @@ Odoo model which stores all needed attributes and behavior.
 from odoo import models, fields, api
 from odoo.tools.translate import _
 
-from .utils.sql_m2m_through_view import \
-    ACADEMY_TESTS_TOPIC_TRAINING_MODULE_LINK_QUESTION_REL
-
 from logging import getLogger
 
 _logger = getLogger(__name__)
@@ -108,7 +105,7 @@ class AcademyTestsTopicTrainingModuleLink(models.Model):
         compute=lambda self: self.compute_category_count()
     )
 
-    question_ids = fields.Many2manyThroughView(
+    question_ids = fields.Many2manyView(
         string='Questions',
         required=False,
         readonly=True,
@@ -122,7 +119,6 @@ class AcademyTestsTopicTrainingModuleLink(models.Model):
         domain=[],
         context={},
         limit=None,
-        sql=ACADEMY_TESTS_TOPIC_TRAINING_MODULE_LINK_QUESTION_REL
     )
 
     question_count = fields.Integer(

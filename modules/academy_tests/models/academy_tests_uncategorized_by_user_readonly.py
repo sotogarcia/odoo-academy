@@ -23,6 +23,8 @@ class AcademyTestsUncategorizedByUserReadonly(models.Model):
     _rec_name = 'owner_id'
     _order = 'owner_id ASC'
 
+    _auto = False
+
     _inherit = []
 
     owner_id = fields.Many2one(

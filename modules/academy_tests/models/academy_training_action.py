@@ -129,3 +129,44 @@ class AcademyTrainingAction(models.Model):
             'domain': [('assignment_id', 'in', assignment_ids)],
             'context': irf.context
         }
+
+    def view_test_templates(self):
+        pass
+
+    def view_test_assignments(self):
+        pass
+
+    def new_assignment_to_test(self):
+        pass
+
+    available_template_count = fields.Integer(
+        string='Available template count',
+        required=False,
+        readonly=False,
+        index=False,
+        default=0,
+        help=False
+    )
+
+    available_assignment_count = fields.Integer(
+        string='Available assignment count',
+        required=False,
+        readonly=False,
+        index=False,
+        default=0,
+        help=False
+    )
+
+    random_template_id = fields.Many2one(
+        string='Random template',
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help=False,
+        comodel_name='academy.tests.random.template',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False
+    )

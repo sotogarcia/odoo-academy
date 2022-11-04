@@ -8,9 +8,6 @@ from odoo import models, fields, api
 from odoo.tools.translate import _
 from logging import getLogger
 
-from odoo.addons.academy_base.models.academy_abstract_training_reference \
-    import MAPPING_TRAINING_REFERENCES
-
 _logger = getLogger(__name__)
 
 
@@ -37,6 +34,7 @@ class AcademyTestsRandomTemplateTypeWizard(models.TransientModel):
             ('extended', 'Extended')]
     )
 
+    # NEW: This field already been updated
     training_ref = fields.Reference(
         string='Training',
         required=False,
@@ -44,7 +42,13 @@ class AcademyTestsRandomTemplateTypeWizard(models.TransientModel):
         index=True,
         default=lambda self: self._default_training_ref(),
         help='Choose training item to which the test will be assigned',
-        selection=MAPPING_TRAINING_REFERENCES
+        selection=[
+            ('academy.training.action.enrolment', 'Enrolment'),
+            ('academy.training.action', 'Training action'),
+            ('academy.training.activity', 'Training activity'),
+            ('academy.competency.unit', 'Competency unit'),
+            ('academy.training.module', 'Training module')
+        ]
     )
 
     supplementary = fields.Integer(

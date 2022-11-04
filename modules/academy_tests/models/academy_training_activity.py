@@ -5,19 +5,11 @@ This module extends the academy.training.activity Odoo model
 """
 
 from odoo import models, fields, api
-
-from .utils.sql_m2m_through_view import \
-    PARTIAL_ACADEMY_TESTS_QUESTION_TRAINING_MODULE
-from .utils.sql_m2m_through_view import \
-    ACADEMY_TESTS_QUESTION_TRAINING_ACTIVITY_REL
-
 from odoo.tools.translate import _
+
 from logging import getLogger
 
 _logger = getLogger(__name__)
-
-AVAILABLE_QUESTIONS = ACADEMY_TESTS_QUESTION_TRAINING_ACTIVITY_REL.format(
-    PARTIAL_ACADEMY_TESTS_QUESTION_TRAINING_MODULE)
 
 
 class AcademyTrainingActivity(models.Model):
@@ -119,7 +111,7 @@ class AcademyTrainingActivity(models.Model):
         for record in self:
             record.template_count = len(record.template_ids)
 
-    available_question_ids = fields.Many2manyThroughView(
+    available_question_ids = fields.Many2manyView(
         string='Available questions',
         required=False,
         readonly=True,
@@ -132,8 +124,7 @@ class AcademyTrainingActivity(models.Model):
         column2='question_id',
         domain=[],
         context={},
-        limit=None,
-        sql=AVAILABLE_QUESTIONS
+        limit=None
     )
 
     def create_test_template(self, no_open=False):
@@ -147,3 +138,44 @@ class AcademyTrainingActivity(models.Model):
 
         if not no_open and template:
             return module_obj._template_act_window(template)
+
+    def view_test_templates(self):
+        pass
+
+    def view_test_assignments(self):
+        pass
+
+    def new_assignment_to_test(self):
+        pass
+
+    available_template_count = fields.Integer(
+        string='Available template count',
+        required=False,
+        readonly=False,
+        index=False,
+        default=0,
+        help=False
+    )
+
+    available_assignment_count = fields.Integer(
+        string='Available assignment count',
+        required=False,
+        readonly=False,
+        index=False,
+        default=0,
+        help=False
+    )
+
+    random_template_id = fields.Many2one(
+        string='Random template',
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help=False,
+        comodel_name='academy.tests.random.template',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False
+    )

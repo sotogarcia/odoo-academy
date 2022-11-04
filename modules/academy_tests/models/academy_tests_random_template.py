@@ -10,11 +10,8 @@ from odoo import models, fields, api
 from odoo.tools.translate import _
 from odoo.exceptions import UserError
 from odoo.osv.expression import AND
-from odoo.osv.expression import TRUE_DOMAIN
 
 from .utils.libuseful import eval_domain
-from odoo.addons.academy_base.models.academy_abstract_training \
-    import AcademyAbstractTraining
 
 from enum import IntFlag
 from datetime import datetime
@@ -40,8 +37,7 @@ class AcademyTestsRandomTemplate(models.Model):
     _description = u'Academy Tests Random Template'
 
     _inherit = [
-        'academy.abstract.training.reference',
-        'academy.abstract.owner',
+        'ownership.mixin',
         'image.mixin',
         'mail.thread',
         'mail.activity.mixin'
@@ -310,6 +306,115 @@ class AcademyTestsRandomTemplate(models.Model):
         index=False,
         default=True,
         help='Check it to self assign template to new created test',
+    )
+
+    # NEW: this field was added after migration
+    training_ref = fields.Reference(
+        string='Training',
+        required=True,
+        readonly=False,
+        index=True,
+        default=0,
+        help='Training element: Enrolment, Action, Activity,...',
+        selection=[
+            ('academy.training.action.enrolment', 'Enrolment'),
+            ('academy.training.action', 'Training action'),
+            ('academy.training.activity', 'Training activity'),
+            ('academy.competency.unit', 'Competency unit'),
+            ('academy.training.module', 'Training module')
+        ]
+    )
+
+    # NEW: this field was added after migration
+    training_type = fields.Selection(
+        string='Training type',
+        required=True,
+        readonly=False,
+        index=True,
+        default=False,
+        help='Type of training: Enrolment, Action, Activity,...',
+        selection=[
+            ('academy.training.action.enrolment', 'Enrolment'),
+            ('academy.training.action', 'Training action'),
+            ('academy.training.activity', 'Training activity'),
+            ('academy.competency.unit', 'Competency unit'),
+            ('academy.training.module', 'Training module')
+        ]
+    )
+
+    # NEW: this field was added after migration
+    enrolment_id = fields.Many2one(
+        string='Enrolment',
+        required=False,
+        readonly=True,
+        index=True,
+        default=None,
+        help='The enrolment to which the test will be assigned',
+        comodel_name='academy.training.action.enrolment',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False
+    )
+
+    # NEW: this field was added after migration
+    training_action_id = fields.Many2one(
+        string='Training action',
+        required=False,
+        readonly=True,
+        index=True,
+        default=None,
+        help='The training action to which the test will be assigned',
+        comodel_name='academy.training.action',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False
+    )
+
+    # NEW: this field was added after migration
+    training_activity_id = fields.Many2one(
+        string='Training activity',
+        required=False,
+        readonly=True,
+        index=True,
+        default=None,
+        help='The training activity to which the test will be assigned',
+        comodel_name='academy.training.activity',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False
+    )
+
+    # NEW: this field was added after migration
+    competency_unit_id = fields.Many2one(
+        string='Competency unit',
+        required=False,
+        readonly=True,
+        index=True,
+        default=None,
+        help='The competency unit to which the test will be assigned',
+        comodel_name='academy.competency.unit',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False
+    )
+
+    # NEW: this field was added after migration
+    training_module_id = fields.Many2one(
+        string='Training module',
+        required=False,
+        readonly=True,
+        index=True,
+        default=None,
+        help='The training module to which the test will be assigned',
+        comodel_name='academy.training.module',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False
     )
 
     # ----------------- AUXILIARY FIELDS METHODS AND EVENTS -------------------

@@ -121,11 +121,12 @@ class AcademyCompetencyUnit(models.Model):
               'total number of related questions available in database')
     )
 
-    @api.depends('number_of_questions', 'available_question_count')
+    # TODO: available_question_count it's not defined
+    @api.depends('number_of_questions')
     def _compute_questions_ratio(self):
         for record in self:
             req = record.number_of_questions
-            av = record.available_question_count
+            av = 0  # av = record.available_question_count
             record.questions_ratio = '{} / {}'.format(req, av)
 
     def create_test_template(self, no_open=False):
@@ -145,3 +146,44 @@ class AcademyCompetencyUnit(models.Model):
 
         for record in self:
             mail_template.send_mail(record.id)
+
+    def view_test_templates(self):
+        pass
+
+    def view_test_assignments(self):
+        pass
+
+    def new_assignment_to_test(self):
+        pass
+
+    available_template_count = fields.Integer(
+        string='Available template count',
+        required=False,
+        readonly=False,
+        index=False,
+        default=0,
+        help=False
+    )
+
+    available_assignment_count = fields.Integer(
+        string='Available assignment count',
+        required=False,
+        readonly=False,
+        index=False,
+        default=0,
+        help=False
+    )
+
+    random_template_id = fields.Many2one(
+        string='Random template',
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help=False,
+        comodel_name='academy.tests.random.template',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False
+    )

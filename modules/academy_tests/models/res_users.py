@@ -5,10 +5,8 @@
 ###############################################################################
 
 from odoo import models, fields, api
-from odoo.tools.translate import _
+
 from logging import getLogger
-from .utils.sql_m2m_through_view \
-    import ACADEMY_TESTS_QUESTION_DUPLICATED_BY_OWNER_REL
 
 _logger = getLogger(__name__)
 
@@ -39,7 +37,7 @@ class ResUsers(models.Model):
         limit=None
     )
 
-    duplicate_question_ids = fields.Many2manyThroughView(
+    duplicate_question_ids = fields.Many2manyView(
         string='Duplicate questions',
         required=False,
         readonly=True,
@@ -52,8 +50,7 @@ class ResUsers(models.Model):
         column2='duplicate_id',
         domain=[],
         context={},
-        limit=None,
-        sql=ACADEMY_TESTS_QUESTION_DUPLICATED_BY_OWNER_REL
+        limit=None
     )
 
     duplicate_question_count = fields.Integer(

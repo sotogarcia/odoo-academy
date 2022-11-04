@@ -7,8 +7,7 @@ This module extends the academy.training.action.enrolment Odoo model
 from odoo import models, fields, api
 from odoo.tools.translate import _
 from logging import getLogger
-from .utils.sql_m2m_through_view import \
-    ACADEMY_TRAINING_AVAILABLE_ITEMS_REL
+
 
 _logger = getLogger(__name__)
 
@@ -86,7 +85,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         for record in self:
             record.template_count = len(record.template_ids)
 
-    available_assignment_ids = fields.Many2manyThroughView(
+    available_assignment_ids = fields.Many2manyView(
         string='Available assignments',
         required=False,
         readonly=True,
@@ -99,9 +98,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         domain=[],
         context={},
         limit=None,
-        store=True,
         help='List all available test assignments in this enrolment',
-        sql=lambda self: self.sql_available_assignment_ids()
     )
 
     available_assignment_count = fields.Integer(
@@ -132,13 +129,6 @@ class AcademyTrainingActionEnrolment(models.Model):
         related="student_id.attempt_count"
     )
 
-    def sql_available_assignment_ids(self):
-        query = ACADEMY_TRAINING_AVAILABLE_ITEMS_REL
-
-        related = 'academy_tests_test_training_assignment'
-
-        return query.format(related=related)
-
     def view_test_attempts(self):
         self.ensure_one()
 
@@ -157,6 +147,15 @@ class AcademyTrainingActionEnrolment(models.Model):
 
     # def view_test_assignments(self):
     #     self.ensure_one()
+    available_assignment_count = fields.Integer(
+        string='Available template count',
+        required=False,
+        readonly=False,
+        index=False,
+        default=0,
+        help=False
+    )
+
 
     #     path = 'available_assignment_ids.id'
     #     assignment_ids = self.mapped(path)
@@ -175,3 +174,44 @@ class AcademyTrainingActionEnrolment(models.Model):
     #             'create': False
     #         },
     #     }
+
+    def view_test_templates(self):
+        pass
+
+    def view_test_assignments(self):
+        pass
+
+    def new_assignment_to_test(self):
+        pass
+
+    available_template_count = fields.Integer(
+        string='Available template count',
+        required=False,
+        readonly=False,
+        index=False,
+        default=0,
+        help=False
+    )
+
+    available_assignment_count = fields.Integer(
+        string='Available assignment count',
+        required=False,
+        readonly=False,
+        index=False,
+        default=0,
+        help=False
+    )
+
+    random_template_id = fields.Many2one(
+        string='Random template',
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help=False,
+        comodel_name='academy.tests.random.template',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False
+    )

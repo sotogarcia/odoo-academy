@@ -33,7 +33,7 @@ class ChangeOwnerWizard(models.TransientModel):
     _rec_name = 'id'
     _order = 'id ASC'
 
-    _inherit = ['academy.abstract.owner']
+    _inherit = ['ownership.mixin']
 
     question_ids = fields.Many2many(
         string='Questions',
