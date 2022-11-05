@@ -12,7 +12,6 @@ _logger = getLogger(__name__)
 
 UTPL = 'academy_tests.mail_template_uncategorized_questions_by_user_and_topic'
 DTPL = 'academy_tests.mail_template_duplicated_questions_by_user_and_topic'
-ITPL = 'academy_tests.mail_template_you_have_impugnments'
 
 
 class ResUsers(models.Model):
@@ -116,25 +115,5 @@ class ResUsers(models.Model):
         manager_set = question_set.mapped('owner_id')
 
         for user_item in manager_set.sorted('name'):
-            _logger.info(msg, user_item.name)
-            mail_template.send_mail(user_item.id)
-
-    @api.model
-    def notify_impugnments(self):
-        msg = 'Sending mail to %s notifying impugnments'
-
-        impugnment_domain = [('state', 'in', ['open', 'reply'])]
-        impugnment_set = self.env['academy.tests.question.impugnment']
-        impugnment_set = impugnment_set.search(impugnment_domain)
-
-        owner_ids = impugnment_set.mapped('owner_id.id')
-        owner_ids = list(dict.fromkeys(owner_ids))
-
-        user_domain = [('id', 'in', owner_ids)]
-        user_set = self.env['res.users']
-        user_set = user_set.search(user_domain)
-
-        mail_template = self.env.ref(ITPL)
-        for user_item in user_set.sorted('name'):
             _logger.info(msg, user_item.name)
             mail_template.send_mail(user_item.id)

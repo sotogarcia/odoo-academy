@@ -282,9 +282,6 @@ class AcademyTestsTestQuestionRel(models.Model):
     def show_duplicates(self):
         return self.question_id.show_duplicates()
 
-    def show_impugnments(self):
-        return self.question_id.show_impugnments()
-
     def to_moodle(self, encoding='utf8', prettify=True, xml_declaration=True,
                   category=None):
         quiz = self.question_id._moodle_create_quiz(category=category)

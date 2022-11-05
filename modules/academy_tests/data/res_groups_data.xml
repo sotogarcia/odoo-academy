@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="module_category_academy_tests" model="ir.module.category">
+            <field name="name">Academy tests</field>
+            <field name="sequence" eval="10" />
+            <field name="visible" eval="True" />
+            <field name="description">Academy tests category</field>
+        </record>
+
+        <record id="academy_tests_group_teacher" model="res.groups">
+            <field name="name">Teacher</field>
+            <field name="comment">Users who can create new tests with existing questions</field>
+            <field name="category_id" ref="module_category_academy_tests"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="academy_tests_group_editor" model="res.groups">
+            <field name="name">Editor</field>
+            <field name="comment">Users who can create and edit their own questions</field>
+            <field name="category_id" ref="module_category_academy_tests"/>
+            <field name="implied_ids" eval="[(4, ref('academy_tests_group_teacher'))]"/>
+        </record>
+
+        <record id="academy_tests_group_technical" model="res.groups">
+            <field name="name">Technical</field>
+            <field name="comment">Users who can edit questions that are not their own</field>
+            <field name="category_id" ref="module_category_academy_tests"/>
+            <field name="implied_ids" eval="[(4, ref('academy_tests_group_editor'))]"/>
+        </record>
+
+        <record id="academy_tests_group_manager" model="res.groups">
+            <field name="name">Manager</field>
+            <field name="comment">Users who can create/edit information in all models</field>
+            <field name="category_id" ref="module_category_academy_tests"/>
+            <field name="implied_ids" eval="[(4, ref('academy_tests_group_technical'))]"/>
+            <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]" />
+        </record>
+
+    </data>
+</openerp>

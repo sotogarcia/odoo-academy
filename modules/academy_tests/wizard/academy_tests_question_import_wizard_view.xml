@@ -75,7 +75,7 @@
                         <separator colspan="4" />
 
                         <field name="owner_id" class="oe_field_owner_id"
-                            groups="academy_base.academy_group_technical"
+                            groups="academy_tests.academy_tests_group_technical"
                             options="{'no_create_edit': True, 'no_open': True}" />
 
                         <field name="authorship" class="oe_field_authorship" />

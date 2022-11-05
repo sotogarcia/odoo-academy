@@ -132,7 +132,7 @@
             <field name="sequence" eval="25" />
             <field name="action" ref="action_levels_act_window" />
             <field name="parent_id" ref="menu_test_settings_top" />
-            <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
+            <field name="groups_id" eval="[(4, ref('academy_tests.academy_tests_group_technical'))]"/>
         </record>
 
     </data>

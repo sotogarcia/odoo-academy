@@ -108,9 +108,6 @@
                 <search string="academy_topic_search">
                     <field name="name" />
                     <field name="description" />
-                    <field name="training_activity_ids" />
-                    <field name="competency_unit_ids" />
-                    <field name="training_module_ids" />
                     <field name="question_count" string="Questions" />
                     <field name="id" string="Topic ID" />
 
@@ -146,7 +143,7 @@
             <field name="sequence" eval="15" />
             <field name="action" ref="action_topics_act_window" />
             <field name="parent_id" ref="menu_test_advanced" />
-            <field name="groups_id" eval="[(4, ref('academy_base.academy_group_teacher')), (4, ref('academy_base.academy_group_technical'))]" />
+            <field name="groups_id" eval="[(4, ref('academy_tests.academy_tests_group_editor')), (4, ref('academy_tests.academy_tests_group_technical'))]" />
         </record>
 
         <!-- Main menu for model.name -->
@@ -155,7 +152,7 @@
             <field name="sequence" eval="15" />
             <field name="action" ref="action_topics_act_window" />
             <field name="parent_id" ref="menu_test_settings_top" />
-            <field name="groups_id" eval="[(4, ref('academy_base.academy_group_teacher')), (4, ref('academy_base.academy_group_technical'))]" />
+            <field name="groups_id" eval="[(4, ref('academy_tests.academy_tests_group_editor')), (4, ref('academy_tests.academy_tests_group_technical'))]" />
         </record>
 
     </data>

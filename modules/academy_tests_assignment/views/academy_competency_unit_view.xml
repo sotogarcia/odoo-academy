@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="view_academy_competency_unit_form_add_test_page" model="ir.ui.view">
+            <field name="name">Extend competency unit form view adding test topics</field>
+            <field name="model">academy.competency.unit</field>
+            <field name="type">form</field>
+            <field name="mode">extension</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="academy_base.view_academy_competency_unit_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//page[@id='setup']/*[last()]" position="after">
+                    <group col="4" string="Tests">
+                        <field name="random_template_id" class="oe_field_test_template_id" />
+                        <field name="number_of_questions" class="oe_field_number_of_questions" string="Nº questions" />
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Tree view for "academy.competency.unit" -->
+        <record id="view_academy_competency_unit_inline_edit_tree" model="ir.ui.view">
+            <field name="name">view.academy.competency.unit.inline.edit.tree</field>
+            <field name="model">academy.competency.unit</field>
+            <field name="type">tree</field>
+            <field name="mode">extension</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="academy_base.view_academy_competency_unit_inline_edit_tree" />
+            <field name="arch" type="xml">
+                <xpath expr="//tree/*[last()]" position="after">
+                    <field name="number_of_questions" class="oe_field_number_of_questions oe_edit_only" />
+                    <field name="questions_ratio" class="oe_field_questions_ratio oe_read_only text-center" />
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Tree view for "academy.competency.unit" -->
+        <record id="view_academy_competency_unit_list_only_tree" model="ir.ui.view">
+            <field name="name">view.academy.competency.unit.list.only.tree</field>
+            <field name="model">academy.competency.unit</field>
+            <field name="type">tree</field>
+            <field name="mode">extension</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="academy_base.view_academy_competency_unit_list_only_tree" />
+            <field name="arch" type="xml">
+                <xpath expr="//tree/*[last()]" position="after">
+                    <field name="number_of_questions" class="oe_field_number_of_questions oe_edit_only" />
+                    <field name="questions_ratio" class="oe_field_questions_ratio oe_read_only text-center" />
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Tree view for "academy.competency.unit" -->
+        <record id="view_academy_competency_unit_append_existing_tree" model="ir.ui.view">
+            <field name="name">view.academy.competency.unit.append.existing.tree</field>
+            <field name="model">academy.competency.unit</field>
+            <field name="type">tree</field>
+            <field name="mode">extension</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="academy_base.view_academy_competency_unit_append_existing_tree" />
+            <field name="arch" type="xml">
+                <xpath expr="//tree/*[last()]" position="after">
+                    <field name="number_of_questions" class="oe_field_number_of_questions oe_edit_only" />
+                    <field name="questions_ratio" class="oe_field_questions_ratio oe_read_only text-center" />
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>

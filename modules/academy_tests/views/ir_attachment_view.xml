@@ -30,7 +30,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//div[@name='creation_div']" position="after">
                     <field name="owner_id" class="oe_field_owner_id"
-                        groups="academy_base.academy_group_technical" />
+                        groups="academy_tests.academy_tests_group_technical" />
                 </xpath>
             </field>
         </record>
@@ -90,7 +90,7 @@
             <field name="sequence" eval="5" />
             <field name="action" ref="action_manage_attachments_act_window" />
             <field name="parent_id" ref="academy_tests.menu_test_top" />
-            <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical')), (4, ref('academy_base.academy_group_teacher'))]"/>
+            <field name="groups_id" eval="[(4, ref('academy_tests.academy_tests_group_technical')), (4, ref('academy_tests.academy_tests_group_editor'))]"/>
         </record>
 
     </data>

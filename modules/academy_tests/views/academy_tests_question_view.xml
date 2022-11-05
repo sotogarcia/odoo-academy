@@ -65,10 +65,6 @@
                                 attrs="{'invisible': [('duplicated_count', '=', 0)]}">
                                 <field name="duplicated_count" class="oe_field_duplicated_count" />&#160;Duplicates
                             </button>
-                            <button name="show_impugnments" type="object"
-                                class="oe_stat_button oe_read_only" icon="fa-exclamation">
-                                <field name="impugnment_count" class="oe_field_impugnment_count" />&#160;Discuss
-                            </button>
                             <button name="switch_status" type="object" attrs="{'invisible': [('status', '&lt;&gt;', 'ready')]}"
                                 class="oe_stat_button oe_read_only text-success" icon="fa-pencil-square-o">
                                 <field name="status" class="oe_field_status" />
@@ -159,7 +155,7 @@
 
                                     <field name="authorship" class="oe_field_authorship" />
                                     <field name="owner_id" class="oe_field_owner_id"
-                                        groups="academy_base.academy_group_technical"
+                                        groups="academy_tests.academy_tests_group_technical"
                                         options="{'no_create': True}" />
                                 </group>
                             </page>
@@ -446,7 +442,7 @@
             <field name="sequence" eval="15" />
             <field name="action" ref="action_questions_act_window" />
             <field name="parent_id" ref="academy_tests.menu_test_top" />
-            <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical')), (4, ref('academy_base.academy_group_teacher'))]"/>
+            <field name="groups_id" eval="[(4, ref('academy_tests.academy_tests_group_technical')), (4, ref('academy_tests.academy_tests_group_editor'))]"/>
         </record>
 
 

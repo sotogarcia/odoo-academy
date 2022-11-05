@@ -50,7 +50,8 @@ class AcademyTestsTest(models.Model):
         'ownership.mixin',
         'image.mixin',
         'mail.thread',
-        'mail.activity.mixin'
+        'mail.activity.mixin',
+        'academy.abstract.test'
     ]
 
     name = fields.Char(
@@ -96,16 +97,6 @@ class AcademyTestsTest(models.Model):
         translate=False
     )
 
-    preamble = fields.Text(
-        string='Preamble',
-        required=False,
-        readonly=False,
-        index=False,
-        default=lambda self: self.default_preamble(),
-        help='What it is said before beginning to test',
-        translate=True
-    )
-
     @api.model
     def default_preamble(self):
         return _('This exercise poses different questions, presenting a set '
@@ -142,69 +133,6 @@ class AcademyTestsTest(models.Model):
         limit=None,
     )
 
-    assignment_ids = fields.One2many(
-        string='Training assignments',
-        required=False,
-        readonly=False,
-        index=True,
-        default=None,
-        help='False',
-        comodel_name='academy.tests.test.training.assignment',
-        inverse_name='test_id',
-        domain=[],
-        context={},
-        auto_join=False,
-        limit=None
-    )
-
-    assignment_count = fields.Integer(
-        string='Nº assignments',
-        required=False,
-        readonly=True,
-        index=False,
-        default=0,
-        help='Show the number or training assignments for this test',
-        store=False,
-        compute='_compute_assignment_count'
-    )
-
-    @api.depends('assignment_ids')
-    def _compute_assignment_count(self):
-        for record in self:
-            record.assignment_count = \
-                len(record.assignment_ids)
-
-    random_template_id = fields.Many2one(
-        string='Template',
-        required=False,
-        readonly=True,
-        index=False,
-        default=None,
-        help='Template has been used to Populate this tests',
-        comodel_name='academy.tests.random.template',
-        domain=[],
-        context={},
-        ondelete='cascade',
-        auto_join=False
-    )
-
-    test_kind_id = fields.Many2one(
-        string='Kind of test',
-        required=True,
-        readonly=False,
-        index=False,
-        default=lambda self: self.default_test_kind_id(),
-        help='Choose the kind for this test',
-        comodel_name='academy.tests.test.kind',
-        domain=[],
-        context={},
-        ondelete='cascade',
-        auto_join=False
-    )
-
-    def default_test_kind_id(self):
-        return self.env.ref('academy_tests.academy_tests_test_kind_common')
-
     first_use_id = fields.Many2one(
         string='First use',
         required=False,
@@ -228,13 +156,20 @@ class AcademyTestsTest(models.Model):
         help='Check it to indicate that it is your own authorship'
     )
 
-    repeat_images = fields.Boolean(
-        string='Repeat images',
+    test_block_ids = fields.Many2manyView(
+        string='Test blocks',
         required=False,
-        readonly=False,
+        readonly=True,
         index=False,
-        default=False,
-        help='Repeat the image every time it is referred to in a question'
+        default=None,
+        help='List all blocks have been used in this tests',
+        comodel_name='academy.tests.test.block',
+        relation='academy_tests_test_test_block_rel',
+        column1='test_id',
+        column2='test_block_id',
+        domain=[],
+        context={},
+        limit=None,
     )
 
     tag_ids = fields.Many2many(
@@ -254,94 +189,7 @@ class AcademyTestsTest(models.Model):
         tracking=True,
     )
 
-    test_block_ids = fields.Many2manyView(
-        string='Test blocks',
-        required=False,
-        readonly=True,
-        index=False,
-        default=None,
-        help='List all blocks have been used in this tests',
-        comodel_name='academy.tests.test.block',
-        relation='academy_tests_test_test_block_rel',
-        column1='test_id',
-        column2='test_block_id',
-        domain=[],
-        context={},
-        limit=None,
-    )
-
-    auto_arrange_blocks = fields.Boolean(
-        string='Auto arrange blocks',
-        required=False,
-        readonly=False,
-        index=False,
-        default=True,
-        help='Check it to auto arrange questions in blocks'
-    )
-
-    restart_numbering = fields.Boolean(
-        string='Restart numbering',
-        required=False,
-        readonly=False,
-        index=False,
-        default=False,
-        help='Check it to restart numbering in each block'
-    )
-
-    block_starts_page = fields.Boolean(
-        string='Block starts a page',
-        required=False,
-        readonly=False,
-        index=False,
-        default=True,
-        help='Check it to do each block starts a new page'
-    )
-
     # -------------------------- MANAGEMENT FIELDS ----------------------------
-
-    attempt_count = fields.Integer(
-        string='Attempt count',
-        required=False,
-        readonly=True,
-        index=False,
-        default=0,
-        store=False,
-        help='Show number of test attempts',
-        compute='_compute_attempt_count',
-        search='_search_attempt_count'
-    )
-
-    @api.depends('attempt_ids')
-    def _compute_attempt_count(self):
-        for record in self:
-            record.attempt_count = len(record.attempt_ids)
-
-    def _search_attempt_count(self, operator, value):
-        domain = FALSE_DOMAIN
-        operator, value = self._ensure_search_attempt_count_(operator, value)
-        query = SEARCH_TEST_ATTEMPT_COUNT.format(operator, value)
-
-        self.env.cr.execute(query)
-        rows = self.env.cr.dictfetchall()
-
-        if rows:
-            test_ids = [row['test_id'] for row in rows]
-            domain = [('id', 'in', test_ids)]
-
-        return domain
-
-    @staticmethod
-    def _ensure_search_attempt_count_(operator, value):
-        if isinstance(value, bool):
-            if not operator == '=':
-                value = not value
-
-            if value:
-                operator = '>'
-
-            value = 0
-
-        return operator, value
 
     question_count = fields.Integer(
         string='Number of questions',
@@ -459,21 +307,6 @@ class AcademyTestsTest(models.Model):
         translate=False,
         compute='_compute_lang',
         store=False
-    )
-
-    attempt_ids = fields.One2many(
-        string='Attempts',
-        required=False,
-        readonly=False,
-        index=True,
-        default=None,
-        help='Related test attempts',
-        comodel_name='academy.tests.attempt',
-        inverse_name='test_id',
-        domain=[],
-        context={},
-        auto_join=False,
-        limit=None
     )
 
     # -------------------------- PYTHON CONSTRAINS ----------------------------
@@ -895,23 +728,6 @@ class AcademyTestsTest(models.Model):
 
         return ' '.join(classes)
 
-    def view_training_assignments(self):
-        self.ensure_one()
-
-        return {
-            'model': 'ir.actions.act_window',
-            'type': 'ir.actions.act_window',
-            'name': _('Training assignments'),
-            'res_model': 'academy.tests.test.training.assignment',
-            'target': 'current',
-            'view_mode': 'kanban,tree,form',
-            'domain': [('test_id', '=', self.id)],
-            'context': {
-                'name_get': 'training',
-                'default_test_id': self.id
-            }
-        }
-
     def new_from_template(self, gui=True):
         self.ensure_one()
 
@@ -924,18 +740,3 @@ class AcademyTestsTest(models.Model):
             result['target'] = 'main'
 
         return result
-
-    def new_assignment_to_training(self):
-        self.ensure_one()
-
-        return {
-            'model': 'ir.actions.act_window',
-            'type': 'ir.actions.act_window',
-            'name': _('New assignment'),
-            'res_model': 'academy.tests.test.training.assignment',
-            'target': 'new',
-            'view_mode': 'form',
-            'context': {
-                'default_test_id': self.id
-            }
-        }

@@ -61,7 +61,7 @@ class AcademyTestsTestKind(models.Model):
         default=None,
         help=False,
         comodel_name='academy.tests.test',
-        inverse_name='test_kind_id',
+        inverse_name='kind_id',
         domain=[],
         context={},
         auto_join=False,

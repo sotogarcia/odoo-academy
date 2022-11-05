@@ -281,21 +281,6 @@ class AcademyTestsQuestion(models.Model):
         limit=None,
     )
 
-    impugnment_ids = fields.One2many(
-        string='Impugnments',
-        required=False,
-        readonly=False,
-        index=False,
-        default=None,
-        help='List current impugnments to this question',
-        comodel_name='academy.tests.question.impugnment',
-        inverse_name='question_id',
-        domain=[],
-        context={},
-        auto_join=False,
-        limit=None
-    )
-
     checksum = fields.Char(
         string='Checksum',
         required=False,
@@ -421,22 +406,6 @@ class AcademyTestsQuestion(models.Model):
         compute='_compute_color'
     )
 
-    topic_module_link_ids = fields.Many2manyView(
-        string='Links module-topic',
-        required=False,
-        readonly=True,
-        index=False,
-        default=None,
-        help='List all module-topic links this question is related to',
-        comodel_name='academy.tests.topic.training.module.link',
-        relation='academy_tests_topic_training_module_link_question_rel',
-        column1='question_id',
-        column2='topic_module_link_id',
-        domain=[],
-        context={},
-        limit=None,
-    )
-
     def _compute_color(self):
         for record in self:
             if record.status == 'draft':
@@ -503,22 +472,6 @@ class AcademyTestsQuestion(models.Model):
     def _compute_dependent_count(self):
         for record in self:
             record.dependent_count = len(record.dependent_ids)
-
-    impugnment_count = fields.Integer(
-        string='Impugnment count',
-        required=False,
-        readonly=True,
-        index=False,
-        default=0,
-        store=False,
-        help='Show the number of current impugnments to this question',
-        compute='_compute_impugnment_count'
-    )
-
-    @api.depends('impugnment_ids')
-    def _compute_impugnment_count(self):
-        for record in self:
-            record.impugnment_count = len(record.impugnment_ids)
 
     duplicated_count = fields.Integer(
         string='Duplicated count',
@@ -1332,52 +1285,6 @@ class AcademyTestsQuestion(models.Model):
 
         self.env.cr.execute(sql)
         self.env.cr.commit()
-
-    def impugn(self):
-        self.ensure_one()
-
-        act_xid = 'academy_tests.action_question_impugnment_act_window'
-        act_item = self.env.ref(act_xid)
-
-        act_dict = dict(
-            name=act_item.name,
-            view_mode='form',
-            view_id=False,
-            view_type='form',
-            res_model='academy.tests.question.impugnment',
-            type='ir.actions.act_window',
-            nodestroy=True,
-            target='new',
-            context={
-                'default_question_id': self.id,
-                'default_owner_id': self.owner_id.id if self.owner_id else 1
-            }
-        )
-
-        return act_dict
-
-    def show_impugnments(self):
-        self.ensure_one()
-
-        act_xid = 'academy_tests.action_question_impugnment_act_window'
-        act_item = self.env.ref(act_xid)
-
-        act_dict = dict(
-            name=act_item.name,
-            view_mode='tree,form,graph',
-            view_id=False,
-            view_type='form',
-            res_model='academy.tests.question.impugnment',
-            type='ir.actions.act_window',
-            target='current',
-            context={
-                'default_question_id': self.id,
-                'default_owner_id': self.owner_id.id if self.owner_id else 1
-            },
-            domain=[('question_id', '=', self.id)]
-        )
-
-        return act_dict
 
     def show_duplicates(self):
         self.ensure_one()
