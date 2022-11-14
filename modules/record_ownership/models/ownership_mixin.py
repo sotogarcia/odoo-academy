@@ -126,6 +126,8 @@ class OwnershipMixin(models.AbstractModel):
         compute="_compute_prerogative"
     )
 
+    @api.depends('owner_id', 'subrogate_id')
+    @api.depends_context('uid')
     def _compute_prerogative(self):
         """ Compute current user access rights to change authorship. This will
         be used to enable or disable fields in related views.

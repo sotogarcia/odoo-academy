@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """ AcademyTestsTopicVersion
 
-This module contains the academy.tests.topic.version Odoo model which stores
-all academy tests topic version attributes and behavior.
+This module contains the academy.tests.version Odoo model which stores
+all academy tests version attributes and behavior.
 """
 
 from odoo import models, fields, api
@@ -22,8 +22,8 @@ class AcademyTestsTopicVersion(models.Model):
     versions.
     """
 
-    _name = 'academy.tests.topic.version'
-    _description = u'Academy tests topic version'
+    _name = 'academy.tests.version'
+    _description = u'Academy tests version'
 
     _rec_name = 'name'
     _order = 'sequence DESC'
@@ -96,10 +96,10 @@ class AcademyTestsTopicVersion(models.Model):
         readonly=False,
         index=True,
         default=None,
-        help='Show the list os questions related to this topic version',
+        help='Show the list of questions related to this version',
         comodel_name='academy.tests.question',
-        relation='academy_tests_question_topic_version_rel',
-        column1='topic_version_id',
+        relation='academy_tests_question_version_rel',
+        column1='version_id',
         column2='question_id',
         domain=[],
         context={},
@@ -147,4 +147,3 @@ class AcademyTestsTopicVersion(models.Model):
             _('There is already another version with the first name')
         )
     ]
-

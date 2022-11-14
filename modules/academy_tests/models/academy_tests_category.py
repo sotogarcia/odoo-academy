@@ -98,6 +98,15 @@ class AcademyTestsCategory(models.Model):
         translate=False
     )
 
+    provisional = fields.Boolean(
+        string='Provisional',
+        required=False,
+        readonly=False,
+        index=True,
+        default=False,
+        help='Check it to indicate the category is not definitive'
+    )
+
     question_ids = fields.Many2many(
         string='Questions',
         required=False,
@@ -150,15 +159,6 @@ class AcademyTestsCategory(models.Model):
         ids = self.env.cr.fetchall()
 
         return [('id', 'in', ids)]
-
-    provisional = fields.Boolean(
-        string='Provisional',
-        required=False,
-        readonly=False,
-        index=True,
-        default=False,
-        help='Check it to indicate the category is not definitive'
-    )
 
     # --------------------------- SQL_CONTRAINTS ------------------------------
 

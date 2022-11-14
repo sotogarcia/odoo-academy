@@ -4,7 +4,7 @@
 This module contains the academy.tests.kind Odoo model which stores
 all academy tests kind attributes and behavior.
 """
-from odoo import models, fields
+from odoo import models, fields, api
 
 from logging import getLogger
 
@@ -67,3 +67,18 @@ class AcademyTestsTestKind(models.Model):
         auto_join=False,
         limit=None
     )
+
+    test_count = fields.Integer(
+        string='Test count',
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        help=False,
+        compute='_compute_test_count'
+    )
+
+    @api.depends('test_ids')
+    def _compute_test_count(self):
+        for record in self:
+            record.test_count = len(record.test_ids)

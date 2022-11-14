@@ -36,9 +36,9 @@
                             options="{'no_create_edit': True, 'no_open': True}"
                             attrs="{'readonly': [('change_topic', '=', False)], 'required' : [('change_topic', '=', True)]}" />
 
-                        <field name="topic_version_action" class="oe_field_topic_version_action" colspan="2"
+                        <field name="version_action" class="oe_field_version_action" colspan="2"
                             attrs="{'readonly': [('change_topic', '=', False)], 'required' : [('change_topic', '=', True)]}" />
-                        <field name="topic_version_ids" class="oe_field_topic_version_ids"
+                        <field name="version_ids" class="oe_field_version_ids"
                             domain="[('topic_id', '=', topic_id)]" widget="many2many_tags"
                             options="{'no_create_edit': True}" colspan="4" string="Versions"
                             attrs="{'readonly': [('change_topic', '=', False)], 'required' : [('change_topic', '=', True)]}" />

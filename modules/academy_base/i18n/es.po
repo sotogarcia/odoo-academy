@@ -4337,7 +4337,7 @@ msgstr "Certificado de profesionalidad - Nivel 8"
 
 #. module: academy_base
 #: model:ir.ui.menu,name:academy_base.menu_professional_family
-msgid "Professional Families"
+msgid "Professional families"
 msgstr "Familias profesionales"
 
 #. module: academy_base
@@ -5497,12 +5497,6 @@ msgstr "Secreto máximo"
 #: model:academy.professional.sector,name:academy_base.professional_sector_3214
 msgid "Toxicology"
 msgstr "Toxicología"
-
-#. module: academy_base
-#: model:ir.model.fields,field_description:academy_base.field_academy_abstract_training_reference__training_ref
-#: model:ir.ui.menu,name:academy_base.menu_academy_settings_helper
-msgid "Training"
-msgstr "Soporte"
 
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_abstract_training_reference__training_action_id

@@ -20,7 +20,7 @@ class AcademyTestsTestBlock(models.Model):
 
     """
 
-    _name = 'academy.tests.test.block'
+    _name = 'academy.tests.block'
     _description = u'This act as label to allow grouping test questions'
 
     _rec_name = 'name'
@@ -74,7 +74,7 @@ class AcademyTestsTestBlock(models.Model):
         default=None,
         help=False,
         comodel_name='academy.tests.test.question.rel',
-        relation='academy_tests_test_block_link_rel',
+        relation='academy_tests_block_link_rel',
         column1='block_id',
         column2='link_id',
         domain=[],
@@ -90,7 +90,7 @@ class AcademyTestsTestBlock(models.Model):
         default=None,
         help=False,
         comodel_name='academy.tests.question',
-        relation='academy_tests_test_block_question_rel',
+        relation='academy_tests_block_question_rel',
         column1='block_id',
         column2='question_id',
         domain=[],
@@ -107,7 +107,7 @@ class AcademyTestsTestBlock(models.Model):
         default=None,
         help=False,
         comodel_name='academy.tests.test',
-        relation='academy_tests_test_block_test_rel',
+        relation='academy_tests_block_test_rel',
         column1='block_id',
         column2='tests_id',
         domain=[],

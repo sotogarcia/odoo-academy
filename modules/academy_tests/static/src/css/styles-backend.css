@@ -230,7 +230,7 @@ code but I have not found where I should make the change */
 }
 
 .manual-categorization-tree-view [data-name="topic_id"],
-.manual-categorization-tree-view [data-name="topic_version_ids"],
+.manual-categorization-tree-view [data-name="version_ids"],
 .manual-categorization-tree-view [data-name="category_ids"] {
     min-width:  120px!important;
 }
@@ -239,7 +239,7 @@ code but I have not found where I should make the change */
     width:  20%!important;
 }
 
-.manual-categorization-tree-view [data-name="topic_version_ids"], {
+.manual-categorization-tree-view [data-name="version_ids"], {
     width:  10%!important;
 }
 

@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="res_config_settings_view_form" model="ir.ui.view">
+            <field name="name">res.config.settings.view.form.inherit.academy.tests</field>
+            <field name="model">res.config.settings</field>
+            <field name="priority" eval="20" />
+            <field name="inherit_id" ref="base.res_config_settings_view_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//div[hasclass('settings')]" position="inside">
+                    <div class="app_settings_block" data-string="Academy"
+                         data-key="academy_base" groups="base.group_system" >
+
+                        <div name="activities_settings">
+                            <h2>Catalog</h2>
+                            <div class="row mt16 o_settings_container" name="file">
+
+                               <div class="col-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <span class="o_form_label">
+                                            Training actions
+                                        </span>
+                                        <div class="text-muted">
+                                            Training action attribute values
+                                        </div>
+
+                                        <div class="content-group mt8">
+                                            <button
+                                                name="%(academy_base.action_application_scope_act_window)d"
+                                                string="Professional fields"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+
+                                        <div class="content-group mt8">
+                                            <button
+                                                name="%(academy_base.action_knowledge_area_act_window)d"
+                                                string="Application scopes"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+
+                                        <div class="content-group mt8">
+                                            <button
+                                                name="%(academy_base.action_professional_category_act_window)d"
+                                                string="Professional categories"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+
+                                        <div class="content-group mt8">
+                                            <button
+                                                name="%(academy_base.action_training_modality_act_window)d"
+                                                string="Training modalities"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+
+                                        <div class="content-group mt8">
+                                            <button
+                                                name="%(academy_base.action_training_methodology_act_window)d"
+                                                string="Training methodologies"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+
+
+                                    </div> <!-- pane -->
+                                </div> <!-- col -->
+
+                                <div class="col-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <span class="o_form_label">
+                                            Training activities
+                                        </span>
+                                        <div class="text-muted">
+                                            Training activity attribute values
+                                        </div>
+
+                                        <div class="content-group mt8">
+                                            <button
+                                                name="%(academy_base.action_professional_family_act_window)d"
+                                                string="Professional families"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+
+                                        <div class="content-group mt8">
+                                            <button
+                                                name="%(academy_base.action_professional_area_act_window)d"
+                                                string="Professional areas"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+
+                                        <div class="content-group mt8">
+                                            <button
+                                                name="%(academy_base.action_qualification_level_act_window)d"
+                                                string="Qualification levels"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+
+                                        <div class="content-group mt8">
+                                            <button
+                                                name="%(academy_base.action_professional_field_act_window)d"
+                                                string="Professional fields"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+
+                                        <div class="content-group mt8">
+                                            <button
+                                                name="%(academy_base.action_professional_sector_act_window)d"
+                                                string="Professional sectors"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+
+                                    </div>
+
+                                </div> <!-- col -->
+                            </div> <!-- row -->
+
+                            <div class="row mt16 o_settings_container" name="file">
+
+                               <div class="col-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <span class="o_form_label">
+                                           Other catalog items
+                                        </span>
+                                        <div class="text-muted">
+                                            Other catalog attribute values
+                                        </div>
+
+                                        <div class="content-group mt8">
+                                            <button
+                                                name="%(academy_base.action_competency_unit_act_window)d"
+                                                string="Competency units"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+
+                                        <div class="content-group mt8">
+                                            <button
+                                                name="%(academy_base.action_professional_qualification_act_window)d"
+                                                string="Professional qualifications"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+
+                                        <div class="content-group mt8">
+                                            <button
+                                                name="%(academy_base.action_training_module_units_act_window)d"
+                                                string="Training units"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+
+                                    </div> <!-- pane -->
+                                </div> <!-- col -->
+
+                            </div> <!-- row -->
+
+                        </div>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>

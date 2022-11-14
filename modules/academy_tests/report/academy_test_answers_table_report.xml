@@ -31,19 +31,19 @@
                         <tbody>
 
                         <t t-set="index" t-value="0" />
-                        <t t-set="previous_test_block_id" t-value="None" />
+                        <t t-set="previous_block_id" t-value="None" />
 
                         <t t-foreach="o.answers_table_ids" t-as="answer">
 
-                            <t t-if="answer.test_block_id != previous_test_block_id">
+                            <t t-if="answer.block_id != previous_block_id">
 
-                                <t t-set="previous_test_block_id" t-value="answer.test_block_id" />
+                                <t t-set="previous_block_id" t-value="answer.block_id" />
 
-                                <t t-if="answer.test_block_id or answer_index > 0">
+                                <t t-if="answer.block_id or answer_index > 0">
                                     <tr>
                                         <th colspan="5" class="text-center text-uppercase">
-                                            <t t-if="answer.test_block_id">
-                                                <t t-esc="answer.test_block_id.name" />
+                                            <t t-if="answer.block_id">
+                                                <t t-esc="answer.block_id.name" />
                                             </t>
                                             <t t-else="">
                                                 ---

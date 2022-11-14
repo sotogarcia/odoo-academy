@@ -32,11 +32,23 @@ class AcademyTestsTag(models.Model):
         required=True,
         readonly=False,
         index=True,
-        default=None,
+        default=lambda self: self.default_name(),
         help='Name for this tag',
         size=255,
         translate=True
     )
+
+    def default_name(self):
+        name = ''
+
+        uid = self.env.context.get('uid', False)
+        if uid:
+            user = self.env['res.users'].browse(uid)
+            name = ' '.join(user.name.split(' ', 2)[:2])
+            if name:
+                name = name + ': '
+
+        return name
 
     description = fields.Text(
         string='Description',

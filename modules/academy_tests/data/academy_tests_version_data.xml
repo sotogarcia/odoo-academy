@@ -3,7 +3,7 @@
 <openerp>
     <data noupdate="0">
 
-        <record id="academy_tests_topic_version_no_version" model="academy.tests.topic.version">
+        <record id="academy_tests_version_no_version" model="academy.tests.version">
             <field name="name">No version</field>
             <field name="description">This will be used to store uncategorized questions</field>
             <field name="active" eval="True" />

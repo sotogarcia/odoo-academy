@@ -25,9 +25,10 @@
             <field name="arch" type="xml">
                 <tree string="academy_topic_tree" create="1" delete="1" edit="1">
                     <field name="name" class="oe_field_name" string="Name" />
-                    <field name="category_count" class="oe_field_category_count" string="Categories" />
                     <field name="description" class="oe_field_category_count" />
+                    <field name="manager_id" class="oe_field_manager_id" />
                     <field name="provisional" class="oe_field_provisional" />
+                    <field name="category_count" class="oe_field_category_count" string="Categories" />
                     <field name="question_count" class="oe_field_question_count" string="Questions" />
                 </tree>
             </field>
@@ -53,6 +54,8 @@
                             </button>
                         </div>
 
+                        <field name="prerogative" invisible="1" />
+
                         <div class="oe_title w-100">
                             <field name="id" class="oe_field_id" invisible="1" />
                             <field name="active" class="oe_field_active" invisible="1" />
@@ -74,16 +77,22 @@
                                     context="{'tree_view_ref': 'academy_tests.view_academy_category_tree_x2many', 'default_topic_id': id}" />
                             </page>
                             <page string="Versions" class="oe_page_versions" accesskey="V">
-                                <field name="topic_version_ids" class="oe_field_topic_version_ids" string="Versions"
-                                    context="{'tree_view_ref': 'academy_tests.view_academy_tests_topic_version_x2many_tree',
+                                <field name="version_ids" class="oe_field_version_ids" string="Versions"
+                                    context="{'tree_view_ref': 'academy_tests.view_academy_tests_version_x2many_tree',
                                     'default_topic_id': id}" />
                             </page>
                             <page id="setup" string="Setup" class="oe_page_setup" accesskey="S">
                                 <group col="4">
                                     <field name="description" class="oe_field_description"
                                         placeholder="Enter new description" colspan="4" />
-                                    <field name="owner_id" class="oe_field_owner_id" />
                                     <field name="provisional" class="oe_field_provisional" />
+                                    <group col="4" colspan="4" string="Ownership"
+                                        attrs="{'invisible': [('prerogative', '&lt;', '1')]}">
+                                        <field name="owner_id" class="oe_field_owner_id"
+                                            attrs="{'readonly': [('prerogative', '&lt;', '3')]}" />
+                                        <field name="subrogate_id" class="oe_field_subrogate_id"
+                                            attrs="{'readonly': [('prerogative', '&lt;', '2')]}" />
+                                    </group>
                                 </group>
                             </page>
                         </notebook>
@@ -108,11 +117,15 @@
                 <search string="academy_topic_search">
                     <field name="name" />
                     <field name="description" />
-                    <field name="question_count" string="Questions" />
+                    <field name="manager_id" />
                     <field name="id" string="Topic ID" />
 
+                    <filter name="provisional" string="Provisional"
+                            domain="[('active','=', True)]"/>
+
+                    <separator />
                     <filter name="inactive" string="Archived"
-                            domain="[('active','=',False)]"/>
+                            domain="[('active','=', False)]"/>
                 </search>
             </field>
         </record>
@@ -142,7 +155,7 @@
             <field name="name">Topics</field>
             <field name="sequence" eval="15" />
             <field name="action" ref="action_topics_act_window" />
-            <field name="parent_id" ref="menu_test_advanced" />
+            <field name="parent_id" ref="menu_test_settings_top" />
             <field name="groups_id" eval="[(4, ref('academy_tests.academy_tests_group_editor')), (4, ref('academy_tests.academy_tests_group_technical'))]" />
         </record>
 

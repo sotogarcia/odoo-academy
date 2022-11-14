@@ -175,15 +175,6 @@
             </field>
         </record>
 
-        <!-- Main menu for model.name -->
-        <record id="menu_competency_unit" model="ir.ui.menu" >
-            <field name="name">Competency units</field>
-            <field name="sequence" eval="25" />
-            <field name="action" ref="action_competency_unit_act_window" />
-            <field name="parent_id" ref="academy_base.menu_academy_settings_helper" />
-            <field name="groups_id" eval="[(4, ref('academy_base.academy_group_manager'))]"/>
-        </record>
-
         <!-- Tree view for "academy.competency.unit" -->
         <record id="view_academy_competency_unit_inline_edit_tree" model="ir.ui.view">
             <field name="name">view.academy.competency.unit.inline.edit.tree</field>

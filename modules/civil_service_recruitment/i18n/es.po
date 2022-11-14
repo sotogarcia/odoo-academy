@@ -535,15 +535,10 @@ msgid "City"
 msgstr "Ciudad"
 
 #. module: civil_service_recruitment
-#: model:res.partner.category,name:civil_service_recruitment.res_partner_category_civil_service
-msgid "Civil Service"
-msgstr "Funcionariado"
-
-#. module: civil_service_recruitment
 #: model:ir.ui.menu,name:civil_service_recruitment.menu_civil_service_recruitment
-#: model:ir.ui.menu,name:civil_service_recruitment.menu_civil_service_settings
+#: model:res.partner.category,name:civil_service_recruitment.res_partner_category_civil_service
 msgid "Civil service"
-msgstr "Funcionariado"
+msgstr "Función pública"
 
 #. module: civil_service_recruitment
 #: model:ir.model,name:civil_service_recruitment.model_civil_service_recruitment_process
@@ -637,7 +632,7 @@ msgid "Click to add new employees corps"
 msgstr "Haga clic para añadir un nuevo cuerpo de empleados"
 
 #. module: civil_service_recruitment
-#: model_terms:ir.actions.act_window,help:civil_service_recruitment.action_employment_position_act_window
+#: model_terms:ir.actions.act_window,help:civil_service_recruitment.action_employment_group_act_window
 msgid "Click to add new employment groups"
 msgstr "Haga clic para agregar nuevos grupos de empleo"
 
@@ -652,7 +647,7 @@ msgid "Click to add new events"
 msgstr "Pulsar para añadir nuevos eventos"
 
 #. module: civil_service_recruitment
-#: model_terms:ir.actions.act_window,help:civil_service_recruitment.action_vacancy_kind_act_window
+#: model_terms:ir.actions.act_window,help:civil_service_recruitment.action_exam_type_act_window
 msgid "Click to add new exam types"
 msgstr "Haga clic para añadir un nuevo tipo de examen"
 
@@ -982,7 +977,7 @@ msgid "Employment group"
 msgstr "Grupo de empleo"
 
 #. module: civil_service_recruitment
-#: model:ir.actions.act_window,name:civil_service_recruitment.action_employment_position_act_window
+#: model:ir.actions.act_window,name:civil_service_recruitment.action_employment_group_act_window
 #: model:ir.ui.menu,name:civil_service_recruitment.menu_employment_group
 msgid "Employment groups"
 msgstr "Grupos de empleo"
@@ -1086,8 +1081,8 @@ msgid "Exam type"
 msgstr "Tipo de examen"
 
 #. module: civil_service_recruitment
-#: model:ir.actions.act_window,name:civil_service_recruitment.action_vacancy_kind_act_window
-#: model:ir.ui.menu,name:civil_service_recruitment.menu_vacancy_kind
+#: model:ir.actions.act_window,name:civil_service_recruitment.action_exam_type_act_window
+#: model:ir.ui.menu,name:civil_service_recruitment.menu_exam_type
 msgid "Exam types"
 msgstr "Tipo de examen"
 
@@ -2177,7 +2172,7 @@ msgid "There are no employees corps yet"
 msgstr "Todavía no hay cuerpos de empleados"
 
 #. module: civil_service_recruitment
-#: model_terms:ir.actions.act_window,help:civil_service_recruitment.action_employment_position_act_window
+#: model_terms:ir.actions.act_window,help:civil_service_recruitment.action_employment_group_act_window
 msgid "There are no employment groups yet"
 msgstr "Aún no hay grupos de empleo"
 
@@ -2192,7 +2187,7 @@ msgid "There are no events yet"
 msgstr "Todavía no hay eventos"
 
 #. module: civil_service_recruitment
-#: model_terms:ir.actions.act_window,help:civil_service_recruitment.action_vacancy_kind_act_window
+#: model_terms:ir.actions.act_window,help:civil_service_recruitment.action_exam_type_act_window
 msgid "There are no exam types yet"
 msgstr "Todavía no hay tipos de examen"
 

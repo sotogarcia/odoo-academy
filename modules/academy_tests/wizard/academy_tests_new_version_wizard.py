@@ -31,21 +31,21 @@ EXCLUDE_SQL = '''
             academy_tests_question AS atq
         INNER JOIN academy_tests_question_category_rel AS crel
             ON crel.question_id = atq."id"
-        INNER JOIN academy_tests_question_topic_version_rel AS vrel
+        INNER JOIN academy_tests_question_version_rel AS vrel
             ON vrel.question_id = atq."id"
         WHERE
-            topic_version_id = {ver}
+            version_id = {ver}
             AND category_id IN ( {cats} )
     ) SELECT DISTINCT
         atq."id"
     FROM
         academy_tests_question AS atq
-    INNER JOIN academy_tests_question_topic_version_rel AS vrel
+    INNER JOIN academy_tests_question_version_rel AS vrel
         ON vrel.question_id = atq."id"
     LEFT JOIN has_given_categories AS hgc
         ON hgc.question_id = atq."id"
     WHERE
-        topic_version_id = {ver}
+        version_id = {ver}
         AND hgc.question_id {op} NULL
         --IS NOT
 '''
@@ -56,10 +56,10 @@ class AcademyTestNewTopicVersion(models.TransientModel):
     in selected categories
     """
 
-    _name = 'academy.tests.new.topic.version.wizard'
-    _description = u'Academy test new topic version'
+    _name = 'academy.tests.new.version.wizard'
+    _description = u'Academy test new version'
 
-    _inherits = {'academy.tests.topic.version': 'topic_version_id'}
+    _inherits = {'academy.tests.version': 'version_id'}
 
     _rec_name = 'id'
     _order = 'id ASC'
@@ -71,7 +71,7 @@ class AcademyTestNewTopicVersion(models.TransientModel):
         index=False,
         default=None,
         comodel_name='academy.tests.category',
-        relation='academy_tests_new_topic_version_wizard_category_rel',
+        relation='academy_tests_new_version_wizard_category_rel',
         column1='wizard_id',
         column2='category_id',
         domain=[],
@@ -81,14 +81,14 @@ class AcademyTestNewTopicVersion(models.TransientModel):
               'not be added')
     )
 
-    topic_version_id = fields.Many2one(
-        string='Topic version',
+    version_id = fields.Many2one(
+        string='Version',
         required=True,
         readonly=False,
         index=False,
         default=None,
-        help='New topic version will be created',
-        comodel_name='academy.tests.topic.version',
+        help='New version will be created',
+        comodel_name='academy.tests.version',
         domain=[],
         context={},
         ondelete='cascade',
@@ -151,7 +151,7 @@ class AcademyTestNewTopicVersion(models.TransientModel):
             values['topic_id'] = active_id
 
             topic_item = self.env[active_model].browse(active_id)
-            versions = topic_item.topic_version_ids.mapped('sequence')
+            versions = topic_item.version_ids.mapped('sequence')
             values['sequence'] = max(versions or [0]) + 10
 
         return values
@@ -190,7 +190,7 @@ class AcademyTestNewTopicVersion(models.TransientModel):
             mixed -- ID of the previous version or None
         """
 
-        version_obj = self.env['academy.tests.topic.version']
+        version_obj = self.env['academy.tests.version']
 
         domain = [('topic_id', '=', self.topic_id.id), ('id', '!=', new_id)]
         rows = version_obj.search_read(
@@ -202,8 +202,8 @@ class AcademyTestNewTopicVersion(models.TransientModel):
     def _except(whole, to_exclude):
         return [item for item in whole if item not in to_exclude]
 
-    def _read_topic_version_id(self):
-        return self.topic_version_id.id
+    def _read_version_id(self):
+        return self.version_id.id
 
     def _read_topic_category_ids(self):
         return self.topic_id.mapped('category_ids.id')
@@ -266,7 +266,7 @@ class AcademyTestNewTopicVersion(models.TransientModel):
         if category_ids and last_version_id:
             domain = self._build_domain(
                 last_version_id, category_ids, False)
-            values = {'topic_version_ids': [(4, version_id, None)]}
+            values = {'version_ids': [(4, version_id, None)]}
 
             self._update_questions(domain, values)
 
@@ -291,8 +291,8 @@ class AcademyTestNewTopicVersion(models.TransientModel):
                 self._update_questions(target_domain, values)
 
             elif self.no_updated in ['new', 'new_draft']:
-                version_id = self._read_topic_version_id()
-                values = {'topic_version_ids': [(6, None, [version_id])]}
+                version_id = self._read_version_id()
+                values = {'version_ids': [(6, None, [version_id])]}
 
                 if self.no_updated == 'new_draft':
                     values['status'] = 'draft'
@@ -300,7 +300,7 @@ class AcademyTestNewTopicVersion(models.TransientModel):
                 self._clone_questions(target_domain, values)
 
     def append_version(self):
-        """ Append created topic version to all the questions which have at
+        """ Append created version to all the questions which have at
         least one of the chosen categories.
 
         This method will be invoked by a button in Wizard
@@ -308,7 +308,7 @@ class AcademyTestNewTopicVersion(models.TransientModel):
         for record in self:
 
             if record.update_questions:
-                version_id = self._read_topic_version_id()
+                version_id = self._read_version_id()
                 last_version_id = self._get_previous_version_id(version_id)
 
                 category_ids = record._append_version(

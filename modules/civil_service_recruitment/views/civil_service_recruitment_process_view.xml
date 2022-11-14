@@ -3,7 +3,7 @@
 <openerp>
     <data noupdate="0">
 
-        <!-- VIEWS: "Civil Service Recruitment"
+        <!-- VIEWS: "Civil service Recruitment"
 
             - Model·········: civil.service.recruitment.process
             - _rec_name·····: name
@@ -95,7 +95,7 @@
                         <group col="2" string="Administration">
                             <group col="2">
                                 <field name="offer_id"
-                                    readonly="context.get('default_civil_service_recruitment_public_offer_id', False)"/>
+                                    readonly="context.get('default_offer_id', False)"/>
                                 <field name="announcement" />
                             </group>
                             <group col="2">

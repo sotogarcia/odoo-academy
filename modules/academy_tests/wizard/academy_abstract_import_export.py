@@ -881,7 +881,7 @@ class AcademyAbstractImportExport(models.AbstractModel):
     def _get_last_test_sequence(test_item):
 
         test_item.ensure_one()
-        sequences = test_item.question_ids.mapped('sequence') or [0]
+        sequences = test_item.link_ids.mapped('sequence') or [0]
 
         return max(sequences)
 
@@ -890,11 +890,11 @@ class AcademyAbstractImportExport(models.AbstractModel):
         model = 'academy.tests.test'
         m2m_ops = []
 
-        question_ids = self._ensure_ids(questions, at_leat_one=False)
+        link_ids = self._ensure_ids(questions, at_leat_one=False)
         test_item = self._ensure_recordset(test, model, at_leat_one=True)
         sequence = self._get_last_test_sequence(test_item)
 
-        for question_id in question_ids:
+        for question_id in link_ids:
 
             sequence += 1
             values = {
@@ -905,4 +905,4 @@ class AcademyAbstractImportExport(models.AbstractModel):
 
             m2m_ops.append((0, None, values))
 
-        test_item.write({'question_ids': m2m_ops})
+        test_item.write({'link_ids': m2m_ops})

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Civil Service Recruitment",
+    'name': "Civil service Recruitment",
 
     'summary': """
         Store and manage information about civil service entrance examination""",
@@ -72,6 +72,8 @@
         'views/civil_service_recruitment_event_view.xml',
         'views/civil_service_recruitment_event_type_view.xml',
         'views/civil_service_recruitment_required_specialization_view.xml',
+
+        'views/res_config_settings_view.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

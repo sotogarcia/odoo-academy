@@ -17,13 +17,12 @@ class AcademyTestsTestTestBlockRel(models.Model):
     """ This act as middle relation in many to many relationship
     """
 
-    _name = 'academy.tests.test.test.block.rel'
+    _name = 'academy.tests.test.block.rel'
     _description = u'List blocks by test'
 
-    _order = 'test_id DESC,  test_block_id DESC'
+    _order = 'test_id DESC,  block_id DESC'
 
     _auto = False
-
 
     test_id = fields.Many2one(
         string='Question',
@@ -39,14 +38,14 @@ class AcademyTestsTestTestBlockRel(models.Model):
         auto_join=False
     )
 
-    test_block_id = fields.Many2one(
-        string='Test block',
+    block_id = fields.Many2one(
+        string='Block',
         required=True,
         readonly=True,
         index=True,
         default=None,
-        help='Related test block',
-        comodel_name='academy.tests.test.block',
+        help='Related block',
+        comodel_name='academy.tests.block',
         domain=[],
         context={},
         ondelete='cascade',
@@ -77,9 +76,9 @@ class AcademyTestsTestTestBlockRel(models.Model):
     _view_sql = '''
         SELECT DISTINCT
             test_id,
-            test_block_id
+            block_id
         FROM
             academy_tests_test_question_rel
         WHERE
-            test_block_id IS NOT NULL
+            block_id IS NOT NULL
     '''

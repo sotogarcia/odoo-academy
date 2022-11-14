@@ -137,9 +137,9 @@ class AcademyTestsAnswersTable(models.Model):
         compute=lambda self: self._compute_category_ids()
     )
 
-    test_block_id = fields.Many2one(
-        string='Test block',
-        related='link_id.test_block_id'
+    block_id = fields.Many2one(
+        string='Block',
+        related='link_id.block_id'
     )
 
     @api.depends('question_id')
@@ -161,4 +161,3 @@ class AcademyTestsAnswersTable(models.Model):
                 ACADEMY_TESTS_ANSWERS_TABLE_MODEL
             )
         )
-

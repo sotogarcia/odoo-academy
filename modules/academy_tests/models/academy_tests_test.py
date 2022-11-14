@@ -23,11 +23,9 @@ from re import split
 from odoo import models, fields, api
 from odoo.tools.translate import _
 
-from odoo.osv.expression import FALSE_DOMAIN
 from .utils.sql_operations import ACADEMY_TESTS_SHUFFLE
 from .utils.sql_operations import ACADEMY_TESTS_ARRANGE_BLOCKS
 from .utils.sql_inverse_searches import QUESTION_COUNT_SEARCH
-from .utils.sql_inverse_searches import SEARCH_TEST_ATTEMPT_COUNT
 
 from .utils.libuseful import prepare_text, fix_established, is_numeric, \
     eval_domain
@@ -47,11 +45,11 @@ class AcademyTestsTest(models.Model):
     _order = 'write_date DESC, create_date DESC'
 
     _inherit = [
+        'academy.tests.abstract.test.details',
         'ownership.mixin',
-        'image.mixin',
         'mail.thread',
-        'mail.activity.mixin',
-        'academy.abstract.test'
+        'image.mixin',
+        'mail.activity.mixin'
     ]
 
     name = fields.Char(
@@ -97,13 +95,7 @@ class AcademyTestsTest(models.Model):
         translate=False
     )
 
-    @api.model
-    def default_preamble(self):
-        return _('This exercise poses different questions, presenting a set '
-                 'of alternative answers for each of them, among which you '
-                 'must select the only correct one.')
-
-    question_ids = fields.One2many(
+    link_ids = fields.One2many(
         string='Questions',
         required=False,
         readonly=False,
@@ -156,17 +148,17 @@ class AcademyTestsTest(models.Model):
         help='Check it to indicate that it is your own authorship'
     )
 
-    test_block_ids = fields.Many2manyView(
-        string='Test blocks',
+    block_ids = fields.Many2manyView(
+        string='Blocks',
         required=False,
         readonly=True,
         index=False,
         default=None,
         help='List all blocks have been used in this tests',
-        comodel_name='academy.tests.test.block',
-        relation='academy_tests_test_test_block_rel',
+        comodel_name='academy.tests.block',
+        relation='academy_tests_test_block_rel',
         column1='test_id',
-        column2='test_block_id',
+        column2='block_id',
         domain=[],
         context={},
         limit=None,
@@ -203,10 +195,10 @@ class AcademyTestsTest(models.Model):
         search='_search_question_count'
     )
 
-    @api.depends('question_ids')
+    @api.depends('link_ids')
     def _compute_question_count(self):
         for record in self:
-            record.question_count = len(record.question_ids)
+            record.question_count = len(record.link_ids)
 
     def _search_question_count(self, operator, operand):
         supported = ['=', '!=', '<=', '<', '>', '>=']
@@ -253,10 +245,10 @@ class AcademyTestsTest(models.Model):
         compute=lambda self: self._compute_topic_count()
     )
 
-    @api.depends('question_ids')
+    @api.depends('link_ids')
     def _compute_topic_count(self):
         for record in self:
-            question_set = record.question_ids.mapped('question_id')
+            question_set = record.link_ids.mapped('question_id')
             topic_set = question_set.mapped('topic_id')
             ids = topic_set.mapped('id')
 
@@ -277,18 +269,18 @@ class AcademyTestsTest(models.Model):
         compute=lambda self: self._compute_topic_id()
     )
 
-    @api.depends('question_ids')
+    @api.depends('link_ids')
     def _compute_topic_id(self):
         for record in self:
-            rel_ids = record.question_ids.filtered(
+            rel_ids = record.link_ids.filtered(
                 lambda rel: rel.question_id.topic_id)
-            question_ids = rel_ids.mapped('question_id')
-            topics = {k.id: 0 for k in question_ids.mapped('topic_id')}
+            link_ids = rel_ids.mapped('question_id')
+            topics = {k.id: 0 for k in link_ids.mapped('topic_id')}
 
             if not topics:
                 record.topic_id = None
             else:
-                for question_id in question_ids:
+                for question_id in link_ids:
                     _id = question_id.topic_id.id
                     topics[_id] = topics[_id] + 1
 
@@ -311,7 +303,7 @@ class AcademyTestsTest(models.Model):
 
     # -------------------------- PYTHON CONSTRAINS ----------------------------
 
-    @api.constrains('question_ids')
+    @api.constrains('link_ids')
     def _check_question_availability(self):
         """ Check if questions are ready and they have not dependencies
         """
@@ -319,8 +311,8 @@ class AcademyTestsTest(models.Model):
         ready_msg = _('Some of the questions have not been marked as ready.')
 
         for record in self:
-            for link_id in record.question_ids.sorted('sequence'):
-                previous_ids = record.question_ids.filtered(
+            for link_id in record.link_ids.sorted('sequence'):
+                previous_ids = record.link_ids.filtered(
                     lambda x: x.sequence < link_id.sequence) \
                     .mapped('question_id')
 
@@ -381,7 +373,7 @@ class AcademyTestsTest(models.Model):
         xid = 'academy_tests.action_test_question_links_act_window'
         action = self.env.ref(xid)
         domain = eval_domain(action.domain)
-        link_ids = self.mapped('question_ids.id')
+        link_ids = self.mapped('link_ids.id')
 
         return {
             'name': _('Questions links'),
@@ -432,10 +424,10 @@ class AcademyTestsTest(models.Model):
 
         # STEP 3: Create new links for all questions in the original test
         create_empty = self.env.context.get('create_empty_test', False)
-        if self.question_ids and not create_empty:
-            leafs = self.question_ids.mapped(self._mapped_question_ids)
+        if self.link_ids and not create_empty:
+            leafs = self.link_ids.mapped(self._mapped_link_ids)
             if(leafs):
-                default['question_ids'] = leafs
+                default['link_ids'] = leafs
 
         # STEP 4: Call parent method
         result = super(AcademyTestsTest, self).copy(default=default)
@@ -443,7 +435,7 @@ class AcademyTestsTest(models.Model):
         return result
 
     @staticmethod
-    def _mapped_question_ids(item):
+    def _mapped_link_ids(item):
         return (0, 0, {
             'test_id': item.test_id.id,
             'question_id': item.question_id.id,
@@ -457,7 +449,7 @@ class AcademyTestsTest(models.Model):
 
         if self:
 
-            if self.auto_arrange_blocks:  # Keep test blocks
+            if self.auto_arrange_blocks:  # Keep blocks
                 test_ids = self.mapped('id')
                 test_ids_str = [str(tid) for tid in test_ids]
                 joined = ', '.join(test_ids_str)
@@ -468,7 +460,7 @@ class AcademyTestsTest(models.Model):
 
             else:
                 for record in self:
-                    rel_set = record.question_ids.sorted()
+                    rel_set = record.link_ids.sorted()
 
                     index = 1
                     for rel_item in rel_set:
@@ -481,10 +473,10 @@ class AcademyTestsTest(models.Model):
 
         for record in self:
 
-            if not record.question_ids:
+            if not record.link_ids:
                 continue
 
-            link_ids = record.question_ids
+            link_ids = record.link_ids
             dep_ids = link_ids.mapped('question_id.depends_on_id')
 
             if dep_ids:
@@ -546,7 +538,7 @@ class AcademyTestsTest(models.Model):
 
             parts.append(linesep)
 
-            for link in self.question_ids:
+            for link in self.link_ids:
                 question = link.question_id
 
                 parts.append(question.to_string(editable))
@@ -569,7 +561,7 @@ class AcademyTestsTest(models.Model):
 
     def update_questions_dialog(self):
         wizard_model = 'academy.tests.update.questions.wizard'
-        question_set = self.mapped('question_ids.question_id')
+        question_set = self.mapped('link_ids.question_id')
 
         wizard_set = self.env[wizard_model]
         wizard_set = wizard_set.create({})
@@ -639,19 +631,19 @@ class AcademyTestsTest(models.Model):
 
     @staticmethod
     def _docx_update_block(link, wd):
-        if link.test_block_id:
-            wd.add_paragraph(link.test_block_id.name, 'Heading 2')
-            if link.test_block_id.preamble:
-                wd.add_paragraph(link.test_block_id.preamble, 'Preamble')
+        if link.block_id:
+            wd.add_paragraph(link.block_id.name, 'Heading 2')
+            if link.block_id.preamble:
+                wd.add_paragraph(link.block_id.preamble, 'Preamble')
 
     def _docx_update_questions(self, wd):
-        test_block_id = 0
+        block_id = 0
 
-        for qitem in self.question_ids:
-            if test_block_id != qitem.test_block_id.id:
+        for qitem in self.link_ids:
+            if block_id != qitem.block_id.id:
                 self._docx_update_block(qitem, wd)
 
-            test_block_id = qitem.test_block_id.id
+            block_id = qitem.block_id.id
 
             for img in qitem.ir_attachment_image_ids:
                 content = base64.b64decode(img.datas)
@@ -715,7 +707,7 @@ class AcademyTestsTest(models.Model):
     def compute_block_classes(self, block):
         self.ensure_one()
 
-        classes = ['academy-post-test-block']
+        classes = ['academy-post-block']
 
         if self.restart_numbering:
             classes.append('academy-post-test-restart-numbering')

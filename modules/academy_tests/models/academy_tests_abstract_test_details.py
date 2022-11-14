@@ -12,11 +12,11 @@ from logging import getLogger
 _logger = getLogger(__name__)
 
 
-class AcademyAbstractTest(models.Model):
+class AcademyTestsAbstractTestDetails(models.Model):
     """ Common test datails. This can be used by several models.
     """
 
-    _name = 'academy.abstract.test'
+    _name = 'academy.tests.abstract.test.details'
     _description = u'Academy abstract test'
 
     kind_id = fields.Many2one(
@@ -81,3 +81,11 @@ class AcademyAbstractTest(models.Model):
         help='What it is said before beginning to test',
         translate=True
     )
+
+    @api.model
+    def default_preamble(self):
+        value = _('This exercise poses different questions, presenting a set '
+                  'of alternative answers for each of them, among which you '
+                  'must select the only correct one.')
+
+        return value

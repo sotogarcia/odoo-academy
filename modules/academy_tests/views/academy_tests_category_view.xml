@@ -27,6 +27,7 @@
                     <field name="name" class="oe_field_name" string="Name" />
                     <field name="description" class="oe_field_description" />
                     <field name="keywords" class="oe_field_regex" />
+                    <field name="topic_id" class="oe_field_topic_id" />
                     <field name="provisional" class="oe_field_provisional" />
                     <field name="question_count" class="oe_field_question_count" string="Questions" />
                 </tree>
@@ -111,11 +112,20 @@
                     <field name="name" />
                     <field name="description" />
                     <field name="topic_id" />
-                    <field name="question_count" string="Questions" />
-                    <field name="id" string="Topic ID" />
+                    <field name="id" string="Category ID" />
 
+                    <filter name="provisional" string="Provisional"
+                            domain="[('active','=', True)]"/>
+
+                    <filter string="Group by topic"
+                        name="group_by_topic"
+                        domain="[]"
+                        context="{'group_by': 'topic_id'}"
+                        help="" />
+
+                    <separator />
                     <filter name="inactive" string="Archived"
-                            domain="[('active','=',False)]"/>
+                            domain="[('active','=', False)]"/>
                 </search>
             </field>
         </record>
@@ -138,15 +148,6 @@
                     There are no categories yet
                 </p>
             </field>
-        </record>
-
-        <!-- Main menu for model.name -->
-        <record id="menu_categories" model="ir.ui.menu" >
-            <field name="name">Categories</field>
-            <field name="sequence" eval="20" />
-            <field name="action" ref="action_categories_act_window" />
-            <field name="parent_id" ref="menu_test_settings_top" />
-            <field name="groups_id" eval="[(4, ref('academy_tests.academy_tests_group_editor')), (4, ref('academy_tests.academy_tests_group_technical'))]" />
         </record>
 
     </data>

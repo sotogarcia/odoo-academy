@@ -130,14 +130,5 @@
             </field>
         </record>
 
-
-        <!-- Main menu for model.name -->
-        <record id="menu_vacancys" model="ir.ui.menu" >
-            <field name="name">Vacancies</field>
-            <field name="sequence" eval="10" />
-            <field name="action" ref="action_vacancys_act_window" />
-            <field name="parent_id" ref="menu_civil_service_settings" />
-        </record>
-
     </data>
 </openerp>

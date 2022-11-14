@@ -15,11 +15,11 @@
             <field name="active" eval="False" />
             <field name="type_id" ref="academy_tests.academy_tests_question_type_1" />
             <field name="topic_id" ref="academy_tests.academy_tests_topic_demo_1" />
-            <field name="topic_version_ids" eval="[(4, ref('academy_tests.academy_tests_topic_version_demo_1'))]" />
+            <field name="version_ids" eval="[(4, ref('academy_tests.academy_tests_version_demo_1'))]" />
             <field name="category_ids" eval="[(4, ref('academy_tests.academy_tests_category_demo_brand'))]" />
             <field name="tag_ids" eval="[(4, ref('academy_tests.academy_tests_tag_demo_brand'))]" />
             <field name="level_id" ref="academy_tests.academy_level_12" />
-            <field name="owner_id" ref="academy_base.res_users_demo_teacher" />
+            <field name="owner_id" ref="base.user_admin" />
         </record>
 
         <record id="academy_tests_question_demo_2" model="academy.tests.question">
@@ -28,11 +28,11 @@
             <field name="active" eval="False" />
             <field name="type_id" ref="academy_tests.academy_tests_question_type_1" />
             <field name="topic_id" ref="academy_tests.academy_tests_topic_demo_1" />
-            <field name="topic_version_ids" eval="[(4, ref('academy_tests.academy_tests_topic_version_demo_3'))]" />
+            <field name="version_ids" eval="[(4, ref('academy_tests.academy_tests_version_demo_3'))]" />
             <field name="category_ids" eval="[(4, ref('academy_tests.academy_tests_category_demo_development'))]" />
             <field name="tag_ids" eval="[(4, ref('academy_tests.academy_tests_tag_demo_code'))]" />
             <field name="level_id" ref="academy_tests.academy_level_13" />
-            <field name="owner_id" ref="academy_base.res_users_demo_teacher" />
+            <field name="owner_id" ref="base.user_admin" />
         </record>
 
         <record id="academy_tests_question_demo_3" model="academy.tests.question">
@@ -41,11 +41,11 @@
             <field name="active" eval="False" />
             <field name="type_id" ref="academy_tests.academy_tests_question_type_1" />
             <field name="topic_id" ref="academy_tests.academy_tests_topic_demo_1" />
-            <field name="topic_version_ids" eval="[(4, ref('academy_tests.academy_tests_topic_version_demo_1'))]" />
+            <field name="version_ids" eval="[(4, ref('academy_tests.academy_tests_version_demo_1'))]" />
             <field name="category_ids" eval="[(4, ref('academy_tests.academy_tests_category_demo_development')), (4, ref('academy_tests.academy_tests_category_demo_brand'))]" />
             <field name="tag_ids" eval="[(4, ref('academy_tests.academy_tests_tag_demo_third_party')), (4, ref('academy_tests.academy_tests_tag_demo_code'))]" />
             <field name="level_id" ref="academy_tests.academy_level_15" />
-            <field name="owner_id" ref="academy_base.res_users_demo_teacher" />
+            <field name="owner_id" ref="base.user_admin" />
         </record>
 
         <record id="academy_tests_question_demo_4" model="academy.tests.question">
@@ -55,11 +55,11 @@
             <field name="active" eval="False" />
             <field name="type_id" ref="academy_tests.academy_tests_question_type_3" />
             <field name="topic_id" ref="academy_tests.academy_tests_topic_demo_1" />
-            <field name="topic_version_ids" eval="[(4, ref('academy_tests.academy_tests_topic_version_demo_1'))]" />
+            <field name="version_ids" eval="[(4, ref('academy_tests.academy_tests_version_demo_1'))]" />
             <field name="category_ids" eval="[(4, ref('academy_tests.academy_tests_category_demo_brand'))]" />
             <field name="tag_ids" eval="[(4, ref('academy_tests.academy_tests_tag_demo_brand'))]" />
             <field name="level_id" ref="academy_tests.academy_level_12" />
-            <field name="owner_id" ref="academy_base.res_users_demo_teacher" />
+            <field name="owner_id" ref="base.user_admin" />
         </record>
 
         <record id="academy_tests_question_demo_5" model="academy.tests.question">
@@ -67,11 +67,11 @@
             <field name="active" eval="False" />
             <field name="type_id" ref="academy_tests.academy_tests_question_type_1" />
             <field name="topic_id" ref="academy_tests.academy_tests_topic_demo_1" />
-            <field name="topic_version_ids" eval="[(4, ref('academy_tests.academy_tests_topic_version_demo_3'))]" />
+            <field name="version_ids" eval="[(4, ref('academy_tests.academy_tests_version_demo_3'))]" />
             <field name="category_ids" eval="[(4, ref('academy_tests.academy_tests_category_demo_development'))]" />
             <field name="tag_ids" eval="[(4, ref('academy_tests.academy_tests_tag_demo_code'))]" />
             <field name="level_id" ref="academy_tests.academy_level_13" />
-            <field name="owner_id" ref="academy_base.res_users_demo_teacher" />
+            <field name="owner_id" ref="base.user_admin" />
         </record>
 
         <record id="academy_tests_question_demo_6" model="academy.tests.question">
@@ -79,11 +79,11 @@
             <field name="active" eval="False" />
             <field name="type_id" ref="academy_tests.academy_tests_question_type_1" />
             <field name="topic_id" ref="academy_tests.academy_tests_topic_demo_1" />
-            <field name="topic_version_ids" eval="[(4, ref('academy_tests.academy_tests_topic_version_demo_3'))]" />
+            <field name="version_ids" eval="[(4, ref('academy_tests.academy_tests_version_demo_3'))]" />
             <field name="category_ids" eval="[(4, ref('academy_tests.academy_tests_category_demo_development'))]" />
             <field name="tag_ids" eval="[(4, ref('academy_tests.academy_tests_tag_demo_code'))]" />
             <field name="level_id" ref="academy_tests.academy_level_13" />
-            <field name="owner_id" ref="academy_base.res_users_demo_teacher" />
+            <field name="owner_id" ref="base.user_admin" />
         </record>
 
     </data>

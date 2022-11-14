@@ -110,20 +110,20 @@ VERSION_QUESTION_COUNT_SEARCH = '''
     WITH category_question_quantity AS (
 
         SELECT
-            topic_version_id,
+            version_id,
             COUNT ( * ) :: INTEGER AS quantity
         FROM
-            academy_tests_question_topic_version_rel AS rel
+            academy_tests_question_version_rel AS rel
         GROUP BY
-            topic_version_id
+            version_id
 
     )
     SELECT
-        ttv."id" AS topic_version_id
+        ttv."id" AS version_id
     FROM
-        academy_tests_topic_version AS ttv
+        academy_tests_version AS ttv
     LEFT JOIN category_question_quantity AS cmp
-        ON ttv."id" = cmp.topic_version_id
+        ON ttv."id" = cmp.version_id
     WHERE
         COALESCE ( quantity, 0 ) :: INTEGER {} {}
 '''
@@ -149,37 +149,6 @@ QUESTION_COUNT_SEARCH = '''
     LEFT JOIN test_question_quantity AS rel
         ON rel.test_id = att."id"
     WHERE COALESCE(quantity, 0)::INTEGER {} {}
-'''
-
-# INVERSE SEARCH: academy_tests.field_academy_tests_question__uncategorized
-# Raw sentence used to search uncategorized questions
-# -----------------------------------------------------------------------------
-
-UNCATEGORIZED_QUESTION_SEARCH = '''
-    SELECT DISTINCT ON
-        ( atq."id" ) atq."id" AS question_id
-    FROM
-        academy_tests_question AS atq
-        LEFT JOIN academy_tests_topic AS atp
-            ON atp."id" = atq.topic_id
-        LEFT JOIN academy_tests_question_category_rel AS rel1
-            ON rel1.question_id = atq."id"
-        LEFT JOIN academy_tests_category AS atc
-            ON atc."id" = rel1.category_id
-        LEFT JOIN academy_tests_question_topic_version_rel AS rel2
-            ON rel2.question_id = atq."id"
-        LEFT JOIN academy_tests_topic_version AS attv
-            ON rel2.topic_version_id = attv."id"
-    WHERE
-        atp."id" IS NULL
-        OR atc."id" IS NULL
-        OR attv."id" IS NULL
-        OR atp."active" IS FALSE
-        OR atc."active" IS FALSE
-        OR attv."active" IS FALSE
-        OR atp."provisional" IS TRUE
-        OR atc."provisional" IS TRUE
-        OR attv."provisional" IS TRUE
 '''
 
 

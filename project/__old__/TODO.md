@@ -1,0 +1,8 @@
+- [x] Topic: falta subrogate_id en la vista
+- [x] Res config: versiones lleva a un lugar extraño
+- [ ] Las etiquetas deben comenzar por el nombre
+- [x] Emplear previous questions
+- [x] Permitir seleccionar la pregunta en el formulario de respuesta
+- [ ] Quitar usado en del formulario tipo de tet y añadir recuento de tests
+- [ ] Quitar usado en del formulario bloque de tet y añadir recuento
+- [ ] Prevenir

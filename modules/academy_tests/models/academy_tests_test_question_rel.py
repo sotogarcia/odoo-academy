@@ -19,7 +19,6 @@ from logging import getLogger
 # pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
 from odoo.tools.translate import _
-from odoo.exceptions import ValidationError
 
 from io import BytesIO
 
@@ -29,11 +28,7 @@ _logger = getLogger(__name__)
 
 # pylint: disable=locally-disabled, R0903
 class AcademyTestsTestQuestionRel(models.Model):
-    """ The summary line for a class docstring should fit on one line.
-
-    Fields:
-      name (Char): Human readable name which will identify each record.
-
+    """ Middle table in many to many relationship between tests and questions
     """
 
     _name = 'academy.tests.test.question.rel'
@@ -110,14 +105,14 @@ class AcademyTestsTestQuestionRel(models.Model):
         store=False
     )
 
-    test_block_id = fields.Many2one(
-        string='Test block',
+    block_id = fields.Many2one(
+        string='Block',
         required=False,
         readonly=False,
         index=True,
         default=None,
-        help='Choose the test block in which this question appears',
-        comodel_name='academy.tests.test.block',
+        help='Choose the block in which this question appears',
+        comodel_name='academy.tests.block',
         domain=[],
         context={},
         ondelete='set null',
@@ -169,7 +164,7 @@ class AcademyTestsTestQuestionRel(models.Model):
         result = 'question_id 'not in keys
         result = result and 'name' in keys
         result = result and 'topic_id' in keys
-        result = result and 'topic_version_ids' in keys
+        result = result and 'version_ids' in keys
         result = result and 'category_ids' in keys
         result = result and 'type_id' in keys
         result = result and 'level_id' in keys

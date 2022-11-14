@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="res_config_settings_view_form" model="ir.ui.view">
+            <field name="name">res.config.settings.view.form.inherit.academy.tests</field>
+            <field name="model">res.config.settings</field>
+            <field name="priority" eval="20" />
+            <field name="inherit_id" ref="base.res_config_settings_view_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//div[hasclass('settings')]" position="inside">
+                    <div class="app_settings_block" data-string="Tests"
+                         data-key="academy_tests" groups="base.group_system" >
+
+                        <div name="academy_tests_settings_attribute_values">
+                            <h2>Categorization</h2>
+                            <div class="row mt16 o_settings_container" name="file">
+                                <div class="col-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <span class="o_form_label">
+                                            Categorization
+                                        </span>
+                                        <div class="text-muted">
+                                            Categorization elements
+                                        </div>
+                                        <div class="content-group mt8">
+                                            <button
+                                                name="%(academy_tests.action_topics_act_window)d"
+                                                string="Topics"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+                                        <div class="content-group mt8">
+                                            <button
+                                                name="%(academy_tests.action_versions_act_window)d"
+                                                string="Versions"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+                                        <div class="content-group mt8">
+                                            <button
+                                                name="%(academy_tests.action_categories_act_window)d"
+                                                string="Categories"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+                                        <div class="content-group mt8">
+                                            <button
+                                                name="%(academy_tests.action_tags_act_window)d"
+                                                string="Tags"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+                                    </div>
+                                </div> <!-- col -->
+
+                                <div class="col-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <span class="o_form_label">
+                                            Previous questions
+                                        </span>
+                                        <div class="text-muted">
+                                            Number of questions will be used to compute default categorization
+                                        </div>
+                                        <div class="content-group">
+                                            <div class="row mt8">
+                                                <label
+                                                    class="col-md-3 o_light_label"
+                                                    for="categorize_from_last_questions"
+                                                />
+                                                <field name="categorize_from_last_questions" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <div class="o_setting_right_pane">
+                                        <span class="o_form_label">
+                                            Autocategorization
+                                        </span>
+                                        <div class="text-muted">
+                                            Determines how the autocategorization function will behave
+                                        </div>
+                                        <div class="content-group">
+                                            <div class="row mt8">
+                                                <label
+                                                    class="col-md-3 o_light_label"
+                                                    for="autocategorization_flags"
+                                                    string="Flags"
+                                                />
+                                                <field name="autocategorization_flags" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> <!-- col -->
+
+                            </div> <!-- row -->
+                        </div>
+
+                        <div name="academy_tests_settings_attribute_values">
+                            <h2>Attributes</h2>
+                            <div class="row mt16 o_settings_container" name="file">
+
+                                <div class="col-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <span class="o_form_label">
+                                            Questions
+                                        </span>
+                                        <div class="text-muted">
+                                            Question attribute values
+                                        </div>
+                                        <div class="content-group mt8">
+                                            <button
+                                                name="%(academy_tests.action_levels_act_window)d"
+                                                string="Levels"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+                                        <div class="content-group mt8">
+                                            <button
+                                                name="%(academy_tests.action_answers_act_window)d"
+                                                string="Answers"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+                                    </div>
+                                </div> <!-- col -->
+
+                                <div class="col-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <span class="o_form_label">
+                                            Tests
+                                        </span>
+                                        <div class="text-muted">
+                                            Test attribute values
+                                        </div>
+                                        <div class="content-group mt8">
+                                            <button
+                                                name="%(academy_tests.action_kind_of_test_act_window)d"
+                                                string="Kinds"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+                                        <div class="content-group mt8">
+                                            <button
+                                                name="%(academy_tests.action_block_of_test_act_window)d"
+                                                string="Blocks"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+                                    </div>
+                                </div> <!-- col -->
+
+                            </div> <!-- row -->
+                        </div>
+
+                    </div>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>

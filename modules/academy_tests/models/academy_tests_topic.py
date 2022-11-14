@@ -68,6 +68,21 @@ class AcademyTestsTopic(models.Model):
               'hide record without removing it')
     )
 
+    version_ids = fields.One2many(
+        string='Versions',
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help='Manage different versions of the same topic',
+        comodel_name='academy.tests.version',
+        inverse_name='topic_id',
+        domain=[],
+        context={},
+        auto_join=False,
+        limit=None
+    )
+
     category_ids = fields.One2many(
         string='Categories',
         required=False,
@@ -91,21 +106,6 @@ class AcademyTestsTopic(models.Model):
         default=None,
         help='List the related questions',
         comodel_name='academy.tests.question',
-        inverse_name='topic_id',
-        domain=[],
-        context={},
-        auto_join=False,
-        limit=None
-    )
-
-    topic_version_ids = fields.One2many(
-        string='Versions',
-        required=False,
-        readonly=False,
-        index=False,
-        default=None,
-        help='Manage different versions of the same topic',
-        comodel_name='academy.tests.topic.version',
         inverse_name='topic_id',
         domain=[],
         context={},
@@ -181,24 +181,41 @@ class AcademyTestsTopic(models.Model):
     def _onchange_category_ids(self):
         self._compute_category_count()
 
-    question_count = fields.Integer(
-        string='Number of questions',
+    version_count = fields.Integer(
+        string='Version count',
         required=False,
         readonly=True,
         index=False,
         default=0,
-        help='Show number of questions',
+        help=False,
         store=False,
-        compute=lambda self: self.compute_question_count()
+        compute='_compute_version_count',
     )
 
-    @api.depends('question_ids')
-    def compute_question_count(self):
-        """ Computes `question_count` field value, this will be the number
-        of categories related with this topic
-        """
+    @api.depends('version_ids')
+    def _compute_version_count(self):
         for record in self:
-            record.question_count = len(record.question_ids)
+            record.version_count = len(record.version_ids)
+
+    last_version_id = fields.Many2one(
+        string='Last version',
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help=False,
+        comodel_name='academy.tests.version',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False,
+        compute='_compute_last_version_id'
+    )
+
+    @api.depends('version_ids')
+    def _compute_last_version_id(self):
+        for record in self:
+            record.last_version_id = record.last_version()
 
     # --------------------------- SQL_CONTRAINTS ------------------------------
 
@@ -210,11 +227,11 @@ class AcademyTestsTopic(models.Model):
         )
     ]
 
-    @api.constrains('topic_version_ids')
-    def _check_topic_version_ids(self):
+    @api.constrains('version_ids')
+    def _check_version_ids(self):
         msg = _('Topic {} must have at least one version')
         for record in self:
-            if not record.topic_version_ids:
+            if not record.version_ids:
                 raise ValidationError(msg.format(record.name))
 
     @api.constrains('category_ids')
@@ -227,9 +244,21 @@ class AcademyTestsTopic(models.Model):
     # --------------------------- PUBLIC METHODS ------------------------------
 
     def last_version(self, topic_id=None):
+        """This gets the last version of a given topic. If topic has not been
+        passed as argument, this uses self as target topic
+
+        Args:
+            topic_id (None, optional): topic from which last versions will be
+            gotten
+
+        Returns:
+            object: (academy.tests.version) last version from topic
+        """
         item = topic_id or self
 
-        versions = item.topic_version_ids.sorted(key='sequence', reverse=True)
+        item.ensure_one()
+
+        versions = item.version_ids.sorted(key='sequence', reverse=True)
 
         return versions[0] if versions else False
 
@@ -289,8 +318,8 @@ class AcademyTestsTopic(models.Model):
 
         action = {
             'type': 'ir.actions.act_window',
-            'name': 'New topic version wizard',
-            'res_model': 'academy.tests.new.topic.version.wizard',
+            'name': 'New version wizard',
+            'res_model': 'academy.tests.new.version.wizard',
             'view_mode': 'form',
             'target': 'new',
             'domain': [],

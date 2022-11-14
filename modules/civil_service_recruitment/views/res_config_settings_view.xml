@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="res_config_settings_view_form" model="ir.ui.view">
+            <field name="name">res.config.settings.view.form.inherit.academy.tests</field>
+            <field name="model">res.config.settings</field>
+            <field name="priority" eval="20" />
+            <field name="inherit_id" ref="base.res_config_settings_view_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//div[hasclass('settings')]" position="inside">
+                    <div class="app_settings_block" data-string="Civil service"
+                         data-key="civil_service_recruitment" groups="base.group_system" >
+
+
+                        <div name="civil_service_recruitment_main_settings">
+                            <h2>Civil service</h2>
+                            <div class="row mt16 o_settings_container" name="file">
+
+                                <div class="col-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <span class="o_form_label">
+                                            Employment
+                                        </span>
+                                        <div class="text-muted">
+                                            Employment attribute values
+                                        </div>
+
+                                        <div class="content-group mt8">
+                                            <button
+                                                name="%(civil_service_recruitment.action_hiring_type_act_window)d"
+                                                string="Hiring types"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+
+                                        <div class="content-group mt8">
+                                            <button
+                                                name="%(civil_service_recruitment.action_employment_group_act_window)d"
+                                                string="Employment groups"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+
+                                        <div class="content-group mt8">
+                                            <button
+                                                name="%(civil_service_recruitment.action_civil_service_recruitment_public_corps_act_window)d"
+                                                string="Job corps"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+
+                                        <div class="content-group mt8">
+                                            <button
+                                                name="%(civil_service_recruitment.action_civil_service_recruitment_required_specialization_act_window)d"
+                                                string="Required specializations"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+
+                                    </div> <!-- pane -->
+                                </div> <!-- col -->
+
+                                <div class="col-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <span class="o_form_label">
+                                            Exams
+                                        </span>
+                                        <div class="text-muted">
+                                            Exam attribute values
+                                        </div>
+
+                                        <div class="content-group mt8">
+                                            <button
+                                                name="%(civil_service_recruitment.action_exam_type_act_window)d"
+                                                string="Exam types"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+
+                                        <div class="content-group mt8">
+                                            <button
+                                                name="%(civil_service_recruitment.action_access_systems_act_window)d"
+                                                string="Access systems"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+
+                                        <div class="content-group mt8">
+                                            <button
+                                                name="%(civil_service_recruitment.action_public_administration_type_act_window)d"
+                                                string="Administration types"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+
+                                    </div> <!-- pane -->
+                                </div> <!-- col -->
+
+                            </div> <!-- row -->
+
+                        </div>
+
+                        <div name="civil_service_recruitment_process_settings">
+                            <h2>Selection processes</h2>
+                            <div class="row mt16 o_settings_container" name="file">
+
+                                <div class="col-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <span class="o_form_label">
+                                            Vacancies
+                                        </span>
+                                        <div class="text-muted">
+                                            Vacancy positions by selection process
+                                        </div>
+
+                                        <div class="content-group mt8">
+                                            <button
+                                                name="%(civil_service_recruitment.action_vacancys_act_window)d"
+                                                string="Vacancies"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+
+                                        <div class="content-group mt8">
+                                            <button
+                                                name="%(civil_service_recruitment.action_civil_service_recruitment_vacancy_type_act_window)d"
+                                                string="Vacancy types"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+
+                                    </div>
+                                </div> <!-- col -->
+
+                                <div class="col-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <span class="o_form_label">
+                                            Events
+                                        </span>
+                                        <div class="text-muted">
+                                            Process events by selection process
+                                        </div>
+
+                                        <div class="content-group mt8">
+                                            <button
+                                                name="%(civil_service_recruitment.action_civil_service_recruitment_event_act_window)d"
+                                                string="Events"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+
+                                        <div class="content-group mt8">
+                                            <button
+                                                name="%(civil_service_recruitment.action_civil_service_recruitment_event_type_act_window)d"
+                                                string="Event types"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+
+                                    </div>
+
+                                </div> <!-- col -->
+                            </div> <!-- row -->
+
+                        </div>
+
+                    </div>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>

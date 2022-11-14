@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 26.3.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 250 250" style="enable-background:new 0 0 250 250;" xml:space="preserve">
+<style type="text/css">
+	.st0{clip-path:url(#SVGID_00000181078313210422543600000008301022404364077952_);fill-opacity:0;}
+	.st1{clip-path:url(#SVGID_00000181078313210422543600000008301022404364077952_);filter:url(#ut21eioDgedz5CWzXOUbRjLNasX8GLDS);}
+	.st2{fill:#5A5A75;}
+	.st3{fill:#C2B8A8;}
+	.st4{fill:#9FC2C0;}
+</style>
+<filter  color-interpolation-filters="sRGB" filterUnits="objectBoundingBox" height="400%" id="ut21eioDgedz5CWzXOUbRjLNasX8GLDS" width="400%" x="-200%" y="-200%">
+	<feOffset  dx="0" dy="3" in="SourceGraphic" xmlns="http://www.w3.org/2000/svg"></feOffset>
+	<feGaussianBlur  result="pf_100_offsetBlur" stdDeviation="2.146804531419514" xmlns="http://www.w3.org/2000/svg">
+		</feGaussianBlur>
+	
+		<feComposite  in="SourceGraphic" in2="pf_100_offsetBlur" operator="out" result="pf_100_inverse" xmlns="http://www.w3.org/2000/svg">
+		</feComposite>
+	<feFlood  flood-color="#FFFFFF" flood-opacity="0.5" result="pf_100_color" xmlns="http://www.w3.org/2000/svg"></feFlood>
+	<feComposite  in="pf_100_color" in2="pf_100_inverse" operator="in" result="pf_100_shadow" xmlns="http://www.w3.org/2000/svg">
+		</feComposite>
+	
+		<feComposite  in="pf_100_shadow" in2="SourceGraphic" operator="over" result="_out_nTPDw1dPOE4dI1bI0U8DfzdsY3ERWsZA" xmlns="http://www.w3.org/2000/svg">
+		</feComposite>
+	<feOffset  dx="0" dy="-3" in="_out_nTPDw1dPOE4dI1bI0U8DfzdsY3ERWsZA" xmlns="http://www.w3.org/2000/svg"></feOffset>
+	<feGaussianBlur  result="pf_101_offsetBlur" stdDeviation="2.146804531419514" xmlns="http://www.w3.org/2000/svg">
+		</feGaussianBlur>
+	
+		<feComposite  in="_out_nTPDw1dPOE4dI1bI0U8DfzdsY3ERWsZA" in2="pf_101_offsetBlur" operator="out" result="pf_101_inverse" xmlns="http://www.w3.org/2000/svg">
+		</feComposite>
+	<feFlood  flood-color="#000000" flood-opacity="0.5" result="pf_101_color" xmlns="http://www.w3.org/2000/svg"></feFlood>
+	<feComposite  in="pf_101_color" in2="pf_101_inverse" operator="in" result="pf_101_shadow" xmlns="http://www.w3.org/2000/svg">
+		</feComposite>
+	
+		<feComposite  in="pf_101_shadow" in2="_out_nTPDw1dPOE4dI1bI0U8DfzdsY3ERWsZA" operator="over" result="_out_XeauSaJy413IM9SlDJsE762c4bfV03q3" xmlns="http://www.w3.org/2000/svg">
+		</feComposite>
+	<feMerge>
+		<feMergeNode  in="_out_XeauSaJy413IM9SlDJsE762c4bfV03q3"></feMergeNode>
+	</feMerge>
+</filter>
+<g>
+	<defs>
+		<rect id="SVGID_1_" y="0" width="250" height="250"/>
+	</defs>
+	<clipPath id="SVGID_00000148653659144950996220000014390345057444004785_">
+		<use xlink:href="#SVGID_1_"  style="overflow:visible;"/>
+	</clipPath>
+	
+		<rect y="0" style="clip-path:url(#SVGID_00000148653659144950996220000014390345057444004785_);fill-opacity:0;" width="250" height="250"/>
+	
+		<g style="clip-path:url(#SVGID_00000148653659144950996220000014390345057444004785_);filter:url(#ut21eioDgedz5CWzXOUbRjLNasX8GLDS);">
+		<path class="st2" d="M15,0h220c8.3,0,15,6.7,15,15v220c0,8.3-6.7,15-15,15H15c-8.3,0-15-6.7-15-15V15C0,6.7,6.7,0,15,0z"/>
+	</g>
+</g>
+<path class="st3" d="M216.7,96.6l-5.8-5.8c-2.3-2.3-6.1-2.3-8.4,0L178.5,115V63c0-6.2-5-11.2-11.2-11.2H158v-3
+	c0-4.8-3.9-8.7-8.7-8.7c-4.8,0-8.7,3.9-8.7,8.7v3H95.4v-3c-0.1-4.8-4.1-8.6-8.9-8.5c-4.7,0.1-8.5,3.9-8.5,8.5v3H58
+	c-6.2,0-11.2,5-11.2,11.2v131.4c0,6.2,5,11.2,11.2,11.2h109.3c6.2,0,11.2-5,11.2-11.2v-38.3c0-1.4-1.1-2.5-2.5-2.5
+	c-1.4,0-2.5,1.1-2.5,2.5l0,0v38.3c0,3.4-2.8,6.2-6.2,6.2H67.4c-3.4,0-6.2-2.8-6.2-6.2V63c0-3.4,2.8-6.2,6.2-6.2H78v4
+	c0,4.8,3.9,8.7,8.7,8.7l0,0c4.8,0,8.7-3.9,8.7-8.7v-3.9h45.2v3.9c0,4.8,3.9,8.7,8.7,8.7l0,0c4.8,0,8.7-3.9,8.7-8.7v-3.9h9.3
+	c3.4,0,6.2,2.8,6.2,6.2v57l-30.2,30.2c-0.4,0.4-0.6,0.9-0.7,1.4l-1.7,10.5h-17.6c-1.4,0.1-2.5,1.2-2.4,2.6c0,1.3,1.1,2.4,2.4,2.4
+	H143c2.5-0.6,12.4-1.3,14.3-2.7l59.4-59.4C219,102.7,219,98.9,216.7,96.6L216.7,96.6z M58,200.6L58,200.6c-3.5,0-6.2-2.8-6.2-6.2V63
+	c0-3.4,2.8-6.2,6.2-6.2H58c-1.2,1.8-1.9,4-1.9,6.2v131.4C56.2,196.6,56.8,198.8,58,200.6L58,200.6z M90.4,60.8c0,2-1.6,3.7-3.7,3.7
+	l0,0c-2,0-3.7-1.6-3.7-3.7v-6.4c0,0,0,0,0,0c0,0,0,0,0,0v-5.5c0.1-2,1.8-3.6,3.8-3.6c2,0.1,3.5,1.6,3.6,3.6L90.4,60.8L90.4,60.8z
+	 M149.3,64.5L149.3,64.5c-2,0-3.7-1.6-3.7-3.7v-12c0.1-2,1.8-3.6,3.8-3.6c2,0.1,3.5,1.6,3.6,3.6v12C153,62.8,151.3,64.5,149.3,64.5
+	C149.3,64.5,149.3,64.5,149.3,64.5z M146,161.6l1-6.9c0.1-0.5,0.1-1,0.3-1.4l48.9-48.9l7,7l-49,48.9c-0.4,0.2-0.8,0.3-1.3,0.3
+	C152.4,160.7,146,161.6,146,161.6L146,161.6z M213.2,101.4l-6.4,6.4l-7-7l6.4-6.4c0.3,0,0.1-0.5,1.3,0l5.8,5.8
+	C213.2,100.5,213.7,100.3,213.2,101.4L213.2,101.4z"/>
+<path class="st3" d="M123.2,152.7c-1.4-0.1-2.6,1-2.6,2.4c-0.1,1.4,1,2.6,2.4,2.6c0.1,0,0.1,0,0.2,0h10c1.4-0.1,2.5-1.2,2.4-2.6
+	c0-1.3-1.1-2.4-2.4-2.4H123.2z"/>
+<g>
+	<path class="st4" d="M111,101.8H95.9c-1.4,0.1-2.5,1.2-2.4,2.6c0,1.3,1.1,2.4,2.4,2.4H111c1.4,0.1,2.6-1,2.6-2.4s-1-2.6-2.4-2.6
+		C111.1,101.8,111,101.8,111,101.8z"/>
+	<path class="st4" d="M77.5,106.8H84c1.4-0.1,2.5-1.2,2.4-2.6c0-1.3-1.1-2.4-2.4-2.4h-6.4c-1.4,0.1-2.5,1.2-2.4,2.6
+		C75.2,105.7,76.2,106.8,77.5,106.8z"/>
+	<path class="st4" d="M113.5,113.8c0-1.4-1.1-2.5-2.5-2.5l0,0H77.5c-1.4,0.1-2.5,1.2-2.4,2.6c0,1.3,1.1,2.4,2.4,2.4H111
+		C112.4,116.3,113.5,115.2,113.5,113.8z"/>
+	<path class="st4" d="M77.5,125.8h19.4c1.4,0.1,2.6-1,2.6-2.4c0.1-1.4-1-2.6-2.4-2.6c-0.1,0-0.1,0-0.2,0H77.5
+		c-1.4,0.1-2.5,1.2-2.4,2.6C75.2,124.7,76.2,125.7,77.5,125.8z"/>
+	<path class="st4" d="M128.5,133.8h22.6c4.5,0,8.1-3.6,8.1-8.1v-21c0-4.5-3.6-8.1-8.1-8.1h-22.6c-4.5,0-8.1,3.6-8.1,8.1v21
+		C120.4,130.2,124,133.8,128.5,133.8z M125.4,104.7c0-1.7,1.4-3.1,3.1-3.1h22.6c1.7,0,3.1,1.4,3.1,3.1v21c0,1.7-1.4,3.1-3.1,3.1
+		h-22.6c-1.7,0-3.1-1.4-3.1-3.1V104.7z"/>
+	<path class="st4" d="M72.8,174.2c0,4.5,3.7,8.1,8.1,8.1h22.6c4.5,0,8.1-3.6,8.1-8.1v-21c0-4.1-3.5-8.1-8.1-8.1H80.9
+		c-4.5,0-8.1,3.6-8.1,8.1V174.2z M103.5,177.3H82.7l23.9-22.8v19.7C106.6,175.9,105.2,177.3,103.5,177.3L103.5,177.3z M77.8,153.2
+		c0-1.7,1.4-3.1,3.1-3.1c0.7,0,22.2,0,23,0l-26,24.7C77.7,173.6,77.9,154.4,77.8,153.2L77.8,153.2z"/>
+	<path class="st4" d="M137.5,80.8c0-1.4-1.1-2.5-2.5-2.5l0,0H99.5c-1.4-0.1-2.6,1-2.6,2.4c-0.1,1.4,1,2.6,2.4,2.6c0.1,0,0.1,0,0.2,0
+		H135C136.4,83.4,137.5,82.2,137.5,80.8z"/>
+</g>
+<path class="st3" d="M123.2,171.2c-1.4-0.1-2.6,1-2.6,2.4s1,2.6,2.4,2.6c0.1,0,0.1,0,0.2,0h32.4c1.4-0.1,2.5-1.2,2.4-2.6
+	c0-1.3-1.1-2.4-2.4-2.4H123.2z"/>
+</svg>

@@ -39,7 +39,7 @@
                         <field name="topic_id" class="oe_field_topic_id"
                             options="{'no_create_edit': True, 'no_open': True}" />
 
-                        <field name="topic_version_ids" class="oe_field_topic_version_ids"
+                        <field name="version_ids" class="oe_field_version_ids"
                             domain="[('topic_id', '=', topic_id)]" string="Versions"
                             context="{'default_topic_id': topic_id}"
                             attrs="{'readonly': [('topic_id', '=', False)]}"

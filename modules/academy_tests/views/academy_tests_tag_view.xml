@@ -25,8 +25,10 @@
             <field name="arch" type="xml">
                 <tree string="academy_tag_tree" create="1" delete="1" edit="1" >
                     <field name="name" class="oe_field_name" />
-                    <field name="question_count" class="oe_field_question_count" string="Questions" />
+                    <field name="description" class="oe_field_description" />
+                    <field name="manager_id" class="oe_field_manager_id" />
                     <field name="test_count" class="oe_field_test_count" string="Tests" />
+                    <field name="question_count" class="oe_field_question_count" string="Questions" />
                 </tree>
             </field>
         </record>
@@ -47,8 +49,10 @@
                                 attrs="{'invisible': [('active', '=', True)]}" />
                         </div>
 
+                        <field name="active" invisible="1" />
+                        <field name="prerogative" invisible="1" />
+
                         <div class="oe_title w-100">
-                            <field name="active" class="oe_field_active" invisible="1" />
                             <label for="name" class="oe_edit_only" />
                             <h1>
                                 <field name="name" class="oe_field_name"
@@ -62,6 +66,13 @@
                             <field name="test_count" class="oe_field_test_count" string="Tests" />
                             <field name="description" class="oe_field_description"
                                 placeholder="Enter new description" colspan="4" />
+                        </group>
+                        <group col="4" colspan="4" string="Ownership"
+                            attrs="{'invisible': [('prerogative', '&lt;', '1')]}">
+                            <field name="owner_id" class="oe_field_owner_id"
+                                attrs="{'readonly': [('prerogative', '&lt;', '3')]}" />
+                            <field name="subrogate_id" class="oe_field_subrogate_id"
+                                attrs="{'readonly': [('prerogative', '&lt;', '2')]}" />
                         </group>
                     </sheet>
                 </form>
@@ -79,10 +90,11 @@
             <field name="arch" type="xml">
                 <search string="academy_tag_search">
                     <field name="name" string="Name" />
+                    <field name="manager_id" class="oe_field_manager_id" />
 
                     <filter string="My tags"
                         name="my_tags"
-                        domain="[('create_uid', '=', uid)]"
+                        domain="[('manager_id', '=', uid)]"
                         context="{}"
                         help="List only the own tags" />
                 </search>
@@ -114,7 +126,7 @@
             <field name="name">Tags</field>
             <field name="sequence" eval="30" />
             <field name="action" ref="action_tags_act_window" />
-            <field name="parent_id" ref="menu_test_advanced" />
+            <field name="parent_id" ref="menu_test_settings_top" />
             <field name="groups_id" eval="[(4, ref('academy_tests.academy_tests_group_technical')), (4, ref('academy_tests.academy_tests_group_editor'))]"/>
         </record>
 

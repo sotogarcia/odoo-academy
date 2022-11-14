@@ -24,7 +24,7 @@ FIND_MOST_USED_QUESTION_FIELD_VALUE_FOR_SQL = '''
             AND atq.active IS TRUE
             AND atp.active IS TRUE
         ORDER BY atq.write_date DESC
-        LIMIT 3
+        LIMIT {num}
     ) as sub
     GROUP BY
         {field}
@@ -87,26 +87,26 @@ ACADEMY_TESTS_SHUFFLE = '''
     ),
 
     block_order AS (
-        -- Computes sequence of the first test block in test exercise
+        -- Computes sequence of the first block in test exercise
         SELECT
-            test_block_id,
+            block_id,
             ROW_NUMBER ( ) OVER (
                 ORDER BY "sequence" ASC ) :: INTEGER AS "sequence"
         FROM (
-            -- Computes sequence by test ID and subsequence by test block
+            -- Computes sequence by test ID and subsequence by block
             SELECT
-                test_block_id,
+                block_id,
                 ROW_NUMBER ( ) OVER (
                     PARTITION BY test_id ORDER BY test_id, "sequence"
                 ) AS "sequence",
                 ROW_NUMBER ( ) OVER (
-                    PARTITION BY test_id, test_block_id
+                    PARTITION BY test_id, block_id
                     ORDER BY test_id, "sequence"
                 ) :: INTEGER AS "subsequence"
             FROM
                 academy_tests_test_question_rel
             WHERE
-                test_block_id IS NOT NULL
+                block_id IS NOT NULL
             ) AS src
         WHERE
             "subsequence" = 1
@@ -120,7 +120,7 @@ ACADEMY_TESTS_SHUFFLE = '''
         FROM
             academy_tests_test_question_rel AS rel
         LEFT JOIN block_order AS bo
-            ON bo.test_block_id = rel.test_block_id
+            ON bo.block_id = rel.block_id
         ORDER BY
             bo."sequence" ASC NULLS FIRST,
             rel."sequence"
@@ -233,25 +233,25 @@ ACADEMY_TESTS_ARRANGE_BLOCKS = '''
     ),
 
     block_order AS (
-        -- Computes sequence of the first test block in test exercise
+        -- Computes sequence of the first block in test exercise
         SELECT
-            test_block_id,
+            block_id,
             ROW_NUMBER ( ) OVER (
                 ORDER BY "sequence" ASC ) :: INTEGER AS "sequence"
         FROM (
-            -- Computes sequence by test ID and subsequence by test block
+            -- Computes sequence by test ID and subsequence by block
             SELECT
-                test_block_id,
+                block_id,
                 ROW_NUMBER ( ) OVER (
                     PARTITION BY test_id
                     ORDER BY test_id, "sequence" ) AS "sequence",
                 ROW_NUMBER ( ) OVER (
-                    PARTITION BY test_id, test_block_id
+                    PARTITION BY test_id, block_id
                     ORDER BY test_id, "sequence" ) :: INTEGER AS "subsequence"
             FROM
                 academy_tests_test_question_rel
             WHERE
-                test_block_id IS NOT NULL
+                block_id IS NOT NULL
             ) AS src
         WHERE
             "subsequence" = 1
@@ -270,7 +270,7 @@ ACADEMY_TESTS_ARRANGE_BLOCKS = '''
         INNER JOIN target_tests AS tt
             ON rel."test_id" = tt.test_id
         LEFT JOIN block_order AS bo
-            ON bo.test_block_id = rel.test_block_id
+            ON bo.block_id = rel.block_id
         )
     UPDATE academy_tests_test_question_rel AS rel
         SET "sequence" = ns."sequence"
@@ -278,85 +278,4 @@ ACADEMY_TESTS_ARRANGE_BLOCKS = '''
         block_grouping AS ns
     WHERE
         rel."id" = ns."link_id"
-'''
-
-# PERFORM CHANGES IN DATABASE
-# This will be used to sort by random keeping grouped questions with the same
-# attachment or attachments. It packes ids in an SQL array, sort recordset and
-# unnest the arrays.
-# -----------------------------------------------------------------------------
-
-ACADEMY_QUESTION_ENSURE_CHECKSUMS = '''
-    WITH answers AS (
-        SELECT
-            atq."id" AS question_id,
-            ARRAY_AGG (
-                CASE WHEN ans.is_correct
-                    THEN 'x'
-                    ELSE '#'
-                END || ans."name"
-                ORDER BY ans."sequence" ASC, ans."id" ASC
-            )::VARCHAR AS answers
-        FROM
-            academy_tests_question AS atq
-            INNER JOIN academy_tests_answer AS ans
-                ON atq."id" = ans.question_id
-        GROUP BY
-            atq."id"
-    ), versions AS (
-        SELECT
-            atq."id" AS question_id,
-            ARRAY_AGG (
-                rel."topic_version_id" ORDER BY rel."topic_version_id" ASC
-            ) :: INT [] AS version_ids
-        FROM
-            academy_tests_question AS atq
-            INNER JOIN academy_tests_question_topic_version_rel AS rel
-                ON rel."question_id" = atq."id"
-        GROUP BY
-            atq."id"
-    ), attachments AS (
-        SELECT
-            atq."id" AS question_id,
-            ARRAY_AGG (
-                rel."attachment_id" ORDER BY rel."attachment_id" ASC
-            ) :: INT [] AS attachment_ids
-        FROM
-            academy_tests_question AS atq
-            INNER JOIN academy_tests_question_ir_attachment_rel AS rel
-                ON rel."question_id" = atq."id"
-        GROUP BY
-            atq."id"
-    ), value_list AS (
-        SELECT
-            atq."id" AS question_id,
-            COALESCE(NULLIF( "preamble", '' ), 'Empty')::VARCHAR AS preamble,
-            "name",
-            answers,
-            COALESCE(version_ids, ARRAY[0]::INT[])::INT[] AS version_ids,
-            COALESCE(attachment_ids, ARRAY[0]::INT[])::INT[] AS attachment_ids
-        FROM
-            academy_tests_question AS atq
-            INNER JOIN answers AS ans
-                ON ans."question_id" = atq."id"
-            LEFT JOIN versions AS vers
-                ON vers."question_id" = atq."id"
-            LEFT JOIN attachments AS att
-                ON att."question_id" = atq."id"
-    ), computed_md5 AS (
-        SELECT
-          question_id,
-            UPPER(MD5(
-                preamble || '; ' ||
-                "name" || '; ' ||
-                ARRAY_TO_STRING(answers::VARCHAR[], '; ')::VARCHAR || '; ' ||
-                ARRAY_TO_STRING(version_ids, '; ')::VARCHAR ||
-                ARRAY_TO_STRING(attachment_ids, '; ')::VARCHAR
-            ))::VARCHAR AS md5
-        FROM value_list
-    )
-    UPDATE academy_tests_question AS atq
-    SET checksum = "md5"
-    FROM computed_md5 as cmp
-    WHERE cmp."question_id" = atq."id"
 '''

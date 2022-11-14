@@ -38,7 +38,7 @@
                         context="{'search_default_all_available_questions': 1}" />
                     <field name="type_id" class="oe_field_type_id" readonly="1" />
                     <field name="topic_id" class="oe_field_topic_id" readonly="1" string="Version" />
-                    <field name="topic_version_ids" class="oe_field_topic_version_ids" widget="many2many_tags" readonly="1" />
+                    <field name="version_ids" class="oe_field_version_ids" widget="many2many_tags" readonly="1" />
                     <field name="category_ids" class="oe_field_category_ids" widget="many2many_tags" readonly="1" />
                     <field name="level_id" class="oe_field_level_id" readonly="1" />
                     <field name="attachment_count" class="oe_field_attachment_count" readonly="1" string="Attachments" />
@@ -73,11 +73,11 @@
                     <field name="question_id" class="oe_field_name oe_edit_only"
                         context="{'search_default_all_available_questions': 1}" />
 
-                    <field name="test_block_id" class="oe_field_test_block_id oe_edit_only" />
+                    <field name="block_id" class="oe_field_block_id oe_edit_only" />
 
                     <field name="type_id" class="oe_field_type_id oe_edit_only" readonly="1" />
                     <field name="topic_id" class="oe_field_topic_id oe_edit_only" readonly="1" string="Version" />
-<!--                     <field name="topic_version_ids" class="oe_field_topic_version_ids oe_edit_only" widget="many2many_tags" readonly="1" />
+<!--                     <field name="version_ids" class="oe_field_version_ids oe_edit_only" widget="many2many_tags" readonly="1" />
                     <field name="category_ids" class="oe_field_category_ids oe_edit_only" widget="many2many_tags" readonly="1" />
                     <field name="level_id" class="oe_field_level_id oe_edit_only" readonly="1" />
  -->
@@ -98,10 +98,6 @@
             <field name="active" eval="True" />
             <field name="inherit_id" ref="view_academy_question_form" />
             <field name="arch" type="xml">
-                <xpath expr="//form" position="attributes">
-                    <attribute name="duplicate">0</attribute>
-                </xpath>
-
                 <xpath expr="//div[@name='button_box']" position="attributes">
                     <attribute name="attrs">{'invisible': [('question_id', '=', False), ('perform', '=', 'link')]}</attribute>
                 </xpath>

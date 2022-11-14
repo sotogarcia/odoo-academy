@@ -4,7 +4,7 @@
     <data noupdate="1">
 
         <record id="res_partner_category_civil_service" model="res.partner.category">
-            <field name="name">Civil Service</field>
+            <field name="name">Civil service</field>
         </record>
 
     </data>

@@ -21,12 +21,10 @@ from io import BytesIO
 
 from .utils.libuseful import prepare_text, fix_established, is_numeric
 
-from .utils.sql_operations import ACADEMY_QUESTION_ENSURE_CHECKSUMS
 from .utils.sql_operations import FIND_MOST_USED_QUESTION_FIELD_VALUE_FOR_SQL
 from .utils.sql_operations import FIND_MOST_USED_QUESTION_CATEGORY_VALUE_SQL
 
 from .utils.sql_inverse_searches import ANSWER_COUNT_SEARCH
-from .utils.sql_inverse_searches import UNCATEGORIZED_QUESTION_SEARCH
 
 _logger = getLogger(__name__)
 
@@ -73,16 +71,15 @@ class AcademyTestsQuestion(models.Model):
         'answer_ids',
         'ir_attachment_ids',
         'topic_id',
-        'topic_version_ids',
+        'version_ids',
         'category_ids',
         'level_id',
         'tag_ids',
         'owner_id',
         'authorship',
         'active',
-        'uncategorized',
         'status',
-        'test_ids',
+        'link_ids',
         'create_date',
         'write_date',
         'create_uid',
@@ -148,17 +145,17 @@ class AcademyTestsQuestion(models.Model):
         tracking=True,
     )
 
-    topic_version_ids = fields.Many2many(
-        string='Topic versions',
+    version_ids = fields.Many2many(
+        string='Versions',
         required=True,
         readonly=False,
         index=True,
-        default=lambda self: self.default_topic_version_ids(),
+        default=lambda self: self.default_version_ids(),
         help='Choose which versions of the topic this question belongs to',
-        comodel_name='academy.tests.topic.version',
-        relation='academy_tests_question_topic_version_rel',
+        comodel_name='academy.tests.version',
+        relation='academy_tests_question_version_rel',
         column1='question_id',
-        column2='topic_version_id',
+        column2='version_id',
         domain=[],
         context={},
         limit=None,
@@ -266,7 +263,7 @@ class AcademyTestsQuestion(models.Model):
         auto_join=False
     )
 
-    test_ids = fields.One2many(
+    link_ids = fields.One2many(
         string='Used in',
         required=False,
         readonly=True,
@@ -279,17 +276,6 @@ class AcademyTestsQuestion(models.Model):
         context={},
         auto_join=False,
         limit=None,
-    )
-
-    checksum = fields.Char(
-        string='Checksum',
-        required=False,
-        readonly=False,
-        index=True,
-        default=None,
-        help='Question checksum',
-        size=32,
-        translate=False
     )
 
     status = fields.Selection(
@@ -361,40 +347,6 @@ class AcademyTestsQuestion(models.Model):
         limit=None,
     )
 
-    duplicated_ids = fields.Many2manyView(
-        string='Duplicates',
-        required=False,
-        readonly=True,
-        index=True,
-        default=None,
-        help=False,
-        comodel_name='academy.tests.question',
-        relation='academy_tests_question_duplicated_rel',
-        column1='question_id',
-        column2='duplicate_id',
-        domain=[],
-        context={},
-        limit=None,
-    )
-
-    # This field can have a maximum of one record. It's used in some domains
-    # to check if question is not the original.
-    original_ids = fields.Many2manyView(
-        string='Original',
-        required=False,
-        readonly=True,
-        index=True,
-        default=None,
-        help=False,
-        comodel_name='academy.tests.question',
-        relation='academy_tests_question_duplicated_rel',
-        column1='duplicate_id',
-        column2='question_id',
-        domain=[],
-        context={},
-        limit=None,
-    )
-
     color = fields.Integer(
         string='Color Index',
         required=True,
@@ -425,11 +377,11 @@ class AcademyTestsQuestion(models.Model):
         )
     ]
 
-    @api.constrains('topic_version_ids')
-    def _check_topic_version_ids(self):
+    @api.constrains('version_ids')
+    def _check_version_ids(self):
         msg = _('Topic {} must have at least one version')
         for record in self:
-            if not record.topic_version_ids:
+            if not record.version_ids:
                 raise ValidationError(msg.format(record.name))
 
     @api.constrains('category_ids')
@@ -438,6 +390,64 @@ class AcademyTestsQuestion(models.Model):
         for record in self:
             if not record.category_ids:
                 raise ValidationError(msg.format(record.name))
+
+    @api.constrains('name', 'preamble', 'topic_id', 'answer_ids',
+                    'ir_attachment_ids', 'version_ids', 'status')
+    def _check_question_is_unique(self):
+        msg = _('There is already a question «Q#{}» with this wording')
+
+        for record in self:
+
+            if record.status != 'ready':
+                continue
+
+            similar_set = record._search_similars()
+            thisans = record._join_answers()
+            thisattach = record._join_attachments()
+
+            for similar in similar_set:
+                simans = similar._join_answers()
+                if thisans and simans and thisans == simans:
+                    raise ValidationError(msg.format(similar.id))
+
+                simattach = similar._join_attachments()
+                if thisattach and simattach and thisattach == simattach:
+                    raise ValidationError(msg.format(similar.id))
+
+    def _search_similars(self):
+        self.ensure_one()
+
+        domain = [
+            ('id', '!=', self.id),
+            ('status', '=', 'ready'),
+            ('topic_id', '=', self.topic_id.id),
+            ('name', 'ilike', self.name),
+            ('preamble', 'ilike', self.preamble),
+        ]
+
+        return self.search(domain)
+
+    def _join_answers(self):
+        answers = []
+
+        self.ensure_one()
+
+        for answer in self.answer_ids:
+            prefix = 'x' if answer.is_correct else '#'
+            name = answer.name.lower()
+            answers.append('{}{}'.format(prefix, name))
+
+        answers.sort()
+
+        return ';'.join(answers)
+
+    def _join_attachments(self):
+        self.ensure_one()
+        checksums = self.mapped('ir_attachment_ids.checksum')
+
+        checksums.sort()
+
+        return ';'.join(checksums)
 
     # -------------------------- MANAGEMENT FIELDS ----------------------------
 
@@ -472,21 +482,6 @@ class AcademyTestsQuestion(models.Model):
     def _compute_dependent_count(self):
         for record in self:
             record.dependent_count = len(record.dependent_ids)
-
-    duplicated_count = fields.Integer(
-        string='Duplicated count',
-        required=False,
-        readonly=True,
-        index=False,
-        default=0,
-        help='Show the number of duplicate questions',
-        compute='_compute_duplicated_count'
-    )
-
-    @api.depends('duplicated_ids')
-    def _compute_duplicated_count(self):
-        for record in self:
-            record.duplicated_count = len(record.duplicated_ids)
 
     ir_attachment_image_ids = fields.Many2many(
         string='Images',
@@ -603,43 +598,22 @@ class AcademyTestsQuestion(models.Model):
         for record in self:
             record.category_count = len(record.category_ids)
 
-    uncategorized = fields.Boolean(
-        string='Uncategorized',
-        required=False,
-        readonly=True,
-        index=False,
-        default=False,
-        help='Show if question has been categorized',
-        store=False,
-        compute='_compute_uncategorized',
-        search='_search_uncategorized',
-    )
-
-    @api.depends('topic_id', 'topic_version_ids', 'category_ids')
-    def _compute_uncategorized(self):
-        for record in self:
-            topic_id = record.topic_id
-            is_valid_topic = topic_id.active and topic_id.provisional is False
-
-            category_ids = record.category_ids
-            act_cats = all(category_ids.mapped('active'))
-            end_cats = not any(category_ids.mapped('provisional'))
-
-            version_ids = record.topic_version_ids
-            act_vers = all(version_ids.mapped('active'))
-            end_vers = not any(version_ids.mapped('provisional'))
-
-            record.uncategorized = (topic_id and is_valid_topic) and \
-                (category_ids and act_cats and end_cats) and \
-                (version_ids and act_vers and end_vers)
-
-    def _search_uncategorized(self, operator, value):
-        self.env.cr.execute(UNCATEGORIZED_QUESTION_SEARCH)
-        ids = self.env.cr.fetchall()
-
-        return [('id', operator, ids)]
-
     # --------------- ONCHANGE EVENTS AND OTHER FIELD METHODS -----------------
+
+    @staticmethod
+    def _safe_cast(val, to_type, default=None):
+        try:
+            return to_type(val)
+        except (ValueError, TypeError):
+            return default
+
+    def _categorize_from_last_questions(self):
+        key = 'academy_tests.categorize_from_last_questions'
+
+        param_obj = self.env["ir.config_parameter"].sudo()
+        value = param_obj.get_param(key, default='3')
+
+        return self._safe_cast(value, int, 3)
 
     def default_type_id(self, type_id=None):
         """ Computes the type_id default value. This will be the most
@@ -648,8 +622,9 @@ class AcademyTestsQuestion(models.Model):
         ID, this will be used when no alternative was found
         """
         uid = self._default_owner_id()
+        num = self._categorize_from_last_questions()
         sql = FIND_MOST_USED_QUESTION_FIELD_VALUE_FOR_SQL.format(
-            field='type_id', owner=uid)
+            field='type_id', owner=uid, num=num)
 
         self.env.cr.execute(sql)
         data = self.env.cr.fetchone()
@@ -663,15 +638,16 @@ class AcademyTestsQuestion(models.Model):
         ID, this will be used when no alternative was found
         """
         uid = self._default_owner_id()
+        num = self._categorize_from_last_questions()
         sql = FIND_MOST_USED_QUESTION_FIELD_VALUE_FOR_SQL.format(
-            field='topic_id', owner=uid)
+            field='topic_id', owner=uid, num=num)
 
         self.env.cr.execute(sql)
         data = self.env.cr.fetchone()
 
         return data[0] if data and data[0] else topic_id
 
-    def default_topic_version_ids(self):
+    def default_version_ids(self):
         return self.topic_id.last_version()
 
     def default_level_id(self, level_id=None):
@@ -682,8 +658,9 @@ class AcademyTestsQuestion(models.Model):
         """
 
         uid = self._default_owner_id()
+        num = self._categorize_from_last_questions()
         sql = FIND_MOST_USED_QUESTION_FIELD_VALUE_FOR_SQL.format(
-            field='level_id', owner=uid)
+            field='level_id', owner=uid, num=num)
 
         self.env.cr.execute(sql)
         data = self.env.cr.fetchone()
@@ -752,7 +729,7 @@ class AcademyTestsQuestion(models.Model):
         only in the selected topic.
         """
         self.category_ids = False
-        self.topic_version_ids = self.default_topic_version_ids()
+        self.version_ids = self.default_version_ids()
 
     @api.onchange('ir_attachment_ids')
     def _onchange_ir_attachment_id(self):
@@ -834,6 +811,24 @@ class AcademyTestsQuestion(models.Model):
 
         return fields
 
+    @api.returns('self', lambda value: value.id)
+    def copy(self, default=None):
+        """ There can be no duplicates in production, so all copies must be
+        created with draft status.
+
+        Args:
+            default (None, optional): values to overwrite in the copy
+
+        Returns:
+            object: a copy of this record with ``draft`` as status value
+        """
+        parent = super(AcademyTestsQuestion, self)
+
+        default = dict(default or {})
+        default['status'] = 'draft'
+
+        return parent.copy(default=default)
+
     @api.model
     def create(self, values):
         """ Update attachment records
@@ -886,7 +881,7 @@ class AcademyTestsQuestion(models.Model):
         self.ensure_one()
 
         if subtype_id == self.env.ref(expected).id:
-            result.append(self.mapped('test_ids.test_id'))
+            result.append(self.mapped('link_ids.test_id'))
 
         return result
 
@@ -1125,7 +1120,7 @@ class AcademyTestsQuestion(models.Model):
     )
 
     @api.depends(
-        'name', 'preamble', 'answer_ids', 'attachment_ids', 'description')
+        'name', 'preamble', 'answer_ids', 'ir_attachment_ids', 'description')
     def compute_markdown(self):
         for record in self:
             record.markdown = record.to_string(True).strip()
@@ -1142,7 +1137,7 @@ class AcademyTestsQuestion(models.Model):
     )
 
     @api.depends(
-        'name', 'preamble', 'answer_ids', 'attachment_ids', 'description')
+        'name', 'preamble', 'answer_ids', 'ir_attachment_ids', 'description')
     def compute_html(self):
         for record in self:
             record.html = record.to_html()
@@ -1275,38 +1270,6 @@ class AcademyTestsQuestion(models.Model):
                 record.status = 'ready'
             else:
                 record.status = 'draft'
-
-    @api.model
-    def ensure_checksums(self):
-        """ This method uses an SQL query to UPDATE the checksum in all the
-        question records when this field has a null value.
-        """
-        sql = ACADEMY_QUESTION_ENSURE_CHECKSUMS
-
-        self.env.cr.execute(sql)
-        self.env.cr.commit()
-
-    def show_duplicates(self):
-        self.ensure_one()
-
-        act_xid = ('academy_tests.'
-                   'action_remove_duplicate_questions_wizard_act_window')
-        act_item = self.env.ref(act_xid)
-
-        act_dict = dict(
-            name=act_item.name,
-            view_mode='form',
-            view_id=False,
-            view_type='form',
-            res_model=act_item.res_model,
-            type='ir.actions.act_window',
-            target='new',
-            context={
-                'default_question_id': self.id
-            }
-        )
-
-        return act_dict
 
     @api.model
     def domain_to_sql(self, domain):

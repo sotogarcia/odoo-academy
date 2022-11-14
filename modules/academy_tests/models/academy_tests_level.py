@@ -5,7 +5,7 @@ This module contains the academy.tests.level Odoo model which stores
 all academy tests level attributes and behavior.
 """
 
-from odoo import models, fields
+from odoo import models, fields, api
 from odoo.tools.translate import _
 
 from logging import getLogger
@@ -62,6 +62,37 @@ class AcademyTestsLevel(models.Model):
         default=10,
         help='Sequence order for difficulty'
     )
+
+    question_ids = fields.One2many(
+        string='Questions',
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help='List the related questions',
+        comodel_name='academy.tests.question',
+        inverse_name='level_id',
+        domain=[],
+        context={},
+        auto_join=False,
+        limit=None
+    )
+
+    question_count = fields.Integer(
+        string='Question count',
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        help=False,
+        compute='_compute_question_count',
+        search='_search_question_count',
+    )
+
+    @api.depends('question_ids')
+    def _compute_question_count(self):
+        for record in self:
+            record.question_count = len(record.question_ids)
 
     # --------------------------- SQL_CONTRAINTS ------------------------------
 

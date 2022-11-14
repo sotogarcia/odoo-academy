@@ -24,9 +24,9 @@
             <field name="active" eval="True" />
             <field name="arch" type="xml">
                 <tree string="academy_answer_tree" create="1" delete="1" edit="1">
-                    <field name="is_correct" class="oe_field_is_correct" />
                     <field name="name" class="oe_field_name" />
-                    <field name="description" class="oe_field_description" />
+                    <field name="question_ref" class="od_field_qid" />
+                    <field name="is_correct" class="oe_field_is_correct" />
                 </tree>
             </field>
         </record>
@@ -75,6 +75,8 @@
                             <h1>ID-<field name="id" class="oe_field_id" /></h1>
                         </div>
                         <group col="2">
+                            <field name="question_id" class="oe_field_question_id"
+                                invisible="context.get('default_question_id', False)" />
                             <field name="is_correct" class="oe_field_is_correct" />
                         </group>
                         <notebook>
@@ -101,7 +103,16 @@
             <field name="arch" type="xml">
                 <search string="academy_answer_search">
                     <field name="name" />
-                    <!-- ··· -->
+                    <field name="question_id" />
+                    <field name="question_ref" string="Question ID" />
+                    <field name="id" string="Answer ID" />
+
+                    <filter name="is_correct" string="Is correct"
+                            domain="[('active','=',True)]"/>
+
+                    <separator />
+                    <filter name="inactive" string="Archived"
+                            domain="[('active','=',False)]"/>
                 </search>
             </field>
         </record>

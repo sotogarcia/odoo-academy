@@ -17,10 +17,8 @@ from . import academy_tests_question_import_wizard
 from . import academy_tests_change_owner_wizard
 
 from . import academy_tests_choose_report_wizard
-from . import academy_tests_new_topic_version_wizard
+from . import academy_tests_new_version_wizard
 
 from . import academy_tests_manual_categorization_wizard
 
 from . import academy_tests_update_questions_wizard
-
-from . import academy_tests_remove_duplicate_questions_wizard

@@ -40,6 +40,8 @@
                 <tree string="academy_level_tree" create="1" delete="1" edit="1" >
                     <field name="sequence" class="oe_field_sequence" widget="handle" />
                     <field name="name" class="oe_field_name" string="Name" />
+                    <field name="description" class="od_field_description" />
+                    <field name="question_count" class="oe_field_question_count" />
                 </tree>
             </field>
         </record>
@@ -69,6 +71,7 @@
                             </h1>
                         </div>
                         <group col="2">
+                            <field name="question_count" class="oe_field_question_count" />
                             <field name="description" class="oe_field_description"
                                 placeholder="Enter new description" />
                         </group>

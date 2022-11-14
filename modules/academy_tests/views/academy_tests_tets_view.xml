@@ -98,7 +98,7 @@
                         <notebook class="academy-tests-test-data">
                             <!-- options="{'no_create': 1}" -->
                             <page string="Questions" class="oe_page_questions" accesskey="Q">
-                                <field name="question_ids" class="oe_field_question_ids" options="{'no_create': 1}"
+                                <field name="link_ids" class="oe_field_link_ids" options="{'no_create': 1}"
                                     context="{'tree_view_ref': 'academy_tests.view_academy_tests_test_question_rel_embed_tree'}" />
                             </page>
 
@@ -138,7 +138,7 @@
                                     <field name="repeat_images" class="oe_field_repeat_images" />
 
                                     <separator colspan="4" string="Blocks" />
-                                    <field name="test_block_ids" class="oe_field_test_block_ids"
+                                    <field name="block_ids" class="oe_field_block_ids"
                                         widget="many2many_tags" />
                                     <field name="auto_arrange_blocks" class="oe_field_auto_arrange_blocks" />
                                     <field name="restart_numbering" class="oe_field_restart_numbering" />

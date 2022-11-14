@@ -74,8 +74,8 @@
                 <search string="academy_professional_category_search">
                     <field name="name" />
 
+                    <separator/>
                     <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
-
                 </search>
             </field>
         </record>
@@ -98,15 +98,6 @@
                     There are no professional categories yet
                 </p>
             </field>
-        </record>
-
-        <!-- Main menu for model.name -->
-        <record id="menu_professional_category" model="ir.ui.menu" >
-            <field name="name">Professional Categories</field>
-            <field name="sequence" eval="20" />
-            <field name="action" ref="action_professional_category_act_window" />
-            <field name="parent_id" ref="menu_academy_settings_helper" />
-            <field name="groups_id" eval="[(4, ref('academy_base.academy_group_manager'))]"/>
         </record>
 
     </data>

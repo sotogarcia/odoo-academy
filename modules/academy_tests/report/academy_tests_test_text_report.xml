@@ -14,7 +14,7 @@
 
 <t t-esc="o.preamble" /></t>
 
-<t t-foreach="o.question_ids.question_id" t-as="question_id"><t t-raw="question_id.to_string(editable=True)" /></t>
+<t t-foreach="o.link_ids.question_id" t-as="question_id"><t t-raw="question_id.to_string(editable=True)" /></t>
                 </t>
             </field>
         </record>

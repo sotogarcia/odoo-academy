@@ -3,7 +3,7 @@
 <openerp>
     <data noupdate="0">
 
-        <!-- VIEWS: "Vacancy kind"
+        <!-- VIEWS: "Exam type"
 
             - Model·········: civil.service.recruitment.exam.type
             - _rec_name·····: name
@@ -86,7 +86,7 @@
         </record>
 
         <!-- Main window action for model.name -->
-        <record id="action_vacancy_kind_act_window" model="ir.actions.act_window">
+        <record id="action_exam_type_act_window" model="ir.actions.act_window">
             <field name="type">ir.actions.act_window</field>
             <field name="name">Exam types</field>
             <field name="res_model">civil.service.recruitment.exam.type</field>
@@ -105,13 +105,13 @@
         </record>
 
         <!-- Main menu for model.name -->
-        <record id="menu_vacancy_kind" model="ir.ui.menu" >
+<!--         <record id="menu_exam_type" model="ir.ui.menu" >
             <field name="name">Exam types</field>
             <field name="sequence" eval="10" />
-            <field name="action" ref="action_vacancy_kind_act_window" />
+            <field name="action" ref="action_exam_type_act_window" />
             <field name="parent_id" ref="menu_civil_service_settings" />
             <field name="groups_id" eval="[(4, ref('civil_service_recruitment.civil_service_recruitment_group_manager'))]" />
-        </record>
+        </record> -->
 
     </data>
 </openerp>

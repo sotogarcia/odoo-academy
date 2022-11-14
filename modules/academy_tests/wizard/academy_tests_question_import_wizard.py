@@ -157,17 +157,17 @@ class AcademyTestsQuestionImport(models.TransientModel):
         auto_join=False
     )
 
-    topic_version_ids = fields.Many2many(
-        string='Topic versions',
+    version_ids = fields.Many2many(
+        string='Versions',
         required=True,
         readonly=False,
         index=False,
         default=None,
         help='Choose which versions of the topic this question belongs to',
-        comodel_name='academy.tests.topic.version',
-        relation='academy_tests_question_import_topic_version_rel',
+        comodel_name='academy.tests.version',
+        relation='academy_tests_question_import_version_rel',
         column1='question_import_id',
-        column2='topic_version_id',
+        column2='version_id',
         domain=[],
         context={},
         limit=None
@@ -344,15 +344,15 @@ class AcademyTestsQuestionImport(models.TransientModel):
         topic_item = self.env.ref(xid)
 
         if self.topic_id.id == topic_item.id:
-            xid = 'academy_tests.academy_tests_topic_version_no_version'
+            xid = 'academy_tests.academy_tests_version_no_version'
             item = self.env.ref(xid)
-            self.topic_version_ids = [(6, 0, [item.id])]
+            self.version_ids = [(6, 0, [item.id])]
 
             xid = 'academy_tests.academy_tests_category_no_category'
             item = self.env.ref(xid)
             self.category_ids = [(6, 0, [item.id])]
         else:
-            self.topic_version_ids = self.topic_id.last_version()
+            self.version_ids = self.topic_id.last_version()
             self.category_ids = [(5, 0, 0)]
 
     @api.onchange('state')
@@ -486,11 +486,11 @@ class AcademyTestsQuestionImport(models.TransientModel):
         # pylint: disable=locally-disabled, E1101
         catops = [(4, ID, None) for ID in self.category_ids.mapped('id')]
         tagops = [(4, ID, None) for ID in self.tag_ids.mapped('id')]
-        verops = [(4, ID, None) for ID in self.topic_version_ids.mapped('id')]
+        verops = [(4, ID, None) for ID in self.version_ids.mapped('id')]
 
         categorization_values = {
             'topic_id': self.topic_id.id,
-            'topic_version_ids': verops,
+            'version_ids': verops,
             'category_ids': catops,
             'type_id': self.type_id.id,
             'tag_ids': tagops,

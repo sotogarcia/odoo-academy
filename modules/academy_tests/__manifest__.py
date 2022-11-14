@@ -31,17 +31,17 @@
         'data/academy_tests_level_data.xml',
         'data/academy_tests_question_type_data.xml',
         'data/academy_tests_test_kind_data.xml',
-        'data/academy_tests_correction_scale_data.xml',
         'data/ir_sequence.xml',
-        'data/academy_tests_test_block_data.xml',
+        'data/academy_tests_block_data.xml',
 
         'data/academy_tests_topic_data.xml',
-        'data/academy_tests_topic_version_data.xml',
+        'data/academy_tests_version_data.xml',
         'data/academy_tests_category_data.xml',
 
         'data/res_groups_data.xml',
 
         'security/academy_tests.xml',
+        'security/academy_tests_abstract_test_details.xml',
         'security/academy_tests_answer.xml',
         'security/academy_tests_answers_table.xml',
         'security/academy_tests_category.xml',
@@ -53,11 +53,9 @@
         'security/academy_tests_question_type.xml',
         'security/academy_tests_topic.xml',
         'security/academy_tests_test_kind.xml',
-        'security/academy_tests_correction_scale.xml',
-        'security/academy_tests_topic_version.xml',
+        'security/academy_tests_version.xml',
+        'security/academy_tests_block.xml',
         'security/mail_message.xml',
-        'security/academy_tests_uncategorized_questions_by_user.xml',
-        'security/academy_tests_test_block.xml',
         'security/ir_attachment.xml',
 
         'security/academy_tests_question_import_wizard.xml',
@@ -67,20 +65,18 @@
         'security/academy_tests_question_append_wizard.xml',
         'security/academy_tests_question_append_wizard_link.xml',
         'security/academy_tests_question_categorize_wizard.xml',
-        'security/academy_tests_remove_duplicate_questions_wizard.xml',
         'security/academy_tests_update_questions_wizard.xml',
-        'security/academy_tests_new_topic_version_wizard.xml',
+        'security/academy_tests_new_version_wizard.xml',
 
         'security/academy_tests_question_dependency_rel.xml',
-        'security/academy_tests_question_duplicated_rel.xml',
-        'security/academy_tests_test_test_block_rel.xml',
-        'security/academy_res_users_duplicated_questions_rel.xml',
-        'security/academy_tests_test_topic_rel.xml',
+        'security/academy_tests_block_rel.xml',
+        'security/academy_tests_topic_rel.xml',
 
         # This must be before academy_tests_tets_view.xml
         'report/academy_test_report.xml',
 
         'views/academy_tests.xml',
+
         'views/academy_tests_answer_view.xml',
         'views/academy_tests_category_view.xml',
         'views/academy_tests_level_view.xml',
@@ -90,21 +86,14 @@
         'views/academy_tests_test_kind_view.xml',
         'views/academy_tests_tets_view.xml',
         'views/academy_tests_topic_view.xml',
+        'views/academy_tests_version_view.xml',
+        'views/academy_tests_block_view.xml',
+
         'views/ir_attachment_view.xml',
-        'views/academy_tests_topic_version_view.xml',
-
-        'views/academy_tests_correction_scale_view.xml',
-
-        'views/academy_tests_uncategorized_by_user_readonly_view.xml',
-        'views/academy_tests_test_block_view.xml',
+        'views/res_config_settings.xml',
 
         'report/academy_test_answers_table_report.xml',
-        'report/academy_tests_uncategorized_by_user_report.xml',
-
         'report/academy_tests_test_text_report.xml',
-
-        'templates/uncategorized_questions_by_user_and_topic.xml',
-        'templates/duplicated_questions_by_user_and_topic.xml',
 
         'wizard/academy_tests_question_categorize_wizard_view.xml',
         'wizard/academy_tests_question_append_wizard_view.xml',
@@ -112,9 +101,8 @@
         'wizard/academy_tests_update_questions_wizard_view.xml',
         'wizard/academy_tests_change_owner_wizard_view.xml',
         'wizard/academy_tests_choose_report_wizard.xml',
-        'wizard/academy_tests_new_topic_version_wizard_view.xml',
+        'wizard/academy_tests_new_version_wizard_view.xml',
         'wizard/academy_tests_manual_categorization_wizard_view.xml',
-        'wizard/academy_tests_remove_duplicate_questions_wizard_view.xml',
         'wizard/academy_tests_question_append_wizard_link_view.xml',
     ],
     # only loaded in demonstration mode
@@ -122,7 +110,7 @@
         'demo/ir_attachment_demo.xml',
         'demo/academy_tests_tag_demo.xml',
         'demo/academy_tests_topic_demo.xml',
-        'demo/academy_tests_topic_version_demo.xml',
+        'demo/academy_tests_version_demo.xml',
         'demo/academy_tests_category_demo.xml',
         'demo/academy_tests_test_demo.xml',
         'demo/academy_tests_question_demo.xml',
@@ -155,6 +143,4 @@
             'academy_tests/static/src/css/academy_tests_report.css',
         ]
     },
-
-    'license': 'AGPL-3'
 }

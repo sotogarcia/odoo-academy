@@ -10,9 +10,5 @@
             <field name="parent_id" ref="academy_base.menu_academy" />
         </record>
 
-        <record id="civil_service_recruitment.menu_civil_service_settings" model="ir.ui.menu" >
-            <field name="parent_id" ref="academy_base.menu_academy_settings" />
-        </record>
-
     </data>
 </openerp>

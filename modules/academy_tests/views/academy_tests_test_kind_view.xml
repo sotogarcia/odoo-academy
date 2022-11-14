@@ -26,6 +26,7 @@
                 <tree string="academy_tests_test_kind_tree" create="1" delete="1" edit="1">
                     <field name="name" />
                     <field name="description" />
+                    <field name="test_count" />
                 </tree>
             </field>
         </record>
@@ -58,12 +59,10 @@
                         </div>
 
                         <group col="2">
+                            <field name="test_count" class="oe_field_test_count" />
                             <field name="description" class="oe_field_description"
                                 placeholder="Enter new description" />
                         </group>
-
-                        <separator string="Used in" />
-                        <field name="test_ids" class="oe_field_test_ids" />
                     </sheet>
                 </form>
             </field>

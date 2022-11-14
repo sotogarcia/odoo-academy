@@ -13,12 +13,5 @@
             <field name="groups_id" eval="[(4, ref('civil_service_recruitment.civil_service_recruitment_group_consultant'))]"/>
         </record>
 
-        <record id="menu_civil_service_settings" model="ir.ui.menu" >
-            <field name="name">Civil service</field>
-            <field name="sequence" eval="25" />
-            <field name="parent_id" ref="civil_service_recruitment.menu_civil_service_recruitment" />
-            <field name="groups_id" eval="[(4, ref('civil_service_recruitment.civil_service_recruitment_group_consultant'))]"/>
-        </record>
-
     </data>
 </openerp>

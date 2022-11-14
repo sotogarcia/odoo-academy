@@ -89,10 +89,11 @@
         'views/academy_student_view.xml',
 
         'views/academy_teacher_view.xml',
+        'views/res_partner_view.xml',
+
+        'views/res_config_settings_view.xml',
 
         'report/academy_training_activity_details_report.xml',
-
-        'views/res_partner_view.xml',
 
         'wizard/academy_company_switch_wizard_view.xml'
     ],

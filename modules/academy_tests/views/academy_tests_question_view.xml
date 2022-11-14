@@ -35,7 +35,7 @@
                     <field name="name" class="oe_field_name" string="Name" />
                     <field name="type_id" class="oe_field_type_id" />
                     <field name="topic_id" class="oe_field_topic_id" />
-                    <field name="topic_version_ids" class="oe_field_topic_version_ids" widget="many2many_tags" string="Versions" />
+                    <field name="version_ids" class="oe_field_version_ids" widget="many2many_tags" string="Versions" />
                     <field name="category_ids" class="oe_field_category_ids" widget="many2many_tags" />
                     <field name="level_id" class="oe_field_level_id" />
                     <field name="attachment_count" class="oe_field_attachment_count" string="Attachments" />
@@ -57,14 +57,10 @@
             <field name="arch" type="xml">
                 <form string="academy_question_form" create="1" delete="1" edit="1" class="o_question_form">
                     <sheet>
+                        <field name="active" invisible="1" />
 
                         <div class="oe_button_box" name="button_box">
                             <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
-                            <button name="show_duplicates" type="object"
-                                class="oe_stat_button oe_read_only" icon="fa-clone"
-                                attrs="{'invisible': [('duplicated_count', '=', 0)]}">
-                                <field name="duplicated_count" class="oe_field_duplicated_count" />&#160;Duplicates
-                            </button>
                             <button name="switch_status" type="object" attrs="{'invisible': [('status', '&lt;&gt;', 'ready')]}"
                                 class="oe_stat_button oe_read_only text-success" icon="fa-pencil-square-o">
                                 <field name="status" class="oe_field_status" />
@@ -76,8 +72,6 @@
                         </div>
 
                         <div class="oe_title_question" id="academy-tests-question-title">
-
-                            <field name="active" invisible="1"/>
 
                             <label for="preamble" class="oe_edit_only d-block" />
                             <field name="preamble" class="oe_field_preamble" widget="text"
@@ -138,7 +132,7 @@
                                         options="{'no_create': True}" />
                                     <field name="topic_id" class="oe_field_topic_id"
                                         options="{'no_create': True}" />
-                                    <field name="topic_version_ids" class="oe_field_topic_version_ids"
+                                    <field name="version_ids" class="oe_field_version_ids"
                                         widget="many2many_tags" options="{'no_create': True}"
                                         attrs="{'readonly': [('topic_id', '=', False)]}"
                                         domain="[('topic_id', '=', topic_id)]" string="Versions"
@@ -175,7 +169,7 @@
                             <page string="Dependency" class="oe_page_description" accesskey="E">
 
                                 <group col="2" string="Tests">
-                                    <field name="test_ids" class="oe_field_test_ids oe_center_buttons" widget="many2many_deedless" context="{'show_test_id': True}">
+                                    <field name="link_ids" class="oe_field_link_ids oe_center_buttons" widget="many2many_deedless" context="{'show_test_id': True}">
                                         <tree string="Tests by questions" create="0" delete="0" edit="0" editable="bottom">
                                             <field name="test_id" class="oe_field_test_id" />
                                             <button name="open_test"
@@ -322,7 +316,7 @@
 
                     <field name="name" string="Statement" />
                     <field name="preamble" />
-                    <field name="test_ids" string="Test" />
+                    <field name="link_ids" string="Test" />
                     <field name="topic_id" />
                     <field name="category_ids" />
                     <field name="level_id" />
@@ -361,18 +355,6 @@
                         help="List the own available authorship questions" />
 
                     <separator/>
-
-                    <filter string="Uncategorized questions"
-                        name="uncategorized_questions"
-                        domain="[('uncategorized', '=', True)]"
-                        context="{}"
-                        help="List of uncategorized questions" />
-
-                    <filter string="Questions with duplicates"
-                        name="duplicated_questions"
-                        domain="[('duplicated_ids', '&lt;&gt;', False)]"
-                        context="{}"
-                        help="List the questions that have duplicates" />
 
                     <filter string="Questions to review"
                         name="to_be_reviewed"
@@ -438,8 +420,8 @@
 
         <!-- Main menu for model.name -->
         <record id="menu_questions" model="ir.ui.menu" >
-            <field name="name">List questions</field>
-            <field name="sequence" eval="15" />
+            <field name="name">Questions</field>
+            <field name="sequence" eval="20" />
             <field name="action" ref="action_questions_act_window" />
             <field name="parent_id" ref="academy_tests.menu_test_top" />
             <field name="groups_id" eval="[(4, ref('academy_tests.academy_tests_group_technical')), (4, ref('academy_tests.academy_tests_group_editor'))]"/>
@@ -597,7 +579,7 @@
                         options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"
                         invisible="context.get('hide_topic', False)" />
 
-                    <field name="topic_version_ids" class="oe_field_topic_version_ids"
+                    <field name="version_ids" class="oe_field_version_ids"
                         widget="many2many_tags" string="Versions"
                         domain="[('topic_id', '=', topic_id)]"
                         options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"

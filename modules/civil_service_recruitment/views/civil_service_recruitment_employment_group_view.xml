@@ -87,7 +87,7 @@
         </record>
 
         <!-- Main window action for model.name -->
-        <record id="action_employment_position_act_window" model="ir.actions.act_window">
+        <record id="action_employment_group_act_window" model="ir.actions.act_window">
             <field name="type">ir.actions.act_window</field>
             <field name="name">Employment groups</field>
             <field name="res_model">civil.service.recruitment.employment.group</field>
@@ -103,15 +103,6 @@
                     There are no employment groups yet
                 </p>
             </field>
-        </record>
-
-        <!-- Main menu for model.name -->
-        <record id="menu_employment_group" model="ir.ui.menu" >
-            <field name="name">Employment groups</field>
-            <field name="sequence" eval="10" />
-            <field name="action" ref="action_employment_position_act_window" />
-            <field name="parent_id" ref="menu_civil_service_settings" />
-            <field name="groups_id" eval="[(4, ref('civil_service_recruitment.civil_service_recruitment_group_manager'))]" />
         </record>
 
     </data>
