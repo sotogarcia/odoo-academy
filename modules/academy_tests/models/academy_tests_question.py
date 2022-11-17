@@ -8,21 +8,18 @@ all academy tests question attributes and behavior.
 from odoo import models, fields, api
 from odoo.tools.translate import _
 from odoo.exceptions import ValidationError, UserError
-from odoo.osv.expression import FALSE_DOMAIN
+from odoo.osv.expression import FALSE_DOMAIN, TRUE_DOMAIN
 
 from logging import getLogger
 from os import linesep
 from re import search, UNICODE, IGNORECASE
 from enum import Enum
 
-import lxml.etree as ET
-import mimetypes
-from io import BytesIO
-
 from .utils.libuseful import prepare_text, fix_established, is_numeric
 
 from .utils.sql_operations import FIND_MOST_USED_QUESTION_FIELD_VALUE_FOR_SQL
 from .utils.sql_operations import FIND_MOST_USED_QUESTION_CATEGORY_VALUE_SQL
+from .utils.sql_inverse_searches import SEARCH_IS_UNCATEGORIZED
 
 from .utils.sql_inverse_searches import ANSWER_COUNT_SEARCH
 
@@ -61,29 +58,6 @@ class AcademyTestsQuestion(models.Model):
         'ownership.mixin',
         'mail.thread',
         'mail.activity.mixin'
-    ]
-
-    _selectable = [
-        'id',
-        'description',
-        'preamble',
-        'name',
-        'answer_ids',
-        'ir_attachment_ids',
-        'topic_id',
-        'version_ids',
-        'category_ids',
-        'level_id',
-        'tag_ids',
-        'owner_id',
-        'authorship',
-        'active',
-        'status',
-        'link_ids',
-        'create_date',
-        'write_date',
-        'create_uid',
-        'write_uid',
     ]
 
     # ---------------------------- ENTITY FIELDS ------------------------------
@@ -347,6 +321,8 @@ class AcademyTestsQuestion(models.Model):
         limit=None,
     )
 
+    # -------------------------- MANAGEMENT FIELDS ----------------------------
+
     color = fields.Integer(
         string='Color Index',
         required=True,
@@ -366,90 +342,6 @@ class AcademyTestsQuestion(models.Model):
                 record.color = 3
             else:
                 record.color = 10
-
-    # -------------------------- SQL CONSTRANINTS  ----------------------------
-
-    _sql_constraints = [
-        (
-            'exclude_it_self_in_depends_on_id',
-            'CHECK(depends_on_id <> id)',
-            _('A question cannot depend on itself')
-        )
-    ]
-
-    @api.constrains('version_ids')
-    def _check_version_ids(self):
-        msg = _('Topic {} must have at least one version')
-        for record in self:
-            if not record.version_ids:
-                raise ValidationError(msg.format(record.name))
-
-    @api.constrains('category_ids')
-    def _check_category_ids(self):
-        msg = _('Topic {} must have at least one category')
-        for record in self:
-            if not record.category_ids:
-                raise ValidationError(msg.format(record.name))
-
-    @api.constrains('name', 'preamble', 'topic_id', 'answer_ids',
-                    'ir_attachment_ids', 'version_ids', 'status')
-    def _check_question_is_unique(self):
-        msg = _('There is already a question «Q#{}» with this wording')
-
-        for record in self:
-
-            if record.status != 'ready':
-                continue
-
-            similar_set = record._search_similars()
-            thisans = record._join_answers()
-            thisattach = record._join_attachments()
-
-            for similar in similar_set:
-                simans = similar._join_answers()
-                if thisans and simans and thisans == simans:
-                    raise ValidationError(msg.format(similar.id))
-
-                simattach = similar._join_attachments()
-                if thisattach and simattach and thisattach == simattach:
-                    raise ValidationError(msg.format(similar.id))
-
-    def _search_similars(self):
-        self.ensure_one()
-
-        domain = [
-            ('id', '!=', self.id),
-            ('status', '=', 'ready'),
-            ('topic_id', '=', self.topic_id.id),
-            ('name', 'ilike', self.name),
-            ('preamble', 'ilike', self.preamble),
-        ]
-
-        return self.search(domain)
-
-    def _join_answers(self):
-        answers = []
-
-        self.ensure_one()
-
-        for answer in self.answer_ids:
-            prefix = 'x' if answer.is_correct else '#'
-            name = answer.name.lower()
-            answers.append('{}{}'.format(prefix, name))
-
-        answers.sort()
-
-        return ';'.join(answers)
-
-    def _join_attachments(self):
-        self.ensure_one()
-        checksums = self.mapped('ir_attachment_ids.checksum')
-
-        checksums.sort()
-
-        return ';'.join(checksums)
-
-    # -------------------------- MANAGEMENT FIELDS ----------------------------
 
     dependency_count = fields.Integer(
         string='Dependencies',
@@ -531,7 +423,7 @@ class AcademyTestsQuestion(models.Model):
 
             return [('id', op, ids)]
 
-    attachment_count = fields.Integer(
+    ir_attachment_count = fields.Integer(
         string='Number of attachments',
         required=False,
         readonly=False,
@@ -539,13 +431,13 @@ class AcademyTestsQuestion(models.Model):
         default=0,
         store=False,
         help='Number of attachments',
-        compute='_compute_attachment_count'
+        compute='_compute_ir_attachment_count'
     )
 
     @api.depends('ir_attachment_ids')
-    def _compute_attachment_count(self):
+    def _compute_ir_attachment_count(self):
         for record in self:
-            record.attachment_count = len(record.ir_attachment_ids)
+            record.ir_attachment_count = len(record.ir_attachment_ids)
 
     answer_count = fields.Integer(
         string='Number of answers',
@@ -598,16 +490,225 @@ class AcademyTestsQuestion(models.Model):
         for record in self:
             record.category_count = len(record.category_ids)
 
-    # --------------- ONCHANGE EVENTS AND OTHER FIELD METHODS -----------------
+    version_count = fields.Integer(
+        string='Number of versions',
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        help='Number of versions',
+        store=False,
+        compute='_compute_version_count'
+    )
+
+    @api.depends('version_ids')
+    def _compute_version_count(self):
+        for record in self:
+            record.version_count = len(record.version_ids)
+
+    is_uncategorized = fields.Boolean(
+        string='Uncategorized',
+        required=False,
+        readonly=True,
+        index=True,
+        default=False,
+        help=('Check if the question is related to a provisional topic, '
+              'version or category'),
+        compute='_compute_is_uncategorized',
+        search='_search_is_uncategorized'
+    )
+
+    @api.depends('topic_id', 'version_ids', 'category_ids')
+    def _compute_is_uncategorized(self):
+        for record in self:
+            provisional = record.mapped('topic_id.provisional')
+            provisional.extend(record.mapped('version_ids.provisional'))
+            provisional.extend(record.mapped('category_ids.provisional'))
+
+            record.is_uncategorized = any(provisional)
+
+    @api.model
+    def _search_is_uncategorized(self, operator, value):
+        assert operator in ['=', '!='] and value in [True, False], \
+            _('Invalid search operation for closed field in attempt')
+
+        self.env.cr.execute(SEARCH_IS_UNCATEGORIZED)
+        result_set = self.env.cr.fetchall()
+
+        if result_set:
+            ids = [item[0] for item in result_set]
+
+            if self._is_uncategorized_is_true(operator, value):
+                domain = [('id', 'in', ids)]
+            else:
+                domain = [('id', 'not in', ids)]
+        else:
+            if self._is_uncategorized_is_true(operator, value):
+                domain = FALSE_DOMAIN
+            else:
+                domain = TRUE_DOMAIN
+
+        return domain
 
     @staticmethod
-    def _safe_cast(val, to_type, default=None):
-        try:
-            return to_type(val)
-        except (ValueError, TypeError):
-            return default
+    def _is_uncategorized_is_true(operator, value):
+        return operator == '=' and value or operator == '!=' and not value
+
+    # --------------------------- EXPORT TO STRING ----------------------------
+
+    markdown = fields.Text(
+        string='Markdown',
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help='Show question as markdown text',
+        translate=False,
+        compute='_compute_markdown',
+        store=False
+    )
+
+    @api.depends(
+        'name', 'preamble', 'answer_ids', 'ir_attachment_ids', 'description')
+    def _compute_markdown(self):
+        for record in self:
+            record.markdown = record.to_string(True).strip()
+
+    def _get_real_id(self, item=None):
+        item = item or self
+
+        item.ensure_one()
+
+        if isinstance(item.id, models.NewId):
+            return 0
+        else:
+            return item.id
+
+    def to_string(self, editable=False):
+        """ Export question contents as markdown text
+
+        @param editable (bool): if it set to true IDs will be preserved,
+        otherwise index or URLs will be used instead
+
+        @return (str): returns a single text string it contains the
+        contents of the all questions in the recordset
+        """
+        output = ''
+        index = 0
+
+        for record in self:
+            lines = []
+            index = record._get_real_id() if editable else index + 1
+
+            # STEP 1: Append description line (one or more)
+            desc_line = prepare_text(record.description or '', '>')
+            if(desc_line):
+                lines.append(desc_line)
+
+            # STEP 2: Append each one of the attachment lines
+            for attach in record.ir_attachment_ids:
+                if editable:
+                    src_value = self._get_real_id(attach)
+                else:
+                    src_value = getattr(attach, 'local_url')
+                attach_line = '![{}]({})'.format(attach.name, src_value)
+                lines.append(attach_line)
+
+            # STEP 3: Append preamble line (one or more)
+            pre_line = prepare_text(record.preamble or '')
+            if(pre_line):
+                lines.append(pre_line)
+
+            # STEP 4: Append name line (unique)
+            lines.append('{}. {}'.format(index, (record.name or '').strip()))
+
+            # STEP 5: Append each one of the answers
+            for aindex, answer in enumerate(record.answer_ids):
+                letter = 'x' if answer.is_correct else chr(97 + aindex)
+                lines.append('{}) {}'.format(
+                    letter, (answer.name or '').strip()))
+
+            # STEP 6: Append empty line (between questions)
+            lines.append(linesep)
+
+            # STEP 7: Store question lines in output buffer
+            output += linesep.join(lines)
+
+        return output
+
+    # ---------------------------- EXPORT TO HTML -----------------------------
+
+    html = fields.Html(
+        string='Html',
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help='Show question as HTML',
+        compute='_compute_html',
+        store=False
+    )
+
+    @api.depends(
+        'name', 'preamble', 'answer_ids', 'ir_attachment_ids', 'description')
+    def _compute_html(self):
+        for record in self:
+            record.html = record.to_html()
+
+    def _get_values_for_template(self):
+        answers = []
+        images = []
+
+        self.ensure_one()
+
+        for answer_item in self.answer_ids:
+            answers.append({
+                'name': answer_item.name,
+                'is_correct': answer_item.is_correct
+            })
+
+        for image_item in self.ir_attachment_image_ids:
+            images.append({
+                'id': self._get_real_id(image_item),
+                'name': image_item.name
+            })
+
+        return {
+            'index': self._get_real_id(),
+            'name': self.name,
+            'preamble': self.preamble,
+            'answers': answers,
+            'images': images
+        }
+
+    def to_html(self):
+        output = ''
+
+        template_xid = \
+            'academy_tests.view_academy_tests_display_question_as_html'
+        view_obj = self.env['ir.ui.view']
+
+        for record in self:
+
+            values = record._get_values_for_template()
+
+            html = view_obj._render_template(template_xid, values)
+            output += html  # .decode('utf8')
+
+        return output
+
+    # --------------- ONCHANGE EVENTS AND OTHER FIELD METHODS -----------------
 
     def _categorize_from_last_questions(self):
+        """ Get the number of questions will be used to compute default
+        topic, leve, etc.
+
+        This value can be stored as ir.config.parameter
+
+        Returns:
+            int: number of questions will be used
+        """
+
         key = 'academy_tests.categorize_from_last_questions'
 
         param_obj = self.env["ir.config_parameter"].sudo()
@@ -737,7 +838,96 @@ class AcademyTestsQuestion(models.Model):
         self.markdown = self.to_string(True).strip()
         self.html = self.to_html()
 
-    # -------------------------- PYTHON CONSTRAINS ----------------------------
+    # ---------------------------- CONSTRAINTS  -------------------------------
+
+    _sql_constraints = [
+        (
+            'exclude_it_self_in_depends_on_id',
+            'CHECK(depends_on_id <> id)',
+            _('A question cannot depend on itself')
+        )
+    ]
+
+    @api.constrains('version_ids')
+    def _check_version_ids(self):
+        msg = _('Topic {} must have at least one version')
+        for record in self:
+            if not record.version_ids:
+                raise ValidationError(msg.format(record.name))
+
+    @api.constrains('category_ids')
+    def _check_category_ids(self):
+        msg = _('Topic {} must have at least one category')
+        for record in self:
+            if not record.category_ids:
+                raise ValidationError(msg.format(record.name))
+
+    @api.constrains('name', 'preamble', 'topic_id', 'answer_ids',
+                    'ir_attachment_ids', 'version_ids', 'status')
+    def _check_question_is_unique(self):
+        msg = _('There is already a question «Q#{}» with this wording')
+
+        for record in self:
+
+            if record.status != 'ready':
+                continue
+
+            similar_set = record._search_similars()
+            thisans = record._join_answers()
+            thisattach = record._join_attachments()
+
+            for similar in similar_set:
+                simans = similar._join_answers()
+                if thisans and simans and thisans == simans:
+                    raise ValidationError(msg.format(similar.id))
+
+                simattach = similar._join_attachments()
+                if thisattach and simattach and thisattach == simattach:
+                    raise ValidationError(msg.format(similar.id))
+
+    def _search_similars(self):
+        """ Used in _check_question_is_unique
+        """
+
+        self.ensure_one()
+
+        domain = [
+            ('id', '!=', self.id),
+            ('status', '=', 'ready'),
+            ('topic_id', '=', self.topic_id.id),
+            ('name', 'ilike', self.name),
+            ('preamble', 'ilike', self.preamble),
+        ]
+
+        return self.search(domain)
+
+    def _join_answers(self):
+        """ Used in _check_question_is_unique
+        """
+
+        answers = []
+
+        self.ensure_one()
+
+        for answer in self.answer_ids:
+            prefix = 'x' if answer.is_correct else '#'
+            name = answer.name.lower()
+            answers.append('{}{}'.format(prefix, name))
+
+        answers.sort()
+
+        return ';'.join(answers)
+
+    def _join_attachments(self):
+        """ Used in _check_question_is_unique
+        """
+
+        self.ensure_one()
+        checksums = self.mapped('ir_attachment_ids.checksum')
+
+        checksums.sort()
+
+        return ';'.join(checksums)
 
     @api.constrains('answer_ids', 'name')
     def _check_answer_ids(self):
@@ -779,6 +969,12 @@ class AcademyTestsQuestion(models.Model):
         return order_str
 
     def _update_ir_attachments(self):
+        """ Apparently Odoo links the attachment to the record from which it is
+        saved, but this block it from being used from other questions.
+
+        This method unlinks the attachment from the specific question.
+        """
+
         attachment_set = self.mapped('ir_attachment_ids')
         values = {'res_model': None, 'res_id': 0, 'public': True}
 
@@ -800,16 +996,6 @@ class AcademyTestsQuestion(models.Model):
             result.append((record.id, text))
 
         return result
-
-    @api.model
-    def fields_get(self, fields=None):
-
-        fields = super(AcademyTestsQuestion, self).fields_get()
-
-        for field_name in fields.keys():
-            fields[field_name]['selectable'] = field_name in self._selectable
-
-        return fields
 
     @api.returns('self', lambda value: value.id)
     def copy(self, default=None):
@@ -858,37 +1044,10 @@ class AcademyTestsQuestion(models.Model):
 
         return result
 
-    # ----------------------- MESSAGING METHODS ------------------------
-
-    def _track_subtype(self, init_values):
-        self.ensure_one()
-
-        if('active' not in init_values):
-            if 'owner_id' in init_values:
-                xid = 'academy_tests.academy_tests_question_owned'
-            else:
-                xid = 'academy_tests.academy_tests_question_written'
-
-            return self.env.ref(xid)
-        else:
-            _super = super(AcademyTestsQuestion, self)
-            return _super._track_subtype(init_values)
-
-    def _spread_to(self, subtype_id=False, subtype=None):
-        expected = 'academy_tests.academy_tests_question_written'
-
-        result = []
-        self.ensure_one()
-
-        if subtype_id == self.env.ref(expected).id:
-            result.append(self.mapped('link_ids.test_id'))
-
-        return result
-
-    # -------------------------- AUXILIARY METHODS ----------------------------
+    # --------------------------- IMPORT FROM TEXT ----------------------------
 
     @staticmethod
-    def safe_cast(val, to_type, default=None):
+    def _safe_cast(val, to_type, default=None):
         """ Performs a safe cast between `val` type to `to_type`
 
         @param val: value will be converted
@@ -1026,11 +1185,11 @@ class AcademyTestsQuestion(models.Model):
         record = self.env['ir.attachment']
 
         # STEP 1: Try to find attachment by `id` field
-        numericURI = self.safe_cast(uri, int, 0)
+        numericURI = self._safe_cast(uri, int, 0)
         if not numericURI:
             match = search(r'\/([0-9]+)\?', uri)
             if match:
-                numericURI = self.safe_cast(match.group(1), int, 0)
+                numericURI = self._safe_cast(match.group(1), int, 0)
 
         if numericURI:
             record = record.browse(numericURI)
@@ -1105,147 +1264,6 @@ class AcademyTestsQuestion(models.Model):
 
         return value_set
 
-    # ---------------------------- PUBLIC METHODS -----------------------------
-
-    markdown = fields.Text(
-        string='Markdown',
-        required=False,
-        readonly=True,
-        index=False,
-        default=None,
-        help='Show question as markdown text',
-        translate=False,
-        compute=lambda self: self.compute_markdown(),
-        store=False
-    )
-
-    @api.depends(
-        'name', 'preamble', 'answer_ids', 'ir_attachment_ids', 'description')
-    def compute_markdown(self):
-        for record in self:
-            record.markdown = record.to_string(True).strip()
-
-    html = fields.Html(
-        string='Html',
-        required=False,
-        readonly=True,
-        index=False,
-        default=None,
-        help='Show question as HTML',
-        compute=lambda self: self.compute_html(),
-        store=False
-    )
-
-    @api.depends(
-        'name', 'preamble', 'answer_ids', 'ir_attachment_ids', 'description')
-    def compute_html(self):
-        for record in self:
-            record.html = record.to_html()
-
-    def _get_values_for_template(self):
-        answers = []
-        images = []
-
-        self.ensure_one()
-
-        for answer_item in self.answer_ids:
-            answers.append({
-                'name': answer_item.name,
-                'is_correct': answer_item.is_correct
-            })
-
-        for image_item in self.ir_attachment_image_ids:
-            images.append({
-                'id': self._get_real_id(image_item),
-                'name': image_item.name
-            })
-
-        return {
-            'index': self._get_real_id(),
-            'name': self.name,
-            'preamble': self.preamble,
-            'answers': answers,
-            'images': images
-        }
-
-    def _get_real_id(self, item=None):
-        item = item or self
-
-        item.ensure_one()
-
-        if isinstance(item.id, models.NewId):
-            return 0
-        else:
-            return item.id
-
-    def to_html(self):
-        output = ''
-
-        template_xid = \
-            'academy_tests.view_academy_tests_display_question_as_html'
-        view_obj = self.env['ir.ui.view']
-
-        for record in self:
-
-            values = record._get_values_for_template()
-
-            html = view_obj._render_template(template_xid, values)
-            output += html  # .decode('utf8')
-
-        return output
-
-    def to_string(self, editable=False):
-        """ Export question contents as markdown text
-
-        @param editable (bool): if it set to true IDs will be preserved,
-        otherwise index or URLs will be used instead
-
-        @return (str): returns a single text string it contains the
-        contents of the all questions in the recordset
-        """
-        output = ''
-        index = 0
-
-        for record in self:
-            lines = []
-            index = record._get_real_id() if editable else index + 1
-
-            # STEP 1: Append description line (one or more)
-            desc_line = prepare_text(record.description or '', '>')
-            if(desc_line):
-                lines.append(desc_line)
-
-            # STEP 2: Append each one of the attachment lines
-            for attach in record.ir_attachment_ids:
-                if editable:
-                    src_value = self._get_real_id(attach)
-                else:
-                    src_value = getattr(attach, 'local_url')
-                attach_line = '![{}]({})'.format(attach.name, src_value)
-                lines.append(attach_line)
-
-            # STEP 3: Append preamble line (one or more)
-            pre_line = prepare_text(record.preamble or '')
-            if(pre_line):
-                lines.append(pre_line)
-
-            # STEP 4: Append name line (unique)
-            lines.append('{}. {}'.format(index, (record.name or '').strip()))
-
-            # STEP 5: Append each one of the answers
-            for aindex, answer in enumerate(record.answer_ids):
-                letter = 'x' if answer.is_correct else chr(97 + aindex)
-                lines.append('{}) {}'.format(
-                    letter, (answer.name or '').strip()))
-
-            # STEP 6: Append empty line (between questions)
-            lines.append(linesep)
-
-            # STEP 7: Store question lines in output buffer
-            output += linesep.join(lines)
-
-        return output
-
     @api.model
     def from_string(self, content, defaults={}, edit=False):
         groups = self._split_in_line_groups(content)
@@ -1264,18 +1282,14 @@ class AcademyTestsQuestion(models.Model):
 
         return item.to_string(editable) if item else ''
 
+    # ---------------------------- BUTTON ACTIONS -----------------------------
+
     def switch_status(self):
         for record in self:
             if record.status == 'draft':
                 record.status = 'ready'
             else:
                 record.status = 'draft'
-
-    @api.model
-    def domain_to_sql(self, domain):
-        items = self._where_calc(domain).get_sql()
-
-        return items[1] % tuple(items[2]) if items else 'TRUE'
 
     def open_form_view(self, res_id=None):
 
@@ -1302,156 +1316,4 @@ class AcademyTestsQuestion(models.Model):
             'domain': '[]',
             'context': self.env.context,
             'flags': {'mode': 'readonly'}
-        }
-
-    def to_moodle(self, encoding='utf8', prettify=True, xml_declaration=True,
-                  category=None):
-        quiz = self._moodle_create_quiz(category=category)
-
-        for record in self:
-            node = record._to_moodle()
-            quiz.append(node)
-
-        file = BytesIO()
-        root = quiz.getroottree()
-        root.write(file, encoding=encoding, pretty_print=prettify,
-                   xml_declaration=xml_declaration)
-
-        return file.getvalue()
-
-    @staticmethod
-    def _moodle_create_quiz(category=None):
-        category = category or _('Odoo export')
-
-        node = ET.Element('quiz')
-
-        qnode = ET.SubElement(node, 'question', type='category')
-        cnode = ET.SubElement(qnode, 'category')
-        ET.SubElement(cnode, 'text').text = '$course$/top'
-
-        qnode = ET.SubElement(node, 'question', type='category')
-        cnode = ET.SubElement(qnode, 'category')
-        ET.SubElement(cnode, 'text').text = '$course$/top/{}'.format(category)
-
-        return node
-
-    def _answer_count(self):
-        self.ensure_one()
-
-        right_set = self.answer_ids.filtered(lambda a: a.is_correct)
-
-        return len(self.answer_ids), len(right_set)
-
-    @staticmethod
-    def _moodle_cdata(text=None):
-        return ET.CDATA(text) if text else ''
-
-    @staticmethod
-    def _moodle_paragraphs(text, prettify=True):
-        paragraphs = []
-        lines = text.splitlines()
-        sep = '\n' if prettify else ''
-
-        for line in lines:
-            paragraphs.append('<p>{}</p>'.format(line))
-
-        return sep.join(paragraphs)
-
-    @staticmethod
-    def _moodle_create_node(multichoice=False):
-        node = ET.Element('question', type='multichoice')
-
-        ET.SubElement(node, 'hidden').text = '0'
-        ET.SubElement(node, 'shuffleanswers').text = 'false'
-        ET.SubElement(node, 'answernumbering').text = 'abc'
-        ET.SubElement(node, 'single').text = 'false' if multichoice else 'true'
-
-        return node
-
-    def _moodle_append_name(self, node, name=None):
-        if not name:
-            name = '{}-{}'.format('ID', self.id)
-
-        sub = ET.SubElement(node, 'name')
-        ET.SubElement(sub, 'text').text = name
-
-    def _moodle_append_description(self, node, prettify=True):
-        description = self._moodle_paragraphs(self.description or '', prettify)
-        sub = ET.SubElement(
-            node, 'generalfeedback', format='moodle_auto_format')
-        ET.SubElement(sub, 'text').text = self._moodle_cdata(description)
-
-    def _moodle_append_statement(self, node, prettify=True):
-        tag = '<img src="@@PLUGINFILE@@/{fn}" alt="{fn}" role="presentation">'
-        html = ''
-
-        snode = ET.SubElement(node, 'questiontext', format='html')
-
-        if self.ir_attachment_ids:
-            pattern = '<div style="display: flex;">{}</div>{}'
-            sep = '\n' if prettify else ''
-            img_tags = []
-
-            for attach in self.ir_attachment_ids:
-                ext = mimetypes.guess_extension(attach.mimetype)
-                fname = '{}{}'.format(attach.name, ext)
-
-                attnode = ET.SubElement(
-                    snode, 'file', name=fname, path="/", encoding="base64")
-                attnode.text = attach.datas
-
-                img_tags.append(tag.format(fn=fname))
-
-            html += pattern.format(sep.join(img_tags), sep)
-
-        if self.preamble:
-            html += self._moodle_paragraphs(self.preamble or '', prettify)
-
-        html += self._moodle_paragraphs(self.name or '', prettify)
-
-        ET.SubElement(snode, 'text').text = self._moodle_cdata(html)
-
-    def _moodle_append_answer(self, node, answer, fraction):
-        ans_node = ET.SubElement(
-            node, 'answer', format='moodle_auto_format', fraction=fraction)
-        ET.SubElement(ans_node, 'text').text = self._moodle_cdata(answer.name)
-
-        desc_node = ET.SubElement(
-            ans_node, 'feedback', format='moodle_auto_format')
-        ET.SubElement(desc_node, 'text').text = \
-            self._moodle_cdata(answer.description or '')
-
-    def _to_moodle(self, name=None):
-        self.ensure_one()
-
-        a_total, a_right = self._answer_count()
-        good = 100 / a_right
-        bad = (100 / (a_total - a_right)) * -1
-
-        node = self._moodle_create_node(multichoice=(a_right > 1))
-
-        self._moodle_append_name(node, name)
-        self._moodle_append_statement(node)
-        self._moodle_append_description(node)
-
-        for answer in self.answer_ids:
-            fraction = str(good) if answer.is_correct else str(bad)
-
-            self._moodle_append_answer(node, answer, fraction)
-
-        return node
-
-    def download_as_moodle_xml(self):
-        question_ids = self.mapped('id')
-
-        if not question_ids:
-            raise(_('There are no questions'))
-
-        ids_str = ','.join([str(item) for item in question_ids])
-
-        relative_url = '/academy_tests/moodle/questions?question_ids={}'
-        return {
-            'type': 'ir.actions.act_url',
-            'url': relative_url.format(ids_str),
-            'target': 'self',
         }

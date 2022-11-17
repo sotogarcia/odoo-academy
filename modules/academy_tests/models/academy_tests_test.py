@@ -45,7 +45,6 @@ class AcademyTestsTest(models.Model):
     _order = 'write_date DESC, create_date DESC'
 
     _inherit = [
-        'academy.tests.abstract.test.details',
         'ownership.mixin',
         'mail.thread',
         'image.mixin',
@@ -94,6 +93,77 @@ class AcademyTestsTest(models.Model):
         size=20,
         translate=False
     )
+
+    kind_id = fields.Many2one(
+        string='Kind',
+        required=True,
+        readonly=False,
+        index=False,
+        default=lambda self: self.default_kind_id(),
+        help='Choose the kind for this test',
+        comodel_name='academy.tests.test.kind',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False
+    )
+
+    def default_kind_id(self):
+        return self.env.ref('academy_tests.academy_tests_test_kind_common')
+
+    repeat_images = fields.Boolean(
+        string='Repeat images',
+        required=False,
+        readonly=False,
+        index=False,
+        default=False,
+        help='Repeat the image every time it is referred to in a question'
+    )
+
+    auto_arrange_blocks = fields.Boolean(
+        string='Auto arrange blocks',
+        required=False,
+        readonly=False,
+        index=False,
+        default=True,
+        help='Check it to auto arrange questions in blocks'
+    )
+
+    block_starts_page = fields.Boolean(
+        string='Block starts a page',
+        required=False,
+        readonly=False,
+        index=False,
+        default=True,
+        help='Check it to do each block starts a new page'
+    )
+
+    restart_numbering = fields.Boolean(
+        string='Restart numbering',
+        required=False,
+        readonly=False,
+        index=False,
+        default=False,
+        help='Check it to restart numbering in each block'
+    )
+
+    preamble = fields.Text(
+        string='Preamble',
+        required=False,
+        readonly=False,
+        index=False,
+        default=lambda self: self.default_preamble(),
+        help='What it is said before beginning to test',
+        translate=True
+    )
+
+    @api.model
+    def default_preamble(self):
+        value = _('This exercise poses different questions, presenting a set '
+                  'of alternative answers for each of them, among which you '
+                  'must select the only correct one.')
+
+        return value
 
     link_ids = fields.One2many(
         string='Questions',

@@ -138,19 +138,6 @@ class AcademyTestsTestQuestionRel(models.Model):
 
         return result
 
-    @api.model
-    def fields_get(self, fields=None):
-
-        fields = super(AcademyTestsTestQuestionRel, self).fields_get()
-
-        selectable = self.question_id._selectable.copy()
-        selectable.append('real_question_id')
-
-        for field_name in fields.keys():
-            fields[field_name]['selectable'] = field_name in selectable
-
-        return fields
-
     def switch_status(self):
         """ This method is only a wrapper will be allows user to call
         the real switch_status existing in related question

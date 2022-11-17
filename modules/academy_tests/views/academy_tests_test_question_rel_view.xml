@@ -41,7 +41,7 @@
                     <field name="version_ids" class="oe_field_version_ids" widget="many2many_tags" readonly="1" />
                     <field name="category_ids" class="oe_field_category_ids" widget="many2many_tags" readonly="1" />
                     <field name="level_id" class="oe_field_level_id" readonly="1" />
-                    <field name="attachment_count" class="oe_field_attachment_count" readonly="1" string="Attachments" />
+                    <field name="ir_attachment_count" class="oe_field_attachment_count" readonly="1" string="Attachments" />
 
                 </tree>
             </field>

@@ -38,7 +38,7 @@
                     <field name="version_ids" class="oe_field_version_ids" widget="many2many_tags" string="Versions" />
                     <field name="category_ids" class="oe_field_category_ids" widget="many2many_tags" />
                     <field name="level_id" class="oe_field_level_id" />
-                    <field name="attachment_count" class="oe_field_attachment_count" string="Attachments" />
+                    <field name="ir_attachment_count" class="oe_field_ir_attachment_count" string="Attachments" />
                     <field name="owner_id" class="oe_field_owner_id" />
                     <field name="depends_on_id" class="oe_field_depends_on_id" invisible="1" />
                </tree>
@@ -228,7 +228,7 @@
                     <field name="id" />
                     <field name="name" />
                     <field name="answer_ids" />
-                    <field name="attachment_count" />
+                    <field name="ir_attachment_count" />
                     <field name="topic_id" />
                     <field name="level_id" />
                     <field name="category_count" />
@@ -253,7 +253,7 @@
                                     <div class="p-2 flex-grow-1 o_question_kanban_status_topic" title="Topic"><field name="topic_id" /></div>
                                     <div class="p-2 o_question_kanban_status_category" title="Number of categories"><field name="category_count" /></div>
                                     <div class="p-2 o_question_kanban_status_level" title="Level"><field name="level_id" /></div>
-                                    <div class="p-2 o_question_kanban_status_attachment" title="Number of attachments"><field name="attachment_count" /></div>
+                                    <div class="p-2 o_question_kanban_status_attachment" title="Number of attachments"><field name="ir_attachment_count" /></div>
                                     <div class="p-2 o_question_kanban_status_preamble" title="Has preamble">
                                         <tag t-if="record.preamble.raw_value">P</tag>
                                         <tag t-else="">&#160;</tag>
@@ -553,7 +553,7 @@
                     <field name="type_id" class="oe_field_type_id" />
                     <field name="topic_id" class="oe_field_topic_id" />
                     <field name="level_id" class="oe_field_level_id" readonly="1"  />
-                    <field name="attachment_count" class="oe_field_attachment_count" />
+                    <field name="ir_attachment_count" class="oe_field_ir_attachment_count" />
 
                </tree>
             </field>

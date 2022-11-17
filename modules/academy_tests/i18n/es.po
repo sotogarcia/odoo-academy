@@ -30,6 +30,7 @@ msgid ""
 "b) Answer 2\n"
 "c) Answer 3\n"
 "x) Right answer\n"
+"\n"
 msgstr ""
 "\n"
 "> Comentario opcional para pregunta\n"
@@ -40,6 +41,7 @@ msgstr ""
 "b) Respuesta 2\n"
 "c) Respuesta 3\n"
 "x) Respuesta correcta\n"
+"\n"
 
 #. module: academy_tests
 #: model:mail.template,report_name:academy_tests.mail_template_uncategorized_questions_by_user_and_topic

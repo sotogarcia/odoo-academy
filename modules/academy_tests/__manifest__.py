@@ -41,7 +41,6 @@
         'data/res_groups_data.xml',
 
         'security/academy_tests.xml',
-        'security/academy_tests_abstract_test_details.xml',
         'security/academy_tests_answer.xml',
         'security/academy_tests_answers_table.xml',
         'security/academy_tests_category.xml',

@@ -3,30 +3,6 @@
 """
 
 
-# INVERSE SEARCH: academy_tests.field_academy_tests_attempt__closed
-# Raw sentence used to search attempts with no stored blank answers
-# -----------------------------------------------------------------------------
-
-ATTEMPTS_CLOSED_SEARCH = '''
-    WITH no_stored_blank_answers AS (
-        SELECT
-            ata."id",
-            COUNT(*) AS no_stored
-        FROM academy_tests_attempt AS ata
-        INNER JOIN academy_tests_attempt_final_answer_helper AS rel
-            ON ata."id" = rel.attempt_id and rel.attempt_answer_id IS NULL
-        GROUP BY ata."id"
-    ) SELECT
-        ata."id"
-    FROM
-        academy_tests_attempt AS ata
-        LEFT JOIN no_stored_blank_answers AS nsb ON ata."id" = nsb."id"
-    WHERE
-        COALESCE(no_stored, 0) = 0
-        AND elapsed IS NOT NULL
-        AND "end" IS NOT NULL
-'''
-
 
 # INVERSE SEARCH: academy_tests.field_academy_tests_question__answer_count
 # Raw sentence used to search questions by number of answers
@@ -152,46 +128,53 @@ QUESTION_COUNT_SEARCH = '''
 '''
 
 
-# INVERSE SEARCH: academy_tests.field_academy_tests_attempt__passed
-# Raw sentence used to search passed attempts
-# -----------------------------------------------------------------------------
-REQUEST_ATTEMPT_PASSED_SEARCH = '''
-    SELECT
-        "id"
-    FROM
-        academy_tests_attempt_resume_helper
-    WHERE
-        (final_points >= ( max_points / 2.0 )) = {}
-'''
-
-
-# INVERSE SEARCH: academy_tests.field_academy_tests__attempt_count
-# Raw sentence used to search tests by number of attempts
-# -----------------------------------------------------------------------------
-SEARCH_TEST_ATTEMPT_COUNT = '''
-    SELECT
-        test_id,
-        COUNT(*)::INTEGER AS num
-    FROM
-        academy_tests_attempt
-    GROUP BY
-        test_id
-    HAVING
-        COUNT(*) {} {}
-'''
-
-
 # INVERSE SEARCH: academy_tests.field_academy_student__attempt_count
 # Raw sentence used to search students by number of attempts
 # -----------------------------------------------------------------------------
-SEARCH_STUDENT_ATTEMPT_COUNT = '''
+SEARCH_IS_UNCATEGORIZED = '''
+    WITH topics AS (
+
+        SELECT
+            atq."id" AS question_id
+        FROM
+            academy_tests_question AS atq
+        INNER JOIN academy_tests_topic AS att ON atq.topic_id = att."id"
+        WHERE
+            att.provisional IS TRUE
+
+    ), categories AS (
+
+        SELECT
+            rel.question_id
+        FROM
+            academy_tests_question_category_rel AS rel
+        INNER JOIN academy_tests_category AS cat
+            ON rel.category_id = cat."id"
+        WHERE
+            cat.provisional IS TRUE
+
+    ), versions AS (
+
+        SELECT
+            rel.question_id
+        FROM
+            academy_tests_question_version_rel AS rel
+        INNER JOIN academy_tests_version AS ver
+            ON rel.version_id = ver."id"
+        WHERE
+            ver.provisional IS TRUE
+
+    )
     SELECT
-    student_id,
-    COUNT( * ) :: INTEGER AS num
+        *
     FROM
-        academy_tests_attempt
-    GROUP BY
-        student_id
-    HAVING
-        COUNT(*) {} {}
+        topics
+    UNION SELECT
+        *
+    FROM
+        categories
+    UNION SELECT
+        *
+    FROM
+        versions
 '''
