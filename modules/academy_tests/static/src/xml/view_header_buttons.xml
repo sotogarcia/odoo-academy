@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates id="academy_tests" xml:space="preserve">
+
+    <t t-extend="KanbanView.buttons" t-name="AcademyTestsQuestionRelKanbanView.button">
+        <t t-jquery="button:last" t-operation="after">
+            <t t-if="widget.modelName == 'academy.tests.test.question.rel'">
+                <button class="btn btn-secondary oe_btn_choose_questions" type="button">
+                    <i class="fa fa-hand-o-up" aria-hidden="false"></i>
+                    &#160;
+                    Choose
+                </button>
+            </t>
+        </t>
+    </t>
+
+</templates>

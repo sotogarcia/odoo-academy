@@ -3,6 +3,7 @@ odoo.define('academy_tests.QuestionKanbanView', function(require) {
     "use strict";
 
     var KanbanRecord = require('web.KanbanRecord');
+    var rpc = require('web.rpc')
 
     /*
     * Captures question kanban click event when target is the menu button and
@@ -12,15 +13,55 @@ odoo.define('academy_tests.QuestionKanbanView', function(require) {
 
         events: _.defaults({
             'click .o_question_kanban_status_bar': '_onKanbanStatusMenuClick',
-            'click #question_kanban_status_menu_add_to_test': '_onKanbanStatusMenuAddToTest',
+            'click .question_kanban_manually_append_cmd': '_onQuestionKanbanManuallyAppendCmd',
             'click a[data-markdown]': '_onKanbanDataMarkdown',
         }, KanbanRecord.prototype.events),
+
+        init: function (parent, options) {
+            this._super.apply(this, arguments);
+        },
+
+        start: function() {
+            this._super.apply(this, arguments);
+
+            if(this.modelName === 'academy.tests.question') {
+                if(this.record.link_id.raw_value) {
+                    this.$el.css('background-color', 'LightBlue');
+                }
+            }
+
+            if(this.modelName === 'academy.tests.test.question.rel') {
+                if(this.record.link_id.raw_value) {
+                    this.$el.css('background-color', 'LightBlue');
+                }
+            }
+        },
 
         _onKanbanStatusMenuClick: function(event) {
             event.preventDefault();
         },
 
-        _onKanbanStatusMenuAddToTest: function(event) {
+        _switchButtonAspect: function(append) {
+            let self = this;
+            let i = self.$el.find('i.fa')
+
+
+            if (append !== false) {
+                self.$el.css('background-color', 'LightBlue');
+                i.removeClass('fa-plus-square');
+                i.removeClass('text-primary');
+                i.addClass('fa-minus-square');
+                i.addClass('text-danger');
+            } else {
+                i.removeClass('fa-minus-square');
+                i.removeClass('text-danger');
+                i.addClass('fa-plus-square');
+                i.addClass('text-primary');
+                self.$el.css('background-color', 'initial');
+            }
+        },
+
+        _onQuestionKanbanManuallyAppendCmd: function(event) {
             let self = this;
             let data = this.recordData;
             let question_id = false;
@@ -34,17 +75,13 @@ odoo.define('academy_tests.QuestionKanbanView', function(require) {
             }
 
             if(question_id !== false) {
-
-                this.do_action({
-                    type: 'ir.actions.act_window',
-                    res_model: 'academy.tests.question.append.wizard',
-                    views: [[false, 'form']],
-                    target: 'new',
-                    context: {
-                        'default_question_link_ids': [
-                            (0, 0, {'question_id': question_id})
-                        ]
-                    }
+                rpc.query({
+                    model: 'academy.tests.question',
+                    method: 'manually_append_to_test',
+                    args: [question_id],
+                    context: self.state.context
+                }).then(function (result) {
+                    self._switchButtonAspect(result);
                 });
             } // if
 
@@ -131,3 +168,44 @@ odoo.define('academy_tests.AcademyTestsWidgets', function(require) {
 });
 
 
+odoo.define('AcademyTestsQuestionRelKanbanView.kanban_button', function(require) {
+   "use strict";
+
+   var KanbanController = require('web.KanbanController');
+   var KanbanView = require('web.KanbanView');
+   var viewRegistry = require('web.view_registry');
+
+   var KanbanButton = KanbanController.include({
+
+        buttons_template: 'AcademyTestsQuestionRelKanbanView.button',
+
+        events: _.extend({}, KanbanController.prototype.events, {
+           'click .oe_btn_choose_questions': '_ActionChooseQuestions',
+        }),
+
+        _ActionChooseQuestions: function () {
+            var self = this;
+
+            this.do_action({
+                type: 'ir.actions.act_window',
+                res_model: 'academy.tests.question',
+                name :'Choose questions',
+                view_mode: 'kanban,tree,form,pivot',
+                // view_type: 'form',
+                views: [[false, 'kanban'], [false, 'tree'], [false, 'form'], [false, 'pivot']],
+                target: 'current',
+                res_id: false,
+                context: self.initialState.context
+            });
+
+        } // _ActionChooseQuestions
+   });
+
+   var AcademyTestsQuestionRelKanbanView = KanbanView.extend({
+       config: _.extend({}, KanbanView.prototype.config, {
+           Controller: KanbanButton
+       }),
+   });
+
+   viewRegistry.add('button_in_kanban', AcademyTestsQuestionRelKanbanView);
+});

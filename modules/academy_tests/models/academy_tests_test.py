@@ -166,7 +166,7 @@ class AcademyTestsTest(models.Model):
         return value
 
     link_ids = fields.One2many(
-        string='Questions',
+        string='Linked questions',
         required=False,
         readonly=False,
         index=True,
@@ -178,6 +178,22 @@ class AcademyTestsTest(models.Model):
         context={},
         auto_join=False,
         limit=None,
+    )
+
+    question_ids = fields.Many2manyView(
+        string='Questions',
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help=False,
+        comodel_name='academy.tests.test',
+        relation='academy_tests_test_question_rel',
+        column1='test_id',
+        column2='question_id',
+        domain=[],
+        context={},
+        limit=None
     )
 
     answers_table_ids = fields.One2many(
@@ -420,38 +436,37 @@ class AcademyTestsTest(models.Model):
             'context': {'default_test_id': self.id}
         }
 
-    def random_questions(self):
-        """ Runs wizard to append random questions. This allows uses to set
-        filter criteria, maximum number of questions, etc.
-        """
-        return {
-            'type': 'ir.actions.act_window',
-            'res_model': 'academy.tests.random.wizard',
-            'view_mode': 'form',
-            'views': [(False, 'form')],
-            'target': 'new',
-            'context': {'default_test_id': self.id}
-        }
-
-    def show_questions(self):
+    def show_links(self):
         """ Runs default view for academy.tests.question with a filter to
         show only current test questions
         """
 
         self.ensure_one()
 
-        xid = 'academy_tests.action_test_question_links_act_window'
-        action = self.env.ref(xid)
-        domain = eval_domain(action.domain)
-        link_ids = self.mapped('link_ids.id')
-
         return {
-            'name': _('Questions links'),
+            'name': _('Related questions'),
             'view_mode': 'kanban,tree,form,pivot',
             'res_model': 'academy.tests.test.question.rel',
             'type': 'ir.actions.act_window',
             'target': 'current',
-            'domain': AND([domain, [('id', 'in', link_ids)]]),
+            'domain': [('test_id', '=', self.id)],
+            'context': {'default_test_id': self.id},
+        }
+
+    def choose_questions(self):
+        """ Runs default view for academy.tests.question with a filter to
+        show only current test questions
+        """
+
+        self.ensure_one()
+
+        return {
+            'name': _('Choose questions'),
+            'view_mode': 'kanban,tree,form,pivot',
+            'res_model': 'academy.tests.question',
+            'type': 'ir.actions.act_window',
+            'target': 'current',
+            'domain': [('test_ids', '=', self.id)],
             'context': {'default_test_id': self.id},
         }
 
@@ -462,6 +477,9 @@ class AcademyTestsTest(models.Model):
 
             @return: returns a id of new record
         """
+
+        if 'authorship' in values.keys():
+            values.pop('first_use_id', False)
 
         result = super(AcademyTestsTest, self).create(values)
         result.resequence()
@@ -474,6 +492,9 @@ class AcademyTestsTest(models.Model):
 
             @return: True on success, False otherwise
         """
+
+        if 'authorship' in values.keys():
+            values.pop('first_use_id', False)
 
         result = super(AcademyTestsTest, self).write(values)
         self.resequence()
@@ -789,16 +810,3 @@ class AcademyTestsTest(models.Model):
             classes.extend(['invisible', 'm-0', 'border-0'])
 
         return ' '.join(classes)
-
-    def new_from_template(self, gui=True):
-        self.ensure_one()
-
-        if not self.random_template_id:
-            msg = _('This test was not created from a template')
-            raise UserError(msg)
-
-        result = self.random_template_id.new_test(gui=gui)
-        if isinstance(result, dict) and 'target' in result.keys():
-            result['target'] = 'main'
-
-        return result

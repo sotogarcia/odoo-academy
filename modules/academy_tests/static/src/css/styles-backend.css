@@ -58,9 +58,10 @@
     padding-bottom: 2.25em!important;
 }
 
-/*.o_kanban_view.o_kanban_ungrouped .o_question_kanban.o_kanban_record {
-  width: 400px;
-}*/
+.o_kanban_view.o_kanban_ungrouped .o_kanban_record {
+    width: 400px;
+}
+
 
 .o_question_kanban .oe_kanban_details > h4 {
     font-size:  100%!important;
@@ -354,3 +355,25 @@ code but I have not found where I should make the change */
 .oe_append_wizard_link_tree td.o_list_record_remove {
     text-align: center!important;
 }
+
+
+/* STYLES WILL BE USED BY view_academy_tests_test_question_rel_embed_tree
+******************************************************************************/
+
+.o_form_readonly .view_academy_tests_test_question_rel_tree .o_list_table {
+    width: 100%;
+}
+
+.o_form_readonly .view_academy_tests_test_question_rel_tree [data-name="link_html"] {
+    width: auto;
+}
+
+.o_form_readonly .view_academy_tests_test_question_rel_tree .o_list_record_remove_header {
+    min-width: 33px!important;
+    width: 33px!important;
+}
+
+.view_academy_tests_test_question_rel_tree .o_list_record_remove {
+    text-align: center;
+}
+

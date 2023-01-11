@@ -279,3 +279,27 @@ class AcademyTestsTestQuestionRel(models.Model):
                    xml_declaration=xml_declaration)
 
         return file.getvalue()
+
+    @api.model
+    def choose_questions(self):
+        """ Runs default view for academy.tests.question with a filter to
+        show only current test questions
+        """
+
+        context = self.env.context.copy()
+
+        if 'default_test_id' not in context.keys():
+            test_ids = self.mapped('test_id.id')
+            test_ids = list(set(test_ids))
+            if len(test_ids) == 1:
+                context.updte({'default_test_id': test_ids[0]})
+
+        return {
+            'name': _('Choose questions'),
+            'view_mode': 'kanban,tree,form,pivot',
+            'res_model': 'academy.tests.question',
+            'type': 'ir.actions.act_window',
+            'target': 'current',
+            'domain': [],
+            'context': context
+        }

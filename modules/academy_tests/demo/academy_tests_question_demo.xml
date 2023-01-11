@@ -60,6 +60,7 @@
             <field name="tag_ids" eval="[(4, ref('academy_tests.academy_tests_tag_demo_brand'))]" />
             <field name="level_id" ref="academy_tests.academy_level_12" />
             <field name="owner_id" ref="base.user_admin" />
+            <field name="ir_attachment_ids" eval="[(4, ref('academy_tests.ir_attachment_demo'))]" />
         </record>
 
         <record id="academy_tests_question_demo_5" model="academy.tests.question">

@@ -252,6 +252,22 @@ class AcademyTestsQuestion(models.Model):
         limit=None,
     )
 
+    test_ids = fields.Many2manyView(
+        string='Tests',
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help=False,
+        comodel_name='academy.tests.question',
+        relation='academy_tests_test_question_rel',
+        column1='question_id',
+        column2='test_id',
+        domain=[],
+        context={},
+        limit=None
+    )
+
     status = fields.Selection(
         string='State',
         required=True,
@@ -653,9 +669,26 @@ class AcademyTestsQuestion(models.Model):
         'name', 'preamble', 'answer_ids', 'ir_attachment_ids', 'description')
     def _compute_html(self):
         for record in self:
-            record.html = record.to_html()
+            record.html = record.to_html(attachments=True)
 
-    def _get_values_for_template(self):
+    alt = fields.Html(
+        string='Html (no images)',
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help='Show question as HTML wihout images',
+        compute='_compute_alt',
+        store=False
+    )
+
+    @api.depends(
+        'name', 'preamble', 'answer_ids', 'ir_attachment_ids', 'description')
+    def _compute_alt(self):
+        for record in self:
+            record.alt = record.to_html(attachments=False)
+
+    def _get_values_for_template(self, attachments=True):
         answers = []
         images = []
 
@@ -667,11 +700,12 @@ class AcademyTestsQuestion(models.Model):
                 'is_correct': answer_item.is_correct
             })
 
-        for image_item in self.ir_attachment_image_ids:
-            images.append({
-                'id': self._get_real_id(image_item),
-                'name': image_item.name
-            })
+        if attachments:
+            for image_item in self.ir_attachment_image_ids:
+                images.append({
+                    'id': self._get_real_id(image_item),
+                    'name': image_item.name
+                })
 
         return {
             'index': self._get_real_id(),
@@ -681,7 +715,7 @@ class AcademyTestsQuestion(models.Model):
             'images': images
         }
 
-    def to_html(self):
+    def to_html(self, attachments=True):
         output = ''
 
         template_xid = \
@@ -690,7 +724,7 @@ class AcademyTestsQuestion(models.Model):
 
         for record in self:
 
-            values = record._get_values_for_template()
+            values = record._get_values_for_template(attachments)
 
             html = view_obj._render_template(template_xid, values)
             output += html  # .decode('utf8')
@@ -749,7 +783,7 @@ class AcademyTestsQuestion(models.Model):
         return data[0] if data and data[0] else topic_id
 
     def default_version_ids(self):
-        return self.topic_id.last_version()
+        return self.topic_id.last_version() if self.topic_id else None
 
     def default_level_id(self, level_id=None):
         """ Computes the level_id default value. This will be the most
@@ -1281,6 +1315,67 @@ class AcademyTestsQuestion(models.Model):
         item = self.env[self._name].browse(res_id)
 
         return item.to_string(editable) if item else ''
+
+    # ---------------------------- KANBAN ACTIONS -----------------------------
+
+    link_id = fields.Many2one(
+        string='Active link',
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help='Test in which this question has been used',
+        comodel_name='academy.tests.test.question.rel',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False,
+        store=False,
+        compute='_compute_link_id',
+        search='_search_link_id'
+    )
+
+    @api.depends_context('default_test_id')
+    def _compute_link_id(self):
+        link_ids = self.env['academy.tests.test.question.rel']
+
+        test_id = self.env.context.get('default_test_id', False)
+        if test_id:
+            test = self.env['academy.tests.test'].browse(test_id)
+            if test:
+                link_ids = test.mapped('link_ids')
+
+        for record in self:
+            record.link_id = \
+                link_ids.filtered(lambda x: x.question_id.id == record.id)
+
+    @api.model
+    def _search_link_id(self, operator, value):
+        return FALSE_DOMAIN
+
+    def manually_append_to_test(self):
+        self.ensure_one()
+
+        if self.link_id:
+            self.link_id.unlink()
+        else:
+            print('manually_append_to_test: append')
+            test_id = self.env.context.get('default_test_id', False)
+            test = self.env['academy.tests.test'].browse(test_id)
+            assert test, _('There is no test with ID %s' % test_id)
+
+            sequence = max(test.mapped('link_ids.sequence') + [0])
+            values = {
+                'test_id': test.id,
+                'question_id': self.id,
+                'sequence': sequence
+            }
+            self.link_id.create(values)
+
+        self._compute_link_id()
+        test.resequence()
+
+        return self.link_id.id if self.link_id else False
 
     # ---------------------------- BUTTON ACTIONS -----------------------------
 

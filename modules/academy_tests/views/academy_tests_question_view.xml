@@ -32,6 +32,8 @@
                     decoration-danger="status == 'draft'">
 
                     <field name="status" class="oe_field_status" invisible="1" />
+                    <field name="link_id" invisible="1" />
+
                     <field name="name" class="oe_field_name" string="Name" />
                     <field name="type_id" class="oe_field_type_id" />
                     <field name="topic_id" class="oe_field_topic_id" />
@@ -46,18 +48,19 @@
         </record>
 
 
-        <!-- Form view for "academy.tests.question" -->
-        <record id="view_academy_question_form" model="ir.ui.view">
+        <!-- Shared by academy.test.question and academy.tests.question.rel -->
+        <record id="view_academy_question_form_base" model="ir.ui.view">
             <field name="name">view.academy.tests.question.form</field>
             <field name="model">academy.tests.question</field>
             <field name="type">form</field>
             <field name="mode">primary</field>
-            <field name="priority" eval="16" />
+            <field name="priority" eval="99" />
             <field name="active" eval="True" />
             <field name="arch" type="xml">
                 <form string="academy_question_form" create="1" delete="1" edit="1" class="o_question_form">
                     <sheet>
                         <field name="active" invisible="1" />
+                        <field name="link_id" invisible="1" />
 
                         <div class="oe_button_box" name="button_box">
                             <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
@@ -169,17 +172,7 @@
                             <page string="Dependency" class="oe_page_description" accesskey="E">
 
                                 <group col="2" string="Tests">
-                                    <field name="link_ids" class="oe_field_link_ids oe_center_buttons" widget="many2many_deedless" context="{'show_test_id': True}">
-                                        <tree string="Tests by questions" create="0" delete="0" edit="0" editable="bottom">
-                                            <field name="test_id" class="oe_field_test_id" />
-                                            <button name="open_test"
-                                                    string="Open test"
-                                                    type="object"
-                                                    default_focus="1"
-                                                    icon="fa-external-link"
-                                                    help="Open test in new window" />
-                                        </tree>
-                                    </field>
+                                    <field name="test_ids" class="oe_field_test_ids oe_center_buttons" />
                                 </group>
 
                                 <group cols="2" string="Questions">
@@ -205,29 +198,46 @@
                         </notebook>
 
                     </sheet>
-                    <div class="oe_chatter">
-                            <field name="message_follower_ids" widget="mail_followers"/>
-                            <field name="message_ids" widget="mail_thread"/>
-                    </div>
                 </form>
             </field>
         </record>
 
 
-        <record id="view_academy_tests_question_kanban" model="ir.ui.view">
+        <!-- Form view for "academy.tests.question" -->
+        <record id="view_academy_question_form" model="ir.ui.view">
+            <field name="name">view.academy.tests.question.form</field>
+            <field name="model">academy.tests.question</field>
+            <field name="type">form</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="view_academy_question_form_base" />
+            <field name="arch" type="xml">
+                <xpath expr="//sheet" position="after">
+                    <div class="oe_chatter">
+                            <field name="message_follower_ids" widget="mail_followers"/>
+                            <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+
+
+        <!-- Shared by academy.tests.question and academy.tests.test.question.rel
+         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        <record id="view_academy_tests_question_kanban_base" model="ir.ui.view">
             <field name="name">view.academy.tests.question.kanban</field>
             <field name="model">academy.tests.question</field>
             <field name="type">kanban</field>
             <field name="mode">primary</field>
-            <field name="priority" eval="16" />
+            <field name="priority" eval="99" />
             <field name="active" eval="True" />
             <field name="arch" type="xml">
                 <kanban string="Academy Question Kanban" create="1" delete="1" edit="1"
                     quick_create="1" class="o_kanban_mobile">
 
                     <field name="id" />
-                    <field name="name" />
-                    <field name="answer_ids" />
+                    <field name="alt" />
                     <field name="ir_attachment_count" />
                     <field name="topic_id" />
                     <field name="level_id" />
@@ -236,45 +246,27 @@
                     <field name="description" />
                     <field name="status" />
                     <field name="color" />
+                    <field name="link_id" />
 
                     <templates>
                         <t t-name="kanban-box">
                             <div t-attf-class="oe_kanban_global_click o_question_kanban #{kanban_color(record.color.raw_value)}">
                                 <div class="oe_kanban_details">
-                                    <h4><field name="id" class="oe_field_id" />. <field name="name" /></h4>
-                                    <ol class="o_question_kanban_answer_list">
-                                    <t t-foreach="record.answer_ids.raw_value" t-as="o">
-                                        <li t-att-data-is-correct="o.is_correct"><span t-att-title="o.name"><t t-esc="o.name" /></span></li>
-                                    </t>
-                                    </ol>
+                                    <field name="alt" widget="html" />
                                 </div>
 
-                                <div class="d-flex flex-row o_question_kanban_status_bar" onclick="event.preventDefault();">
-                                    <div class="p-2 flex-grow-1 o_question_kanban_status_topic" title="Topic"><field name="topic_id" /></div>
-                                    <div class="p-2 o_question_kanban_status_category" title="Number of categories"><field name="category_count" /></div>
-                                    <div class="p-2 o_question_kanban_status_level" title="Level"><field name="level_id" /></div>
-                                    <div class="p-2 o_question_kanban_status_attachment" title="Number of attachments"><field name="ir_attachment_count" /></div>
-                                    <div class="p-2 o_question_kanban_status_preamble" title="Has preamble">
+                                <div id="o_question_kanban_status_bar" class="d-flex flex-row o_question_kanban_status_bar" onclick="event.preventDefault();">
+                                    <div class="p-2 text-truncate o_question_kanban_status_topic flex-grow-1" title="Topic"><field name="topic_id" /></div>
+                                    <div class="p-2 text-truncate o_question_kanban_status_category" title="Number of categories"><field name="category_count" /></div>
+                                    <div class="p-2 text-truncate o_question_kanban_status_level" title="Level"><field name="level_id" /></div>
+                                    <div class="p-2 text-truncate o_question_kanban_status_attachment" title="Number of attachments"><field name="ir_attachment_count" /></div>
+                                    <div class="p-2 text-truncate o_question_kanban_status_preamble" title="Has preamble">
                                         <tag t-if="record.preamble.raw_value">P</tag>
                                         <tag t-else="">&#160;</tag>
                                     </div>
-                                    <div class="p-2 o_question_kanban_status_description" title="Has description">
+                                    <div class="p-2 text-truncate o_question_kanban_status_description" title="Has description">
                                         <tag t-if="record.description.raw_value">D</tag>
                                         <tag t-else="">&#160;</tag>
-                                    </div>
-                                    <div class="p-0 o_question_kanban_status_menu" id="question_kanban_status_menu">
-                                        <div class="dropdown">
-                                            <a class="btn btn-sm btn-outline-light dropdown-toggle" type="button"
-                                               id="question_kanban_status_menu_button" data-toggle="dropdown"
-                                               aria-haspopup="true" aria-expanded="false" role='button' title="Menu">
-                                                <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-                                            </a>
-                                            <div class="dropdown-menu" aria-labelledby="question_kanban_status_menu_button" role='menu' id="question_kanban_status_menu_button">
-                                                <a class="dropdown-item" id="question_kanban_status_menu_add_to_test" href="#">
-                                                    Add to test
-                                                </a>
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
 
@@ -283,6 +275,32 @@
                     </templates>
 
                 </kanban>
+            </field>
+        </record>
+
+        <!-- Kanban view for "academy.questions" -->
+        <record id="view_academy_tests_question_kanban" model="ir.ui.view">
+            <field name="name">view.academy.tests.question.kanban</field>
+            <field name="model">academy.tests.question</field>
+            <field name="type">kanban</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="view_academy_tests_question_kanban_base" />
+            <field name="arch" type="xml">
+                <xpath expr="//div[@id='o_question_kanban_status_bar']/*[last()]" position="after">
+                    <div id="question_kanban_status_button_wrapper">
+                        <a class="question_kanban_manually_append_cmd btn btn-sm"
+                            href="#" role='button' title="Switch">
+                            <t t-if="record.link_id.raw_value">
+                                <i class="fa fa-minus-square text-danger" aria-hidden="false"></i>
+                            </t>
+                            <t t-else="">
+                                <i class="fa fa-plus-square text-primary" aria-hidden="false"></i>
+                            </t>
+                        </a>
+                    </div>
+                </xpath>
             </field>
         </record>
 
@@ -316,7 +334,7 @@
 
                     <field name="name" string="Statement" />
                     <field name="preamble" />
-                    <field name="link_ids" string="Test" />
+                    <field name="test_ids" string="Test" />
                     <field name="topic_id" />
                     <field name="category_ids" />
                     <field name="level_id" />

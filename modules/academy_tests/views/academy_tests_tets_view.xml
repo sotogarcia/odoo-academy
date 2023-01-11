@@ -27,7 +27,7 @@
                     <field name="name" class="oe_field_name" />
                     <field name="description" class="oe_field_description" />
                     <field name="topic_id" class="oe_field_topic_id" />
-                    <field name="owner_id" class="oe_field_owner_id" />
+                    <field name="manager_id" class="oe_field_manager_id" />
                     <field name="question_count" class="oe_field_question_count" string="Questions" />
                     <field name="kind_id" class="od_field_kind_id" />
                 </tree>
@@ -63,7 +63,7 @@
                                     <span>Text edit</span>
                                 </button>
 
-                                <button name="show_questions" type="object"
+                                <button name="show_links" type="object"
                                     class="oe_stat_button oe_read_only" icon="fa-list-ol">
                                     <field name="question_count" widget="statinfo" string="Questions" />
                                 </button>
@@ -115,11 +115,11 @@
                                         widget="many2many_tags" />
 
                                     <separator string="Proprietary" colspan="4" />
-                                    <field name="owner_id" class="oe_field_owner_id" colspan="4"
-                                        options="{'no_create': True}" groups="academy_tests.academy_tests_group_technical" />
                                     <field name="authorship" class="oe_field_authorship" />
                                     <field name="first_use_id" class="oe_field_first_use_id"
-                                        attrs="{'invisible': [('authorship', '=', True)]}" />
+                                        attrs="{'readonly': [('authorship', '=', True)]}" />
+                                    <field name="owner_id" class="oe_field_owner_id" options="{'no_create': True}" />
+                                    <field name="subrogate_id" class="oe_field_subrogate_id" options="{'no_create': True}" />
 
                                    <separator colspan="4" string="Topics" />
                                     <field name="topic_ids" class="oe_field_topic_ids"
@@ -270,7 +270,7 @@
                     <field name="name" string="Name" />
                     <field name="topic_ids" string="Has topic" />
                     <field name="tag_ids" />
-                    <field name="owner_id" />
+                    <field name="manager_id" />
                     <field name="create_date" />
                     <field name="kind_id" />
 
@@ -278,7 +278,7 @@
 
                     <filter string="My tests"
                         name="my_tests"
-                        domain="[('owner_id', '=', uid)]"
+                        domain="[('manager_id', '=', uid)]"
                         context="{}"
                         help="List only the own tests" />
 

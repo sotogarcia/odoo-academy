@@ -22,23 +22,26 @@
         'web',
         'record_ownership',
         'base_field_m2m_view',
-        'ks_percent_field'
+        'ks_percent_field',
+        'web_tree_header_buttons_always_visible'
     ],
 
     # always loaded
     'data': [
+        'data/res_groups_data.xml',
+        'data/ir_actions_server_data.xml',
+        'data/ir_sequence.xml',
+
         'data/mail_message_subtype_data.xml',
         'data/academy_tests_level_data.xml',
         'data/academy_tests_question_type_data.xml',
         'data/academy_tests_test_kind_data.xml',
-        'data/ir_sequence.xml',
         'data/academy_tests_block_data.xml',
 
         'data/academy_tests_topic_data.xml',
         'data/academy_tests_version_data.xml',
         'data/academy_tests_category_data.xml',
 
-        'data/res_groups_data.xml',
 
         'security/academy_tests.xml',
         'security/academy_tests_answer.xml',
@@ -135,11 +138,13 @@
     "assets": {
         'web.assets_backend': [
             "academy_tests/static/src/css/styles-backend.css",
-            "academy_tests/static/src/js/academy_tests.js",
-            "academy_tests/static/src/js/listview_button.js",
+            "academy_tests/static/src/js/academy_tests.js"
         ],
         'web.report_assets_common': [
             'academy_tests/static/src/css/academy_tests_report.css',
-        ]
+        ],
+        'web.assets_qweb': [
+            'academy_tests/static/src/xml/view_header_buttons.xml'
+        ],
     },
 }
