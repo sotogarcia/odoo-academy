@@ -39,7 +39,7 @@
                     <field name="category_ids" class="oe_field_category_ids" widget="many2many_tags" />
                     <field name="level_id" class="oe_field_level_id" />
                     <field name="attachment_count" class="oe_field_attachment_count" string="Attachments" />
-                    <field name="owner_id" class="oe_field_owner_id" />
+                    <field name="manager_id" class="oe_field_manager_id" />
                     <field name="depends_on_id" class="oe_field_depends_on_id" invisible="1" />
                </tree>
             </field>
@@ -158,7 +158,11 @@
                                     <separator colspan="4" />
 
                                     <field name="authorship" class="oe_field_authorship" />
+                                    <separator colspan="2" />
                                     <field name="owner_id" class="oe_field_owner_id"
+                                        groups="academy_base.academy_group_technical"
+                                        options="{'no_create': True}" />
+                                    <field name="subrogate_id" class="oe_field_subrogate_id"
                                         groups="academy_base.academy_group_technical"
                                         options="{'no_create': True}" />
                                 </group>
@@ -331,7 +335,7 @@
                     <field name="category_ids" />
                     <field name="level_id" />
                     <field name="tag_ids" />
-                    <field name="owner_id" />
+                    <field name="manager_id" />
                     <field name="answer_ids" />
                     <field name="ir_attachment_ids" />
 
@@ -348,19 +352,19 @@
 
                     <filter string="My questions"
                         name="my_own_questions"
-                        domain="[('owner_id', '=', uid)]"
+                        domain="[('manager_id', '=', uid)]"
                         context="{}"
                         help="List all the own questions" />
 
                     <filter string="My available questions"
                         name="my_own_available_questions"
-                        domain="[('owner_id', '=', uid), ('status', '=', 'ready'), ('depends_on_id', '=', False)]"
+                        domain="[('manager_id', '=', uid), ('status', '=', 'ready'), ('depends_on_id', '=', False)]"
                         context="{}"
                         help="List the own available questions" />
 
                     <filter string="My available authorship questions"
                         name="my_own_available_authorship_questions"
-                        domain="[('owner_id', '=', uid), ('status', '=', 'ready'), ('depends_on_id', '=', False), ('authorship', '=', True)]"
+                        domain="[('manager_id', '=', uid), ('status', '=', 'ready'), ('depends_on_id', '=', False), ('authorship', '=', True)]"
                         context="{}"
                         help="List the own available authorship questions" />
 

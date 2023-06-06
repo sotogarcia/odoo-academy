@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="access_academy_tests_model_academy_training_action_enrolment_available_assignment_rel_academy_group_consultant" model="ir.model.access">
+            <field name="name">access_academy_tests_model_academy_training_action_enrolment_available_assignment_rel_academy_group_consultant</field>
+            <field name="model_id" ref="academy_tests.model_academy_training_action_enrolment_available_assignment_rel" />
+            <field name="group_id" ref="academy_base.academy_group_consultant" />
+            <field name="perm_create" eval="False" />
+            <field name="perm_read" eval="True" />
+            <field name="perm_write" eval="False" />
+            <field name="perm_unlink" eval="False" />
+            <field name="active" eval="True" />
+        </record>
+
+    </data>
+</openerp>

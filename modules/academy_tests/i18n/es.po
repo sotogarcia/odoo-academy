@@ -234,10 +234,10 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_training_action_enrolment_kanban
 msgid ""
 "<i class=\"fa fa-list-ol d-inline-block mr-1\" aria-hidden=\"false\"/>\n"
-"                            Assignments"
+"                            Assign"
 msgstr ""
 "<i class=\"fa fa-list-ol d-inline-block mr-1\" aria-hidden=\"false\"/>\n"
-"                            Asignaciones"
+"                            Asignar"
 
 #. module: academy_tests
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_tests_question_request_kanban
@@ -338,7 +338,7 @@ msgstr ""
 #. module: academy_tests
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_tests_test_training_assignment_kanban
 msgid "<strong>Owner: </strong>"
-msgstr "<strong>Propietario: </strong>"
+msgstr "<strong>Responsable: </strong>"
 
 #. module: academy_tests
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_tests_test_kanban
@@ -2235,7 +2235,7 @@ msgstr "Lista de categorías"
 #. module: academy_tests
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_tests_change_owner_wizard_form
 msgid "Change Owner Wizard"
-msgstr "Asistente de Cambio de Propietario"
+msgstr "Asistente de Cambio de Responsable"
 
 #. module: academy_tests
 #: model:ir.actions.act_window,name:academy_tests.action_question_change_owner_act_window
@@ -5946,7 +5946,6 @@ msgid "Number of messages with delivery error"
 msgstr "Cantidad de mensajes con error de entrega"
 
 #. module: academy_tests
-#: model:ir.model.fields,field_description:academy_tests.field_academy_competency_unit__number_of_questions
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_category__question_count
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_test__question_count
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_topic__question_count
@@ -5957,20 +5956,6 @@ msgstr "Cantidad de preguntas"
 #: model:ir.model.fields,help:academy_tests.field_academy_tests_attempt_resume_helper__question_count
 msgid "Number of questions in test"
 msgstr "Cantidad de preguntas en el examen"
-
-#. module: academy_tests
-#: model:ir.model.fields,help:academy_tests.field_academy_competency_unit__number_of_questions
-msgid "Number of questions will be added in templates"
-msgstr "Número de preguntas que será añadido en las plantillas"
-
-#. module: academy_tests
-#: model:ir.model.fields,help:academy_tests.field_academy_competency_unit__questions_ratio
-msgid ""
-"Number of required questions to create a default test and the total number of related questions available in "
-"database"
-msgstr ""
-"Número de preguntas requeridas para crear un test y número total de preguntas relacionadas que están "
-"disponibles en la base de datos"
 
 #. module: academy_tests
 #: model:ir.model.fields,help:academy_tests.field_academy_tests_random_template__serial
@@ -6332,12 +6317,12 @@ msgstr "Propia"
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_uncategorized_by_user_readonly__owner_id
 #: model:ir.model.fields,field_description:academy_tests.field_ir_attachment__owner_id
 msgid "Owner"
-msgstr "Propietario"
+msgstr "Responsable"
 
 #. module: academy_tests
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_random_line__owner_ids
 msgid "Owners"
-msgstr "Propietarios"
+msgstr "Responsables"
 
 #. module: academy_tests
 #: model:mail.message.subtype,description:academy_tests.academy_tests_question_owned
@@ -7032,11 +7017,6 @@ msgstr "Informe para imprimir las respuestas correctas para los tests"
 #: model:ir.model,name:academy_tests.model_report_academy_tests_view_academy_tests_qweb
 msgid "Report to print tests"
 msgstr "Informe para imprimir tests"
-
-#. module: academy_tests
-#: model:ir.model.fields,field_description:academy_tests.field_academy_competency_unit__questions_ratio
-msgid "Req/Av"
-msgstr "Requerido/Disponible"
 
 #. module: academy_tests
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_test_question_rel__request_id
@@ -8160,7 +8140,7 @@ msgstr "Nombre del test"
 #. module: academy_tests
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_attempt_resume_helper__test_owner_id
 msgid "Test owner"
-msgstr "Propietario de el test"
+msgstr "Responsable de el test"
 
 #. module: academy_tests
 #: model:ir.actions.server,name:academy_tests.action_redirect_to_preview

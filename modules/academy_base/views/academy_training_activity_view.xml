@@ -29,6 +29,7 @@
                     <field name="professional_family_id" />
                     <field name="qualification_level_id" />
                     <field name="training_action_count" string="Actions" />
+                    <field name="manager_id" class="oe_field_manager_id" />
                 </tree>
             </field>
         </record>
@@ -75,14 +76,16 @@
                         <group col="4">
                             <field name="activity_code" class="oe_field_activity_code"
                                 placeholder="Enter new code" />
+                            <field name="attainment_id" class="oe_field_attainment_id" string="Required" />
+                            <separator colspan="4" string="Grants" />
                             <field name="professional_family_id" class="oe_field_professional_family_id" />
                             <field name="professional_area_id" class="oe_field_professional_area_id" />
                             <field name="qualification_level_id" class="oe_field_qualification_level_id" />
                             <field name="professional_field_id" class="oe_field_professional_field" />
-                            <field name="professional_sector_ids" class="oe_field_professional_sector_ids" widget="many2many_tags" />
-                            <separator colspan="4" />
+                            <field name="professional_sector_ids" class="oe_field_professional_sector_ids"
+                                widget="many2many_tags" colspan="4" string="Sectors" />
                             <field name="general_competence" class="oe_field_general_competence"
-                                placeholder="General competence name" colspan="4" />
+                                placeholder="Tasks will carry out in the future" colspan="4" />
                         </group>
 
                         <notebook>
@@ -95,6 +98,7 @@
                                     <field name="description" class="oe_field_description"
                                         placeholder="Enter new description" colspan="4" />
                                     <field name="owner_id" class="oe_field_owner_id" />
+                                    <field name="subrogate_id" class="oe_field_subrogate_id" />
                                 </group>
                             </page>
 
@@ -149,10 +153,10 @@
                                 <div class="oe_kanban_details">
                                     <h4><strong class="oe_partner_heading"><field name="name"/></strong></h4>
                                     <ul>
-                                        <li class="o_ellipsis"><strong>Activity code:&#160;</strong><field name="activity_code" /></li>
+                                        <li class="o_ellipsis"><strong>Code:&#160;</strong><field name="activity_code" /></li>
                                         <li class="o_ellipsis"><strong>Professional family:&#160;</strong><field name="professional_family_id" /></li>
                                         <li class="o_ellipsis"><strong>Qualification level:&#160;</strong><field name="qualification_level_id" /></li>
-                                        <li class="o_ellipsis"><strong>Training actions:&#160;</strong><field name="training_action_count" /></li>
+                                        <li class="o_ellipsis"><strong>Nº actions:&#160;</strong><field name="training_action_count" /></li>
                                      </ul>
                                 </div>
                                 <div class="row">

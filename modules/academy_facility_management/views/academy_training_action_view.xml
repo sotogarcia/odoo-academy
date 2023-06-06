@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+
+        <record id="view_academy_training_action_form" model="ir.ui.view">
+            <field name="name">view.academy.training.action.form</field>
+            <field name="model">academy.training.action</field>
+            <field name="type">form</field>
+            <field name="mode">extension</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="academy_base.view_academy_training_action_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='owner_id']/.." position="after">
+                    <group col="6" string="Facilities">
+                        <field name="facility_link_ids" class="oe_field_facility_link_ids"
+                            colspan="6" context="{'default_training_action_id': id}" nolabel="1" />
+                        <field name="primary_complex_id" class="oe_field_primary_complex_id" />
+                        <field name="primary_facility_id" class="oe_field_primary_facility_id" />
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_academy_training_action_search" model="ir.ui.view">
+            <field name="name">view.academy.training.action.search</field>
+            <field name="model">academy.training.action</field>
+            <field name="type">search</field>
+            <field name="mode">extension</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="academy_base.view_academy_training_action_search" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='student_ids']" position="after">
+                    <field name="primary_complex_id" />
+                </xpath>
+                <xpath expr="//group[@name='group_by']/*[last()]" position="after">
+                    <filter name="group_byprimary_complex_id" string="Primary complex" domain="[]" context="{'group_by' : 'primary_complex_id'}" />
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>

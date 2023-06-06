@@ -20,16 +20,10 @@ import mimetypes
 from io import BytesIO
 
 from .utils.libuseful import prepare_text, fix_established, is_numeric
-import odoo.addons.academy_base.models.utils.custom_model_fields as custom
 
 from .utils.sql_operations import ACADEMY_QUESTION_ENSURE_CHECKSUMS
 from .utils.sql_operations import FIND_MOST_USED_QUESTION_FIELD_VALUE_FOR_SQL
 from .utils.sql_operations import FIND_MOST_USED_QUESTION_CATEGORY_VALUE_SQL
-
-from .utils.sql_m2m_through_view import ACADEMY_TESTS_QUESTION_DEPENDENCY_REL
-from .utils.sql_m2m_through_view import ACADEMY_TESTS_QUESTION_DUPLICATED_REL
-from .utils.sql_m2m_through_view import \
-    ACADEMY_TESTS_TOPIC_TRAINING_MODULE_LINK_QUESTION_REL
 
 from .utils.sql_inverse_searches import ANSWER_COUNT_SEARCH
 from .utils.sql_inverse_searches import UNCATEGORIZED_QUESTION_SEARCH
@@ -66,7 +60,7 @@ class AcademyTestsQuestion(models.Model):
     _order = 'write_date DESC, create_date DESC'
 
     _inherit = [
-        'academy.abstract.owner',
+        'ownership.mixin',
         'academy.abstract.spreadable',
         'mail.thread'
     ]
@@ -350,7 +344,7 @@ class AcademyTestsQuestion(models.Model):
         auto_join=False
     )
 
-    depends_on_ids = custom.Many2manyThroughView(
+    depends_on_ids = fields.Many2manyView(
         string='Depends on',
         required=False,
         readonly=True,
@@ -364,10 +358,10 @@ class AcademyTestsQuestion(models.Model):
         domain=[],
         context={},
         limit=None,
-        sql=ACADEMY_TESTS_QUESTION_DEPENDENCY_REL
+        copy=False
     )
 
-    dependent_ids = custom.Many2manyThroughView(
+    dependent_ids = fields.Many2manyView(
         string='Dependents',
         required=False,
         readonly=True,
@@ -381,10 +375,10 @@ class AcademyTestsQuestion(models.Model):
         domain=[],
         context={},
         limit=None,
-        sql=ACADEMY_TESTS_QUESTION_DEPENDENCY_REL
+        copy=False
     )
 
-    duplicated_ids = custom.Many2manyThroughView(
+    duplicated_ids = fields.Many2manyView(
         string='Duplicates',
         required=False,
         readonly=True,
@@ -398,12 +392,12 @@ class AcademyTestsQuestion(models.Model):
         domain=[],
         context={},
         limit=None,
-        sql=ACADEMY_TESTS_QUESTION_DUPLICATED_REL
+        copy=False
     )
 
     # This field can have a maximum of one record. It's used in some domains
     # to check if question is not the original.
-    original_ids = custom.Many2manyThroughView(
+    original_ids = fields.Many2manyView(
         string='Original',
         required=False,
         readonly=True,
@@ -417,7 +411,7 @@ class AcademyTestsQuestion(models.Model):
         domain=[],
         context={},
         limit=None,
-        sql=ACADEMY_TESTS_QUESTION_DUPLICATED_REL
+        copy=False
     )
 
     color = fields.Integer(
@@ -446,7 +440,7 @@ class AcademyTestsQuestion(models.Model):
         limit=None
     )
 
-    topic_module_link_ids = custom.Many2manyThroughView(
+    topic_module_link_ids = fields.Many2manyView(
         string='Links module-topic',
         required=False,
         readonly=True,
@@ -460,7 +454,7 @@ class AcademyTestsQuestion(models.Model):
         domain=[],
         context={},
         limit=None,
-        sql=ACADEMY_TESTS_TOPIC_TRAINING_MODULE_LINK_QUESTION_REL
+        copy=False
     )
 
     def _compute_color(self):
@@ -706,7 +700,7 @@ class AcademyTestsQuestion(models.Model):
         @param type_id (int): it allows external code to pass a default
         ID, this will be used when no alternative was found
         """
-        uid = self._default_owner_id()
+        uid = self.default_owner_id()
         sql = FIND_MOST_USED_QUESTION_FIELD_VALUE_FOR_SQL.format(
             field='type_id', owner=uid)
 
@@ -721,7 +715,7 @@ class AcademyTestsQuestion(models.Model):
         @param topic_id (int): it allows external code to pass a default
         ID, this will be used when no alternative was found
         """
-        uid = self._default_owner_id()
+        uid = self.default_owner_id()
         sql = FIND_MOST_USED_QUESTION_FIELD_VALUE_FOR_SQL.format(
             field='topic_id', owner=uid)
 
@@ -740,7 +734,7 @@ class AcademyTestsQuestion(models.Model):
         ID, this will be used when no alternative was found
         """
 
-        uid = self._default_owner_id()
+        uid = self.default_owner_id()
         sql = FIND_MOST_USED_QUESTION_FIELD_VALUE_FOR_SQL.format(
             field='level_id', owner=uid)
 
@@ -770,7 +764,7 @@ class AcademyTestsQuestion(models.Model):
         @note: **IMPORTANT**, this method is not used to compute the
         default value, this only allows external code to invoke it.
         """
-        uid = self._default_owner_id()
+        uid = self.default_owner_id()
         result = [(5, 0, 0)]    # Unlink all
 
         if self.topic_id and self.topic_id.category_ids:
@@ -1448,11 +1442,11 @@ class AcademyTestsQuestion(models.Model):
         }
 
     def to_moodle(self, encoding='utf8', prettify=True, xml_declaration=True,
-                  category=None):
+                  category=None, correction_scale=None):
         quiz = self._moodle_create_quiz(category=category)
 
         for record in self:
-            node = record._to_moodle()
+            node = record._to_moodle(correction_scale=correction_scale)
             quiz.append(node)
 
         file = BytesIO()
@@ -1564,12 +1558,32 @@ class AcademyTestsQuestion(models.Model):
         ET.SubElement(desc_node, 'text').text = \
             self._moodle_cdata(answer.description or '')
 
-    def _to_moodle(self, name=None):
+    @staticmethod
+    def _round_to_moodle(value):
+        valid = [100.0, 90.0, 83.33333, 80.0, 75.0, 70.0, 66.66667, 60.0, 50.0,
+                 40.0, 33.33333, 30.0, 25.0, 20.0, 16.66667, 14.28571, 12.5,
+                 11.11111, 10.0, 5.0, 0.0]
+        sign = -1 if value < 0 else 1
+        value = min(valid, key=lambda x: abs(x - value))
+
+        return sign * value
+
+    def _to_moodle(self, name=None, correction_scale=None):
         self.ensure_one()
 
         a_total, a_right = self._answer_count()
-        good = 100 / a_right
-        bad = (100 / (a_total - a_right)) * -1
+
+        if not correction_scale:
+            scale_xid = 'academy_tests.academy_tests_correction_scale_default'
+            correction_scale = self.env.ref(scale_xid)
+
+        good = correction_scale.right * 100
+        bad = correction_scale.wrong * 100
+        print(good, bad)
+
+        good = self._round_to_moodle(good)
+        bad = self._round_to_moodle(bad)
+        print(str(good), str(bad))
 
         node = self._moodle_create_node(multichoice=(a_right > 1))
 
@@ -1579,6 +1593,7 @@ class AcademyTestsQuestion(models.Model):
 
         for answer in self.answer_ids:
             fraction = str(good) if answer.is_correct else str(bad)
+            print(answer.is_correct, str(good))
 
             self._moodle_append_answer(node, answer, fraction)
 

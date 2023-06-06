@@ -514,7 +514,7 @@ class TestAcademyTestsRandomTemplate(TransactionCase):
             self._assert_equal(question_set, obtained_set)
 
     def test_context(self):
-        action = self.env.ref('academy_base.academy_training_action_demo')
+        action = self.env.ref('academy_base.academy_training_action_demo_1')
         test_set = action.mapped('available_assignment_ids.test_id')
         question_set = test_set.mapped('question_ids.question_id')
 
@@ -538,7 +538,7 @@ class TestAcademyTestsRandomTemplate(TransactionCase):
         question_set = question_set.search(domain)
         self._one_line_context(question_set, action, None, True, True)
 
-        enrolment_xid = 'academy_base.academy_training_action_enrolment_demo'
+        enrolment_xid = 'academy_base.academy_training_action_enrolment_demo_1'
         enrolment = self.env.ref(enrolment_xid)
         test_set = action.mapped('available_assignment_ids.test_id')
         question_set = test_set.mapped('question_ids.question_id')

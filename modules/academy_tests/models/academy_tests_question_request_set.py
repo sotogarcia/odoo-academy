@@ -6,7 +6,6 @@
 
 from odoo import models, fields, api
 from odoo.tools.translate import _
-from odoo.exceptions import ValidationError, UserError
 from logging import getLogger
 
 
@@ -33,7 +32,7 @@ class AcademyTestsQuestionRequestSet(models.Model):
     _order = 'name ASC'
 
     _inherit = [
-        'academy.abstract.owner',
+        'ownership.mixin',
         'mail.thread'
     ]
 

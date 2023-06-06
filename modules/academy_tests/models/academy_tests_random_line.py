@@ -8,9 +8,8 @@ which contains all Academy Tests Random Wizard Line  attributes and behavior.
 
 from logging import getLogger
 from datetime import datetime
-from odoo.osv.expression import AND, FALSE_DOMAIN, TRUE_DOMAIN
+from odoo.osv.expression import AND, FALSE_DOMAIN
 from odoo import models, fields, api
-from odoo.exceptions import UserError
 from odoo.tools.translate import _
 
 

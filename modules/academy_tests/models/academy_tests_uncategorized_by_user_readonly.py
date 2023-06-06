@@ -4,8 +4,7 @@
 #    __openerp__.py file at the root folder of this module.                   #
 ###############################################################################
 
-from odoo import models, fields, api
-from odoo.tools.translate import _
+from odoo import models, fields
 from odoo.tools import drop_view_if_exists
 from logging import getLogger
 

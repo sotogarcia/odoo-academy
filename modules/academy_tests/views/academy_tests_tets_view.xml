@@ -27,9 +27,10 @@
                     <field name="name" class="oe_field_name" />
                     <field name="description" class="oe_field_description" />
                     <field name="topic_id" class="oe_field_topic_id" />
-                    <field name="owner_id" class="oe_field_owner_id" />
+                    <field name="manager_id" class="oe_field_manager_id" />
                     <field name="question_count" class="oe_field_question_count" string="Questions" />
                     <field name="test_kind_id" class="od_field_test_kind_id" />
+                    <field name="last_edition" class="oe_field_last_edition" />
                 </tree>
             </field>
         </record>
@@ -111,6 +112,7 @@
                             <page string="Details" class="oe_page_description" accesskey="D">
                                 <group col="4">
                                     <separator string="Description" colspan="4" />
+                                    <field name="last_edition" class="oe_field_last_edition" />
                                     <field name="description" class="oe_field_description"
                                         placeholder="Enter new description" colspan="4" />
 
@@ -121,11 +123,13 @@
                                         widget="many2many_tags" />
 
                                     <separator string="Proprietary" colspan="4" />
-                                    <field name="owner_id" class="oe_field_owner_id" colspan="4"
-                                        options="{'no_create': True}" groups="academy_base.academy_group_technical" />
                                     <field name="authorship" class="oe_field_authorship" />
                                     <field name="first_use_id" class="oe_field_first_use_id"
                                         attrs="{'invisible': [('authorship', '=', True)]}" />
+                                    <field name="owner_id" class="oe_field_owner_id"
+                                        options="{'no_create': True}" groups="academy_base.academy_group_technical" />
+                                    <field name="subrogate_id" class="oe_field_subrogate_id"
+                                        options="{'no_create': True}" groups="academy_base.academy_group_technical" />
 
                                    <separator colspan="4" string="Topics" />
                                     <field name="topic_ids" class="oe_field_topic_ids"
@@ -150,6 +154,8 @@
                                     <field name="restart_numbering" class="oe_field_restart_numbering" />
                                     <field name="block_starts_page" class="oe_field_block_starts_page" />
 
+                                    <separator colspan="4" string="Correction scale" />
+                                    <field name="correction_scale_id" class="oe_field_correction_scale_id" />
                                 </group>
 
                             </page>
@@ -298,7 +304,7 @@
                     <field name="name" string="Name" />
                     <field name="topic_ids" string="Has topic" />
                     <field name="tag_ids" />
-                    <field name="owner_id" />
+                    <field name="manager_id" />
                     <field name="create_date" />
                     <field name="test_kind_id" />
 
@@ -306,7 +312,7 @@
 
                     <filter string="My tests"
                         name="my_tests"
-                        domain="[('owner_id', '=', uid)]"
+                        domain="[('manager_id', '=', uid)]"
                         context="{}"
                         help="List only the own tests" />
 

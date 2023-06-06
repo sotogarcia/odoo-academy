@@ -165,20 +165,31 @@ class AcademyTestsUpdateQuestionsWizard(models.TransientModel):
                 }
 
     def default_question_ids(self):
-        question_obj = self.env['academy.tests.question']
+        question_set = self.env['academy.tests.question']
 
         context = self.env.context
-        active_ids = context.get('active_ids', [])
         active_model = context.get('active_model')
 
-        if active_model == 'academy.tests.test.question.rel':
-            active_ids = self._get_mapped(
-                active_model, active_ids, 'question_id.id')
-        elif active_model == 'academy.tests.test':
-            active_ids = self._get_mapped(
-                active_model, active_ids, 'question_ids.question_id.id')
+        if active_model:
+            active_id = context.get('active_id', -1)
+            active_ids = context.get('active_ids', [active_id])
 
-        return question_obj.search([('id', 'in', active_ids)])
+            if active_ids and active_ids[0] > 0:
+                link_set = self.env['academy.tests.test.question.rel']
+
+                if active_model == 'academy.tests.test.question.rel':
+                    domain = [('id', 'in', active_ids)]
+                    link_set = link_set.search(domain, order='sequence ASC')
+
+                elif active_model == 'academy.tests.test':
+                    domain = [('tes_id', 'in', active_ids)]
+                    link_set = link_set.search(
+                        domain, order='test_id DESC, sequence ASC')
+
+                for link in link_set:  # Preserve order
+                    question_set += link.question_id
+
+        return question_set
 
     @api.onchange('question_ids')
     def _onchange_question_ids(self):
@@ -204,15 +215,6 @@ class AcademyTestsUpdateQuestionsWizard(models.TransientModel):
             _(error_msg.format(len(question_ids), len(question_set)))
 
         return question_set
-
-    def _get_mapped(self, model_name, ids, path):
-        """ This method is used in ``default_question_ids``
-        """
-
-        item_obj = self.env[model_name]
-        item_set = item_obj.search([('id', 'in', ids)])
-
-        return item_set.mapped(path)
 
     @staticmethod
     def _remove_dependent_fields(values):

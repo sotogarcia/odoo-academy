@@ -43,9 +43,9 @@
             <field name="active" eval="True" />
             <field name="inherit_id" ref="academy_base.view_academy_competency_unit_inline_edit_tree" />
             <field name="arch" type="xml">
-                <xpath expr="//tree/*[last()]" position="after">
-                    <field name="number_of_questions" class="oe_field_number_of_questions oe_edit_only" />
-                    <field name="questions_ratio" class="oe_field_questions_ratio oe_read_only text-center" />
+                <xpath expr="//tree/field[last()]" position="after">
+                    <field name="number_of_questions" class="oe_field_number_of_questions oe_edit_only" string="Questions" />
+                    <field name="questions_ratio" class="oe_field_questions_ratio oe_read_only text-center" string="Questions" />
                 </xpath>
             </field>
         </record>
@@ -60,7 +60,7 @@
             <field name="active" eval="True" />
             <field name="inherit_id" ref="academy_base.view_academy_competency_unit_list_only_tree" />
             <field name="arch" type="xml">
-                <xpath expr="//tree/*[last()]" position="after">
+                <xpath expr="//tree/field[last()]" position="after">
                     <field name="number_of_questions" class="oe_field_number_of_questions oe_edit_only" />
                     <field name="questions_ratio" class="oe_field_questions_ratio oe_read_only text-center" />
                 </xpath>
@@ -77,7 +77,7 @@
             <field name="active" eval="True" />
             <field name="inherit_id" ref="academy_base.view_academy_competency_unit_append_existing_tree" />
             <field name="arch" type="xml">
-                <xpath expr="//tree/*[last()]" position="after">
+                <xpath expr="//tree/field[last()]" position="after">
                     <field name="number_of_questions" class="oe_field_number_of_questions oe_edit_only" />
                     <field name="questions_ratio" class="oe_field_questions_ratio oe_read_only text-center" />
                 </xpath>

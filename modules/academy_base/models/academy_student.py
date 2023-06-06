@@ -7,10 +7,10 @@ all student attributes and behavior.
 
 from odoo import models, fields, api
 from odoo.tools.translate import _
-from .utils.custom_model_fields import Many2manyThroughView
 from odoo.exceptions import ValidationError
+from odoo.tools.safe_eval import safe_eval
 from odoo.osv.expression import OR
-from odoo.osv.expression import FALSE_DOMAIN
+from odoo.osv.expression import AND, FALSE_DOMAIN
 
 from logging import getLogger
 
@@ -66,7 +66,7 @@ class AcademyStudent(models.Model):
         compute='_compute_enrolment_count'
     )
 
-    training_action_ids = Many2manyThroughView(
+    training_action_ids = fields.Many2manyView(
         string='Training actions',
         required=False,
         readonly=True,
@@ -80,7 +80,7 @@ class AcademyStudent(models.Model):
         domain=[],
         context={},
         limit=None,
-        # sql=must be empty. View will be created in training.action
+        copy=False
     )
 
     @api.depends('enrolment_ids')
@@ -91,6 +91,29 @@ class AcademyStudent(models.Model):
     @api.onchange('enrolment_ids')
     def _onchange_enrolment_ids(self):
         self.enrolment_count = len(self.enrolment_ids)
+
+    attainment_id = fields.Many2one(
+        string='Educational attainment',
+        required=False,
+        readonly=False,
+        index=True,
+        default=None,
+        help='Choose related educational attainment',
+        comodel_name='academy.educational.attainment',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False
+    )
+
+    birthday = fields.Date(
+        string='Birthday',
+        required=False,
+        readonly=False,
+        index=True,
+        default=None,
+        help='Date on which the student was born'
+    )
 
     _sql_constraints = [
         (
@@ -118,22 +141,72 @@ class AcademyStudent(models.Model):
                 if partner_obj.search_count(OR(leafs)) > 1:
                     raise ValidationError(msg)
 
+    @api.model
+    def default_get(self, fields):
+        parent = super(AcademyStudent, self)
+        values = parent. default_get(fields)
+
+        values['employee'] = False
+        values['type'] = 'contact'
+        values['is_company'] = False
+
+        return values
+
+    @staticmethod
+    def _eval_domain(domain):
+        """ Evaluate a domain expresion (str, False, None, list or tuple) an
+        returns a valid domain
+
+        Arguments:
+            domain {mixed} -- domain expresion
+
+        Returns:
+            mixed -- Odoo valid domain. This will be a tuple or list
+        """
+
+        if domain in [False, None]:
+            domain = []
+        elif not isinstance(domain, (list, tuple)):
+            try:
+                domain = eval(domain)
+            except Exception:
+                domain = []
+
+        return domain
+
     def edit_enrolments(self):
+
         self.ensure_one()
+
+        act_xid = 'academy_base.action_training_action_enrolment_act_window'
+        action = self.env.ref(act_xid)
 
         view_xid = ('academy_base.'
                     'view_academy_training_action_enrolment_edit_by_user_tree')
-        return {
+
+        ctx = self.env.context.copy()
+        ctx.update(safe_eval(action.context))
+        ctx.update({'default_student_id': self.id})
+        ctx.update({'tree_view_ref': view_xid})
+
+        domain = self._eval_domain(action.domain)
+        domain = AND([domain, [('student_id', '=', self.id)]])
+
+        action_values = {
             'name': _('Enrolments for «{}»').format(self.name),
-            'view_mode': 'kanban,tree,form',
-            'view_type': 'form',
-            'res_model': 'academy.training.action.enrolment',
-            'type': 'ir.actions.act_window',
-            'nodestroy': True,
+            'type': action.type,
+            'help': action.help,
+            'domain': domain,
+            'context': ctx,
+            'res_model': action.res_model,
+            'target': action.target,
+            'view_mode': action.view_mode,
+            'search_view_id': action.search_view_id.id,
             'target': 'current',
-            'domain': [('student_id', '=', self.id)],
-            'context': {'tree_view_ref': view_xid}
+            'nodestroy': True
         }
+
+        return action_values
 
     def go_to_contact(self):
         self.ensure_one()

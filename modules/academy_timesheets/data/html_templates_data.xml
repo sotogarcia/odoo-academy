@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <template id="view_academy_tests_display_question_as_html" name="Display question as HTML">
+
+            <table class="table table-sm table-bordered table-striped my-0">
+                <thead>
+                    <tr>
+                        <th class="px-2" style="width: 10%;">&#160;</th>
+                        <th class="px-2" style="width: 10%;">Date</th>
+                        <th class="px-2" style="width: 10%;">Time</th>
+                        <th class="px-2" style="width: 40%;">Competency unit</th>
+                        <th class="px-2" style="width: 15%;">Facility</th>
+                        <th class="px-2" style="width: 15%;">Teacher</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr t-attf-id="academy.training.session_{{first['id']}}">
+                        <th class="px-2">First</th>
+                        <td class="px-2 text-muted"><t t-esc="first['date']" /></td>
+                        <td class="px-2 text-muted"><t t-esc="first['interval']" /></td>
+                        <td class="px-2 text-muted text-truncate"><t t-esc="first['competency']" /></td>
+                        <td class="px-2 text-muted text-truncate"><t t-esc="first['facility']" /></td>
+                        <td class="px-2 text-muted text-truncate"><t t-esc="first['teacher']" /></td>
+                    </tr>
+                    <tr t-attf-id="academy.training.session_{{previous['id']}}">
+                        <th class="px-2">Previous</th>
+                        <td class="px-2 text-muted"><t t-esc="previous['date']" /></td>
+                        <td class="px-2 text-muted"><t t-esc="previous['interval']" /></td>
+                        <td class="px-2 text-muted text-truncate"><t t-esc="previous['competency']" /></td>
+                        <td class="px-2 text-muted text-truncate"><t t-esc="previous['facility']" /></td>
+                        <td class="px-2 text-muted text-truncate"><t t-esc="previous['teacher']" /></td>
+                    </tr>
+                    <tr t-attf-id="academy.training.session_{{current['id']}}">
+                        <th class="px-2">Current</th>
+                        <td class="px-2 text-success"><t t-esc="current['date']" /></td>
+                        <td class="px-2 text-success"><t t-esc="current['interval']" /></td>
+                        <td class="px-2 text-success text-truncate"><t t-esc="current['competency']" /></td>
+                        <td class="px-2 text-success text-truncate"><t t-esc="current['facility']" /></td>
+                        <td class="px-2 text-success text-truncate"><t t-esc="current['teacher']" /></td>
+                    </tr>
+                    <tr t-attf-id="academy.training.session_{{following['id']}}">
+                        <th class="px-2">Next</th>
+                        <td class="px-2 text-info"><t t-esc="following['date']" /></td>
+                        <td class="px-2 text-info"><t t-esc="following['interval']" /></td>
+                        <td class="px-2 text-info text-truncate"><t t-esc="following['competency']" /></td>
+                        <td class="px-2 text-info text-truncate"><t t-esc="following['facility']" /></td>
+                        <td class="px-2 text-info text-truncate"><t t-esc="following['teacher']" /></td>
+                    </tr>
+                    <tr t-attf-id="academy.training.session_{{last['id']}}">
+                        <th class="px-2">Last</th>
+                        <td class="px-2 text-info"><t t-esc="last['date']" /></td>
+                        <td class="px-2 text-info"><t t-esc="last['interval']" /></td>
+                        <td class="px-2 text-info text-truncate"><t t-esc="last['competency']" /></td>
+                        <td class="px-2 text-info text-truncate"><t t-esc="last['facility']" /></td>
+                        <td class="px-2 text-info text-truncate"><t t-esc="last['teacher']" /></td>
+                    </tr>
+                </tbody>
+            </table>
+        </template>
+
+
+    </data>
+</openerp>

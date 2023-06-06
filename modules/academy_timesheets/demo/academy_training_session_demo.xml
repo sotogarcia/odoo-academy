@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="academy_training_session_1" model="academy.training.session">
+            <field name="active" eval="True" />
+            <field name="training_action_id" ref="academy_base.academy_training_action_demo_1" />
+            <field name="competency_unit_id" ref="academy_base.academy_competency_unit_libre" />
+            <field name="invitation_ids" eval="[(4, ref('academy_base.academy_demo_student_1'), 0)]" />
+            <field name="date_start" eval="(DateTime.today()+ timedelta(days=1)).strftime('%Y-%m-%d 16:00:00')" />
+            <field name="date_stop" eval="(DateTime.today()+ timedelta(days=1)).strftime('%Y-%m-%d 18:00:00')" />
+            <field name="reservation_ids" eval="[
+                    (4, ref('academy_timesheets.academy_training_session_1_reservation_a'), 0),
+                    (4, ref('academy_timesheets.academy_training_session_1_reservation_b'), 0)
+                ]"
+            />
+            <field name="state">ready</field>
+        </record>
+
+    </data>
+</openerp>

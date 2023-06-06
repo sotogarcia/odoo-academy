@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <openerp>
-    <data noupdate="0">
+    <data noupdate="1">
 
         <record id="academy_professional_family_01" model="academy.professional.family">
             <field name="name">Physical and sports activities</field>

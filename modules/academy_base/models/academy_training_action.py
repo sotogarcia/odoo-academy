@@ -7,19 +7,14 @@ all training action attributes and behavior.
 
 from logging import getLogger
 
-from datetime import datetime, timedelta
-from pytz import timezone, utc
 from odoo.tools.translate import _
 
 # pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
-from odoo.exceptions import ValidationError
 from odoo.tools.safe_eval import safe_eval
-from odoo.osv.expression import AND
-
-from .utils.custom_model_fields import Many2manyThroughView
-from .utils.raw_sql import ACADEMY_TRAINING_ACTION_AVAILABLE_RESOURCE_REL, \
-    ACADEMY_TRAINING_ACTION_STUDENT_REL
+from odoo.osv.expression import AND, FALSE_DOMAIN
+from pytz import utc
+from uuid import uuid4
 
 # pylint: disable=locally-disabled, C0103
 _logger = getLogger(__name__)
@@ -42,10 +37,24 @@ class AcademyTrainingAction(models.Model):
         'mail.thread',
         'academy.abstract.observable',
         'academy.abstract.training',
-        'academy.abstract.owner'
+        'ownership.mixin'
     ]
 
-    _inherits = {'academy.training.activity': 'training_activity_id'}
+    _check_company_auto = True
+
+    company_id = fields.Many2one(
+        string='Company',
+        required=True,
+        readonly=True,
+        index=True,
+        default=lambda self: self.env.company,
+        help='The company this record belongs to',
+        comodel_name='res.company',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False
+    )
 
     action_name = fields.Char(
         string='Action name',
@@ -83,19 +92,33 @@ class AcademyTrainingAction(models.Model):
         required=True,
         readonly=False,
         index=False,
-        default=lambda self: self._utc_o_clock(),
+        default=lambda self: self.default_start(),
         help='Start date of an event, without time for full day events'
     )
+
+    def default_start(self):
+        now = fields.Datetime.now()
+        now = fields.Datetime.context_timestamp(self, now)
+        now = now.replace(hour=0, minute=0, second=0)
+
+        return now.astimezone(utc).replace(tzinfo=None)
 
     # pylint: disable=locally-disabled, w0212
     end = fields.Datetime(
         string='End',
-        required=True,
+        required=False,
         readonly=False,
         index=False,
-        default=lambda self: self._utc_o_clock(offset=720),
+        default=lambda self: self.default_end(),
         help='Stop date of an event, without time for full day events',
     )
+
+    def default_end(self):
+        now = fields.Datetime.now()
+        now = fields.Datetime.context_timestamp(self, now)
+        now = now.replace(hour=23, minute=59, second=59)
+
+        return now.astimezone(utc).replace(tzinfo=None)
 
     application_scope_id = fields.Many2one(
         string='Application scope',
@@ -214,12 +237,16 @@ class AcademyTrainingAction(models.Model):
 
     seating = fields.Integer(
         string='Seating',
-        required=False,
+        required=True,
         readonly=False,
         index=False,
         default=20,
         help='Maximum number of signups allowed'
     )
+
+    @api.onchange('seating')
+    def _onchange_seating(self):
+        self.excess = max(self.seating, self.excess)
 
     training_action_enrolment_ids = fields.One2many(
         string='Action enrolments',
@@ -233,7 +260,8 @@ class AcademyTrainingAction(models.Model):
         domain=[],
         context={},
         auto_join=False,
-        limit=None
+        limit=None,
+        copy=False
     )
 
     action_resource_ids = fields.Many2many(
@@ -252,7 +280,7 @@ class AcademyTrainingAction(models.Model):
         limit=None
     )
 
-    available_resource_ids = Many2manyThroughView(
+    available_resource_ids = fields.Many2manyView(
         string='Available action resources',
         required=False,
         readonly=True,
@@ -266,10 +294,10 @@ class AcademyTrainingAction(models.Model):
         domain=[],
         context={},
         limit=None,
-        sql=ACADEMY_TRAINING_ACTION_AVAILABLE_RESOURCE_REL
+        copy=False
     )
 
-    student_ids = Many2manyThroughView(
+    student_ids = fields.Many2manyView(
         string='Students',
         required=False,
         readonly=True,
@@ -283,48 +311,19 @@ class AcademyTrainingAction(models.Model):
         domain=[],
         context={},
         limit=None,
-        sql=ACADEMY_TRAINING_ACTION_STUDENT_REL
+        copy=False
     )
 
     enrolment_count = fields.Integer(
-        string='Nº enrolments',
+        string='Enrolment count',
         required=False,
         readonly=True,
         index=False,
         default=0,
         help='Show number of enrolments',
-        compute='_compute_training_action_enrolment_count'
+        compute='_compute_training_action_enrolment_count',
+        search='_search_training_action_enrolment_count'
     )
-
-    lesson_ids = fields.One2many(
-        string='Lessons',
-        required=False,
-        readonly=False,
-        index=False,
-        default=None,
-        help=False,
-        comodel_name='academy.training.lesson',
-        inverse_name='training_action_id',
-        domain=[],
-        context={},
-        auto_join=False,
-        limit=None
-    )
-
-    lesson_count = fields.Integer(
-        string='Nº lessons',
-        required=False,
-        readonly=True,
-        index=False,
-        default=0,
-        help='Show the number of related lessons',
-        compute='_compute_lesson_count'
-    )
-
-    @api.depends('lesson_ids')
-    def _compute_lesson_count(self):
-        for record in self:
-            record.lesson_count = len(record.lesson_ids)
 
     @api.depends('training_action_enrolment_ids')
     def _compute_training_action_enrolment_count(self):
@@ -332,9 +331,111 @@ class AcademyTrainingAction(models.Model):
             record.enrolment_count = \
                 len(record.training_action_enrolment_ids)
 
+    @api.model
+    def _search_training_action_enrolment_count(self, operator, value):
+        sql = '''
+            SELECT
+                ata."id" AS training_action_id
+            FROM
+                academy_training_action AS ata
+            LEFT JOIN academy_training_action_enrolment AS enrol
+                ON enrol.training_action_id = ata."id"
+            GROUP BY ata."id"
+            HAVING COUNT ( enrol."id" ) {op} {value}
+        '''
+
+        domain = FALSE_DOMAIN
+
+        if value is True and operator == '=':
+            operator, value = '>', 0
+        elif value is True and operator in ('!=', '<>'):
+            operator, value = '=', 0
+        elif value is False and operator == '=':
+            operator, value = '=', 0
+        elif value is False and operator in ('!=', '<>'):
+            operator, value = '>', 0
+
+        sql = sql.format(op=operator, value=value)
+
+        self.env.cr.execute(sql)
+        rows = self.env.cr.dictfetchall()
+        if rows:
+            ids = [row['training_action_id'] for row in (rows or [])]
+            domain = [('id', 'in', ids)]
+
+        return domain
+
     @api.onchange('training_action_enrolment_ids')
     def _onchange_training_action_enrolment_ids(self):
         self._compute_training_action_enrolment_count()
+
+    excess = fields.Integer(
+        string='Excess',
+        required=True,
+        readonly=False,
+        index=False,
+        default=0,
+        help=_('Maximum number of students who can be invited to use this '
+               'feature at the same time')
+    )
+
+    # ------------------------- ACTIVITY RELATED FIELDS -----------------------
+    # _inherits from training activity raises an error with multicompany
+
+    name = fields.Char(
+        string='Name',
+        related='training_activity_id.name'
+    )
+
+    professional_family_id = fields.Many2one(
+        string='Professional family',
+        related='training_activity_id.professional_family_id'
+    )
+
+    professional_area_id = fields.Many2one(
+        string='Professional area',
+        related='training_activity_id.professional_area_id'
+    )
+
+    qualification_level_id = fields.Many2one(
+        string='Qualification level',
+        related='training_activity_id.qualification_level_id'
+    )
+
+    attainment_id = fields.Many2one(
+        string='Educational attainment',
+        related='training_activity_id.attainment_id'
+    )
+
+    activity_code = fields.Char(
+        string='Activity code',
+        related='training_activity_id.activity_code'
+    )
+
+    general_competence = fields.Text(
+        string='General competence',
+        related='training_activity_id.general_competence'
+    )
+
+    professional_field_id = fields.Many2one(
+        string='Professional field',
+        related='training_activity_id.professional_field_id'
+    )
+
+    professional_sector_ids = fields.Many2many(
+        string='Professional sectors',
+        related='training_activity_id.professional_sector_ids'
+    )
+
+    competency_unit_ids = fields.One2many(
+        string='Competency units',
+        related='training_activity_id.competency_unit_ids'
+    )
+
+    competency_unit_count = fields.Integer(
+        string='Number of competency units',
+        related='training_activity_id.competency_unit_count'
+    )
 
     # ------------------------------ CONSTRAINS -------------------------------
 
@@ -346,29 +447,84 @@ class AcademyTrainingAction(models.Model):
         ),
         (
             'check_date_order',
-            '"start" < "end"',
+            'CHECK("end" IS NULL OR "start" < "end")',
             _(u'End date must be greater then start date')
         ),
+        (
+            'USERS_GREATER_OR_EQUAL_TO_ZERO',
+            'CHECK(seating >= 0)',
+            _('The number of users must be greater than or equal to zero')
+        )
     ]
 
     # -------------------------- OVERLOADED METHODS ---------------------------
 
     # @api.one
     @api.returns('self', lambda value: value.id)
-    def copy(self, default=None):
+    def copy(self, defaults=None):
         """ Prevents new record of the inherited (_inherits) model will be
         created
         """
 
-        default = dict(default or {})
-        default.update({
-            'training_activity_id': self.training_activity_id.id
-        })
+        action_obj = self.env[self._name]
+        action_set = action_obj.search([], order='id DESC', limit=1)
 
-        rec = super(AcademyTrainingAction, self).copy(default)
+        defaults = dict(defaults or {})
+        # default.update({
+        #     'training_activity_id': self.training_activity_id.id
+        # })
+        #
+        if 'action_code' not in defaults:
+            defaults['action_code'] = uuid4().hex.upper()
+
+        if 'action_name' not in defaults:
+            defaults['action_name'] = '{} - {}'.format(
+                self.action_name, action_set.id + 1)
+
+        rec = super(AcademyTrainingAction, self).copy(defaults)
         return rec
 
+    @api.model
+    def create(self, values):
+        """ Overridden method 'create'
+        """
+
+        parent = super(AcademyTrainingAction, self)
+        result = parent.create(values)
+
+        result.update_enrolments()
+
+        return result
+
+    def write(self, values):
+        """ Overridden method 'write'
+        """
+
+        parent = super(AcademyTrainingAction, self)
+        result = parent.write(values)
+
+        self.update_enrolments()
+
+        return result
+
     # --------------------------- PUBLIC METHODS ------------------------------
+
+    def update_enrolments(self, force=False):
+        dtformat = '%Y-%m-%d %H:%M:%S.%f'
+
+        for record in self:
+            enrol_set = record.training_action_enrolment_ids
+
+            # Enrolment start must be great or equal than record start
+            target_set = enrol_set.filtered(lambda r: r.start < record.start)
+            target_set.write({'start': record.start.strftime(dtformat)})
+
+            # Enrolment end must be less or equal than record end
+            # NOTE: end date can be null
+            if record.end:
+                target_set = enrol_set.filtered(
+                    lambda r: r.end and r.end > record.end)
+                target_set.write({'end': record.end.strftime(dtformat)})
 
     def session_wizard(self):
         """ Launch the Session wizard.
@@ -443,6 +599,10 @@ class AcademyTrainingAction(models.Model):
         act_xid = 'academy_base.action_training_action_enrolment_act_window'
         action = self.env.ref(act_xid)
 
+        ctx = self.env.context.copy()
+        ctx.update(safe_eval(action.context))
+        ctx.update({'default_training_action_id': self.id})
+
         domain = self._eval_domain(action.domain)
         domain = AND([domain, [('training_action_id', '=', self.id)]])
 
@@ -451,7 +611,7 @@ class AcademyTrainingAction(models.Model):
             'type': action.type,
             'help': action.help,
             'domain': domain,
-            'context': {'default_training_action_id': self.id},
+            'context': ctx,
             'res_model': action.res_model,
             'target': action.target,
             'view_mode': action.view_mode,
@@ -460,28 +620,3 @@ class AcademyTrainingAction(models.Model):
         }
 
         return action_values
-
-    # -------------------------- AUXILIARY METHODS ----------------------------
-
-    @api.model
-    def _utc_o_clock(self, offset=0, dateonly=False):
-        """ Returns Odoo valid current date or datetime with offset.
-        This method will be used to set default values for date/time fields
-
-        @param offset: offset in hours
-        @param dateonly: return only date without time
-        """
-        ctx = self.env.context
-        tz = timezone(ctx.get('tz')) if ctx.get('tz', False) else utc
-        ctx_now = datetime.now(tz)
-        utc_now = ctx_now.astimezone(utc)
-        utc_offset = utc_now + timedelta(hours=offset)
-
-        utc_ock = utc_offset.replace(minute=0, second=0, microsecond=0)
-
-        if dateonly is True:
-            result = fields.Date.to_string(utc_ock.date())
-        else:
-            result = fields.Datetime.to_string(utc_ock)
-
-        return result

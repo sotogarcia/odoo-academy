@@ -3,6 +3,14 @@
 <openerp>
     <data noupdate="0">
 
+        <!-- Multicompany
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        <record id="ir_rule_restricted_training_assignment_multi_company" model="ir.rule">
+            <field name="name">Restricted Training assignment: multi-company</field>
+            <field name="model_id" ref="academy_tests.model_academy_tests_test_training_assignment"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        </record>
 
         <!-- tests
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -15,7 +23,7 @@
             <field name="perm_create" eval="False" />
             <field name="perm_write" eval="True" />
             <field name="perm_unlink" eval="True" />
-            <field name="domain_force">['|',('owner_id', '=', user.id), ('owner_id', '=', False)]</field>
+            <field name="domain_force">['|', '|', ('subrogate_id', '=', user.id), ('owner_id', '=', user.id), ('owner_id', '=', False)]</field>
             <field name="active" eval="True" />
         </record>
 
@@ -99,7 +107,7 @@
             <field name="perm_create" eval="False" />
             <field name="perm_write" eval="True" />
             <field name="perm_unlink" eval="True" />
-            <field name="domain_force">['|',('owner_id', '=', user.id), ('owner_id', '=', False)]</field>
+            <field name="domain_force">['|', '|', ('subrogate_id', '=', user.id), ('owner_id', '=', user.id), ('owner_id', '=', False)]</field>
             <field name="active" eval="True" />
         </record>
 
@@ -141,7 +149,7 @@
             <field name="perm_create" eval="False" />
             <field name="perm_write" eval="True" />
             <field name="perm_unlink" eval="True" />
-            <field name="domain_force">['|',('owner_id', '=', user.id), ('owner_id', '=', False)]</field>
+            <field name="domain_force">['|', '|', ('subrogate_id', '=', user.id), ('owner_id', '=', user.id), ('owner_id', '=', False)]</field>
             <field name="active" eval="True" />
         </record>
 
@@ -183,7 +191,7 @@
             <field name="perm_create" eval="False" />
             <field name="perm_write" eval="True" />
             <field name="perm_unlink" eval="True" />
-            <field name="domain_force">['|',('owner_id', '=', user.id), ('owner_id', '=', False)]</field>
+            <field name="domain_force">['|', '|', ('subrogate_id', '=', user.id), ('owner_id', '=', user.id), ('owner_id', '=', False)]</field>
             <field name="active" eval="False" />
         </record>
 

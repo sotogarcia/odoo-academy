@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <!-- Form view for "academy.training.action.enrolment" -->
+        <record id="view_academy_training_action_enrolment_form" model="ir.ui.view">
+            <field name="name">view.academy.training.action.enrolment.form</field>
+            <field name="model">academy.training.action.enrolment</field>
+            <field name="type">form</field>
+            <field name="mode">extension</field>
+            <field name="priority" eval="16" />
+            <field name="inherit_id" ref="academy_base.view_academy_training_action_enrolment_form" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+
+                <xpath expr="//div[@name='button_box']/*[last()]" position="after">
+                    <button name="view_exclusion" type="object" class="oe_stat_button oe_read_only"
+                        icon="fa-ban" help="Show exclusions">
+                        <field name="exclusion_count" widget="statinfo" string="Exclusions" />
+                    </button>
+                    <button name="view_invitation" type="object" class="oe_stat_button oe_read_only"
+                        icon="fa-users" help="Show related invitations">
+                        <field name="invitation_count" widget="statinfo" string="Invitations" />
+                    </button>
+                </xpath>
+
+            </field>
+        </record>
+
+    </data>
+</openerp>

@@ -6,7 +6,6 @@ test creation
 """
 
 from odoo import models, fields, api
-from odoo.tools.translate import _
 
 from logging import getLogger
 

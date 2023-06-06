@@ -5,8 +5,7 @@ This module contains the academy.tests.attempt.answer Odoo model which stores
 all academy tests attempt answer attributes and behavior.
 """
 
-from odoo import models, fields, api
-from odoo.tools.translate import _
+from odoo import models, fields
 from logging import getLogger
 
 _logger = getLogger(__name__)

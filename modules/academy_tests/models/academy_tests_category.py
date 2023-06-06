@@ -10,11 +10,6 @@ from odoo.tools.translate import _
 from odoo.exceptions import ValidationError
 from odoo.osv.expression import FALSE_DOMAIN
 
-from .utils.sql_m2m_through_view import \
-    INHERITED_CATEGORIES_REL as SEARCH_MODULES, \
-    ACADEMY_TRAINING_ACTIVITY_TEST_CATEGORY_REL as SEARCH_ACTIVITIES, \
-    ACADEMY_COMPETENCY_UNIT_TEST_CATEGORY_REL as SEARCH_COMPETENCIES
-
 from logging import getLogger
 import re
 

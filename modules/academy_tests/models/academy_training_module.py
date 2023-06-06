@@ -7,22 +7,11 @@ This module extends the academy.training.module Odoo model
 from odoo import models, fields, api
 from odoo.tools.translate import _
 
-import odoo.addons.academy_base.models.utils.custom_model_fields as custom
-from .utils.sql_m2m_through_view import INHERITED_TOPICS_REL
-from .utils.sql_m2m_through_view import INHERITED_CATEGORIES_REL
-from .utils.sql_m2m_through_view import \
-    PARTIAL_ACADEMY_TESTS_QUESTION_TRAINING_MODULE
-from .utils.sql_m2m_through_view import \
-    ACADEMY_TESTS_QUESTION_TRAINING_MODULE_REL
-
 from logging import getLogger
 from datetime import datetime
 import re
 
 _logger = getLogger(__name__)
-
-AVAILABLE_QUESTIONS = ACADEMY_TESTS_QUESTION_TRAINING_MODULE_REL.format(
-    PARTIAL_ACADEMY_TESTS_QUESTION_TRAINING_MODULE)
 
 
 class AcademyTrainingModule(models.Model):
@@ -114,7 +103,7 @@ class AcademyTrainingModule(models.Model):
         limit=None,
     )
 
-    available_topic_ids = custom.Many2manyThroughView(
+    available_topic_ids = fields.Many2manyView(
         string='Available topics',
         required=False,
         readonly=True,
@@ -128,10 +117,10 @@ class AcademyTrainingModule(models.Model):
         domain=[],
         context={},
         limit=None,
-        sql=INHERITED_TOPICS_REL
+        copy=False
     )
 
-    available_categories_ids = custom.Many2manyThroughView(
+    available_categories_ids = fields.Many2manyView(
         string='Available categories',
         required=False,
         readonly=True,
@@ -145,10 +134,10 @@ class AcademyTrainingModule(models.Model):
         domain=[],
         context={},
         limit=None,
-        sql=INHERITED_CATEGORIES_REL
+        copy=False
     )
 
-    available_question_ids = custom.Many2manyThroughView(
+    available_question_ids = fields.Many2manyView(
         string='Available questions',
         required=False,
         readonly=True,
@@ -161,8 +150,7 @@ class AcademyTrainingModule(models.Model):
         column2='question_id',
         domain=[],
         context={},
-        limit=None,
-        sql=AVAILABLE_QUESTIONS
+        limit=None
     )
 
     @staticmethod

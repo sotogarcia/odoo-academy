@@ -14,10 +14,10 @@ _logger = getLogger(__name__)
 
 
 STATES = [
-    ('open', 'Opened'),
-    ('reply', 'Discuss'),
-    ('answer', 'Answered'),
-    ('close', 'Closed')
+    ('open', _('Opened')),
+    ('reply', _('Discuss')),
+    ('answer', _('Answered')),
+    ('close', _('Closed'))
 ]
 
 
@@ -28,7 +28,7 @@ class AcademyTestsQuestionImpugnment(models.Model):
     _name = 'academy.tests.question.impugnment'
     _description = u'Academy tests, question impugnment'
 
-    _inherit = ['academy.abstract.owner', 'mail.thread']
+    _inherit = ['ownership.mixin', 'mail.thread']
 
     _rec_name = 'name'
     _order = 'write_date DESC, create_date DESC'

@@ -11,11 +11,8 @@ from logging import getLogger
 from odoo import models, fields, api
 from odoo.tools.translate import _
 from odoo.exceptions import UserError
-from odoo.osv.expression import FALSE_DOMAIN
-
-from .utils.custom_model_fields import Many2manyThroughView
-from .utils.raw_sql import \
-    ACADEMY_TRAINING_ACTION_ENROLMENT_AVAILABLE_RESOURCE_REL
+from odoo.osv.expression import AND, TRUE_DOMAIN, FALSE_DOMAIN
+from odoo.exceptions import ValidationError
 
 # pylint: disable=locally-disabled, C0103
 _logger = getLogger(__name__)
@@ -34,9 +31,10 @@ class AcademyTrainingActionEnrolment(models.Model):
 
     _inherit = [
         'mail.thread',
+        'mail.activity.mixin',
         'image.mixin',
         'academy.abstract.training',
-        'academy.abstract.owner'
+        'ownership.mixin'
     ]
 
     # pylint: disable=locally-disabled, W0212
@@ -49,6 +47,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         help='Enter new code',
         size=30,
         translate=False,
+        tracking=True
     )
 
     description = fields.Text(
@@ -67,7 +66,13 @@ class AcademyTrainingActionEnrolment(models.Model):
         readonly=False,
         index=False,
         default=True,
-        help='Enables/disables the record'
+        help='Enables/disables the record',
+        tracking=True
+    )
+
+    company_id = fields.Many2one(
+        string='Company',
+        related='training_action_id.company_id'
     )
 
     student_id = fields.Many2one(
@@ -111,7 +116,8 @@ class AcademyTrainingActionEnrolment(models.Model):
         column2='competency_unit_id',
         domain=[],
         context={},
-        limit=None
+        limit=None,
+        tracking=True
     )
 
     # pylint: disable=locally-disabled, W0108
@@ -121,7 +127,8 @@ class AcademyTrainingActionEnrolment(models.Model):
         readonly=False,
         index=False,
         default=lambda self: fields.Date.context_today(self),
-        help='Date in which student has been enrolled'
+        help='Date in which student has been enrolled',
+        tracking=True
     )
 
     deregister = fields.Date(
@@ -130,7 +137,79 @@ class AcademyTrainingActionEnrolment(models.Model):
         readonly=False,
         index=False,
         default=None,
-        help='Date in which student has been unsubscribed'
+        help='Date in which student has been unsubscribed',
+        tracking=True
+    )
+
+    training_modality_ids = fields.Many2many(
+        string='Training modalities',
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help='Choose training modalities',
+        comodel_name='academy.training.modality',
+        relation='academy_training_action_enrolment_training_modality_rel',
+        column1='enrolment_id',
+        column2='modality_id',
+        domain=[],
+        context={},
+        limit=None,
+        tracking=True
+    )
+
+    # This will be used in form view to compute domain
+    available_modality_ids = fields.Many2many(
+        string='Available modalities',
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help='Available training modalities',
+        comodel_name='academy.training.modality',
+        relation='academy_training_action_enrolment_available_modalities_rel',
+        column1='enrolment_id',
+        column2='modality_id',
+        domain=[],
+        context={},
+        limit=None,
+        compute='_compute_available_modality_ids'
+    )
+
+    @api.depends('training_action_id')
+    def _compute_available_modality_ids(self):
+        modality_domain = []
+        modality_obj = self.env['academy.training.modality']
+        modality_set = modality_obj.search(modality_domain)
+
+        for record in self:
+            action = record.training_action_id
+            if action and action.training_modality_ids:
+                record.available_modality_ids = action.training_modality_ids
+            else:
+                record.available_modality_ids = modality_set
+
+    # delivery = fields.Boolean(
+    #     string='Materials were delivered',
+    #     required=False,
+    #     readonly=False,
+    #     index=True,
+    #     default=False,
+    #     help='You have been given all the necessary material',
+    #     tracking=True
+    # )
+
+    material = fields.Selection(
+        string='Material',
+        required=False,
+        readonly=False,
+        index=True,
+        default='digital',
+        help='Choose educational material format',
+        selection=[
+            ('printed', 'Printed'),
+            ('digital', 'Digital')
+        ]
     )
 
     # It is necessary to keep the difference with the name of the activity
@@ -170,7 +249,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         limit=None
     )
 
-    available_resource_ids = Many2manyThroughView(
+    available_resource_ids = fields.Many2manyView(
         string='Available enrolment resources',
         required=False,
         readonly=True,
@@ -184,7 +263,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         domain=[],
         context={},
         limit=None,
-        sql=ACADEMY_TRAINING_ACTION_ENROLMENT_AVAILABLE_RESOURCE_REL
+        copy=False
     )
 
     finalized = fields.Boolean(
@@ -299,22 +378,41 @@ class AcademyTrainingActionEnrolment(models.Model):
 
     @api.onchange('training_action_id')
     def _onchange_training_action_id(self):
-        path = 'training_action_id.training_activity_id.competency_unit_ids.id'
+        competency_path = ('training_action_id.training_activity_id.'
+                           'competency_unit_ids.id')
+        modality_path = 'training_action_id.training_modality_ids'
 
         for record in self:
-            record.competency_unit_ids = [(5, 0, 0)]
+            if self.training_action_id:
+                unit_ids = record.mapped(competency_path)
+                if unit_ids:
+                    record.competency_unit_ids = [(6, 0, unit_ids)]
 
-            unit_ids = record.mapped(path)
-            if unit_ids:
-                record.competency_unit_ids = [(6, 0, unit_ids)]
+                self.training_modality_ids = self.mapped(modality_path)
+                self.deregister = self.training_action_id.end
+            else:
+                record.competency_unit_ids = [(5, 0, 0)]
+                self.training_modality_ids = None
+                self.deregister = None
 
-        competency_ids = self.mapped(path)
+        competency_ids = self.mapped(competency_path)
         if competency_ids:
-            domain = [('id', 'in', competency_ids)]
+            competency_domain = [('id', 'in', competency_ids)]
         else:
-            domain = FALSE_DOMAIN
+            competency_domain = FALSE_DOMAIN
 
-        return {'domain': {'competency_unit_ids': domain}}
+        modality_ids = self.mapped(modality_path + '.id')
+        if modality_ids:
+            modality_domain = [('id', 'in', modality_ids)]
+        else:
+            modality_domain = TRUE_DOMAIN
+
+        return {
+            'domain': {
+                'competency_unit_ids': competency_domain,
+                'training_modality_ids': modality_domain
+            }
+        }
 
     # -------------------------- OVERLOADED METHODS ---------------------------
 
@@ -398,3 +496,47 @@ class AcademyTrainingActionEnrolment(models.Model):
                 })
 
             return view_act
+
+    _sql_constraints = [
+        (
+            'check_date_order',
+            'CHECK("deregister" IS NULL OR "register" <= "deregister")',
+            _(u'End date must be greater then start date')
+        ),
+    ]
+
+    @api.constrains('competency_unit_ids')
+    def _check_competency_unit_ids(self):
+        message = _('Enrolment must have at least one related competency unit')
+
+        for record in self:
+            if not record.competency_unit_ids:
+                raise ValidationError(message)
+
+    @api.constrains(
+        'student_id', 'training_action_id', 'register', 'deregister')
+    def _check_unique_enrolment(self):
+        """
+        """
+        message = _('Student is already enrolled in the training action')
+        enrolment_obj = self.env['academy.training.action.enrolment']
+
+        for record in self:
+            student_id = record.student_id.id
+            action_id = record.training_action_id.id
+
+            domains = [[('id', '<>', record.id)]]
+
+            domains.append([('student_id', '=', student_id)])
+            domains.append([('training_action_id', '=', action_id)])
+            domains.append([
+                '|',
+                ('deregister', '=', False),
+                ('deregister', '>', record.register)
+            ])
+
+            if not record.deregister:
+                domains.append([('register', '<', record.deregister)])
+
+            if enrolment_obj.search(AND(domains)):
+                ValidationError(message)

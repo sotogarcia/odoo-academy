@@ -48,7 +48,7 @@ class AcademyTestsQuestionImport(models.TransientModel):
     _rec_name = 'id'
     _order = 'id DESC'
 
-    _inherit = ['academy.abstract.owner', 'academy.abstract.import.export']
+    _inherit = ['ownership.mixin', 'academy.abstract.import.export']
 
     test_id = fields.Many2one(
         string='Test',

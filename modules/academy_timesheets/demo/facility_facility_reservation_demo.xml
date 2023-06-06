@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="academy_training_session_1_reservation_a" model="facility.reservation">
+            <field name="active" eval="True" />
+            <field name="facility_id" ref="facility_management.facility_classroom_1" />
+            <field name="date_start" eval="(DateTime.today()+ timedelta(days=1)).strftime('%Y-%m-%d 16:00:00')" />
+            <field name="date_stop" eval="(DateTime.today()+ timedelta(days=1)).strftime('%Y-%m-%d 18:00:00')" />
+            <field name="validate" eval="True" />
+            <field name="owner_id" ref="base.user_admin" />
+            <field name="state">confirmed</field>
+        </record>
+
+        <record id="academy_training_session_1_reservation_b" model="facility.reservation">
+            <field name="active" eval="True" />
+            <field name="facility_id" ref="facility_management.facility_computer_projector" />
+            <field name="date_start" eval="(DateTime.today()+ timedelta(days=1)).strftime('%Y-%m-%d 16:00:00')" />
+            <field name="date_stop" eval="(DateTime.today()+ timedelta(days=1)).strftime('%Y-%m-%d 18:00:00')" />
+            <field name="validate" eval="False" />
+            <field name="owner_id" ref="base.user_admin" />
+            <field name="state">confirmed</field>
+        </record>
+
+    </data>
+</openerp>
+

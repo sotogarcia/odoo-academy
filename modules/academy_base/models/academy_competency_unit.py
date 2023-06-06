@@ -6,6 +6,9 @@ all competency unit attributes and behavior.
 """
 
 from odoo import models, fields, api
+from odoo.tools.translate import _
+from odoo.tools import safe_eval
+from odoo.exceptions import UserError
 
 from logging import getLogger
 
@@ -138,6 +141,53 @@ class AcademyCompetencyUnit(models.Model):
         limit=None
     )
 
+    teacher_assignment_ids = fields.One2many(
+        string='Teacher assignments',
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help='Teachers who teach this competency unit',
+        comodel_name='academy.competency.unit.teacher.rel',
+        inverse_name='competency_unit_id',
+        domain=[],
+        context={},
+        auto_join=False,
+        limit=None
+    )
+
+    teacher_ids = fields.Many2manyView(
+        string='Teachers',
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help=False,
+        comodel_name='academy.teacher',
+        relation='academy_competency_unit_teacher_rel',
+        column1='competency_unit_id',
+        column2='teacher_id',
+        domain=[],
+        context={},
+        limit=None,
+        copy=False
+    )
+
+    teacher_count = fields.Integer(
+        string='Teacher count',
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        help='Number of teachers who teach this competency unit',
+        compute='_compute_teacher_count'
+    )
+
+    @api.depends('teacher_ids')
+    def _compute_teacher_count(self):
+        for record in self:
+            record.teacher_count = len(record.teacher_assignment_ids)
+
     # -------------------------- OVERLOADED METHODS ---------------------------
 
     @api.returns('self', lambda value: value.id)
@@ -154,17 +204,48 @@ class AcademyCompetencyUnit(models.Model):
         rec = super(AcademyCompetencyUnit, self).copy(default)
         return rec
 
-    def view_details(self):
+    @staticmethod
+    def _truncate(sz, minimum, maximum):
+        if len(sz) > maximum:
+            ls = max(minimum, sz.rfind(' '))
+            sz = '{}...'.format(sz[:ls])
+
+        return sz
+
+    def view_teacher_assignments(self):
         self.ensure_one()
 
-        return {
-            'model': 'ir.actions.act_window',
+        action_xid = 'action_academy_competency_unit_teacher_rel_act_window'
+        act_wnd = self.env.ref('academy_base.{}'.format(action_xid))
+
+        name = self._truncate(self.competency_name, 12, 24)
+
+        training_id = self.env.context.get('default_training_action_id', -1)
+        if not training_id:
+            msg = _('No training action has been selected')
+            raise UserError(msg)
+
+        context = safe_eval(act_wnd.context)
+        context.update({
+            'default_competency_unit_id': self.id,
+            'default_training_action_id': training_id
+        })
+
+        domain = [
+            ('competency_unit_id', '=', self.id),
+            ('training_action_id', '=', training_id)
+        ]
+
+        serialized = {
             'type': 'ir.actions.act_window',
-            'name': self.competency_name,
-            'res_model': 'academy.competency.unit',
+            'res_model': 'academy.competency.unit.teacher.rel',
             'target': 'current',
-            'view_mode': 'form',
-            'res_id': self.id,
-            'domain': [],
-            'context': {}
+            'name': _('Teachers for {}').format(name),
+            'view_mode': act_wnd.view_mode,
+            'domain': domain,
+            'context': context,
+            'search_view_id': act_wnd.search_view_id.id,
+            'help': act_wnd.help
         }
+
+        return serialized

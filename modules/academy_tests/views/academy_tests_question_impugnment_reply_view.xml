@@ -42,8 +42,8 @@
                <form string="Impugnment reply" create="1" delete="1" edit="1">
                    <sheet>
                         <group col="4" string="From">
-                            <field name="write_uid" class="oe_readonly" />
-                            <field name="write_date" class="oe_readonly" />
+                            <field name="write_uid" class="oe_readonly" string="User" />
+                            <field name="write_date" class="oe_readonly" string="Date" />
                             <field name="student_id" class="oe_field_student_id" />
                         </group>
                         <group string="Description">

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="1">
+
+        <record id="academy_educational_attainment_level_isced_2011_0" model="academy.educational.attainment">
+            <field name="name">Less than primary education</field>
+            <field name="description">A broad level of educational attainment covering no participation in education, some participation in early childhood education and/or some participation in primary education</field>
+            <field name="level">0</field>
+            <field name="sequence" eval="10" />
+        </record>
+
+        <record id="academy_educational_attainment_level_isced_2011_1" model="academy.educational.attainment">
+            <field name="name">Primary education</field>
+            <field name="description">Programmes typically designed to provide students with fundamental skills in reading, writing and mathematics and to establish a solid foundation for learning</field>
+            <field name="level">1</field>
+            <field name="sequence" eval="20" />
+        </record>
+
+        <record id="academy_educational_attainment_level_isced_2011_2" model="academy.educational.attainment">
+            <field name="name">Lower secondary education</field>
+            <field name="description">First stage of secondary education building on primary education, typically with a more subject-oriented curriculum</field>
+            <field name="level">2</field>
+            <field name="sequence" eval="30" />
+        </record>
+
+        <record id="academy_educational_attainment_level_isced_2011_3" model="academy.educational.attainment">
+            <field name="name">Upper secondary education</field>
+            <field name="description">Second/final stage of secondary education preparing for tertiary education and/or providing skills relevant to employment. Usually with an increased range of subject options and streams</field>
+            <field name="level">3</field>
+            <field name="sequence" eval="40" />
+        </record>
+
+        <record id="academy_educational_attainment_level_isced_2011_4" model="academy.educational.attainment">
+            <field name="name">Post-secondary non-tertiary education</field>
+            <field name="description">Programmes providing learning experiences that build on secondary education and prepare for labour market entry and/or tertiary education. The content is broader than secondary but not as complex as tertiary education</field>
+            <field name="level">4</field>
+            <field name="sequence" eval="50" />
+        </record>
+
+        <record id="academy_educational_attainment_level_isced_2011_5" model="academy.educational.attainment">
+            <field name="name">Short-cycle tertiary education</field>
+            <field name="description">Short first tertiary programmes that are typically practically-based, occupationally-specific and prepare for labour market entry. These programmes may also provide a pathway to other tertiary programmes</field>
+            <field name="level">5</field>
+            <field name="sequence" eval="60" />
+        </record>
+
+        <record id="academy_educational_attainment_level_isced_2011_6" model="academy.educational.attainment">
+            <field name="name">Bachelor's or equivalent level</field>
+            <field name="description">Programmes designed to provide intermediate academic and/or professional knowledge, skills and competencies leading to a first tertiary degree or equivalent qualification</field>
+            <field name="level">6</field>
+            <field name="sequence" eval="70" />
+        </record>
+
+        <record id="academy_educational_attainment_level_isced_2011_7" model="academy.educational.attainment">
+            <field name="name">Master’s or equivalent level</field>
+            <field name="description">Programmes designed to provide advanced academic and/or professional knowledge, skills and competencies leading to a second tertiary degree or equivalent qualification</field>
+            <field name="level">7</field>
+            <field name="sequence" eval="80" />
+        </record>
+
+        <record id="academy_educational_attainment_level_isced_2011_8" model="academy.educational.attainment">
+            <field name="name">Doctoral or equivalent level</field>
+            <field name="description">Programmes designed primarily to lead to an advanced research qualification, usually concluding with the submission and defense of a substantive dissertation of publishable quality based on original research</field>
+            <field name="level">8</field>
+            <field name="sequence" eval="90" />
+        </record>
+
+        <record id="academy_educational_attainment_level_isced_2011_9" model="academy.educational.attainment">
+            <field name="name">Not elsewhere classified</field>
+            <field name="description">Non-formal programs of the educational system and other programs aimed at improving personal and professional training</field>
+            <field name="level">9</field>
+            <field name="sequence" eval="100" />
+        </record>
+
+    </data>
+</openerp>

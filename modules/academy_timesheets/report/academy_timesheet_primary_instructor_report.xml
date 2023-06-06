@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <!-- REPORT: "Teacher weekly timetable"
+
+            - Module: academy_timesheets    Model: academy.teacher
+            - Language field used to translate it: lang
+            - Report uses attachment: True
+            - Report paperformat: report.paperformat_euro
+            - View priority: 16    Active: True
+            - Action help: Weekly timetable for teachers
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+        <!-- Report "Primary instructor" document template -->
+        <record id="view_academy_timesheet_primary_instructor_section_qweb" model="ir.ui.view">
+            <field name="name">Primary instructor report document section</field>
+            <field name="model">academy.teacher</field>
+            <field name="type">qweb</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <t t-name="academy_timesheets.view_academy_timesheet_primary_instructor_section_qweb">
+                    <t t-set="values" t-value="values[o.id]" />
+
+                    <section class="academy-post-test-test posted-test-body col-12">
+                        <header>
+                            <h4 class="academy-timesheet-action-name mb-3"><t t-esc="o.name" /></h4>
+                        </header>
+
+                        <t t-foreach="values['weeks']" t-as="week">
+                        <table class="table table-sm table-bordered w-100 week-timetable">
+                            <caption style="caption-side: top;"><t t-esc="week" /></caption>
+                            <thead>
+                                <tr>
+                                    <th style="width: 15%" class="th-date">DATE</th>
+                                    <th style="width: 12%" class="th-time">TIME</th>
+                                    <th style="width: 58%" class="th-subject">SUBJECT / TASK</th>
+                                    <th style="width: 15%" class="th-teacher">FACILITIES</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <t t-foreach="week_value" t-as="day">
+                                    <t t-set="daily_sessions" t-value='day_value' />
+                                    <t t-if="daily_sessions">
+                                        <t t-foreach="daily_sessions.values()" t-as="session">
+                                            <tr t-attf-class="td-time session {{ 'session-first' if (session_first) else '' }} {{ 'session-last' if (session_last) else '' }} {{ 'session-middle' if (not session_start and not session_last) else '' }} {{ 'day-even' if day_index % 2 == 0 else 'day-odd' }}">
+                                                <td style="width: 15%">
+                                                    <t t-if="session_first">
+                                                        <strong><t t-esc="session['date']" /></strong>
+                                                    </t>
+                                                    <t t-else="">
+                                                        &#160;
+                                                    </t>
+                                                </td>
+                                                <td style="width: 12%">
+                                                    <t t-esc="session['interval']" />
+                                                </td>
+                                                <td style="width: 58%">
+                                                    <strong class="d-block text-truncate text-uppercase"><t t-esc="session['task_name']" /></strong>
+                                                    <t t-if="session['training_action']">
+                                                        <span class="d-block text-truncate"><t t-esc="session['competency_unit']" /></span>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <span class="d-block text-truncate">Non-teaching task</span>
+                                                    </t>
+                                                </td>
+                                                <td style="width: 15%">
+                                                    <strong class="d--block text-truncate"><t t-esc="session['facility']" /></strong>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </t>
+
+                                    <t t-if="not daily_sessions">
+                                        <tr t-attf-class="session session-empty session-first session-last {{ 'day-even' if day_index % 2 == 0 else 'day-odd' }}">
+                                            <td style="width: 15%">
+                                                <strong><t t-esc="day" /></strong>
+                                            </td>
+                                            <td style="width: 12%">···</td>
+                                            <td style="width: 58%">···</td>
+                                            <td style="width: 15%">···</td>
+                                        </tr>
+                                    </t>
+                                </t>
+                            </tbody>
+
+                        </table>
+                        </t> <!-- weeh -->
+
+                    </section>
+                </t> <!-- t-name -->
+
+            </field>
+        </record>
+
+        <!-- Report "Training action" document template -->
+        <record id="view_academy_timesheet_primary_instructor_document_qweb" model="ir.ui.view">
+            <field name="name">Primary instructor report document</field>
+            <field name="model">academy.teacher</field>
+            <field name="type">qweb</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <t t-name="academy_timesheets.view_academy_timesheet_primary_instructor_document_qweb">
+
+                    <div class="page">
+                        <div class="oe_structure"/>
+
+                        <div class="clearfix"></div>
+
+                        <div class="row mt16 mb32">
+                            <t t-call="academy_timesheets.view_academy_timesheet_primary_instructor_section_qweb" />
+                        </div>
+
+                        <div class="clearfix"></div>
+
+                    </div> <!-- page -->
+                </t>
+            </field>
+        </record>
+
+        <!-- Report "Training action" translate_doc template -->
+        <record id="view_academy_timesheet_primary_instructor_qweb" model="ir.ui.view">
+            <field name="name">Primary instructor report</field>
+            <field name="model">academy.teacher</field>
+            <field name="type">qweb</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <t t-name="academy_timesheets.view_academy_timesheet_primary_instructor_qweb">
+                    <t t-call="web.html_container">
+                        <t t-foreach="docs" t-as="o">
+                            <t t-call="academy_timesheets.academy_timesheets_layout">
+                                <t t-call="academy_timesheets.view_academy_timesheet_primary_instructor_document_qweb" />
+                            </t>
+                        </t>
+                    </t> <!-- t-html_container -->
+                </t>
+            </field>
+        </record>
+
+
+        <!-- Report action to show: "Primary instructor" -->
+        <record id="action_report_academy_timesheets_primary_instructor" model="ir.actions.report">
+            <field name="name">Teacher weekly timetable</field>
+            <field name="model">academy.teacher</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">academy_timesheets.view_academy_timesheet_primary_instructor_qweb</field>
+            <field name="print_report_name">(object.name)</field>
+            <field name="attachment_use" eval="False" />
+            <field name="attachment">(object.name+'.pdf')</field>
+            <field name="paperformat_id" ref="academy_timesheets.paperformat_iso_216_din_476_serie_a_4_timesheet" />
+            <field name="help">Weekly timetable for teachers</field>
+            <field name="binding_model_id" ref="academy_base.model_academy_teacher" />
+        </record>
+
+    </data>
+</openerp>

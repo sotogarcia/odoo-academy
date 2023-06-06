@@ -6,10 +6,6 @@ all training module attributes and behavior.
 """
 
 from odoo import models, fields, api
-
-from .utils.custom_model_fields import Many2manyThroughView
-from .utils.raw_sql import ACADEMY_TRAINING_MODULE_AVAILABLE_RESOURCE_REL, \
-    ACADEMY_TRAINING_MODULE_USED_IN_TRAINING_ACTION_REL
 from odoo.tools.translate import _
 
 from logging import getLogger
@@ -30,7 +26,7 @@ class AcademyTrainingModule(models.Model):
         'image.mixin',
         'mail.thread',
         'academy.abstract.training',
-        'academy.abstract.owner'
+        'ownership.mixin'
     ]
 
     _rec_name = 'name'
@@ -112,7 +108,7 @@ class AcademyTrainingModule(models.Model):
         limit=None
     )
 
-    tree_ids = Many2manyThroughView(
+    tree_ids = fields.Many2manyView(
         string='Module tree',
         required=False,
         readonly=True,
@@ -125,8 +121,8 @@ class AcademyTrainingModule(models.Model):
         column2='responded_module_id',
         domain=[],
         context={},
-        limit=None
-        # sql= academy_training_module_tree_readonly model wil be used
+        limit=None,
+        copy=False
     )
 
     module_code = fields.Char(
@@ -166,7 +162,7 @@ class AcademyTrainingModule(models.Model):
         limit=None
     )
 
-    available_resource_ids = Many2manyThroughView(
+    available_resource_ids = fields.Many2manyView(
         string='Available resources',
         required=False,
         readonly=True,
@@ -180,10 +176,10 @@ class AcademyTrainingModule(models.Model):
         domain=[],
         context={},
         limit=None,
-        sql=ACADEMY_TRAINING_MODULE_AVAILABLE_RESOURCE_REL
+        copy=False
     )
 
-    used_in_action_ids = Many2manyThroughView(
+    used_in_action_ids = fields.Many2manyView(
         string='Used in actions',
         required=False,
         readonly=True,
@@ -197,7 +193,7 @@ class AcademyTrainingModule(models.Model):
         domain=[],
         context={},
         limit=None,
-        sql=ACADEMY_TRAINING_MODULE_USED_IN_TRAINING_ACTION_REL
+        copy=False
     )
 
     sequence = fields.Integer(
@@ -210,7 +206,7 @@ class AcademyTrainingModule(models.Model):
     )
 
     # This no needs an SQL statement
-    training_activity_ids = Many2manyThroughView(
+    training_activity_ids = fields.Many2manyView(
         string='Activities',
         required=False,
         readonly=True,
@@ -223,7 +219,8 @@ class AcademyTrainingModule(models.Model):
         column2='training_activity_id',
         domain=[],
         context={},
-        limit=None
+        limit=None,
+        copy=False
     )
 
     # --------------------------- COMPUTED FIELDS -----------------------------
@@ -278,48 +275,6 @@ class AcademyTrainingModule(models.Model):
         result = super(AcademyTrainingModule, self).create(values)
 
         return result
-
-    # --------------------------- PUBLIC METHODS ------------------------------
-
-    def get_imparted_hours_in(self, action_id):
-        """ Get all hours assigned an a given action (id) for this recordset
-
-        @param action_id (recordset/int) : academy.training.action record or id
-
-        @return (float): total time length
-        """
-
-        result = 0
-
-        for record in self:
-            result = result + self.get_imparted_hours_for(action_id, record.id)
-
-        return result
-
-    @api.model
-    def get_imparted_hours_for(self, action_id, module_id):
-        """ Get all hours assigned for given module (id) an a given action (id)
-
-        @param action_id (recordset/int): academy.training.action record or id
-        @param module_id (recordset/int): academy.training.module record or id
-
-        @return (float): total time length
-        """
-
-        action_id = self._get_id(action_id) or -1
-        module_id = self._get_id(module_id) or -1
-
-        lesson_domain = [
-            '&',
-            ('training_action_id', '=', action_id),
-            ('training_module_id', '=', module_id),
-        ]
-
-        lesson_obj = self.env['academy.training.lesson']
-        lesson_set = lesson_obj.search(
-            lesson_domain, offset=0, limit=None, order=None, count=False)
-
-        return sum(lesson_set.mapped('duration') or [0])
 
     # -------------------------- AUXILIARY METHODS ----------------------------
 

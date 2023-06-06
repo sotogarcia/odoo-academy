@@ -27,8 +27,8 @@
                 <tree string="academy_qualification_level_tree" create="1" delete="1" edit="1">
                     <field name="sequence" class="oe_field_sequence"
                         widget="handle" />
-                    <field name="name" />
-                    <field name="description" />
+                    <field name="level" class="oe_field_level" />
+                    <field name="name" class="oe_field_name" />
                 </tree>
             </field>
         </record>
@@ -56,6 +56,7 @@
                             </h1>
                         </div>
                         <group col="2">
+                            <field name="level" class="oe_field_level"/>
                             <field name="description" class="oe_field_description"
                                 placeholder="Enter new description" />
                         </group>
@@ -75,6 +76,7 @@
             <field name="arch" type="xml">
                 <search string="academy_qualification_level_search">
                     <field name="name" />
+                    <field name="level" string="Code" />
 
                     <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
 
@@ -103,13 +105,13 @@
         </record>
 
         <!-- Main menu for model.name -->
-        <record id="menu_qualification_level" model="ir.ui.menu" >
+<!--         <record id="menu_qualification_level" model="ir.ui.menu" >
             <field name="name">Qualification levels</field>
             <field name="sequence" eval="25" />
             <field name="action" ref="action_qualification_level_act_window" />
             <field name="parent_id" ref="academy_base.menu_academy_settings_helper" />
             <field name="groups_id" eval="[(4, ref('academy_base.academy_group_manager'))]"/>
-        </record>
+        </record> -->
 
     </data>
 </openerp>

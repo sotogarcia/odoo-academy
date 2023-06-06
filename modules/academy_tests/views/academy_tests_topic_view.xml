@@ -79,10 +79,12 @@
                             </page>
                             <page id="setup" string="Setup" class="oe_page_setup" accesskey="S">
                                 <group col="4">
+                                    <field name="owner_id" class="oe_field_owner_id" />
+                                    <field name="subrogate_id" class="oe_field_subrogate_id" />
+                                    <field name="provisional" class="oe_field_provisional" />
+                                    <separator colspan="2" />
                                     <field name="description" class="oe_field_description"
                                         placeholder="Enter new description" colspan="4" />
-                                    <field name="owner_id" class="oe_field_owner_id" />
-                                    <field name="provisional" class="oe_field_provisional" />
                                 </group>
                             </page>
                         </notebook>
@@ -111,6 +113,7 @@
                     <field name="competency_unit_ids" />
                     <field name="training_module_ids" />
                     <field name="id" string="Topic ID" />
+                    <field name="manager_id" class="oe_field_manager_id" />
 
                     <filter name="inactive" string="Archived"
                             domain="[('active','=',False)]"/>

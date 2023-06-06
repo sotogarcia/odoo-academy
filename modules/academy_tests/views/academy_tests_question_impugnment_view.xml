@@ -27,7 +27,7 @@
                     <field name="student_id" class="oe_field_student_id" />
                     <field name="name" />
                     <field name="create_uid" />
-                    <field name="owner_id" />
+                    <field name="manager_id" />
                 </tree>
             </field>
         </record>
@@ -64,8 +64,10 @@
                         </div>
 
                         <group col="4" string="Creation">
-                            <field name="owner_id" class="oe_field_owner_id" />
                             <field name="student_id" class="oe_field_student_id" />
+                            <separator colspan="2" />
+                            <field name="owner_id" class="oe_field_owner_id" />
+                            <field name="subrogate_id" class="oe_field_subrogate_id" />
                         </group>
 
                         <separator string="Question" />
@@ -179,13 +181,19 @@
                 <search string="academy_question_impugnment_search">
                     <field name="name" />
                     <field name="student_id" />
-                    <field name="owner_id" />
+                    <field name="manager_id" />
 
                     <filter string="My impugnments"
                         name="my_impugnments"
-                        domain="[('owner_id', '=', uid)]"
+                        domain="[('manager_id', '=', uid)]"
                         context="{}"
                         help="List only the own impugnments" />
+
+                    <filter string="Answer pending"
+                        name="answer_pending"
+                        domain="['|', ('state', '=', 'open'), ('state', '=', 'reply')]"
+                        context="{}"
+                        help="Impugnments that are pending response" />
                 </search>
             </field>
         </record>

@@ -7,10 +7,10 @@
             <field name="name">Check training module</field>
             <field name="model_id" ref="academy_tests.model_academy_training_module"/>
             <field name="subject">IMPORTANT: Check training module</field>
-            <field name="email_from">"${(object.owner_id.company_id.name) | safe}" &lt;${(object.owner_id.company_id.email) | safe}&gt;</field>
-            <field name="partner_to">${object.owner_id.partner_id.id if object.owner_id.partner_id.email and object.owner_id.partner_id.email == object.owner_id.email else False}</field>
-            <field name="reply_to">${(object.owner_id.company_id.email or user.email) | safe}</field>
-            <field name="lang">${object.owner_id.partner_id.lang}</field>
+            <field name="email_from">"${(object.manager_id.company_id.name) | safe}" &lt;${(object.manager_id.company_id.email) | safe}&gt;</field>
+            <field name="partner_to">${object.manager_id.partner_id.id if object.manager_id.partner_id.email and object.manager_id.partner_id.email == object.manager_id.email else False}</field>
+            <field name="reply_to">${(object.manager_id.company_id.email or user.email) | safe}</field>
+            <field name="lang">${object.manager_id.partner_id.lang}</field>
 <field name="body_html" type="html">
 <table border="0" cellpadding="0" cellspacing="0" style="background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;"><tr><td align="center">
 <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
@@ -27,7 +27,7 @@
                 <tr><td valign="top" style="font-size: 13px;">
                     <div>
                         <p style="margin: 1.5em 0px!important; line-height: 1.25em;">
-                            Dear ${object.owner_id.name or ''},
+                            Dear ${object.manager_id.name or ''},
                         </p>
 
                         <p style="text-justify; margin: 0.5em 0; line-height: 1.25em;">
@@ -74,7 +74,7 @@
                         </p>
                         <br>-·-</br>
                         <p style="margin: 0.5em 0; line-height: 1.25em;">
-                            The ${object.owner_id.company_id.name} Team
+                            The ${object.manager_id.company_id.name} Team
                         </p>
                     </div>
                 </td></tr>
@@ -89,7 +89,7 @@
 </td></tr>
 </table>
             </field>
-            <field name="lang">${object.owner_id.partner_id.lang}</field>
+            <field name="lang">${object.manager_id.partner_id.lang}</field>
             <field name="auto_delete" eval="True"/>
             <field name="user_signature" eval="False"/>
         </record>

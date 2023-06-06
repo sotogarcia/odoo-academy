@@ -51,6 +51,7 @@
                         <field name="image_1920" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}'/>
 
                         <div class="oe_title">
+                            <field name="id" invisible="1"/>
                             <field name="active" invisible="1"/>
                             <label for="name" class="oe_edit_only" />
                             <h1>
@@ -92,9 +93,6 @@
                         <notebook>
                             <page string="Modules/units" class="oe_page_modules_units" accesskey="M">
                                 <field name="training_unit_ids" class="oe_field_training_units_ids" />
-                            </page>
-                            <page string="Lessons" class="oe_page_lessons" accesskey="L">
-                                <field name="training_lesson_ids" class="oe_field_training_lesson_ids" />
                             </page>
                             <page string="Resources" class="oe_page_lessons" accesskey="L">
                                 <field name="training_resource_ids" class="oe_field_training_resource_ids" />
@@ -149,6 +147,7 @@
                                         <li class="o_ellipsis"><strong>Email:&#160;</strong><field name="email" /></li>
                                      </ul>
                                 </div>
+                                <div name="kanban-box-toolbar" class="btn-toolbar d-flex w-100 justify-content-end align-self-end mt-3" role="toolbar" aria-label="Download as document" />
                             </div>
                         </t>
                     </templates>

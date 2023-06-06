@@ -1,0 +1,515 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* academy_facility_management
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 13.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-05-29 23:04+0000\n"
+"PO-Revision-Date: 2023-05-30 01:16+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"Language: es\n"
+"X-Generator: Poedit 2.3\n"
+
+#. module: academy_facility_management
+#: model:ir.model,name:academy_facility_management.model_academy_competency_unit
+msgid "Academy competency unit"
+msgstr "Unidad de competencia"
+
+#. module: academy_facility_management
+#: model:ir.model,name:academy_facility_management.model_academy_training_action
+msgid "Academy training action"
+msgstr "Acción formativa"
+
+#. module: academy_facility_management
+#: model:ir.model,name:academy_facility_management.model_academy_training_action_facility_link
+msgid "Academy training action facility link"
+msgstr ""
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__message_needaction
+msgid "Action Needed"
+msgstr "Accion necesaria"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__active
+msgid "Active"
+msgstr "Activo"
+
+#. module: academy_facility_management
+#: model_terms:ir.ui.view,arch_db:academy_facility_management.view_academy_competency_unit_list_only_tree
+msgid "Assign facilities to this competency unit"
+msgstr "Asignar instalaciones a esta unidad de competencia"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__message_attachment_count
+msgid "Attachment Count"
+msgstr "Recuento de archivos adjuntos"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__color
+msgid "Color"
+msgstr ""
+
+#. module: academy_facility_management
+#: model:ir.model.fields,help:academy_facility_management.field_academy_training_action_facility_link__color
+msgid "Color will be used in kanban view"
+msgstr "El color se usará en la vista kanban"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__company_id
+msgid "Company"
+msgstr "Compañía"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__competency_unit_id
+msgid "Competency unit"
+msgstr "Unidad de competencia"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__complex_id
+msgid "Complex"
+msgstr "Complejo"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,help:academy_facility_management.field_academy_training_action_facility_link__complex_id
+msgid "Complex to which the facility belongs"
+msgstr "Complejo al que pertenece la instalación"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,help:academy_facility_management.field_academy_training_action_facility_link__prerogative
+msgid "Compute current user access rights to change authorship"
+msgstr ""
+"Calcule los derechos de acceso del usuario actual para cambiar la autoría"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__create_uid
+msgid "Created by"
+msgstr "Creado por"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__create_date
+msgid "Created on"
+msgstr "Creado en"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,help:academy_facility_management.field_academy_training_action_facility_link__owner_id
+msgid "Current record owner"
+msgstr "Responsable del registro actual"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__description
+msgid "Description"
+msgstr "Descripción"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__display_name
+msgid "Display Name"
+msgstr "Nombre para mostrar"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,help:academy_facility_management.field_academy_training_action_facility_link__sequence
+msgid "Educational facility priority order"
+msgstr "Orden de prioridad de las instalaciones educativas"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,help:academy_facility_management.field_academy_training_action_facility_link__active
+msgid "Enables/disables the record"
+msgstr "Habilita/deshabilita el registro"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,help:academy_facility_management.field_academy_training_action_facility_link__description
+msgid "Enter new description"
+msgstr "Introducir una nueva descripción"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__excess
+msgid "Excess"
+msgstr "Exceso"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_competency_unit__facility_ids
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action__facility_ids
+#: model_terms:ir.ui.view,arch_db:academy_facility_management.view_academy_competency_unit_list_only_tree
+#: model_terms:ir.ui.view,arch_db:academy_facility_management.view_academy_training_action_form
+msgid "Facilities"
+msgstr "Instalaciones"
+
+#. module: academy_facility_management
+#: code:addons/academy_facility_management/models/academy_competency_unit.py:0
+#, python-format
+msgid "Facilities for {}"
+msgstr "Instalaciones para {}"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,help:academy_facility_management.field_academy_competency_unit__facility_assignment_ids
+msgid "Facilities used for teaching this competence unit"
+msgstr ""
+"Instalaciones utilizadas para la enseñanza de esta unidad de competencia"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__facility_id
+msgid "Facility"
+msgstr "Instalación"
+
+#. module: academy_facility_management
+#: code:addons/academy_facility_management/models/academy_training_action_facility_link.py:0
+#: model:ir.model.constraint,message:academy_facility_management.constraint_academy_training_action_facility_link_unique_training_action_facility
+#, python-format
+msgid "Facility already has been set to this training action"
+msgstr "La instalación ya se ha asignado a esta acción formativa"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_competency_unit__facility_assignment_ids
+msgid "Facility assignments"
+msgstr "Asignaciones de instalaciones"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_competency_unit__facility_count
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action__facility_count
+msgid "Facility count"
+msgstr "Recuento de instalaciones"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,help:academy_facility_management.field_academy_training_action_facility_link__code
+msgid "Facility internal code"
+msgstr "Código interno de la instalación"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action__facility_link_ids
+msgid "Facility links"
+msgstr "Enlaces de instalaciones"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__message_follower_ids
+msgid "Followers"
+msgstr "Seguidores"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__message_channel_ids
+msgid "Followers (Channels)"
+msgstr "Seguidores (Canales)"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Seguidores (Socios)"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__id
+msgid "ID"
+msgstr ""
+
+#. module: academy_facility_management
+#: model:ir.model.fields,help:academy_facility_management.field_academy_training_action_facility_link__message_needaction
+#: model:ir.model.fields,help:academy_facility_management.field_academy_training_action_facility_link__message_unread
+msgid "If checked, new messages require your attention."
+msgstr "Si está marcado, los nuevos mensajes requieren su atención."
+
+#. module: academy_facility_management
+#: model:ir.model.fields,help:academy_facility_management.field_academy_training_action_facility_link__message_has_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si está marcada, algunos mensajes tienen un error de entrega."
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__image_1920
+msgid "Image"
+msgstr "Imagen"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__image_1024
+msgid "Image 1024"
+msgstr "Imagen 1024"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__image_128
+msgid "Image 128"
+msgstr "Imagen 128"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__image_256
+msgid "Image 256"
+msgstr "Imagen 256"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__image_512
+msgid "Image 512"
+msgstr "Imagen 512"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__code
+msgid "Internal code"
+msgstr "Codigo interno"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__message_is_follower
+msgid "Is Follower"
+msgstr "Es seguidor"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link____last_update
+msgid "Last Modified on"
+msgstr "Última modificación el"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__write_uid
+msgid "Last Updated by"
+msgstr "Última actualización por"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__write_date
+msgid "Last Updated on"
+msgstr "Ultima actualización en"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__message_main_attachment_id
+msgid "Main Attachment"
+msgstr "Adjunto principal"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,help:academy_facility_management.field_academy_training_action__primary_complex_id
+msgid "Main educational complex"
+msgstr "Complejo educativo principal"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,help:academy_facility_management.field_academy_training_action__primary_facility_id
+msgid "Main educational facility"
+msgstr "Instalación educativa principal"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__manager_id
+msgid "Manager"
+msgstr "Gerente"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,help:academy_facility_management.field_academy_training_action_facility_link__excess
+msgid ""
+"Maximum number of students who can be invited to use this feature at the "
+"same time"
+msgstr ""
+"Número máximo de alumnos que pueden ser invitados a usar esta función "
+"al mismo tiempo"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,help:academy_facility_management.field_academy_training_action_facility_link__users
+msgid "Maximum number of students who can use this facility at the same time"
+msgstr ""
+"Número máximo de alumnos que pueden usar esta instalación al mismo "
+"tiempo"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,help:academy_facility_management.field_academy_training_action_facility_link__users_str
+msgid "Maximum users/maximum excess users"
+msgstr "Máximo de usuarios/máximo de usuarios (con exceso)"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__message_has_error
+msgid "Message Delivery error"
+msgstr "Error de entrega de mensajes"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__message_ids
+msgid "Messages"
+msgstr "Mensajes"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__name
+msgid "Name"
+msgstr "Nombre"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,help:academy_facility_management.field_academy_training_action_facility_link__name
+msgid "Name of the facility"
+msgstr "Nombre de la instalación"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,help:academy_facility_management.field_academy_training_action_facility_link__next_use
+msgid "Next time this facility will be used"
+msgstr "La próxima vez que se usará esta instalación"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__next_use
+msgid "Next use"
+msgstr "Próximo uso"
+
+#. module: academy_facility_management
+#: code:addons/academy_facility_management/models/academy_competency_unit.py:0
+#, python-format
+msgid "No training action has been selected"
+msgstr "No se ha seleccionado ninguna acción formativa"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Número de acciones"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,help:academy_facility_management.field_academy_training_action__facility_count
+msgid ""
+"Number of educational facilities will be required to teach the training "
+"action"
+msgstr ""
+"Número de centros educativos que serán necesarios para impartir la acción "
+"formativa"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__message_has_error_counter
+msgid "Number of errors"
+msgstr "Número de errores"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,help:academy_facility_management.field_academy_competency_unit__facility_count
+msgid "Number of facilities used for teaching this competence unit"
+msgstr ""
+"Número de instalaciones utilizadas para la docencia de esta unidad de "
+"competencia"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,help:academy_facility_management.field_academy_training_action_facility_link__message_needaction_counter
+msgid "Number of messages which requires an action"
+msgstr "Número de mensajes que requieren una acción"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,help:academy_facility_management.field_academy_training_action_facility_link__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Número de mensajes con error de entrega"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,help:academy_facility_management.field_academy_training_action_facility_link__reservation_count
+msgid "Number of reservations for this facility"
+msgstr "Número de reservas para esta instalación"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,help:academy_facility_management.field_academy_training_action_facility_link__message_unread_counter
+msgid "Number of unread messages"
+msgstr "Número de mensajes no leídos"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__owner_id
+msgid "Owner"
+msgstr "Responsable"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,help:academy_facility_management.field_academy_training_action_facility_link__manager_id
+msgid "Person in charge of this record"
+msgstr "Responsable de este registro"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,help:academy_facility_management.field_academy_training_action_facility_link__subrogate_id
+msgid "Person who assumes the obligations of the owner"
+msgstr "Persona que asume las obligaciones del responsable"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__prerogative
+msgid "Prerogative"
+msgstr "Prerrogativa"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action__primary_complex_id
+#: model_terms:ir.ui.view,arch_db:academy_facility_management.view_academy_training_action_search
+msgid "Primary complex"
+msgstr "Complejo primario"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action__primary_facility_id
+msgid "Primary facility"
+msgstr "Instalación primaria"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,help:academy_facility_management.field_academy_training_action_facility_link__facility_id
+msgid "Related educational facility"
+msgstr "Centro educativo relacionado"
+
+#. module: academy_facility_management
+#: model:ir.actions.act_window,name:academy_facility_management.action_academy_training_action_facility_link_act_window
+#: model_terms:ir.ui.view,arch_db:academy_facility_management.view_academy_training_action_facility_link_search
+#: model_terms:ir.ui.view,arch_db:academy_facility_management.view_academy_training_action_facility_link_tree
+msgid "Related facilities"
+msgstr "Instalaciones relacionadas"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,help:academy_facility_management.field_academy_training_action_facility_link__competency_unit_id
+#: model:ir.model.fields,help:academy_facility_management.field_academy_training_action_facility_link__training_action_id
+msgid "Related training action"
+msgstr "Acción formativa relacionada"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,help:academy_facility_management.field_academy_training_action__facility_ids
+msgid "Required educational facilities"
+msgstr "Instalaciones educativas requeridas"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,help:academy_facility_management.field_academy_training_action__facility_link_ids
+msgid "Required educational facilities in relevance order"
+msgstr "Instalaciones educativas requeridas en orden de relevancia"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__reservation_count
+msgid "Reservation count"
+msgstr "Recuento de reservas"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__reservation_ids
+msgid "Reservations"
+msgstr "Reservas"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__sequence
+msgid "Sequence"
+msgstr "Secuencia"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,help:academy_facility_management.field_academy_training_action_facility_link__reservation_ids
+msgid "Show related reservations"
+msgstr "Mostrar reservas relacionadas"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__subrogate_id
+msgid "Subrogate"
+msgstr "Subrogar"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,help:academy_facility_management.field_academy_training_action_facility_link__company_id
+msgid "The company this record belongs to"
+msgstr "La empresa a la que pertenece este registro"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__training_action_id
+msgid "Training action"
+msgstr "Acción formativa"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__type_id
+msgid "Type"
+msgstr "Tipo"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,help:academy_facility_management.field_academy_training_action_facility_link__type_id
+msgid "Type of facility"
+msgstr "Tipo de instalación"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__message_unread
+msgid "Unread Messages"
+msgstr "Mensajes no leídos"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__message_unread_counter
+msgid "Unread Messages Counter"
+msgstr "Contador de mensajes no leídos"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__users
+msgid "Users"
+msgstr "Usuarios"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__users_str
+msgid "Users/Excess"
+msgstr "Usuarios/Exceso"

@@ -5,9 +5,7 @@ This module extends the academy.competency.unit Odoo model
 """
 
 from odoo import models, fields, api
-from odoo.tools.translate import _
 from logging import getLogger
-import odoo.addons.academy_base.models.utils.custom_model_fields as custom
 
 _logger = getLogger(__name__)
 

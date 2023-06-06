@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <!-- VIEWS: "Sessions"
+
+            - Model·········: facility.reservation
+            - _rec_name·····: name
+            - Domain········: []
+            - Context·······: {}
+            - Parent menu ··: timesheets.menu_timesheets
+            - View priority·: 16    Sequence····: 10
+            - Action help···: There are no reservations
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+        <!-- Tree view for "facility.reservation" -->
+        <record id="view_facility_reservation_embed_in_session_tree" model="ir.ui.view">
+            <field name="name">view.facility.reservation.tree</field>
+            <field name="model">facility.reservation</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="32" />
+            <field name="inherit_id" ref="facility_management.view_facility_reservation_tree" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <xpath expr="//tree" position="attributes">
+                    <attribute name="editable">bottom</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='display_name']" position="replace" />
+
+                <xpath expr="//field[@name='date_start']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='date_stop']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='date_delay']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='state']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <xpath expr="//field[1]" position="before">
+                    <field name="session_id" class="oe_field_session_id" invisible="1" />
+                </xpath>
+
+                <xpath expr="//field[1]" position="before">
+                    <field name="sequence" class="oe_field_sequence oe_edit_only" widget="handle" />
+                </xpath>
+
+                <xpath expr="//field[last()]" position="after">
+                    <field name="complex_id" class="oe_field_complex_id" />
+                </xpath>
+
+                <xpath expr="//field[last()]" position="after">
+                    <field name="type_id" class="oe_field_type_id" />
+                </xpath>
+
+                <xpath expr="//field[last()]" position="after">
+                    <field name="validate" class="oe_field_validate" />
+                </xpath>
+
+            </field>
+        </record>
+
+        <!-- Form view for "facility.reservation" -->
+        <record id="view_facility_reservation_embed_in_session_form" model="ir.ui.view">
+            <field name="name">view.facility.reservation.form</field>
+            <field name="model">facility.reservation</field>
+            <field name="type">form</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="32" />
+            <field name="inherit_id" ref="facility_management.view_facility_reservation_form" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='date_start']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='date_stop']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='date_delay']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Form view for "facility.reservation" -->
+        <record id="view_facility_reservation_form" model="ir.ui.view">
+            <field name="name">view.facility.reservation.form</field>
+            <field name="model">facility.reservation</field>
+            <field name="type">form</field>
+            <field name="mode">extension</field>
+            <field name="priority" eval="16" />
+            <field name="inherit_id" ref="facility_management.view_facility_reservation_form" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="session_id" class="oe_field_session_id" invisible="1" />
+                </xpath>
+                <xpath expr="//field[@name='date_start']" position="attributes">
+                    <attribute name="attrs">{'readonly': [('session_id', '&lt;&gt;', False)]}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='date_stop']" position="attributes">
+                    <attribute name="attrs">{'readonly': [('session_id', '&lt;&gt;', False)]}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='date_delay']" position="attributes">
+                    <attribute name="attrs">{'readonly': [('session_id', '&lt;&gt;', False)]}</attribute>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>

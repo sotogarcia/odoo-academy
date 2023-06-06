@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <!-- Form view for "academy.teacher" -->
+        <record id="view_academy_teacher_form" model="ir.ui.view">
+            <field name="name">view.academy.teacher.form</field>
+            <field name="model">academy.teacher</field>
+            <field name="type">form</field>
+            <field name="mode">extension</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="academy_base.view_academy_teacher_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//div[@name='button_box']" position="inside">
+                    <button name="view_sessions" type="object" class="oe_stat_button oe_read_only"
+                        icon="fa-calendar" help="Show related sessions">
+                        <field name="session_count" widget="statinfo" string="Scheduled" />
+                    </button>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_academy_teacher_kanban" model="ir.ui.view">
+            <field name="name">view.academy.teacher.kanban</field>
+            <field name="model">academy.teacher</field>
+            <field name="type">kanban</field>
+            <field name="mode">extension</field>
+            <field name="priority" eval="24" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="academy_base.view_academy_teacher_kanban" />
+            <field name="arch" type="xml">
+                <xpath expr="//div[@name='kanban-box-toolbar']" position="inside">
+                    <div class="btn-group" role="group" aria-label="Management">
+                        <button name="view_sessions" type="object"
+                            class="btn btn-sm btn-light oe_read_only" title="Show related sessions">
+                            <i class="fa fa-calendar d-inline-block mr-1" aria-hidden="false"></i>
+                            Scheduled
+                        </button>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>

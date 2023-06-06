@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <openerp>
-    <data noupdate="0">
+    <data noupdate="1">
 
         <record id="academy_qualification_level_level_isced_2011_0" model="academy.qualification.level">
-            <field name="name">Early childhood Education</field>
+            <field name="name">Early childhood education</field>
             <field name="description">Education designed to support early development in preparation for participation in school and society. Programmes designed for children below the age of 3</field>
             <field name="level">0</field>
             <field name="sequence" eval="10" />
@@ -46,24 +46,31 @@
         </record>
 
         <record id="academy_qualification_level_level_isced_2011_6" model="academy.qualification.level">
-            <field name="name">Bachelor or equivalent</field>
+            <field name="name">Bachelor's or equivalent level</field>
             <field name="description">Programmes designed to provide intermediate academic and/or professional knowledge, skills and competencies leading to a first tertiary degree or equivalent qualification</field>
             <field name="level">6</field>
             <field name="sequence" eval="70" />
         </record>
 
         <record id="academy_qualification_level_level_isced_2011_7" model="academy.qualification.level">
-            <field name="name">Master or equivalent</field>
+            <field name="name">Master’s or equivalent level</field>
             <field name="description">Programmes designed to provide advanced academic and/or professional knowledge, skills and competencies leading to a second tertiary degree or equivalent qualification</field>
             <field name="level">7</field>
             <field name="sequence" eval="80" />
         </record>
 
         <record id="academy_qualification_level_level_isced_2011_8" model="academy.qualification.level">
-            <field name="name">Doctoral or equivalent</field>
+            <field name="name">Doctoral or equivalent level</field>
             <field name="description">Programmes designed primarily to lead to an advanced research qualification, usually concluding with the submission and defense of a substantive dissertation of publishable quality based on original research</field>
             <field name="level">8</field>
             <field name="sequence" eval="90" />
+        </record>
+
+        <record id="academy_qualification_level_level_isced_2011_9" model="academy.qualification.level">
+            <field name="name">Not elsewhere classified</field>
+            <field name="description">Non-formal programs of the educational system and other programs aimed at improving personal and professional training</field>
+            <field name="level">9</field>
+            <field name="sequence" eval="100" />
         </record>
 
         <record id="academy_qualification_level_es_3B" model="academy.qualification.level">

@@ -5,8 +5,7 @@ This module contains the academy.tests.question.changelog.entry Odoo model
 which uses an SQL view to get all question tracking messages.
 """
 
-from odoo import models, fields, api
-from odoo.tools.translate import _
+from odoo import models, fields
 from odoo.tools import drop_view_if_exists
 from logging import getLogger
 

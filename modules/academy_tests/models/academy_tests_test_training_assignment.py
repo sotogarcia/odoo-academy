@@ -8,10 +8,6 @@ from odoo import models, fields, api
 from odoo.tools.translate import _
 from logging import getLogger
 
-from .utils.sql_m2m_through_view import \
-    ACADEMY_TESTS_TEST_TRAINING_ASSIGNMENT_STUDENT_REL
-import odoo.addons.academy_base.models.utils.custom_model_fields as custom
-
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
@@ -40,9 +36,35 @@ class AcademyTestsTestTrainingAssignment(models.Model):
 
     _inherit = [
         'academy.abstract.training.reference',
-        'academy.abstract.owner',
+        'ownership.mixin',
         'mail.thread'
     ]
+
+    company_id = fields.Many2one(
+        string='Company',
+        required=False,
+        readonly=True,
+        index=True,
+        default=None,
+        help='Available for company',
+        comodel_name='res.company',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False,
+        compute='_compute_company_id',
+        store=True
+    )
+
+    @api.depends('enrolment_id', 'training_action_id')
+    def _compute_company_id(self):
+        for record in self:
+            if record.enrolment_id:
+                record.company_id = record.enrolment_id.company_id
+            elif record.training_action_id:
+                record.company_id = record.training_action_id.company_id
+            else:
+                record.company_id = None
 
     name = fields.Char(
         string='Name',
@@ -274,7 +296,7 @@ class AcademyTestsTestTrainingAssignment(models.Model):
         for record in self:
             record.attempt_count = len(record.attempt_ids)
 
-    student_ids = custom.Many2manyThroughView(
+    student_ids = fields.Many2manyView(
         string='Students',
         required=False,
         readonly=True,
@@ -288,7 +310,7 @@ class AcademyTestsTestTrainingAssignment(models.Model):
         domain=[],
         context={},
         limit=None,
-        sql=ACADEMY_TESTS_TEST_TRAINING_ASSIGNMENT_STUDENT_REL
+        copy=False
     )
 
     student_count = fields.Integer(

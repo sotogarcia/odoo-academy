@@ -25,7 +25,7 @@
             <field name="arch" type="xml">
                 <tree string="academy_tests_random_template_tree" create="1" delete="1" edit="1">
                     <field name="name" class="oe_field_name" string="Name" />
-                    <field name="owner_id" class="oe_field_owner_id" />
+                    <field name="manager_id" class="oe_field_manager_id" />
                     <field name="training_ref" class="oe_field_context_ref" />
                     <field name="scheduled_count" class="oe_field_scheduled_count" />
                 </tree>
@@ -96,7 +96,10 @@
 
                                 <group col="4">
                                     <field name="test_kind_id" class="oe_field_test_kind_id" />
+                                    <separator colspan="2" />
                                     <field name="owner_id" class="oe_field_owner_id" options="{'no_create': True}"
+                                        groups="academy_base.academy_group_technical" />
+                                    <field name="subrogate_id" class="oe_field_subrogate_id" options="{'no_create': True}"
                                         groups="academy_base.academy_group_technical" />
 
                                     <separator colspan="4" />
@@ -273,7 +276,7 @@
 
                     <filter string="My templates"
                         name="my_templates"
-                        domain="[('owner_id', '=', uid)]"
+                        domain="[('manager_id', '=', uid)]"
                         context="{}"
                         help="List only the own templates" />
                 </search>

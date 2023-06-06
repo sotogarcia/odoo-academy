@@ -24,13 +24,10 @@ from odoo import models, fields, api
 from odoo.tools.translate import _
 
 from odoo.osv.expression import FALSE_DOMAIN
-import odoo.addons.academy_base.models.utils.custom_model_fields as custom
 from .utils.sql_operations import ACADEMY_TESTS_SHUFFLE
 from .utils.sql_operations import ACADEMY_TESTS_ARRANGE_BLOCKS
 from .utils.sql_inverse_searches import QUESTION_COUNT_SEARCH
 from .utils.sql_inverse_searches import SEARCH_TEST_ATTEMPT_COUNT
-from .utils.sql_m2m_through_view import ACADEMY_TESTS_TEST_TOPIC_IDS_SQL
-from .utils.sql_m2m_through_view import ACADEMY_TESTS_TEST_TEST_BLOCK_REL
 from .utils.libuseful import prepare_text, fix_established, is_numeric, \
     eval_domain
 
@@ -50,7 +47,7 @@ class AcademyTestsTest(models.Model):
 
     _inherit = [
         'academy.abstract.spreadable',
-        'academy.abstract.owner',
+        'ownership.mixin',
         'image.mixin',
         'mail.thread'
     ]
@@ -128,6 +125,31 @@ class AcademyTestsTest(models.Model):
         auto_join=False,
         limit=None,
     )
+
+    last_edition = fields.Datetime(
+        string='Last editiong',
+        required=False,
+        readonly=True,
+        index=False,
+        default=fields.datetime.now(),
+        help='Last editing date/time',
+        compute='_compute_last_edition'
+    )
+
+    @api.depends('write_date', 'question_ids')
+    def _compute_last_edition(self):
+        for record in self:
+            path = 'question_ids.write_date'
+            links = record.mapped(path)
+            path = 'question_ids.question_id.write_date'
+            questions = record.mapped(path)
+            path = 'question_ids.question_id.answer_ids.write_date'
+            answers = record.mapped(path)
+            test = [record.write_date]
+
+            dates = test + links + questions + answers
+
+            record.last_edition = max(dates)
 
     answers_table_ids = fields.One2many(
         string='Answers table',
@@ -256,7 +278,7 @@ class AcademyTestsTest(models.Model):
         track_visibility='onchange',
     )
 
-    test_block_ids = custom.Many2manyThroughView(
+    test_block_ids = fields.Many2manyView(
         string='Test blocks',
         required=False,
         readonly=True,
@@ -270,7 +292,7 @@ class AcademyTestsTest(models.Model):
         domain=[],
         context={},
         limit=None,
-        sql=ACADEMY_TESTS_TEST_TEST_BLOCK_REL
+        copy=False
     )
 
     auto_arrange_blocks = fields.Boolean(
@@ -381,7 +403,7 @@ class AcademyTestsTest(models.Model):
 
         return [('id', 'in', ids)]
 
-    topic_ids = custom.Many2manyThroughView(
+    topic_ids = fields.Many2manyView(
         string='Topics',
         required=False,
         readonly=True,
@@ -395,7 +417,7 @@ class AcademyTestsTest(models.Model):
         domain=[],
         context={},
         limit=None,
-        sql=ACADEMY_TESTS_TEST_TOPIC_IDS_SQL
+        copy=False
     )
 
     topic_count = fields.Integer(
@@ -479,6 +501,24 @@ class AcademyTestsTest(models.Model):
         auto_join=False,
         limit=None
     )
+
+    correction_scale_id = fields.Many2one(
+        string='Correction scale',
+        required=True,
+        readonly=False,
+        index=False,
+        default=lambda self: self.default_correction_scale_id(),
+        help='Choose the scale of correction',
+        comodel_name='academy.tests.correction.scale',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False
+    )
+
+    def default_correction_scale_id(self):
+        xid = 'academy_tests.academy_tests_correction_scale_default'
+        return self.env.ref(xid)
 
     # -------------------------- PYTHON CONSTRAINS ----------------------------
 

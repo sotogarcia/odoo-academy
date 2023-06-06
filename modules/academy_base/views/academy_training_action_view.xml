@@ -28,7 +28,7 @@
                     <field name="action_name" string="Name" />
                     <field name="start" class="oe_field_start" />
                     <field name="end" class="oe_field_end" />
-                    <field name="owner_id" class="oe_field_owner_id" string="Tuttor" />
+                    <field name="manager_id" class="oe_field_manager_id" string="Tuttor" />
                     <field name="enrolment_count" class="oe_field_training_action_enrolment_count" />
                 </tree>
             </field>
@@ -53,12 +53,6 @@
                                 <field name="enrolment_count" widget="statinfo" string="Enrollments" />
                             </button>
 
-                            <button name="session_wizard" type="object"
-                                class="oe_stat_button oe_read_only" icon="fa-calendar"
-                                help="View training action enrollments">
-                                <field name="lesson_count" widget="statinfo" string="New session" />
-                            </button>
-
                             <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
                         </div>
 
@@ -67,7 +61,7 @@
                         <field name="id" invisible="1"/>
                         <field name="active" invisible="1"/>
 
-                        <div class="oe_title">
+                        <div class="oe_title" id="title">
                             <label for="name" class="oe_edit_only" />
                             <h1>
                                 <field name="action_name" class="oe_field_name"
@@ -75,28 +69,33 @@
                             </h1>
                         </div>
 
-                        <group col="2">
+                        <group col="2" id="action" class="mt-3">
+                            <field name="action_code" class="oe_field_code" />
                             <field name="training_activity_id" class="oe_field_training_activity_id"
                                 readonly="context.get('default_training_activity_id', False)" />
                             <field name="application_scope_id" class="od_field_application_scope" />
                         </group>
 
-                        <group col="4">
-                            <field name="action_code" class="oe_field_code" />
-                            <field name="start" class="oe_field_start" />
-                            <field name="seating" class="oe_field_seating" />
-                            <field name="end" class="oe_field_end" />
-                            <field name="description" class="oe_field_description"
-                                    placeholder="Enter new description" colspan="4" />
+                        <group col="2" id="details">
+                            <group col="2" class="my-0" string="Seating">
+                                <field name="seating" class="oe_field_seating" />
+                                <field name="excess" class="oe_field_excess" />
+                            </group>
+                            <group col="2" class="my-0" string="Interval">
+                                <field name="start" class="oe_field_start" />
+                                <field name="end" class="oe_field_end" />
+                            </group>
                         </group>
 
                         <notebook>
-                            <page string="Competency units" class="oe_page_competency_units" accesskey="C">
+                            <page id="competency" string="Competency units" class="oe_page_competency_units" accesskey="C">
                                 <field name="competency_unit_ids" class="oe_field_competency_unit_ids"
-                                    colspan="2" nolabel="1" readonly="1"
-                                    context="{'tree_view_ref': 'academy_base.view_academy_competency_unit_list_only_tree'}" />
+                                    colspan="2" nolabel="1" readonly="1" context="{
+                                        'tree_view_ref': 'academy_base.view_academy_competency_unit_list_only_tree',
+                                        'default_training_action_id': id
+                                    }" />
                             </page>
-                            <page string="Data" class="oe_page_data" accesskey="T">
+                            <page id="data" string="Data" class="oe_page_data" accesskey="T">
 
                                 <group col="4">
                                     <field name="knowledge_area_ids" class="od_field_knowledge_area" widget="many2many_tags"
@@ -113,16 +112,19 @@
                                     <field name="activity_code" class="oe_field_action_code"
                                         placeholder="Enter new internal code" readonly="1" />
                                     <field name="qualification_level_id" class="oe_field_qualification_level_id" readonly="1" />
+                                    <field name="description" class="oe_field_description"
+                                        placeholder="Enter new description" colspan="4" />
                                 </group>
 
                             </page>
                             <page id="setup" string="Setup" class="oe_page_setup" accesskey="S">
                                 <group col="4">
-                                    <field name="owner_id" class="oe_field_owner_id" string="Tuttor" />
+                                    <field name="owner_id" class="oe_field_owner_id" />
+                                    <field name="subrogate_id" class="oe_field_subrogate_id" />
                                 </group>
                             </page>
 
-                            <page string="Resources" class="oe_page_available_resources" accesskey="R">
+                            <page id="resources" string="Resources" class="oe_page_available_resources" accesskey="R">
                                 <field name="action_resource_ids" nolabel="1"
                                        class="oe_field_action_resource_ids oe_edit_only" />
 
@@ -172,8 +174,8 @@
                                         <h4><strong class="oe_partner_heading"><field name="action_name"/></strong></h4>
                                         <ul>
                                             <li class="o_ellipsis"><strong>Lifespan:&#160;</strong><field name="start" widget="date" />&#160;-&#160;<field name="end" widget="date" /></li>
-                                            <li class="o_ellipsis"><strong>Training activity:&#160;</strong><field name="training_activity_id" /></li>
-                                            <li class="o_ellipsis"><strong>Application scope:&#160;</strong><field name="application_scope_id" /></li>
+                                            <li class="o_ellipsis"><strong>Activity:&#160;</strong><field name="training_activity_id" /></li>
+                                            <li class="o_ellipsis"><strong>Code:&#160;</strong><field name="action_code" /></li>
                                             <li class="o_ellipsis"><strong>Nº enrolments:&#160;</strong><field name="enrolment_count" /></li>
                                          </ul>
                                     </div>
@@ -207,29 +209,23 @@
                     <field name="action_name" string="Name" />
                     <field name="action_code" string="Code" />
 
-                    <field name="application_scope_id" />
-                    <field name="professional_category_id" />
-                    <field name="training_action_category_id" />
+                    <field name="training_activity_id" />
 
-                    <separator />
-
-                    <field name="knowledge_area_ids" />
                     <field name="training_modality_ids" />
                     <field name="training_methodology_ids" />
-
-                    <separator />
-
-                    <field name="professional_family_id" />
-                    <field name="professional_area_id" />
-                    <field name="qualification_level_id" />
-
-                    <separator/>
 
                     <field name="student_ids" />
 
                     <separator/>
-
                     <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
+
+                    <separator/>
+                    <filter name="with_enrolments" string="With enrolments" domain="[('enrolment_count', '>', 0)]" />
+                    <filter name="without_enrolments" string="Without enrolments" domain="[('enrolment_count', '=', 0)]" />
+
+                    <separator />
+                    <filter name="has_finalized" string="Finalized" domain="[('end', '&lt;=', (datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))]"/>
+                    <filter name="in_progress" string="In progress" domain="['|', ('end', '=', False), ('end', '&gt;', (datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))]"/>
 
                     <group expand="0" name="group_by" string="Group By">
                         <filter name="group_by_training_activity_id"  string="Training activity" domain="[]" context="{'group_by' : 'training_activity_id'}" />

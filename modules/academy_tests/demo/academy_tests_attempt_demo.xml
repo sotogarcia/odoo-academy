@@ -5,7 +5,7 @@
 
         <record id="academy_tests_attempt_demo_1" model="academy.tests.attempt">
             <field name="active" eval="True" />
-            <field name="student_id" ref="academy_base.academy_demo_student" />
+            <field name="student_id" ref="academy_base.academy_demo_student_1" />
             <field name="assignment_id" ref="academy_tests.academy_tests_test_training_assignment_tests_demo_1" />
             <field name="start" eval="(DateTime.now().replace(hour=2, minute=0)).strftime('%Y-%m-%d %H:%M:%S')" />
             <field name="elapsed" eval="0.75" />
@@ -20,7 +20,7 @@
 
         <record id="academy_tests_attempt_demo_2" model="academy.tests.attempt">
             <field name="active" eval="True" />
-            <field name="student_id" ref="academy_base.academy_demo_student" />
+            <field name="student_id" ref="academy_base.academy_demo_student_1" />
             <field name="assignment_id" ref="academy_tests.academy_tests_test_training_assignment_tests_demo_1" />
             <field name="start" eval="(DateTime.now().replace(hour=2, minute=0)).strftime('%Y-%m-%d %H:%M:%S')" />
             <field name="elapsed" eval="0.75" />

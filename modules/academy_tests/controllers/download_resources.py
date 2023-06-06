@@ -149,13 +149,13 @@ class TestAttachments(http.Controller):
 
         try:
             test_set = self._browse_for_test(test_id)
-            question_set = test_set.question_ids
+            # question_set = test_set.question_ids
         except AssertionError as ae:
             return Response(str(ae), status=404)
 
         headers = self._build_moodle_headers(test_set.name)
         content = self._build_moodle_xml(
-            question_set, category or test_set.name)
+            test_set, category or test_set.name)
 
         return request.make_response(content, headers=headers)
 
@@ -222,12 +222,21 @@ class TestAttachments(http.Controller):
         return question_set
 
     @staticmethod
-    def _build_moodle_xml(question_set, category=None):
+    def _build_moodle_xml(target_set, category=None):
         category = category or _('Odoo export')
 
-        return question_set.to_moodle(encoding='utf8', prettify=True,
-                                      xml_declaration=True,
-                                      category=category)
+        scale_xid = 'academy_tests.academy_tests_correction_scale_default'
+        correction_scale = request.env.ref(scale_xid)
+
+        test_obj = request.env['academy.tests.test']
+        if isinstance(target_set, type(test_obj)):
+            correction_scale = target_set.correction_scale_id
+            target_set = target_set.question_ids
+
+        return target_set.to_moodle(encoding='utf8', prettify=True,
+                                    xml_declaration=True,
+                                    category=category,
+                                    correction_scale=correction_scale)
 
     @staticmethod
     def _build_moodle_headers(fname=None):

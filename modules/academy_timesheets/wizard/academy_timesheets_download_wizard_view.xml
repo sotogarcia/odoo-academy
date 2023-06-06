@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="view_academy_timesheets_download_wizard" model="ir.ui.view">
+            <field name="name">Academy timesheets download wizard</field>
+            <field name="model">academy.timesheets.download.wizard</field>
+            <field name="type">form</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <form string="Timesheets download wizard" create="1" delete="1" edit="1">
+
+                    <header>
+                        <button name="perform_action"
+                                string="&#160;Navigate"
+                                type="object"
+                                default_focus="1"
+                                icon="fa-download"
+                                class="btn btn-primary float-right"
+                                help="Download schedule document" />
+
+                    </header>
+
+                    <group col="4">
+                        <field name="target_ref" class="oe_field_target_ref" colspan="4"
+                            options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
+                        <separator colspan="4" />
+                        <field name="week" class="oe_field_week" />
+                        <field name="week_date" class="oe_field_week_date"
+                            attrs="{'readonly': [('week', '&lt;&gt;', 'other')]}"/>
+                        <field name="mime" class="oe_field_mime" />
+                        <field name="download" class="oe_field_download" />
+                        <separator colspan="4" />
+                        <field name="url" class="oe_field_url text-left px-2 py-1" widget="CopyClipboardChar" colspan="4" />
+                    </group>
+
+                    <footer />
+
+                </form>
+            </field>
+        </record>
+
+        <record id="action_academy_timesheets_download_wizard_training_action_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Download schedule</field>
+            <field name="res_model">academy.timesheets.download.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="binding_model_id" ref="academy_timesheets.model_academy_training_action" />
+            <field name="binding_view_types">form</field>
+            <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
+        </record>
+
+        <record id="action_academy_timesheets_download_wizard_teacher_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Download schedule</field>
+            <field name="res_model">academy.timesheets.download.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="binding_model_id" ref="academy_timesheets.model_academy_teacher" />
+            <field name="binding_view_types">form</field>
+            <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
+        </record>
+
+        <record id="action_academy_timesheets_download_wizard_student_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Download schedule</field>
+            <field name="res_model">academy.timesheets.download.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="binding_model_id" ref="academy_timesheets.model_academy_student" />
+            <field name="binding_view_types">form</field>
+            <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
+        </record>
+
+    </data>
+</openerp>

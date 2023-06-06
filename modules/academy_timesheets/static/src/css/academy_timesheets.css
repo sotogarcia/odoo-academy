@@ -1,0 +1,30 @@
+.table-academy-timesheets-details {
+    table-layout: auto!important;
+}
+
+.table-academy-timesheets-details.o_group.o_inner_group > tbody > tr > th,
+.table-academy-timesheets-details.o_group.o_inner_group > tbody > tr > td {
+    padding-left: 1ex!important;
+    padding-right: 1ex!important;
+    vertical-align: middle;
+    width: auto!important;
+    min-width: initial!important;
+}
+
+.table-academy-timesheets-details.o_group.o_inner_group > tbody > tr > td > .o_form_label_empty  {
+    min-height: 26px;
+    display: inline-flex;
+    align-items: center;
+}
+
+.table-academy-timesheets-details.o_group.o_inner_group > tbody > tr > th:last-child(),
+.table-academy-timesheets-details.o_group.o_inner_group > tbody > tr > td:last-child() {
+    width: 100%!important;
+}
+
+.table-academy-timesheets-details.o_group.o_inner_group > tbody > tr > th .o_field_widget,
+.table-academy-timesheets-details.o_group.o_inner_group > tbody > tr > td .o_field_widget {
+    margin-bottom: 0px!important;
+}
+
+

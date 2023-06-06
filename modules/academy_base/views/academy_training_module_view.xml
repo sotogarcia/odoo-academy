@@ -28,6 +28,7 @@
                     <field name="module_code" />
                     <field name="name" />
                     <field name="hours" class="oe_field_hours" widget="float_time" />
+                    <field name="manager_id" class="oe_field_manager_id" />
                 </tree>
             </field>
         </record>
@@ -70,6 +71,7 @@
                                     <field name="description" class="oe_field_description"
                                         placeholder="Enter new description" colspan="4" />
                                     <field name="owner_id" class="oe_field_owner_id" />
+                                    <field name="subrogate_id" class="oe_field_subrogate_id" />
                                 </group>
                             </page>
                             <page string="Resources" class="oe_page_resources" accesskey="R">

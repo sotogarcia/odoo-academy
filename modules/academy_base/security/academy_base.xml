@@ -3,34 +3,21 @@
 <openerp>
 	<data noupdate="0">
 
-		<!-- Lessons 
-		- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-		<record id="academy_teachers_can_only_update_or_unlink_their_own_lessons_rule" model="ir.rule">
-			<field name="name">Academy: Teachers can only update or unlink their own lessons</field>
-			<field name="model_id" ref="academy_base.model_academy_training_lesson" />
-			<field name="groups" eval="[(4, ref('academy_base.academy_group_teacher'))]" />
-			<field name="global" eval="False" />
-			<field name="perm_read" eval="False" />
-			<field name="perm_create" eval="False" />
-			<field name="perm_write" eval="True" />
-			<field name="perm_unlink" eval="True" />
-			<field name="domain_force">['|',('create_uid', '=', user.id), ('write_uid', '=', user.id)]</field>
-			<field name="active" eval="True" />
-		</record>
+        <!-- Multicompany
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        <record id="ir_rule_restricted_training_action_multi_company" model="ir.rule">
+            <field name="name">Restricted Training Action: multi-company</field>
+            <field name="model_id" ref="academy_base.model_academy_training_action"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        </record>
 
-		<record id="academy_technicians_and_managers_can_update_or_unlink_their_own_lessons_rule" model="ir.rule">
-			<field name="name">Academy: Technicians and managers can update or unlink their own lessons</field>
-			<field name="model_id" ref="academy_base.model_academy_training_lesson"/>
-			<field name="groups" eval="[(4, ref('academy_base.academy_group_technical')), (4, ref('academy_base.academy_group_manager'))]"/>
-			<field name="global" eval="False" />
-			<field name="perm_read" eval="False" />
-			<field name="perm_create" eval="False" />
-			<field name="perm_write" eval="True" />
-			<field name="perm_unlink" eval="True" />
-			<field name="domain_force">[(1,'=',1)]</field>
-			<field name="active" eval="True" />
-		</record>
-
+        <record id="ir_rule_restricted_training_action_enrolment_multi_company" model="ir.rule">
+            <field name="name">Restricted Training Action Enrolment: multi-company</field>
+            <field name="model_id" ref="academy_base.model_academy_training_action_enrolment"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        </record>
 
 		<!-- Resources
 		- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->

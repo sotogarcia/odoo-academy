@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <!-- VIEWS: "Clone wizard log"
+
+            - Model·········: academy.timesheets.clone.wizard.log
+            - _rec_name·····: name
+            - Domain········: []
+            - Context·······: {}
+            - Parent menu ··: academy_base.menu_academy_settings_helper
+            - View priority·: 16    Sequence····: 10
+            - Action help···: There are no log entries yet
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+        <!-- Tree view for "academy.timesheets.clone.wizard.log" -->
+        <record id="view_academy_timesheets_clone_wizard_log_tree" model="ir.ui.view">
+            <field name="name">view.academy.timesheets.clone.wizard.log.tree</field>
+            <field name="model">academy.timesheets.clone.wizard.log</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <tree string="academy_timesheets_clone_wizard_log_tree" create="1" delete="1" edit="1"
+                    decoration-muted="level &lt; 10" decoration-success="level == 10"
+                    decoration-info="level == 20" decoration-warning="level == 30"
+                    decoration-danger="level &gt;= 40">
+                    <field name="level" class="oe_field_level" invisible="1" />
+                    <field name="kind" class="oe_field_kind" />
+                    <field name="create_date" class="oe_field_create_date" />
+                    <field name="from_date" class="oe_field_from_date" />
+                    <field name="to_date" class="oe_field_to_date" />
+                    <field name="name" class="oe_field_name" />
+                    <field name="description" class="oe_field_description" />
+                    <field name="target_ref" class="oe_field_target_ref" />
+                    <field name="session_id" class="oe_field_session_id" />
+                    <field name="wizard_code" class="oe_field_wiazard_id" />
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form view for "academy.timesheets.clone.wizard.log" -->
+        <record id="view_academy_timesheets_clone_wizard_log_form" model="ir.ui.view">
+            <field name="name">view.academy.timesheets.clone.wizard.log.form</field>
+            <field name="model">academy.timesheets.clone.wizard.log</field>
+            <field name="type">form</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <form string="academy_timesheets_clone_wizard_log_form" create="1" delete="1" edit="1">
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only" />
+                            <h1>
+                                <field name="name" class="oe_field_name"
+                                    placeholder="Name" />
+                            </h1>
+                        </div>
+
+                        <group col="4">
+                            <field name="kind" class="oe_field_kind" />
+                            <field name="wizard_code" class="oe_field_wizard_code" />
+
+                            <field name="sequence" class="oe_field_sequence" />
+                            <field name="create_date" class="oe_field_create_date" />
+
+                            <separator colspan="4" />
+
+                            <field name="from_date" class="oe_field_from_date" />
+                            <field name="to_date" class="oe_field_to_date" />
+
+                            <field name="target_ref" class="oe_field_target_ref" />
+                            <field name="session_id" class="oe_field_session_id" />
+
+                            <separator colspan="4" string="Caption text" />
+
+                            <field name="description" class="oe_field_description" colspan="4" />
+                        </group>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search view for "academy.timesheets.clone.wizard.log" -->
+        <record id="view_academy_timesheets_clone_wizard_log_search" model="ir.ui.view">
+            <field name="name">view.academy.timesheets.clone.wizard.log.search</field>
+            <field name="model">academy.timesheets.clone.wizard.log</field>
+            <field name="type">search</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <search string="academy_timesheets_clone_wizard_log_search">
+                    <field name="kind" />
+                    <field name="create_date" />
+                    <field name="from_date" />
+                    <field name="to_date" />
+                    <field name="name" />
+                    <field name="target_ref" />
+                    <field name="session_id" />
+
+                    <filter string="Error logs"
+                        name="error_logs"
+                        domain="[('level', '&gt;=', 40)]"
+                        context="{}"
+                        help="Show only records with error or critical messages" />
+
+                    <filter string="No debug"
+                        name="no_debug"
+                        domain="[('level', '&lt;&gt;', 10)]"
+                        context="{}"
+                        help="Do not show logs with debugging messages" />
+
+                </search>
+            </field>
+        </record>
+
+        <!-- Main window action for model.name -->
+        <record id="action_clone_wizard_log_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Clone wizard log</field>
+            <field name="res_model">academy.timesheets.clone.wizard.log</field>
+            <field name="view_mode">tree,form</field>
+            <field name="target">current</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="search_view_id" ref="view_academy_timesheets_clone_wizard_log_search" />
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to add new clone wizard log
+                </p><p>
+                    There are no log entries yet
+                </p>
+            </field>
+        </record>
+
+        <!-- Main menu for model.name -->
+        <record id="menu_clone_wizard_log" model="ir.ui.menu" >
+            <field name="name">Clone wizard log</field>
+            <field name="sequence" eval="10" />
+            <field name="action" ref="action_clone_wizard_log_act_window" />
+            <field name="parent_id" ref="academy_base.menu_academy_settings_helper" />
+            <field name="groups_id" eval="[(4, ref('academy_base.academy_group_manager'))]"/>
+        </record>
+
+    </data>
+</openerp>

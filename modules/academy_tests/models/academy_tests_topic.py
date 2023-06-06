@@ -9,11 +9,6 @@ from odoo import models, fields, api
 from odoo.tools.translate import _
 from odoo.osv.expression import FALSE_DOMAIN
 
-from .utils.sql_m2m_through_view import \
-    INHERITED_TOPICS_REL as SEARCH_MODULES, \
-    ACADEMY_TRAINING_ACTIVITY_TEST_TOPIC_REL as SEARCH_ACTIVITIES, \
-    ACADEMY_COMPETENCY_UNIT_TEST_TOPIC_REL as SEARCH_COMPETENCIES
-
 import re
 from logging import getLogger
 
@@ -31,7 +26,7 @@ class AcademyTestsTopic(models.Model):
     _order = 'name ASC'
 
     _inherit = [
-        'academy.abstract.owner',
+        'ownership.mixin',
         'mail.thread'
     ]
 

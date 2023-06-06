@@ -20,22 +20,8 @@ class IrAttachment(models.Model):
     _name = 'ir.attachment'
     _inherit = [
         'ir.attachment',
-        'academy.abstract.owner'
+        'ownership.mixin'
     ]
-
-    owner_id = fields.Many2one(
-        string='Owner',
-        required=False,
-        readonly=False,
-        index=True,
-        default=lambda self: self._default_owner_id(),
-        help='Current owner',
-        comodel_name='res.users',
-        domain=[],
-        context={},
-        ondelete='cascade',
-        auto_join=False
-    )
 
     question_ids = fields.Many2many(
         string='Questions',
@@ -52,14 +38,6 @@ class IrAttachment(models.Model):
         context={},
         limit=None
     )
-
-    def _default_owner_id(self):
-        """ Compute the default owner for new questions; this will be
-        the current user or the root user.
-        @note: root user will be used only for background actions.
-        """
-
-        return self.env.context.get('uid', 1)
 
     @api.model_create_multi
     def create(self, vals_list):

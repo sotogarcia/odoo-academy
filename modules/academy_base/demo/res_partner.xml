@@ -44,6 +44,14 @@
             <field name="street">Peartree, 6</field>
         </record>
 
+        <record id="res_company_my_academy_partner" model="res.partner">
+            <field name="name">My Academy</field>
+            <field name="email">my@academy.com</field>
+            <field name="city">Naraío</field>
+            <field name="zip">15576</field>
+            <field name="country_id" ref="base.es"/>
+            <field name="street">Campolabrado, 1</field>
+        </record>
 
     </data>
 </openerp>

@@ -10,7 +10,6 @@ from odoo import models, fields, api
 from odoo.tools.translate import _
 from odoo.exceptions import UserError
 from odoo.osv.expression import AND
-from odoo.osv.expression import TRUE_DOMAIN
 
 from .utils.libuseful import eval_domain
 from odoo.addons.academy_base.models.academy_abstract_training \
@@ -41,7 +40,7 @@ class AcademyTestsRandomTemplate(models.Model):
 
     _inherit = [
         'academy.abstract.training.reference',
-        'academy.abstract.owner',
+        'ownership.mixin',
         'image.mixin',
         'mail.thread'
     ]

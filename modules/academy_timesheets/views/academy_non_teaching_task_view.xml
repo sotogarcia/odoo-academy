@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="view_academy_non_teaching_task_xml_tree" model="ir.ui.view">
+            <field name="name">Academy non teaching task tree view</field>
+            <field name="model">academy.non.teaching.task</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <tree string="academy_non_teaching_task_tree" create="1" delete="1" edit="1" editable="bottom">
+                    <field name="name" class="oe_field_name" />
+                    <field name="description" class="oe_field_description" />
+                    <field name="active" class="oe_field_active" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_academy_non_teaching_task_xml_search" model="ir.ui.view">
+            <field name="name">Academy non teaching task tree view</field>
+            <field name="model">academy.non.teaching.task</field>
+            <field name="type">search</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <search string="academy_non_teaching_task_search">
+                    <field name="name" />
+                    <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_non_teaching_tasks_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Non teaching tasks</field>
+            <field name="res_model">academy.non.teaching.task</field>
+            <field name="view_mode">tree</field>
+            <field name="target">current</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="search_view_id" ref="view_academy_non_teaching_task_xml_search" />
+        </record>
+
+    </data>
+</openerp>

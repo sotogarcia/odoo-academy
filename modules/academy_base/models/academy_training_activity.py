@@ -9,10 +9,6 @@ from logging import getLogger
 
 # pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
-from .utils.custom_model_fields import Many2manyThroughView
-from .utils.raw_sql import ACADEMY_TRAINING_ACTIVITY_TRAINING_MODULE_REL, \
-    ACADEMY_TRAINING_ACTIVITY_TRAINING_UNIT_REL, \
-    ACADEMY_TRAINING_ACTIVITY_AVAILABLE_RESOURCE_REL
 
 from odoo.tools.translate import _
 
@@ -36,7 +32,7 @@ class AcademyTrainingActivity(models.Model):
         'image.mixin',
         'mail.thread',
         'academy.abstract.training',
-        'academy.abstract.owner'
+        'ownership.mixin'
     ]
 
     name = fields.Char(
@@ -111,6 +107,20 @@ class AcademyTrainingActivity(models.Model):
         auto_join=False
     )
 
+    attainment_id = fields.Many2one(
+        string='Educational attainment',
+        required=False,
+        readonly=False,
+        index=True,
+        default=None,
+        help='Choose related educational attainment',
+        comodel_name='academy.educational.attainment',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False
+    )
+
     activity_code = fields.Char(
         string='Activity code',
         required=False,
@@ -128,8 +138,8 @@ class AcademyTrainingActivity(models.Model):
         readonly=False,
         index=False,
         default=None,
-        help=('Description of general competence that will be acquired at the '
-              'end of the activity'),
+        help=('Describes the most significant professional functions of the '
+              'professional profile'),
         translate=True
     )
 
@@ -191,9 +201,10 @@ class AcademyTrainingActivity(models.Model):
         context={},
         auto_join=False,
         limit=None,
+        check_company=True
     )
 
-    available_module_ids = Many2manyThroughView(
+    available_module_ids = fields.Many2manyView(
         string='Training modules',
         required=False,
         readonly=True,
@@ -207,10 +218,10 @@ class AcademyTrainingActivity(models.Model):
         domain=[],
         context={},
         limit=None,
-        sql=ACADEMY_TRAINING_ACTIVITY_TRAINING_MODULE_REL
+        copy=False
     )
 
-    available_unit_ids = Many2manyThroughView(
+    available_unit_ids = fields.Many2manyView(
         string='Available training units',
         required=False,
         readonly=True,
@@ -224,7 +235,7 @@ class AcademyTrainingActivity(models.Model):
         domain=[],
         context={},
         limit=None,
-        sql=ACADEMY_TRAINING_ACTIVITY_TRAINING_UNIT_REL
+        copy=False
     )
 
     activity_resource_ids = fields.Many2many(
@@ -240,10 +251,11 @@ class AcademyTrainingActivity(models.Model):
         column2='training_resource_id',
         domain=[],
         context={},
-        limit=None
+        limit=None,
+        copy=False
     )
 
-    available_resource_ids = Many2manyThroughView(
+    available_resource_ids = fields.Many2manyView(
         string='Available activity resources',
         required=False,
         readonly=True,
@@ -257,11 +269,11 @@ class AcademyTrainingActivity(models.Model):
         domain=[],
         context={},
         limit=None,
-        sql=ACADEMY_TRAINING_ACTIVITY_AVAILABLE_RESOURCE_REL
+        copy=False
     )
 
     # This no needs an SQL statement
-    training_module_ids = Many2manyThroughView(
+    training_module_ids = fields.Many2manyView(
         string='Modules',
         required=False,
         readonly=True,

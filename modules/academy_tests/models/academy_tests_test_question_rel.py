@@ -19,7 +19,6 @@ from logging import getLogger
 # pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
 from odoo.tools.translate import _
-from odoo.exceptions import ValidationError
 
 from io import BytesIO
 
@@ -332,12 +331,13 @@ class AcademyTestsTestQuestionRel(models.Model):
         return self.question_id.show_impugnments()
 
     def to_moodle(self, encoding='utf8', prettify=True, xml_declaration=True,
-                  category=None):
+                  category=None, correction_scale=None):
         quiz = self.question_id._moodle_create_quiz(category=category)
 
         for record in self:
             name = 'SEQ-{:04}'.format(record.sequence)
-            node = record.question_id._to_moodle(name=name)
+            node = record.question_id._to_moodle(
+                name=name, correction_scale=correction_scale)
             quiz.append(node)
 
         file = BytesIO()

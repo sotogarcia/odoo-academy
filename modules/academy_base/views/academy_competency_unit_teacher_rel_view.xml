@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="view_academy_competency_unit_teacher_rel_tree" model="ir.ui.view">
+            <field name="name">Teachers conducting the competency unit</field>
+            <field name="model">academy.competency.unit.teacher.rel</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="32" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <tree string="view_academy_competency_unit_teacher_rel_tree" create="1" delete="1" edit="1" editable="bottom">
+                    <field name="training_action_id" invisible="1"/>
+
+                    <field name="sequence" class="oe_field_sequence" widget="handle" />
+                    <field name="teacher_id" class="oe_field_teacher_id"
+                            options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
+                    <field name="email" class="oe_field_email" readonly="1" widget="email" />
+                    <field name="phone" class="oe_field_phone" readonly="1" widget="phone" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_academy_competency_unit_teacher_rel_search" model="ir.ui.view">
+            <field name="name">Teachers conducting de competency unit</field>
+            <field name="model">academy.competency.unit.teacher.rel</field>
+            <field name="type">search</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <search string="view_academy_competency_unit_teacher_rel_search">
+                    <field name="training_action_id" />
+                    <field name="competency_unit_id" />
+                    <field name="sequence" />
+                    <field name="teacher_id" />
+                </search>
+            </field>
+        </record>
+
+        <record id="action_academy_competency_unit_teacher_rel_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Teacher assignments</field>
+            <field name="res_model">academy.competency.unit.teacher.rel</field>
+            <field name="view_mode">tree</field>
+            <field name="target">current</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="search_view_id" ref="academy_base.view_academy_competency_unit_teacher_rel_search" />
+        </record>
+
+    </data>
+</openerp>
+
+

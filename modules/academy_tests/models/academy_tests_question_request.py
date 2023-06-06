@@ -7,7 +7,7 @@
 from odoo import models, fields, api
 from odoo.tools.translate import _
 from logging import getLogger
-from odoo.exceptions import ValidationError, UserError
+from odoo.exceptions import UserError
 from .utils.libuseful import fix_established, is_numeric
 from .utils.sql_inverse_searches import REQUEST_SUPPLIED_COUNT_SEARCH
 

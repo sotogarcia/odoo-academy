@@ -1,0 +1,265 @@
+# -*- coding: utf-8 -*-
+###############################################################################
+#    License, author and contributors information in:                         #
+#    __openerp__.py file at the root folder of this module.                   #
+###############################################################################
+
+from odoo.http import Controller, request, route
+from logging import getLogger
+from datetime import datetime, timedelta
+
+_logger = getLogger(__name__)
+
+
+CURRENT_TEACH_URL = '/academy-timesheets/teacher/schedule'
+
+TEACH_URL = '/academy-timesheets/teacher/<int:teacher_id>/schedule'
+TEACH_ACT = \
+    'academy_timesheets.action_report_academy_timesheets_primary_instructor'
+
+STUDENT_URL = '/academy-timesheets/student/<int:student_id>/schedule'
+STUDENT_ACT = \
+    'academy_timesheets.action_report_academy_timesheets_student'
+
+ACTION_URL = '/academy-timesheets/training/<int:action_id>/schedule'
+ACTION_ACT = \
+    'academy_timesheets.action_report_academy_timesheets_training_action'
+
+
+class PublishTimesheets(Controller):
+    """
+    """
+
+    @route(CURRENT_TEACH_URL, type='http', auth='user', website=False)
+    def publish_current_instructor_timesheet(self, **kw):
+        kw = kw or {}
+
+        doc_type = self._get_format_param(kw)
+        target_date = self._compute_week_param(kw)
+        download = self._get_download_param(kw)
+
+        allowed_xid = 'academy_base.academy_group_consultant'
+        if not request.env.user.has_group(allowed_xid):
+            return request.not_found()
+
+        uid = request.session.uid
+        teacher_obj = request.env['academy.teacher']
+        teacher = teacher_obj.search([('res_users_id', '=', uid)], limit=1)
+        if not teacher:
+            return request.not_found()
+
+        return self._report_reponse(
+            TEACH_ACT, teacher, doc_type, target_date, download)
+
+    @route(TEACH_URL, type='http', auth='user', website=False)
+    def publish_instructor_timesheet(self, teacher_id, **kw):
+        kw = kw or {}
+
+        doc_type = self._get_format_param(kw)
+        target_date = self._compute_week_param(kw)
+        download = self._get_download_param(kw)
+
+        allowed_xid = 'academy_base.academy_group_consultant'
+        if not request.env.user.has_group(allowed_xid):
+            return request.not_found()
+
+        teacher_obj = request.env['academy.teacher']
+        teacher = teacher_obj.browse(teacher_id)
+        if not teacher:
+            return request.not_found()
+
+        return self._report_reponse(
+            TEACH_ACT, teacher, doc_type, target_date, download)
+
+    @route(STUDENT_URL, type='http', auth='user', website=False)
+    def publish_student_timesheet(self, student_id, **kw):
+        kw = kw or {}
+        doc_type = self._get_format_param(kw)
+        target_date = self._compute_week_param(kw)
+        download = self._get_download_param(kw)
+
+        allowed_xid = 'academy_base.academy_group_consultant'
+        if not request.env.user.has_group(allowed_xid):
+            return request.not_found()
+
+        teacher_obj = request.env['academy.student']
+        teacher = teacher_obj.browse(student_id)
+        if not teacher:
+            return request.not_found()
+
+        return self._report_reponse(
+            STUDENT_ACT, teacher, doc_type, target_date, download)
+
+    @route(ACTION_URL, type='http', auth='public', website=False)
+    def publish_training_action_timesheet(self, action_id, **kw):
+
+        kw = kw or {}
+        doc_type = self._get_format_param(kw)
+        target_date = self._compute_week_param(kw)
+        download = self._get_download_param(kw)
+
+        action_obj = request.env['academy.training.action'].sudo()
+        action = action_obj.search([('id', '=', action_id)], limit=1)
+        if not action:
+            return request.not_found()
+
+        return self._report_reponse(
+            ACTION_ACT, action, doc_type, target_date, download)
+
+    def _report_reponse(self, report_xid, record, doc_type, dt, download):
+        date_start, date_stop = self._weekly_interval(dt)
+
+        if doc_type == 'html':
+            render_method_name = 'render_qweb_html'
+            content_type = 'text/html; charset=utf-8'
+        else:
+            doc_type = 'pdf'  # Ensure valid value
+            render_method_name = 'render_qweb_pdf'
+            content_type = 'application/pdf'
+
+        datas = {
+            'doc_ids': record.mapped('id'),
+            'doc_model': getattr(record, '_name'),
+            'interval': {'date_start': date_start, 'date_stop': date_stop},
+            'full_weeks': True
+        }
+
+        report_obj = request.env.ref(report_xid).sudo()
+        render_method = getattr(report_obj, render_method_name)
+        files = render_method([record.id], data=datas)
+        if not files:
+            return request.not_found()
+
+        if download:
+            disposition = 'attachment; filename="Schedule.%s"' % doc_type
+        else:
+            disposition = 'inline'
+
+        pdfhttpheaders = [
+            ('Content-Type', content_type),
+            ('Content-Length', len(files[0])),
+            ('Content-Disposition', disposition)
+        ]
+
+        return request.make_response(files[0], headers=pdfhttpheaders)
+
+    def _get_format_param(self, kw):
+        param = kw.get('format', False)
+
+        if not param:
+            param_name = 'academy_timesheets.teacher_report_type'
+            param_obj = request.env['ir.config_parameter'].sudo()
+            param = param_obj.get_param(param_name)
+
+        if not param or param not in ['html', 'HTML', 'pdf', 'PDF']:
+            param = 'html'
+
+        return param.lower()
+
+    def _compute_week_param(self, kw):
+        """ Returns a valid date for a day in a week. Week can be ``current``,
+        ``last``, ``next`` or it can also be given as a date.
+
+        Args:
+            kw (dict): controller ``kw`` parameters
+
+        Returns:
+            datetime: valid datetime in the week
+        """
+
+        result = None
+
+        date_str = kw.get('week', '').lower()
+        if date_str:
+            if date_str == 'current':
+                result = datetime.now()
+
+            elif date_str == 'next':
+                result = datetime.now() + timedelta(days=7)
+
+            elif date_str == 'last':
+                result = datetime.now() - timedelta(days=7)
+
+            else:
+                date_str = date_str.replace('/', '-')
+
+                if len(date_str.split('-')[0]) == 4:
+                    date_format = '%Y-%m-%d'
+                else:
+                    date_format = '%d-%m-%Y'
+
+                try:
+                    result = datetime.strptime(date_str, date_format)
+                except Exception as ex:
+                    _logger.warning(ex)
+
+        if not result:
+            now = datetime.now()
+            result = now.replace(hour=0, minute=0, second=0, microsecond=0)
+
+            next_week_from = self._next_week_from()
+            if next_week_from <= result:
+                result -= timedelta(days=result.weekday())
+                result += timedelta(days=8)
+
+        return result
+
+    def _next_week_from(self):
+        weekdays = ['ISO5', 'ISO6', 'ISO7']
+
+        param_name = 'academy_timesheets.schedule_for_next_week_from'
+        param_obj = request.env['ir.config_parameter'].sudo()
+        param_value = param_obj.get_param(param_name)
+
+        if param_value and param_value in weekdays:
+            offset = weekdays.index(param_value) + 4
+        else:
+            offset = 7  # Next monday
+
+        dt = datetime.now()
+        dt = dt.replace(hour=0, minute=0, second=0, microsecond=0)
+        dt = dt - timedelta(days=dt.weekday()) + timedelta(days=offset)
+
+        if offset < 7:
+            param_name = 'academy_timesheets.schedule_for_next_week_from_time'
+            param_obj = request.env['ir.config_parameter'].sudo()
+            param_value = param_obj.get_param(param_name)
+            tm = self._safe_cast(param_value, float, 0.0)
+
+            if tm:
+                mixin = request.env['facility.scheduler.mixin']
+                dt = mixin.join_datetime(dt, tm, day_limit=True)
+
+        return dt
+
+    @staticmethod
+    def _safe_cast(val, to_type, default=None):
+        """ Performs a safe cast between `val` type to `to_type`
+        """
+
+        try:
+            return to_type(val)
+        except (ValueError, TypeError):
+            return default
+
+    @staticmethod
+    def _get_download_param(kw):
+        param = kw.get('download', False)
+
+        if not param:
+            param_name = 'academy_timesheets.teacher_report_download'
+            param_obj = request.env['ir.config_parameter'].sudo()
+            param = param_obj.get_param(param_name)
+        else:
+            param = (param.lower() == 'true')
+
+        return bool(param)
+
+    @classmethod
+    def _weekly_interval(cls, dt):
+
+        dt = dt.replace(hour=0, minute=0, second=0, microsecond=0)
+        date_start = dt - timedelta(days=dt.weekday())
+        date_stop = date_start + timedelta(days=6)
+
+        return date_start, date_stop

@@ -1,0 +1,482 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <!-- VIEWS: "Sessions"
+
+            - Model·········: academy.training.session
+            - _rec_name·····: name
+            - Domain········: []
+            - Context·······: {}
+            - Parent menu ··: academy_timesheets.menu_academy_timesheets
+            - View priority·: 16    Sequence····: 10
+            - Action help···: There are no sessions
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+        <!-- Tree view for "academy.training.session" -->
+        <record id="view_academy_training_session_tree" model="ir.ui.view">
+            <field name="name">view.academy.training.session.tree</field>
+            <field name="model">academy.training.session</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <tree string="academy_training_session_tree" create="1" delete="1" edit="1">
+                    <field name="company_id" invisible="1" />
+                    <field name="training_action_id" invisible="1" />
+                    <field name="task_id" invisible="1" />
+
+                    <field name="task_name" class="oe_field_task_name" />
+                    <field name="competency_unit_id" class="oe_field_competency_unit_id" />
+                    <field name="primary_teacher_id" class="oe_field_primary_teacher_id" />
+                    <field name="primary_facility_id" class="oe_field_primary_facility_id" />
+                    <field name="date_start" class="oe_field_date_start" />
+                    <field name="date_delay" class="oe_field_date_delay" widget="float_time" />
+                    <field name="invitation_count" class="oe_field_invitation_count" />
+                    <field name="state" class="oe_field_state" />
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form view for "academy.training.session" -->
+        <record id="view_academy_training_session_form" model="ir.ui.view">
+            <field name="name">view.academy.training.session.form</field>
+            <field name="model">academy.training.session</field>
+            <field name="type">form</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <form string="academy_training_session_form" create="1" delete="1" edit="1">
+                    <header>
+                        <field name="state" widget="statusbar" clickable="1"
+                            groups="academy_base.academy_group_technical" />
+                    </header>
+
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="view_teachers" type="object" class="oe_stat_button oe_read_only"
+                                icon="fa-graduation-cap" help="Show related teachers">
+                                <field name="teacher_count" widget="statinfo" string="Teachers" />
+                            </button>
+                            <button name="view_reservations" type="object" class="oe_stat_button oe_read_only"
+                                icon="fa-building-o" help="Show related facility reservations">
+                                <field name="reservation_count" widget="statinfo" string="Facilities" />
+                            </button>
+                            <button name="view_exclusion" type="object" class="oe_stat_button oe_read_only"
+                                icon="fa-ban" help="Show exclusions">
+                                <field name="exclusion_count" widget="statinfo" string="Exclusions" />
+                            </button>
+                            <button name="view_invitation" type="object" class="oe_stat_button oe_read_only"
+                                icon="fa-users" help="Show related invitations">
+                                <field name="invitation_count" widget="statinfo" string="Invitations" />
+                            </button>
+                        </div>
+
+                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger"
+                            attrs="{'invisible': [('active', '=', True)]}"/>
+
+                        <div class="oe_title">
+                            <field name="id" invisible="1" />
+                            <field name="active" invisible="1"/>
+                            <field name="company_id" invisible="1" />
+                            <field name="training_action_id" invisible="1" />
+                            <field name="task_id" invisible="1" />
+                            <field name="training_activity_id" invisible="1" />
+
+                            <label for="task_name" class="oe_edit_only" />
+                            <h1>
+                                <field name="task_name" readonly="1"
+                                    class="oe_field_task_name" required="0" />
+                            </h1>
+                        </div>
+
+                        <group col="6">
+                            <field name="date_start" class="oe_field_date_start" colspan="2" />
+                            <field name="date_stop" class="oe_field_date_stop" colspan="2" />
+                            <field name="date_delay" class="oe_field_date_delay" widget="float_time" colspan="2" />
+                        </group>
+
+                        <group col="4">
+                            <field name="kind" class="oe_field_kind" readonly="context.get('default_training_action_id', 0)" />
+                            <field name="validate" class="oe_field_validate" colspan="2" />
+                            <field name="primary_teacher_id" class="oe_field_primary_teacher_id"
+                                options="{'no_quick_create': True, 'no_create': True}" />
+                            <field name="primary_facility_id" class="oe_field_primary_facility_id"
+                                options="{'no_quick_create': True, 'no_create': True}" />
+                        </group>
+
+                        <group col="6" string="Training" attrs="{'invisible': [('kind', '&lt;&gt;', 'teach')]}">
+                            <field name="training_action_id" colspan="4" class="oe_field_training_action_id"
+                                options="{'no_quick_create': True, 'no_create': True}"
+                                readonly="context.get('default_training_action_id', 0)"
+                                attrs="{'required': [('kind', '=', 'teach')]}" />
+                            <field name="competency_unit_id" colspan="4" class="oe_field_competency_unit_id"
+                                options="{'no_quick_create': True, 'no_create': True}" string="Unit"
+                                domain="[('training_activity_id', '=', training_activity_id)]"
+                                attrs="{'required': [('kind', '=', 'teach')]}" />
+                        </group>
+
+                        <group col="2" string="Task" attrs="{'invisible': [('kind', '&lt;&gt;', 'task')]}">
+                            <field name="task_id" class="oe_field_task_id"
+                                options="{'no_quick_create': True, 'no_create': True}"
+                                attrs="{'required': [('kind', '=', 'task')]}" />
+                        </group>
+
+                        <notebook>
+                            <page string="Teachers" class="oe_page_teachers" accesskey="T">
+                                <field name="teacher_assignment_ids" class="oe_field_teacher_assignment_ids"
+                                    nolabel="1" context="{
+                                        'default_session_id': id,
+                                        'tree_view_ref': 'academy_timesheets.view_academy_training_session_teacher_rel_tree'
+                                    }" />
+
+                            </page>
+                            <page string="Facilities" class="oe_page_facilities" accesskey="F">
+                                <field name="reservation_ids" class="oe_field_reservation_ids"
+                                    nolabel="1" context="{
+                                        'default_session_id': id,
+                                        'default_date_start': date_start,
+                                        'default_date_stop': date_stop,
+                                        'tree_view_ref': 'academy_timesheets.view_facility_reservation_embed_in_session_tree'
+                                    }" options="{'no_open': True}" />
+                            </page>
+                            <page string="Notes" class="oe_page_notes" accesskey="N">
+                                <field name="description" class="oe_field_description" colspan="4" nolabel="1" />
+                            </page>
+                        </notebook>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_academy_training_session_kanban" model="ir.ui.view">
+            <field name="name">view.academy.training.session.kanban</field>
+            <field name="model">academy.training.session</field>
+            <field name="type">kanban</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_mobile" group_create="1" group_delete="1" group_edit="1"
+                    archivable="1"  quick_create="1" quick_create_view="view_academy_training_session_form">
+
+                    <field name="id" />
+                    <field name="active" />
+                    <field name="company_id" />
+                    <field name="training_action_id" />
+                    <field name="task_id" />
+
+                    <field name="task_name" />
+                    <field name="display_name" />
+                    <field name="date_start" />
+                    <field name="date_stop" />
+                    <field name="date_delay" />
+                    <field name="invitation_count" />
+                    <field name="competency_unit_id" />
+                    <field name="primary_teacher_id" />
+                    <field name="teacher_count" />
+                    <field name="primary_facility_id" />
+                    <field name="reservation_count" />
+                    <field name="state" class="oe_field_state" />
+
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click">
+                                <div class="oe_kanban_details d-flex flex-column justify-content-between h-100">
+                                    <div class="d-flex justify-content-between">
+                                        <h4>
+                                            <field name="task_name" class="oe_field_task_name" />
+                                        </h4>
+                                        <field name="state" class="oe_field_state" nolabel="1" widget="ready_draft_widget" />
+                                    </div>
+
+                                    <div class="text-truncate">
+                                        <field name="competency_unit_id" class="oe_field_competency_unit_id" />
+                                    </div>
+
+                                    <table class="table table-sm table-borderless">
+                                        <tbody>
+                                            <tr>
+                                                <th><i class="fa fa-street-view"></i></th>
+                                                <td class="w-100">
+                                                    <span class="font-italic"><field name="primary_teacher_id" /></span>
+                                                    <span class="ml-2 text-monospace">(<field name="teacher_count" class="oe_field_teacher_count" />)</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th><i class="fa fa-graduation-cap"></i></th>
+                                                <td class="w-100">
+                                                    <span class="font-italic"><field name="primary_facility_id" /></span>
+                                                    <span class="ml-2 text-monospace">(<field name="reservation_count" class="oe_field_reservation_count" />)</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th><i class="fa fa-clock-o"></i></th>
+                                                <td class="w-100" style="font-size: smaller;">
+                                                    <field name="date_start" class="oe_field_date_start" /> -
+                                                    (<field name="date_delay" class="oe_field_date_delay" widget="float_time" /> hours)
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+
+                </kanban>
+            </field>
+        </record>
+
+        <record id="view_academy_training_session_calendar" model="ir.ui.view">
+            <field name="name">view.academy.training.session.calendar</field>
+            <field name="model">academy.training.session</field>
+            <field name="type">calendar</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <calendar mode="week" date_start="date_start" date_stop="date_stop" date_delay="date_delay"
+                          quick_add="false" color="task_name" form_view_id="training_session_calendar">
+                    <field name="company_id" invisible="1" />
+                    <field name="training_action_id" invisible="1" />
+                    <field name="task_id" invisible="1" />
+
+                    <field name="task_name" class="oe_field_task_name" filters="1" />
+                    <field name="competency_unit_id" class="oe_field_competency_unit_id text-truncate" />
+                    <field name="primary_facility_id" class="oe_field_primary_facility_id" />
+                    <field name="primary_teacher_id" class="oe_field_primary_teacher_id" />
+                </calendar>
+            </field>
+        </record>
+
+        <record id="view_academy_training_session_calendar_no_training" model="ir.ui.view">
+            <field name="name">view.academy.training.session.calendar.no.training</field>
+            <field name="model">academy.training.session</field>
+            <field name="type">calendar</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="24" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="academy_timesheets.view_academy_training_session_calendar" />
+            <field name="arch" type="xml">
+                <xpath expr="//calendar" position="attributes">
+                    <attribute name="color">competency_unit_id</attribute>
+                </xpath>
+                <xpath expr="//field[@name='task_name']" position="replace" />
+                <xpath expr="//field[@name='competency_unit_id']" position="replace" />
+
+                <xpath expr="//field[@name='primary_teacher_id']" position="attributes">
+                    <attribute name="filters">1</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_academy_training_session_calendar_no_primary_instructor" model="ir.ui.view">
+            <field name="name">view.academy.training.session.calendar.no.primary.instructor</field>
+            <field name="model">academy.training.session</field>
+            <field name="type">calendar</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="24" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="academy_timesheets.view_academy_training_session_calendar" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='task_name']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='primary_teacher_id']" position="replace" />
+            </field>
+        </record>
+
+        <!-- Search view for "academy.training.session" -->
+        <record id="view_academy_training_session_search" model="ir.ui.view">
+            <field name="name">view.academy.training.session.search</field>
+            <field name="model">academy.training.session</field>
+            <field name="type">search</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <search string="academy_training_session_search">
+                    <field name="task_name" />
+                    <field name="competency_unit_id" />
+                    <field name="invitation_count" />
+
+                    <separator />
+                    <field name="primary_teacher_id" />
+                    <field name="teacher_count" />
+
+                    <separator />
+                    <field name="primary_complex_id"  />
+                    <field name="primary_facility_id" />
+                    <field name="reservation_count" string="Facility count" />
+
+                    <separator />
+                    <field name="date_start" />
+                    <field name="date_stop" />
+                    <field name="date_delay" />
+
+                    <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
+
+                    <separator />
+                    <filter string="Training" name="kind_teach" domain="[('kind', '=', 'teach')]" />
+                    <filter string="Task" name="kind_task" domain="[('kind', '=', 'task')]" />
+
+                    <separator />
+                    <filter string="With exclusions" name="with_exclusions" domain="[('exclusion_count', '>', 0)]" />
+                    <filter string="Without exclusions" name="without_exclusions" domain="[('exclusion_count', '=', 0)]" />
+
+                    <separator />
+                    <filter string="Current week" name="current_week" domain="[
+                        ('date_start', '&gt;=', ((context_today() - relativedelta(days=context_today().weekday())).strftime('%Y-%m-%d'))),
+                        ('date_stop', '&lt;=', ((context_today() + relativedelta(days=7 - context_today().weekday())).strftime('%Y-%m-%d')))
+                    ]" />
+
+                    <filter string="Next week" name="next_week" domain="[
+                        ('date_start', '&gt;=', ((context_today() + relativedelta(days=7 - context_today().weekday())).strftime('%Y-%m-%d'))),
+                        ('date_stop', '&lt;=', ((context_today() + relativedelta(days=14 - context_today().weekday())).strftime('%Y-%m-%d')))
+                    ]" />
+
+                    <filter string="Current month" name="current_month" domain="[
+                        ('date_start', '&lt;', (context_today()+relativedelta(months=1)).strftime('%Y-%m-01')),
+                        ('date_stop','&gt;=', context_today().strftime('%Y-%m-01'))
+                    ]"/>
+
+                    <separator />
+                    <filter string="Draft" name="state_draft" domain="[('state', '=', 'draft')]" />
+                    <filter string="Ready" name="state_ready" domain="[('state', '=', 'ready')]" />
+
+                    <separator />
+                    <filter string="No teacher" name="no_teacher" domain="[('teacher_assignment_ids', '=', False)]" />
+                    <filter string="No facility" name="no_facility" domain="[('reservation_ids', '=', False)]" />
+
+                    <group expand="0" name="group_by" string="Group By">
+                        <filter name="group_by_task_name" string="Training / task"
+                            domain="[]" context="{'group_by': 'task_name'}" />
+                        <filter name="group_by_primary_teacher_id" string="Primary instructor"
+                            domain="[]" context="{'group_by': 'primary_teacher_id'}" />
+                        <filter name="group_by_primary_facility_id" string="Primary facility"
+                            domain="[]" context="{'group_by': 'primary_facility_id'}" />
+                        <filter name="group_by_primary_complex_id" string="Primary complex"
+                            domain="[]" context="{'group_by': 'primary_complex_id'}" />
+                        <filter name="group_by_date_start" string="Beginning"
+                            domain="[]" context="{'group_by': 'date_start'}" />
+                        <filter name="group_by_date_stop" string="Ending"
+                            domain="[]" context="{'group_by': 'date_stop'}" />
+                    </group>
+
+                </search>
+            </field>
+        </record>
+
+        <!-- Main window action for model.name -->
+        <record id="action_sessions_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Sessions</field>
+            <field name="res_model">academy.training.session</field>
+            <field name="view_mode">calendar,kanban,tree,form</field>
+            <field name="target">current</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="search_view_id" ref="view_academy_training_session_search" />
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to add new sessions
+                </p><p>
+                    There are no sessions
+                </p>
+            </field>
+        </record>
+
+        <!-- Main menu for model.name -->
+        <record id="menu_sessions" model="ir.ui.menu" >
+            <field name="name">Sessions</field>
+            <field name="sequence" eval="10" />
+            <field name="action" ref="action_sessions_act_window" />
+            <field name="parent_id" ref="academy_base.menu_academy_advanced" />
+            <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
+        </record>
+
+
+        <!-- Tree view for "academy.training.session" -->
+        <record id="view_academy_training_session_tree_teacher_readonly" model="ir.ui.view">
+            <field name="name">view.academy.training.session.tree.teacher.readonly</field>
+            <field name="model">academy.training.session</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="31" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="academy_timesheets.view_academy_training_session_tree" />
+            <field name="arch" type="xml">
+               <xpath expr="//tree" position="attributes">
+                    <attribute name="create">0</attribute>
+                    <attribute name="edit">0</attribute>
+                    <attribute name="delete">0</attribute>
+                    <attribute name="import">0</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Form view for "academy.training.session" -->
+        <record id="view_academy_training_session_form_teacher_readonly" model="ir.ui.view">
+            <field name="name">view.academy.training.session.form.teacher.readonly</field>
+            <field name="model">academy.training.session</field>
+            <field name="type">form</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="31" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="academy_timesheets.view_academy_training_session_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//form" position="attributes">
+                    <attribute name="create">0</attribute>
+                    <attribute name="edit">0</attribute>
+                    <attribute name="delete">0</attribute>
+                    <attribute name="duplicate">0</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_academy_training_session_kanban_teacher_readonly" model="ir.ui.view">
+            <field name="name">view.academy.training.session.kanban.teacher.readonly</field>
+            <field name="model">academy.training.session</field>
+            <field name="type">kanban</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="31" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="academy_timesheets.view_academy_training_session_kanban" />
+            <field name="arch" type="xml">
+                <xpath expr="//kanban" position="attributes">
+                    <attribute name="create">0</attribute>
+                    <attribute name="delete">0</attribute>
+                    <attribute name="group_create">0</attribute>
+                    <attribute name="group_edit">0</attribute>
+                    <attribute name="group_delete">0</attribute>
+                    <attribute name="archivable">0</attribute>
+                    <attribute name="quick_create">0</attribute>
+                    <attribute name="records_draggable">0</attribute>
+                    <attribute name="groups_draggable">0</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_academy_training_session_calendar_teacher_readonly" model="ir.ui.view">
+            <field name="name">view.academy.training.session.calendar.teacher.readonly</field>
+            <field name="model">academy.training.session</field>
+            <field name="type">calendar</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="31" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="academy_timesheets.view_academy_training_session_calendar_no_primary_instructor" />
+            <field name="arch" type="xml">
+                <xpath expr="//calendar" position="attributes">
+                    <attribute name="quick_add">0</attribute>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>

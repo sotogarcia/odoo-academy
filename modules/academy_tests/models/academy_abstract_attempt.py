@@ -8,7 +8,6 @@ all academy tests attempt attributes and behavior.
 from odoo import models, fields, api
 from odoo.tools.translate import _
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
-import odoo.addons.academy_base.models.utils.custom_model_fields as custom
 from .utils.sql_inverse_searches import ATTEMPTS_CLOSED_SEARCH
 from odoo.osv.expression import FALSE_DOMAIN, TRUE_DOMAIN
 
@@ -139,8 +138,7 @@ class AcademyAbstractAttempt(models.AbstractModel):
         copy=True,
     )
 
-    # This must be a Many2manyThroughView because middle relation is a VIEW
-    attempt_final_answer_ids = custom.Many2manyThroughView(
+    attempt_final_answer_ids = fields.Many2manyView(
         string='Final answers',
         required=False,
         readonly=True,

@@ -31,6 +31,8 @@
                 <xpath expr="//div[@name='creation_div']" position="after">
                     <field name="owner_id" class="oe_field_owner_id"
                         groups="academy_base.academy_group_technical" />
+                    <field name="subrogate_id" class="oe_field_subrogate_id"
+                        groups="academy_base.academy_group_technical" />
                 </xpath>
             </field>
         </record>
@@ -45,15 +47,16 @@
             <field name="arch" type="xml">
                 <xpath expr="//filter[@name='creation_month']" position="after">
                     <field name="question_ids" class="oe_field_question_ids" />
+                    <field name="manager_id" class="oe_field_manager_id" />
                 </xpath>
                 <xpath expr="//filter[@name='my_documents_filter']" position="attributes">
-                    <attribute name="string">Created by me</attribute>
-                    <attribute name="help">Filter by documents created by me</attribute>
+                    <attribute name="string">Managed by me</attribute>
+                    <attribute name="help">Filter by documents managed by me</attribute>
                 </xpath>
                 <xpath expr="//filter[@name='my_documents_filter']" position="after">
                     <filter string="My documents"
                         name="my_own_documents_filter"
-                        domain="[('owner_id','=', uid)]"
+                        domain="[('manager_id','=', uid)]"
                         context="{}"
                         help="Filter on my documents" />
                     <filter string="In questions"

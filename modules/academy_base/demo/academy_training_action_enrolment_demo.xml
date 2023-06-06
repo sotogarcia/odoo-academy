@@ -3,10 +3,43 @@
 <openerp>
     <data noupdate="0">
 
-        <record id="academy_training_action_enrolment_demo" model="academy.training.action.enrolment">
-            <field name="student_id" ref="academy_base.academy_demo_student" />
-            <field name="training_action_id" ref="academy_base.academy_training_action_demo" />
+        <record id="academy_training_action_enrolment_demo_1" model="academy.training.action.enrolment">
+            <field name="student_id" ref="academy_base.academy_demo_student_1" />
+            <field name="training_action_id" ref="academy_base.academy_training_action_demo_1" />
             <field name="competency_unit_ids" eval="[(4, ref('academy_base.academy_competency_unit_libre'), None), (4, ref('academy_base.academy_competency_unit_odoo'), None)]" />
+            <field name="register" eval="(DateTime.today() - timedelta(days=DateTime.today().weekday() - 2 )).strftime('%Y-%m-%d 9:00:00')" />
+            <field name="deregister" eval="(DateTime.today() + relativedelta(months=3)).strftime('%Y-%m-%d 22:00:00')" />
+        </record>
+
+        <record id="academy_training_action_enrolment_demo_2" model="academy.training.action.enrolment">
+            <field name="student_id" ref="academy_base.academy_demo_student_4" />
+            <field name="training_action_id" ref="academy_base.academy_training_action_demo_1" />
+            <field name="competency_unit_ids" eval="[(4, ref('academy_base.academy_competency_unit_libre'), None), (4, ref('academy_base.academy_competency_unit_odoo'), None)]" />
+            <field name="register" eval="(DateTime.today() - timedelta(days=DateTime.today().weekday() - 2 )).strftime('%Y-%m-%d 9:00:00')" />
+            <field name="deregister" eval="(DateTime.today() + relativedelta(months=3)).strftime('%Y-%m-%d 22:00:00')" />
+        </record>
+
+        <record id="academy_training_action_enrolment_demo_3" model="academy.training.action.enrolment">
+            <field name="student_id" ref="academy_base.academy_demo_student_5" />
+            <field name="training_action_id" ref="academy_base.academy_training_action_demo_1" />
+            <field name="competency_unit_ids" eval="[(4, ref('academy_base.academy_competency_unit_libre'), None), (4, ref('academy_base.academy_competency_unit_odoo'), None)]" />
+            <field name="register" eval="(DateTime.today() - timedelta(days=DateTime.today().weekday() - 2 )).strftime('%Y-%m-%d 9:00:00')" />
+            <field name="deregister" eval="(DateTime.today() + relativedelta(months=3)).strftime('%Y-%m-%d 22:00:00')" />
+        </record>
+
+        <record id="academy_training_action_enrolment_demo_4" model="academy.training.action.enrolment">
+            <field name="student_id" ref="academy_base.academy_demo_student_2" />
+            <field name="training_action_id" ref="academy_base.academy_training_action_demo_2" />
+            <field name="competency_unit_ids" eval="[(4, ref('academy_base.academy_competency_unit_mswin'), None), (4, ref('academy_base.academy_competency_unit_office'), None)]" />
+            <field name="register" eval="(DateTime.today() - timedelta(days=DateTime.today().weekday() + 7 )).strftime('%Y-%m-%d 9:00:00')" />
+        </record>
+
+        <record id="academy_training_action_enrolment_demo_5" model="academy.training.action.enrolment">
+            <field name="student_id" ref="academy_base.academy_demo_student_3" />
+            <field name="training_action_id" ref="academy_base.academy_training_action_demo_1" />
+            <field name="competency_unit_ids" eval="[(4, ref('academy_base.academy_competency_unit_odoo'), None)]" />
+            <field name="register" eval="(DateTime.today() - timedelta(days=DateTime.today().weekday() - 2 )).strftime('%Y-%m-%d 9:00:00')" />
+            <field name="deregister" eval="(DateTime.today() + relativedelta(months=3)).strftime('%Y-%m-%d 22:00:00')" />
         </record>
 
     </data>

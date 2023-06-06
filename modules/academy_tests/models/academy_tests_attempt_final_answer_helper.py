@@ -24,9 +24,6 @@ class AcademyTestsAttemptFinalAnswerHelper(models.Model):
     This view will be used as middle table in many2many field to show final
     attempt answers by attempt.
 
-    A Many2manyThroughView custom field can not be used because this model
-    has serveral extra fields.
-
     Only the following fields: attempt_id and attempt_answer_id, are
     required, all other can be usefull in a future.
     """

@@ -6,6 +6,8 @@ all teacher attributes and behavior.
 """
 
 from odoo import models, fields
+from odoo.tools import safe_eval
+from odoo.tools.translate import _
 
 from logging import getLogger
 
@@ -57,20 +59,5 @@ class AcademyTeacher(models.Model):
             ('training_unit_ids', '=', False)
         ],
         context={},
-        limit=None
-    )
-
-    training_lesson_ids = fields.One2many(
-        string='Training lessons',
-        required=False,
-        readonly=True,
-        index=False,
-        default=None,
-        help=False,
-        comodel_name='academy.training.lesson',
-        inverse_name='teacher_id',
-        domain=[],
-        context={},
-        auto_join=False,
         limit=None
     )

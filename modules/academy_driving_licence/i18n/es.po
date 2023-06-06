@@ -1,0 +1,48 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* academy_driving_licence
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 13.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-03-20 23:21+0000\n"
+"PO-Revision-Date: 2023-03-21 00:25+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"Language: es\n"
+"X-Generator: Poedit 2.3\n"
+
+#. module: academy_driving_licence
+#: model:ir.model,name:academy_driving_licence.model_academy_student
+msgid "Academy student"
+msgstr "Alumno"
+
+#. module: academy_driving_licence
+#: model_terms:ir.ui.view,arch_db:academy_driving_licence.view_academy_student_search
+msgid "Driving licence"
+msgstr "Permiso de conducir"
+
+#. module: academy_driving_licence
+#: model:ir.model.fields,field_description:academy_driving_licence.field_academy_student__driving_ids
+msgid "Driving licences"
+msgstr "Carnés"
+
+#. module: academy_driving_licence
+#: model:ir.model.fields,help:academy_driving_licence.field_academy_student__driving_ids
+msgid "Driving licences obtained by the student"
+msgstr "Permisos de conducir obtenidos por el estudiante"
+
+#. module: academy_driving_licence
+#: model:ir.model.fields,help:academy_driving_licence.field_academy_student__implied_driving_ids
+msgid "Driving licences recognized to the student"
+msgstr "Permisos de conducir reconocidos al estudiante"
+
+#. module: academy_driving_licence
+#: model:ir.model.fields,field_description:academy_driving_licence.field_academy_student__implied_driving_ids
+msgid "Implied driving licences"
+msgstr "Permisos de conducir implícitos"

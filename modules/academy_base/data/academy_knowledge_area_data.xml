@@ -2,7 +2,7 @@
 
 <openerp>
 
-    <data noupdate="0">
+    <data noupdate="1">
 
         <record id="academy_knowledge_area_01" model="academy.knowledge.area">
             <field name="name">Algebra</field>

@@ -30,7 +30,7 @@
                         invisible="context.get('default_training_ref', False)" />
                     <field name="test_id" class="oe_field_test_id"
                         invisible="context.get('default_test_id', False)" />
-                    <field name="owner_id" class="oe_field_owner_id" />
+                    <field name="manager_id" class="oe_field_manager_id" />
                     <field name="release" class="oe_field_release" />
                 </tree>
             </field>
@@ -99,6 +99,7 @@
                             <field name="release" class="oe_field_release" />
                             <field name="expiration" class="oe_field_expiration" />
                             <field name="owner_id" class="oe_field_owner_id" />
+                            <field name="subrogate_id" class="oe_field_subrogate_id" />
 
                             <separator colspan="4" string="Realization" class="mt-4" />
                             <field name="correction_scale_id" class="oe_field_correction_scale_id" />

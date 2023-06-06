@@ -5,20 +5,10 @@ This module extends the academy.training.activity Odoo model
 """
 
 from odoo import models, fields, api
-import odoo.addons.academy_base.models.utils.custom_model_fields as custom
 
-from .utils.sql_m2m_through_view import \
-    PARTIAL_ACADEMY_TESTS_QUESTION_TRAINING_MODULE
-from .utils.sql_m2m_through_view import \
-    ACADEMY_TESTS_QUESTION_TRAINING_ACTIVITY_REL
-
-from odoo.tools.translate import _
 from logging import getLogger
 
 _logger = getLogger(__name__)
-
-AVAILABLE_QUESTIONS = ACADEMY_TESTS_QUESTION_TRAINING_ACTIVITY_REL.format(
-    PARTIAL_ACADEMY_TESTS_QUESTION_TRAINING_MODULE)
 
 
 class AcademyTrainingActivity(models.Model):
@@ -120,7 +110,7 @@ class AcademyTrainingActivity(models.Model):
         for record in self:
             record.template_count = len(record.template_ids)
 
-    available_question_ids = custom.Many2manyThroughView(
+    available_question_ids = fields.Many2manyView(
         string='Available questions',
         required=False,
         readonly=True,
@@ -134,7 +124,7 @@ class AcademyTrainingActivity(models.Model):
         domain=[],
         context={},
         limit=None,
-        sql=AVAILABLE_QUESTIONS
+        copy=False
     )
 
     def create_test_template(self, no_open=False):

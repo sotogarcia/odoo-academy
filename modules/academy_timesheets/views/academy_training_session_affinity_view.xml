@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <!-- VIEWS: "Invitation"
+
+            - Model·········: Invitation
+            - _rec_name·····: name
+            - Domain········: []
+            - Context·······: {}
+            - Parent menu ··: academy_timesheets.menu_academy_timesheets
+            - View priority·: 16    Sequence····: 10
+            - Action help···: There are no affinity yet
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+        <!-- Tree view for "academy.training.session.affinity" -->
+        <record id="view_academy_training_session_affinity_tree" model="ir.ui.view">
+            <field name="name">view.academy.training.session.affinity.tree</field>
+            <field name="model">academy.training.session.affinity</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <tree string="academy_training_session_affinity_tree"  create="0" delete="0" edit="1">
+                    <field name="student_id" class="oe_field_student_id"
+                        invisible="context.get('default_student_id', False)" />
+                    <field name="training_action_id" class="oe_field_training_action_id" />
+                    <field name="competency_unit_id" class="oe_field_competency_unit_id" />
+                    <field name="date_start" class="oe_field_date_start" />
+                    <field name="date_stop" class="oe_field_date_stop" />
+                    <button name="toggle_invitation"
+                            string="Invite"
+                            type="object"
+                            icon="fa-thumbs-o-up"
+                            help="Click it to invite this student" />
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form view for "academy.training.session.affinity" -->
+        <record id="view_academy_training_session_affinity_form" model="ir.ui.view">
+            <field name="name">view.academy.training.session.affinity.form</field>
+            <field name="model">academy.training.session.affinity</field>
+            <field name="type">form</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <form string="academy_training_session_affinity_form" create="0" delete="0" edit="0">
+                    <sheet>
+                        <div class="oe_button_box" name="button_box" />
+
+                        <div class="oe_title">
+                            <field name="id" invisible="1" />
+                            <field name="session_id" invisible="1" />
+
+                            <label for="display_name" class="oe_edit_only" />
+                            <h1>
+                                <field name="display_name" class="oe_field_display_name"
+                                    readonly="1" />
+                            </h1>
+                        </div>
+
+                        <group col="4" class="oe_read_only" string="Session" >
+                            <field name="training_action_id" colspan="4"
+                                    class="oe_field_training_action_id" />
+                            <field name="competency_unit_id" colspan="4"  string="Unit"
+                                    class="oe_field_competency_unit_id" />
+                            <separator colspan="4" />
+                            <field name="primary_teacher_id" class="oe_field_primary_teacher_id" />
+                            <field name="primary_facility_id" class="oe_field_primary_facility_id" />
+                        </group>
+
+                        <group col="6" string="Interval" >
+                            <field name="date_start" class="oe_field_date_start" />
+                            <field name="date_stop" class="oe_field_date_stop" />
+                            <field name="date_delay" class="oe_field_date_delay" widget="float_time" />
+                        </group>
+
+                        <group col="4" string="Student">
+                            <field name="student_id" class="oe_field_student_id" />
+                            <separator colspan="2" />
+                            <field name="vat" class="oe_field_vat" />
+                            <field name="zip" class="oe_field_zip" />
+                            <field name="mobile" class="oe_field_mobile" widget="phone" />
+                            <field name="email" class="oe_field_email" widget="email" />
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Form view for "academy.training.session.affinity" -->
+        <record id="view_academy_training_session_affinity_calendar" model="ir.ui.view">
+            <field name="name">view.academy.training.session.affinity.calendar</field>
+            <field name="model">academy.training.session.affinity</field>
+            <field name="type">calendar</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <calendar mode="week" date_start="date_start" date_stop="date_stop" date_delay="date_delay"
+                    quick_add="false">
+                    <field name="training_action_id" class="oe_field_training_action_id" />
+                    <field name="competency_unit_id" class="oe_field_competency_unit_id" />
+                    <field name="primary_teacher_id" class="oe_field_primary_teacher_id" />
+                </calendar>
+            </field>
+        </record>
+
+        <!-- Search view for "academy.training.session.affinity" -->
+        <record id="view_academy_training_session_affinity_search" model="ir.ui.view">
+            <field name="name">view.academy.training.session.affinity.search</field>
+            <field name="model">academy.training.session.affinity</field>
+            <field name="type">search</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <search string="academy_training_session_affinity_search">
+                    <field name="session_id" class="oe_field_session_id" />
+                    <field name="student_id" class="oe_field_student_id" />
+                </search>
+            </field>
+        </record>
+
+        <!-- Main window action for model.name -->
+        <record id="action_affinity_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Invitation</field>
+            <field name="res_model">academy.training.session.affinity</field>
+            <field name="view_mode">tree,form</field>
+            <field name="target">current</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="search_view_id" ref="view_academy_training_session_affinity_search" />
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to add new affinity
+                </p><p>
+                    There are no affinity yet
+                </p>
+            </field>
+        </record>
+
+        <!-- Main menu for model.name -->
+        <!-- <record id="menu_affinity" model="ir.ui.menu" >
+            <field name="name">Invitation</field>
+            <field name="sequence" eval="10" />
+            <field name="action" ref="action_affinity_act_window" />
+            <field name="parent_id" ref="academy_timesheets.menu_academy_timesheets_settings" />
+        </record> -->
+
+    </data>
+</openerp>
