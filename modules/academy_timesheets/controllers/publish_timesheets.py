@@ -95,6 +95,11 @@ class PublishTimesheets(Controller):
 
         kw = kw or {}
         doc_type = self._get_format_param(kw)
+
+        # Temporaty patch -> this will be removed
+        if kw.get('week', '').lower() == 'current':
+            kw.pop('week')
+
         target_date = self._compute_week_param(kw)
         download = self._get_download_param(kw)
 
@@ -138,7 +143,9 @@ class PublishTimesheets(Controller):
         pdfhttpheaders = [
             ('Content-Type', content_type),
             ('Content-Length', len(files[0])),
-            ('Content-Disposition', disposition)
+            ('Content-Disposition', disposition),
+            ('Cache-Control', 'no-store'),
+            ('Access-Control-Allow-Origin', '*')
         ]
 
         return request.make_response(files[0], headers=pdfhttpheaders)
@@ -194,8 +201,8 @@ class PublishTimesheets(Controller):
                     _logger.warning(ex)
 
         if not result:
-            now = datetime.now()
-            result = now.replace(hour=0, minute=0, second=0, microsecond=0)
+            result = datetime.now()
+            # result = now.replace(hour=0, minute=0, second=0, microsecond=0)
 
             next_week_from = self._next_week_from()
             if next_week_from <= result:
@@ -227,8 +234,7 @@ class PublishTimesheets(Controller):
             tm = self._safe_cast(param_value, float, 0.0)
 
             if tm:
-                mixin = request.env['facility.scheduler.mixin']
-                dt = mixin.join_datetime(dt, tm, day_limit=True)
+                dt = dt + timedelta(seconds=tm * 3600.0)
 
         return dt
 

@@ -125,6 +125,8 @@ class AcademyTimesheetsSendByMailWizard(models.TransientModel):
 
         email_values = {'email_to': None}
         email_template = self._get_email_template(model)
+        context = self._compute_report_context()
+        email_template = email_template.with_context(context)
 
         # Report will be empty when the model corresponds to student or teacher
         # In any other case the training action report will be used.
@@ -244,6 +246,21 @@ class AcademyTimesheetsSendByMailWizard(models.TransientModel):
         template_xid = '{}.{}'.format('academy_timesheets', name)
 
         return self.env.ref(template_xid)
+
+    def _compute_report_context(self):
+        self.ensure_one()
+
+        context = self.env.context.copy()
+
+        context.update({
+            'time_span': {
+                'date_start': self.date_start.strftime('%Y-%m-%d'),
+                'date_stop': self.date_stop.strftime('%Y-%m-%d'),
+            },
+            'full_weeks': self.full_weeks
+        })
+
+        return context
 
     @staticmethod
     def _get_target(record, model):

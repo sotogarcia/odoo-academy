@@ -48,7 +48,10 @@ class AcademyTimesheetTrainingActionReport(models.AbstractModel):
         docids = docids or data.get('doc_ids', [])
 
         date_start, date_stop = self._get_interval(data)
-        full_weeks = data.get('full_weeks', True)
+
+        # full_weeks from ``data`` or from context
+        full_weeks = self.env.context.get('full_weeks', True)
+        full_weeks = data.get('full_weeks', full_weeks)
 
         lang = self._get_lang()
 

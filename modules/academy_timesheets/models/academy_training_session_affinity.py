@@ -263,7 +263,7 @@ class AcademyTrainingSessionAffinity(models.Model):
 
             if record.invited:
                 domain = [
-                    ('enrolment_id', '=', enrolment_id)
+                    ('enrolment_id', '=', enrolment_id),
                     ('session_id', '=', session_id)
                 ]
                 invitation = invitation_obj.search(domain)
