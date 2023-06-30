@@ -85,8 +85,8 @@
                             nolabel="1" />
 
                         <separator string="Replies" />
-                        <field name="reply_ids" class="oe_field_reply_ids"
-                            nolabel="1" />
+                        <field name="reply_ids" class="oe_field_reply_ids" nolabel="1"
+                            context="{'default_impugnment_id': id}" />
 
                     </sheet>
                     <div class="oe_chatter">

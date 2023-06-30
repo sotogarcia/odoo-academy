@@ -58,7 +58,7 @@ class AcademyTestsCorrectionScale(models.Model):
         readonly=False,
         index=False,
         default=1.0,
-        digits=(16, 2),
+        digits=(16, 10),
         help='Score by right question'
     )
 
@@ -68,7 +68,7 @@ class AcademyTestsCorrectionScale(models.Model):
         readonly=False,
         index=False,
         default=-1.0,
-        digits=(16, 2),
+        digits=(16, 10),
         help='Score by wrong question'
     )
 
@@ -78,6 +78,6 @@ class AcademyTestsCorrectionScale(models.Model):
         readonly=False,
         index=False,
         default=0.0,
-        digits=(16, 2),
+        digits=(16, 10),
         help='Score by blank question'
     )

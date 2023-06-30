@@ -20,7 +20,7 @@ msgstr ""
 #. module: academy_driving_licence
 #: model:ir.model,name:academy_driving_licence.model_academy_student
 msgid "Academy student"
-msgstr "Alumno"
+msgstr "Estudiante"
 
 #. module: academy_driving_licence
 #: model_terms:ir.ui.view,arch_db:academy_driving_licence.view_academy_student_search

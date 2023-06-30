@@ -6,3 +6,4 @@
 
 
 from . import download_resources
+from . import redirecto_to

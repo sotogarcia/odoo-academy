@@ -101,7 +101,7 @@ msgstr "Creado en"
 #. module: academy_facility_management
 #: model:ir.model.fields,help:academy_facility_management.field_academy_training_action_facility_link__owner_id
 msgid "Current record owner"
-msgstr "Responsable del registro actual"
+msgstr "Titular del registro actual"
 
 #. module: academy_facility_management
 #: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__description
@@ -285,7 +285,7 @@ msgstr "Instalación educativa principal"
 #. module: academy_facility_management
 #: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__manager_id
 msgid "Manager"
-msgstr "Gerente"
+msgstr "Administrador"
 
 #. module: academy_facility_management
 #: model:ir.model.fields,help:academy_facility_management.field_academy_training_action_facility_link__excess
@@ -393,7 +393,7 @@ msgstr "Número de mensajes no leídos"
 #. module: academy_facility_management
 #: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__owner_id
 msgid "Owner"
-msgstr "Responsable"
+msgstr "Titular"
 
 #. module: academy_facility_management
 #: model:ir.model.fields,help:academy_facility_management.field_academy_training_action_facility_link__manager_id
@@ -403,7 +403,7 @@ msgstr "Responsable de este registro"
 #. module: academy_facility_management
 #: model:ir.model.fields,help:academy_facility_management.field_academy_training_action_facility_link__subrogate_id
 msgid "Person who assumes the obligations of the owner"
-msgstr "Persona que asume las obligaciones del responsable"
+msgstr "Persona que asume las obligaciones del titular"
 
 #. module: academy_facility_management
 #: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__prerogative
@@ -472,7 +472,7 @@ msgstr "Mostrar reservas relacionadas"
 #. module: academy_facility_management
 #: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__subrogate_id
 msgid "Subrogate"
-msgstr "Subrogar"
+msgstr "Delegar"
 
 #. module: academy_facility_management
 #: model:ir.model.fields,help:academy_facility_management.field_academy_training_action_facility_link__company_id

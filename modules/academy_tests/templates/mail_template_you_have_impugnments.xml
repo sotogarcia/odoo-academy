@@ -30,8 +30,10 @@
                             Dear ${object.name or ''},
                         </p>
 
+                        % set base_url = object.env['ir.config_parameter'].sudo().get_param('web.base.url')
                         <p style="text-justify; margin: 0.5em 0; line-height: 1.25em;">
-                          You have open disputes regarding any of your questions.
+                            You have <a href="${base_url}/academy_tests/redirect/impugnments"
+                            target="_blank">open disputes</a> regarding any of your questions.
                         </p>
 
                        <p style="margin: 0.5em 0; line-height: 1.25em;">

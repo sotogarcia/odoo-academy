@@ -86,16 +86,20 @@ class ResPartner(models.Model):
         """ Convert partner in student
         """
 
-        student_obj = self.env['academy.student']
+        student_set = self.env['academy.student']
 
         for record in self:
             if not record.student_id:
                 values = {'res_partner_id': record.id}
-                record.student_id = student_obj.create(values)
+                record.student_id = student_set.create(values)
                 record._log_convert_to_student_result(exists=False)
 
             else:
                 record._log_convert_to_student_result(exists=True)
+
+            student_set += record.student_id
+
+        return student_set
 
     def _log_convert_to_student_result(self, exists):
         self.ensure_one()

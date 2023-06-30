@@ -7,7 +7,8 @@
             <field name="active" eval="True" />
             <field name="training_action_id" ref="academy_base.academy_training_action_demo_1" />
             <field name="competency_unit_id" ref="academy_base.academy_competency_unit_libre" />
-            <field name="invitation_ids" eval="[(4, ref('academy_base.academy_demo_student_1'), 0)]" />
+            <!-- <field name="invitation_ids" eval="[(4, ref('academy_base.academy_demo_student_1'), 0)]" /> -->
+            <!--  academy_training_action_enrolment_demo_1 -->
             <field name="date_start" eval="(DateTime.today()+ timedelta(days=1)).strftime('%Y-%m-%d 16:00:00')" />
             <field name="date_stop" eval="(DateTime.today()+ timedelta(days=1)).strftime('%Y-%m-%d 18:00:00')" />
             <field name="reservation_ids" eval="[

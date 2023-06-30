@@ -39,18 +39,35 @@
             <field name="priority" eval="16" />
             <field name="active" eval="True" />
             <field name="arch" type="xml">
-               <form string="Impugnment reply" create="1" delete="1" edit="1">
-                   <sheet>
-                        <group col="4" string="From">
-                            <field name="write_uid" class="oe_readonly" string="User" />
-                            <field name="write_date" class="oe_readonly" string="Date" />
-                            <field name="student_id" class="oe_field_student_id" />
+               <form class="view_academy_tests_question_impugnment_reply_form" string="Impugnment reply" create="1" delete="1" edit="1">
+                    <header>
+                        <field name="state" widget="statusbar" clickable="1"
+                            groups="academy_base.academy_group_technical"/>
+                    </header>
+
+                    <sheet>
+                        <field name="create_date" invisible="1" />
+
+                        <group col="2" states="reply">
+                            <label for="markdown" colspan="2" class="mb-1" string="Question" />
+                            <field colspan="2" name="markdown" class="oe_field_markdown text-monospace border py-2 px-3 w-100 bg-light" nolabel="1" />
+                            <label for="last_reply" colspan="2" class="mt-3 mb-1" string="Last reply" />
+                            <field colspan="2" name="last_reply" class="oe_field_last_reply oe_edit_only text-info" nolabel="1" />
+                            <label for="description" colspan="2" class="mt-3 mb-1" string="New reply" />
+                            <field colspan="2" name="description" class="oe_field_description" nolabel="1" />
                         </group>
-                        <group string="Description">
-                            <field name="description" class="oe_field_description"
-                                nolabel="1" />
+
+                        <group col="4" string="Details" states="options">
+                            <field name="write_uid" class="oe_field_write_uid" string="User" readonly="1"
+                                groups="academy_base.academy_group_technical" />
+                            <field name="write_date" class="oe_field_write_date" string="Date" readonly="1"
+                                groups="academy_base.academy_group_technical" />
+                            <field name="student_id" class="oe_field_student_id" colspan="4"
+                                groups="academy_base.academy_group_technical" />
+                            <field name="impugnment_id" class="oe_field_impugnment_id" colspan="4" readonly="1" force_save="1"
+                                groups="academy_base.academy_group_technical" />
                         </group>
-                   </sheet>
+                    </sheet>
                </form>
             </field>
         </record>

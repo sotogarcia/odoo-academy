@@ -1,0 +1,2 @@
+- [ ] Permitir filtar las impugnaciones por tema
+- [ ] Mostrar el usuario que replicó

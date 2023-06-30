@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-31 08:08+0000\n"
-"PO-Revision-Date: 2023-05-31 10:13+0200\n"
+"POT-Creation-Date: 2023-06-22 13:06+0000\n"
+"PO-Revision-Date: 2023-06-22 15:11+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -292,26 +292,30 @@ msgid ""
 "<dl>\n"
 "    <dt>Current week in PDF</dt>\n"
 "    <dd>\n"
-"        <a target=\"_blank\" href=\"${object.schedule_url}?format=pdf&week=current\">\n"
+"        <a target=\"_blank\" href=\"${object.schedule_url}?"
+"format=pdf&week=current\">\n"
 "            ${object.schedule_url}?format=pdf&week=current\n"
 "        </a>\n"
 "    <dd>\n"
 "    <dt>Current week as WEB</dt>\n"
 "    <dd>\n"
-"        <a target=\"_blank\" href=\"${object.schedule_url}?format=html&week=current\">\n"
+"        <a target=\"_blank\" href=\"${object.schedule_url}?"
+"format=html&week=current\">\n"
 "            ${object.schedule_url}?format=html&week=current\n"
 "        </a>\n"
 "    <dd>\n"
 "    <dt>Next week in PDF</dt>\n"
 "    <dd>\n"
-"        <a target=\"_blank\" href=\"${object.schedule_url}?format=pdf&week=next\">\n"
+"        <a target=\"_blank\" href=\"${object.schedule_url}?"
+"format=pdf&week=next\">\n"
 "            ${object.schedule_url}?format=pdf&week=next\n"
 "        </a>\n"
 "    <dd>\n"
 "    <dt>Next week as WEB</dt>\n"
 "    <dd>\n"
-"        <a target=\"_blank\" href=\"${object.schedule_url}?format=html&week=next\">\n"
-"            ${object.schedule_url}?format=html&week=next
+"        <a target=\"_blank\" href=\"${object.schedule_url}?"
+"format=html&week=next\">\n"
+"            ${object.schedule_url}?format=html&week=next\n"
 "        </a>\n"
 "    <dd>\n"
 "</dl>\n"
@@ -418,36 +422,39 @@ msgstr ""
 "<p style=\"margin: 0.5em 0;\"> Hola, </p>\n"
 "<p style=\"margin: 0.5em 0;\">Adjunto a este correo encontrarás, en formato "
 "PDF, tu horario docente. </p>\n"
-"<p style=\"margin: 0.5em 0;\">Es posible que para visualizar dicho documento "
-"necesites instalar un visor adecuado, como por ejemplo <a href=\"https://"
-"www.adobe.com/es/acrobat/pdf-reader.html\">Adobe Reader</a>.</p>\n"
+"<p style=\"margin: 0.5em 0;\">Es posible que para visualizar dicho "
+"documento necesites instalar un visor adecuado, como por ejemplo <a href="
+"\"https://www.adobe.com/es/acrobat/pdf-reader.html\">Adobe Reader</a>.</p>\n"
 "<p style=\"margin: 0.5em 0;\">Por otra parte, siempre podrás consultar tu "
 "horario actualizado usando cualquiera de las siguientes direcciones:</p>\n"
 "\n"
 "<dl>\n"
 "    <dt>Semana actual en PDF</dt>\n"
 "    <dd>\n"
-"        <a target=\"_blank\" href=\"${object.schedule_url}?format=pdf&week=current\">\n"
+"        <a target=\"_blank\" href=\"${object.schedule_url}?"
+"format=pdf&week=current\">\n"
 "            ${object.schedule_url}?format=pdf&week=current\n"
 "        </a>\n"
 "    <dd>\n"
 "    <dt>Semana actual en la WEB</dt>\n"
 "    <dd>\n"
-"        <a target=\"_blank\" href=\"${object.schedule_url}?format=html&week=current\">\n"
+"        <a target=\"_blank\" href=\"${object.schedule_url}?"
+"format=html&week=current\">\n"
 "            ${object.schedule_url}?format=html&week=current\n"
 "        </a>\n"
 "    <dd>\n"
 "    <dt>La próxima semana en PDF</dt>\n"
 "    <dd>\n"
-"        <a target=\"_blank\" href=\"${object.schedule_url}?format=pdf&week=next\">\n"
+"        <a target=\"_blank\" href=\"${object.schedule_url}?"
+"format=pdf&week=next\">\n"
 "            ${object.schedule_url}?format=pdf&week=next\n"
 "        </a>\n"
 "    <dd>\n"
 "    <dt>La próxima semana en la WEB</dt>\n"
 "    <dd>\n"
-"        <a target=\"_blank\" href=\"${object.schedule_url}?format=html&week=next\">\n"
-"            ${object.schedule_url}?format=html&week=next
-"        </a>\n"
+"        <a target=\"_blank\" href=\"${object.schedule_url}?"
+"format=html&week=next\">\n"
+"            ${object.schedule_url}?format=html&week=nex        </a>\n"
 "    <dd>\n"
 "</dl>\n"
 "\n"
@@ -742,10 +749,15 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_teacher_kanban
 msgid ""
 "<i class=\"fa fa-calendar d-inline-block mr-1\" aria-hidden=\"false\"/>\n"
-"                                Scheduled"
+"                            Scheduled"
 msgstr ""
 "<i class=\"fa fa-calendar d-inline-block mr-1\" aria-hidden=\"false\"/>\n"
-"                        Sesiones"
+"                            Horario"
+
+#. module: academy_timesheets
+#: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_timesheet_primary_instructor_section_qweb
+msgid "<span class=\"d-block text-truncate\">Non-teaching task</span>"
+msgstr "<span class=\"d-block text-truncate\">Tarea no formativa</span>"
 
 #. module: academy_timesheets
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.res_config_settings_view_form
@@ -773,11 +785,22 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.res_config_settings_view_form
 msgid ""
 "<span class=\"o_form_label\">\n"
+"                                            Teacher schedule\n"
+"                                        </span>"
+msgstr ""
+"<span class=\"o_form_label\">\n"
+"                                            Horario del docente\n"
+"                                        </span>"
+
+#. module: academy_timesheets
+#: model_terms:ir.ui.view,arch_db:academy_timesheets.res_config_settings_view_form
+msgid ""
+"<span class=\"o_form_label\">\n"
 "                                            Teacher timesheet\n"
 "                                        </span>"
 msgstr ""
 "<span class=\"o_form_label\">\n"
-"                                            Horario del profesor\n"
+"                                            Horario del docente\n"
 "                                        </span>"
 
 #. module: academy_timesheets
@@ -788,7 +811,7 @@ msgstr "Unidad de competencia"
 #. module: academy_timesheets
 #: model:ir.model,name:academy_timesheets.model_academy_student
 msgid "Academy student"
-msgstr "Alumno"
+msgstr "Estudiante"
 
 #. module: academy_timesheets
 #: model:ir.model,name:academy_timesheets.model_academy_teacher
@@ -808,7 +831,7 @@ msgstr "Horario del estudiante"
 #. module: academy_timesheets
 #: model:ir.model,name:academy_timesheets.model_report_academy_timesheets_view_academy_timesheet_primary_instructor_qweb
 msgid "Academy timesheet teacher report"
-msgstr "Horario del profesor"
+msgstr "Horario del docente"
 
 #. module: academy_timesheets
 #: model:ir.model,name:academy_timesheets.model_report_academy_timesheets_view_academy_timesheet_training_action_qweb
@@ -828,6 +851,11 @@ msgstr ""
 #. module: academy_timesheets
 #: model:ir.model,name:academy_timesheets.model_academy_timesheets_download_wizard
 msgid "Academy timesheets download"
+msgstr ""
+
+#. module: academy_timesheets
+#: model:ir.model,name:academy_timesheets.model_academy_timesheets_search_teachers_wizard
+msgid "Academy timesheets search teachers wizard"
 msgstr ""
 
 #. module: academy_timesheets
@@ -906,7 +934,7 @@ msgstr "Todas las sesiones para la acción formativa"
 #. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_student__session_ids
 msgid "All sessions given to this student"
-msgstr "Todas las sesiones para el alumno"
+msgstr "Todas las sesiones para el estudiante"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_action__allow_overlap
@@ -934,9 +962,21 @@ msgid "Archived"
 msgstr "Archivado"
 
 #. module: academy_timesheets
+#: model_terms:ir.ui.view,arch_db:academy_timesheets.res_config_settings_view_form
+msgid "Assistance"
+msgstr "Asistencias"
+
+#. module: academy_timesheets
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session__message_attachment_count
 msgid "Attachment Count"
 msgstr "Nº adjuntos"
+
+#. module: academy_timesheets
+#. openerp-web
+#: code:addons/academy_timesheets/static/src/xml/header_view_buttons.xml:0
+#, python-format
+msgid "Available"
+msgstr "Disponibles"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_student__available_sessions_ids
@@ -985,7 +1025,7 @@ msgstr "Cambiando a"
 #. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_training_session_invitation__present
 msgid "Check it only if the student is present"
-msgstr "Marcar solo si el alumno está presente"
+msgstr "Marcar solo si el estudiante está presente"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_timesheets_download_wizard__download
@@ -1071,6 +1111,11 @@ msgid "Clone schedule"
 msgstr "Clonar horario"
 
 #. module: academy_timesheets
+#: model:ir.actions.act_window,name:academy_timesheets.action_academy_timesheets_clone_wizard_teacher_act_window
+msgid "Clone teacher schedule"
+msgstr "Clonar el horario del docente"
+
+#. module: academy_timesheets
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_timesheets_clone_wizard
 msgid "Clone the schedule for the interval"
 msgstr "Clonar el horario para el intervalo"
@@ -1133,11 +1178,17 @@ msgid "Config Settings"
 msgstr "Opciones de Configuración"
 
 #. module: academy_timesheets
+#: model:ir.model.fields,help:academy_timesheets.field_res_config_settings__help_to_fill
+msgid "Create upcoming sessions for a teacher with the same information"
+msgstr "Crear próximas sesiones para un docente usando la misma información"
+
+#. module: academy_timesheets
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_non_teaching_task__create_uid
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheet_session_state_wizard__create_uid
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_clone_wizard__create_uid
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_clone_wizard_log__create_uid
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_download_wizard__create_uid
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_search_teachers_wizard__create_uid
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_send_by_mail_wizard__create_uid
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_verification_wizard__create_uid
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session__create_uid
@@ -1152,6 +1203,7 @@ msgstr "Creado por"
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_clone_wizard__create_date
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_clone_wizard_log__create_date
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_download_wizard__create_date
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_search_teachers_wizard__create_date
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_send_by_mail_wizard__create_date
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_verification_wizard__create_date
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session__create_date
@@ -1179,7 +1231,7 @@ msgstr "Mes actual"
 #. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_training_session__owner_id
 msgid "Current record owner"
-msgstr "Dueño del registro actual"
+msgstr "Titular del registro actual"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_training_session__state
@@ -1195,6 +1247,11 @@ msgid "Current week"
 msgstr "Semana actual"
 
 #. module: academy_timesheets
+#: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_training_session_search
+msgid "Current year"
+msgstr "Año actual"
+
+#. module: academy_timesheets
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_timesheet_primary_instructor_section_qweb
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_timesheet_student_section_qweb
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_timesheet_training_action_section_qweb
@@ -1208,6 +1265,7 @@ msgid "DETAILS"
 msgstr "DETALLES"
 
 #. module: academy_timesheets
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_search_teachers_wizard__date_base
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_tests_display_question_as_html
 msgid "Date"
 msgstr "Fecha"
@@ -1221,6 +1279,16 @@ msgstr "Fecha desde la cual se estaban copiando las sesiones"
 #: model:ir.model.fields,help:academy_timesheets.field_academy_timesheets_download_wizard__week_date
 msgid "Date in the target week"
 msgstr "Fecha en la semana objetivo"
+
+#. module: academy_timesheets
+#: model:ir.model.fields,help:academy_timesheets.field_academy_timesheets_search_teachers_wizard__date_base
+msgid "Date of reservation start"
+msgstr "Fecha de inicio de la reserva"
+
+#. module: academy_timesheets
+#: model:ir.model.fields,help:academy_timesheets.field_academy_timesheets_search_teachers_wizard__finish_date
+msgid "Date of the last repetition"
+msgstr "Fecha de la última repetición"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_verification_wizard__date_start
@@ -1261,6 +1329,11 @@ msgid "Day"
 msgstr "Día"
 
 #. module: academy_timesheets
+#: model:ir.model.fields,help:academy_timesheets.field_academy_timesheets_search_teachers_wizard__weekday_ids
+msgid "Days of the week on which it is repeated"
+msgstr "Días de la semana en que se repite"
+
+#. module: academy_timesheets
 #: model:ir.model.fields.selection,name:academy_timesheets.selection__academy_timesheets_clone_wizard_log__kind__10
 msgid "Debug"
 msgstr "Depuración"
@@ -1279,6 +1352,7 @@ msgstr "Descripción"
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_clone_wizard__display_name
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_clone_wizard_log__display_name
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_download_wizard__display_name
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_search_teachers_wizard__display_name
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_send_by_mail_wizard__display_name
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_verification_wizard__display_name
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session__display_name
@@ -1290,6 +1364,11 @@ msgstr "Descripción"
 #: model:ir.model.fields,field_description:academy_timesheets.field_report_academy_timesheets_view_academy_timesheet_training_action_qweb__display_name
 msgid "Display Name"
 msgstr "Nombre para mostrar"
+
+#. module: academy_timesheets
+#: model:ir.model.fields,help:academy_timesheets.field_academy_timesheets_search_teachers_wizard__next_schedule
+msgid "Display next schedule date/time"
+msgstr "Mostrar la próxima fecha/hora programada"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_training_session__interval_str
@@ -1321,11 +1400,6 @@ msgstr "Formato del archivo"
 #: model:ir.model.fields,field_description:academy_timesheets.field_res_config_settings__teacher_report_download
 msgid "Download"
 msgstr "Descargar"
-
-#. module: academy_timesheets
-#: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_teacher_kanban
-msgid "Download as document"
-msgstr "Descargar como documento"
 
 #. module: academy_timesheets
 #: model:ir.actions.act_window,name:academy_timesheets.action_academy_timesheets_download_wizard_student_act_window
@@ -1364,6 +1438,7 @@ msgid "Dropdown menu"
 msgstr "Menú desplegable"
 
 #. module: academy_timesheets
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_search_teachers_wizard__date_delay
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session__date_delay
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_affinity__date_delay
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_invitation__date_delay
@@ -1471,7 +1546,10 @@ msgid "FACILITIES"
 msgstr "AULAS"
 
 #. module: academy_timesheets
+#. openerp-web
+#: code:addons/academy_timesheets/static/src/xml/header_view_buttons.xml:0
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_training_session_form
+#, python-format
 msgid "Facilities"
 msgstr "Instalaciones"
 
@@ -1496,6 +1574,16 @@ msgstr "Asistente para informes de instalaciones"
 #: model:ir.model,name:academy_timesheets.model_facility_reservation
 msgid "Facility reservation"
 msgstr "Reserva de instalaciones"
+
+#. module: academy_timesheets
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_search_teachers_wizard__finish_type
+msgid "Finish"
+msgstr "Finaliza"
+
+#. module: academy_timesheets
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_search_teachers_wizard__finish_date
+msgid "Finish date"
+msgstr "Fecha de finalización"
 
 #. module: academy_timesheets
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_tests_display_question_as_html
@@ -1534,6 +1622,11 @@ msgid "From date"
 msgstr "Desde la fecha"
 
 #. module: academy_timesheets
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_search_teachers_wizard__full_day
+msgid "Full day"
+msgstr "Día completo"
+
+#. module: academy_timesheets
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_send_by_mail_wizard__full_weeks
 msgid "Full weeks"
 msgstr "Semanas completas"
@@ -1545,11 +1638,22 @@ msgid "Group By"
 msgstr "Agrupar por"
 
 #. module: academy_timesheets
+#: model:ir.model.fields,field_description:academy_timesheets.field_res_config_settings__help_to_fill
+msgid "Help to fill"
+msgstr "Ayuda para llenar"
+
+#. module: academy_timesheets
+#: model_terms:ir.ui.view,arch_db:academy_timesheets.res_config_settings_view_form
+msgid "Help to fill out the teacher's schedule"
+msgstr "Ayuda para llenar el horario del docente"
+
+#. module: academy_timesheets
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_non_teaching_task__id
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheet_session_state_wizard__id
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_clone_wizard__id
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_clone_wizard_log__id
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_download_wizard__id
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_search_teachers_wizard__id
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_send_by_mail_wizard__id
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_verification_wizard__id
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session__id
@@ -1568,10 +1672,20 @@ msgid "ID of the wizard which create the log record"
 msgstr "ID del asistente que creó el registro"
 
 #. module: academy_timesheets
+#: model:ir.model.fields,help:academy_timesheets.field_academy_timesheets_search_teachers_wizard__full_day
+msgid "If checked, facility will be reserved for the entire day"
+msgstr "Si está marcado, la instalación se reservará para todo el día"
+
+#. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_training_session__message_needaction
 #: model:ir.model.fields,help:academy_timesheets.field_academy_training_session__message_unread
 msgid "If checked, new messages require your attention."
 msgstr "Si está marcado, los nuevos mensajes requieren su atención."
+
+#. module: academy_timesheets
+#: model:ir.model.fields,help:academy_timesheets.field_academy_timesheets_search_teachers_wizard__repeat
+msgid "If checked, reservation will be repeated over time"
+msgstr "Si está marcado, la reserva se repetirá con el tiempo"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_training_session__message_has_error
@@ -1651,6 +1765,11 @@ msgid "Interval"
 msgstr "Intervalo"
 
 #. module: academy_timesheets
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_search_teachers_wizard__interval_type
+msgid "Interval type"
+msgstr "Tipo de intervalo"
+
+#. module: academy_timesheets
 #: code:addons/academy_timesheets/wizard/academy_timesheets_download_wizard.py:0
 #, python-format
 msgid "Invalid target item"
@@ -1661,6 +1780,12 @@ msgstr "Elemento de destino no válido"
 #, python-format
 msgid "Invalid target model"
 msgstr "Modelo objetivo no válido"
+
+#. module: academy_timesheets
+#: code:addons/academy_timesheets/controllers/redirect_to.py:0
+#, python-format
+msgid "Invalid view type for action «%s»"
+msgstr "Tipo de vista no válido para la acción «%s»"
 
 #. module: academy_timesheets
 #: model:ir.actions.act_window,name:academy_timesheets.action_affinity_act_window
@@ -1682,7 +1807,7 @@ msgstr "Nº de invitaciones"
 #. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_student__invitation_ids
 msgid "Invitation list for the student"
-msgstr "Lista de invitaciones para el alumno"
+msgstr "Lista de invitaciones para el estudiante"
 
 #. module: academy_timesheets
 #: code:addons/academy_timesheets/models/academy_student.py:0
@@ -1746,6 +1871,7 @@ msgstr "Última"
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_clone_wizard____last_update
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_clone_wizard_log____last_update
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_download_wizard____last_update
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_search_teachers_wizard____last_update
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_send_by_mail_wizard____last_update
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_verification_wizard____last_update
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session____last_update
@@ -1764,6 +1890,7 @@ msgstr "Última modificación el"
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_clone_wizard__write_uid
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_clone_wizard_log__write_uid
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_download_wizard__write_uid
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_search_teachers_wizard__write_uid
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_send_by_mail_wizard__write_uid
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_verification_wizard__write_uid
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session__write_uid
@@ -1778,6 +1905,7 @@ msgstr "Última actualización por"
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_clone_wizard__write_date
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_clone_wizard_log__write_date
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_download_wizard__write_date
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_search_teachers_wizard__write_date
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_send_by_mail_wizard__write_date
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_verification_wizard__write_date
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session__write_date
@@ -1811,7 +1939,7 @@ msgstr "Lista de invitaciones vigentes para la matrícula"
 #. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_student__exclusion_ids
 msgid "List of sessions to which student has not been invited"
-msgstr "Lista de sesiones a las que el alumno no ha sido invitado"
+msgstr "Lista de sesiones a las que el estudiante no ha sido invitado"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_training_session__exclusion_ids
@@ -1890,6 +2018,16 @@ msgid "Model"
 msgstr "Modelo"
 
 #. module: academy_timesheets
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_search_teachers_wizard__month_type
+msgid "Month type"
+msgstr "Tipo de mes"
+
+#. module: academy_timesheets
+#: model:ir.model.fields,help:academy_timesheets.field_academy_timesheets_search_teachers_wizard__month_type
+msgid "Monthly recurrence type"
+msgstr "Tipo de recurrencia mensual"
+
+#. module: academy_timesheets
 #: code:addons/academy_timesheets/models/academy_training_session.py:0
 #, python-format
 msgid "My schedule"
@@ -1901,6 +2039,11 @@ msgstr "Mi horario"
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_timesheets_clone_wizard_log_form
 msgid "Name"
 msgstr "Nombre"
+
+#. module: academy_timesheets
+#: model:ir.model.fields,help:academy_timesheets.field_academy_timesheets_search_teachers_wizard__week_day_str
+msgid "Name of the current weekday and repeat order in month"
+msgstr "Nombre del día de la semana actual y orden de repetición en el mes"
 
 #. module: academy_timesheets
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_timesheets_download_wizard
@@ -1918,12 +2061,17 @@ msgstr "Nueva sesión"
 #: code:addons/academy_timesheets/models/academy_training_session_invitation.py:0
 #, python-format
 msgid "New student"
-msgstr "Nuevo alumno"
+msgstr "Nuevo estudiante"
 
 #. module: academy_timesheets
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_tests_display_question_as_html
 msgid "Next"
 msgstr "Próxima"
+
+#. module: academy_timesheets
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_search_teachers_wizard__next_schedule
+msgid "Next schedule"
+msgstr "Próximo horario"
 
 #. module: academy_timesheets
 #: model:ir.model.fields.selection,name:academy_timesheets.selection__academy_timesheets_download_wizard__week__next
@@ -2060,7 +2208,7 @@ msgstr "Número de sesiones sobre las que se ha realizado el cálculo"
 #. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_student__invitation_count
 msgid "Number of sessions to which the student has been invited"
-msgstr "Número de sesiones a las que ha sido invitado el alumno"
+msgstr "Número de sesiones a las que ha sido invitado el estudiante"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_timesheets_clone_wizard__record_count
@@ -2100,7 +2248,7 @@ msgstr "Número de sesiones de entrenamiento sin instalaciones"
 #. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_timesheets_verification_wizard__no_teacher_count
 msgid "Number of training sessions with no teacher"
-msgstr "Número de sesiones de formación sin profesor"
+msgstr "Número de sesiones de formación sin docente"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_training_session__message_unread_counter
@@ -2108,10 +2256,15 @@ msgid "Number of unread messages"
 msgstr "Número de mensajes no leídos"
 
 #. module: academy_timesheets
+#: model:ir.model.fields,help:academy_timesheets.field_academy_timesheets_search_teachers_wizard__interval_number
+msgid "Numeric value for repeat interval"
+msgstr "Valor numérico para el intervalo de repetición"
+
+#. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_training_session_teacher_rel__sequence
 #: model:ir.model.fields,help:academy_timesheets.field_facility_reservation__sequence
 msgid "Order of importance of the teacher in the training session"
-msgstr "Orden de importancia del profesor en la sesión de formación"
+msgstr "Orden de importancia del docente en la sesión de formación"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_invitation__invitation_ids
@@ -2121,7 +2274,7 @@ msgstr "Otras invitaciones"
 #. module: academy_timesheets
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session__owner_id
 msgid "Owner"
-msgstr "Responsable"
+msgstr "Titular"
 
 #. module: academy_timesheets
 #: model:ir.model.fields.selection,name:academy_timesheets.selection__academy_timesheets_download_wizard__mime__pdf
@@ -2143,7 +2296,7 @@ msgstr "Responsable de este registro"
 #. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_training_session__subrogate_id
 msgid "Person who assumes the obligations of the owner"
-msgstr "Persona que asume las obligaciones del propietario"
+msgstr "Persona que asume las obligaciones del titular"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_teacher_rel__phone
@@ -2283,12 +2436,12 @@ msgstr "Sesión relacionada"
 #. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_training_session_affinity__student_id
 msgid "Related student"
-msgstr "Alumno relacionado"
+msgstr "Estudiante relacionado"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_training_session_teacher_rel__teacher_id
 msgid "Related teacher"
-msgstr "Profesora relacionada"
+msgstr "Docente relacionada"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_training_session__training_action_id
@@ -2314,6 +2467,21 @@ msgstr "Sesión de formación relacionada"
 #, python-format
 msgid "Removing"
 msgstr "Eliminando"
+
+#. module: academy_timesheets
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_search_teachers_wizard__repeat
+msgid "Repeat"
+msgstr "Repetir"
+
+#. module: academy_timesheets
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_search_teachers_wizard__interval_number
+msgid "Repeat every"
+msgstr "Repite cada"
+
+#. module: academy_timesheets
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_search_teachers_wizard__finish_number
+msgid "Repetitions"
+msgstr "Repeticiones"
 
 #. module: academy_timesheets
 #: model:ir.model.fields.selection,name:academy_timesheets.selection__academy_timesheets_clone_wizard__method__replace
@@ -2351,19 +2519,25 @@ msgid "SUBJECT / TASK"
 msgstr "MATERIA / TAREA"
 
 #. module: academy_timesheets
-#: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_timesheet_primary_instructor_section_qweb
-msgid "<span class=\"d-block text-truncate\">Non-teaching task</span>"
-msgstr "<span class=\"d-block text-truncate\">Tarea no formativa</span>"
-
-#. module: academy_timesheets
 #: model:ir.model.fields.selection,name:academy_timesheets.selection__res_config_settings__schedule_for_next_week_from__iso6
 msgid "Saturday"
 msgstr "Sábado"
 
 #. module: academy_timesheets
+#: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_timesheets_search_teachers_wizard_form
+msgid "Schedule"
+msgstr "Horario"
+
+#. module: academy_timesheets
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_teacher__schedule_url
 msgid "Schedule URL"
 msgstr "Programar URL"
+
+#. module: academy_timesheets
+#: code:addons/academy_timesheets/wizard/academy_timesheets_verification_wizard.py:0
+#, python-format
+msgid "Schedule verification"
+msgstr "Verificación de horarios"
 
 #. module: academy_timesheets
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_student_form
@@ -2377,6 +2551,17 @@ msgstr "Sesiones"
 #, python-format
 msgid "Scheduler document"
 msgstr "Documento del horario"
+
+#. module: academy_timesheets
+#: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_timesheets_search_teachers_wizard_form
+msgid "Search"
+msgstr "Buscar"
+
+#. module: academy_timesheets
+#: model:ir.actions.act_window,name:academy_timesheets.action_search_available_teachers_act_window
+#: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_timesheets_search_teachers_wizard_form
+msgid "Search available teachers"
+msgstr "Buscar profesores disponibles"
 
 #. module: academy_timesheets
 #: code:addons/academy_timesheets/models/academy_timesheets_clone_wizard_log.py:0
@@ -2499,12 +2684,12 @@ msgstr "Sesiones impartidas por {}"
 #. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_teacher__session_ids
 msgid "Sessions that this professor will participate in"
-msgstr "Sesiones en las que participará este profesor"
+msgstr "Sesiones en las que participará este docente"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_student__available_sessions_ids
 msgid "Sessions to which this student can be invited"
-msgstr "Sesiones a las que se puede invitar a este alumno"
+msgstr "Sesiones a las que se puede invitar a este estudiante"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_res_config_settings__teacher_report_type
@@ -2533,6 +2718,11 @@ msgstr "Breve descripción"
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_training_session_form
 msgid "Show exclusions"
 msgstr "Mostrar excluidos"
+
+#. module: academy_timesheets
+#: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_timesheets_search_teachers_wizard_form
+msgid "Show found teachers using all the window"
+msgstr "Mostrar profesores encontrados usando toda la ventana"
 
 #. module: academy_timesheets
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_student_form
@@ -2633,22 +2823,22 @@ msgstr "Asistente de estado"
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_training_session_affinity_form
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_training_session_invitation_form
 msgid "Student"
-msgstr "Alumno"
+msgstr "Estudiante"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_training_session_affinity__invited
 msgid "Student has been invited to the session"
-msgstr "El alumno ha sido invitado a la sesión"
+msgstr "El estudiante ha sido invitado a la sesión"
 
 #. module: academy_timesheets
 #: model:ir.actions.report,name:academy_timesheets.action_report_academy_timesheets_student
 msgid "Student weekly timetable"
-msgstr "Horario semanal del alumno"
+msgstr "Horario semanal del estudiante"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session__subrogate_id
 msgid "Subrogate"
-msgstr "Subrogar"
+msgstr "Delegar"
 
 #. module: academy_timesheets
 #: model:ir.model.fields.selection,name:academy_timesheets.selection__res_config_settings__schedule_for_next_week_from__iso7
@@ -2709,12 +2899,12 @@ msgstr "ID de impuesto"
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_tests_display_question_as_html
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_training_session_teacher_rel_form
 msgid "Teacher"
-msgstr "Profesor"
+msgstr "Docente"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session__teacher_assignment_ids
 msgid "Teacher assignments"
-msgstr "Asignaciones de profesor"
+msgstr "Asignaciones de docente"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session__teacher_count
@@ -2724,7 +2914,7 @@ msgstr "Nº de docentes"
 #. module: academy_timesheets
 #: model:mail.template,subject:academy_timesheets.mail_template_teacher_schedule
 msgid "Teacher schedule"
-msgstr "Horario del profesor"
+msgstr "Horario del docente"
 
 #. module: academy_timesheets
 #: model:ir.actions.report,name:academy_timesheets.action_report_academy_timesheets_primary_instructor
@@ -2738,17 +2928,19 @@ msgid "Teacher with primary responsibility"
 msgstr "Docente con la responsabilidad principal"
 
 #. module: academy_timesheets
+#. openerp-web
 #: code:addons/academy_timesheets/models/academy_training_session.py:0
+#: code:addons/academy_timesheets/static/src/xml/header_view_buttons.xml:0
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session__teacher_ids
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_training_session_form
 #, python-format
 msgid "Teachers"
-msgstr "Profesores"
+msgstr "Docentes"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_training_session__teacher_ids
 msgid "Teachers who teach this training session"
-msgstr "Profesores que imparten esta sesión de formación"
+msgstr "Docentes que imparten esta sesión de formación"
 
 #. module: academy_timesheets
 #: code:addons/academy_timesheets/models/academy_training_session.py:0
@@ -2762,6 +2954,12 @@ msgstr ""
 #: model:ir.model.fields.selection,name:academy_timesheets.selection__academy_training_session__kind__teach
 msgid "Teaching task"
 msgstr "Tarea docente"
+
+#. module: academy_timesheets
+#: code:addons/academy_timesheets/wizard/academy_timesheets_search_teachers_wizard.py:0
+#, python-format
+msgid "Teachers that match the criteria"
+msgstr "Docentes que cumplen con los criterios"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_training_session_affinity__vat
@@ -2803,7 +3001,7 @@ msgstr "El intervalo no puede terminar sin haber comenzado"
 #: model:ir.model.constraint,message:academy_timesheets.constraint_academy_training_session_invitation_unique_student_by_session
 #, python-format
 msgid "The student has already been invited to the session"
-msgstr "El alumno ya ha sido invitado a la sesión"
+msgstr "El estudiante ya ha sido invitado a la sesión"
 
 #. module: academy_timesheets
 #: code:addons/academy_timesheets/models/academy_timesheets_clone_wizard_log.py:0
@@ -2816,7 +3014,7 @@ msgstr "El modelo de destino no es compatible"
 #: model:ir.model.constraint,message:academy_timesheets.constraint_academy_training_session_teacher_rel_UNIQUE_TEACHER_BY_SESSION
 #, python-format
 msgid "The teacher had already been assigned to the session"
-msgstr "El profesor ya había sido asignado a la sesión"
+msgstr "El docente ya había sido asignado a la sesión"
 
 #. module: academy_timesheets
 #: model_terms:ir.actions.act_window,help:academy_timesheets.action_affinity_act_window
@@ -2869,10 +3067,23 @@ msgid "Time (UTC)"
 msgstr "Hora (UTC)"
 
 #. module: academy_timesheets
+#: model:ir.model.fields,help:academy_timesheets.field_res_config_settings__wait_to_fill
+msgid ""
+"Time during which the information of the last created session will be kept"
+msgstr ""
+"Tiempo durante el cual se mantendrá la información de la última sesión "
+"creada"
+
+#. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_res_config_settings__schedule_for_next_week_from_time
 msgid "Time from which the schedule of the following week will be shown"
 msgstr ""
 "Hora a partir de la cual se mostrará el horario de la semana siguiente"
+
+#. module: academy_timesheets
+#: model:ir.model.fields,help:academy_timesheets.field_academy_timesheets_search_teachers_wizard__date_delay
+msgid "Time length of the reservation"
+msgstr "Duración de la reserva"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_training_session__date_delay
@@ -2880,6 +3091,26 @@ msgstr ""
 #: model:ir.model.fields,help:academy_timesheets.field_academy_training_session_invitation__date_delay
 msgid "Time length of the training session"
 msgstr "Duración de la sesión formativa"
+
+#. module: academy_timesheets
+#: model:ir.model.fields,help:academy_timesheets.field_academy_timesheets_search_teachers_wizard__time_start
+msgid "Time of reservation start"
+msgstr "Hora de inicio de la reserva"
+
+#. module: academy_timesheets
+#: model:ir.model.fields,help:academy_timesheets.field_academy_timesheets_search_teachers_wizard__time_stop
+msgid "Time of reservation stop"
+msgstr "Hora de finalización de la reserva"
+
+#. module: academy_timesheets
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_search_teachers_wizard__time_start
+msgid "Time start"
+msgstr "Inicio"
+
+#. module: academy_timesheets
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_search_teachers_wizard__time_stop
+msgid "Time stop"
+msgstr "Final"
 
 #. module: academy_timesheets
 #: model:ir.actions.act_window,name:academy_timesheets.action_academy_timesheets_verification_wizard_act_window
@@ -2927,6 +3158,11 @@ msgstr "Número total de reservas de instalaciones requeridas para esta sesión"
 #: model:ir.model.fields,help:academy_timesheets.field_academy_training_session__teacher_count
 msgid "Total number of related teachers"
 msgstr "Número total de docentes relacionados"
+
+#. module: academy_timesheets
+#: model:ir.model.fields,help:academy_timesheets.field_academy_timesheets_search_teachers_wizard__finish_number
+msgid "Total number of repetitions"
+msgstr ""
 
 #. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_timesheet_session_state_wizard__session_count
@@ -3042,8 +3278,18 @@ msgstr "Validar"
 
 #. module: academy_timesheets
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_timesheets_verification_wizard
+msgid "Verification of the calendar of training actions"
+msgstr "Verificación del calendario de acciones formativas"
+
+#. module: academy_timesheets
+#: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_timesheets_verification_wizard
 msgid "View"
 msgstr "Vista"
+
+#. module: academy_timesheets
+#: model:ir.model.fields,field_description:academy_timesheets.field_res_config_settings__wait_to_fill
+msgid "Waiting time"
+msgstr "Tiempo de espera"
 
 #. module: academy_timesheets
 #: model:ir.model.fields.selection,name:academy_timesheets.selection__academy_timesheets_clone_wizard_log__kind__30
@@ -3072,9 +3318,21 @@ msgid "Week date"
 msgstr "Fecha de la semana"
 
 #. module: academy_timesheets
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_search_teachers_wizard__weekday
 #: model:ir.model.fields,field_description:academy_timesheets.field_res_config_settings__schedule_for_next_week_from
 msgid "Weekday"
 msgstr "Día de semana"
+
+#. module: academy_timesheets
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_search_teachers_wizard__week_day_str
+#: model:ir.model.fields,help:academy_timesheets.field_academy_timesheets_search_teachers_wizard__weekday
+msgid "Weekday name"
+msgstr "Nombre del día de la semana"
+
+#. module: academy_timesheets
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_search_teachers_wizard__weekday_ids
+msgid "Weekdays"
+msgstr "Días de semana"
 
 #. module: academy_timesheets
 #: model_terms:ir.actions.report,help:academy_timesheets.action_report_academy_timesheets_student
@@ -3214,6 +3472,12 @@ msgid "hours)"
 msgstr "horas)"
 
 #. module: academy_timesheets
+#: code:addons/academy_timesheets/controllers/publish_timesheets.py:0
+#, python-format
+msgid "iFrame Resizer can not be used with PDF files"
+msgstr "iFrame Resizer no se puede utilizar con archivos PDF"
+
+#. module: academy_timesheets
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_training_session_teacher_rel_tree
 msgid "view_academy_training_session_teacher_rel_tree"
 msgstr ""
@@ -3221,4 +3485,4 @@ msgstr ""
 #. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_timesheets_download_wizard__week
 msgid "week corresponding to the schedule"
-msgstr ""
+msgstr "semana correspondiente al horario"

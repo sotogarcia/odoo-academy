@@ -82,7 +82,8 @@ class AcademyTeacher(models.Model):
             'view_academy_training_session_calendar_no_primary_instructor',
             'view_academy_training_session_kanban',
             'view_academy_training_session_tree',
-            'view_academy_training_session_form',
+            'view_academy_training_session_pivot',
+            'view_academy_training_session_form'
         ]
 
         view_mapping = []

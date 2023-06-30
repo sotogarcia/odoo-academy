@@ -20,7 +20,7 @@ msgstr ""
 #. module: academy_cefrl
 #: model:ir.model,name:academy_cefrl.model_academy_student
 msgid "Academy student"
-msgstr "Alumno"
+msgstr "Estudiante"
 
 #. module: academy_cefrl
 #: model_terms:ir.ui.view,arch_db:academy_cefrl.view_academy_student_search

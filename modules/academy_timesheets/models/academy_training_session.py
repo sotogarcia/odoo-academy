@@ -528,8 +528,9 @@ class AcademyTrainingSession(models.Model):
         default=0.0,
         digits=(16, 2),
         help='Time length of the training session',
-        store=False,
-        compute='_compute_duration'
+        store=True,
+        compute='_compute_duration',
+        group_operator='sum'
     )
 
     @api.onchange('date_delay')
@@ -541,14 +542,8 @@ class AcademyTrainingSession(models.Model):
 
     def _compute_duration(self):
         for record in self:
-
-            if record.date_start and record.date_stop:
-                difference = (record.date_stop - record.date_start)
-                value = max(difference.total_seconds(), 0)
-            else:
-                value = 0
-
-            record.date_delay = value / 3600.0
+            delay = record._time_interval(record.date_start, record.date_stop)
+            record.date_delay = delay
 
     def date_delay_str(self, span=None):
         self.ensure_one()
@@ -732,6 +727,16 @@ class AcademyTrainingSession(models.Model):
             _('Session cannot end before starting')
         )
     ]
+
+    @staticmethod
+    def _time_interval(start, stop):
+        if start and stop:
+            difference = (stop - start)
+            value = max(difference.total_seconds(), 0)
+        else:
+            value = 0
+
+        return value / 3600.0
 
     @api.model
     def _read_help_to_fill_configuration(self):
@@ -1263,4 +1268,24 @@ class AcademyTrainingSession(models.Model):
             'type': 'ir.actions.act_url',
             'url': '/academy-timesheets/teacher/schedule',
             'target': 'blank',
+        }
+
+    @api.model
+    def wizard_search_for_available_facilities(self):
+        return {
+            'name': 'Search for available facilities ',
+            'res_model': 'ir.actions.act_url',
+            'type': 'ir.actions.act_url',
+            'target': 'wizard_facilities',
+            'url': '/academy_timesheets/redirect/facilities'
+        }
+
+    @api.model
+    def wizard_search_for_available_teachers(self):
+        return {
+            'name': 'Search for available facilities ',
+            'res_model': 'ir.actions.act_url',
+            'type': 'ir.actions.act_url',
+            'target': 'wizard_teachers',
+            'url': '/academy_timesheets/redirect/teachers'
         }

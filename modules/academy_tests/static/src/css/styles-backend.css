@@ -354,3 +354,17 @@ code but I have not found where I should make the change */
 .oe_append_wizard_link_tree td.o_list_record_remove {
     text-align: center!important;
 }
+
+
+/* view_academy_tests_question_impugnment_reply_form
+******************************************************************************/
+
+.view_academy_tests_question_impugnment_reply_form .oe_field_description {
+    resize: vertical!important;
+    min-height: 6.5em!important;
+}
+
+
+.view_academy_tests_question_impugnment_reply_form .o_td_label {
+    border: none!important;
+}

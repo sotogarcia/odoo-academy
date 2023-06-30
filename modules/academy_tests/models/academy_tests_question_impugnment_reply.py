@@ -8,7 +8,7 @@ attributes and behavior.
 
 from logging import getLogger
 
-from odoo import models, fields
+from odoo import models, fields, api
 
 _logger = getLogger(__name__)
 
@@ -70,6 +70,57 @@ class AcademyTestsQuestionImpugnmentReply(models.Model):
         ondelete='cascade',
         auto_join=False
     )
+
+    html = fields.Html(
+        string='Html',
+        related='impugnment_id.html',
+        readonly=True
+    )
+
+    markdown = fields.Text(
+        string='Markdown',
+        related='impugnment_id.markdown',
+        readonly=True
+    )
+
+    last_reply = fields.Text(
+        string='Last reply',
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help='Texto of the last reply or impugnment',
+        translate=True,
+        compute='_compute_last_reply'
+    )
+
+    state = fields.Selection(
+        string='State',
+        required=True,
+        readonly=False,
+        index=False,
+        default='reply',
+        help='Wizard status bar progress',
+        selection=[
+            ('reply', 'Reply'),
+            ('options', 'Options')
+        ]
+    )
+
+    @api.depends('impugnment_id')
+    def _compute_last_reply(self):
+        for record in self:
+            reply_set = record.mapped('impugnment_id.reply_ids').filtered(
+                lambda x: bool(x.description))
+
+            if record.create_date:
+                reply_set = reply_set.filtered(
+                    lambda x: x.create_date < record.create_date)
+
+            if reply_set:
+                record.last_reply = reply_set[-1].description
+            else:
+                record.last_reply = record.impugnment_id.description
 
     def create(self, values):
         """ Call parent inpugnment update method

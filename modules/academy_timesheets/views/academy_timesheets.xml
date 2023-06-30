@@ -12,6 +12,7 @@
         <template id="view_academy_timesheets_assets" name="website assets for academy_timesheets" inherit_id="web.assets_backend">
             <xpath expr="." position="inside">
                 <script type="text/javascript" src="/academy_timesheets/static/src/js/academy_timesheets_widgets.js" />
+                <script type="text/javascript" src="/academy_timesheets/static/src/js/header_view_buttons.js" />
                 <link href="/academy_timesheets/static/src/css/academy_timesheets.css" rel="stylesheet" />
             </xpath>
         </template>

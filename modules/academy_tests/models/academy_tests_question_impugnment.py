@@ -76,6 +76,11 @@ class AcademyTestsQuestionImpugnment(models.Model):
         related='question_id.html'
     )
 
+    markdown = fields.Text(
+        string='Markdown',
+        related='question_id.markdown'
+    )
+
     active = fields.Boolean(
         string='Active',
         required=False,

@@ -12,6 +12,7 @@
         <record id="menu_academy" model="ir.ui.menu" >
             <field name="name">Academy</field>
             <field name="sequence" eval="10" />
+            <field name="web_icon">academy_base,static/description/icon.png</field>
         </record>
 
         <record id="menu_academy_monitoring" model="ir.ui.menu" >

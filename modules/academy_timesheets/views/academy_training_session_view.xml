@@ -132,7 +132,6 @@
                                         'default_session_id': id,
                                         'tree_view_ref': 'academy_timesheets.view_academy_training_session_teacher_rel_tree'
                                     }" />
-
                             </page>
                             <page string="Facilities" class="oe_page_facilities" accesskey="F">
                                 <field name="reservation_ids" class="oe_field_reservation_ids"
@@ -149,6 +148,12 @@
                         </notebook>
 
                     </sheet>
+
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+
                 </form>
             </field>
         </record>
@@ -292,6 +297,23 @@
             </field>
         </record>
 
+        <record id="view_academy_training_session_pivot" model="ir.ui.view">
+            <field name="name">view.academy.training.session.calendar.no.primary.instructor</field>
+            <field name="model">academy.training.session</field>
+            <field name="type">pivot</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="24" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <pivot display_quantity="0" disable_linking="0" default_order="primary_teacher_id ASC, task_name ASC">
+                    <field name="primary_teacher_id" type="row"/>
+                    <field name="task_name" type="row" />
+                    <field name="create_date" interval="month" type="col"/>
+                    <field name="date_delay" type="measure" />
+                </pivot>
+            </field>
+        </record>
+
         <!-- Search view for "academy.training.session" -->
         <record id="view_academy_training_session_search" model="ir.ui.view">
             <field name="name">view.academy.training.session.search</field>
@@ -332,19 +354,25 @@
 
                     <separator />
                     <filter string="Current week" name="current_week" domain="[
-                        ('date_start', '&gt;=', ((context_today() - relativedelta(days=context_today().weekday())).strftime('%Y-%m-%d'))),
-                        ('date_stop', '&lt;=', ((context_today() + relativedelta(days=7 - context_today().weekday())).strftime('%Y-%m-%d')))
-                    ]" />
+                        ('date_start', '&gt;=', (datetime.datetime.combine(context_today() - relativedelta(days=context_today().weekday()), datetime.time(0,0,0))).strftime('%Y-%m-%d %H:%M:%S')),
+                        ('date_start','&lt;', (datetime.datetime.combine(context_today() + relativedelta(days=7 - context_today().weekday()), datetime.time(0,0,0))).strftime('%Y-%m-%d %H:%M:%S'))                    ]" />
 
                     <filter string="Next week" name="next_week" domain="[
-                        ('date_start', '&gt;=', ((context_today() + relativedelta(days=7 - context_today().weekday())).strftime('%Y-%m-%d'))),
-                        ('date_stop', '&lt;=', ((context_today() + relativedelta(days=14 - context_today().weekday())).strftime('%Y-%m-%d')))
+                        ('date_start', '&gt;=', (datetime.datetime.combine(context_today() + relativedelta(days=7 - context_today().weekday()), datetime.time(0,0,0))).strftime('%Y-%m-%d %H:%M:%S')),
+                        ('date_start','&lt;', (datetime.datetime.combine(context_today() + relativedelta(days=14 - context_today().weekday()), datetime.time(0,0,0))).strftime('%Y-%m-%d %H:%M:%S'))
                     ]" />
 
                     <filter string="Current month" name="current_month" domain="[
-                        ('date_start', '&lt;', (context_today()+relativedelta(months=1)).strftime('%Y-%m-01')),
-                        ('date_stop','&gt;=', context_today().strftime('%Y-%m-01'))
+                        ('date_start', '&gt;=', (datetime.datetime.combine(context_today(), datetime.time(0,0,0))).strftime('%Y-%m-01 %H:%M:%S')),
+                        ('date_start','&lt;', (datetime.datetime.combine(context_today() + relativedelta(months=1), datetime.time(0,0,0))).strftime('%Y-%m-01 %H:%M:%S'))
                     ]"/>
+
+                    <filter string="Current year" name="current_year" domain="[
+                        ('date_start', '&gt;=', (datetime.datetime.combine(context_today(), datetime.time(0,0,0))).strftime('%Y-01-01 %H:%M:%S')),
+                        ('date_start','&lt;', (datetime.datetime.combine(context_today() + relativedelta(years=1), datetime.time(0,0,0))).strftime('%Y-01-01 %H:%M:%S'))
+                    ]"/>
+
+
 
                     <separator />
                     <filter string="Draft" name="state_draft" domain="[('state', '=', 'draft')]" />
@@ -378,10 +406,10 @@
             <field name="type">ir.actions.act_window</field>
             <field name="name">Sessions</field>
             <field name="res_model">academy.training.session</field>
-            <field name="view_mode">calendar,kanban,tree,form</field>
+            <field name="view_mode">calendar,kanban,tree,pivot,form</field>
             <field name="target">current</field>
             <field name="domain">[]</field>
-            <field name="context">{}</field>
+            <field name="context">{'search_default_current_year': 1}</field>
             <field name="search_view_id" ref="view_academy_training_session_search" />
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">

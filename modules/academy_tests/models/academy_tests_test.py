@@ -127,7 +127,7 @@ class AcademyTestsTest(models.Model):
     )
 
     last_edition = fields.Datetime(
-        string='Last editiong',
+        string='Last edition',
         required=False,
         readonly=True,
         index=False,

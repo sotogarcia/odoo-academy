@@ -60,6 +60,7 @@
         'wizard/academy_timesheets_download_wizard_view.xml',
         'wizard/academy_timesheets_clone_wizard_view.xml',
         'wizard/academy_timesheets_verification_wizard_view.xml',
+        'wizard/academy_timesheets_search_teachers_wizard_view.xml',
 
         'report/academy_timesheet_layout_report.xml',
         'report/academy_timesheet_primary_instructor_report.xml',
@@ -70,14 +71,14 @@
     ],
 
     'demo': [
-        'demo/academy_training_action_demo.xml',
         'demo/facility_facility_reservation_demo.xml',
         'demo/academy_training_session_demo.xml',
         'demo/academy_training_session_teacher_rel_demo.xml'
     ],
 
     'js': [
-        'static/src/js/academy_timesheets_widgets.js'
+        'static/src/js/academy_timesheets_widgets.js',
+        'static/src/js/header_view_buttons.js'
     ],
 
     'css': [
@@ -86,7 +87,8 @@
     ],
 
     'qweb': [
-        'static/src/xml/academy_timesheets_widgets.xml'
+        'static/src/xml/academy_timesheets_widgets.xml',
+        'static/src/xml/header_view_buttons.xml'
     ],
 
     "external_dependencies": {

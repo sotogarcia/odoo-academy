@@ -5,8 +5,10 @@
 ###############################################################################
 
 from odoo.http import Controller, request, route
+from odoo.tools.translate import _
 from logging import getLogger
 from datetime import datetime, timedelta
+from bs4 import BeautifulSoup
 
 _logger = getLogger(__name__)
 
@@ -21,9 +23,13 @@ STUDENT_URL = '/academy-timesheets/student/<int:student_id>/schedule'
 STUDENT_ACT = \
     'academy_timesheets.action_report_academy_timesheets_student'
 
+EMBED_URL = '/academy-timesheets/training/<int:action_id>/schedule/embed'
 ACTION_URL = '/academy-timesheets/training/<int:action_id>/schedule'
 ACTION_ACT = \
     'academy_timesheets.action_report_academy_timesheets_training_action'
+
+JSCRIPT = ('<script defer src="https://cdnjs.cloudflare.com/ajax/libs/'
+           'iframe-resizer/4.3.6/iframeResizer.contentWindow.min.js" />')
 
 
 class PublishTimesheets(Controller):
@@ -37,6 +43,7 @@ class PublishTimesheets(Controller):
         doc_type = self._get_format_param(kw)
         target_date = self._compute_week_param(kw)
         download = self._get_download_param(kw)
+        embed = self._get_embed_param(kw)
 
         allowed_xid = 'academy_base.academy_group_consultant'
         if not request.env.user.has_group(allowed_xid):
@@ -48,8 +55,12 @@ class PublishTimesheets(Controller):
         if not teacher:
             return request.not_found()
 
-        return self._report_reponse(
-            TEACH_ACT, teacher, doc_type, target_date, download)
+        content = self._render_report(
+            TEACH_ACT, teacher, doc_type, target_date, embed)
+        if not content:
+            return request.not_found()
+
+        return self._report_reponse(content, doc_type, download)
 
     @route(TEACH_URL, type='http', auth='user', website=False)
     def publish_instructor_timesheet(self, teacher_id, **kw):
@@ -58,6 +69,7 @@ class PublishTimesheets(Controller):
         doc_type = self._get_format_param(kw)
         target_date = self._compute_week_param(kw)
         download = self._get_download_param(kw)
+        embed = self._get_embed_param(kw)
 
         allowed_xid = 'academy_base.academy_group_consultant'
         if not request.env.user.has_group(allowed_xid):
@@ -68,27 +80,37 @@ class PublishTimesheets(Controller):
         if not teacher:
             return request.not_found()
 
-        return self._report_reponse(
-            TEACH_ACT, teacher, doc_type, target_date, download)
+        content = self._render_report(
+            TEACH_ACT, teacher, doc_type, target_date, embed)
+        if not content:
+            return request.not_found()
+
+        return self._report_reponse(content, doc_type, download)
 
     @route(STUDENT_URL, type='http', auth='user', website=False)
     def publish_student_timesheet(self, student_id, **kw):
         kw = kw or {}
+
         doc_type = self._get_format_param(kw)
         target_date = self._compute_week_param(kw)
         download = self._get_download_param(kw)
+        embed = self._get_embed_param(kw)
 
         allowed_xid = 'academy_base.academy_group_consultant'
         if not request.env.user.has_group(allowed_xid):
             return request.not_found()
 
-        teacher_obj = request.env['academy.student']
-        teacher = teacher_obj.browse(student_id)
-        if not teacher:
+        student_obj = request.env['academy.student']
+        student = student_obj.browse(student_id)
+        if not student:
             return request.not_found()
 
-        return self._report_reponse(
-            STUDENT_ACT, teacher, doc_type, target_date, download)
+        content = self._render_report(
+            STUDENT_ACT, student, doc_type, target_date, embed)
+        if not content:
+            return request.not_found()
+
+        return self._report_reponse(content, doc_type, download)
 
     @route(ACTION_URL, type='http', auth='public', website=False)
     def publish_training_action_timesheet(self, action_id, **kw):
@@ -102,25 +124,48 @@ class PublishTimesheets(Controller):
 
         target_date = self._compute_week_param(kw)
         download = self._get_download_param(kw)
+        embed = self._get_embed_param(kw)
 
         action_obj = request.env['academy.training.action'].sudo()
         action = action_obj.search([('id', '=', action_id)], limit=1)
         if not action:
             return request.not_found()
 
-        return self._report_reponse(
-            ACTION_ACT, action, doc_type, target_date, download)
+        content = self._render_report(
+            ACTION_ACT, action, doc_type, target_date, embed)
+        if not content:
+            return request.not_found()
 
-    def _report_reponse(self, report_xid, record, doc_type, dt, download):
+        return self._report_reponse(content, doc_type, download)
+
+    @route(EMBED_URL, type='http', auth='public', website=False)
+    def publish_embed_training_action_timesheet(self, action_id, **kw):
+
+        kw = kw or {}
+        doc_type = self._get_format_param(kw)
+
+        # Temporaty patch -> this will be removed
+        if kw.get('week', '').lower() == 'current':
+            kw.pop('week')
+
+        target_date = self._compute_week_param(kw)
+        download = self._get_download_param(kw)
+        embed = self._get_embed_param(kw)
+
+        action_obj = request.env['academy.training.action'].sudo()
+        action = action_obj.search([('id', '=', action_id)], limit=1)
+        if not action:
+            return request.not_found()
+
+        content = self._render_report(
+            ACTION_ACT, action, doc_type, target_date, embed)
+        if not content:
+            return request.not_found()
+
+        return self._report_reponse(content, doc_type, download)
+
+    def _render_report(self, report_xid, record, doc_type, dt, embed=False):
         date_start, date_stop = self._weekly_interval(dt)
-
-        if doc_type == 'html':
-            render_method_name = 'render_qweb_html'
-            content_type = 'text/html; charset=utf-8'
-        else:
-            doc_type = 'pdf'  # Ensure valid value
-            render_method_name = 'render_qweb_pdf'
-            content_type = 'application/pdf'
 
         datas = {
             'doc_ids': record.mapped('id'),
@@ -129,11 +174,39 @@ class PublishTimesheets(Controller):
             'full_weeks': True
         }
 
+        if doc_type == 'html':
+            render_method_name = 'render_qweb_html'
+        else:
+            render_method_name = 'render_qweb_pdf'
+
         report_obj = request.env.ref(report_xid).sudo()
         render_method = getattr(report_obj, render_method_name)
+
         files = render_method([record.id], data=datas)
-        if not files:
-            return request.not_found()
+        content = files[0] if files and len(files[0]) else None
+
+        if embed:
+            if doc_type == 'html':
+                soup = BeautifulSoup(content, "html.parser")
+                param_obj = request.env['ir.config_parameter']
+                url = param_obj.sudo().get_param('web.base.url')
+                jscript = JSCRIPT.format(url)
+                jscript = BeautifulSoup(jscript, 'html.parser')
+                soup.html.body.append(jscript)
+                content = soup.prettify()
+            else:
+                msg = _('iFrame Resizer can not be used with PDF files')
+                _logger.warning(msg)
+
+        return content
+
+    def _report_reponse(self, content, doc_type, download):
+
+        if doc_type == 'html':
+            content_type = 'text/html; charset=utf-8'
+        else:
+            doc_type = 'pdf'  # Ensure valid value
+            content_type = 'application/pdf'
 
         if download:
             disposition = 'attachment; filename="Schedule.%s"' % doc_type
@@ -142,13 +215,13 @@ class PublishTimesheets(Controller):
 
         pdfhttpheaders = [
             ('Content-Type', content_type),
-            ('Content-Length', len(files[0])),
+            ('Content-Length', len(content)),
             ('Content-Disposition', disposition),
             ('Cache-Control', 'no-store'),
             ('Access-Control-Allow-Origin', '*')
         ]
 
-        return request.make_response(files[0], headers=pdfhttpheaders)
+        return request.make_response(content, headers=pdfhttpheaders)
 
     def _get_format_param(self, kw):
         param = kw.get('format', False)
@@ -260,6 +333,10 @@ class PublishTimesheets(Controller):
             param = (param.lower() == 'true')
 
         return bool(param)
+
+    def _get_embed_param(self, kw):
+        param = kw.get('embed', False)
+        return self._safe_cast(param, bool, False)
 
     @classmethod
     def _weekly_interval(cls, dt):
