@@ -4,7 +4,7 @@
 #    __openerp__.py file at the root folder of this module.                   #
 ###############################################################################
 
-from odoo import models, fields
+from odoo import models, fields, api
 from odoo.tools.translate import _
 from logging import getLogger
 
@@ -105,3 +105,36 @@ class AcademyTrainingSessionTeacherRel(models.Model):
             _('This teacher is occupied by another training action')
         ),
     ]
+
+    @api.model
+    def create(self, values):
+        """ Overridden method 'create'
+        """
+
+        parent = super(AcademyTrainingSessionTeacherRel, self)
+        result = parent.create(values)
+
+        result._update_session_followers()
+
+        return result
+
+    def write(self, values):
+        """ Overridden method 'write'
+        """
+
+        parent = super(AcademyTrainingSessionTeacherRel, self)
+        result = parent.write(values)
+
+        self._update_session_followers()
+
+        return result
+
+    def _update_session_followers(self):
+        path = 'teacher_id.res_users_id.partner_id.id'
+
+        for record in self:
+            session = record.session_id
+
+            if session.state == 'ready':
+                partner_ids = record.mapped(path)
+                session.message_subscribe(partner_ids=partner_ids)

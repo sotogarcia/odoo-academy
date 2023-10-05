@@ -217,7 +217,9 @@ class PublishTimesheets(Controller):
             ('Content-Type', content_type),
             ('Content-Length', len(content)),
             ('Content-Disposition', disposition),
-            ('Cache-Control', 'no-store'),
+            ('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0'),
+            ('Pragma', 'no-cache'),
+            ('Expires', '0'),
             ('Access-Control-Allow-Origin', '*')
         ]
 

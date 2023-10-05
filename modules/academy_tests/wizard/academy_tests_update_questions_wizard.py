@@ -168,26 +168,33 @@ class AcademyTestsUpdateQuestionsWizard(models.TransientModel):
         question_set = self.env['academy.tests.question']
 
         context = self.env.context
+
         active_model = context.get('active_model')
+        if not active_model:
+            return question_set
 
-        if active_model:
-            active_id = context.get('active_id', -1)
-            active_ids = context.get('active_ids', [active_id])
+        active_id = context.get('active_id', -1)
+        active_ids = context.get('active_ids', [active_id])
+        if not(active_ids and active_ids[0] > 0):
+            return question_set
 
-            if active_ids and active_ids[0] > 0:
-                link_set = self.env['academy.tests.test.question.rel']
+        if active_model == 'academy.tests.question':
+            domain = [('id', 'in', active_ids)]
+            question_set = question_set.search(domain)
+        else:
 
-                if active_model == 'academy.tests.test.question.rel':
-                    domain = [('id', 'in', active_ids)]
-                    link_set = link_set.search(domain, order='sequence ASC')
+            link_set = self.env['academy.tests.test.question.rel']
 
-                elif active_model == 'academy.tests.test':
-                    domain = [('tes_id', 'in', active_ids)]
-                    link_set = link_set.search(
-                        domain, order='test_id DESC, sequence ASC')
+            if active_model == 'academy.tests.test.question.rel':
+                domain = [('id', 'in', active_ids)]
+                link_set = link_set.search(domain, order='sequence ASC')
 
-                for link in link_set:  # Preserve order
-                    question_set += link.question_id
+            elif active_model == 'academy.tests.test':
+                domain = [('tes_id', 'in', active_ids)]
+                link_set = link_set.search(
+                    domain, order='test_id DESC, sequence ASC')
+
+            question_set = link_set.mapped('question_id')
 
         return question_set
 
@@ -195,7 +202,7 @@ class AcademyTestsUpdateQuestionsWizard(models.TransientModel):
     def _onchange_question_ids(self):
         self.ensure_one
 
-        question_set = self._search_for_real_questions()
+        question_set = self.question_ids
 
         attach_ids = question_set.mapped('ir_attachment_ids.id')
         m2m_action = [(6, 0, attach_ids) if attach_ids else (5, 0, 0)]

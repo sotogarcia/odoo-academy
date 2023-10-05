@@ -132,6 +132,22 @@
                                         'default_session_id': id,
                                         'tree_view_ref': 'academy_timesheets.view_academy_training_session_teacher_rel_tree'
                                     }" />
+                                <div class="btn-group" role="group" aria-label="Teachers">
+                                    <button name="toggle_followers"
+                                            class="btn btn-secondary"
+                                            string="Toggle followers"
+                                            type="object"
+                                            default_focus="0"
+                                            icon="fa-users"
+                                            help="Add all teachers as followers and remove all others" />
+                                    <button name="send_by_mail"
+                                            class="btn btn-secondary"
+                                            string="Send by mail"
+                                            type="object"
+                                            default_focus="0"
+                                            icon="fa-envelope"
+                                            help="Send session by email" />
+                                </div>
                             </page>
                             <page string="Facilities" class="oe_page_facilities" accesskey="F">
                                 <field name="reservation_ids" class="oe_field_reservation_ids"

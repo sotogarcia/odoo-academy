@@ -6,6 +6,7 @@ stores all training action enrolment attributes and behavior.
 """
 
 from logging import getLogger
+from datetime import datetime
 
 # pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
@@ -540,3 +541,42 @@ class AcademyTrainingActionEnrolment(models.Model):
 
             if enrolment_obj.search(AND(domains)):
                 ValidationError(message)
+
+    @api.model
+    def _ensure_recordset(self, model, sources):
+        source_obj = self.env[model]
+
+        if isinstance(sources, int):
+            source_set = source_obj.browse(sources)
+        elif isinstance(sources, (list, tuple)):
+            action_domain = [('id', 'in', sources)]
+            source_set = source_obj.search(action_domain)
+        else:
+            msg = _('The source recordset must correspond to the model {}')
+            assert isinstance(sources, type(source_obj)), msg.format(model)
+            source_set = sources
+
+        return source_set
+
+    def copy_to(self, action_set, origin_set=False):
+
+        if not origin_set:
+            origin_set = self
+
+        action_set = self._ensure_recordset(action_set)
+        origin_set = self._ensure_recordset(origin_set or self)
+
+        for enrolment in origin_set:
+
+            for action in action_set:
+                register = enrolment.register
+                deregister = enrolment.deregister
+
+                if register < action.start or register >= action.stop:
+                    register = action.start
+
+                if deregister > action.stop or deregister <= action.start or \
+                   deregister <= register:
+                    deregister = action.stop
+
+                register = register.strftime('')

@@ -191,7 +191,6 @@ class AcademyTimesheetsCloneWizardLog(models.Model):
     def target(self, sequence, wizard, target):
         name = self._get_target_name(target)
         target_ref = self._get_target_reference(target)
-        print(target_ref)
         model, _id = target_ref.split(',')
 
         msg = _('Change target to «{}». Model: {}, ID: {}')

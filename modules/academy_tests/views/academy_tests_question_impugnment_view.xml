@@ -123,13 +123,13 @@
                                     </h4>
                                 </div>
 
-                                <table class="table table-sm table-borderless w-100" style="table-layout: fixed;">
+                                <table class="table table-sm table-borderless w-100">
                                     <tbody>
                                         <tr>
                                             <th>Student:</th>
                                             <td class="o_ellipsis">
                                                 <t t-if="record.student_id.raw_value">
-                                                    <field name="student_name"/>
+                                                    <field name="student_id"/>
                                                 </t>
                                                 <t t-else="">
                                                     &#160;
@@ -187,13 +187,22 @@
                         name="my_impugnments"
                         domain="[('manager_id', '=', uid)]"
                         context="{}"
-                        help="List only the own impugnments" />
+                        help="List only my own impugnments" />
+
+                    <separator />
+
+                    <filter string="Active impugnments"
+                        name="active_impugnments"
+                        domain="[('manager_id', '=', uid), ('state', '&lt;&gt;', 'close')]"
+                        context="{}"
+                        help="List only unclosed impugnments" />
 
                     <filter string="Answer pending"
                         name="answer_pending"
                         domain="['|', ('state', '=', 'open'), ('state', '=', 'reply')]"
                         context="{}"
                         help="Impugnments that are pending response" />
+
                 </search>
             </field>
         </record>
@@ -206,7 +215,7 @@
             <field name="view_mode">kanban,tree,form,pivot</field>
             <field name="target">current</field>
             <field name="domain">[]</field>
-            <field name="context">{"search_default_my_impugnments": 1}</field>
+            <field name="context">{"search_default_my_impugnments": 1, "search_default_active_impugnments": 1}</field>
             <field name="search_view_id" ref="view_academy_question_impugnment_search" />
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">

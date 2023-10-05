@@ -91,6 +91,17 @@ class AcademyTimesheetsSendByMailWizard(models.TransientModel):
         help='Always show full weeks'
     )
 
+    force_send = fields.Boolean(
+        string='Force send',
+        required=False,
+        readonly=False,
+        index=False,
+        default=False,
+        help=('If True, the generated mail will be immediately sent after '
+              'being created, as if the scheduler was executed for this '
+              'message only')
+    )
+
     def _correct_dates(self, stop_changes=False):
         msg = _('Last date should be later than first date')
 
@@ -143,7 +154,8 @@ class AcademyTimesheetsSendByMailWizard(models.TransientModel):
             # Emails will be sent to each user individually
             for recipient in recipients:
                 email_values.update({'email_to': recipient})
-                email_template.send_mail(target.id, email_values=email_values)
+                email_template.send_mail(target.id, email_values=email_values,
+                                         force_send=self.force_send)
 
     def _get_training_action_report(self, model):
         if model not in ['academy.teacher', 'academy.student']:

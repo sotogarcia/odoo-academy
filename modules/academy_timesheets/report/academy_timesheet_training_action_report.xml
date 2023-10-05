@@ -31,7 +31,8 @@
                         </header>
 
                         <t t-foreach="values['weeks']" t-as="week">
-                        <table class="table table-bordered w-100 week-timetable">
+                        <div class="table-responsive">
+                        <table class="table table-bordered w-100 week-timetable" style="min-width: 17cm !important;">
                             <caption style="caption-side: top;"><t t-esc="week" /></caption>
                             <thead>
                                 <tr>
@@ -88,6 +89,7 @@
                             </tbody>
 
                         </table>
+                        </div>
                         </t> <!-- weeh -->
 
                     </section>

@@ -24,10 +24,11 @@
                     </header>
 
                     <group col="4">
+                        <field name="active_model" class="oe_field_active_model" colspan="4" />
                         <field name="date_start" class="oe_field_date_start" widget="date" />
                         <field name="date_stop" class="oe_field_date_stop" widget="date" />
                         <field name="full_weeks" class="oe_field_full_weeks" />
-                        <field name="active_model" class="oe_field_active_model" />
+                        <field name="force_send" class="oe_field_force_send" />
                     </group>
 
                     <footer />

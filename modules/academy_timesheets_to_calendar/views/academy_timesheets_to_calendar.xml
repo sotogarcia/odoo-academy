@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <template id="view_academy_timesheets_to_calendar_assets" name="website assets for academy_timesheets_to_calendar" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/academy_timesheets_to_calendar/static/src/js/header_view_buttons.js" />
+            </xpath>
+        </template>
+    </data>
+</openerp>

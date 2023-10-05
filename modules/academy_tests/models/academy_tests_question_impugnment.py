@@ -207,9 +207,12 @@ class AcademyTestsQuestionImpugnment(models.Model):
         for record in self:
             record._update_state()
 
-    def toggle_open_close(self):
+    def toggle_open_close(self, force_close=False):
         for record in self:
-            if record.state == 'close':
+            if force_close:
+                if record.state != 'close':
+                    record.state = 'close'
+            elif record.state == 'close':
                 record.state = None
                 record._update_state()
             else:

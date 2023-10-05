@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-22 12:58+0000\n"
-"PO-Revision-Date: 2023-06-22 15:05+0200\n"
+"POT-Creation-Date: 2023-07-10 18:50+0000\n"
+"PO-Revision-Date: 2023-07-10 21:07+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -1512,7 +1512,7 @@ msgstr ""
 "                        </p>\n"
 "\n"
 "                       <p style=\"margin: 0.5em 0; line-height: 1.25em;\">\n"
-"                           Es importante para los alumnos que realizan los "
+"                           Es importante para los estudiantes que realizan los "
 "ejercicios                           relacionados con estas preguntas que se les facilite un "
 "respuesta                           rápida y correcta.\n"
 "                        </p>\n"
@@ -1560,6 +1560,12 @@ msgid "A serious error has occurred, check log files"
 msgstr "Se ha producido un error grave, compruebe los archivos de registro"
 
 #. module: academy_tests
+#: code:addons/academy_tests/wizard/academy_tests_copy_assignments_wizard.py:0
+#, python-format
+msgid "A target training object has not been chosen"
+msgstr "No se ha elegido una formación de destino"
+
+#. module: academy_tests
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_statistics_student_question_readonly_document_qweb
 msgid "ABSOLUTE"
 msgstr "ABSOLUTO"
@@ -1568,6 +1574,11 @@ msgstr "ABSOLUTO"
 #: model:ir.model.fields,field_description:academy_tests.field_academy_test_choose_report_wizard__report_help
 msgid "About"
 msgstr "Acerca de"
+
+#. module: academy_tests
+#: model:academy.tests.test,name:academy_tests.academy_tests_demo_1
+msgid "About Odoo"
+msgstr "Acerca de Odoo"
 
 #. module: academy_tests
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_tests_question_kanban
@@ -1617,12 +1628,12 @@ msgstr "Estudiante"
 #. module: academy_tests
 #: model:ir.model,name:academy_tests.model_academy_test_choose_report_wizard
 msgid "Academy test choose report wizard"
-msgstr ""
+msgstr "Asistente de selección de informe de test de la academia"
 
 #. module: academy_tests
 #: model:ir.model,name:academy_tests.model_academy_test_new_topic_version_wizard
 msgid "Academy test new topic version"
-msgstr ""
+msgstr "Tests - Nueva versión del tema"
 
 #. module: academy_tests
 #: model:ir.model,name:academy_tests.model_academy_tests_attempt
@@ -1643,6 +1654,11 @@ msgstr ""
 #. module: academy_tests
 #: model:ir.model,name:academy_tests.model_academy_tests_attempt_resume_helper
 msgid "Academy tests attempt resume helper"
+msgstr ""
+
+#. module: academy_tests
+#: model:ir.model,name:academy_tests.model_academy_tests_copy_assignments_wizard
+msgid "Academy tests copy assignments wizard"
 msgstr ""
 
 #. module: academy_tests
@@ -1897,6 +1913,7 @@ msgid "Academy training module test topic rel"
 msgstr ""
 
 #. module: academy_tests
+#: model:ir.model.fields.selection,name:academy_tests.selection__academy_tests_copy_assignments_wizard__training_ref__academy_training_action
 #: model:ir.model.fields.selection,name:academy_tests.selection__academy_tests_random_template_type_wizard__training_ref__academy_training_action
 msgid "Action"
 msgstr "Acción"
@@ -1997,6 +2014,7 @@ msgstr "Actividades"
 
 #. module: academy_tests
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_random_template_scheduled__activity_type_id
+#: model:ir.model.fields.selection,name:academy_tests.selection__academy_tests_copy_assignments_wizard__training_ref__academy_training_activity
 #: model:ir.model.fields.selection,name:academy_tests.selection__academy_tests_random_template_type_wizard__training_ref__academy_training_activity
 msgid "Activity"
 msgstr "Actividad"
@@ -2005,6 +2023,11 @@ msgstr "Actividad"
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_random_template_scheduled__activity_user_type
 msgid "Activity User Type"
 msgstr "Tipo de actividad de usuario"
+
+#. module: academy_tests
+#: model:academy.tests.answer,name:academy_tests.academy_tests_answer_B_to_question_2
+msgid "Ada"
+msgstr ""
 
 #. module: academy_tests
 #: model:ir.model.fields.selection,name:academy_tests.selection__academy_tests_question_categorize_wizard__category_action__new
@@ -2083,6 +2106,7 @@ msgstr "Enmendar"
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_answers_table_qweb
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_statistics_student_question_readonly_document_qweb
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_tests_attempt_answer_form
+#: code:addons/academy_tests/models/academy_tests_test.py:0
 #, python-format
 msgid "Answer"
 msgstr "Respuesta"
@@ -2163,6 +2187,11 @@ msgid "Append Wizard Link"
 msgstr "Añadir enlace al asistente"
 
 #. module: academy_tests
+#: model:academy.tests.random.template,description:academy_tests.academy_tests_random_template_demo
+msgid "Append questions about Odoo"
+msgstr "Agregar preguntas sobre Odoo"
+
+#. module: academy_tests
 #: model:ir.model.fields,help:academy_tests.field_academy_tests_random_template_type_wizard__supplementary
 msgid "Append supplementary questions"
 msgstr "Añadir preguntas de reserva"
@@ -2231,7 +2260,13 @@ msgstr "Asignación"
 #: model:ir.model.constraint,message:academy_tests.constraint_academy_tests_test_training_assignment_single_assignment
 #, python-format
 msgid "Assignment of test to training is duplicated"
-msgstr "La asignación del test al entrenamiento está duplicada"
+msgstr "La asignación del test a la formación está duplicada"
+
+#. module: academy_tests
+#: model:ir.model.fields,field_description:academy_tests.field_academy_tests_copy_assignments_wizard__assignment_ids
+#: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_tests_copy_assignments_wizard_wizard
+msgid "Assignments"
+msgstr "Asignaciones"
 
 #. module: academy_tests
 #: model:ir.model,name:academy_tests.model_ir_attachment
@@ -2477,9 +2512,23 @@ msgid "Basic"
 msgstr "Básica"
 
 #. module: academy_tests
+#: model:academy.tests.category,description:academy_tests.academy_tests_category_demo_concepts
+msgid "Basic concepts about the religion"
+msgstr "Conceptos básicos sobre la religión"
+
+#. module: academy_tests
 #: model:ir.model.fields.selection,name:academy_tests.selection__academy_tests_question_categorize_wizard__state__step2
 msgid "Batch"
 msgstr "Lote"
+
+#. module: academy_tests
+#: model:academy.tests.random.template,preamble:academy_tests.academy_tests_random_template_demo
+msgid ""
+"Below is presented a list of questions with four answers each, of which only one is correct. Select the right "
+"answer for each of the questions."
+msgstr ""
+"A continuación se presenta una lista de preguntas con cuatro respuestas cada una, de las cuales solo una es "
+"correcta. Seleccione la respuesta correcta para cada una de las preguntas."
 
 #. module: academy_tests
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_tests_attempt_resume_helper_search
@@ -2500,6 +2549,11 @@ msgstr "Tipo de vínculo"
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_random_template_scheduled__binding_view_types
 msgid "Binding View Types"
 msgstr "Tipos de vista de enlace"
+
+#. module: academy_tests
+#: model:academy.tests.answer,name:academy_tests.academy_tests_answer_B_to_question_6
+msgid "Black"
+msgstr "Negro"
 
 #. module: academy_tests
 #: code:addons/academy_tests/models/academy_abstract_attempt_answer.py:0
@@ -2563,6 +2617,12 @@ msgstr "Saltos de página"
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_tests_form
 msgid "Blocks"
 msgstr "Bloques"
+
+#. module: academy_tests
+#: model:academy.tests.category,name:academy_tests.academy_tests_category_demo_brand
+#: model:academy.tests.tag,name:academy_tests.academy_tests_tag_demo_brand
+msgid "Brand"
+msgstr "Marca"
 
 #. module: academy_tests
 #: model:ir.actions.act_window,name:academy_tests.action_question_categorize_wizard_act_window
@@ -2735,6 +2795,12 @@ msgstr "Marcar para no permitir los registros seleccionados en lugar de incluirl
 #: model:ir.model.fields,help:academy_tests.field_academy_tests_questions_by_teacher_wizard__allow_empty
 msgid "Check it to allow empty lines"
 msgstr "Marcar para permitir líneas vacías"
+
+#. module: academy_tests
+#: model:ir.model.fields,help:academy_tests.field_academy_tests_copy_assignments_wizard__choose_actions
+msgid "Check it to allow select target training actions instead the chosen training activity"
+msgstr ""
+"Marcar para permitir seleccionar acciones formativas objetivo en lugar de la actividad formativa elegida"
 
 #. module: academy_tests
 #: model:ir.model.fields,help:academy_tests.field_academy_tests_categorization_wizard__default_filter
@@ -2980,6 +3046,11 @@ msgid "Choose a test template will be used as default"
 msgstr "Elegir una plantilla de test que se usará por defecto"
 
 #. module: academy_tests
+#: model:ir.model.fields,field_description:academy_tests.field_academy_tests_copy_assignments_wizard__choose_actions
+msgid "Choose actions"
+msgstr "Elegir acciones"
+
+#. module: academy_tests
 #: model:ir.model.fields,help:academy_tests.field_academy_tests_random_line__level_ids
 msgid "Choose allowed levels or leave empty to allow all"
 msgstr "Elegir los niveles permitidos o dejar en blanco para permitirlos todos"
@@ -3130,7 +3201,7 @@ msgstr "Elegir el informe que se imprimirá"
 #: model:ir.model.fields,help:academy_tests.field_academy_tests_question_impugnment__student_id
 #: model:ir.model.fields,help:academy_tests.field_academy_tests_question_impugnment_reply__student_id
 msgid "Choose student who impugn this question"
-msgstr "Elegir el alumno que ha impugnado la pregunta"
+msgstr "Elegir el estudiante que ha impugnado la pregunta"
 
 #. module: academy_tests
 #: model:ir.model.fields,help:academy_tests.field_academy_tests_question_categorize_wizard__tag_ids
@@ -3218,7 +3289,7 @@ msgstr "Elegir la fecha inicial"
 #: model:ir.model.fields,help:academy_tests.field_academy_tests_attempt__student_id
 #: model:ir.model.fields,help:academy_tests.field_academy_tests_attempt_resume_helper__student_id
 msgid "Choose the student who performs the attempt"
-msgstr "Elegir al alumno que realiza el intento"
+msgstr "Elegir al estudiante que realiza el intento"
 
 #. module: academy_tests
 #: model:ir.model.fields,help:academy_tests.field_academy_tests_answers_table__test_block_id
@@ -3307,9 +3378,19 @@ msgid "Choose which versions of the topic this question belongs to"
 msgstr "Elegir a qué versiones del tema pertenece esta pregunta"
 
 #. module: academy_tests
+#: model:ir.model.fields,help:academy_tests.field_academy_tests_copy_assignments_wizard__assignment_ids
+msgid "Chosen assignments"
+msgstr "Asignaciones elegidas"
+
+#. module: academy_tests
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_tests_form
 msgid "Classification"
 msgstr "Clasificación"
+
+#. module: academy_tests
+#: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_tests_copy_assignments_wizard_wizard
+msgid "Click to perform a copy"
+msgstr "Clic para realizar una copia"
 
 #. module: academy_tests
 #: model_terms:ir.actions.act_window,help:academy_tests.action_answers_act_window
@@ -3434,9 +3515,15 @@ msgid "Closed"
 msgstr "Cerrado"
 
 #. module: academy_tests
+#: model:academy.tests.tag,name:academy_tests.academy_tests_tag_demo_code
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_test__code
 msgid "Code"
 msgstr "Código"
+
+#. module: academy_tests
+#: model:academy.tests.category,description:academy_tests.academy_tests_category_demo_development
+msgid "Code development"
+msgstr "Desarrollo de código"
 
 #. module: academy_tests
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_question__color
@@ -3466,6 +3553,8 @@ msgid "Common"
 msgstr "Común"
 
 #. module: academy_tests
+#: model:ir.model.fields,field_description:academy_tests.field_academy_tests_random_template__company_id
+#: model:ir.model.fields,field_description:academy_tests.field_academy_tests_random_wizard__company_id
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_test_training_assignment__company_id
 msgid "Company"
 msgstr "Compañía"
@@ -3477,6 +3566,7 @@ msgstr "Compañía"
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_random_template__competency_unit_id
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_random_wizard__competency_unit_id
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_test_training_assignment__competency_unit_id
+#: model:ir.model.fields.selection,name:academy_tests.selection__academy_tests_copy_assignments_wizard__training_ref__academy_competency_unit
 #: model:ir.model.fields.selection,name:academy_tests.selection__academy_tests_random_template_type_wizard__training_ref__academy_competency_unit
 msgid "Competency unit"
 msgstr "Unidad de competencia"
@@ -3519,6 +3609,11 @@ msgid "Compute current user access rights to change authorship"
 msgstr "Calcular los derechos de acceso del usuario actual para cambiar la autoría"
 
 #. module: academy_tests
+#: model:academy.tests.category,name:academy_tests.academy_tests_category_demo_concepts
+msgid "Concepts"
+msgstr "Conceptos"
+
+#. module: academy_tests
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_uncategorized_by_user_report_qweb
 msgid "Congratulations, you have no questions pending categorization"
 msgstr "Enhorabuena, no tienes preguntas pendientes de categorización"
@@ -3529,6 +3624,17 @@ msgstr "Enhorabuena, no tienes preguntas pendientes de categorización"
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_tests_question_import_form
 msgid "Content"
 msgstr "Contenido"
+
+#. module: academy_tests
+#: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_tests_copy_assignments_wizard_wizard
+msgid "Copy"
+msgstr "Copiar"
+
+#. module: academy_tests
+#: model:ir.actions.act_window,name:academy_tests.action_academy_tests_copy_assignments_wizard_wizard_act_window
+#: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_tests_copy_assignments_wizard_wizard
+msgid "Copy assignments"
+msgstr "Copiar asignaciones"
 
 #. module: academy_tests
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_tests_attempt_final_answer_helper_form
@@ -3594,7 +3700,7 @@ msgstr "Crear/escribir el nombre del modelo objetivo"
 #. module: academy_tests
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_tests_question_impugnment_kanban
 msgid "Create:"
-msgstr "Crear:"
+msgstr "Creada:"
 
 #. module: academy_tests
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_tests_question_request_form
@@ -3610,6 +3716,7 @@ msgstr "Creada"
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_categorization_wizard__create_uid
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_category__create_uid
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_change_owner_wizard__create_uid
+#: model:ir.model.fields,field_description:academy_tests.field_academy_tests_copy_assignments_wizard__create_uid
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_correction_scale__create_uid
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_level__create_uid
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_question__create_uid
@@ -3655,6 +3762,7 @@ msgstr "Creado por"
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_categorization_wizard__create_date
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_category__create_date
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_change_owner_wizard__create_date
+#: model:ir.model.fields,field_description:academy_tests.field_academy_tests_copy_assignments_wizard__create_date
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_correction_scale__create_date
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_level__create_date
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_question__create_date
@@ -3897,11 +4005,21 @@ msgid "Description"
 msgstr "Descripción"
 
 #. module: academy_tests
+#: model:ir.model.fields.selection,name:academy_tests.selection__academy_tests_copy_assignments_wizard__state__step2
+msgid "Destination"
+msgstr "Destino"
+
+#. module: academy_tests
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_tests_attempt_final_answer_helper_form
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_tests_form
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_tests_question_impugnment_reply_form
 msgid "Details"
 msgstr "Detalles"
+
+#. module: academy_tests
+#: model:academy.tests.category,name:academy_tests.academy_tests_category_demo_development
+msgid "Development"
+msgstr "Desarrollo"
 
 #. module: academy_tests
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_question__level_id
@@ -3947,6 +4065,7 @@ msgstr "Discusión"
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_categorization_wizard__display_name
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_category__display_name
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_change_owner_wizard__display_name
+#: model:ir.model.fields,field_description:academy_tests.field_academy_tests_copy_assignments_wizard__display_name
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_correction_scale__display_name
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_level__display_name
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_question__display_name
@@ -4217,6 +4336,7 @@ msgstr "Fecha / hora de finalización"
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_random_template__enrolment_id
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_random_wizard__enrolment_id
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_test_training_assignment__enrolment_id
+#: model:ir.model.fields.selection,name:academy_tests.selection__academy_tests_copy_assignments_wizard__training_ref__academy_training_action_enrolment
 #: model:ir.model.fields.selection,name:academy_tests.selection__academy_tests_random_template_type_wizard__training_ref__academy_training_action_enrolment
 msgid "Enrolment"
 msgstr "Matrícula"
@@ -4336,6 +4456,16 @@ msgstr "Introducir el tiempo que se ha utilizado en el intento"
 #: model:ir.model.fields,help:academy_tests.field_academy_tests_attempt_resume_helper__available
 msgid "Enter the total time for the attempt"
 msgstr "Introducir el tiempo total para el intento"
+
+#. module: academy_tests
+#: model:academy.tests.topic,name:academy_tests.academy_tests_topic_demo_1
+msgid "Enterprise Resource Planning"
+msgstr "Planificación de recursos empresariales"
+
+#. module: academy_tests
+#: model:academy.tests.topic,description:academy_tests.academy_tests_topic_demo_1
+msgid "Enterprise Resource Planning Open Source Software"
+msgstr "Software de código abierto de planificación de recursos empresariales"
 
 #. module: academy_tests
 #: code:addons/academy_tests/models/academy_tests_topic.py:0
@@ -4571,6 +4701,11 @@ msgid "Final score obtained based on wrong answers"
 msgstr "Puntuación final obtenida en base a respuestas incorrectas"
 
 #. module: academy_tests
+#: model:academy.tests.answer,name:academy_tests.academy_tests_answer_A_to_question_4
+msgid "First logo (1)"
+msgstr "Primer logotipo (1)"
+
+#. module: academy_tests
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_test__first_use_id
 msgid "First use"
 msgstr "Primer uso"
@@ -4627,6 +4762,11 @@ msgid "Followers (Partners)"
 msgstr "Seguidores (Socios)"
 
 #. module: academy_tests
+#: model:academy.tests.answer,description:academy_tests.academy_tests_answer_C_to_question_2
+msgid "Formally Velneo"
+msgstr "Formalmente Velneo"
+
+#. module: academy_tests
 #: model_terms:ir.actions.report,help:academy_tests.action_report_test_as_markdown
 msgid "Full test as text file"
 msgstr "Prueba completa como archivo de texto"
@@ -4635,6 +4775,23 @@ msgstr "Prueba completa como archivo de texto"
 #: model_terms:ir.actions.report,help:academy_tests.action_report_test_changelog
 msgid "Full test changelog"
 msgstr "Registro de cambios completo del test"
+
+#. module: academy_tests
+#: model:academy.tests.answer,description:academy_tests.academy_tests_answer_B_to_question_1
+msgid "GNU General Public License"
+msgstr "Licencia Pública General GNU"
+
+#. module: academy_tests
+#: model:academy.tests.answer,description:academy_tests.academy_tests_answer_A_to_question_1
+#: model:academy.tests.question,description:academy_tests.academy_tests_question_demo_1
+#: model:academy.tests.test.question.rel,description:academy_tests.academy_tests_test_question_rel_1
+msgid "GNU Lesser General Public License"
+msgstr "Licencia pública general menor de GNU"
+
+#. module: academy_tests
+#: model:academy.tests.answer,name:academy_tests.academy_tests_answer_B_to_question_1
+msgid "GPL"
+msgstr ""
 
 #. module: academy_tests
 #: code:addons/academy_tests/models/academy_tests_random_line.py:0
@@ -4772,6 +4929,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_categorization_wizard__id
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_category__id
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_change_owner_wizard__id
+#: model:ir.model.fields,field_description:academy_tests.field_academy_tests_copy_assignments_wizard__id
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_correction_scale__id
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_level__id
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_question__id
@@ -5063,20 +5221,37 @@ msgid "Impugnments that are pending response"
 msgstr "Impugnaciones que están pendientes de respuesta"
 
 #. module: academy_tests
+#: model:academy.tests.random.line.categorization,description:academy_tests.academy_tests_random_line_categorization_demo
+msgid "In Odoo topic"
+msgstr "En el tema Odoo"
+
+#. module: academy_tests
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_attachment_search
 msgid "In questions"
 msgstr "En preguntas"
 
 #. module: academy_tests
+#: model:academy.tests.question,name:academy_tests.academy_tests_question_demo_2
+#: model:academy.tests.test.question.rel,name:academy_tests.academy_tests_test_question_rel_2
+msgid "In which language has the Odoo code been written?"
+msgstr "¿En qué idioma se ha escrito el código de Odoo?"
+
+#. module: academy_tests
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_random_template__incremental
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_random_wizard__incremental
 msgid "Incremental"
-msgstr ""
+msgstr "Incremental"
 
 #. module: academy_tests
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_test_question_rel__index
 msgid "Index"
 msgstr "Índice"
+
+#. module: academy_tests
+#: model:academy.tests.category,description:academy_tests.academy_tests_category_demo_brand
+#: model:academy.tests.tag,description:academy_tests.academy_tests_tag_demo_brand
+msgid "Information about the software"
+msgstr "Información sobre el programa"
 
 #. module: academy_tests
 #: model:ir.model.fields,field_description:academy_tests.field_academy_abstract_attempt_answer__instant
@@ -5131,6 +5306,11 @@ msgid "Invalid view type for action «%s»"
 msgstr "Tipo de vista no válido para la acción «%s»"
 
 #. module: academy_tests
+#: model:academy.tests.topic,name:academy_tests.academy_tests_topic_demo_2
+msgid "Invisible Pink Unicorn"
+msgstr "Unicornio rosa invisible"
+
+#. module: academy_tests
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_answer__message_is_follower
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_question__message_is_follower
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_question_impugnment__message_is_follower
@@ -5148,10 +5328,28 @@ msgid "Is Follower"
 msgstr "Es seguidor"
 
 #. module: academy_tests
+#: model:academy.tests.question,name:academy_tests.academy_tests_question_demo_3
+#: model:academy.tests.test.question.rel,name:academy_tests.academy_tests_test_question_rel_3
+msgid "Is PostgreSQL the unique database management system can be used by Odoo to store information?"
+msgstr ""
+"¿Es PostgreSQL el único sistema de gestión de bases de datos que Odoo puede utilizar para almacenar "
+"información?"
+
+#. module: academy_tests
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_answer__is_correct
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_attempt_final_answer_helper__is_correct
 msgid "Is correct?"
 msgstr "¿Es correcta?"
+
+#. module: academy_tests
+#: model:academy.tests.answer,name:academy_tests.academy_tests_answer_D_to_question_2
+msgid "JavaScript"
+msgstr ""
+
+#. module: academy_tests
+#: model:academy.tests.answer,description:academy_tests.academy_tests_answer_D_to_question_2
+msgid "JavaScript is an Oracle Corporation registered trademark"
+msgstr "JavaScript is an Oracle Corporation registered trademark"
 
 #. module: academy_tests
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_category__keywords
@@ -5164,6 +5362,11 @@ msgstr "Palabras clave"
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_test__test_kind_id
 msgid "Kind of test"
 msgstr "Tipo de test"
+
+#. module: academy_tests
+#: model:academy.tests.answer,name:academy_tests.academy_tests_answer_A_to_question_1
+msgid "LGPL"
+msgstr ""
 
 #. module: academy_tests
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_random_line__tag_ids
@@ -5203,6 +5406,7 @@ msgstr "Última fecha de ejecución"
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_categorization_wizard____last_update
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_category____last_update
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_change_owner_wizard____last_update
+#: model:ir.model.fields,field_description:academy_tests.field_academy_tests_copy_assignments_wizard____last_update
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_correction_scale____last_update
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_level____last_update
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_question____last_update
@@ -5267,6 +5471,7 @@ msgstr "Última modificación el"
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_categorization_wizard__write_uid
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_category__write_uid
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_change_owner_wizard__write_uid
+#: model:ir.model.fields,field_description:academy_tests.field_academy_tests_copy_assignments_wizard__write_uid
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_correction_scale__write_uid
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_level__write_uid
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_question__write_uid
@@ -5312,6 +5517,7 @@ msgstr "Última actualización por"
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_categorization_wizard__write_date
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_category__write_date
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_change_owner_wizard__write_date
+#: model:ir.model.fields,field_description:academy_tests.field_academy_tests_copy_assignments_wizard__write_date
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_correction_scale__write_date
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_level__write_date
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_question__write_date
@@ -5604,11 +5810,6 @@ msgid "List only the active test kinds"
 msgstr "Lista sólo los tipos de test activos"
 
 #. module: academy_tests
-#: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_question_impugnment_search
-msgid "List only the own impugnments"
-msgstr "Listar sólo las impugnaciones propias"
-
-#. module: academy_tests
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_tag_search
 msgid "List only the own tags"
 msgstr "Listar sólo las etiquetas propias"
@@ -5667,7 +5868,7 @@ msgstr "Listar aquellas preguntas que dependen de otra"
 #. module: academy_tests
 #: model:ir.model.fields,help:academy_tests.field_academy_tests_test_training_assignment__student_ids
 msgid "List with all the students who can take the test"
-msgstr "Enumera todos los alumnos que pueden hacer el test"
+msgstr "Enumera todos los estudiantes que pueden hacer el test"
 
 #. module: academy_tests
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_tests_update_questions_wizard_form
@@ -5779,7 +5980,7 @@ msgstr "El valor máximo debe ser mayor o igual que el valor mínimo"
 #. module: academy_tests
 #: model:ir.model.fields,help:academy_tests.field_academy_tests_attempt_resume_helper__max_points
 msgid "Maximum number of points the student can obtain"
-msgstr "Número máximo de puntos que puede obtener el alumno"
+msgstr "Número máximo de puntos que puede obtener el estudiante"
 
 #. module: academy_tests
 #: model:ir.model.fields,help:academy_tests.field_academy_tests_random_line__quantity
@@ -5882,6 +6083,7 @@ msgid "Model on which the server action runs."
 msgstr "Modelo sobre el que se aplica la acción de servidor."
 
 #. module: academy_tests
+#: model:ir.model.fields.selection,name:academy_tests.selection__academy_tests_copy_assignments_wizard__training_ref__academy_training_module
 #: model:ir.model.fields.selection,name:academy_tests.selection__academy_tests_random_template_type_wizard__training_ref__academy_training_module
 msgid "Module"
 msgstr "Módulo"
@@ -5918,11 +6120,6 @@ msgstr "Mis preguntas disponibles"
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_attachment_search
 msgid "My documents"
 msgstr "Mis documentos"
-
-#. module: academy_tests
-#: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_question_impugnment_search
-msgid "My impugnments"
-msgstr "Mis impugnaciones"
 
 #. module: academy_tests
 #: model:ir.model.fields.selection,name:academy_tests.selection__academy_tests_change_owner_wizard__authorship__own
@@ -6143,6 +6340,7 @@ msgid "Next planned execution date for this job."
 msgstr "Fecha de la próxima ejecución programada para esta acción."
 
 #. module: academy_tests
+#: model:academy.tests.answer,name:academy_tests.academy_tests_answer_B_to_question_3
 #: code:addons/academy_tests/report/academy_test_changelog_report.py:0
 #, python-format
 msgid "No"
@@ -6157,6 +6355,12 @@ msgstr "Seguras"
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_tests_attempt_resume_helper_form
 msgid "No answered"
 msgstr "Respondidas"
+
+#. module: academy_tests
+#: code:addons/academy_tests/wizard/academy_tests_copy_assignments_wizard.py:0
+#, python-format
+msgid "No assignments have been chosen to copy"
+msgstr "No se han elegido tareas para copiar"
 
 #. module: academy_tests
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_tests_attempt_resume_helper_form
@@ -6197,6 +6401,12 @@ msgstr "No topics have been assigned"
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_tests_attempt_resume_helper_form
 msgid "No total"
 msgstr "Totales"
+
+#. module: academy_tests
+#: code:addons/academy_tests/wizard/academy_tests_copy_assignments_wizard.py:0
+#, python-format
+msgid "No training actions have been chosen as targets"
+msgstr "No se han elegido como objetivos acciones formativas"
 
 #. module: academy_tests
 #: model:academy.tests.topic.version,name:academy_tests.academy_tests_topic_version_no_version
@@ -6565,7 +6775,7 @@ msgstr "Nº preguntas"
 #. module: academy_tests
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_test_training_assignment__student_count
 msgid "Nº students"
-msgstr "Nº alumnos"
+msgstr "Nº estudiantes"
 
 #. module: academy_tests
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_random_line__tag_count
@@ -6592,11 +6802,44 @@ msgid "Nº types"
 msgstr "Nº tipos"
 
 #. module: academy_tests
+#: model:academy.tests.random.line,name:academy_tests.academy_tests_random_line_demo
+msgid "Odoo"
+msgstr ""
+
+#. module: academy_tests
+#: model:academy.tests.answer,name:academy_tests.academy_tests_answer_C_to_question_1
+msgid "Odoo Enterprise Edition License"
+msgstr "Licencia de Odoo Enterprise Edition"
+
+#. module: academy_tests
 #: code:addons/academy_tests/controllers/download_resources.py:0
 #: code:addons/academy_tests/models/academy_tests_question.py:0
 #, python-format
 msgid "Odoo export"
 msgstr "Exportación de Odoo"
+
+#. module: academy_tests
+#: model:academy.tests.question,preamble:academy_tests.academy_tests_question_demo_1
+#: model:academy.tests.test.question.rel,preamble:academy_tests.academy_tests_test_question_rel_1
+msgid "Odoo has two editions, Community and Enterprise"
+msgstr "Odoo tiene dos ediciones, Community y Enterprise"
+
+#. module: academy_tests
+#: model:academy.tests.question,preamble:academy_tests.academy_tests_question_demo_2
+#: model:academy.tests.test.question.rel,preamble:academy_tests.academy_tests_test_question_rel_2
+msgid "Odoo is developed by a heterogeneous community, but all programmers use the same language"
+msgstr "Odoo es desarrollado por una comunidad heterogénea, pero todos los programadores usan el mismo lenguaje"
+
+#. module: academy_tests
+#: model:academy.tests.question,description:academy_tests.academy_tests_question_demo_4
+#: model:academy.tests.test.question.rel,description:academy_tests.academy_tests_test_question_rel_4
+msgid "Odoo logos was available to download in Odoo home page"
+msgstr "Los logotipos de Odoo estaban disponibles para descargar en la página de inicio de Odoo"
+
+#. module: academy_tests
+#: model:academy.tests.random.template,name:academy_tests.academy_tests_random_template_demo
+msgid "Odoo questions"
+msgstr "Preguntas de odoo"
 
 #. module: academy_tests
 #: model:academy.tests.test.kind,name:academy_tests.academy_tests_test_kind_official
@@ -6659,6 +6902,17 @@ msgstr "Abrir test"
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_question_form
 msgid "Open test in new window"
 msgstr "Abrir test en nueva ventana"
+
+#. module: academy_tests
+#: model:academy.tests.test,preamble:academy_tests.academy_tests_demo_1
+msgid "OpenERP (formally Odoo) is a complete open source business management system (ERP)"
+msgstr "OpenERP (formalmente Odoo) es un completo sistema de gestión empresarial (ERP) de código abierto"
+
+#. module: academy_tests
+#: model:academy.tests.question,preamble:academy_tests.academy_tests_question_demo_4
+#: model:academy.tests.test.question.rel,preamble:academy_tests.academy_tests_test_question_rel_4
+msgid "OpenERP logo was changed at the same time the name was changed"
+msgstr "El logotipo de OpenERP se cambió al mismo tiempo que se cambió el nombre"
 
 #. module: academy_tests
 #: code:addons/academy_tests/models/academy_tests_question_impugnment.py:0
@@ -6888,6 +7142,11 @@ msgid "Person who assumes the obligations of the owner"
 msgstr "Persona que asume las obligaciones del titular"
 
 #. module: academy_tests
+#: model:academy.tests.answer,name:academy_tests.academy_tests_answer_A_to_question_6
+msgid "Pink"
+msgstr "Rosa"
+
+#. module: academy_tests
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_tests_questions_by_teacher_wizard_form
 msgid "Pivot"
 msgstr "Pivote"
@@ -6932,6 +7191,12 @@ msgid "Post check"
 msgstr "Verificación posterior"
 
 #. module: academy_tests
+#: model:academy.tests.question,description:academy_tests.academy_tests_question_demo_3
+#: model:academy.tests.test.question.rel,description:academy_tests.academy_tests_test_question_rel_3
+msgid "PostgreSQL is an object-relational database management system (ORDBMS)"
+msgstr "PostgreSQL es un sistema de gestión de base de datos relacional de objetos (ORDBMS)"
+
+#. module: academy_tests
 #: model:academy.tests.question.type,name:academy_tests.academy_tests_question_type_2
 msgid "Practical"
 msgstr "Práctica"
@@ -6945,6 +7210,8 @@ msgstr "Práctica"
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_test_question_rel__preamble
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_tests_random_template_form
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_tests_random_wizard_form
+#: code:addons/academy_tests/models/academy_tests_test.py:0
+#, python-format
 msgid "Preamble"
 msgstr "Preámbulo"
 
@@ -7063,6 +7330,11 @@ msgid "Provisional"
 msgstr "Provisional"
 
 #. module: academy_tests
+#: model:academy.tests.answer,name:academy_tests.academy_tests_answer_A_to_question_2
+msgid "Python"
+msgstr ""
+
+#. module: academy_tests
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_random_template_scheduled__code
 msgid "Python Code"
 msgstr "Código Python"
@@ -7114,6 +7386,7 @@ msgstr "Cantidad (DESC)"
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_tests_question_impugnment_reply_form
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_tests_test_question_rel_embed_tree
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_tests_test_question_rel_tree
+#: code:addons/academy_tests/models/academy_tests_test.py:0
 #, python-format
 msgid "Question"
 msgstr "Pregunta"
@@ -7219,7 +7492,7 @@ msgstr "La pregunta con dependencias debe agregarse manualmente"
 #. module: academy_tests
 #: model:ir.actions.report,name:academy_tests.action_report_question_student_statistics
 msgid "Question/student statistics"
-msgstr "Estadísticas de preguntas / alumnos"
+msgstr "Estadísticas de preguntas / estudiantes"
 
 #. module: academy_tests
 #: code:addons/academy_tests/controllers/download_resources.py:0
@@ -7265,6 +7538,11 @@ msgstr "Estadísticas de preguntas / alumnos"
 #, python-format
 msgid "Questions"
 msgstr "Preguntas"
+
+#. module: academy_tests
+#: model:academy.tests.random.line,description:academy_tests.academy_tests_random_line_demo
+msgid "Questions about Odoo"
+msgstr "Preguntas sobre Odoo"
 
 #. module: academy_tests
 #: model:academy.tests.question.type,description:academy_tests.academy_tests_question_type_1
@@ -7550,7 +7828,7 @@ msgstr "Informe para imprimir tests"
 #. module: academy_tests
 #: model:ir.model.fields,field_description:academy_tests.field_academy_competency_unit__questions_ratio
 msgid "Req/Av"
-msgstr "Req./Disp."
+msgstr "Req/Disp"
 
 #. module: academy_tests
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_test_question_rel__request_id
@@ -7755,6 +8033,11 @@ msgid "Search value not supported"
 msgstr "Valor de búsqueda no admitido"
 
 #. module: academy_tests
+#: model:academy.tests.answer,name:academy_tests.academy_tests_answer_B_to_question_4
+msgid "Second logo (2)"
+msgstr "Segundo logotipo (2)"
+
+#. module: academy_tests
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_test_training_assignment__secondary_activity_id
 msgid "Secondary activity"
 msgstr "Actividad secundaria"
@@ -7911,7 +8194,7 @@ msgstr "Mostrar el número de tareas programadas"
 #. module: academy_tests
 #: model:ir.model.fields,help:academy_tests.field_academy_tests_test_training_assignment__student_count
 msgid "Show number of students who can take the test"
-msgstr "Mostrar el número de alumnos que pueden realizar el test"
+msgstr "Mostrar el número de estudiantes que pueden realizar el test"
 
 #. module: academy_tests
 #: model:ir.model.fields,help:academy_tests.field_academy_tests_question_request__supplied
@@ -8215,6 +8498,16 @@ msgid "Something about this version"
 msgstr "Algo sobre esta versión"
 
 #. module: academy_tests
+#: model:ir.model.fields.selection,name:academy_tests.selection__academy_tests_copy_assignments_wizard__state__step1
+msgid "Source"
+msgstr "Fuente"
+
+#. module: academy_tests
+#: model_terms:ir.ui.view,arch_db:academy_tests.view_copy_assignments_wizard_assignment_tree
+msgid "Source assignments"
+msgstr "Asignaciones de origen"
+
+#. module: academy_tests
 #: code:addons/academy_tests/models/academy_tests_random_line.py:0
 #: model:ir.model.fields.selection,name:academy_tests.selection__academy_tests_random_line__state__step5
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_tests_question_categorize_wizard_form
@@ -8243,6 +8536,7 @@ msgstr "Fecha/hora de inicio"
 #. module: academy_tests
 #: model:ir.model.fields,field_description:academy_tests.field_academy_test_new_topic_version_wizard__state
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_change_owner_wizard__state
+#: model:ir.model.fields,field_description:academy_tests.field_academy_tests_copy_assignments_wizard__state
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_question__status
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_question_categorize_wizard__state
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_question_import_wizard__state
@@ -8278,7 +8572,7 @@ msgstr "Estadísticas de las respuestas agrupadas por pregunta"
 #. module: academy_tests
 #: model_terms:ir.actions.report,help:academy_tests.action_report_student_question_statistics
 msgid "Statistics on the answers grouped by student"
-msgstr "Estadísticas sobre las respuestas agrupadas por alumno"
+msgstr "Estadísticas sobre las respuestas agrupadas por estudiante"
 
 #. module: academy_tests
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_question_categorize_wizard__status
@@ -8300,12 +8594,12 @@ msgstr "Estudiante"
 #. module: academy_tests
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_question_impugnment__student_name
 msgid "Student name"
-msgstr "Nombre del alumno"
+msgstr "Nombre del estudiante"
 
 #. module: academy_tests
 #: model:ir.actions.report,name:academy_tests.action_report_student_question_statistics
 msgid "Student/question statistics"
-msgstr "Estadísticas de alumnos / preguntas"
+msgstr "Estadísticas del estudiante / preguntas"
 
 #. module: academy_tests
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_tests_question_impugnment_kanban
@@ -8451,6 +8745,11 @@ msgstr "Etiquetas"
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_random_template_scheduled__crud_model_name
 msgid "Target Model"
 msgstr "Modelo de objetivo"
+
+#. module: academy_tests
+#: model:ir.model.fields,help:academy_tests.field_academy_tests_copy_assignments_wizard__training_ref
+msgid "Target training object"
+msgstr "Elemento formativo objetivo"
 
 #. module: academy_tests
 #: model:ir.model.fields.selection,name:academy_tests.selection__academy_tests_question_categorize_wizard__state__step1
@@ -8616,7 +8915,7 @@ msgstr "Intentos para el test"
 #. module: academy_tests
 #: model:ir.model.fields,help:academy_tests.field_academy_tests_test_training_assignment__attempt_ids
 msgid "Test attempts by students"
-msgstr "Intentos de test por alumnos"
+msgstr "Intentos de test por estudiante"
 
 #. module: academy_tests
 #: model:ir.model.fields,field_description:academy_tests.field_academy_competency_unit__test_block_id
@@ -8661,6 +8960,11 @@ msgstr "Descripción del test"
 #, python-format
 msgid "Test field is required"
 msgstr "El campo test es obligatorio"
+
+#. module: academy_tests
+#: model:academy.tests.test.training.assignment,name:academy_tests.academy_tests_test_training_assignment_tests_demo_1
+msgid "Test from System - 2023-07-10 18:42:52"
+msgstr "Test del sistema - 2023-07-10 18:42:52"
 
 #. module: academy_tests
 #: model:mail.message.subtype,description:academy_tests.academy_tests_test_written
@@ -8786,7 +9090,7 @@ msgstr "Enlace test/pregunta"
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_training_module_form_add_test_page
 #, python-format
 msgid "Tests"
-msgstr ""
+msgstr "Tests"
 
 #. module: academy_tests
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_test_test_block_rel__test_block_id
@@ -8856,6 +9160,12 @@ msgid "The attachment line \"{}\" is not valid"
 msgstr "La línea del archivo adjunto \"{}\" no es válida"
 
 #. module: academy_tests
+#: model:ir.model.fields,help:academy_tests.field_academy_tests_random_template__company_id
+#: model:ir.model.fields,help:academy_tests.field_academy_tests_random_wizard__company_id
+msgid "The company this record belongs to"
+msgstr "La compañía a la que pertenece este registro"
+
+#. module: academy_tests
 #: model:ir.model.fields,help:academy_tests.field_academy_abstract_attempt__competency_unit_id
 #: model:ir.model.fields,help:academy_tests.field_academy_tests_attempt__competency_unit_id
 #: model:ir.model.fields,help:academy_tests.field_academy_tests_attempt_resume_helper__competency_unit_id
@@ -8905,6 +9215,11 @@ msgstr ""
 "                   posible."
 
 #. module: academy_tests
+#: model:academy.tests.topic,description:academy_tests.academy_tests_topic_demo_2
+msgid "The goddess of a new religion"
+msgstr "La diosa de una nueva religión."
+
+#. module: academy_tests
 #: code:addons/academy_tests/controllers/redirecto_to.py:0
 #, python-format
 msgid "The menu item must have an associated window action"
@@ -8923,6 +9238,11 @@ msgstr ""
 #, python-format
 msgid "The number of questions must be a positive integer"
 msgstr "El número de preguntas debe ser un número entero positivo"
+
+#. module: academy_tests
+#: model:academy.tests.topic.version,description:academy_tests.academy_tests_topic_version_demo_2
+msgid "The only true version"
+msgstr "La única versión verdadera"
 
 #. module: academy_tests
 #: model:ir.model.fields,help:academy_tests.field_academy_tests_random_template_scheduled__priority
@@ -9157,6 +9477,21 @@ msgid ""
 msgstr "Estas preguntas exponen una situación y proponen varias alternativas, siendo una de ellas la correcta"
 
 #. module: academy_tests
+#: model:academy.tests.answer,name:academy_tests.academy_tests_answer_C_to_question_4
+msgid "Third logo (3)"
+msgstr "Tercer logotipo (3)"
+
+#. module: academy_tests
+#: model:academy.tests.tag,name:academy_tests.academy_tests_tag_demo_third_party
+msgid "Third party"
+msgstr "Terceros"
+
+#. module: academy_tests
+#: model:academy.tests.tag,description:academy_tests.academy_tests_tag_demo_third_party
+msgid "Third party software"
+msgstr "Software de terceros"
+
+#. module: academy_tests
 #: model:ir.model.fields.selection,name:academy_tests.selection__academy_tests_change_owner_wizard__authorship__third
 #: model:ir.model.fields.selection,name:academy_tests.selection__academy_tests_question_categorize_wizard__authorship__third
 #: model:ir.model.fields.selection,name:academy_tests.selection__academy_tests_random_line__authorship__third
@@ -9184,9 +9519,19 @@ msgid "This is the default correction scale"
 msgstr "Esta es la escala de corrección predeterminada"
 
 #. module: academy_tests
+#: model:academy.tests.answer,description:academy_tests.academy_tests_answer_B_to_question_2
+msgid "This language received name in honour of Augusta Ada, Countess of Lovelace"
+msgstr "Este idioma recibió su nombre en honor a Augusta Ada, Condesa de Lovelace"
+
+#. module: academy_tests
 #: model:ir.model.fields.selection,name:academy_tests.selection__academy_tests_questions_by_teacher_wizard__period__5
 msgid "This month"
 msgstr "Este mes"
+
+#. module: academy_tests
+#: model:academy.tests.test,description:academy_tests.academy_tests_demo_1
+msgid "This test contains some questions related with Odoo"
+msgstr "Este test contiene algunas preguntas relacionadas con Odoo"
 
 #. module: academy_tests
 #: code:addons/academy_tests/models/academy_tests_test.py:0
@@ -9363,6 +9708,7 @@ msgid "Tracking"
 msgstr "Seguimiento"
 
 #. module: academy_tests
+#: model:ir.model.fields,field_description:academy_tests.field_academy_tests_copy_assignments_wizard__training_ref
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_random_line__training_ref
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_random_template__training_ref
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_random_template_type_wizard__training_ref
@@ -9384,9 +9730,15 @@ msgid "Training action"
 msgstr "Acción formativa"
 
 #. module: academy_tests
+#: model:ir.model.fields,field_description:academy_tests.field_academy_tests_copy_assignments_wizard__training_action_ids
+msgid "Training actions"
+msgstr "Acciones formativas"
+
+#. module: academy_tests
 #: model:ir.model.fields,field_description:academy_tests.field_academy_abstract_attempt__training_activity_id
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_attempt__training_activity_id
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_attempt_resume_helper__training_activity_id
+#: model:ir.model.fields,field_description:academy_tests.field_academy_tests_copy_assignments_wizard__training_activity_id
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_question_training_activity_rel__training_activity_id
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_random_template__training_activity_id
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_random_wizard__training_activity_id
@@ -9456,6 +9808,11 @@ msgstr "Tipo de formación"
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_training_activity_topics_module_relationships_table_qweb
 msgid "Training unit"
 msgstr "Unidad formativa"
+
+#. module: academy_tests
+#: model:academy.tests.answer,name:academy_tests.academy_tests_answer_C_to_question_6
+msgid "Transparent"
+msgstr "Transparente"
 
 #. module: academy_tests
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_tests_attempt_final_answer_helper_tree
@@ -9569,6 +9926,11 @@ msgstr "Preguntas sin categorizar"
 #: model:ir.model,name:academy_tests.model_report_academy_tests_view_uncategorized_by_user_report_qweb
 msgid "Uncategorized questions by user"
 msgstr "Preguntas sin categorizar por usuario"
+
+#. module: academy_tests
+#: model:academy.tests.topic.version,name:academy_tests.academy_tests_topic_version_demo_2
+msgid "Unique"
+msgstr "Único"
 
 #. module: academy_tests
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_answer__message_unread
@@ -9751,12 +10113,27 @@ msgid "Value will be used to compute secodary_id field domain"
 msgstr "El valor se usará para calcular el dominio del campo secundario_id"
 
 #. module: academy_tests
+#: model:academy.tests.answer,name:academy_tests.academy_tests_answer_C_to_question_2
+msgid "Velázquez Visual"
+msgstr ""
+
+#. module: academy_tests
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_tests_test_question_rel_embed_tree
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_tests_test_question_rel_tree
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_tests_topic_training_module_link_form
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_tests_topic_training_module_link_tree
 msgid "Version"
 msgstr "Versión"
+
+#. module: academy_tests
+#: model:academy.tests.topic.version,description:academy_tests.academy_tests_topic_version_demo_1
+msgid "Version 13"
+msgstr ""
+
+#. module: academy_tests
+#: model:academy.tests.topic.version,description:academy_tests.academy_tests_topic_version_demo_3
+msgid "Version 7"
+msgstr ""
 
 #. module: academy_tests
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_tests_topic_version_search
@@ -9898,6 +10275,12 @@ msgid "What did the user do?"
 msgstr "¿Qué hizo el usuario?"
 
 #. module: academy_tests
+#: model:academy.tests.question,name:academy_tests.academy_tests_question_demo_1
+#: model:academy.tests.test.question.rel,name:academy_tests.academy_tests_test_question_rel_1
+msgid "What is the type of license using by Odoo Community?"
+msgstr ""
+
+#. module: academy_tests
 #: model:ir.model.fields,help:academy_tests.field_academy_tests_question__preamble
 #: model:ir.model.fields,help:academy_tests.field_academy_tests_test_question_rel__preamble
 msgid "What it is said before beginning to question"
@@ -9918,6 +10301,28 @@ msgid ""
 msgstr ""
 "Cuando se lidia con múltiples acciones, el orden de ejecución se basa en la secuencia. Números bajos "
 "significan mayor prioridad."
+
+#. module: academy_tests
+#: model:academy.tests.question,name:academy_tests.academy_tests_question_demo_5
+#: model:academy.tests.test.question.rel,name:academy_tests.academy_tests_test_question_rel_5
+msgid "Which is the Odoo Spain homepage URL?"
+msgstr "¿Cuál es la URL de la página de inicio de Odoo España?"
+
+#. module: academy_tests
+#: model:academy.tests.question,name:academy_tests.academy_tests_question_demo_6
+msgid "Which is the color of the Invisible Pink Unicorn?"
+msgstr "¿De qué color es el Unicornio Rosa Invisible?"
+
+#. module: academy_tests
+#: model:academy.tests.question,name:academy_tests.academy_tests_question_demo_4
+#: model:academy.tests.test.question.rel,name:academy_tests.academy_tests_test_question_rel_4
+msgid "Which of the logos shown in the image corresponds to Odoo?"
+msgstr "¿Cuál de los logos que se muestran en la imagen corresponde a Odoo?"
+
+#. module: academy_tests
+#: model:academy.tests.answer,name:academy_tests.academy_tests_answer_D_to_question_6
+msgid "White"
+msgstr "Blanco"
 
 #. module: academy_tests
 #: model:ir.model.fields.selection,name:academy_tests.selection__academy_tests_update_questions_wizard__text_encoding__cp1252
@@ -9953,6 +10358,11 @@ msgstr "Asistente"
 #: model:ir.model.fields,help:academy_tests.field_academy_tests_question_impugnment_reply__state
 msgid "Wizard status bar progress"
 msgstr "Progreso en la barra de estado del asistente"
+
+#. module: academy_tests
+#: model:ir.model.fields,help:academy_tests.field_academy_tests_copy_assignments_wizard__state
+msgid "Wizard steps"
+msgstr "Pasos del asistente"
 
 #. module: academy_tests
 #: model:ir.model.fields,help:academy_tests.field_academy_tests_random_template_scheduled__code
@@ -10003,6 +10413,7 @@ msgid "Wrong score"
 msgstr "Valoración (incorrectas)"
 
 #. module: academy_tests
+#: model:academy.tests.answer,name:academy_tests.academy_tests_answer_A_to_question_3
 #: code:addons/academy_tests/report/academy_test_changelog_report.py:0
 #, python-format
 msgid "Yes"
@@ -10406,6 +10817,16 @@ msgid "global"
 msgstr ""
 
 #. module: academy_tests
+#: model:academy.tests.answer,name:academy_tests.academy_tests_answer_B_to_question_5
+msgid "https://odoospain.odoo.com"
+msgstr ""
+
+#. module: academy_tests
+#: model:academy.tests.answer,name:academy_tests.academy_tests_answer_A_to_question_5
+msgid "https://wwww.odoo.es"
+msgstr ""
+
+#. module: academy_tests
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_tests_random_template_form
 msgid "is also accepted."
 msgstr "también es aceptado."
@@ -10477,6 +10898,16 @@ msgid "type"
 msgstr "tipo"
 
 #. module: academy_tests
+#: model:academy.tests.topic.version,name:academy_tests.academy_tests_topic_version_demo_1
+msgid "v.13"
+msgstr ""
+
+#. module: academy_tests
+#: model:academy.tests.topic.version,name:academy_tests.academy_tests_topic_version_demo_3
+msgid "v.7"
+msgstr ""
+
+#. module: academy_tests
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_test_new_topic_version_wizard_form
 msgid "view_academy_test_new_topic_version_wizard_form"
 msgstr ""
@@ -10499,6 +10930,11 @@ msgstr ""
 #. module: academy_tests
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_tests_topic_version_x2many_tree
 msgid "view_academy_tests_topic_version_x2many_tree"
+msgstr ""
+
+#. module: academy_tests
+#: model:academy.tests.random.template,name_pattern:academy_tests.academy_tests_random_template_demo
+msgid "{template} %m/%d/%Y - {sequence}"
 msgstr ""
 
 #. module: academy_tests
@@ -10540,3 +10976,41 @@ msgstr "{} preguntas"
 #, python-format
 msgid "{} represents an empty record of {}"
 msgstr "{} representa un registro vacío de {}"
+
+
+#. module: academy_tests
+#: model:ir.actions.server,name:academy_tests.action_academy_tests_question_impugnment_close
+msgid "Close"
+msgstr "Cerrar"
+
+#. module: academy_tests
+#: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_question_impugnment_search
+msgid "My impugnments"
+msgstr "Mis impugnaciones"
+
+#. module: academy_tests
+#: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_question_impugnment_search
+msgid "List only my own impugnments"
+msgstr "Listar sólo mis propias impugnaciones"
+
+#. module: academy_tests
+#: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_question_impugnment_search
+msgid "Active impugnments"
+msgstr "Impugnaciones activas"
+
+#. module: academy_tests
+#: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_question_impugnment_search
+msgid "List only unclosed impugnments"
+msgstr "Listar sólo las impugnaciones no cerradas"
+
+#. module: academy_tests
+#: code:addons/academy_tests/models/academy_tests_test.py:0
+#, python-format
+msgid "Explanation"
+msgstr "Justificación"
+
+#. module: academy_tests
+#: code:addons/academy_tests/models/academy_tests_test.py:0
+#, python-format
+msgid "Right answer"
+msgstr "Respuesta correcta"

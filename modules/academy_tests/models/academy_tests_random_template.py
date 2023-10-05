@@ -47,6 +47,32 @@ class AcademyTestsRandomTemplate(models.Model):
 
     _rec_name = 'name'
     _order = 'name ASC'
+    _check_company_auto = True
+
+    company_id = fields.Many2one(
+        string='Company',
+        required=False,
+        readonly=True,
+        index=True,
+        default=lambda self: self.env.company,
+        help='The company this record belongs to',
+        comodel_name='res.company',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False,
+        compute='_compute_company_id',
+        store=True
+    )
+
+    @api.depends('training_ref')
+    def _compute_company_id(self):
+        for record in self:
+            training_ref = record.training_ref
+            if training_ref and hasattr(training_ref, 'company_id'):
+                record.company_id = getattr(training_ref, 'company_id', None)
+            else:
+                record.company_id = None
 
     name = fields.Char(
         string='Name',

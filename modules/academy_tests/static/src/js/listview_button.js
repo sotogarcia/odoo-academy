@@ -1,62 +1,66 @@
 odoo.define('academy_tests.listview_button', function (require) {
     "use strict";
 
+    var core = require('web.core');
+    var QWeb = core.qweb;
+
     var KanbanController = require("web.KanbanController");
     var ListController = require("web.ListController");
 
     var IncludeListView = {
         renderButtons: function() {
-            var expected = "academy.tests.random.template";
 
             this._super.apply(this, arguments);
 
-            if (this.hasButtons && this.modelName === expected) {
-                var summary_apply_leave_btn = this.$buttons.find(
-                    'button.o_create_template_from_training');
-                summary_apply_leave_btn.on(
-                    'click', this.proxy('create_template_from_training'));
+            let model = 'academy.tests.random.template';
+            let btn_id = '#11B3838D16FB4B5F8814077387FCAF3C';
+            let template = 'create_template_from_training';
+            let method = this.proxy('create_template_from_training');
 
-                // Patch: the o_button_import was appearing duplicated
-                if (this.viewType === 'kanban') {
-                    this.$buttons.find('button.o_button_import').hide();
+            let custom = null;
+            let button = null;
+            let element = null;
+            let selector = null;
+
+            let vt = this.viewType
+
+            if (this.modelName == model && (vt === 'kanban' || vt === 'list')
+                && this.$buttons && !this.$buttons.find(btn_id).length)
+            {
+                switch(this.viewType) {
+
+                    case 'kanban':
+                        template = 'KanbanView.buttons.' + template;
+                        selector = 'button:last';
+                        break;
+
+                    case 'list':
+                        template = 'ListView.buttons.' + template;
+                        selector = 'button:last';
+                        break;
+                } // switch
+
+                element = this.$buttons.last().find(selector);
+
+                if(element.length === 1) {
+                    custom = $(QWeb.render(template));
+                    custom = element.after(custom);
+
+                    button = this.$buttons.find(btn_id);
+                    button.on('click', method);
                 }
-            }
-        },
 
-        activateTemplateBaseButton: function() {
-            return this.isExpectedModel() && this.hasDefaultTrainingRef();
-        },
+            } // if
 
-        isExpectedModel: function() {
-            return this.modelName =='academy.tests.random.template';
         },
-
-        hasDefaultTrainingRef: function() {
-            var data = this.model.get(this.handle);
-            return 'context' in data && 'default_training_ref' in data.context;
-        },
-
-        getDefaultTrainingRef: function() {
-            var data = this.model.get(this.handle);
-            return data.context['default_training_ref'];
-        },
-
 
         create_template_from_training: function() {
-            var self = this;
+            let self = this;
 
-            var training_ref = self.getDefaultTrainingRef()
+            let data = this.model.get(this.handle);
+            let training_ref = data.context['default_training_ref'];
 
-            /* this._rpc({
-                model: 'academy.tests.random.template',
-                method: 'template_for_training',
-                args: [training_ref],
-            }).then(function (result) {
-                self.do_action(result);
-            });*/
-
-            var self = this;
-            var action = {
+            let action = {
                 type: "ir.actions.act_window",
                 name: "Choose type",
                 res_model: "academy.tests.random.template.type.wizard",
@@ -68,6 +72,7 @@ odoo.define('academy_tests.listview_button', function (require) {
                 context: {'training_ref': training_ref},
                 flags: {'form': {'action_buttons': true, 'options': {'mode': 'edit'}}}
             };
+
             return this.do_action(action);
         },
 

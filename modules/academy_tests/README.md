@@ -1,2 +1,3 @@
 - [ ] Permitir filtar las impugnaciones por tema
 - [ ] Mostrar el usuario que replicó
+- [ ] Mostrar el número total de preguntas de una plantilla

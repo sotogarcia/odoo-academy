@@ -167,7 +167,8 @@
         'wizard/academy_tests_remove_duplicate_questions_wizard_view.xml',
         'wizard/academy_tests_question_request_set_wizard_view.xml',
         'wizard/academy_tests_question_append_wizard_link_view.xml',
-        'wizard/academy_tests_random_template_type_wizard_view.xml'
+        'wizard/academy_tests_random_template_type_wizard_view.xml',
+        'wizard/academy_tests_copy_assignments_wizard_view.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

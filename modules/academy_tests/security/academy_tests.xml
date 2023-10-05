@@ -12,48 +12,6 @@
             <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
         </record>
 
-        <!-- tests
-        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-        <record id="academy_teachers_can_only_update_or_unlink_their_own_tests_rule" model="ir.rule">
-            <field name="name">Academy: Teachers can only update or unlink their own tests</field>
-            <field name="model_id" ref="academy_tests.model_academy_tests_test" />
-            <field name="groups" eval="[(4, ref('academy_base.academy_group_teacher'))]" />
-            <field name="global" eval="False" />
-            <field name="perm_read" eval="False" />
-            <field name="perm_create" eval="False" />
-            <field name="perm_write" eval="True" />
-            <field name="perm_unlink" eval="True" />
-            <field name="domain_force">['|', '|', ('subrogate_id', '=', user.id), ('owner_id', '=', user.id), ('owner_id', '=', False)]</field>
-            <field name="active" eval="True" />
-        </record>
-
-        <record id="academy_technicians_can_update_tests_of_others_rule" model="ir.rule">
-            <field name="name">Academy: Technicians can update tests of others</field>
-            <field name="model_id" ref="academy_tests.model_academy_tests_test" />
-            <field name="groups" eval="[(4, ref('academy_base.academy_group_technical'))]" />
-            <field name="global" eval="False" />
-            <field name="perm_read" eval="False" />
-            <field name="perm_create" eval="False" />
-            <field name="perm_write" eval="True" />
-            <field name="perm_unlink" eval="False" />
-            <field name="domain_force">[(1,'=',1)]</field>
-            <field name="active" eval="True" />
-        </record>
-
-        <record id="academy_technicians_and_managers_can_update_or_unlink_their_own_tests_rule" model="ir.rule">
-            <field name="name">Academy: Technicians and managers can update or unlink their own tests</field>
-            <field name="model_id" ref="academy_tests.model_academy_tests_test"/>
-            <field name="groups" eval="[(4, ref('academy_base.academy_group_manager'))]"/>
-            <field name="global" eval="False" />
-            <field name="perm_read" eval="False" />
-            <field name="perm_create" eval="False" />
-            <field name="perm_write" eval="True" />
-            <field name="perm_unlink" eval="True" />
-            <field name="domain_force">[(1,'=',1)]</field>
-            <field name="active" eval="True" />
-        </record>
-
-
         <!-- answers
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
         <!-- <record id="academy_teachers_can_only_update_or_unlink_their_own_answers_rule" model="ir.rule">
@@ -192,7 +150,7 @@
             <field name="perm_write" eval="True" />
             <field name="perm_unlink" eval="True" />
             <field name="domain_force">['|', '|', ('subrogate_id', '=', user.id), ('owner_id', '=', user.id), ('owner_id', '=', False)]</field>
-            <field name="active" eval="False" />
+            <field name="active" eval="True" />
         </record>
 
         <record id="academy_technicians_can_update_templates_of_others_rule" model="ir.rule">
@@ -200,10 +158,10 @@
             <field name="model_id" ref="academy_tests.model_academy_tests_random_template" />
             <field name="groups" eval="[(4, ref('academy_base.academy_group_technical'))]" />
             <field name="global" eval="False" />
-            <field name="perm_read" eval="False" />
-            <field name="perm_create" eval="False" />
+            <field name="perm_read" eval="True" />
+            <field name="perm_create" eval="True" />
             <field name="perm_write" eval="True" />
-            <field name="perm_unlink" eval="False" />
+            <field name="perm_unlink" eval="True" />
             <field name="domain_force">[(1,'=',1)]</field>
             <field name="active" eval="True" />
         </record>
@@ -213,12 +171,22 @@
             <field name="model_id" ref="academy_tests.model_academy_tests_random_template"/>
             <field name="groups" eval="[(4, ref('academy_base.academy_group_manager'))]"/>
             <field name="global" eval="False" />
-            <field name="perm_read" eval="False" />
-            <field name="perm_create" eval="False" />
+            <field name="perm_read" eval="True" />
+            <field name="perm_create" eval="True" />
             <field name="perm_write" eval="True" />
             <field name="perm_unlink" eval="True" />
             <field name="domain_force">[(1,'=',1)]</field>
             <field name="active" eval="True" />
+        </record>
+
+
+        <!-- Multicompany
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        <record id="ir_rule_restricted_ramdom_template_multi_company" model="ir.rule">
+            <field name="name">Restricted Random Template: multi-company</field>
+            <field name="model_id" ref="academy_tests.model_academy_tests_random_template"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
         </record>
 
 

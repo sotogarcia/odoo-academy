@@ -1266,7 +1266,7 @@ class AcademyTestsQuestion(models.Model):
 
         for record in self:
             lines = []
-            index = record.id if editable else index + 1
+            index = self._get_real_id(record) if editable else index + 1
 
             # STEP 1: Append description line (one or more)
             desc_line = prepare_text(record.description or '', '>')
@@ -1579,11 +1579,9 @@ class AcademyTestsQuestion(models.Model):
 
         good = correction_scale.right * 100
         bad = correction_scale.wrong * 100
-        print(good, bad)
 
         good = self._round_to_moodle(good)
         bad = self._round_to_moodle(bad)
-        print(str(good), str(bad))
 
         node = self._moodle_create_node(multichoice=(a_right > 1))
 
@@ -1593,7 +1591,6 @@ class AcademyTestsQuestion(models.Model):
 
         for answer in self.answer_ids:
             fraction = str(good) if answer.is_correct else str(bad)
-            print(answer.is_correct, str(good))
 
             self._moodle_append_answer(node, answer, fraction)
 

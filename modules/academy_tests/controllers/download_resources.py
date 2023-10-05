@@ -173,7 +173,7 @@ class TestAttachments(http.Controller):
         return request.make_response(content, headers=headers)
 
     def _browse_for_test(self, test_id_str, verify=True):
-        test_set = request.env['academy.tests.test']
+        test_set = request.env['academy.tests.test'].sudo()
 
         test_id = self._safe_cast(test_id_str, int, 0)
 
@@ -248,3 +248,29 @@ class TestAttachments(http.Controller):
 
         return [('Content-Type', 'text/xml'),
                 ('Content-Disposition', content_disposition(fname))]
+
+    @http.route('/academy_tests/test/download/<int:test_id>', type='http',
+                auth="public", website=False, sitemap=False)
+    def test_download(self, test_id, download=True, **kw):
+
+        try:
+            test_set = self._browse_for_test(test_id)
+            xid = 'academy_tests.action_report_full_printable_test'
+            report = request.env.ref(xid).sudo()
+            html = report.render_qweb_pdf(test_set.id)[0]
+        except AssertionError as ae:
+            return Response(str(ae), status=404)
+        except Exception as ex:
+            _logger.error(ex)
+            return Response('Unable to display preview. See logs.', status=404)
+
+        httpheaders = [
+            ('Content-Type', 'application/pdf; charset=utf-8'),
+            ('Content-Length', len(html))
+        ]
+
+        if download:
+            disposition = 'attachment; filename="{}.pdf"'.format(test_set.name)
+            httpheaders.append(('Content-Disposition', disposition))
+
+        return request.make_response(html, headers=httpheaders)

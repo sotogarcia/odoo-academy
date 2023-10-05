@@ -331,7 +331,8 @@ class AcademyTrainingSession(models.Model):
         ondelete='cascade',
         auto_join=False,
         compute='_compute_primary_teacher_id',
-        store=True
+        store=True,
+        track_visibility='onchange'
     )
 
     @api.depends('teacher_assignment_ids')
@@ -402,7 +403,8 @@ class AcademyTrainingSession(models.Model):
         ondelete='cascade',
         auto_join=False,
         compute='_compute_primary_facility_id',
-        store=True
+        store=True,
+        track_visibility='onchange'
     )
 
     @api.depends('reservation_ids')
@@ -540,6 +542,7 @@ class AcademyTrainingSession(models.Model):
                 span = record.date_delay * 3600.0
                 record.date_stop = record.date_start + timedelta(seconds=span)
 
+    @api.depends('date_start', 'date_stop')
     def _compute_duration(self):
         for record in self:
             delay = record._time_interval(record.date_start, record.date_stop)
@@ -727,6 +730,23 @@ class AcademyTrainingSession(models.Model):
             _('Session cannot end before starting')
         )
     ]
+
+    def _track_subtype(self, init_values):
+        self.ensure_one()
+
+        xid = 'academy_timesheets.{}'
+
+        if self.state != 'draft':
+            xid = xid.format('academy_timesheets_training_session_changed')
+            result = self.env.ref(xid)
+        elif init_values.get('state', False) == 'ready':
+            xid = xid.format('academy_timesheets_training_session_draft')
+            result = self.env.ref(xid)
+        else:
+            _super = super(AcademyTrainingSession, self)
+            result = _super._track_subtype(init_values)
+
+        return result
 
     @staticmethod
     def _time_interval(start, stop):
@@ -1072,6 +1092,8 @@ class AcademyTrainingSession(models.Model):
             }
             result.reservation_ids.write(reservation_values)
 
+        result._update_session_followers()
+
         return result
 
     def write(self, values):
@@ -1111,7 +1133,56 @@ class AcademyTrainingSession(models.Model):
                 self_ctx = self.with_context(ctx)
                 self_ctx.reservation_ids.write(reservation_values)
 
+        self._update_session_followers()
+
         return result
+
+    def _update_session_followers(self):
+        path = ('teacher_assignment_ids.teacher_id.res_users_id.'
+                'partner_id.id')
+
+        for record in self:
+            partner_ids = record.mapped(path)
+            if record.state == 'ready':
+                record.message_subscribe(partner_ids=partner_ids)
+
+    def toggle_followers(self):
+
+        path = ('teacher_assignment_ids.teacher_id.res_users_id.'
+                'partner_id')
+
+        current_partner = self.env.user.partner_id
+
+        for record in self:
+            suscribe_set = record.mapped(path) + current_partner
+            unsuscribe_set = self.message_partner_ids.filtered(
+                lambda r: r not in suscribe_set)
+
+            if suscribe_set:
+                partner_ids = suscribe_set.mapped('id')
+                record.message_subscribe(partner_ids=partner_ids)
+
+            if unsuscribe_set:
+                partner_ids = unsuscribe_set.mapped('id')
+                self.message_unsubscribe(partner_ids=partner_ids)
+
+    def send_by_mail(self):
+        """
+        """
+        context = self.env.context.copy()
+        context.update({'include_schedule_url': True})
+
+        tpl_xid = 'academy_timesheets.mail_template_training_session_details'
+        email_template = self.env.ref(tpl_xid).with_context(context)
+
+        send_mail = email_template.send_mail
+
+        for record in self:
+            teacher_set = self.mapped('teacher_assignment_ids.teacher_id')
+            for teacher in teacher_set:
+                address = '{} <{}>'.format(teacher.name, teacher.email)
+                evalues = {'email_to': address}
+                send_mail(record.id, email_values=evalues, force_send=True)
 
     @api.returns('self', lambda value: value.id)
     def copy(self, default=None):
@@ -1121,9 +1192,16 @@ class AcademyTrainingSession(models.Model):
         if 'date_start' not in default:
             date_start = self.date_start + timedelta(days=7)
             default['date_start'] = date_start.strftime('%Y-%m-%d %H:%M:%S')
+        else:
+            date_start = fields.Datetime.from_string(default['date_start'])
+
         if 'date_stop' not in default:
             date_stop = self.date_stop + timedelta(days=7)
             default['date_stop'] = date_stop.strftime('%Y-%m-%d %H:%M:%S')
+        else:
+            date_stop = fields.Datetime.from_string(default['date_stop'])
+
+        default['date_delay'] = self._time_interval(date_start, date_stop)
 
         if 'state' not in default:
             default['state'] = 'draft'
@@ -1247,8 +1325,6 @@ class AcademyTrainingSession(models.Model):
 
         act_window = teacher.view_sessions()
         act_window.update(views=self._compute_view_mapping())
-
-        print(act_window)
 
         return act_window
 

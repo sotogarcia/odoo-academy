@@ -32,6 +32,7 @@
         'data/ir_actions_server_data.xml',
         'data/html_templates_data.xml',
         'data/report_paperformat_data.xml',
+        'data/mail_message_subtype_data.xml',
 
         'security/academy_non_teaching_task.xml',
         'security/academy_training_session.xml',

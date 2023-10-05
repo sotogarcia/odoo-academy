@@ -315,5 +315,165 @@
         ]]></field>
         </record>
 
+
+        <record id="mail_template_training_session_details" model="mail.template">
+            <field name="name">Training session details</field>
+            <field name="subject">${object.task_name}</field>
+            <field name="email_from">${(object.company_id.name or user.name)|safe} &lt;${(object.company_id.email or user.email)|safe}&gt;</field>
+            <field name="email_to"></field>
+            <field name="reply_to">${user.name|safe} &lt;${user.email|safe}&gt;</field>
+            <field name="report_template" />
+            <field name="report_name" />
+            <field name="user_signature" eval="False" />
+            <field name="auto_delete" eval="True" />
+            <field name="model_id" ref="academy_timesheets.model_academy_training_session" />
+            <field name="body_html"><![CDATA[
+        <table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
+          <tr>
+            <td align="center">
+              <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
+                <tbody>
+                  <!-- HEADER -->
+                  <tr>
+                    <td align="center" style="min-width: 590px;">
+                      <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                        <tr>
+                          <td valign="middle">
+                            <span style="font-size: 10px;">Session details</span>
+                            <br />
+                            <span style="font-size: 20px; font-weight: bold;"></span>
+                          </td>
+                          <td valign="middle" align="right">
+                            <img src="/logo.png?company=" style="padding: 0px; margin: 0px; height: auto; width: 80px;" alt="" />
+                          </td>
+                        </tr>
+                        <tr>
+                          <td colspan="2" style="text-align:center;">
+                            <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;" />
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                  <!-- CONTENT -->
+                  <tr>
+                    <td align="center" style="min-width: 590px;">
+                      <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                        <tr>
+                          <td valign="top" style="font-size: 13px;">
+
+<p style="margin: 0.5em 0;">Hello,</p>
+
+% if object.kind == 'teach'
+<p style="margin: 0.5em 0;">I'm reaching out to you to provide you with information regarding the training session directed towards the group <strong>${ object.training_action_id.action_name }</strong>, part of the <strong>${ object.training_activity_id.name }</strong> course, which will focus on the subject <strong>${ object.competency_unit_id.competency_name }</strong>.</p>
+% endif
+
+% if object.kind == 'task'
+<p style="margin: 0.5em 0;">I'm reaching out to you to provide you with information regarding the scheduled task <strong>${ object.task_id.display_name }</strong>.</p>
+% endif
+
+<p style="margin: 0.5em 0;">Following are the essential details about it:</p>
+
+<ul>
+  <li><strong>Start:</strong> ${ object.date_start }</li>
+  <li><strong>End:</strong> ${ object.date_stop }</li>
+  <li><strong>Duration:</strong> ${ object.date_delay_str() }</li>
+% if object.primary_facility_id
+  <li><strong>Main venue:</strong> ${ object.primary_facility_id.name }</li>
+% endif
+% if object.primary_teacher_id
+  <li><strong>Principal:</strong> ${ object.primary_teacher_id.name }</li>
+% endif
+</ul>
+
+% if len(object.teacher_assignment_ids) > 1
+<p style="margin: 0.5em 0;">The following list includes all the users who will participate in the session:</p>
+
+<ol>
+% for assignment in object.teacher_assignment_ids
+  <li>
+    <a href="mailto:${ assignment.teacher_id.email }" style="color: inherit; text-decoration: none;">
+      ${ assignment.teacher_id.name }
+    </a>
+  </li>
+% endfor
+</ol>
+% endif
+
+% if len(object.reservation_ids) > 1
+<p style="margin: 0.5em 0;">The facilities, services and/or resources described below will be used:</p>
+
+<ul>
+% for reservation in object.reservation_ids
+  <li>
+    ${ reservation.facility_id.display_name }
+    <i>(${ reservation.facility_id.complex_id.name })</i>
+  </li>
+% endfor
+</ul>
+% endif
+
+
+% if object.state == 'ready' and object.env.context.get('include_schedule_url', False)
+<p>This session has been confirmed and therefore is reflected in your weekly schedule. You can quickly access it by following any of the following links:</p>
+
+<ul>
+    <li><a target="_blank" href="/academy-timesheets/teacher/schedule?week=${ object.date_start.strftime('%Y-%m-%d') }&format=html&download=False">View it online</a></li>
+    <li>
+    <a target="_blank" href="/academy-timesheets/teacher/schedule?week=${ object.date_start.strftime('%Y-%m-%d') }&format=pdf&download=True">Download it as a PDF</a></li>
+</ul>
+
+% endif
+
+<p style="margin: 0.5em 0;">If you have any further questions about this or other sessions, please don't hesitate to reach out to us.</p>
+
+<p>Best regards,</p>
+
+<p style="margin: 0.5em 0;"><a href="mailto:${user.email}" tile="Send mail to ${user.name}">${user.name}</a></p>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="text-align:center;">
+                            <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;" />
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                  <!-- FOOTER -->
+                  <tr>
+                    <td align="center" style="min-width: 590px;">
+                      <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; font-size: 11px; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                        <tr>
+                          <td valign="middle" align="left">  </td>
+                        </tr>
+                        <tr>
+                          <td valign="middle" align="left" style="opacity: 0.7;">
+                    ${user.company_id.phone}
+                    % if user.company_id.email
+                        | <a href="'mailto:%s' % ${user.company_id.email}" style="text-decoration:none; color: #454748;">${user.company_id.email}</a>
+                    % endif
+                    % if user.company_id.website
+                        | <a href="'%s' % ${user.company_id.website}" style="text-decoration:none; color: #454748;">
+                        ${user.company_id.website}
+                    </a>
+                    % endif
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+        </table>
+        ]]></field>
+        </record>
+
+
+
+
     </data>
 </openerp>

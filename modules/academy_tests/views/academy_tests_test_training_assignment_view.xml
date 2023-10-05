@@ -143,10 +143,14 @@
                                 <div class="oe_kanban_details d-flex flex-column h-100 justify-content-end">
                                     <h4 class="flex-fill align-top">
                                         <strong class="oe_partner_heading">
-                                            <field name="display_name"/>
+                                            <field name="name"/>
                                         </strong>
                                     </h4>
                                     <ul>
+                                        <li class="o_ellipsis">
+                                            <strong>Test:&#160;</strong>
+                                            <field name="test_id" />
+                                        </li>
                                         <li class="o_ellipsis">
                                             <strong>Training type:&#160;</strong>
                                             <field name="training_type" />

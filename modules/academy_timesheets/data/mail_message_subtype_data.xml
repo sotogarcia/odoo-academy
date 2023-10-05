@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="academy_timesheets_training_session_draft" model="mail.message.subtype">
+            <field name="name">Training session temporarily removed</field>
+            <field name="res_model">academy.training.session</field>
+            <field name="relation_field">write_date</field>
+            <field name="default" eval="True"/>
+            <field name="description">The session has been temporarily removed from the schedule</field>
+        </record>
+
+        <record id="academy_timesheets_training_session_changed" model="mail.message.subtype">
+            <field name="name">Training session has been changed</field>
+            <field name="res_model">academy.training.session</field>
+            <field name="relation_field">write_date</field>
+            <field name="default" eval="True"/>
+            <field name="description">The schedule session has been changed</field>
+        </record>
+
+    </data>
+</openerp>

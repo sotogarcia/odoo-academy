@@ -208,7 +208,7 @@ class AcademyTestsTest(models.Model):
         comodel_name='academy.tests.random.template',
         domain=[],
         context={},
-        ondelete='cascade',
+        ondelete='set null',
         auto_join=False
     )
 
@@ -222,7 +222,7 @@ class AcademyTestsTest(models.Model):
         comodel_name='academy.tests.test.kind',
         domain=[],
         context={},
-        ondelete='cascade',
+        ondelete='restrict',
         auto_join=False
     )
 
@@ -239,7 +239,7 @@ class AcademyTestsTest(models.Model):
         comodel_name='res.partner',
         domain=[],
         context={},
-        ondelete='cascade',
+        ondelete='set null',
         auto_join=False
     )
 
@@ -797,6 +797,19 @@ class AcademyTestsTest(models.Model):
             'res_id': wizard_set.id
         }
 
+    @staticmethod
+    def _localize_paragraph_styles(doc):
+        style_mapping = {
+            'Explanation': _('Explanation'),
+            'Preamble': _('Preamble'),
+            'Question': _('Question'),
+            'Answer': _('Answer'),
+            'Right answer': _('Right answer'),
+        }
+
+        for old_style_name, new_style_name in style_mapping.items():
+            doc.styles[old_style_name].name = new_style_name
+
     def save_as_docx(self):
 
         tpl_path = self._docx_get_template_path()
@@ -806,6 +819,8 @@ class AcademyTestsTest(models.Model):
         self._docx_update_preamble(wd)
 
         self._docx_update_questions(wd)
+
+        self._localize_paragraph_styles(wd)
 
         buffer = BytesIO()
         wd.save(buffer)
@@ -873,11 +888,11 @@ class AcademyTestsTest(models.Model):
             if qitem.description:
                 for line in self._split_lines(qitem.description):
                     if line:
-                        wd.add_paragraph(line, 'About')
+                        wd.add_paragraph(line, 'Explanation')
             if qitem.preamble:
                 for line in self._split_lines(qitem.preamble):
                     if line:
-                        wd.add_paragraph(line, 'About')
+                        wd.add_paragraph(line, 'Explanation')
 
             wd.add_paragraph(qitem.name, 'Question')
 

@@ -120,10 +120,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         action_xid = 'academy_timesheets.action_invitation_act_window'
         action = self.env.ref(action_xid)
 
-        ctx = self.env.context.copy()
-        ctx.update(safe_eval(action.context))
-        ctx.update({'default_enrolment_id': self.id})
-
+        ctx = {'default_enrolment_id': self.id}
         domain = [('enrolment_id', '=', self.id)]
 
         serialized = {
@@ -146,10 +143,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         action_xid = 'academy_timesheets.action_affinity_act_window'
         action = self.env.ref(action_xid)
 
-        ctx = self.env.context.copy()
-        ctx.update(safe_eval(action.context))
-        ctx.update({'default_enrolment_id': self.id})
-
+        ctx = {'default_enrolment_id': self.id}
         domain = [
             ('enrolment_id', '=', self.id),
             ("invited", "<>", True)
@@ -213,18 +207,27 @@ class AcademyTrainingActionEnrolment(models.Model):
         unlink_set.unlink()
 
     def _link_pendent_invitations(self):
+        # for record in self:
+        #     domains = []
+
+        #     training_action_id = record.training_action_id.id
+
+        #     domains.append([('training_action_id', '=', training_action_id)])
+        #     domains.append([('date_stop', '>', record.register)])
+        #     if record.deregister:
+        #         domains.append([("date_start", "<", record.deregister)])
+
+        #     session_domain = AND(domains)
+        #     session_obj = record.env['academy.training.session']
+        #     session_set = session_obj.search(session_domain)
+
+        #     session_set.invite_all()
+        #
+        affinity_obj = self.env['academy.training.session.affinity']
         for record in self:
-            domains = []
-
-            training_action_id = record.training_action_id.id
-
-            domains.append([('training_action_id', '=', training_action_id)])
-            domains.append([('date_stop', '>', record.register)])
-            if record.deregister:
-                domains.append([("date_start", "<", record.deregister)])
-
-            session_domain = AND(domains)
-            session_obj = record.env['academy.training.session']
-            session_set = session_obj.search(session_domain)
-
-            session_set.invite_all()
+            domain = [
+                ('enrolment_id', '=', record.id),
+                ('invited', '!=', True)
+            ]
+            affinity_set = affinity_obj.search(domain)
+            affinity_set.toggle_invitation()

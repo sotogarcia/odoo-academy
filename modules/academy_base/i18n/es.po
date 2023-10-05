@@ -6233,6 +6233,8 @@ msgstr "Imagen de la acción formativa"
 #: model:ir.model.fields,field_description:academy_base.field_academy_student__training_action_ids
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_activity__training_action_ids
 #: model:ir.ui.menu,name:academy_base.menu_training_action
+#: model:ir.ui.menu,name:academy_base.menu_training_actions_quick_edit
+#: model:ir.actions.act_window,name:academy_base.action_training_actions_quick_edit_act_window
 #, python-format
 msgid "Training actions"
 msgstr "Acciónes formativas"
@@ -6250,6 +6252,8 @@ msgstr "Acciones formativas para la preparación de funcionarios y personal de l
 #. module: academy_base
 #: model:ir.actions.act_window,name:academy_base.action_academy_training_activity_act_window
 #: model:ir.ui.menu,name:academy_base.menu_academy_training_activity
+#: model:ir.ui.menu,name:academy_base.menu_training_activites_quick_edit
+#: model:ir.actions.act_window,name:academy_base.activity_training_activites_quick_edit_act_window
 msgid "Training activities"
 msgstr "Actividades formativas"
 
@@ -6726,12 +6730,12 @@ msgstr "Ver y editar niveles de calificación"
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.res_config_settings_view_form
 msgid "View and edit training methodologies"
-msgstr "Ver y editar metodologías de entrenamiento"
+msgstr "Ver y editar metodologías de formación"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.res_config_settings_view_form
 msgid "View and edit training modalities"
-msgstr "Ver y editar modalidades de entrenamiento"
+msgstr "Ver y editar modalidades de formación"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_student_form
@@ -7181,3 +7185,15 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_enrolment_embed_tree
 msgid "view_academy_training_action_enrolment_embed_tree"
 msgstr ""
+
+#. module: academy_base
+#: model:ir.ui.menu,name:academy_base.menu_training_actions
+msgid "Quick training edit"
+msgstr "Edición de grupos"
+
+#. module: academy_base
+#: model:ir.ui.menu,name:academy_base.menu_academy_advanced_quick_edit
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_actions_quick_edit_tree
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_activites_quick_edit_tree
+msgid "Quick edit"
+msgstr "Edición rápida"

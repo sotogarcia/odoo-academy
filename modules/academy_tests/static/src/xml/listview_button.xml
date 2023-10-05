@@ -1,25 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<templates id="template" xml:space="preserve">
+<templates id="academy_timesheets_header_view_buttons" xml:space="preserve">
 
-    <t t-extend="ListView.buttons">
-        <t t-jquery="div.o_list_buttons" t-operation="append">            
-            <t t-if="widget &amp;&amp; 'activateTemplateBaseButton' in widget &amp;&amp; widget.activateTemplateBaseButton()">
-                <button type="button" class="btn btn-secondary o_create_template_from_training">
-                    Template base
-                </button>      
-            </t>      
-        </t>
+    <t t-name="ListView.buttons.create_template_from_training">
+        <button type="button" class="btn btn-info" id="11B3838D16FB4B5F8814077387FCAF3C">
+            Template base
+        </button>
     </t>
 
-    <t t-extend="KanbanView.buttons">
-        <t t-jquery="button" t-operation="after">
-            <t t-if="widget &amp;&amp; 'activateTemplateBaseButton' in widget &amp;&amp; widget.activateTemplateBaseButton()">
-                <button type="button" class="btn btn-secondary o_create_template_from_training">
-                    Template base
-                </button>
-            </t>
-        </t>
+    <t t-name="KanbanView.buttons.create_template_from_training">
+        <button type="button" class="btn btn-info" id="11B3838D16FB4B5F8814077387FCAF3C">
+            Template base
+        </button>
     </t>
 
 </templates>

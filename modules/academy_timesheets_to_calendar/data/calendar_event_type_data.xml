@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="calendar_event_type_academy_timesheet" model="calendar.event.type">
+            <field name="name">From timesheet</field>
+        </record>
+
+        <record id="calendar_event_type_academy_timesheet_teaching_task" model="calendar.event.type">
+            <field name="name">Teaching task</field>
+        </record>
+
+        <record id="calendar_event_type_academy_timesheet_non_teaching" model="calendar.event.type">
+            <field name="name">Non teaching task</field>
+        </record>
+
+    </data>
+</openerp>
