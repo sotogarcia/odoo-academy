@@ -10,8 +10,8 @@ from odoo.tools import safe_eval
 from odoo.osv.expression import FALSE_DOMAIN, TRUE_DOMAIN
 from odoo.osv.expression import TERM_OPERATORS_NEGATION
 
-from datetime import timedelta
-
+from pytz import timezone
+from datetime import datetime, time, timedelta
 from logging import getLogger
 
 
@@ -147,8 +147,66 @@ class AcademyTrainingAction(models.Model):
         readonly=False,
         index=False,
         default=False,
-        help='Check to allow sessions for this training action to be overlapped'
+        help=('Check to allow sessions for this training action to be '
+              'overlapped')
     )
+
+    current_week_hours = fields.Float(
+        string='Current week hours',
+        required=True,
+        readonly=True,
+        index=False,
+        default=0.0,
+        digits=(16, 12),
+        help='Number of training hours in the current week',
+        compute='_compute_current_week_hours'
+    )
+
+    @api.depends(
+        'session_ids.date_start', 'session_ids.date_stop')
+    def _compute_current_week_hours(self):
+        # Obtener zona horaria del usuario
+        user_tz = self.env.user.tz or 'UTC'
+        local_tz = timezone(user_tz)
+
+        # Establecer el rango de inicio y finalización de la semana actual
+        today = datetime.now(local_tz).date()
+        start_of_week = today - timedelta(days=today.weekday())
+        end_of_week = start_of_week + timedelta(days=7)
+
+        start_of_week = datetime.combine(start_of_week, time.min)
+        end_of_week = datetime.combine(end_of_week, time.min)
+
+        start_of_week = local_tz.localize(start_of_week)
+        end_of_week = local_tz.localize(end_of_week)
+
+        # Convertir las fechas a UTC
+        start_of_week_utc = start_of_week.astimezone(timezone('UTC'))
+        end_of_week_utc = end_of_week.astimezone(timezone('UTC'))
+
+        start_of_week_utc = start_of_week_utc.replace(tzinfo=None)
+        end_of_week_utc = end_of_week_utc.replace(tzinfo=None)
+
+        for record in self:
+            total_hours = 0
+
+            for session in record.session_ids:
+                if not (session.date_start and session.date_stop):
+                    continue
+
+                if not (start_of_week_utc < session.date_stop):
+                    continue
+
+                if not (end_of_week_utc > session.date_start):
+                    continue
+
+                session_start = max(start_of_week_utc, session.date_start)
+                session_stop = min(end_of_week_utc, session.date_stop)
+
+                duration = max(timedelta(), session_stop - session_start)
+                total_hours += duration.total_seconds() / 3600
+
+            record.current_week_hours = total_hours
 
     def view_timesheets(self):
         action_xid = ('academy_timesheets.'

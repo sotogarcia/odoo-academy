@@ -25,11 +25,14 @@
             <field name="active" eval="True" />
             <field name="arch" type="xml">
                 <tree string="academy_student_tree" create="1" delete="1" edit="1">
-                    <field name="vat" class="oe_field_vat" />
-                    <field name="name" />
-                    <field name="phone" />
-                    <field name="mobile" />
-                    <field name="email" />
+                    <field name="vat" class="oe_field_vat" optional="show" />
+                    <field name="title" class="oe_field_title" optional="hide" />
+                    <field name="name" class="oe_field_name" optional="show" />
+                    <field name="email" class="oe_field_email" optional="show" />
+                    <field name="phone" class="oe_field_phone" optional="show" />
+                    <field name="mobile" class="oe_field_mobile" optional="show" />
+                    <field name="zip" class="oe_field_zip" optional="hide" />
+                    <field name="enrolment_str" class="oe_field_enrolment_str" optional="show" />
                 </tree>
             </field>
         </record>
@@ -50,13 +53,13 @@
 
                         <div class="oe_button_box" name="button_box">
                             <button name="edit_enrolments" type="object"
-                                class="oe_stat_button oe_read_only" icon="fa-pencil-square-o"
+                                class="oe_stat_button oe_read_only" icon="fa-id-card-o"
                                 help="View student enrolments">
-                                <field name="enrolment_count" widget="statinfo" string="Enrollments" />
+                                <field name="enrolment_str" widget="statinfo" string="Enrollments" />
                             </button>
                             <button class="oe_stat_button" name="go_to_contact"
                                 string="Contact" type="object" default_focus="0"
-                                icon="fa-id-card-o" help="Go to contact" />
+                                icon="fa-user-o" help="Go to contact" />
                         </div>
 
                         <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
@@ -179,9 +182,10 @@
                                 <div name="kanban-box-toolbar" class="btn-toolbar d-flex flex-row-reverse justify-content-end align-self-end mt-3" role="toolbar" aria-label="Download as document">
                                     <div class="btn-group" role="group" aria-label="Management">
                                         <button name="edit_enrolments" type="object"
+                                            groups="academy_base.academy_group_technical"
                                             class="btn btn-sm btn-light oe_read_only" title="View student enrolments">
-                                            <i class="fa fa-pencil-square-o d-inline-block mr-1" aria-hidden="false"></i>
-                                            Enrolments
+                                            <i class="fa fa-id-card-o d-inline-block mr-1" aria-hidden="false"></i>
+                                            <field name="enrolment_str" />
                                         </button>
                                     </div>
                                 </div>
@@ -220,14 +224,12 @@
                     <field name="id" string="Student ID" />
 
                     <filter name="inactive" string="Archived"
-                            domain="[('active','=',False)]"/>
+                            domain="[('active', '=', False)]"/>
 
                     <separator />
+                    <filter name="enrolled" string="Enrolled" domain="[('current_enrolment_count', '>', 0)]" />
+                    <filter name="not_enrolled" string="Not Enrolled" domain="[('current_enrolment_count', '=', 0)]" />
 
-                    <filter name="enrolled" string="Enrolled"
-                        domain="[('enrolment_ids','&lt;&gt;',False)]"/>
-                    <filter name="not_enrolled" string="Not enrolled"
-                        domain="[('enrolment_ids','&lt;&gt;',False)]"/>
                 </search>
             </field>
         </record>
@@ -240,8 +242,8 @@
             <field name="view_mode">kanban,tree,form</field>
 
             <field name="target">current</field>
-            <field name="domain">[]</field>
-            <field name="context">{}</field>
+            <field name="domain" eval="[('id', '&lt;&gt;', ref('academy_base.academy_student_default_template'))]" />
+            <field name="context">{"search_default_enrolled": 1}</field>
             <field name="search_view_id" ref="view_academy_student_search" />
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">

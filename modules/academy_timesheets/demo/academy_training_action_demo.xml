@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+
+        <record id="academy_training_action_demo_test_1" model="academy.training.action">
+            <field name="action_name">Training action test</field>
+            <field name="description">Training action for unit tests</field>
+            <field name="active">True</field>
+            <field name="start" eval="(DateTime.today() - timedelta(days=DateTime.today().weekday() + 5)).strftime('%Y-%m-%d 08:00:00')" />
+            <field name="end" eval="(DateTime.today() + relativedelta(months=3) - timedelta(days=DateTime.today().weekday() + 5)).strftime('%Y-%m-%d 13:00:00')" />
+            <field name="application_scope_id" ref="academy_base.academy_application_scope_public" />
+            <field name="professional_category_id" ref="academy_base.academy_professional_category_administrative" />
+            <!-- <field name="training_action_category_id"></field> -->
+            <field name="training_activity_id" ref="academy_base.academy_training_activity_ms" />
+            <field name="action_code">TEST</field>
+            <field name="seating">15</field>
+            <field name="excess">20</field>
+            <field name="company_id" ref="academy_base.res_company_my_academy" />
+        </record>
+
+    </data>
+</openerp>

@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-22 13:06+0000\n"
-"PO-Revision-Date: 2023-06-22 15:11+0200\n"
+"POT-Creation-Date: 2023-11-20 23:09+0000\n"
+"PO-Revision-Date: 2023-11-21 00:15+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -181,6 +181,385 @@ msgstr ""
 "<p style=\"margin: 0.5em 0;\">Gracias, </p>\n"
 "<p style=\"margin: 0.5em 0;\"><a href=\"mailto:${user.email}\" tile="
 "\"Enviar correo a ${user.name}\">${user.name}</a></p>\n"
+"                            </div>\n"
+"                          </td>\n"
+"                        </tr>\n"
+"                        <tr>\n"
+"                          <td style=\"text-align:center;\">\n"
+"                            <hr width=\"100%\" style=\"background-color:"
+"rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;"
+"min-height:1px;line-height:0; margin: 16px 0px 16px 0px;\" />\n"
+"                          </td>\n"
+"                        </tr>\n"
+"                      </table>\n"
+"                    </td>\n"
+"                  </tr>\n"
+"                  <!-- FOOTER -->\n"
+"                  <tr>\n"
+"                    <td align=\"center\" style=\"min-width: 590px;\">\n"
+"                      <table border=\"0\" cellpadding=\"0\" cellspacing="
+"\"0\" width=\"590\" style=\"min-width: 590px; background-color: white; font-"
+"size: 11px; padding: 0px 8px 0px 8px; border-collapse:separate;\">\n"
+"                        <tr>\n"
+"                          <td valign=\"middle\" align=\"left\">  </td>\n"
+"                        </tr>\n"
+"                        <tr>\n"
+"                          <td valign=\"middle\" align=\"left\" style="
+"\"opacity: 0.7;\">\n"
+"                    ${user.company_id.phone}\n"
+"                    % if user.company_id.email\n"
+"                        | <a href=\"'mailto:%s' % ${user.company_id."
+"email}\" style=\"text-decoration:none; color: #454748;\">${user.company_id."
+"email}</a>\n"
+"                    % endif\n"
+"                    % if user.company_id.website\n"
+"                        | <a href=\"'%s' % ${user.company_id.website}\" "
+"style=\"text-decoration:none; color: #454748;\">\n"
+"                        ${user.company_id.website}\n"
+"                    </a>\n"
+"                    % endif\n"
+"                          </td>\n"
+"                        </tr>\n"
+"                      </table>\n"
+"                    </td>\n"
+"                  </tr>\n"
+"                </tbody>\n"
+"              </table>\n"
+"            </td>\n"
+"          </tr>\n"
+"        </table>\n"
+"        "
+
+#. module: academy_timesheets
+#: model:mail.template,body_html:academy_timesheets.mail_template_training_session_details
+msgid ""
+"\n"
+"        <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style="
+"\"padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,"
+"sans-serif; color: #454748; width: 100%; border-collapse:separate;\">\n"
+"          <tr>\n"
+"            <td align=\"center\">\n"
+"              <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width="
+"\"590\" style=\"padding: 16px; background-color: white; color: #454748; "
+"border-collapse:separate;\">\n"
+"                <tbody>\n"
+"                  <!-- HEADER -->\n"
+"                  <tr>\n"
+"                    <td align=\"center\" style=\"min-width: 590px;\">\n"
+"                      <table border=\"0\" cellpadding=\"0\" cellspacing="
+"\"0\" width=\"590\" style=\"min-width: 590px; background-color: white; "
+"padding: 0px 8px 0px 8px; border-collapse:separate;\">\n"
+"                        <tr>\n"
+"                          <td valign=\"middle\">\n"
+"                            <span style=\"font-size: 10px;\">Session "
+"details</span>\n"
+"                            <br />\n"
+"                            <span style=\"font-size: 20px; font-weight: "
+"bold;\"></span>\n"
+"                          </td>\n"
+"                          <td valign=\"middle\" align=\"right\">\n"
+"                            <img src=\"/logo.png?company=\" style="
+"\"padding: 0px; margin: 0px; height: auto; width: 80px;\" alt=\"\" />\n"
+"                          </td>\n"
+"                        </tr>\n"
+"                        <tr>\n"
+"                          <td colspan=\"2\" style=\"text-align:center;\">\n"
+"                            <hr width=\"100%\" style=\"background-color:"
+"rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;"
+"min-height:1px;line-height:0; margin: 16px 0px 16px 0px;\" />\n"
+"                          </td>\n"
+"                        </tr>\n"
+"                      </table>\n"
+"                    </td>\n"
+"                  </tr>\n"
+"                  <!-- CONTENT -->\n"
+"                  <tr>\n"
+"                    <td align=\"center\" style=\"min-width: 590px;\">\n"
+"                      <table border=\"0\" cellpadding=\"0\" cellspacing="
+"\"0\" width=\"590\" style=\"min-width: 590px; background-color: white; "
+"padding: 0px 8px 0px 8px; border-collapse:separate;\">\n"
+"                        <tr>\n"
+"                          <td valign=\"top\" style=\"font-size: 13px;\">\n"
+"\n"
+"<p style=\"margin: 0.5em 0;\">Hello,</p>\n"
+"\n"
+"% if object.kind == 'teach'\n"
+"<p style=\"margin: 0.5em 0;\">I'm reaching out to you to provide you with "
+"information regarding the training session directed towards the group "
+"<strong>${ object.training_action_id.action_name }</strong>, part of the "
+"<strong>${ object.training_activity_id.name }</strong> course, which will "
+"focus on the subject <strong>${ object.competency_unit_id.competency_name }"
+"</strong>.</p>\n"
+"% endif\n"
+"\n"
+"% if object.kind == 'task'\n"
+"<p style=\"margin: 0.5em 0;\">I'm reaching out to you to provide you with "
+"information regarding the scheduled task <strong>${ object.task_id."
+"display_name }</strong>.</p>\n"
+"% endif\n"
+"\n"
+"<p style=\"margin: 0.5em 0;\">Following are the essential details about it:"
+"</p>\n"
+"\n"
+"<ul>\n"
+"  <li><strong>Start:</strong> ${ object.localized_dt(object.date_start, "
+"object.get_tz()) }</li>\n"
+"  <li><strong>End:</strong> ${ object.localized_dt(object.date_stop, object."
+"get_tz()) }</li>\n"
+"  <li><strong>Duration:</strong> ${ object.date_delay_str() }</li>\n"
+"% if object.primary_facility_id\n"
+"  <li><strong>Main venue:</strong> ${ object.primary_facility_id.name }</"
+"li>\n"
+"% endif\n"
+"% if object.primary_teacher_id\n"
+"  <li><strong>Principal:</strong> ${ object.primary_teacher_id.name }</li>\n"
+"% endif\n"
+"</ul>\n"
+"\n"
+"% if len(object.teacher_assignment_ids) > 1\n"
+"<p style=\"margin: 0.5em 0;\">The following list includes all the users who "
+"will participate in the session:</p>\n"
+"\n"
+"<ol>\n"
+"% for assignment in object.teacher_assignment_ids\n"
+"  <li>\n"
+"    <a href=\"mailto:${ assignment.teacher_id.email }\" style=\"color: "
+"inherit; text-decoration: none;\">\n"
+"      ${ assignment.teacher_id.name }\n"
+"    </a>\n"
+"  </li>\n"
+"% endfor\n"
+"</ol>\n"
+"% endif\n"
+"\n"
+"% if len(object.reservation_ids) > 1\n"
+"<p style=\"margin: 0.5em 0;\">The facilities, services and/or resources "
+"described below will be used:</p>\n"
+"\n"
+"<ul>\n"
+"% for reservation in object.reservation_ids\n"
+"  <li>\n"
+"    ${ reservation.facility_id.display_name }\n"
+"    <i>(${ reservation.facility_id.complex_id.name })</i>\n"
+"  </li>\n"
+"% endfor\n"
+"</ul>\n"
+"% endif\n"
+"\n"
+"\n"
+"% if object.state == 'ready' and object.env.context."
+"get('include_schedule_url', False)\n"
+"<p>This session has been confirmed and therefore is reflected in your "
+"weekly schedule. You can quickly access it by following any of the "
+"following links:</p>\n"
+"\n"
+"<ul>\n"
+"    <li><a target=\"_blank\" href=\"/academy-timesheets/teacher/schedule?"
+"week=${ object.date_start.strftime('%Y-%m-%d') }&format=html&download=False"
+"\">View it online</a></li>\n"
+"    <li>\n"
+"    <a target=\"_blank\" href=\"/academy-timesheets/teacher/schedule?week="
+"${ object.date_start.strftime('%Y-%m-%d') }&format=pdf&download=True"
+"\">Download it as a PDF</a></li>\n"
+"</ul>\n"
+"\n"
+"% endif\n"
+"\n"
+"<p style=\"margin: 0.5em 0;\">If you have any further questions about this "
+"or other sessions, please don't hesitate to reach out to us.</p>\n"
+"\n"
+"<p>Best regards,</p>\n"
+"\n"
+"<p style=\"margin: 0.5em 0;\"><a href=\"mailto:${user.email}\" tile=\"Send "
+"mail to ${user.name}\">${user.name}</a></p>\n"
+"                            </div>\n"
+"                          </td>\n"
+"                        </tr>\n"
+"                        <tr>\n"
+"                          <td style=\"text-align:center;\">\n"
+"                            <hr width=\"100%\" style=\"background-color:"
+"rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;"
+"min-height:1px;line-height:0; margin: 16px 0px 16px 0px;\" />\n"
+"                          </td>\n"
+"                        </tr>\n"
+"                      </table>\n"
+"                    </td>\n"
+"                  </tr>\n"
+"                  <!-- FOOTER -->\n"
+"                  <tr>\n"
+"                    <td align=\"center\" style=\"min-width: 590px;\">\n"
+"                      <table border=\"0\" cellpadding=\"0\" cellspacing="
+"\"0\" width=\"590\" style=\"min-width: 590px; background-color: white; font-"
+"size: 11px; padding: 0px 8px 0px 8px; border-collapse:separate;\">\n"
+"                        <tr>\n"
+"                          <td valign=\"middle\" align=\"left\">  </td>\n"
+"                        </tr>\n"
+"                        <tr>\n"
+"                          <td valign=\"middle\" align=\"left\" style="
+"\"opacity: 0.7;\">\n"
+"                    ${user.company_id.phone}\n"
+"                    % if user.company_id.email\n"
+"                        | <a href=\"'mailto:%s' % ${user.company_id."
+"email}\" style=\"text-decoration:none; color: #454748;\">${user.company_id."
+"email}</a>\n"
+"                    % endif\n"
+"                    % if user.company_id.website\n"
+"                        | <a href=\"'%s' % ${user.company_id.website}\" "
+"style=\"text-decoration:none; color: #454748;\">\n"
+"                        ${user.company_id.website}\n"
+"                    </a>\n"
+"                    % endif\n"
+"                          </td>\n"
+"                        </tr>\n"
+"                      </table>\n"
+"                    </td>\n"
+"                  </tr>\n"
+"                </tbody>\n"
+"              </table>\n"
+"            </td>\n"
+"          </tr>\n"
+"        </table>\n"
+"        "
+msgstr ""
+"\n"
+"        <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style="
+"\"padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,"
+"sans-serif; color: #454748; width: 100%; border-collapse:separate;\">\n"
+"          <tr>\n"
+"            <td align=\"center\">\n"
+"              <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width="
+"\"590\" style=\"padding: 16px; background-color: white; color: #454748; "
+"border-collapse:separate;\">\n"
+"                <tbody>\n"
+"                  <!-- HEADER -->\n"
+"                  <tr>\n"
+"                    <td align=\"center\" style=\"min-width: 590px;\">\n"
+"                      <table border=\"0\" cellpadding=\"0\" cellspacing="
+"\"0\" width=\"590\" style=\"min-width: 590px; background-color: white; "
+"padding: 0px 8px 0px 8px; border-collapse:separate;\">\n"
+"                        <tr>\n"
+"                          <td valign=\"middle\">\n"
+"                            <span style=\"font-size: 10px;\">Detalles de la "
+"sesión</span>\n"
+"                            <br />\n"
+"                            <span style=\"font-size: 20px; font-weight: "
+"bold;\"></span>\n"
+"                          </td>\n"
+"                          <td valign=\"middle\" align=\"right\">\n"
+"                            <img src=\"/logo.png?company=\" style="
+"\"padding: 0px; margin: 0px; height: auto; width: 80px;\" alt=\"\" />\n"
+"                          </td>\n"
+"                        </tr>\n"
+"                        <tr>\n"
+"                          <td colspan=\"2\" style=\"text-align:center;\">\n"
+"                            <hr width=\"100%\" style=\"background-color:"
+"rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;"
+"min-height:1px;line-height:0; margin: 16px 0px 16px 0px;\" />\n"
+"                          </td>\n"
+"                        </tr>\n"
+"                      </table>\n"
+"                    </td>\n"
+"                  </tr>\n"
+"                  <!-- CONTENT -->\n"
+"                  <tr>\n"
+"                    <td align=\"center\" style=\"min-width: 590px;\">\n"
+"                      <table border=\"0\" cellpadding=\"0\" cellspacing="
+"\"0\" width=\"590\" style=\"min-width: 590px; background-color: white; "
+"padding: 0px 8px 0px 8px; border-collapse:separate;\">\n"
+"                        <tr>\n"
+"                          <td valign=\"top\" style=\"font-size: 13px;\">\n"
+"\n"
+"<p style=\"margin: 0.5em 0;\">Hola,</p>\n"
+"\n"
+"% if object.kind == 'teach'\n"
+"<p style=\"margin: 0.5em 0;\">Me pongo en contacto contigo para hacerte "
+"llegar la información relativa a la sesión formativa dirigida al grupo "
+"<strong>${ object.training_action_id.action_name }</strong>, enmarcada "
+"dentro del curso  <strong>${ object.training_activity_id.name }</strong> y "
+"que se centrará en el tema  <strong>${ object.competency_unit_id."
+"competency_name }</strong>.</p>\n"
+"% endif\n"
+"\n"
+"% if object.kind == 'task'\n"
+"<p style=\"margin: 0.5em 0;\">Me pongo en contacto contigo para hacerte "
+"llegar la información sobre la tarea programada <strong>${ object.task_id."
+"display_name }</strong>.</p>\n"
+"% endif\n"
+"\n"
+"<p style=\"margin: 0.5em 0;\">A continuación figuran los detalles "
+"esenciales acerca de la misma:</p>\n"
+"\n"
+"<ul>\n"
+"  <li><strong>Inicio:</strong> ${ object.localized_dt(object.date_start, "
+"object.get_tz()) }</li>\n"
+"  <li><strong>Final:</strong> ${ object.localized_dt(object.date_stop, "
+"object.get_tz()) }</li>\n"
+"  <li><strong>Duración:</strong> ${ object.date_delay_str() }</li>\n"
+"% if object.primary_facility_id\n"
+"  <li><strong>Instalación:</strong> ${ object.primary_facility_id.name }</"
+"li>\n"
+"% endif\n"
+"% if object.primary_teacher_id\n"
+"  <li><strong>Principal:</strong> ${ object.primary_teacher_id.name }</li>\n"
+"% endif\n"
+"</ul>\n"
+"\n"
+"% if len(object.teacher_assignment_ids) > 1\n"
+"<p style=\"margin: 0.5em 0;\">En la lista siguiente figuran todos los "
+"usuarios que participarán en la sesión:</p>\n"
+"\n"
+"<ol>\n"
+"% for assignment in object.teacher_assignment_ids\n"
+"  <li>\n"
+"    <a href=\"mailto:${ assignment.teacher_id.email }\" style=\"color: "
+"inherit; text-decoration: none;\">\n"
+"      ${ assignment.teacher_id.name }\n"
+"    </a>\n"
+"  </li>\n"
+"% endfor\n"
+"</ol>\n"
+"% endif\n"
+"\n"
+"% if len(object.reservation_ids) > 1\n"
+"<p style=\"margin: 0.5em 0;\">Se emplearán las instalaciones, servicios y/o "
+"recursos que se describen a continuación:</p>\n"
+"\n"
+"<ul>\n"
+"% for reservation in object.reservation_ids\n"
+"  <li>\n"
+"    ${ reservation.facility_id.display_name }\n"
+"    <i>(${ reservation.facility_id.complex_id.name })</i>\n"
+"  </li>\n"
+"% endfor\n"
+"</ul>\n"
+"% endif\n"
+"\n"
+"\n"
+"% if object.state == 'ready' and object.env.context."
+"get('include_schedule_url', False)\n"
+"<p>Esta sesión ha sido confirmada y por tanto aparece reflejada en tu "
+"programación semanal. Puedes acceder rápidamente al horario siguiendo "
+"cualquiera de los siguientes enlaces:</p>\n"
+"\n"
+"<ul>\n"
+"    <li><a target=\"_blank\" href=\"/academy-timesheets/teacher/schedule?"
+"week=${ object.date_start.strftime('%Y-%m-%d') }&format=html&download=False"
+"\">Visualizar en línea</a></li>\n"
+"    <li>\n"
+"    <a target=\"_blank\" href=\"/academy-timesheets/teacher/schedule?week="
+"${ object.date_start.strftime('%Y-%m-%d') }&format=pdf&download=True"
+"\">Descargarlo en formato PDF</a></li>\n"
+"</ul>\n"
+"\n"
+"% endif\n"
+"\n"
+"<p style=\"margin: 0.5em 0;\">Si tienes más preguntas sobre esta u otras "
+"sesiones, no dudes en ponerte en contacto con nosotros.</p>\n"
+"\n"
+"<p>Atentamente,</p>\n"
+"\n"
+"<p style=\"margin: 0.5em 0;\"><a href=\"mailto:${user.email}\" tile=\"Send "
+"mail to ${user.name}\">${user.name}</a></p>\n"
 "                            </div>\n"
 "                          </td>\n"
 "                        </tr>\n"
@@ -735,6 +1114,11 @@ msgid "${object.name|safe}_schedule"
 msgstr "${object.name|safe}_horario"
 
 #. module: academy_timesheets
+#: model:mail.template,subject:academy_timesheets.mail_template_training_session_details
+msgid "${object.task_name}"
+msgstr ""
+
+#. module: academy_timesheets
 #: model:ir.actions.report,print_report_name:academy_timesheets.action_report_academy_timesheets_training_action
 msgid "(object.action_name)"
 msgstr ""
@@ -917,6 +1301,12 @@ msgid "Active model"
 msgstr "Modelo activo"
 
 #. module: academy_timesheets
+#: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_training_session_form
+msgid "Add all teachers as followers and remove all others"
+msgstr ""
+"Agregar a todos los profesores como seguidores y elimine a todos los demás"
+
+#. module: academy_timesheets
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.res_config_settings_view_form
 msgid "Add, edit or remove non-teaching tasks"
 msgstr "Agregar, editar o eliminar tareas no docentes"
@@ -984,6 +1374,11 @@ msgid "Available sessions"
 msgstr "Sesiones disponibles"
 
 #. module: academy_timesheets
+#: model:academy.training.action,name:academy_timesheets.academy_training_action_demo_test_1
+msgid "Basic knowledge of Microsoft software"
+msgstr "Conocimientos básicos del software de Microsoft"
+
+#. module: academy_timesheets
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_send_by_mail_wizard__date_start
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session__date_start
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_affinity__date_start
@@ -1017,6 +1412,11 @@ msgid "Change target to «{}». Model: {}, ID: {}"
 msgstr "Cambiar objetivo a «{}». Modelo: {}, ID: {}"
 
 #. module: academy_timesheets
+#: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_timesheet_session_state_wizard_wizard
+msgid "Change their state"
+msgstr "Actualizan el estado"
+
+#. module: academy_timesheets
 #: code:addons/academy_timesheets/models/academy_timesheets_clone_wizard_log.py:0
 #, python-format
 msgid "Changing"
@@ -1026,6 +1426,11 @@ msgstr "Cambiando a"
 #: model:ir.model.fields,help:academy_timesheets.field_academy_training_session_invitation__present
 msgid "Check it only if the student is present"
 msgstr "Marcar solo si el estudiante está presente"
+
+#. module: academy_timesheets
+#: model:ir.model.fields,help:academy_timesheets.field_academy_timesheet_session_state_wizard__mail_create_nosubscribe
+msgid "Check it to add mail_create_nosubscribe key in context"
+msgstr "Marcar para prevenir que el usuario actual sea añadido como seguidor"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_timesheets_download_wizard__download
@@ -1038,9 +1443,33 @@ msgid "Check it to invite all students"
 msgstr "Marcar para invitar a todos los estudiantes"
 
 #. module: academy_timesheets
+#: model:ir.model.fields,help:academy_timesheets.field_academy_timesheet_session_state_wizard__invite_those_enrolled
+msgid "Check it to invite those enrolled "
+msgstr "Marcar para invitar a los matriculados "
+
+#. module: academy_timesheets
+#: model:ir.model.fields,help:academy_timesheets.field_academy_timesheet_session_state_wizard__skip_email_notification
+msgid ""
+"Check it to post messages in chatter only. No email notification will be "
+"sent."
+msgstr ""
+"Marcar para publicar mensajes solo en Chatter. No se enviará ninguna "
+"notificación por correo electrónico."
+
+#. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_timesheets_clone_wizard__show_logs
 msgid "Check it to show log history on exit"
 msgstr "Marcar para mostrar el historial de registro al salir"
+
+#. module: academy_timesheets
+#: model:ir.model.fields,help:academy_timesheets.field_academy_timesheet_session_state_wizard__force_all
+msgid "Check it to update all records even if they don't need it"
+msgstr "Marcar para actualizar todos los registros incluso si no lo necesitan"
+
+#. module: academy_timesheets
+#: model:ir.model.fields,help:academy_timesheets.field_facility_reservation__has_training_session
+msgid "Check it when the reservation has a related training session"
+msgstr "Marcar cuando la reserva tenga una sesión de formación relacionada"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_training_action__allow_overlap
@@ -1139,6 +1568,7 @@ msgstr "Clonación"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session__company_id
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_affinity__company_id
 msgid "Company"
 msgstr "Compañía"
 
@@ -1247,6 +1677,11 @@ msgid "Current week"
 msgstr "Semana actual"
 
 #. module: academy_timesheets
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_action__current_week_hours
+msgid "Current week hours"
+msgstr "Horario de la semana actual"
+
+#. module: academy_timesheets
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_training_session_search
 msgid "Current year"
 msgstr "Año actual"
@@ -1347,6 +1782,12 @@ msgid "Description"
 msgstr "Descripción"
 
 #. module: academy_timesheets
+#: code:addons/academy_timesheets/wizard/facility_reservation_massive_actions_wizard.py:0
+#, python-format
+msgid "Detach from training"
+msgstr "Desligar de la sessión"
+
+#. module: academy_timesheets
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_non_teaching_task__display_name
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheet_session_state_wizard__display_name
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_clone_wizard__display_name
@@ -1391,6 +1832,13 @@ msgid "Do not show logs with debugging messages"
 msgstr "No mostrar registros con mensajes de depuración"
 
 #. module: academy_timesheets
+#: model_terms:ir.ui.view,arch_db:academy_timesheets.view_facility_reservation_form
+msgid ""
+"Do you confirm that you wish to unlink the reservation from the training "
+"session?"
+msgstr "¿Confirmas que deseas desvincular la reserva de la sesión formativa?"
+
+#. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_timesheets_download_wizard__mime
 msgid "Document file format"
 msgstr "Formato del archivo"
@@ -1418,7 +1866,6 @@ msgstr "Descargar el documento del horario"
 #: model:ir.model.fields.selection,name:academy_timesheets.selection__academy_timesheet_session_state_wizard__state__draft
 #: model:ir.model.fields.selection,name:academy_timesheets.selection__academy_timesheets_clone_wizard__state__draft
 #: model:ir.model.fields.selection,name:academy_timesheets.selection__academy_training_session__state__draft
-#: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_timesheet_session_state_wizard_wizard
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_training_session_invitation_search
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_training_session_search
 msgid "Draft"
@@ -1564,6 +2011,33 @@ msgid "Facility count"
 msgstr "Nº de instalaciones"
 
 #. module: academy_timesheets
+#: model:facility.facility,description:academy_timesheets.facility_test_1
+msgid "Facility for unit tests 01"
+msgstr "Instalación para pruebas unitarias 01"
+
+#. module: academy_timesheets
+#: model:facility.facility,description:academy_timesheets.facility_test_2
+msgid "Facility for unit tests 02"
+msgstr "Instalación para pruebas unitarias 02"
+
+#. module: academy_timesheets
+#: model:facility.facility,description:academy_timesheets.facility_test_3
+msgid "Facility for unit tests 03"
+msgstr "Instalación para pruebas unitarias 03"
+
+#. module: academy_timesheets
+#: model:facility.facility,description:academy_timesheets.facility_test_4
+#: model:facility.facility,description:academy_timesheets.facility_test_5
+msgid "Facility for unit tests 04"
+msgstr "Instalación para pruebas unitarias 04"
+
+#. module: academy_timesheets
+#: model:facility.facility,description:academy_timesheets.facility_test_6
+#: model:facility.facility,description:academy_timesheets.facility_test_7
+msgid "Facility for unit tests 11"
+msgstr "Instalación para pruebas unitarias 11"
+
+#. module: academy_timesheets
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_timesheet_session_state_wizard_wizard
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_timesheets_send_by_mail_wizard
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_timesheets_verification_wizard
@@ -1574,6 +2048,46 @@ msgstr "Asistente para informes de instalaciones"
 #: model:ir.model,name:academy_timesheets.model_facility_reservation
 msgid "Facility reservation"
 msgstr "Reserva de instalaciones"
+
+#. module: academy_timesheets
+#: model:ir.model,name:academy_timesheets.model_facility_reservation_massive_actions_wizard
+msgid "Facility reservation massive actions wizard"
+msgstr "Asistente de acciones masivas de reserva de instalaciones"
+
+#. module: academy_timesheets
+#: model:facility.facility,name:academy_timesheets.facility_test_1
+msgid "Facility test 01"
+msgstr "Instalación de prueba 01"
+
+#. module: academy_timesheets
+#: model:facility.facility,name:academy_timesheets.facility_test_2
+msgid "Facility test 02"
+msgstr "Instalación de prueba 02"
+
+#. module: academy_timesheets
+#: model:facility.facility,name:academy_timesheets.facility_test_3
+msgid "Facility test 03"
+msgstr "Instalación de prueba 03"
+
+#. module: academy_timesheets
+#: model:facility.facility,name:academy_timesheets.facility_test_4
+msgid "Facility test 04"
+msgstr "Instalación de prueba 04"
+
+#. module: academy_timesheets
+#: model:facility.facility,name:academy_timesheets.facility_test_5
+msgid "Facility test 05"
+msgstr "Instalación de prueba 05"
+
+#. module: academy_timesheets
+#: model:facility.facility,name:academy_timesheets.facility_test_6
+msgid "Facility test 06"
+msgstr "Instalación de prueba 06"
+
+#. module: academy_timesheets
+#: model:facility.facility,name:academy_timesheets.facility_test_7
+msgid "Facility test 07"
+msgstr "Instalación de prueba 07"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_search_teachers_wizard__finish_type
@@ -1591,6 +2105,11 @@ msgid "First"
 msgstr "Primera"
 
 #. module: academy_timesheets
+#: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_timesheet_session_state_wizard_wizard
+msgid "Flags"
+msgstr "Opciones"
+
+#. module: academy_timesheets
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session__message_follower_ids
 msgid "Followers"
 msgstr "Seguidores"
@@ -1606,10 +2125,27 @@ msgid "Followers (Partners)"
 msgstr "Seguidores (Socios)"
 
 #. module: academy_timesheets
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheet_session_state_wizard__force_all
+msgid "Force all"
+msgstr "Actualizar todos"
+
+#. module: academy_timesheets
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_send_by_mail_wizard__force_send
+msgid "Force send"
+msgstr "Forzar envío"
+
+#. module: academy_timesheets
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_download_wizard__mime
 #: model:ir.model.fields,field_description:academy_timesheets.field_res_config_settings__teacher_report_type
 msgid "Format"
 msgstr "Formato"
+
+#. module: academy_timesheets
+#: model:academy.training.session,task_name:academy_timesheets.academy_training_session_1
+#: model:facility.reservation,name:academy_timesheets.academy_training_session_1_reservation_a
+#: model:facility.reservation,name:academy_timesheets.academy_training_session_1_reservation_b
+msgid "Free software in the office"
+msgstr "Software gratuito en la oficina"
 
 #. module: academy_timesheets
 #: model:ir.model.fields.selection,name:academy_timesheets.selection__res_config_settings__schedule_for_next_week_from__iso5
@@ -1620,6 +2156,11 @@ msgstr "Viernes"
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_clone_wizard_log__from_date
 msgid "From date"
 msgstr "Desde la fecha"
+
+#. module: academy_timesheets
+#: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_timesheet_session_state_wizard_wizard
+msgid "Full attendance"
+msgstr "Asistencia completa"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_search_teachers_wizard__full_day
@@ -1638,6 +2179,16 @@ msgid "Group By"
 msgstr "Agrupar por"
 
 #. module: academy_timesheets
+#: model:ir.model.fields,field_description:academy_timesheets.field_facility_reservation__has_training_session
+msgid "Has training session"
+msgstr "Tiene sesión formativa"
+
+#. module: academy_timesheets
+#: model_terms:ir.ui.view,arch_db:academy_timesheets.academy_session_notification_email
+msgid "Hello."
+msgstr "Hola."
+
+#. module: academy_timesheets
 #: model:ir.model.fields,field_description:academy_timesheets.field_res_config_settings__help_to_fill
 msgid "Help to fill"
 msgstr "Ayuda para llenar"
@@ -1646,6 +2197,22 @@ msgstr "Ayuda para llenar"
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.res_config_settings_view_form
 msgid "Help to fill out the teacher's schedule"
 msgstr "Ayuda para llenar el horario del docente"
+
+#. module: academy_timesheets
+#: model_terms:ir.ui.view,arch_db:academy_timesheets.academy_session_notification_email
+msgid ""
+"I would like to inform you that there have been changes made to one of the\n"
+"  sessions that was scheduled on the timetable. Please review the updated\n"
+"  information at your earliest convenience and let us know if you have any\n"
+"  questions or concerns."
+msgstr ""
+"Me pongo en contacto contigo para informarte de que hemos realizado "
+"cambios\n"
+"   en una de las sesiones que tenías programadas en el horario. Por favor, "
+"revisa la\n"
+"   información actualizada lo antes posible y avísanos si existe algún "
+"impedimento,\n"
+"   si te surge alguna duda o tienes preguntas al respecto."
 
 #. module: academy_timesheets
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_non_teaching_task__id
@@ -1670,6 +2237,15 @@ msgstr ""
 #: model:ir.model.fields,help:academy_timesheets.field_academy_timesheets_clone_wizard_log__wizard_code
 msgid "ID of the wizard which create the log record"
 msgstr "ID del asistente que creó el registro"
+
+#. module: academy_timesheets
+#: model:ir.model.fields,help:academy_timesheets.field_academy_timesheets_send_by_mail_wizard__force_send
+msgid ""
+"If True, the generated mail will be immediately sent after being created, "
+"as if the scheduler was executed for this message only"
+msgstr ""
+"Si es Verdadero, el correo generado se enviará inmediatamente después de su "
+"creación, como si el programador se ejecutara solo para este mensaje"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_timesheets_search_teachers_wizard__full_day
@@ -1836,6 +2412,11 @@ msgid "Invite all"
 msgstr "Invitar a todos"
 
 #. module: academy_timesheets
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheet_session_state_wizard__invite_those_enrolled
+msgid "Invite those enrolled"
+msgstr "Invitar a los matriculados"
+
+#. module: academy_timesheets
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_affinity__invited
 msgid "Invited"
 msgstr "Invitado"
@@ -1926,6 +2507,14 @@ msgid "Level"
 msgstr "Nivel"
 
 #. module: academy_timesheets
+#: model:facility.reservation,description:academy_timesheets.academy_facility_reservation_test_1
+#: model:facility.reservation,description:academy_timesheets.academy_facility_reservation_test_2
+#: model:facility.reservation,description:academy_timesheets.academy_training_session_1_reservation_a
+#: model:facility.reservation,description:academy_timesheets.academy_training_session_1_reservation_b
+msgid "LibreOffice 5"
+msgstr ""
+
+#. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_training_session__invitation_ids
 #: model:ir.model.fields,help:academy_timesheets.field_academy_training_session_invitation__invitation_ids
 msgid "List of attendees for the session"
@@ -1989,7 +2578,7 @@ msgstr "Gestión"
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session__manager_id
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_invitation__manager_id
 msgid "Manager"
-msgstr "Administrador"
+msgstr "Responsable"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session__message_has_error
@@ -2031,7 +2620,7 @@ msgstr "Tipo de recurrencia mensual"
 #: code:addons/academy_timesheets/models/academy_training_session.py:0
 #, python-format
 msgid "My schedule"
-msgstr "Mi horario"
+msgstr "Visualizar"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_non_teaching_task__name
@@ -2103,15 +2692,30 @@ msgid "No records selected for which to clone sessions"
 msgstr "No se seleccionaron los registros para los cuales clonar sesiones"
 
 #. module: academy_timesheets
+#: model_terms:ir.ui.view,arch_db:academy_timesheets.view_facility_reservation_form
+msgid "No scheduler"
+msgstr "Sin planificador"
+
+#. module: academy_timesheets
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_verification_wizard__no_sessions_count
 msgid "No sessions"
 msgstr "Sin sesiones"
+
+#. module: academy_timesheets
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheet_session_state_wizard__mail_create_nosubscribe
+msgid "No subscribe"
+msgstr "No suscribirse"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_verification_wizard__no_teacher_count
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_training_session_search
 msgid "No teacher"
 msgstr "Sin docentes"
+
+#. module: academy_timesheets
+#: model_terms:ir.ui.view,arch_db:academy_timesheets.view_facility_reservation_form
+msgid "No training"
+msgstr "Sin formación"
 
 #. module: academy_timesheets
 #: model:ir.model,name:academy_timesheets.model_academy_non_teaching_task
@@ -2206,6 +2810,11 @@ msgid "Number of sessions on which the calculation has been made"
 msgstr "Número de sesiones sobre las que se ha realizado el cálculo"
 
 #. module: academy_timesheets
+#: model:ir.model.fields,help:academy_timesheets.field_academy_timesheet_session_state_wizard__target_count
+msgid "Number of sessions to which the status will be changed"
+msgstr "Número de sesiones a las que se cambiará el estado"
+
+#. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_student__invitation_count
 msgid "Number of sessions to which the student has been invited"
 msgstr "Número de sesiones a las que ha sido invitado el estudiante"
@@ -2234,6 +2843,11 @@ msgstr "Número de alumnos que no han sido invitados a la sesión"
 #: model:ir.model.fields,help:academy_timesheets.field_academy_timesheets_verification_wizard__no_sessions_count
 msgid "Number of training actions with no sessions"
 msgstr "Número de acciones formativas sin sesiones"
+
+#. module: academy_timesheets
+#: model:ir.model.fields,help:academy_timesheets.field_academy_training_action__current_week_hours
+msgid "Number of training hours in the current week"
+msgstr "Número de horas de formación en la semana actual"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_timesheets_verification_wizard__draft_state_count
@@ -2286,6 +2900,12 @@ msgstr "Documento PDF"
 #: model:ir.model.fields,help:academy_timesheets.field_academy_training_action_enrolment__exclusion_ids
 msgid "Pendent training session invitations"
 msgstr "Invitaciones a sesiones formativas pendientes"
+
+#. module: academy_timesheets
+#: model:academy.training.action,general_competence:academy_timesheets.academy_training_action_demo_test_1
+msgid "Perform basic computer operations with Microsoft Software"
+msgstr ""
+"Realizar operaciones informáticas básicas con el software de Microsoft"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_training_session__manager_id
@@ -2405,11 +3025,15 @@ msgstr "Orden de secuencia de preguntas"
 #: model:ir.model.fields.selection,name:academy_timesheets.selection__academy_timesheet_session_state_wizard__state__ready
 #: model:ir.model.fields.selection,name:academy_timesheets.selection__academy_timesheets_clone_wizard__state__ready
 #: model:ir.model.fields.selection,name:academy_timesheets.selection__academy_training_session__state__ready
-#: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_timesheet_session_state_wizard_wizard
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_training_session_invitation_search
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_training_session_search
 msgid "Ready"
 msgstr "Lista"
+
+#. module: academy_timesheets
+#: model:ir.model,name:academy_timesheets.model_ir_rule
+msgid "Record Rule"
+msgstr "Regla de registro"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_timesheets_clone_wizard_log__target_ref
@@ -2534,6 +3158,16 @@ msgid "Schedule URL"
 msgstr "Programar URL"
 
 #. module: academy_timesheets
+#: model:mail.message.subtype,name:academy_timesheets.academy_timesheets_training_session_changed
+msgid "Schedule session has been changed"
+msgstr "La sesión programada ha sido modificada"
+
+#. module: academy_timesheets
+#: model:mail.message.subtype,name:academy_timesheets.academy_timesheets_training_session_draft
+msgid "Schedule session temporarily removed"
+msgstr "La sesión programada ha sido eliminada temporalmente"
+
+#. module: academy_timesheets
 #: code:addons/academy_timesheets/wizard/academy_timesheets_verification_wizard.py:0
 #, python-format
 msgid "Schedule verification"
@@ -2580,6 +3214,11 @@ msgid "Send"
 msgstr "Enviar"
 
 #. module: academy_timesheets
+#: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_training_session_form
+msgid "Send by mail"
+msgstr "Enviar por correo"
+
+#. module: academy_timesheets
 #: model:ir.actions.act_window,name:academy_timesheets.action_send_invitation_schedule_by_mail_wizard_act_window
 #: model:ir.actions.act_window,name:academy_timesheets.action_send_student_schedule_by_mail_wizard_act_window
 #: model:ir.actions.act_window,name:academy_timesheets.action_send_teacher_schedule_by_mail_wizard_act_window
@@ -2591,6 +3230,11 @@ msgstr "Enviar horario"
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_timesheets_send_by_mail_wizard
 msgid "Send schedule document by mail"
 msgstr "Enviar documento de horario por correo"
+
+#. module: academy_timesheets
+#: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_training_session_form
+msgid "Send session by email"
+msgstr "Enviar sesión por correo electrónico"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_clone_wizard_log__sequence
@@ -2607,6 +3251,7 @@ msgstr "Secuencia"
 #: model:ir.model.fields,field_description:academy_timesheets.field_facility_reservation__session_id
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_training_session_affinity_form
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_training_session_invitation_form
+#: model_terms:ir.ui.view,arch_db:academy_timesheets.view_facility_reservation_tree
 msgid "Session"
 msgstr "Sesión"
 
@@ -2658,6 +3303,12 @@ msgid "Session to which this facility reservation is related"
 msgstr "Sesión con la que está relacionada esta reserva de instalaciones"
 
 #. module: academy_timesheets
+#: code:addons/academy_timesheets/models/academy_training_session.py:0
+#, python-format
+msgid "Session with id #{} not found"
+msgstr "Sesión con id # {} no encontrada"
+
+#. module: academy_timesheets
 #: model:ir.actions.act_window,name:academy_timesheets.action_sessions_act_window
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_competency_unit__session_ids
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_student__session_ids
@@ -2665,7 +3316,6 @@ msgstr "Sesión con la que está relacionada esta reserva de instalaciones"
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheet_session_state_wizard__session_ids
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_action__session_ids
 #: model:ir.ui.menu,name:academy_timesheets.menu_sessions
-#: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_timesheet_session_state_wizard_wizard
 msgid "Sessions"
 msgstr "Sesiones"
 
@@ -2707,6 +3357,11 @@ msgstr "Establecer el nuevo estado para las sesiones elegidas"
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_timesheets_clone_wizard
 msgid "Settings"
 msgstr "Ajustes"
+
+#. module: academy_timesheets
+#: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_training_session_form
+msgid "Setup"
+msgstr "Configuración"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_timesheets_clone_wizard_log__name
@@ -2762,6 +3417,11 @@ msgstr "Mostrar sesiones relacionadas"
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_training_session_form
 msgid "Show related teachers"
 msgstr "Mostrar docentes relacionados"
+
+#. module: academy_timesheets
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheet_session_state_wizard__skip_email_notification
+msgid "Skip email"
+msgstr "No enviar correo"
 
 #. module: academy_timesheets
 #: code:addons/academy_timesheets/lib/session_slot.py:0
@@ -2870,6 +3530,7 @@ msgid "Target sessions"
 msgstr "Sesiones objetivo"
 
 #. module: academy_timesheets
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheet_session_state_wizard__target_count
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_clone_wizard__record_count
 msgid "Targets"
 msgstr "Objetivos"
@@ -2938,6 +3599,12 @@ msgid "Teachers"
 msgstr "Docentes"
 
 #. module: academy_timesheets
+#: code:addons/academy_timesheets/wizard/academy_timesheets_search_teachers_wizard.py:0
+#, python-format
+msgid "Teachers that match the criteria"
+msgstr "Docentes que cumplen con los criterios"
+
+#. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_training_session__teacher_ids
 msgid "Teachers who teach this training session"
 msgstr "Docentes que imparten esta sesión de formación"
@@ -2956,10 +3623,9 @@ msgid "Teaching task"
 msgstr "Tarea docente"
 
 #. module: academy_timesheets
-#: code:addons/academy_timesheets/wizard/academy_timesheets_search_teachers_wizard.py:0
-#, python-format
-msgid "Teachers that match the criteria"
-msgstr "Docentes que cumplen con los criterios"
+#: model_terms:ir.ui.view,arch_db:academy_timesheets.academy_session_notification_email
+msgid "Thank you for your understanding and flexibility."
+msgstr "Gracias por su comprensión y flexibilidad."
 
 #. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_training_session_affinity__vat
@@ -2973,8 +3639,14 @@ msgstr ""
 
 #. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_training_session__company_id
+#: model:ir.model.fields,help:academy_timesheets.field_academy_training_session_affinity__company_id
 msgid "The company this record belongs to"
 msgstr "La empresa a la que pertenece este registro"
+
+#. module: academy_timesheets
+#: model_terms:ir.ui.view,arch_db:academy_timesheets.academy_session_notification_email
+msgid "The details of these changes are reflected below."
+msgstr "Los detalles de estos cambios se reflejan a continuación."
 
 #. module: academy_timesheets
 #: code:addons/academy_timesheets/models/academy_training_session_invitation.py:0
@@ -2995,6 +3667,16 @@ msgstr "La instalación ya había sido asignada a la sesión"
 #, python-format
 msgid "The interval cannot end without having started"
 msgstr "El intervalo no puede terminar sin haber comenzado"
+
+#. module: academy_timesheets
+#: model:mail.message.subtype,description:academy_timesheets.academy_timesheets_training_session_changed
+msgid "The schedule session has been changed"
+msgstr "La sesión formativa ha sido modificada"
+
+#. module: academy_timesheets
+#: model:mail.message.subtype,description:academy_timesheets.academy_timesheets_training_session_draft
+msgid "The session has been temporarily removed from the schedule"
+msgstr "La sesión formativa ha sido retirada temporalmente del horario"
 
 #. module: academy_timesheets
 #: code:addons/academy_timesheets/models/academy_training_session_invitation.py:0
@@ -3135,9 +3817,9 @@ msgid "To date"
 msgstr "Hasta la fecha"
 
 #. module: academy_timesheets
-#: model:ir.model.fields.selection,name:academy_timesheets.selection__academy_timesheet_session_state_wizard__state__toggle
-msgid "Toggle"
-msgstr "Commutar"
+#: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_training_session_form
+msgid "Toggle followers"
+msgstr "Asignar seguidores"
 
 #. module: academy_timesheets
 #: model:ir.actions.server,name:academy_timesheets.action_academy_training_session_affinity_toggle_invitation
@@ -3147,7 +3829,7 @@ msgstr "Alternar invitación"
 #. module: academy_timesheets
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_timesheet_session_state_wizard_wizard
 msgid "Total"
-msgstr ""
+msgstr "Registros totales"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_training_session__reservation_count
@@ -3162,7 +3844,7 @@ msgstr "Número total de docentes relacionados"
 #. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_timesheets_search_teachers_wizard__finish_number
 msgid "Total number of repetitions"
-msgstr ""
+msgstr "Número total de repeticiones"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_timesheet_session_state_wizard__session_count
@@ -3195,6 +3877,19 @@ msgstr "Formación / tarea"
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_training_session_invitation_search
 msgid "Training action"
 msgstr "Acción formativa"
+
+#. module: academy_timesheets
+#: model:academy.training.action,description:academy_timesheets.academy_training_action_demo_test_1
+msgid "Training action for unit tests"
+msgstr "Acción formativa para pruebas unitarias"
+
+#. module: academy_timesheets
+#: model:academy.training.action,action_name:academy_timesheets.academy_training_action_demo_test_1
+#: model:academy.training.session,task_name:academy_timesheets.academy_training_session_test_1
+#: model:facility.reservation,name:academy_timesheets.academy_facility_reservation_test_1
+#: model:facility.reservation,name:academy_timesheets.academy_facility_reservation_test_2
+msgid "Training action test"
+msgstr "Acción formativa de prueba"
 
 #. module: academy_timesheets
 #: model:ir.actions.report,name:academy_timesheets.action_report_academy_timesheets_training_action
@@ -3254,6 +3949,11 @@ msgstr "Responsable, en última instancia, de proporcionar la formación"
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_training_session_invitation_form
 msgid "Unit"
 msgstr "Unidad"
+
+#. module: academy_timesheets
+#: model_terms:ir.ui.view,arch_db:academy_timesheets.view_facility_reservation_form
+msgid "Unlink the reservation from the training session"
+msgstr "Desvincular la reserva de la sesión de formación"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session__message_unread
@@ -3350,6 +4050,11 @@ msgid "Weekly timetable for training actions"
 msgstr "Calendario semanal de las acciones formativas"
 
 #. module: academy_timesheets
+#: model_terms:ir.ui.view,arch_db:academy_timesheets.view_facility_reservation_search
+msgid "With a related training session"
+msgstr "Con una sesión formativa entrenamiento relacionada"
+
+#. module: academy_timesheets
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_training_session_search
 msgid "With exclusions"
 msgstr "Con exclusiones"
@@ -3360,6 +4065,16 @@ msgid "With sessions"
 msgstr "Con sesiones"
 
 #. module: academy_timesheets
+#: model_terms:ir.ui.view,arch_db:academy_timesheets.view_facility_reservation_search
+msgid "With training session"
+msgstr "Con sesión formativa"
+
+#. module: academy_timesheets
+#: model_terms:ir.ui.view,arch_db:academy_timesheets.view_facility_reservation_search
+msgid "Without a related training session"
+msgstr "Sin formación relacionada"
+
+#. module: academy_timesheets
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_training_session_search
 msgid "Without exclusions"
 msgstr "Sin exclusiones"
@@ -3368,6 +4083,11 @@ msgstr "Sin exclusiones"
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_competency_unit_search
 msgid "Without sessions"
 msgstr "Sin sesiones"
+
+#. module: academy_timesheets
+#: model_terms:ir.ui.view,arch_db:academy_timesheets.view_facility_reservation_search
+msgid "Without training session"
+msgstr "Sin sesión formativa"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_clone_wizard_log__wizard_code
@@ -3486,314 +4206,3 @@ msgstr ""
 #: model:ir.model.fields,help:academy_timesheets.field_academy_timesheets_download_wizard__week
 msgid "week corresponding to the schedule"
 msgstr "semana correspondiente al horario"
-
-#. module: academy_timesheets
-#: model:mail.template,body_html:academy_timesheets.mail_template_training_session_details
-msgid ""
-"\n"
-"        <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;\">\n"
-"          <tr>\n"
-"            <td align=\"center\">\n"
-"              <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"padding: 16px; background-color: white; color: #454748; border-collapse:separate;\">\n"
-"                <tbody>\n"
-"                  <!-- HEADER -->\n"
-"                  <tr>\n"
-"                    <td align=\"center\" style=\"min-width: 590px;\">\n"
-"                      <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;\">\n"
-"                        <tr>\n"
-"                          <td valign=\"middle\">\n"
-"                            <span style=\"font-size: 10px;\">Session details</span>\n"
-"                            <br />\n"
-"                            <span style=\"font-size: 20px; font-weight: bold;\"></span>\n"
-"                          </td>\n"
-"                          <td valign=\"middle\" align=\"right\">\n"
-"                            <img src=\"/logo.png?company=\" style=\"padding: 0px; margin: 0px; height: auto; width: 80px;\" alt=\"\" />\n"
-"                          </td>\n"
-"                        </tr>\n"
-"                        <tr>\n"
-"                          <td colspan=\"2\" style=\"text-align:center;\">\n"
-"                            <hr width=\"100%\" style=\"background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;\" />\n"
-"                          </td>\n"
-"                        </tr>\n"
-"                      </table>\n"
-"                    </td>\n"
-"                  </tr>\n"
-"                  <!-- CONTENT -->\n"
-"                  <tr>\n"
-"                    <td align=\"center\" style=\"min-width: 590px;\">\n"
-"                      <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;\">\n"
-"                        <tr>\n"
-"                          <td valign=\"top\" style=\"font-size: 13px;\">\n"
-"\n"
-"<p style=\"margin: 0.5em 0;\">Hello,</p>\n"
-"\n"
-"% if object.kind == 'teach'\n"
-"<p style=\"margin: 0.5em 0;\">I'm reaching out to you to provide you with information regarding the training session directed towards the group <strong>${ object.training_action_id.action_name }</strong>, part of the <strong>${ object.training_activity_id.name }</strong> course, which will focus on the subject <strong>${ object.competency_unit_id.competency_name }</strong>.</p>\n"
-"% endif\n"
-"\n"
-"% if object.kind == 'task'\n"
-"<p style=\"margin: 0.5em 0;\">I'm reaching out to you to provide you with information regarding the scheduled task <strong>${ object.task_id.display_name }</strong>.</p>\n"
-"% endif\n"
-"\n"
-"<p style=\"margin: 0.5em 0;\">Following are the essential details about it:</p>\n"
-"\n"
-"<ul>\n"
-"  <li><strong>Start:</strong> ${ object.date_start }</li>\n"
-"  <li><strong>End:</strong> ${ object.date_stop }</li>\n"
-"  <li><strong>Duration:</strong> ${ object.date_delay_str() }</li>\n"
-"% if object.primary_facility_id\n"
-"  <li><strong>Main venue:</strong> ${ object.primary_facility_id.name }</li>\n"
-"% endif\n"
-"% if object.primary_teacher_id\n"
-"  <li><strong>Principal:</strong> ${ object.primary_teacher_id.name }</li>\n"
-"% endif\n"
-"</ul>\n"
-"\n"
-"% if len(object.teacher_assignment_ids) > 1\n"
-"<p style=\"margin: 0.5em 0;\">The following list includes all the users who will participate in the session:</p>\n"
-"\n"
-"<ol>\n"
-"% for assignment in object.teacher_assignment_ids\n"
-"  <li>\n"
-"    <a href=\"mailto:${ assignment.teacher_id.email }\" style=\"color: inherit; text-decoration: none;\">\n"
-"      ${ assignment.teacher_id.name }\n"
-"    </a>\n"
-"  </li>\n"
-"% endfor\n"
-"</ol>\n"
-"% endif\n"
-"\n"
-"% if len(object.reservation_ids) > 1\n"
-"<p style=\"margin: 0.5em 0;\">The facilities, services and/or resources described below will be used:</p>\n"
-"\n"
-"<ul>\n"
-"% for reservation in object.reservation_ids\n"
-"  <li>\n"
-"    ${ reservation.facility_id.display_name }\n"
-"    <i>(${ reservation.facility_id.complex_id.name })</i>\n"
-"  </li>\n"
-"% endfor\n"
-"</ul>\n"
-"% endif\n"
-"\n"
-"\n"
-"% if object.state == 'ready' and object.env.context.get('include_schedule_url', False)\n"
-"<p>This session has been confirmed and therefore is reflected in your weekly schedule. You can quickly access it by following any of the following links:</p>\n"
-"\n"
-"<ul>\n"
-"    <li><a target=\"_blank\" href=\"/academy-timesheets/teacher/schedule?week=${ object.date_start.strftime('%Y-%m-%d') }&format=html&download=False\">View it online</a></li>\n"
-"    <li>\n"
-"    <a target=\"_blank\" href=\"/academy-timesheets/teacher/schedule?week=${ object.date_start.strftime('%Y-%m-%d') }&format=pdf&download=True\">Download it as a PDF</a></li>\n"
-"</ul>\n"
-"\n"
-"% endif\n"
-"\n"
-"<p style=\"margin: 0.5em 0;\">If you have any further questions about this or other sessions, please don't hesitate to reach out to us.</p>\n"
-"\n"
-"<p>Best regards,</p>\n"
-"\n"
-"<p style=\"margin: 0.5em 0;\"><a href=\"mailto:${user.email}\" tile=\"Send mail to ${user.name}\">${user.name}</a></p>\n"
-"                            </div>\n"
-"                          </td>\n"
-"                        </tr>\n"
-"                        <tr>\n"
-"                          <td style=\"text-align:center;\">\n"
-"                            <hr width=\"100%\" style=\"background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;\" />\n"
-"                          </td>\n"
-"                        </tr>\n"
-"                      </table>\n"
-"                    </td>\n"
-"                  </tr>\n"
-"                  <!-- FOOTER -->\n"
-"                  <tr>\n"
-"                    <td align=\"center\" style=\"min-width: 590px;\">\n"
-"                      <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"min-width: 590px; background-color: white; font-size: 11px; padding: 0px 8px 0px 8px; border-collapse:separate;\">\n"
-"                        <tr>\n"
-"                          <td valign=\"middle\" align=\"left\">  </td>\n"
-"                        </tr>\n"
-"                        <tr>\n"
-"                          <td valign=\"middle\" align=\"left\" style=\"opacity: 0.7;\">\n"
-"                    ${user.company_id.phone}\n"
-"                    % if user.company_id.email\n"
-"                        | <a href=\"'mailto:%s' % ${user.company_id.email}\" style=\"text-decoration:none; color: #454748;\">${user.company_id.email}</a>\n"
-"                    % endif\n"
-"                    % if user.company_id.website\n"
-"                        | <a href=\"'%s' % ${user.company_id.website}\" style=\"text-decoration:none; color: #454748;\">\n"
-"                        ${user.company_id.website}\n"
-"                    </a>\n"
-"                    % endif\n"
-"                          </td>\n"
-"                        </tr>\n"
-"                      </table>\n"
-"                    </td>\n"
-"                  </tr>\n"
-"                </tbody>\n"
-"              </table>\n"
-"            </td>\n"
-"          </tr>\n"
-"        </table>\n"
-"        "
-msgstr ""
-"\n"
-"        <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;\">\n"
-"          <tr>\n"
-"            <td align=\"center\">\n"
-"              <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"padding: 16px; background-color: white; color: #454748; border-collapse:separate;\">\n"
-"                <tbody>\n"
-"                  <!-- HEADER -->\n"
-"                  <tr>\n"
-"                    <td align=\"center\" style=\"min-width: 590px;\">\n"
-"                      <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;\">\n"
-"                        <tr>\n"
-"                          <td valign=\"middle\">\n"
-"                            <span style=\"font-size: 10px;\">Detalles de la sesión</span>\n"
-"                            <br />\n"
-"                            <span style=\"font-size: 20px; font-weight: bold;\"></span>\n"
-"                          </td>\n"
-"                          <td valign=\"middle\" align=\"right\">\n"
-"                            <img src=\"/logo.png?company=\" style=\"padding: 0px; margin: 0px; height: auto; width: 80px;\" alt=\"\" />\n"
-"                          </td>\n"
-"                        </tr>\n"
-"                        <tr>\n"
-"                          <td colspan=\"2\" style=\"text-align:center;\">\n"
-"                            <hr width=\"100%\" style=\"background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;\" />\n"
-"                          </td>\n"
-"                        </tr>\n"
-"                      </table>\n"
-"                    </td>\n"
-"                  </tr>\n"
-"                  <!-- CONTENT -->\n"
-"                  <tr>\n"
-"                    <td align=\"center\" style=\"min-width: 590px;\">\n"
-"                      <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;\">\n"
-"                        <tr>\n"
-"                          <td valign=\"top\" style=\"font-size: 13px;\">\n"
-"\n"
-"<p style=\"margin: 0.5em 0;\">Hola,</p>\n"
-"\n"
-"% if object.kind == 'teach'\n"
-"<p style=\"margin: 0.5em 0;\">Me pongo en contacto contigo para hacerte llegar la información relativa a la sesión formativa dirigida al grupo <strong>${ object.training_action_id.action_name }</strong>, enmarcada dentro del curso  <strong>${ object.training_activity_id.name }</strong> y que se centrará en el tema  <strong>${ object.competency_unit_id.competency_name }</strong>.</p>\n"
-"% endif\n"
-"\n"
-"% if object.kind == 'task'\n"
-"<p style=\"margin: 0.5em 0;\">Me pongo en contacto contigo para hacerte llegar la información sobre la tarea programada <strong>${ object.task_id.display_name }</strong>.</p>\n"
-"% endif\n"
-"\n"
-"<p style=\"margin: 0.5em 0;\">A continuación figuran los detalles esenciales acerca de la misma:</p>\n"
-"\n"
-"<ul>\n"
-"  <li><strong>Inicio:</strong> ${ object.date_start }</li>\n"
-"  <li><strong>Final:</strong> ${ object.date_stop }</li>\n"
-"  <li><strong>Duración:</strong> ${ object.date_delay_str() }</li>\n"
-"% if object.primary_facility_id\n"
-"  <li><strong>Instalación:</strong> ${ object.primary_facility_id.name }</li>\n"
-"% endif\n"
-"% if object.primary_teacher_id\n"
-"  <li><strong>Principal:</strong> ${ object.primary_teacher_id.name }</li>\n"
-"% endif\n"
-"</ul>\n"
-"\n"
-"% if len(object.teacher_assignment_ids) > 1\n"
-"<p style=\"margin: 0.5em 0;\">En la lista siguiente figuran todos los usuarios que participarán en la sesión:</p>\n"
-"\n"
-"<ol>\n"
-"% for assignment in object.teacher_assignment_ids\n"
-"  <li>\n"
-"    <a href=\"mailto:${ assignment.teacher_id.email }\" style=\"color: inherit; text-decoration: none;\">\n"
-"      ${ assignment.teacher_id.name }\n"
-"    </a>\n"
-"  </li>\n"
-"% endfor\n"
-"</ol>\n"
-"% endif\n"
-"\n"
-"% if len(object.reservation_ids) > 1\n"
-"<p style=\"margin: 0.5em 0;\">Se emplearán las instalaciones, servicios y/o recursos que se describen a continuación:</p>\n"
-"\n"
-"<ul>\n"
-"% for reservation in object.reservation_ids\n"
-"  <li>\n"
-"    ${ reservation.facility_id.display_name }\n"
-"    <i>(${ reservation.facility_id.complex_id.name })</i>\n"
-"  </li>\n"
-"% endfor\n"
-"</ul>\n"
-"% endif\n"
-"\n"
-"\n"
-"% if object.state == 'ready' and object.env.context.get('include_schedule_url', False)\n"
-"<p>Esta sesión ha sido confirmada y por tanto aparece reflejada en tu programación semanal. Puedes acceder rápidamente al horario siguiendo cualquiera de los siguientes enlaces:</p>\n"
-"\n"
-"<ul>\n"
-"    <li><a target=\"_blank\" href=\"/academy-timesheets/teacher/schedule?week=${ object.date_start.strftime('%Y-%m-%d') }&format=html&download=False\">Visualizar en línea</a></li>\n"
-"    <li>\n"
-"    <a target=\"_blank\" href=\"/academy-timesheets/teacher/schedule?week=${ object.date_start.strftime('%Y-%m-%d') }&format=pdf&download=True\">Descargarlo en formato PDF</a></li>\n"
-"</ul>\n"
-"\n"
-"% endif\n"
-"\n"
-"<p style=\"margin: 0.5em 0;\">Si tienes más preguntas sobre esta u otras sesiones, no dudes en ponerte en contacto con nosotros.</p>\n"
-"\n"
-"<p>Atentamente,</p>\n"
-"\n"
-"<p style=\"margin: 0.5em 0;\"><a href=\"mailto:${user.email}\" tile=\"Send mail to ${user.name}\">${user.name}</a></p>\n"
-"                            </div>\n"
-"                          </td>\n"
-"                        </tr>\n"
-"                        <tr>\n"
-"                          <td style=\"text-align:center;\">\n"
-"                            <hr width=\"100%\" style=\"background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;\" />\n"
-"                          </td>\n"
-"                        </tr>\n"
-"                      </table>\n"
-"                    </td>\n"
-"                  </tr>\n"
-"                  <!-- FOOTER -->\n"
-"                  <tr>\n"
-"                    <td align=\"center\" style=\"min-width: 590px;\">\n"
-"                      <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"590\" style=\"min-width: 590px; background-color: white; font-size: 11px; padding: 0px 8px 0px 8px; border-collapse:separate;\">\n"
-"                        <tr>\n"
-"                          <td valign=\"middle\" align=\"left\">  </td>\n"
-"                        </tr>\n"
-"                        <tr>\n"
-"                          <td valign=\"middle\" align=\"left\" style=\"opacity: 0.7;\">\n"
-"                    ${user.company_id.phone}\n"
-"                    % if user.company_id.email\n"
-"                        | <a href=\"'mailto:%s' % ${user.company_id.email}\" style=\"text-decoration:none; color: #454748;\">${user.company_id.email}</a>\n"
-"                    % endif\n"
-"                    % if user.company_id.website\n"
-"                        | <a href=\"'%s' % ${user.company_id.website}\" style=\"text-decoration:none; color: #454748;\">\n"
-"                        ${user.company_id.website}\n"
-"                    </a>\n"
-"                    % endif\n"
-"                          </td>\n"
-"                        </tr>\n"
-"                      </table>\n"
-"                    </td>\n"
-"                  </tr>\n"
-"                </tbody>\n"
-"              </table>\n"
-"            </td>\n"
-"          </tr>\n"
-"        </table>\n"
-"        "
-
-#. module: academy_timesheets
-#: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_training_session_form
-msgid "Toggle followers"
-msgstr "Asignar seguidores"
-
-#. module: academy_timesheets
-#: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_training_session_form
-msgid "Send by mail"
-msgstr "Enviar por correo"
-
-#. module: academy_timesheets
-#: model:mail.message.subtype,description:academy_timesheets.academy_timesheets_training_session_changed
-msgid "The schedule session has been changed"
-msgstr "La sesión formativa ha sido modificada"
-
-#. module: academy_timesheets
-#: model:mail.message.subtype,description:academy_timesheets.academy_timesheets_training_session_draft
-msgid "The session has been temporarily removed from the schedule"
-msgstr "La sesión formativa ha sido retirada temporalmente del horario"

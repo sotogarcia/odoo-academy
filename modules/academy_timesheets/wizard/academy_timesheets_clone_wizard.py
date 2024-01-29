@@ -189,6 +189,15 @@ class AcademyTimesheetsCloneWizard(models.TransientModel):
         help='Check it to show log history on exit'
     )
 
+    tracking_disable = fields.Boolean(
+        string='Tracking disable',
+        required=False,
+        readonly=False,
+        index=False,
+        default=True,
+        help='Disable tracking'
+    )
+
     def compute_current_monday(self, offset=0):
         today = fields.Date.context_today(self)
         monday = today - timedelta(days=today.weekday())
@@ -311,6 +320,11 @@ class AcademyTimesheetsCloneWizard(models.TransientModel):
 
     def perform_action(self):
         self.ensure_one()
+
+        if self.tracking_disable:
+            tracking_disable_ctx = self.env.context.copy()
+            tracking_disable_ctx.update({'tracking_disable': True})
+            self = self.with_context(tracking_disable_ctx)
 
         log_obj = self.env['academy.timesheets.clone.wizard.log']
         sequence = 10

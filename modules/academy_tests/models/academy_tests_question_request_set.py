@@ -6,9 +6,9 @@
 
 from odoo import models, fields, api
 from odoo.tools.translate import _
+from odoo.exceptions import ValidationError
+
 from logging import getLogger
-
-
 from datetime import date, timedelta
 
 _logger = getLogger(__name__)
@@ -131,12 +131,21 @@ class AcademyTestsQuestionRequestSet(models.Model):
     def default_expiration(self):
         return self._get_date(days=8)
 
+    @api.constrains('expiration')
+    def _check_expiration(self):
+        message = _('The expiration date must be after the current date')
+
+        today = date.today()
+        for record in self:
+            if record.expiration < today:
+                raise ValidationError(message)
+
     _sql_constraints = [
-        (
-            'not_expired',
-            'CHECK(expiration > CURRENT_TIMESTAMP(0)::TIMESTAMP)',
-            _(u'The expiration date must be after the current instant')
-        ),
+        # (
+        #     'not_expired',
+        #     'CHECK(expiration > CURRENT_TIMESTAMP(0)::TIMESTAMP)',
+        #     _(u'The expiration date must be after the current instant')
+        # ),
         (
             'unique_by_tests',
             'UNIQUE(test_id)',

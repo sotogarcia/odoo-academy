@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+
+        <record id="facility_test_1" model="facility.facility">
+            <field name="name">Facility test 01</field>
+            <field name="code">FT01</field>
+            <field name="description"><![CDATA[Facility for unit tests 01]]></field>
+            <field name="active" eval="True" />
+            <field name="type_id" ref="facility_management.facility_type_test" />
+            <field name="complex_id" ref="facility_management.facility_complex_test_complex" />
+            <field name="users">20</field>
+            <field name="excess">20</field>
+            <field name="owner_id" ref="base.user_admin" />
+        </record>
+
+        <record id="facility_test_2" model="facility.facility">
+            <field name="name">Facility test 02</field>
+            <field name="code">FT02</field>
+            <field name="description"><![CDATA[Facility for unit tests 02]]></field>
+            <field name="active" eval="True" />
+            <field name="type_id" ref="facility_management.facility_type_test" />
+            <field name="complex_id" ref="facility_management.facility_complex_test_complex" />
+            <field name="users">20</field>
+            <field name="excess">20</field>
+            <field name="owner_id" ref="base.user_admin" />
+        </record>
+
+        <record id="facility_test_3" model="facility.facility">
+            <field name="name">Facility test 03</field>
+            <field name="code">FT03</field>
+            <field name="description"><![CDATA[Facility for unit tests 03]]></field>
+            <field name="active" eval="True" />
+            <field name="type_id" ref="facility_management.facility_type_test" />
+            <field name="complex_id" ref="facility_management.facility_complex_test_complex" />
+            <field name="users">20</field>
+            <field name="excess">20</field>
+            <field name="owner_id" ref="base.user_admin" />
+        </record>
+
+        <record id="facility_test_4" model="facility.facility">
+            <field name="name">Facility test 04</field>
+            <field name="code">FT04</field>
+            <field name="description"><![CDATA[Facility for unit tests 04]]></field>
+            <field name="active" eval="True" />
+            <field name="type_id" ref="facility_management.facility_type_test" />
+            <field name="complex_id" ref="facility_management.facility_complex_test_complex" />
+            <field name="users">20</field>
+            <field name="excess">20</field>
+            <field name="owner_id" ref="base.user_admin" />
+        </record>
+
+        <record id="facility_test_5" model="facility.facility">
+            <field name="name">Facility test 05</field>
+            <field name="code">FT05</field>
+            <field name="description"><![CDATA[Facility for unit tests 04]]></field>
+            <field name="active" eval="True" />
+            <field name="type_id" ref="facility_management.facility_type_test" />
+            <field name="complex_id" ref="facility_management.facility_complex_test_complex" />
+            <field name="users">20</field>
+            <field name="excess">20</field>
+            <field name="owner_id" ref="base.user_admin" />
+        </record>
+
+        <record id="facility_test_6" model="facility.facility">
+            <field name="name">Facility test 06</field>
+            <field name="code">FT06</field>
+            <field name="description"><![CDATA[Facility for unit tests 11]]></field>
+            <field name="active" eval="True" />
+            <field name="type_id" ref="facility_management.facility_type_test" />
+            <field name="complex_id" ref="facility_management.facility_complex_test_complex" />
+            <field name="users">20</field>
+            <field name="excess">20</field>
+            <field name="owner_id" ref="base.user_admin" />
+        </record>
+
+        <record id="facility_test_7" model="facility.facility">
+            <field name="name">Facility test 07</field>
+            <field name="code">FT07</field>
+            <field name="description"><![CDATA[Facility for unit tests 11]]></field>
+            <field name="active" eval="True" />
+            <field name="type_id" ref="facility_management.facility_type_test" />
+            <field name="complex_id" ref="facility_management.facility_complex_test_complex" />
+            <field name="users">20</field>
+            <field name="excess">20</field>
+            <field name="owner_id" ref="base.user_admin" />
+        </record>
+
+    </data>
+</openerp>

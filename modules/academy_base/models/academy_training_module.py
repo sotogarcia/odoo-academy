@@ -7,6 +7,8 @@ all training module attributes and behavior.
 
 from odoo import models, fields, api
 from odoo.tools.translate import _
+from odoo.osv.expression import TRUE_DOMAIN, FALSE_DOMAIN
+from odoo.tools import safe_eval
 
 from logging import getLogger
 
@@ -223,6 +225,56 @@ class AcademyTrainingModule(models.Model):
         copy=False
     )
 
+    training_activity_count = fields.Integer(
+        string='Training activity count',
+        required=True,
+        readonly=True,
+        index=False,
+        default=0,
+        help='Number of training activities that use this module',
+        compute='_compute_training_activity_count',
+        search='_search_training_activity_count'
+    )
+
+    @api.depends('training_activity_ids')
+    def _compute_training_activity_count(self):
+        for record in self:
+            record.training_activity_count = len(record.training_activity_ids)
+
+    @api.model
+    def _search_training_activity_count(self, operator, value):
+        sql = '''
+            SELECT
+                atm."id" AS training_module_id
+            FROM
+                academy_training_module AS atm
+            LEFT JOIN academy_competency_unit AS acu
+                ON acu.training_module_id = atm."id" AND acu.active
+            LEFT JOIN academy_training_activity AS act
+                ON act."id" = acu.training_activity_id AND act.active
+            GROUP BY
+                atm."id"
+            HAVING COUNT ( DISTINCT act."id" ) {operator} {value}
+        '''
+
+        if value is True:
+            domain = TRUE_DOMAIN if operator == '=' else FALSE_DOMAIN
+        elif value is False:
+            domain = FALSE_DOMAIN if operator == '=' else TRUE_DOMAIN
+        else:
+
+            sql = sql.format(operator=operator, value=value)
+            self.env.cr.execute(sql)
+            results = self.env.cr.dictfetchall()
+
+            if results:
+                record_ids = [item['training_module_id'] for item in results]
+                domain = [('id', 'in', record_ids)]
+            else:
+                domain = FALSE_DOMAIN
+
+        return domain
+
     # --------------------------- COMPUTED FIELDS -----------------------------
 
     hours = fields.Float(
@@ -302,3 +354,31 @@ class AcademyTrainingModule(models.Model):
                 'default_training_module_id': self.id
             }
         }
+
+    def view_training_activities(self):
+        self.ensure_one()
+
+        action_xid = 'academy_base.action_academy_training_activity_act_window'
+        act_wnd = self.env.ref(action_xid)
+
+        name = _('View {}').format('Name')
+
+        context = self.env.context.copy()
+        context.update(safe_eval(act_wnd.context))
+
+        activity_ids = self.training_activity_ids.ids
+        domain = [('id', 'in', activity_ids)]
+
+        serialized = {
+            'type': 'ir.actions.act_window',
+            'res_model': act_wnd.res_model,
+            'target': 'current',
+            'name': name,
+            'view_mode': act_wnd.view_mode,
+            'domain': domain,
+            'context': context,
+            'search_view_id': act_wnd.search_view_id.id,
+            'help': act_wnd.help
+        }
+
+        return serialized

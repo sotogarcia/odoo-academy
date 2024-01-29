@@ -25,3 +25,6 @@ from . import res_config_settings
 
 from . import academy_timesheets_clone_wizard_log
 
+from . import ir_rule
+
+from . import academy_teacher_operational_shift

@@ -375,8 +375,8 @@
 <p style="margin: 0.5em 0;">Following are the essential details about it:</p>
 
 <ul>
-  <li><strong>Start:</strong> ${ object.date_start }</li>
-  <li><strong>End:</strong> ${ object.date_stop }</li>
+  <li><strong>Start:</strong> ${ object.localized_dt(object.date_start, object.get_tz()) }</li>
+  <li><strong>End:</strong> ${ object.localized_dt(object.date_stop, object.get_tz()) }</li>
   <li><strong>Duration:</strong> ${ object.date_delay_str() }</li>
 % if object.primary_facility_id
   <li><strong>Main venue:</strong> ${ object.primary_facility_id.name }</li>
@@ -471,9 +471,6 @@
         </table>
         ]]></field>
         </record>
-
-
-
 
     </data>
 </openerp>

@@ -25,12 +25,12 @@
             <field name="arch" type="xml">
                 <tree string="academy_tests_tree" create="1" delete="1" edit="1">
                     <field name="name" class="oe_field_name" />
-                    <field name="description" class="oe_field_description" />
-                    <field name="topic_id" class="oe_field_topic_id" />
-                    <field name="manager_id" class="oe_field_manager_id" />
-                    <field name="question_count" class="oe_field_question_count" string="Questions" />
-                    <field name="test_kind_id" class="od_field_test_kind_id" />
-                    <field name="last_edition" class="oe_field_last_edition" />
+                    <field name="description" class="oe_field_description" optional="hide" />
+                    <field name="topic_id" class="oe_field_topic_id" optional="show" />
+                    <field name="manager_id" class="oe_field_manager_id" optional="show" />
+                    <field name="question_count" class="oe_field_question_count" string="Questions" optional="show" />
+                    <field name="test_kind_id" class="od_field_test_kind_id" optional="show" />
+                    <field name="last_edition" class="oe_field_last_edition" optional="show" />
                 </tree>
             </field>
         </record>
@@ -156,6 +156,9 @@
 
                                     <separator colspan="4" string="Correction scale" />
                                     <field name="correction_scale_id" class="oe_field_correction_scale_id" />
+                                    <field name="time_by" class="oe_field_time_by" />
+                                    <field name="available_time" class="oe_field_available_time" widget="float_time" />
+                                    <field name="lock_time" class="oe_field_lock_time" />
                                 </group>
 
                             </page>

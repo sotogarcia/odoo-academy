@@ -44,9 +44,9 @@
 
                     <group col="4" string="Settings">
                         <field name="state" class="oe_field_state" />
-                        <separator colspan="2" />
                         <field name="autoinvite" class="oe_field_autoinvite" />
                         <field name="show_logs" class="oe_field_show_logs" />
+                        <field name="tracking_disable" class="oe_field_tracking_disable" />
                     </group>
 
                     <footer />

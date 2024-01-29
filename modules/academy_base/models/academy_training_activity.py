@@ -310,10 +310,14 @@ class AcademyTrainingActivity(models.Model):
         index=False,
         default=0,
         help='Show the number of competency units in the training activity',
-        compute=lambda self: self._compute_competency_unit_count()
+        compute='_compute_competency_unit_count'
     )
 
-    # The number of modules should be the same as the number of competencies
+    @api.depends('competency_unit_ids')
+    def _compute_competency_unit_count(self):
+        for record in self:
+            record.competency_unit_count = len(record.competency_unit_ids)
+
     # pylint: disable=W0212
     training_module_count = fields.Integer(
         string='Number of training modules',
@@ -322,14 +326,15 @@ class AcademyTrainingActivity(models.Model):
         index=False,
         default=0,
         help='Show the number of training modules in the training activity',
-        compute=lambda self: self._compute_competency_unit_count()
+        compute='_compute_training_module_count',
+        store=False
     )
 
+    # The number of modules should be the same as the number of competencies
     @api.depends('competency_unit_ids')
-    def _compute_competency_unit_count(self):
+    def _compute_training_module_count(self):
         for record in self:
-            record.competency_unit_count = len(record.competency_unit_ids)
-            record.training_module_count = record.competency_unit_count
+            record.training_module_count = len(record.competency_unit_ids)
 
     # pylint: disable=W0212
     training_action_count = fields.Integer(
@@ -339,8 +344,7 @@ class AcademyTrainingActivity(models.Model):
         index=False,
         default=0,
         help=False,
-        store=True,
-        compute=lambda self: self._compute_training_action_count()
+        compute='_compute_training_action_count'
     )
 
     @api.depends('training_action_ids')
@@ -421,3 +425,18 @@ class AcademyTrainingActivity(models.Model):
                 'default_training_activity_id': self.id
             }
         }
+
+    def write(self, values):
+        """ Overridden method 'write'
+        """
+        values = values or {}
+
+        user = self.env.user
+        if not user.has_group('academy_base.academy_group_manager'):
+            values.pop('training_action_count', False)
+            values.pop('training_module_count', False)
+
+        parent = super(AcademyTrainingActivity, self)
+        result = parent.write(values)
+
+        return result

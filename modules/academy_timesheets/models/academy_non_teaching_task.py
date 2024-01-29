@@ -6,7 +6,9 @@
 
 from odoo import models, fields, api
 from odoo.tools.translate import _
+
 from logging import getLogger
+from lxml import etree
 
 
 _logger = getLogger(__name__)
@@ -21,6 +23,22 @@ class AcademyNonTeachingTask(models.Model):
 
     _rec_name = 'name'
     _order = 'name ASC'
+
+    _check_company_auto = True
+
+    company_id = fields.Many2one(
+        string='Company',
+        required=True,
+        readonly=True,
+        index=True,
+        default=lambda self: self.env.company,
+        help='The company this record belongs to',
+        comodel_name='res.company',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False
+    )
 
     name = fields.Char(
         string='Name',

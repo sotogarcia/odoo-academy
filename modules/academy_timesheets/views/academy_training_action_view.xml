@@ -15,6 +15,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//div[@name='button_box']" position="inside">
                     <button name="view_sessions" type="object" class="oe_stat_button oe_read_only"
+                        groups="academy_base.academy_group_technical"
                         icon="fa-calendar" help="Show related sessions">
                         <field name="session_count" widget="statinfo" string="Scheduled" />
                     </button>
@@ -56,6 +57,7 @@
                         class="btn btn-sm btn-light oe_read_only" title="Show related sessions"
                         groups="academy_base.academy_group_technical">
                         <i class="fa fa-calendar d-inline-block mr-1" aria-hidden="false" />
+                        <field name="current_week_hours" class="oe_field_current_week_hours" widget="float_time" />
                     </button>
                 </xpath>
             </field>

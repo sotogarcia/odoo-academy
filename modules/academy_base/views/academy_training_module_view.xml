@@ -177,6 +177,9 @@
                 <xpath expr="//field[@name='hours']" position="before">
                     <field name="training_unit_count" class="oe_field_training_unit_count" string="Units" />
                 </xpath>
+                <xpath expr="//field[@name='hours']" position="before">
+                    <field name="training_activity_count" class="oe_field_training_activity_count" string="Activities" />
+                </xpath>
             </field>
         </record>
 
@@ -191,6 +194,11 @@
             <field name="active" eval="True" />
             <field name="inherit_id" ref="academy_base.view_academy_training_module_form" />
             <field name="arch" type="xml">
+                <xpath expr="//div[@name='button_box']" position="inside">
+                    <button name="view_training_activities" type="object" class="oe_stat_button" icon="fa-th-list">
+                        <field name="training_activity_count" widget="statinfo" string="Activities" />
+                    </button>
+                </xpath>
                 <xpath expr="//div[@name='button_box']" position="inside">
                     <button name="view_training_units" type="object" class="oe_stat_button" icon="fa-list-ul">
                         <field name="training_unit_count" widget="statinfo" string="Units" />

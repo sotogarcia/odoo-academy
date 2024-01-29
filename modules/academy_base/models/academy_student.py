@@ -10,7 +10,12 @@ from odoo.tools.translate import _
 from odoo.exceptions import ValidationError
 from odoo.tools.safe_eval import safe_eval
 from odoo.osv.expression import OR
-from odoo.osv.expression import AND, FALSE_DOMAIN
+from odoo.osv.expression import AND, TRUE_DOMAIN, FALSE_DOMAIN
+from odoo.addons.phone_validation.tools.phone_validation import phone_format
+
+from ..utils.record_utils import create_domain_for_ids
+from ..utils.record_utils import create_domain_for_interval
+from ..utils.record_utils import INCLUDE_ARCHIVED_DOMAIN, ARCHIVED_DOMAIN
 
 from logging import getLogger
 
@@ -45,9 +50,10 @@ class AcademyStudent(models.Model):
         string='Student enrolments',
         required=False,
         readonly=False,
-        index=False,
+        index=True,
         default=None,
-        help=False,
+        help=('List all the enrollments, including those that are current, '
+              'past, and future'),
         comodel_name='academy.training.action.enrolment',
         inverse_name='student_id',
         domain=[],
@@ -62,25 +68,9 @@ class AcademyStudent(models.Model):
         readonly=True,
         index=False,
         default=0,
-        help='Show number of enrolments',
-        compute='_compute_enrolment_count'
-    )
-
-    training_action_ids = fields.Many2manyView(
-        string='Training actions',
-        required=False,
-        readonly=True,
-        index=False,
-        default=None,
-        help='Show training actions in which this student has been enrolled',
-        comodel_name='academy.training.action',
-        relation='academy_training_action_student_rel',
-        column1='student_id',
-        column2='training_action_id',
-        domain=[],
-        context={},
-        limit=None,
-        copy=False
+        help='Show total number of enrolments',
+        compute='_compute_enrolment_count',
+        search='_search_enrolment_count'
     )
 
     @api.depends('enrolment_ids')
@@ -88,9 +78,175 @@ class AcademyStudent(models.Model):
         for record in self:
             record.enrolment_count = len(record.enrolment_ids)
 
-    @api.onchange('enrolment_ids')
-    def _onchange_enrolment_ids(self):
-        self.enrolment_count = len(self.enrolment_ids)
+    @api.model
+    def _search_enrolment_count(self, operator, value):
+        sql = '''
+            SELECT
+                std."id" AS student_id
+            FROM
+                academy_student AS std
+            LEFT JOIN academy_training_action_enrolment AS enrol
+                ON enrol.student_id = std."id"
+                AND enrol.company_id IN ( {companies} )
+                AND enrol.active
+            GROUP BY
+                std."id"
+            HAVING
+                COUNT ( enrol."id" ) {operator} {value}
+        '''
+
+        if value == '=' and value is True or value != '=' and value is False:
+            return TRUE_DOMAIN
+
+        if value != '=' and value is True or value == '=' and value is False:
+            return FALSE_DOMAIN
+
+        training_action_obj = self.env['academy.training.action']
+        companies = training_action_obj.join_allowed_companies()
+
+        sql = sql.format(companies=companies, operator=operator, value=value)
+        cursor = self.env.cr
+        cursor.execute(sql)
+        results = cursor.dictfetchall()
+
+        if results:
+            record_ids = [item['student_id'] for item in results]
+            return [('id', 'in', record_ids)]
+
+        return FALSE_DOMAIN
+
+    current_enrolment_ids = fields.One2many(
+        string='Current enrolments',
+        required=False,
+        readonly=False,
+        index=True,
+        default=None,
+        help=('List all the enrollments, including those that are current, '
+              'past, and future'),
+        comodel_name='academy.training.action.enrolment',
+        inverse_name='student_id',
+        domain=[
+            '&',
+            ('register', '<=', fields.Datetime.now()),
+            '|',
+            ('deregister', '=', False),
+            ('deregister', '>', fields.Datetime.now())
+        ],
+        context={},
+        auto_join=False,
+        limit=None
+    )
+
+    current_enrolment_count = fields.Integer(
+        string='Nº current enrolments',
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        help='Show total number of enrolments',
+        compute='_compute_current_enrolment_count',
+        search='_search_current_enrolment_count',
+    )
+
+    @api.depends('current_enrolment_ids')
+    def _compute_current_enrolment_count(self):
+        for record in self:
+            record.current_enrolment_count = len(record.current_enrolment_ids)
+
+    @api.model
+    def _search_current_enrolment_count(self, operator, value):
+        sql = '''
+            SELECT
+                std."id" AS student_id
+            FROM
+                academy_student AS std
+            LEFT JOIN academy_training_action_enrolment AS enrol
+                ON enrol.student_id = std."id" AND
+                register <= CURRENT_DATE
+                AND (
+                    deregister IS NULL
+                    OR deregister > CURRENT_DATE
+                )
+                AND enrol.company_id IN ( {companies} )
+                AND enrol.active
+            GROUP BY
+                std."id"
+            HAVING
+                COUNT ( enrol."id" ) {operator} {value}
+        '''
+
+        if value == '=' and value is True or value != '=' and value is False:
+            return TRUE_DOMAIN
+
+        if value != '=' and value is True or value == '=' and value is False:
+            return FALSE_DOMAIN
+
+        training_action_obj = self.env['academy.training.action']
+        companies = training_action_obj.join_allowed_companies()
+
+        sql = sql.format(companies=companies, operator=operator, value=value)
+        cursor = self.env.cr
+        cursor.execute(sql)
+        results = cursor.dictfetchall()
+
+        if results:
+            record_ids = [item['student_id'] for item in results]
+            return [('id', 'in', record_ids)]
+
+        return FALSE_DOMAIN
+
+    enrolment_str = fields.Char(
+        string='Enrolment str',
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help='Current enrollments over total number of student enrollments',
+        size=6,
+        translate=False,
+        compute='_compute_enrolment_str'
+    )
+
+    @api.depends('enrolment_ids', 'current_enrolment_ids', 'enrolment_count',
+                 'current_enrolment_count')
+    def _compute_enrolment_str(self):
+        for record in self:
+            current = record.current_enrolment_count or 0
+            total = record.enrolment_count or 0
+
+            if total == 0 or current == total:
+                record.enrolment_str = str(total)
+            else:
+                record.enrolment_str = '{} / {}'.format(current, total)
+
+    training_action_ids = fields.Many2many(
+        string='Training actions',
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help=('List the training actions for which the student has active '
+              'enrollments'),
+        comodel_name='academy.training.action',
+        relation='academy_training_action_student_rel',
+        column1='student_id',
+        column2='training_action_id',
+        domain=[],
+        context={},
+        limit=None,
+        copy=False,
+        compute='_compute_training_action_ids',
+        search='_search_training_action_ids'
+    )
+
+    @api.depends('enrolment_ids', 'enrolment_ids.training_action_id')
+    def _compute_training_action_ids(self):
+        for record in self:
+            record.field = self.mapped('enrolment_ids.training_action_id')
+
+    @api.model
+    def _search_training_action_ids(self, operator, value):
+        return [('enrolment_ids.training_action_id', operator, value)]
 
     attainment_id = fields.Many2one(
         string='Educational attainment',
@@ -222,3 +378,60 @@ class AcademyStudent(models.Model):
             'nodestroy': True,
             'target': 'main',
         }
+
+    def sanitize_phone_number(self):
+        msg = ('Web scoring calculator: Invalid {} number {}. System says: {}')
+
+        country = self.env.company.country_id
+        c_code = country.code if country else None
+        c_phone_code = country.phone_code if country else None
+
+        for record in self:
+            if record.phone:
+                try:
+                    phone = phone_format(record.phone, c_code, c_phone_code,
+                                         force_format='INTERNATIONAL')
+                    record.phone = phone
+                except Exception as ex:
+                    _logger.debug(msg.format('phone', record.phone, ex))
+
+            if record.mobile:
+                try:
+                    mobile = phone_format(record.mobile, c_code, c_phone_code,
+                                          force_format='INTERNATIONAL')
+                    record.mobile = mobile
+                except Exception as ex:
+                    _logger.debug(msg.format('mobile', record.mobile, ex))
+
+    def fetch_enrolled(self, training_actions=None,
+                       point_in_time=None, archived=False):
+
+        student_set = self.env['academy.student']
+
+        domains = []
+
+        if self:
+            domain = create_domain_for_ids('student_id', self)
+            domains.append(domain)
+
+        if training_actions:
+            domain = create_domain_for_ids(
+                'training_action_id', training_actions)
+            domains.append(domain)
+
+        if point_in_time:
+            domain = create_domain_for_interval(
+                'register', 'deregister', point_in_time)
+            domains.append(domain)
+
+        if archived is None:
+            domains.append(INCLUDE_ARCHIVED_DOMAIN)
+        elif archived is True:
+            domains.append(ARCHIVED_DOMAIN)
+
+        if domains:
+            enrolment_obj = self.env['academy.training.action.enrolment']
+            enrolment_set = enrolment_obj.search(AND(domains))
+            student_set = enrolment_set.mapped('student_id')
+
+        return student_set

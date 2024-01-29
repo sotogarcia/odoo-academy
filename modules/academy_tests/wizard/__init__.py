@@ -30,3 +30,4 @@ from . import academy_tests_question_request_set_wizard
 
 from . import academy_tests_random_template_type_wizard
 from . import academy_tests_copy_assignments_wizard
+from . import academy_tests_assignment_wizard

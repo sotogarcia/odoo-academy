@@ -8,6 +8,8 @@ from . import academy_abstract_observable
 from . import academy_abstract_training
 from . import academy_abstract_owner
 
+from . import academy_interface_help_string
+
 from . import academy_training_methodology
 from . import academy_application_scope
 from . import academy_knowledge_area

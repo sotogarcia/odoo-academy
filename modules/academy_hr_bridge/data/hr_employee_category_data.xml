@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="hr_employee_category_educational_staff" model="hr.employee.category">
+            <field name="name">Educational staff</field>
+        </record>
+
+    </data>
+</openerp>

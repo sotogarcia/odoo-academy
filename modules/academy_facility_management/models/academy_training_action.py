@@ -10,6 +10,7 @@
 
 from odoo import models, fields, api
 from odoo.osv.expression import TRUE_DOMAIN, FALSE_DOMAIN
+
 from logging import getLogger
 
 

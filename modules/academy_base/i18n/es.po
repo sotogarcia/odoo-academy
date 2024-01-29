@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-29 22:27+0000\n"
-"PO-Revision-Date: 2023-06-20 21:18+0200\n"
+"POT-Creation-Date: 2023-12-18 19:45+0000\n"
+"PO-Revision-Date: 2023-12-18 20:47+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -108,24 +108,13 @@ msgid ""
 "                                    <b attrs=\"{'invisible': [('type', '!=', 'private')]}\">Private Address</b>\n"
 "                                    <b attrs=\"{'invisible': [('type', '!=', False)]}\">Address</b>"
 msgstr ""
-
-#. module: academy_base
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_kanban
-msgid ""
-"<i class=\"fa fa-id-card-o d-inline-block mr-1\" aria-hidden=\"false\"/>\n"
-"                                            Enrolments"
-msgstr ""
-"<i class=\"fa fa-id-card-o d-inline-block mr-1\" aria-hidden=\"false\"/>\n"
-"                                            Matrículas"
-
-#. module: academy_base
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_student_kanban
-msgid ""
-"<i class=\"fa fa-pencil-square-o d-inline-block mr-1\" aria-hidden=\"false\"/>\n"
-"                                            Enrolments"
-msgstr ""
-"<i class=\"fa fa-pencil-square-o d-inline-block mr-1\" aria-hidden=\"false\"/>\n"
-"                                            Matrículas"
+"<b attrs=\"{'invisible': [('type', '!=', 'contact')]}\">Dirección de la empresa</b>\n"
+"                                      <b attrs=\"{'invisible': [('type', '!=', 'invoice')]}\">Dirección de factura</b>\n"
+"                                      <b attrs=\"{'invisible': [('type', '!=', 'delivery')]}\">Dirección de entrega</"
+"b>\n"
+"                                      <b attrs=\"{'invisible': [('type', '!=', 'other')]}\">Otra dirección</b>\n"
+"                                      <b attrs=\"{'invisible': [('type', '!=', 'private')]}\">Dirección privada</b>\n"
+"                                      <b attrs=\"{'invisible': [('type', '!=', False)]}\">Dirección</b>"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.res_config_settings_view_form
@@ -265,11 +254,6 @@ msgid "<strong>Action: </strong>"
 msgstr "<strong>Acción: </strong>"
 
 #. module: academy_base
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_kanban
-msgid "<strong>Activity: </strong>"
-msgstr "<strong>Actividad: </strong>"
-
-#. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_competency_unit_kanban
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_kanban
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_activity_kanban
@@ -313,7 +297,7 @@ msgstr "<strong>Duración: </strong>"
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_resource_kanban
 msgid "<strong>Manager: </strong>"
-msgstr "<strong>Administrador: </strong>"
+msgstr "<strong>Responsable: </strong>"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_student_kanban
@@ -330,11 +314,6 @@ msgstr "<strong>Módulo: </strong>"
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_activity_kanban
 msgid "<strong>Nº actions: </strong>"
 msgstr "<strong>Nº de acciones: </strong>"
-
-#. module: academy_base
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_kanban
-msgid "<strong>Nº enrolments: </strong>"
-msgstr "<strong>Nº de matrículas: </strong>"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_competency_unit_kanban
@@ -389,6 +368,17 @@ msgstr ""
 "de la primera infancia y/o alguna participación en la educación primaria"
 
 #. module: academy_base
+#: model:academy.interface.help.string,description:academy_base.academy_interface_student_wizard_action_switch
+msgid ""
+"A new enrollment will be created in the target training action, with a validity period defined by the provided dates. "
+"If no end date is specified, the new enrollments will have permanent validity. The specified enrollment date will be "
+"assigned to enrollments that are active as of today in the original training action."
+msgstr ""
+"Se creará una nueva matrícula en la acción formativa de destino, con un intervalo de vigencia delimitado por las fechas "
+"proporcionadas. Si no se especifica una fecha de finalización, las nuevas matrículas tendrán vigencia permanente. La "
+"fecha de alta especificada se asignará a las matrículas que estén activas a día de hoy en la acción formativa de origen."
+
+#. module: academy_base
 #: model:academy.professional.sector,name:academy_base.professional_sector_6101
 msgid "Abnormal psychology"
 msgstr "Psicología anormal"
@@ -432,6 +422,11 @@ msgstr "Unidades de competencia"
 #. module: academy_base
 #: model:ir.model,name:academy_base.model_academy_educational_attainment
 msgid "Academy educational attainment"
+msgstr ""
+
+#. module: academy_base
+#: model:ir.model,name:academy_base.model_academy_interface_help_string
+msgid "Academy interface help string"
 msgstr ""
 
 #. module: academy_base
@@ -486,6 +481,11 @@ msgid "Academy student"
 msgstr "Estudiante"
 
 #. module: academy_base
+#: model:ir.model,name:academy_base.model_academy_student_wizard
+msgid "Academy student wizard"
+msgstr ""
+
+#. module: academy_base
 #: model:ir.model,name:academy_base.model_academy_teacher
 msgid "Academy teacher"
 msgstr "Docente de academia"
@@ -508,6 +508,11 @@ msgstr "Alta en la acción formativa"
 #. module: academy_base
 #: model:ir.model,name:academy_base.model_academy_training_action_enrolment_available_resource_rel
 msgid "Academy training action enrolment available resource rel"
+msgstr ""
+
+#. module: academy_base
+#: model:ir.model,name:academy_base.model_academy_training_action_enrolment_wizard
+msgid "Academy training action enrolment wizard"
 msgstr ""
 
 #. module: academy_base
@@ -597,6 +602,7 @@ msgstr "Acústica"
 
 #. module: academy_base
 #: code:addons/academy_base/models/utils/training_mappings.py:0
+#: model:ir.model.fields,field_description:academy_base.field_academy_student_wizard__action
 #: model:ir.model.fields.selection,name:academy_base.selection__academy_abstract_training_reference__training_ref__academy_training_action
 #, python-format
 msgid "Action"
@@ -629,6 +635,11 @@ msgstr "Nombre de la acción"
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action__action_resource_ids
 msgid "Action resources"
 msgstr "Recursos de la acción"
+
+#. module: academy_base
+#: model:ir.model.fields,help:academy_base.field_academy_student_wizard__action
+msgid "Action that will be carried out on the group of students"
+msgstr "Acción que se efectuará sobre el grupo de alumnos"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_activity_form
@@ -665,7 +676,7 @@ msgstr "Activo"
 #: model:ir.model.fields,field_description:academy_base.field_academy_student__active_lang_count
 #: model:ir.model.fields,field_description:academy_base.field_academy_teacher__active_lang_count
 msgid "Active Lang Count"
-msgstr "Recuento de idiomas activo"
+msgstr "Nº de idiomas activos"
 
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_competency_unit__training_activity_ids
@@ -673,6 +684,8 @@ msgstr "Recuento de idiomas activo"
 #: model:ir.model.fields,field_description:academy_base.field_academy_teacher__activity_ids
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment__activity_ids
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_module__training_activity_ids
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_module_module_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_module_module_tree
 msgid "Activities"
 msgstr "Actividades"
 
@@ -818,10 +831,33 @@ msgid "Alias Contact Security"
 msgstr "Alias de seguridad de contacto"
 
 #. module: academy_base
+#: model:academy.interface.help.string,description:academy_base.academy_interface_student_wizard_action_show
+msgid ""
+"All enrollments of the selected students for the indicated training action that overlap with the given date range will "
+"be displayed."
+msgstr ""
+"Se mostrarán todas las matrículas de los alumnos seleccionados para la acción formativa indicada que se solapen con el "
+"intervalo de fechas especificado."
+
+#. module: academy_base
+#: model:academy.interface.help.string,description:academy_base.academy_interface_student_wizard_action_enroll
+msgid ""
+"All selected students who do not have active enrollments in the specified training action, and whose enrollments do not "
+"overlap with the specified date range, will be enrolled in that training action."
+msgstr ""
+"Todos los estudiantes seleccionados que no tengan matrículas activas en la acción formativa indicada, solapadas con el "
+"intervalo de fechas especificado, serán matriculados en dicha acción."
+
+#. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_student__lang
 #: model:ir.model.fields,help:academy_base.field_academy_teacher__lang
 msgid "All the emails and documents sent to this contact will be translated in this language."
 msgstr "Todos los correos electrónicos y documentos enviados a este contacto serán traducidos a este idioma."
+
+#. module: academy_base
+#: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment_wizard__state
+msgid "Allow to choose wizard step"
+msgstr "Permite elegir el paso del asistente"
 
 #. module: academy_base
 #: model:academy.professional.sector,name:academy_base.professional_sector_1202
@@ -934,6 +970,12 @@ msgid "Archived"
 msgstr "Archivado"
 
 #. module: academy_base
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_student_wizard
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_enrolment_wizard_wizard
+msgid "Are you sure you want to do this?"
+msgstr "¿Estás seguro de que quieres hacer esto?"
+
+#. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form
 msgid "Area"
 msgstr "Área"
@@ -974,7 +1016,7 @@ msgstr "Ciencias de la atmósfera"
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_module__message_attachment_count
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_resource__message_attachment_count
 msgid "Attachment Count"
-msgstr "Recuento de adjuntos"
+msgstr "Nº de adjuntos"
 
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_resource__ir_attachment_ids
@@ -1055,6 +1097,11 @@ msgstr "Conocimiento general básico"
 #: model:academy.training.activity,name:academy_base.academy_training_activity_ms
 msgid "Basic knowledge of Microsoft software"
 msgstr "Conocimientos básicos del software de Microsoft"
+
+#. module: academy_base
+#: model:ir.actions.act_window,name:academy_base.action_academy_student_wizard_act_window
+msgid "Batch management"
+msgstr "Gestión en masa"
 
 #. module: academy_base
 #: model:academy.professional.sector,name:academy_base.professional_sector_3302
@@ -1160,6 +1207,14 @@ msgid "Cell biology"
 msgstr "Biología celular"
 
 #. module: academy_base
+#: model:ir.actions.act_window,name:academy_base.academy_competency_unit_change_owner_act_window
+#: model:ir.actions.act_window,name:academy_base.academy_training_action_change_owner_act_window
+#: model:ir.actions.act_window,name:academy_base.academy_training_activity_change_owner_act_window
+#: model:ir.actions.act_window,name:academy_base.academy_training_module_change_owner_act_window
+msgid "Change owner"
+msgstr "Cambiar titularidad"
+
+#. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_student__channel_ids
 #: model:ir.model.fields,field_description:academy_base.field_academy_teacher__channel_ids
 msgid "Channels"
@@ -1185,6 +1240,26 @@ msgid "Check if the contact is a company, otherwise it is a person"
 msgstr "Marcar si el contacto es una empresa, de lo contrario es una persona"
 
 #. module: academy_base
+#: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment_wizard__update_material
+msgid "Check it to update enrollemnt material"
+msgstr "Marcar para actualizar el material de inscripción"
+
+#. module: academy_base
+#: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment_wizard__update_date_start
+msgid "Check it to update enrollemnt start date"
+msgstr "Marcar para actualizar la fecha de alta"
+
+#. module: academy_base
+#: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment_wizard__update_date_stop
+msgid "Check it to update enrollemnt stop date"
+msgstr "Marcar para actualizar el material de baja"
+
+#. module: academy_base
+#: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment_wizard__update_modalities
+msgid "Check it to update enrollemnt training modalities"
+msgstr "Marcar para actualizar las modalidades de formación"
+
+#. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_student__employee
 #: model:ir.model.fields,help:academy_base.field_academy_teacher__employee
 msgid "Check this box if this contact is an Employee."
@@ -1205,6 +1280,12 @@ msgstr "Ingeniería Y tecnología química"
 #: model:academy.professional.field,name:academy_base.professional_field_23
 msgid "Chemistry"
 msgstr "Química"
+
+#. module: academy_base
+#: code:addons/academy_base/wizard/academy_student_wizard.py:0
+#, python-format
+msgid "Choose an action to perform on selected students"
+msgstr "Marcar para actualizar el tipo de material"
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment__competency_unit_ids
@@ -1528,6 +1609,7 @@ msgstr "Código:"
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_student__color
 #: model:ir.model.fields,field_description:academy_base.field_academy_teacher__color
+#: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment__color
 msgid "Color Index"
 msgstr "Índice de color"
 
@@ -1558,6 +1640,7 @@ msgstr "Compañías"
 #: model:ir.model.fields,field_description:academy_base.field_academy_teacher__company_id
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action__company_id
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment__company_id
+#: model:ir.model.fields,field_description:academy_base.field_academy_training_action_student_rel__company_id
 msgid "Company"
 msgstr "Empresa"
 
@@ -1581,6 +1664,7 @@ msgstr "Tipo de empresa"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_enrolment_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_activity_form
 msgid "Competencies"
 msgstr "Competencias"
 
@@ -1692,6 +1776,11 @@ msgid "Contemporary History"
 msgstr "Historia contemporánea"
 
 #. module: academy_base
+#: model:ir.actions.server,name:academy_base.action_academy_training_action_copy_activity_image
+msgid "Copy activity image"
+msgstr "Copiar la imagen de la actividad"
+
+#. module: academy_base
 #: model:academy.professional.sector,name:academy_base.professional_sector_2101
 msgid "Cosmology"
 msgstr "Cosmología y cosmogonía"
@@ -1725,6 +1814,7 @@ msgstr "Crear nuevo estudiante"
 #: model:ir.model.fields,field_description:academy_base.field_academy_competency_unit__create_uid
 #: model:ir.model.fields,field_description:academy_base.field_academy_competency_unit_teacher_rel__create_uid
 #: model:ir.model.fields,field_description:academy_base.field_academy_educational_attainment__create_uid
+#: model:ir.model.fields,field_description:academy_base.field_academy_interface_help_string__create_uid
 #: model:ir.model.fields,field_description:academy_base.field_academy_knowledge_area__create_uid
 #: model:ir.model.fields,field_description:academy_base.field_academy_professional_area__create_uid
 #: model:ir.model.fields,field_description:academy_base.field_academy_professional_category__create_uid
@@ -1734,9 +1824,11 @@ msgstr "Crear nuevo estudiante"
 #: model:ir.model.fields,field_description:academy_base.field_academy_professional_sector__create_uid
 #: model:ir.model.fields,field_description:academy_base.field_academy_qualification_level__create_uid
 #: model:ir.model.fields,field_description:academy_base.field_academy_student__create_uid
+#: model:ir.model.fields,field_description:academy_base.field_academy_student_wizard__create_uid
 #: model:ir.model.fields,field_description:academy_base.field_academy_teacher__create_uid
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action__create_uid
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment__create_uid
+#: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment_wizard__create_uid
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_activity__create_uid
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_methodology__create_uid
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_modality__create_uid
@@ -1752,6 +1844,7 @@ msgstr "Creado por"
 #: model:ir.model.fields,field_description:academy_base.field_academy_competency_unit__create_date
 #: model:ir.model.fields,field_description:academy_base.field_academy_competency_unit_teacher_rel__create_date
 #: model:ir.model.fields,field_description:academy_base.field_academy_educational_attainment__create_date
+#: model:ir.model.fields,field_description:academy_base.field_academy_interface_help_string__create_date
 #: model:ir.model.fields,field_description:academy_base.field_academy_knowledge_area__create_date
 #: model:ir.model.fields,field_description:academy_base.field_academy_professional_area__create_date
 #: model:ir.model.fields,field_description:academy_base.field_academy_professional_category__create_date
@@ -1761,9 +1854,11 @@ msgstr "Creado por"
 #: model:ir.model.fields,field_description:academy_base.field_academy_professional_sector__create_date
 #: model:ir.model.fields,field_description:academy_base.field_academy_qualification_level__create_date
 #: model:ir.model.fields,field_description:academy_base.field_academy_student__create_date
+#: model:ir.model.fields,field_description:academy_base.field_academy_student_wizard__create_date
 #: model:ir.model.fields,field_description:academy_base.field_academy_teacher__create_date
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action__create_date
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment__create_date
+#: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment_wizard__create_date
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_activity__create_date
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_methodology__create_date
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_modality__create_date
@@ -1791,6 +1886,21 @@ msgid "Cultural sociology"
 msgstr "Sociología cultural"
 
 #. module: academy_base
+#: model:ir.model.fields,help:academy_base.field_academy_student__enrolment_str
+msgid "Current enrollments over total number of student enrollments"
+msgstr "Número de matrículas actuales sobre el total de matrículas del estudiante"
+
+#. module: academy_base
+#: model:ir.model.fields,field_description:academy_base.field_academy_student__current_enrolment_ids
+msgid "Current enrolments"
+msgstr "Matrículas actuales"
+
+#. module: academy_base
+#: model:ir.model.fields,field_description:academy_base.field_academy_student_wizard__current_interval_str
+msgid "Current interval"
+msgstr "Intervalo actual"
+
+#. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_abstract_owner__owner_id
 msgid "Current owner"
 msgstr "Titular actual"
@@ -1803,6 +1913,11 @@ msgstr "Titular actual"
 #: model:ir.model.fields,help:academy_base.field_academy_training_module__owner_id
 msgid "Current record owner"
 msgstr "Titular del registro actual"
+
+#. module: academy_base
+#: model:ir.model.fields,field_description:academy_base.field_academy_student_wizard__current_training_action_id
+msgid "Current training action"
+msgstr "Acción formativa actual"
 
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_resource__training_resource_id
@@ -1836,6 +1951,16 @@ msgid "Date on which the student was born"
 msgstr "Fecha en que nació el estudiante"
 
 #. module: academy_base
+#: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment_wizard__date_start
+msgid "Date start"
+msgstr "Fecha de alta"
+
+#. module: academy_base
+#: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment_wizard__date_stop
+msgid "Date stop"
+msgstr "Fecha de baja"
+
+#. module: academy_base
 #: model:academy.professional.sector,name:academy_base.professional_sector_1102
 msgid "Deductive logic"
 msgstr "Lógica deductiva"
@@ -1865,6 +1990,7 @@ msgstr "Describe las funciones profesionales más significativas del perfil prof
 #: model:ir.model.fields,field_description:academy_base.field_academy_application_scope__description
 #: model:ir.model.fields,field_description:academy_base.field_academy_competency_unit__description
 #: model:ir.model.fields,field_description:academy_base.field_academy_educational_attainment__description
+#: model:ir.model.fields,field_description:academy_base.field_academy_interface_help_string__description
 #: model:ir.model.fields,field_description:academy_base.field_academy_knowledge_area__description
 #: model:ir.model.fields,field_description:academy_base.field_academy_professional_area__description
 #: model:ir.model.fields,field_description:academy_base.field_academy_professional_category__description
@@ -1873,6 +1999,7 @@ msgstr "Describe las funciones profesionales más significativas del perfil prof
 #: model:ir.model.fields,field_description:academy_base.field_academy_professional_qualification__description
 #: model:ir.model.fields,field_description:academy_base.field_academy_professional_sector__description
 #: model:ir.model.fields,field_description:academy_base.field_academy_qualification_level__description
+#: model:ir.model.fields,field_description:academy_base.field_academy_student_wizard__description
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action__description
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment__description
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_activity__description
@@ -1884,10 +2011,16 @@ msgstr "Describe las funciones profesionales más significativas del perfil prof
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_area_form
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_family_form
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_qualification_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_student_wizard
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_enrolment_form
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_resource_form
 msgid "Description"
 msgstr "Descripción"
+
+#. module: academy_base
+#: model:ir.model.fields,help:academy_base.field_academy_student_wizard__description
+msgid "Description of the action that will be carried out on the selected students"
+msgstr "Descripción de la acción que se efectuará sobre los alumnos seleccionados"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_activity_details_document_qweb
@@ -1901,6 +2034,7 @@ msgstr "Lingüística diacrónica"
 
 #. module: academy_base
 #: model:ir.model.fields.selection,name:academy_base.selection__academy_training_action_enrolment__material__digital
+#: model:ir.model.fields.selection,name:academy_base.selection__academy_training_action_enrolment_wizard__material__digital
 msgid "Digital"
 msgstr ""
 
@@ -1934,6 +2068,7 @@ msgstr "Directorio que contiene archivos de recursos"
 #: model:ir.model.fields,field_description:academy_base.field_academy_competency_unit__display_name
 #: model:ir.model.fields,field_description:academy_base.field_academy_competency_unit_teacher_rel__display_name
 #: model:ir.model.fields,field_description:academy_base.field_academy_educational_attainment__display_name
+#: model:ir.model.fields,field_description:academy_base.field_academy_interface_help_string__display_name
 #: model:ir.model.fields,field_description:academy_base.field_academy_knowledge_area__display_name
 #: model:ir.model.fields,field_description:academy_base.field_academy_professional_area__display_name
 #: model:ir.model.fields,field_description:academy_base.field_academy_professional_category__display_name
@@ -1943,11 +2078,13 @@ msgstr "Directorio que contiene archivos de recursos"
 #: model:ir.model.fields,field_description:academy_base.field_academy_professional_sector__display_name
 #: model:ir.model.fields,field_description:academy_base.field_academy_qualification_level__display_name
 #: model:ir.model.fields,field_description:academy_base.field_academy_student__display_name
+#: model:ir.model.fields,field_description:academy_base.field_academy_student_wizard__display_name
 #: model:ir.model.fields,field_description:academy_base.field_academy_teacher__display_name
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action__display_name
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action_available_resource_rel__display_name
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment__display_name
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment_available_resource_rel__display_name
+#: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment_wizard__display_name
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action_student_rel__display_name
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_activity__display_name
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_activity_available_resource_rel__display_name
@@ -1964,6 +2101,11 @@ msgstr "Directorio que contiene archivos de recursos"
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_resource_kind__display_name
 msgid "Display Name"
 msgstr "Nombre para mostrar"
+
+#. module: academy_base
+#: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment__color
+msgid "Display color based on dependency and status"
+msgstr "Color de visualización según la dependencia y el estado"
 
 #. module: academy_base
 #: model:academy.training.modality,name:academy_base.academy_training_modality_distance
@@ -1983,8 +2125,14 @@ msgstr "Política fiscal doméstica y Hacienda pública"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_student_kanban
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_teacher_kanban
 msgid "Download as document"
 msgstr "Descargar como documento"
+
+#. module: academy_base
+#: model:ir.model.fields,field_description:academy_base.field_academy_student_wizard__date_stop
+msgid "Drop date"
+msgstr "Fecha de baja"
 
 #. module: academy_base
 #: model:academy.qualification.level,name:academy_base.academy_qualification_level_level_isced_2011_0
@@ -2188,15 +2336,44 @@ msgid "Engineering of Manufacturing Processes"
 msgstr "Ingeniería de Procesos de Manufactura"
 
 #. module: academy_base
+#: code:addons/academy_base/wizard/academy_student_wizard.py:0
+#, python-format
+msgid "Enroll"
+msgstr "Matricula"
+
+#. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_student_search
 msgid "Enrolled"
-msgstr "Inscrito"
+msgstr "Matriculado"
 
 #. module: academy_base
 #: code:addons/academy_base/models/academy_training_action.py:0
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_student_wizard
 #, python-format
 msgid "Enrolled in"
 msgstr "Matriculado en"
+
+#. module: academy_base
+#: model:ir.model.fields,field_description:academy_base.field_academy_student_wizard__date_start
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_enrolment_wizard_wizard
+msgid "Enrollment date"
+msgstr "Fecha de alta"
+
+#. module: academy_base
+#: code:addons/academy_base/models/academy_training_action_enrolment.py:0
+#, python-format
+msgid "Enrollment is outside the range of training action"
+msgstr "La matrícula queda fuera del ámbito de la acción formativa"
+
+#. module: academy_base
+#: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment_wizard__date_start
+msgid "Enrollment start date will be set for all the selected enrollments"
+msgstr "Se establecerá fecha de alta para todas las matrículas seleccionadas"
+
+#. module: academy_base
+#: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment_wizard__date_stop
+msgid "Enrollment stop date will be set for all the selected enrollments"
+msgstr "Se establecerá fecha de baja para todas las matrículas seleccionadas"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_student_form
@@ -2221,8 +2398,9 @@ msgstr "Comandos de matrícula"
 
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action__enrolment_count
+#: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment_wizard__enrolment_count
 msgid "Enrolment count"
-msgstr "Recuento de matrículas"
+msgstr "Nº de matrículas"
 
 #. module: academy_base
 #: code:addons/academy_base/models/academy_training_action_enrolment.py:0
@@ -2236,7 +2414,14 @@ msgid "Enrolment resources"
 msgstr "Recursos de la matrícula"
 
 #. module: academy_base
+#: model:ir.model.fields,field_description:academy_base.field_academy_student__enrolment_str
+msgid "Enrolment str"
+msgstr "Matriculaciones"
+
+#. module: academy_base
+#: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment_wizard__enrolment_ids
 #: model:ir.ui.menu,name:academy_base.menu_training_action_enrolment
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_student_wizard
 msgid "Enrolments"
 msgstr "Matrículas"
 
@@ -2442,6 +2627,12 @@ msgid "Excess"
 msgstr "Exceso"
 
 #. module: academy_base
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_student_wizard
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_enrolment_wizard_wizard
+msgid "Execute"
+msgstr "Ejecutar"
+
+#. module: academy_base
 #: model:academy.professional.sector,name:academy_base.professional_sector_6106
 msgid "Experimental psychology"
 msgstr "Psicología experimental"
@@ -2471,6 +2662,12 @@ msgid "Extractive industries"
 msgstr "Industrias extractivas"
 
 #. module: academy_base
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_student_wizard
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_enrolment_wizard_wizard
+msgid "Facility reporting wizard"
+msgstr "Asistente de informes de instalaciones"
+
+#. module: academy_base
 #: model:academy.qualification.level,description:academy_base.academy_qualification_level_04
 msgid "Factual and theoretical knowledge in broad contexts in a specific field of work or study"
 msgstr "Conocimiento teórico y fáctico en contextos amplios en un campo específico de trabajo o estudio"
@@ -2488,7 +2685,6 @@ msgstr "Demografía general"
 
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment__finalized
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_enrolment_search
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_search
 msgid "Finalized"
 msgstr "Finalizado"
@@ -2725,8 +2921,13 @@ msgid "Go to contact"
 msgstr "Ir al contacto"
 
 #. module: academy_base
-#: model_terms:ir.ui.view,arch_db:academy_base.view_res_partner_form
+#: model:ir.actions.server,name:academy_base.action_academy_competency_unit_go_to_module
+msgid "Go to module"
+msgstr "Ir al módulo"
+
+#. module: academy_base
 #: model:ir.actions.server,name:academy_base.action_academy_training_action_enrolment_go_to_student
+#: model_terms:ir.ui.view,arch_db:academy_base.view_res_partner_form
 msgid "Go to student"
 msgstr "Ir a la estudiante"
 
@@ -2787,6 +2988,11 @@ msgstr "Grupos"
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_activity_search
 msgid "Have actions"
 msgstr "Tener acciones"
+
+#. module: academy_base
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_enrolment_search
+msgid "Have finished"
+msgstr "He finalizado"
 
 #. module: academy_base
 #: model:academy.professional.family,name:academy_base.academy_professional_family_21
@@ -2927,6 +3133,7 @@ msgstr "Hidrología"
 #: model:ir.model.fields,field_description:academy_base.field_academy_competency_unit__id
 #: model:ir.model.fields,field_description:academy_base.field_academy_competency_unit_teacher_rel__id
 #: model:ir.model.fields,field_description:academy_base.field_academy_educational_attainment__id
+#: model:ir.model.fields,field_description:academy_base.field_academy_interface_help_string__id
 #: model:ir.model.fields,field_description:academy_base.field_academy_knowledge_area__id
 #: model:ir.model.fields,field_description:academy_base.field_academy_professional_area__id
 #: model:ir.model.fields,field_description:academy_base.field_academy_professional_category__id
@@ -2936,11 +3143,13 @@ msgstr "Hidrología"
 #: model:ir.model.fields,field_description:academy_base.field_academy_professional_sector__id
 #: model:ir.model.fields,field_description:academy_base.field_academy_qualification_level__id
 #: model:ir.model.fields,field_description:academy_base.field_academy_student__id
+#: model:ir.model.fields,field_description:academy_base.field_academy_student_wizard__id
 #: model:ir.model.fields,field_description:academy_base.field_academy_teacher__id
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action__id
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action_available_resource_rel__id
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment__id
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment_available_resource_rel__id
+#: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment_wizard__id
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action_student_rel__id
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_activity__id
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_activity_available_resource_rel__id
@@ -3144,6 +3353,7 @@ msgstr ""
 "participantes y el docente"
 
 #. module: academy_base
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_enrolment_search
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_search
 msgid "In progress"
 msgstr "En curso"
@@ -3183,11 +3393,6 @@ msgstr "Industria"
 #: model:academy.professional.area,name:academy_base.academy_profressional_area_icm
 msgid "Information and Communication Management"
 msgstr "Gestión de la Información y la comunicación"
-
-#. module: academy_base
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_enrolment_search
-msgid "Initiated"
-msgstr "Iniciado"
 
 #. module: academy_base
 #: model:academy.professional.sector,name:academy_base.professional_sector_2303
@@ -3267,6 +3472,12 @@ msgid "Introduces the basic features of the more used office appliances"
 msgstr "Presenta las características básicas de los dispositivos de oficina más utilizados"
 
 #. module: academy_base
+#: code:addons/academy_base/models/academy_interface_help_string.py:0 code:addons/academy_base/utils/record_utils.py:0
+#, python-format
+msgid "Invalid external identifier «{}» for help string"
+msgstr "Identificador externo no válido «{}» para la cadena de ayuda"
+
+#. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_student__type
 #: model:ir.model.fields,help:academy_base.field_academy_teacher__type
 msgid "Invoice & Delivery addresses are used in sales orders. Private addresses are only visible by authorized users."
@@ -3321,10 +3532,35 @@ msgid "It has not been specified."
 msgstr "No ha sido especificado."
 
 #. module: academy_base
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_enrolment_wizard_wizard
+msgid "Item count"
+msgstr "Nº de elementos"
+
+#. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_student__function
 #: model:ir.model.fields,field_description:academy_base.field_academy_teacher__function
 msgid "Job Position"
 msgstr "Puesto de trabajo"
+
+#. module: academy_base
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_student_wizard
+msgid "Joining"
+msgstr "Incorporar a"
+
+#. module: academy_base
+#: model:ir.model.fields,field_description:academy_base.field_academy_student_wizard__joining_interval_str
+msgid "Joining interval"
+msgstr "Intervalo de la inscripción"
+
+#. module: academy_base
+#: model:ir.model.fields,field_description:academy_base.field_academy_student_wizard__joining_training_action_id
+msgid "Joining training action"
+msgstr "Unirse a la acción formativa"
+
+#. module: academy_base
+#: model:ir.model.fields,help:academy_base.field_academy_student_wizard__joining_interval_str
+msgid "Joining training action date start and date stop"
+msgstr "Fecha de inicio y fecha de finalización de la acción formativa de incorporación"
 
 #. module: academy_base
 #: model:academy.professional.field,name:academy_base.professional_field_56
@@ -3335,6 +3571,11 @@ msgstr "Ciencias jurídicas. Leyes"
 #: model:ir.model.fields,help:academy_base.field_academy_teacher__password
 msgid "Keep empty if you don't want the user to be able to connect on the system."
 msgstr "Dejar vacío si no desea que el usuario pueda conectarse en el sistema."
+
+#. module: academy_base
+#: model:ir.model.fields,help:academy_base.field_academy_interface_help_string__name
+msgid "Key will be used to recover help string"
+msgstr "La clave se utilizará para recuperar la cadena de ayuda"
 
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_resource__kind_id
@@ -3391,6 +3632,7 @@ msgstr "Lenguajes y sistemas informáticos"
 #: model:ir.model.fields,field_description:academy_base.field_academy_competency_unit____last_update
 #: model:ir.model.fields,field_description:academy_base.field_academy_competency_unit_teacher_rel____last_update
 #: model:ir.model.fields,field_description:academy_base.field_academy_educational_attainment____last_update
+#: model:ir.model.fields,field_description:academy_base.field_academy_interface_help_string____last_update
 #: model:ir.model.fields,field_description:academy_base.field_academy_knowledge_area____last_update
 #: model:ir.model.fields,field_description:academy_base.field_academy_professional_area____last_update
 #: model:ir.model.fields,field_description:academy_base.field_academy_professional_category____last_update
@@ -3400,11 +3642,13 @@ msgstr "Lenguajes y sistemas informáticos"
 #: model:ir.model.fields,field_description:academy_base.field_academy_professional_sector____last_update
 #: model:ir.model.fields,field_description:academy_base.field_academy_qualification_level____last_update
 #: model:ir.model.fields,field_description:academy_base.field_academy_student____last_update
+#: model:ir.model.fields,field_description:academy_base.field_academy_student_wizard____last_update
 #: model:ir.model.fields,field_description:academy_base.field_academy_teacher____last_update
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action____last_update
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action_available_resource_rel____last_update
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment____last_update
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment_available_resource_rel____last_update
+#: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment_wizard____last_update
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action_student_rel____last_update
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_activity____last_update
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_activity_available_resource_rel____last_update
@@ -3427,6 +3671,7 @@ msgstr "Última modificación el"
 #: model:ir.model.fields,field_description:academy_base.field_academy_competency_unit__write_uid
 #: model:ir.model.fields,field_description:academy_base.field_academy_competency_unit_teacher_rel__write_uid
 #: model:ir.model.fields,field_description:academy_base.field_academy_educational_attainment__write_uid
+#: model:ir.model.fields,field_description:academy_base.field_academy_interface_help_string__write_uid
 #: model:ir.model.fields,field_description:academy_base.field_academy_knowledge_area__write_uid
 #: model:ir.model.fields,field_description:academy_base.field_academy_professional_area__write_uid
 #: model:ir.model.fields,field_description:academy_base.field_academy_professional_category__write_uid
@@ -3436,9 +3681,11 @@ msgstr "Última modificación el"
 #: model:ir.model.fields,field_description:academy_base.field_academy_professional_sector__write_uid
 #: model:ir.model.fields,field_description:academy_base.field_academy_qualification_level__write_uid
 #: model:ir.model.fields,field_description:academy_base.field_academy_student__write_uid
+#: model:ir.model.fields,field_description:academy_base.field_academy_student_wizard__write_uid
 #: model:ir.model.fields,field_description:academy_base.field_academy_teacher__write_uid
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action__write_uid
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment__write_uid
+#: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment_wizard__write_uid
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_activity__write_uid
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_methodology__write_uid
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_modality__write_uid
@@ -3454,6 +3701,7 @@ msgstr "Última actualización por"
 #: model:ir.model.fields,field_description:academy_base.field_academy_competency_unit__write_date
 #: model:ir.model.fields,field_description:academy_base.field_academy_competency_unit_teacher_rel__write_date
 #: model:ir.model.fields,field_description:academy_base.field_academy_educational_attainment__write_date
+#: model:ir.model.fields,field_description:academy_base.field_academy_interface_help_string__write_date
 #: model:ir.model.fields,field_description:academy_base.field_academy_knowledge_area__write_date
 #: model:ir.model.fields,field_description:academy_base.field_academy_professional_area__write_date
 #: model:ir.model.fields,field_description:academy_base.field_academy_professional_category__write_date
@@ -3463,9 +3711,11 @@ msgstr "Última actualización por"
 #: model:ir.model.fields,field_description:academy_base.field_academy_professional_sector__write_date
 #: model:ir.model.fields,field_description:academy_base.field_academy_qualification_level__write_date
 #: model:ir.model.fields,field_description:academy_base.field_academy_student__write_date
+#: model:ir.model.fields,field_description:academy_base.field_academy_student_wizard__write_date
 #: model:ir.model.fields,field_description:academy_base.field_academy_teacher__write_date
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action__write_date
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment__write_date
+#: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment_wizard__write_date
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_activity__write_date
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_methodology__write_date
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_modality__write_date
@@ -3583,6 +3833,12 @@ msgid "List all competency units which use this training module"
 msgstr "Enumera todas las unidades de competencia que utilizan este módulo de capacitación"
 
 #. module: academy_base
+#: model:ir.model.fields,help:academy_base.field_academy_student__current_enrolment_ids
+#: model:ir.model.fields,help:academy_base.field_academy_student__enrolment_ids
+msgid "List all the enrollments, including those that are current, past, and future"
+msgstr "Enumere todas las inscripciones, incluidas las actuales, pasadas y futuras"
+
+#. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_activity_details_document_qweb
 msgid "List of competence units"
 msgstr "Lista de unidades de competencia"
@@ -3591,6 +3847,11 @@ msgstr "Lista de unidades de competencia"
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_activity_details_document_qweb
 msgid "List of training modules"
 msgstr "Lista de módulos formativos"
+
+#. module: academy_base
+#: model:ir.model.fields,help:academy_base.field_academy_student__training_action_ids
+msgid "List the training actions for which the student has active enrollments"
+msgstr "Listar las acciones formativas para las que el estudiante tiene matrículas activas"
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_competency_unit__tree_ids
@@ -3628,6 +3889,11 @@ msgstr "MÓDULO"
 #: model:academy.professional.sector,name:academy_base.professional_sector_2304
 msgid "Macromolecular chemistry"
 msgstr "Química macromolecular"
+
+#. module: academy_base
+#: model:ir.model.fields.selection,name:academy_base.selection__academy_training_action_enrolment_wizard__state__main
+msgid "Main"
+msgstr "Principal"
 
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_competency_unit__message_main_attachment_id
@@ -3671,11 +3937,13 @@ msgstr "Gestión"
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_resource__manager_id
 #: model:res.groups,name:academy_base.academy_group_manager
 msgid "Manager"
-msgstr "Administrador"
+msgstr "Responsable"
 
 #. module: academy_base
 #: code:addons/academy_base/models/academy_abstract_training_reference.py:0
 #: model:ir.model.constraint,message:academy_base.constraint_academy_abstract_training_reference_check_training_reference
+#: model:ir.model.constraint,message:academy_base.constraint_academy_tests_random_template_check_training_reference
+#: model:ir.model.constraint,message:academy_base.constraint_academy_tests_test_training_assignment_check_training_reference
 #, python-format
 msgid "Many2one fields must be consistent with the Reference field"
 msgstr "Los campos Many2one deben ser consistentes con el campo Referencia"
@@ -3691,15 +3959,37 @@ msgid "Marketing and Commerce"
 msgstr "Marketing y comercio"
 
 #. module: academy_base
+#: model:ir.actions.act_window,name:academy_base.action_academy_training_action_enrolment_wizard_wizard_act_window
+msgid "Massive actions over enrollments"
+msgstr "Gestión de matrículas"
+
+#. module: academy_base
 #: model:academy.educational.attainment,name:academy_base.academy_educational_attainment_level_isced_2011_7
 #: model:academy.qualification.level,name:academy_base.academy_qualification_level_level_isced_2011_7
 msgid "Master’s or equivalent level"
 msgstr "Máster o nivel equivalente"
 
 #. module: academy_base
+#: model:ir.model.fields,field_description:academy_base.field_academy_student_wizard__target_student_ids
+msgid "Matched"
+msgstr "Concidencias"
+
+#. module: academy_base
+#: model:ir.model.fields,field_description:academy_base.field_academy_student_wizard__target_student_count
+msgid "Matched count"
+msgstr "Nº coincidencias"
+
+#. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment__material
+#: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment_wizard__material
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_enrolment_wizard_wizard
 msgid "Material"
-msgstr "Material"
+msgstr ""
+
+#. module: academy_base
+#: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment_wizard__material
+msgid "Material will be set for all the selected enrollments"
+msgstr "Se establecerá el tipo de material para todas las matrículas seleccionadas"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_enrolment_form
@@ -3883,21 +4173,26 @@ msgstr "Tecnología de las minas"
 
 #. module: academy_base
 #: model:academy.training.modality,name:academy_base.academy_training_modality_blended
+#: code:addons/academy_base/models/academy_training_action_enrolment.py:0
+#, python-format
 msgid "Mixed"
 msgstr "Mixta"
 
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_student__mobile
 #: model:ir.model.fields,field_description:academy_base.field_academy_teacher__mobile
+#: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment__mobile
 msgid "Mobile"
 msgstr "Móvil"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_enrolment_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_enrolment_wizard_wizard
 msgid "Modalities"
 msgstr "Modalidades"
 
 #. module: academy_base
+#: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment__training_modality_str
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form
 msgid "Modality"
 msgstr "Modalidad"
@@ -3910,7 +4205,7 @@ msgstr "Canales moderados"
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_teacher__moderation_counter
 msgid "Moderation count"
-msgstr "Recuento de moderación"
+msgstr "Nº de moderaciones"
 
 #. module: academy_base
 #: model:academy.knowledge.area,name:academy_base.academy_knowledge_area_20
@@ -3947,8 +4242,9 @@ msgid "Module:"
 msgstr "Módulo:"
 
 #. module: academy_base
+#: code:addons/academy_base/models/academy_competency_unit.py:0
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_activity__training_module_ids
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_activity_form
+#, python-format
 msgid "Modules"
 msgstr "Módulos"
 
@@ -3996,6 +4292,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:academy_base.field_academy_application_scope__name
 #: model:ir.model.fields,field_description:academy_base.field_academy_competency_unit__name
 #: model:ir.model.fields,field_description:academy_base.field_academy_educational_attainment__name
+#: model:ir.model.fields,field_description:academy_base.field_academy_interface_help_string__name
 #: model:ir.model.fields,field_description:academy_base.field_academy_knowledge_area__name
 #: model:ir.model.fields,field_description:academy_base.field_academy_professional_area__name
 #: model:ir.model.fields,field_description:academy_base.field_academy_professional_category__name
@@ -4021,6 +4318,11 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_tree
 msgid "Name"
 msgstr "Nombre"
+
+#. module: academy_base
+#: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment__training_modality_str
+msgid "Name of the modality if it is single or \"Mixed\" otherwise"
+msgstr "Nombre de la modalidad si es única o “Mixta” en caso contrario"
 
 #. module: academy_base
 #: model:academy.professional.sector,name:academy_base.professional_sector_5605
@@ -4050,6 +4352,11 @@ msgid "New training action enrolment"
 msgstr "Nueva matrícula"
 
 #. module: academy_base
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_enrolment_wizard_wizard
+msgid "New value"
+msgstr "Nuevo valor"
+
+#. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_student__activity_date_deadline
 #: model:ir.model.fields,field_description:academy_base.field_academy_teacher__activity_date_deadline
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment__activity_date_deadline
@@ -4069,6 +4376,24 @@ msgstr "Resumen de actividad siguiente"
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment__activity_type_id
 msgid "Next Activity Type"
 msgstr "Tipo de la actividad siguiente"
+
+#. module: academy_base
+#: code:addons/academy_base/models/academy_interface_help_string.py:0
+#, python-format
+msgid "No help text found"
+msgstr "No se encontró ningún texto de ayuda"
+
+#. module: academy_base
+#: code:addons/academy_base/wizard/academy_student_wizard.py:0
+#, python-format
+msgid "No matching records"
+msgstr "No hay registros coincidentes"
+
+#. module: academy_base
+#: code:addons/academy_base/wizard/academy_student_wizard.py:0
+#, python-format
+msgid "No matching {model} found for the indicated criteria"
+msgstr "No se encontró ningún {modelo} que coincida con los criterios indicados"
 
 #. module: academy_base
 #: code:addons/academy_base/models/academy_competency_unit.py:0
@@ -4091,21 +4416,26 @@ msgid "Normalized Email"
 msgstr "Correo electrónico normalizado"
 
 #. module: academy_base
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_student_search
+msgid "Not Enrolled"
+msgstr "No inscrito"
+
+#. module: academy_base
 #: model:academy.educational.attainment,name:academy_base.academy_educational_attainment_level_isced_2011_9
 #: model:academy.qualification.level,name:academy_base.academy_qualification_level_level_isced_2011_9
 msgid "Not elsewhere classified"
 msgstr "Educación no formal"
 
 #. module: academy_base
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_student_search
-msgid "Not enrolled"
-msgstr "No matriculado"
-
-#. module: academy_base
 #: code:addons/academy_base/models/academy_abstract_training_reference.py:0
 #, python-format
 msgid "Not established"
 msgstr "No establecido"
+
+#. module: academy_base
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_enrolment_search
+msgid "Not yet started"
+msgstr "No comenzadas"
 
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_student__comment
@@ -4188,6 +4518,21 @@ msgid "Number of competency units related with this professional qualification"
 msgstr "Cantidad de unidades de competencia relacionadas con esta calificación profesional"
 
 #. module: academy_base
+#: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment_wizard__student_count
+msgid "Number of different students related to the selected enrollments"
+msgstr "Número de alumnos diferentes relacionados con las matrículas seleccionadas"
+
+#. module: academy_base
+#: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment_wizard__training_action_count
+msgid "Number of different training actions related to the selected enrollments"
+msgstr "Número de acciones formativas diferentes relacionadas con las matrículas seleccionadas"
+
+#. module: academy_base
+#: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment_wizard__enrolment_count
+msgid "Number of enrollments on whom the action will be carried out"
+msgstr "Número de matriculas sobre las que se realizará la acción"
+
+#. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_competency_unit__message_has_error_counter
 #: model:ir.model.fields,field_description:academy_base.field_academy_student__message_has_error_counter
 #: model:ir.model.fields,field_description:academy_base.field_academy_teacher__message_has_error_counter
@@ -4244,6 +4589,16 @@ msgid "Number of record rules that apply to the current user"
 msgstr "Cantidad de reglas de registro que se aplican al usuario actual"
 
 #. module: academy_base
+#: model:ir.model.fields,help:academy_base.field_academy_student_wizard__target_student_count
+msgid "Number of students actually impacted by the action"
+msgstr "Número de estudiantes realmente afectados por la acción"
+
+#. module: academy_base
+#: model:ir.model.fields,help:academy_base.field_academy_student_wizard__student_count
+msgid "Number of students on whom the action will be carried out"
+msgstr "Número de alumnos sobre los que se realizará la acción"
+
+#. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_competency_unit__teacher_count
 msgid "Number of teachers who teach this competency unit"
 msgstr "Número de docentes que imparten esta unidad de competencia"
@@ -4252,6 +4607,12 @@ msgstr "Número de docentes que imparten esta unidad de competencia"
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_activity__training_action_count
 msgid "Number of training actions"
 msgstr "Cantidad de acciones formativas"
+
+#. module: academy_base
+#: model:ir.model.fields,help:academy_base.field_academy_competency_unit__training_activity_count
+#: model:ir.model.fields,help:academy_base.field_academy_training_module__training_activity_count
+msgid "Number of training activities that use this module"
+msgstr "Número de actividades formativas que utilizan este módulo"
 
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_activity__training_module_count
@@ -4284,6 +4645,11 @@ msgstr "Análisis numérico"
 #: model:academy.professional.sector,name:academy_base.professional_sector_3206
 msgid "Nutrition sciences"
 msgstr "Ciencias de la nutrición"
+
+#. module: academy_base
+#: model:ir.model.fields,field_description:academy_base.field_academy_student__current_enrolment_count
+msgid "Nº current enrolments"
+msgstr "Nº matriculaciones vigentes"
 
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_student__enrolment_count
@@ -4329,6 +4695,8 @@ msgstr "En línea"
 #. module: academy_base
 #: code:addons/academy_base/models/academy_abstract_training_reference.py:0
 #: model:ir.model.constraint,message:academy_base.constraint_academy_abstract_training_reference_one_training_reference
+#: model:ir.model.constraint,message:academy_base.constraint_academy_tests_random_template_one_training_reference
+#: model:ir.model.constraint,message:academy_base.constraint_academy_tests_test_training_assignment_one_training_reference
 #, python-format
 msgid "Only one type of training item can be set by each record"
 msgstr "Solo se puede establecer un tipo de elemento de formación por cada registro"
@@ -4594,6 +4962,12 @@ msgid "Perform basic computer operations with Microsoft Software"
 msgstr "Realizar operaciones informáticas básicas con el software de Microsoft"
 
 #. module: academy_base
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_student_wizard
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_enrolment_wizard_wizard
+msgid "Perform the chosen action on the set of records"
+msgstr "Efectuar la acción elegida sobre el conjunto de registros"
+
+#. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_competency_unit__manager_id
 #: model:ir.model.fields,help:academy_base.field_academy_training_action__manager_id
 #: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment__manager_id
@@ -4837,6 +5211,7 @@ msgstr "Educación primaria"
 
 #. module: academy_base
 #: model:ir.model.fields.selection,name:academy_base.selection__academy_training_action_enrolment__material__printed
+#: model:ir.model.fields.selection,name:academy_base.selection__academy_training_action_enrolment_wizard__material__printed
 msgid "Printed"
 msgstr "Impreso"
 
@@ -4969,6 +5344,11 @@ msgid "Professional fields"
 msgstr "Campos profesionales"
 
 #. module: academy_base
+#: model_terms:ir.ui.view,arch_db:academy_base.res_config_settings_view_form
+msgid "Professional qualification"
+msgstr "Cualificación profesional"
+
+#. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_qualification_kanban
 msgid "Professional qualification photo"
 msgstr "Imagen de la cualificación profesional"
@@ -4987,11 +5367,6 @@ msgstr "Cualificaciónes profesionales"
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_activity_details_document_qweb
 msgid "Professional sectors"
 msgstr "Sectores profesionales"
-
-#. module: academy_base
-#: model_terms:ir.ui.view,arch_db:academy_base.res_config_settings_view_form
-msgid "Professional qualification"
-msgstr "Cualificación profesional"
 
 #. module: academy_base
 #: model:academy.educational.attainment,description:academy_base.academy_educational_attainment_level_isced_2011_8
@@ -5048,6 +5423,18 @@ msgstr ""
 #: model:academy.professional.sector,name:academy_base.professional_sector_7104
 msgid "Prospective ethics"
 msgstr "Ética prospectiva"
+
+#. module: academy_base
+#: code:addons/academy_base/wizard/academy_training_action_enrolment_wizard.py:0
+#, python-format
+msgid "Provided object «{}» has not enrollments"
+msgstr "El objeto proporcionado «{}» no tiene inscripciones"
+
+#. module: academy_base
+#: code:addons/academy_base/wizard/academy_student_wizard.py:0
+#, python-format
+msgid "Provided object «{}» has not students"
+msgstr "El objeto proporcionado «{}» no tiene estudiantes"
 
 #. module: academy_base
 #: model:ir.model,name:academy_base.model_academy_abstract_owner
@@ -5121,6 +5508,13 @@ msgid "Qualification levels"
 msgstr "Niveles de cualificación"
 
 #. module: academy_base
+#: model:ir.ui.menu,name:academy_base.menu_academy_advanced_quick_edit
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_actions_quick_edit_tree
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_activites_quick_edit_tree
+msgid "Quick edit"
+msgstr "Edición rápida"
+
+#. module: academy_base
 #: model:academy.professional.sector,name:academy_base.professional_sector_2105
 msgid "Radio-astronomy"
 msgstr "Radio Astronomía"
@@ -5134,6 +5528,12 @@ msgstr "Radiobiología"
 #: model:academy.professional.sector,name:academy_base.professional_sector_3323
 msgid "Railway technology"
 msgstr "Tecnología ferroviaria"
+
+#. module: academy_base
+#: code:addons/academy_base/wizard/academy_student_wizard.py:0
+#, python-format
+msgid "Re-enroll"
+msgstr "Re-matricular"
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_abstract_owner__root_id
@@ -5244,6 +5644,13 @@ msgid "Reload"
 msgstr "Recargar"
 
 #. module: academy_base
+#: model:ir.actions.server,name:academy_base.ir_cron_remove_temporary_student_enrollments_ir_actions_server
+#: model:ir.cron,cron_name:academy_base.ir_cron_remove_temporary_student_enrollments
+#: model:ir.cron,name:academy_base.ir_cron_remove_temporary_student_enrollments
+msgid "Remove temporary student enrollments"
+msgstr "Eliminar matrículas temporales de estudiantes"
+
+#. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_module_tree_readonly__requested_module_id
 msgid "Requested"
 msgstr "Buscado"
@@ -5293,6 +5700,11 @@ msgstr "Usuario responsable"
 #: model:ir.model.fields,field_description:academy_base.field_academy_teacher__user_id
 msgid "Salesperson"
 msgstr "Vendedor"
+
+#. module: academy_base
+#: model:ir.actions.server,name:academy_base.action_academy_student_sanitize_phone_number
+msgid "Sanitize phone"
+msgstr "Sanear el teléfono"
 
 #. module: academy_base
 #: model:academy.training.resource.kind,name:academy_base.academy_training_resource_kind_1
@@ -5411,7 +5823,6 @@ msgstr ""
 "propios universitarios que precisan del título de bachiller, de duración igual o superior a 2 años"
 
 #. module: academy_base
-#: model:ir.model.fields,help:academy_base.field_academy_student__enrolment_count
 #: model:ir.model.fields,help:academy_base.field_academy_training_action__enrolment_count
 msgid "Show number of enrolments"
 msgstr "Mostrar número de matrículas"
@@ -5430,6 +5841,12 @@ msgstr "Mostrar solo recursos con un directorio relacionado"
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_resource_search
 msgid "Show only resources with related attachments"
 msgstr "Mostrar solo recursos con archivos adjuntos relacionados"
+
+#. module: academy_base
+#: code:addons/academy_base/wizard/academy_student_wizard.py:0
+#, python-format
+msgid "Show related records"
+msgstr "Mostrar relacionados"
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_student__student_id
@@ -5472,9 +5889,10 @@ msgid "Show the students have been enrolled in this training action"
 msgstr "Mostrar los estudiantes que se han matriculado en esta acción formativa"
 
 #. module: academy_base
-#: model:ir.model.fields,help:academy_base.field_academy_student__training_action_ids
-msgid "Show training actions in which this student has been enrolled"
-msgstr "Mostrar acciones formativas en las que se ha matriculado este estudiante"
+#: model:ir.model.fields,help:academy_base.field_academy_student__current_enrolment_count
+#: model:ir.model.fields,help:academy_base.field_academy_student__enrolment_count
+msgid "Show total number of enrolments"
+msgstr "Mostrar número total de inscripciones"
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_professional_family__professional_area_count
@@ -5620,6 +6038,7 @@ msgstr "Fecha de inicio de un evento, sin tiempo para eventos de días completos
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_student__state_id
 #: model:ir.model.fields,field_description:academy_base.field_academy_teacher__state_id
+#: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment_wizard__state
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_student_form
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_teacher_form
 msgid "State"
@@ -5694,9 +6113,27 @@ msgid "Student ID"
 msgstr "Identificación del estudiante"
 
 #. module: academy_base
+#: model:ir.actions.act_window,name:academy_base.action_academy_training_action_enrolment_wizard_act_window
+msgid "Student batch management"
+msgstr "Gestión de alumnos"
+
+#. module: academy_base
+#: model:ir.model.fields,field_description:academy_base.field_academy_student_wizard__student_count
+#: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment_wizard__student_count
+msgid "Student count"
+msgstr "Nº de estudiantes"
+
+#. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.res_config_settings_view_form
 msgid "Student educational attainment information"
 msgstr "Información sobre el nivel educativo de los estudiantes"
+
+#. module: academy_base
+#: code:addons/academy_base/models/academy_training_action_enrolment.py:0
+#: model:ir.model.constraint,message:academy_base.constraint_academy_training_action_enrolment_prevent_overlap
+#, python-format
+msgid "Student enrollments cannot overlap in time for the same training action"
+msgstr "Las matriculaciones de estudiantes no pueden solaparse en el tiempo para una misma acción formativa"
 
 #. module: academy_base
 #: model:ir.model.fields.selection,name:academy_base.selection__academy_abstract_training_reference__training_type__enrolment
@@ -5728,18 +6165,33 @@ msgstr "El estudiante {} ya existe para el socio {}."
 #. module: academy_base
 #: code:addons/academy_base/models/academy_training_action_enrolment.py:0
 #: model:ir.actions.act_window,name:academy_base.action_student_act_window
+#: model:ir.model.fields,field_description:academy_base.field_academy_student_wizard__student_ids
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action__student_ids
+#: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment_wizard__student_ids
+#: model:ir.model.fields.selection,name:academy_base.selection__academy_training_action_enrolment_wizard__state__students
 #: model:ir.ui.menu,name:academy_base.menu_student
 #: model_terms:ir.ui.view,arch_db:academy_base.res_config_settings_view_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_student_enrolment_wizard_tree
 #, python-format
 msgid "Students"
 msgstr "Estudiantes"
 
 #. module: academy_base
+#: model:ir.model.fields,help:academy_base.field_academy_student_wizard__student_ids
+msgid "Students on whom the action will be carried out"
+msgstr "Alumnos sobre los que se efectuará la acción"
+
+#. module: academy_base
+#: model:ir.model.fields,help:academy_base.field_academy_student_wizard__target_student_ids
+msgid "Students on whom the action will be really carried out"
+msgstr "Alumnos sobre los que realmente se efectuará la acción"
+
+#. module: academy_base
 #: model:academy.training.module,description:academy_base.academy_competency_unit_libre_academy_training_module
 #: model:academy.training.module,description:academy_base.academy_competency_unit_office_academy_training_module
 msgid "Students will gain basic hands-on experience using the integrated programs of Microsoft Office 2010"
-msgstr "Los estudiantes obtendrán experiencia práctica básica utilizando los programas integrados de Microsoft Office 2010"
+msgstr ""
+"Los estudiantes obtendrán experiencia práctica básica utilizando los programas integrados de Microsoft Office 2010"
 
 #. module: academy_base
 #: model:academy.training.module,description:academy_base.academy_competency_unit_mswin_academy_training_module
@@ -5756,9 +6208,20 @@ msgid "Subrogate"
 msgstr "Delegado"
 
 #. module: academy_base
+#: model:ir.model.fields,help:academy_base.field_academy_student_wizard__date_start
+msgid "Subscription date will be used for the new enrollments"
+msgstr "La fecha de suscripción se utilizará para las nuevas matrículas"
+
+#. module: academy_base
 #: model:academy.professional.sector,name:academy_base.professional_sector_3213
 msgid "Surgery"
 msgstr "Cirugía"
+
+#. module: academy_base
+#: code:addons/academy_base/wizard/academy_student_wizard.py:0
+#, python-format
+msgid "Switch groups"
+msgstr "Cambiar de grupo"
 
 #. module: academy_base
 #: model:academy.professional.sector,name:academy_base.professional_sector_2419
@@ -5865,6 +6328,11 @@ msgid "Telematics Engineering"
 msgstr "Ingeniería Telemática"
 
 #. module: academy_base
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_enrolment_wizard_wizard
+msgid "Termination date"
+msgstr "Fecha de baja"
+
+#. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_resource_kind__resource_ids
 msgid "Tests"
 msgstr ""
@@ -5885,8 +6353,14 @@ msgid "Textile technology"
 msgstr "Tecnología textil"
 
 #. module: academy_base
+#: model:ir.model.fields,help:academy_base.field_academy_interface_help_string__description
+msgid "Texto of the text string"
+msgstr "Texto de la cadena de texto"
+
+#. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_student__vat
 #: model:ir.model.fields,help:academy_base.field_academy_teacher__vat
+#: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment__vat
 msgid ""
 "The Tax Identification Number. Complete it if the contact is subjected to government taxes. Used in some legal "
 "statements."
@@ -5897,6 +6371,7 @@ msgstr ""
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_action__company_id
 #: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment__company_id
+#: model:ir.model.fields,help:academy_base.field_academy_training_action_student_rel__company_id
 msgid "The company this record belongs to"
 msgstr "La empresa a la que pertenece este registro"
 
@@ -5923,6 +6398,16 @@ msgid "The given action code already exists"
 msgstr "El código de acción dado ya existe"
 
 #. module: academy_base
+#: model:ir.model.fields,help:academy_base.field_academy_student_wizard__current_training_action_id
+msgid "The group in which the student is currently enrolled"
+msgstr "El grupo en el que el estudiante está matriculado actualmente"
+
+#. module: academy_base
+#: model:ir.model.fields,help:academy_base.field_academy_student_wizard__joining_training_action_id
+msgid "The group that the student will join after the change"
+msgstr "El grupo al que se unirá el estudiante después del cambio"
+
+#. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_student__user_id
 #: model:ir.model.fields,help:academy_base.field_academy_teacher__user_id
 msgid "The internal user in charge of this contact."
@@ -5944,11 +6429,45 @@ msgid "The latest versions of the Microsoft Office appliances for PC"
 msgstr "Las últimas versiones de los dispositivos de Microsoft Office para PC"
 
 #. module: academy_base
+#: code:addons/academy_base/models/academy_competency_unit.py:0
+#: model:ir.model.constraint,message:academy_base.constraint_academy_competency_unit_unique_module_by_activity
+#, python-format
+msgid "The module cannot be duplicated in the same training activity"
+msgstr "El módulo no se puede duplicar en la misma actividad formativa"
+
+#. module: academy_base
+#: model:academy.interface.help.string,description:academy_base.academy_interface_student_wizard_action_re_enroll
+msgid ""
+"The most recently completed enrollment for each selected student will be duplicated, with the specified start and end "
+"dates assigned. If no end date is established, the enrollment will be of permanent validity. Students who already have "
+"enrollments overlapping with the specified date range will be excluded from the process."
+msgstr ""
+"La matrícula más recientemente finalizada de cada estudiante seleccionado será duplicada, asignándole las fechas de "
+"inicio y finalización especificadas. Si no se establece una fecha de finalización, la matrícula tendrá una vigencia "
+"permanente. Los estudiantes que ya tengan matrículas que se solapen con el rango de fechas indicado serán excluidos del "
+"proceso."
+
+#. module: academy_base
 #: code:addons/academy_base/models/academy_training_action.py:0
 #: model:ir.model.constraint,message:academy_base.constraint_academy_training_action_USERS_GREATER_OR_EQUAL_TO_ZERO
 #, python-format
 msgid "The number of users must be greater than or equal to zero"
 msgstr "El número de usuarios debe ser mayor o igual a cero"
+
+#. module: academy_base
+#: code:addons/academy_base/models/academy_training_action_enrolment.py:0
+#, python-format
+msgid "The source recordset must correspond to the model {}"
+msgstr "El conjunto de registros de origen debe corresponder al modelo {}"
+
+#. module: academy_base
+#: model:academy.interface.help.string,description:academy_base.academy_interface_student_wizard_action_unenroll
+msgid ""
+"The specified withdrawal date will be assigned to all the enrollments that are active as of today for the selected "
+"students in the chosen training action."
+msgstr ""
+"La fecha de baja especificada se asignará a todas las matrículas de los alumnos seleccionados, que están activas a "
+"fecha de hoy, para la acción formativa elegida."
 
 #. module: academy_base
 #: code:addons/academy_base/models/academy_competency_unit_teacher_rel.py:0
@@ -5976,6 +6495,19 @@ msgstr "El módulo formativo al que se asignará el test"
 #: model:academy.professional.sector,name:academy_base.professional_sector_2212
 msgid "Theoretical physics"
 msgstr "Física teórica"
+
+#. module: academy_base
+#: code:addons/academy_base/models/academy_interface_help_string.py:0
+#: model:ir.model.constraint,message:academy_base.constraint_academy_interface_help_string_unique_name
+#, python-format
+msgid "There already exists an interface help string with that name"
+msgstr "Ya existe una cadena de ayuda de interfaz con ese nombre"
+
+#. module: academy_base
+#: code:addons/academy_base/models/academy_training_action.py:0
+#, python-format
+msgid "There are enrollments that are outside the range of training action"
+msgstr "Hay matriculaciones que quedan fuera del ámbito de acción formativa"
 
 #. module: academy_base
 #: model_terms:ir.actions.act_window,help:academy_base.action_application_scope_act_window
@@ -6107,6 +6639,12 @@ msgid "There is no students"
 msgstr "No hay estudiantes"
 
 #. module: academy_base
+#: code:addons/academy_base/models/academy_competency_unit.py:0
+#, python-format
+msgid "There is no training modules"
+msgstr "No hay módulos de formación"
+
+#. module: academy_base
 #: model:academy.professional.sector,name:academy_base.professional_sector_2213
 msgid "Thermodynamics"
 msgstr "Termodinámica"
@@ -6122,8 +6660,8 @@ msgid ""
 "This course is designed for students who want to gain the necessary skills to create, edit, format, and print basic "
 "LibreOffice worksheets"
 msgstr ""
-"Este curso está diseñado para estudiantes que desean adquirir las habilidades necesarias para crear, editar, formatear e "
-"imprimir hojas de trabajo básicas de LibreOffice"
+"Este curso está diseñado para estudiantes que desean adquirir las habilidades necesarias para crear, editar, formatear "
+"e imprimir hojas de trabajo básicas de LibreOffice"
 
 #. module: academy_base
 #: model:academy.training.module,description:academy_base.academy_training_unit_msx2010
@@ -6131,8 +6669,8 @@ msgid ""
 "This course is designed for students who want to gain the necessary skills to create, edit, format, and print basic "
 "Microsoft Excel 2010 worksheets"
 msgstr ""
-"Este curso está diseñado para estudiantes que desean adquirir las habilidades necesarias para crear, editar, formatear e "
-"imprimir hojas de trabajo básicas de Microsoft Excel 2010"
+"Este curso está diseñado para estudiantes que desean adquirir las habilidades necesarias para crear, editar, formatear "
+"e imprimir hojas de trabajo básicas de Microsoft Excel 2010"
 
 #. module: academy_base
 #: model:academy.training.module,description:academy_base.academy_competency_unit_odoo_academy_training_module
@@ -6189,6 +6727,7 @@ msgstr "Toxicología"
 
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_abstract_training_reference__training_ref
+#: model:ir.model.fields.selection,name:academy_base.selection__academy_training_action_enrolment_wizard__state__training
 #: model:ir.ui.menu,name:academy_base.menu_academy_settings_helper
 msgid "Training"
 msgstr "Soporte"
@@ -6218,6 +6757,11 @@ msgid "Training action commands"
 msgstr "Comandos de acción formativa"
 
 #. module: academy_base
+#: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment_wizard__training_action_count
+msgid "Training action count"
+msgstr "Nº de acciones formativas"
+
+#. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_enrolment_kanban
 msgid "Training action enrolment photo"
 msgstr "Imagen de la matrícula en la acción formativa"
@@ -6230,14 +6774,16 @@ msgstr "Imagen de la acción formativa"
 #. module: academy_base
 #: code:addons/academy_base/models/academy_training_activity.py:0
 #: model:ir.actions.act_window,name:academy_base.action_training_action_act_window
+#: model:ir.actions.act_window,name:academy_base.action_training_actions_quick_edit_act_window
 #: model:ir.model.fields,field_description:academy_base.field_academy_student__training_action_ids
+#: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment_wizard__training_action_ids
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_activity__training_action_ids
 #: model:ir.ui.menu,name:academy_base.menu_training_action
 #: model:ir.ui.menu,name:academy_base.menu_training_actions_quick_edit
-#: model:ir.actions.act_window,name:academy_base.action_training_actions_quick_edit_act_window
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_enrolment_wizard_tree
 #, python-format
 msgid "Training actions"
-msgstr "Acciónes formativas"
+msgstr "Acciones formativas"
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_activity__training_action_ids
@@ -6251,9 +6797,9 @@ msgstr "Acciones formativas para la preparación de funcionarios y personal de l
 
 #. module: academy_base
 #: model:ir.actions.act_window,name:academy_base.action_academy_training_activity_act_window
+#: model:ir.actions.act_window,name:academy_base.activity_training_activites_quick_edit_act_window
 #: model:ir.ui.menu,name:academy_base.menu_academy_training_activity
 #: model:ir.ui.menu,name:academy_base.menu_training_activites_quick_edit
-#: model:ir.actions.act_window,name:academy_base.activity_training_activites_quick_edit_act_window
 msgid "Training activities"
 msgstr "Actividades formativas"
 
@@ -6276,6 +6822,12 @@ msgstr "Actividades formativas en las que se utiliza el módulo"
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_search
 msgid "Training activity"
 msgstr "Actividad formativa"
+
+#. module: academy_base
+#: model:ir.model.fields,field_description:academy_base.field_academy_competency_unit__training_activity_count
+#: model:ir.model.fields,field_description:academy_base.field_academy_training_module__training_activity_count
+msgid "Training activity count"
+msgstr "Nº de actividades"
 
 #. module: academy_base
 #: model:ir.actions.report,name:academy_base.action_report_academy_training_activity_details
@@ -6340,8 +6892,14 @@ msgstr "Metodología de formación"
 #: model:ir.actions.act_window,name:academy_base.action_training_modality_act_window
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action__training_modality_ids
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment__training_modality_ids
+#: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment_wizard__training_modality_ids
 msgid "Training modalities"
 msgstr "Modalidades de formación"
+
+#. module: academy_base
+#: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment_wizard__training_modality_ids
+msgid "Training modalities will be set for all the selected enrollments"
+msgstr "Se establecerán las modalidades formativas para todas las matrículas seleccionadas"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form
@@ -6452,6 +7010,8 @@ msgstr "Formación cuyo objetivo es promover la inserción o reinserción de des
 #. module: academy_base
 #: code:addons/academy_base/models/academy_abstract_training_reference.py:0
 #: model:ir.model.constraint,message:academy_base.constraint_academy_abstract_training_reference_check_training_type
+#: model:ir.model.constraint,message:academy_base.constraint_academy_tests_random_template_check_training_type
+#: model:ir.model.constraint,message:academy_base.constraint_academy_tests_test_training_assignment_check_training_type
 #, python-format
 msgid "Training_type must be consistent with the Reference field"
 msgstr "El tipo de formación debe ser coherente con el campo de referencia"
@@ -6494,6 +7054,12 @@ msgid "Unemployed"
 msgstr "Desempleados"
 
 #. module: academy_base
+#: code:addons/academy_base/wizard/academy_student_wizard.py:0
+#, python-format
+msgid "Unenroll"
+msgstr "Dar de baja"
+
+#. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_competency_unit__competency_code
 msgid "Unit code"
 msgstr "Código de unidad"
@@ -6524,6 +7090,12 @@ msgid "Unknown"
 msgstr "Desconocido"
 
 #. module: academy_base
+#: code:addons/academy_base/utils/record_utils.py:0
+#, python-format
+msgid "Unknown data for targets parameter"
+msgstr "Datos desconocidos para el parámetro objetivos"
+
+#. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_competency_unit__message_unread
 #: model:ir.model.fields,field_description:academy_base.field_academy_student__message_unread
 #: model:ir.model.fields,field_description:academy_base.field_academy_teacher__message_unread
@@ -6548,6 +7120,11 @@ msgid "Unread Messages Counter"
 msgstr "Contador de mensajes no leídos"
 
 #. module: academy_base
+#: model:ir.model.fields,help:academy_base.field_academy_student_wizard__date_stop
+msgid "Unsubscription date will be used for the new enrollments"
+msgstr "La fecha de baja se utilizará para las nuevas altas"
+
+#. module: academy_base
 #: code:addons/academy_base/models/academy_training_action_enrolment.py:0
 #, python-format
 msgid "Unsupported domain leaf (\"finalized\", \"{}\", \"{}\")"
@@ -6562,6 +7139,16 @@ msgstr "Actualizar áreas"
 #: model_terms:ir.ui.view,arch_db:academy_base.res_config_settings_view_form
 msgid "Update categories"
 msgstr "Actualizar categorías"
+
+#. module: academy_base
+#: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment_wizard__update_date_start
+msgid "Update date start"
+msgstr "Actualizar fecha de alta"
+
+#. module: academy_base
+#: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment_wizard__update_date_stop
+msgid "Update date stop"
+msgstr "Actualizar fecha de baja"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.res_config_settings_view_form
@@ -6589,11 +7176,17 @@ msgid "Update levels"
 msgstr "Actualizar niveles"
 
 #. module: academy_base
+#: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment_wizard__update_material
+msgid "Update material"
+msgstr "Actualizar material"
+
+#. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.res_config_settings_view_form
 msgid "Update methodologies"
 msgstr "Actualizar metodologías"
 
 #. module: academy_base
+#: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment_wizard__update_modalities
 #: model_terms:ir.ui.view,arch_db:academy_base.res_config_settings_view_form
 msgid "Update modalities"
 msgstr "Actualizar modalidades"
@@ -6678,6 +7271,11 @@ msgstr ""
 "propios recursos"
 
 #. module: academy_base
+#: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment__vat
+msgid "Vat"
+msgstr "NIF"
+
+#. module: academy_base
 #: model:academy.professional.sector,name:academy_base.professional_sector_3109
 msgid "Veterinary sciences"
 msgstr "Veterinaria"
@@ -6750,6 +7348,12 @@ msgid "View training action enrollments"
 msgstr "Ver matrículas en acciones formativas"
 
 #. module: academy_base
+#: code:addons/academy_base/models/academy_training_module.py:0
+#, python-format
+msgid "View {}"
+msgstr ""
+
+#. module: academy_base
 #: model:academy.professional.sector,name:academy_base.professional_sector_2420
 msgid "Virology"
 msgstr "Virología"
@@ -6791,6 +7395,12 @@ msgstr "Sin matrículas"
 #: model:academy.professional.family,name:academy_base.academy_professional_family_18
 msgid "Wood, furniture and cork"
 msgstr "Madera, muebles y corcho"
+
+#. module: academy_base
+#: code:addons/academy_base/models/academy_training_action_enrolment.py:0
+#, python-format
+msgid "You must assign a real student to each of the enrollments."
+msgstr "Debes asignar un alumno real a cada una de las matrículas."
 
 #. module: academy_base
 #: model:academy.training.module,description:academy_base.academy_training_unit_lbw5
@@ -7136,6 +7746,11 @@ msgid "academy_training_resource_tree"
 msgstr ""
 
 #. module: academy_base
+#: model:ir.model.fields,help:academy_base.field_academy_student_wizard__current_interval_str
+msgid "current training action date start and date stop"
+msgstr ""
+
+#. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_student_form
 msgid "e.g. BE0477472701"
 msgstr "p.ej. BE0477472701"
@@ -7162,9 +7777,26 @@ msgid "hours"
 msgstr "horas"
 
 #. module: academy_base
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_kanban
+msgid "record.training_activity_id.raw_value"
+msgstr ""
+
+#. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_student_kanban
 msgid "student photo"
 msgstr "foto de estudiante"
+
+#. module: academy_base
+#: code:addons/academy_base/wizard/academy_student_wizard.py:0
+#, python-format
+msgid "students"
+msgstr "estudiantes"
+
+#. module: academy_base
+#: code:addons/academy_base/wizard/academy_student_wizard.py:0
+#, python-format
+msgid "training action enrollments"
+msgstr "inscripciones en acciones formativas"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_competency_unit_teacher_rel_search
@@ -7185,15 +7817,3 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_enrolment_embed_tree
 msgid "view_academy_training_action_enrolment_embed_tree"
 msgstr ""
-
-#. module: academy_base
-#: model:ir.ui.menu,name:academy_base.menu_training_actions
-msgid "Quick training edit"
-msgstr "Edición de grupos"
-
-#. module: academy_base
-#: model:ir.ui.menu,name:academy_base.menu_academy_advanced_quick_edit
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_actions_quick_edit_tree
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_activites_quick_edit_tree
-msgid "Quick edit"
-msgstr "Edición rápida"

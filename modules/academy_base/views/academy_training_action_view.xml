@@ -25,11 +25,26 @@
             <field name="active" eval="True" />
             <field name="arch" type="xml">
                 <tree string="academy_training_action_tree" create="1" delete="1" edit="1">
+                    <field name="action_code" class="oe_field_action_code" optional="show" />
                     <field name="action_name" string="Name" />
+
+                    <field name="training_modality_ids" class="oe_field_training_modality_ids" optional="hide" />
+                    <field name="training_methodology_ids" class="oe_field_training_methodology_ids" optional="hide" />
+                    <field name="competency_unit_count" class="oe_field_competency_unit_count" optional="hide" />
+
                     <field name="start" class="oe_field_start" />
                     <field name="end" class="oe_field_end" />
-                    <field name="manager_id" class="oe_field_manager_id" string="Tuttor" />
-                    <field name="enrolment_count" class="oe_field_training_action_enrolment_count" />
+
+                    <field name="activity_code" class="oe_field_activity_code" optional="hide" />
+                    <field name="training_activity_id" class="oe_field_training_activity_id" optional="show" />
+                    <field name="professional_family_id" class="oe_field_professional_family_id" optional="hide" />
+                    <field name="qualification_level_id" class="oe_field_qualification_level_id" optional="hide" />
+
+                    <field name="seating" class="oe_field_seating" optional="hide" />
+                    <field name="excess" class="oe_field_excess" optional="hide" />
+                    <field name="enrolment_count" class="oe_field_training_action_enrolment_count" optional="show" />
+
+                    <field name="manager_id" class="oe_field_manager_id" string="Tuttor" optional="show" />
                 </tree>
             </field>
         </record>
@@ -157,6 +172,7 @@
                     <field name="action_name" />
                     <field name="seating" />
                     <field name="end" />
+                    <field name="training_activity_id" />
 
                     <templates>
                         <t t-name="kanban-box">
@@ -173,19 +189,19 @@
                                     <div class="oe_kanban_details">
                                         <h4><strong class="oe_partner_heading"><field name="action_name"/></strong></h4>
                                         <ul>
-                                            <li class="o_ellipsis"><strong>Lifespan:&#160;</strong><field name="start" widget="date" />&#160;-&#160;<field name="end" widget="date" /></li>
-                                            <li class="o_ellipsis"><strong>Activity:&#160;</strong><field name="training_activity_id" /></li>
+                                            <li class="o_ellipsis" t-attf-title="record.training_activity_id.raw_value"><field name="training_activity_id" /></li>
                                             <li class="o_ellipsis"><strong>Code:&#160;</strong><field name="action_code" /></li>
-                                            <li class="o_ellipsis"><strong>Nº enrolments:&#160;</strong><field name="enrolment_count" /></li>
+                                            <li class="o_ellipsis"><strong>Lifespan:&#160;</strong><field name="start" widget="date" />&#160;-&#160;<field name="end" widget="date" /></li>
                                          </ul>
                                     </div>
                                 </div>
                                 <div name="kanban-box-toolbar" class="btn-toolbar d-flex w-100 justify-content-end align-self-end mt-3" role="toolbar" aria-label="Training action commands">
                                     <div class="btn-group" role="group" aria-label="Management">
                                         <button name="show_training_action_enrolments" type="object"
+                                            groups="academy_base.academy_group_technical"
                                             class="btn btn-sm btn-light oe_read_only" title="View training action enrollments">
                                             <i class="fa fa-id-card-o d-inline-block mr-1" aria-hidden="false"></i>
-                                            Enrolments
+                                            <field name="enrolment_count" />
                                         </button>
                                     </div>
                                 </div>

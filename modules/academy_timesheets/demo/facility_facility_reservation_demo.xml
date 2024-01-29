@@ -23,6 +23,145 @@
             <field name="state">confirmed</field>
         </record>
 
+        <!-- Unit test reservations -->
+        <record id="academy_facility_reservation_test_1" model="facility.reservation">
+            <field name="active" eval="True" />
+            <field name="facility_id" ref="academy_timesheets.facility_test_1" />
+            <field name="date_start" eval="(DateTime.today()+ timedelta(days=1)).strftime('%Y-%m-%d 16:00:00')" />
+            <field name="date_stop" eval="(DateTime.today()+ timedelta(days=1)).strftime('%Y-%m-%d 18:00:00')" />
+            <field name="validate" eval="True" />
+            <field name="owner_id" ref="base.user_admin" />
+            <field name="state">confirmed</field>
+        </record>
+
+        <record id="academy_facility_reservation_test_2" model="facility.reservation">
+            <field name="active" eval="True" />
+            <field name="facility_id" ref="academy_timesheets.facility_test_2" />
+            <field name="date_start" eval="(DateTime.today()+ timedelta(days=1)).strftime('%Y-%m-%d 16:00:00')" />
+            <field name="date_stop" eval="(DateTime.today()+ timedelta(days=1)).strftime('%Y-%m-%d 18:00:00')" />
+            <field name="validate" eval="True" />
+            <field name="owner_id" ref="base.user_admin" />
+            <field name="state">confirmed</field>
+        </record>
+
+        <record id="academy_facility_reservation_test_3" model="facility.reservation">
+            <field name="active" eval="True" />
+            <field name="facility_id" ref="academy_timesheets.facility_test_3" />
+            <field name="date_start" eval="(DateTime.today()+ timedelta(days=1)).strftime('%Y-%m-%d 16:00:00')" />
+            <field name="date_stop" eval="(DateTime.today()+ timedelta(days=1)).strftime('%Y-%m-%d 18:00:00')" />
+            <field name="validate" eval="True" />
+            <field name="owner_id" ref="base.user_admin" />
+            <field name="state">confirmed</field>
+        </record>
+
+        <record id="academy_facility_reservation_test_4" model="facility.reservation">
+            <field name="active" eval="True" />
+            <field name="facility_id" ref="academy_timesheets.facility_test_4" />
+            <field name="date_start" eval="(DateTime.today()+ timedelta(days=1)).strftime('%Y-%m-%d 16:00:00')" />
+            <field name="date_stop" eval="(DateTime.today()+ timedelta(days=1)).strftime('%Y-%m-%d 18:00:00')" />
+            <field name="validate" eval="True" />
+            <field name="owner_id" ref="base.user_admin" />
+            <field name="state">confirmed</field>
+        </record>
+
+        <record id="academy_facility_reservation_test_6" model="facility.reservation">
+            <field name="active" eval="True" />
+            <field name="facility_id" ref="academy_timesheets.facility_test_6" />
+            <field name="date_start" eval="(DateTime.today()+ timedelta(days=1)).strftime('%Y-%m-%d 16:00:00')" />
+            <field name="date_stop" eval="(DateTime.today()+ timedelta(days=1)).strftime('%Y-%m-%d 18:00:00')" />
+            <field name="validate" eval="True" />
+            <field name="owner_id" ref="base.user_admin" />
+            <field name="state">confirmed</field>
+        </record>
+
+        <record id="academy_facility_reservation_test_7" model="facility.reservation">
+            <field name="active" eval="True" />
+            <field name="facility_id" ref="academy_timesheets.facility_test_7" />
+            <field name="date_start" eval="(DateTime.today()+ timedelta(days=1)).strftime('%Y-%m-%d 16:00:00')" />
+            <field name="date_stop" eval="(DateTime.today()+ timedelta(days=1)).strftime('%Y-%m-%d 18:00:00')" />
+            <field name="validate" eval="True" />
+            <field name="owner_id" ref="base.user_admin" />
+            <field name="state">confirmed</field>
+        </record>
+
+        <!-- Unit test nuisance reservations -->
+        <record id="academy_facility_reservation_test_nuisance_1" model="facility.reservation">
+            <field name="active" eval="True" />
+            <field name="facility_id" ref="academy_timesheets.facility_test_1" />
+            <field name="date_start" eval="(DateTime.today()+ timedelta(days=2)).strftime('%Y-%m-%d 16:00:00')" />
+            <field name="date_stop" eval="(DateTime.today()+ timedelta(days=2)).strftime('%Y-%m-%d 18:00:00')" />
+            <field name="validate" eval="True" />
+            <field name="owner_id" ref="base.user_admin" />
+            <field name="state">confirmed</field>
+            <field name="training_action_id" ref="academy_timesheets.academy_training_action_demo_test_1" />
+        </record>
+
+        <record id="academy_facility_reservation_test_nuisance_2" model="facility.reservation">
+            <field name="active" eval="True" />
+            <field name="facility_id" ref="academy_timesheets.facility_test_2" />
+            <field name="date_start" eval="(DateTime.today()+ timedelta(days=2)).strftime('%Y-%m-%d 15:00:00')" />
+            <field name="date_stop" eval="(DateTime.today()+ timedelta(days=2)).strftime('%Y-%m-%d 17:00:00')" />
+            <field name="validate" eval="True" />
+            <field name="owner_id" ref="base.user_admin" />
+            <field name="state">confirmed</field>
+            <field name="training_action_id" ref="academy_timesheets.academy_training_action_demo_test_1" />
+        </record>
+
+        <record id="academy_facility_reservation_test_nuisance_3" model="facility.reservation">
+            <field name="active" eval="True" />
+            <field name="facility_id" ref="academy_timesheets.facility_test_3" />
+            <field name="date_start" eval="(DateTime.today()+ timedelta(days=2)).strftime('%Y-%m-%d 17:00:00')" />
+            <field name="date_stop" eval="(DateTime.today()+ timedelta(days=2)).strftime('%Y-%m-%d 19:00:00')" />
+            <field name="validate" eval="True" />
+            <field name="owner_id" ref="base.user_admin" />
+            <field name="state">confirmed</field>
+            <field name="training_action_id" ref="academy_timesheets.academy_training_action_demo_test_1" />
+        </record>
+
+        <record id="academy_facility_reservation_test_nuisance_4" model="facility.reservation">
+            <field name="active" eval="True" />
+            <field name="facility_id" ref="academy_timesheets.facility_test_4" />
+            <field name="date_start" eval="(DateTime.today()+ timedelta(days=2)).strftime('%Y-%m-%d 15:00:00')" />
+            <field name="date_stop" eval="(DateTime.today()+ timedelta(days=2)).strftime('%Y-%m-%d 19:00:00')" />
+            <field name="validate" eval="True" />
+            <field name="owner_id" ref="base.user_admin" />
+            <field name="state">confirmed</field>
+            <field name="training_action_id" ref="academy_timesheets.academy_training_action_demo_test_1" />
+        </record>
+
+        <record id="academy_facility_reservation_test_nuisance_5" model="facility.reservation">
+            <field name="active" eval="True" />
+            <field name="facility_id" ref="academy_timesheets.facility_test_5" />
+            <field name="date_start" eval="(DateTime.today()+ timedelta(days=2)).strftime('%Y-%m-%d 17:30:00')" />
+            <field name="date_stop" eval="(DateTime.today()+ timedelta(days=2)).strftime('%Y-%m-%d 18:30:00')" />
+            <field name="validate" eval="True" />
+            <field name="owner_id" ref="base.user_admin" />
+            <field name="state">confirmed</field>
+            <field name="training_action_id" ref="academy_timesheets.academy_training_action_demo_test_1" />
+        </record>
+
+        <record id="academy_facility_reservation_test_nuisance_6" model="facility.reservation">
+            <field name="active" eval="True" />
+            <field name="facility_id" ref="academy_timesheets.facility_test_6" />
+            <field name="date_start" eval="(DateTime.today()+ timedelta(days=2)).strftime('%Y-%m-%d 17:00:00')" />
+            <field name="date_stop" eval="(DateTime.today()+ timedelta(days=2)).strftime('%Y-%m-%d 18:00:00')" />
+            <field name="validate" eval="True" />
+            <field name="owner_id" ref="base.user_admin" />
+            <field name="state">confirmed</field>
+            <field name="training_action_id" ref="academy_timesheets.academy_training_action_demo_test_1" />
+        </record>
+
+        <record id="academy_facility_reservation_test_nuisance_7" model="facility.reservation">
+            <field name="active" eval="True" />
+            <field name="facility_id" ref="academy_timesheets.facility_test_7" />
+            <field name="date_start" eval="(DateTime.today()+ timedelta(days=2)).strftime('%Y-%m-%d 19:00:00')" />
+            <field name="date_stop" eval="(DateTime.today()+ timedelta(days=2)).strftime('%Y-%m-%d 21:00:00')" />
+            <field name="validate" eval="True" />
+            <field name="owner_id" ref="base.user_admin" />
+            <field name="state">confirmed</field>
+            <field name="training_action_id" ref="academy_timesheets.academy_training_action_demo_test_1" />
+        </record>
+
     </data>
 </openerp>
 

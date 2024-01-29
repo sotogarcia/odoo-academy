@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="hr_job_teacher" model="hr.job">
+            <field name="name">Teacher</field>
+            <field name="department_id" ref="" />
+            <field name="state">recruit</field>
+        </record>
+
+    </data>
+</openerp>

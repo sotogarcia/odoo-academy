@@ -14,6 +14,23 @@
             - Action help···: There are no reservations
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
+
+        <record id="view_facility_reservation_tree" model="ir.ui.view">
+            <field name="name">view.facility.reservation.tree</field>
+            <field name="model">facility.reservation</field>
+            <field name="type">tree</field>
+            <field name="mode">extension</field>
+            <field name="priority" eval="24" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="facility_management.view_facility_reservation_tree" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='has_scheduler']" position="after">
+                    <field name="has_training_session" class="oe_field_has_training_session" string="Session" optional="hide" />
+                </xpath>
+            </field>
+        </record>
+
+
         <!-- Tree view for "facility.reservation" -->
         <record id="view_facility_reservation_embed_in_session_tree" model="ir.ui.view">
             <field name="name">view.facility.reservation.tree</field>
@@ -97,12 +114,15 @@
             <field name="model">facility.reservation</field>
             <field name="type">form</field>
             <field name="mode">extension</field>
-            <field name="priority" eval="16" />
+            <field name="priority" eval="24" />
             <field name="inherit_id" ref="facility_management.view_facility_reservation_form" />
             <field name="active" eval="True" />
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='name']" position="after">
                     <field name="session_id" class="oe_field_session_id" invisible="1" />
+                </xpath>
+                <xpath expr="//field[@name='training_action_id']" position="attributes">
+                    <attribute name="attrs">{'readonly': [('session_id', '&lt;&gt;', False)]}</attribute>
                 </xpath>
                 <xpath expr="//field[@name='date_start']" position="attributes">
                     <attribute name="attrs">{'readonly': [('session_id', '&lt;&gt;', False)]}</attribute>
@@ -113,8 +133,54 @@
                 <xpath expr="//field[@name='date_delay']" position="attributes">
                     <attribute name="attrs">{'readonly': [('session_id', '&lt;&gt;', False)]}</attribute>
                 </xpath>
+                <xpath expr="//button[@name='unbind']" position="after">
+                    <button name="detach_from_training"
+                            string="No training"
+                            type="object"
+                            default_focus="0"
+                            icon="fa-files-o"
+                            class="btn btn-danger"
+                            confirm="Do you confirm that you wish to unlink the reservation from the training session?"
+                            help="Unlink the reservation from the training session"
+                            attrs="{'invisible': [('session_id', '=', False)]}" />
+                </xpath>
+                <xpath expr="//button[@name='unbind']" position="attributes">
+                    <attribute name="string">No scheduler</attribute>
+                </xpath>
             </field>
         </record>
+
+        <record id="view_facility_reservation_search" model="ir.ui.view">
+            <field name="name">view.facility.reservation.search</field>
+            <field name="model">facility.reservation</field>
+            <field name="type">search</field>
+            <field name="mode">extension</field>
+            <field name="priority" eval="24" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="facility_management.view_facility_reservation_search" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='complex_id']" position="after">
+
+                    <separator />
+                    <field name="session_id" />
+
+                    <separator />
+                    <filter string="With training session"
+                        name="with_training_session"
+                        domain="[('session_id', '&lt;&gt;', False)]"
+                        context="{}"
+                        help="With a related training session" />
+
+                    <filter string="Without training session"
+                        name="without_training_session"
+                        domain="[('session_id', '=', False)]"
+                        context="{}"
+                        help="Without a related training session" />
+
+                </xpath>
+            </field>
+        </record>
+
 
     </data>
 </openerp>

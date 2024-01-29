@@ -141,7 +141,25 @@
                                         </div>
                                     </div>
                                 </div> <!-- col -->
-
+                                <div class="col-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <span class="o_form_label">
+                                            Teacher operational shifts
+                                        </span>
+                                        <div class="text-muted">
+                                            View the operational shifts of academy teachers ensuring effective time.
+                                        </div>
+                                        <div class="content-group mt8">
+                                            <button
+                                                name="%(academy_timesheets.action_teacher_operational_shift_act_window)d"
+                                                string="&#160;View shifts"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+                                    </div>
+                                </div> <!-- col -->
                             </div> <!-- row -->
 
                         </div>

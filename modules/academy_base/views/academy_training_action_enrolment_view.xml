@@ -23,12 +23,19 @@
             <field name="priority" eval="16" />
             <field name="active" eval="True" />
             <field name="arch" type="xml">
-                <tree string="academy_training_action_enrolment_tree" create="1" delete="1" edit="1">
-                    <field name="student_id" class="oe_field_student_id" />
+                <tree string="academy_training_action_enrolment_tree" create="1" delete="1" edit="1" decoration-success="register &lt;= current_date and (deregister &gt;= current_date or not deregister)">
+                    <field name="training_activity_id" class="oe_field_training_activity_id" optional="hide" />
                     <field name="training_action_id" class="oe_field_training_action_id" />
+                    <field name="training_modality_str" class="oe_field_training_modality_str" optional="hide" />
+                    <field name="student_id" class="oe_field_student_id" />
+                    <field name="vat" class="oe_field_vat" optional="hide" />
+                    <field name="email" class="oe_field_email" optional="show" />
+                    <field name="phone" class="oe_field_phone" optional="show" />
+                    <field name="mobile" class="oe_field_mobile" optional="show" />
+                    <field name="zip" class="oe_field_zip" optional="hide" />
                     <field name="register" class="oe_field_register" />
                     <field name="deregister" class="oe_field_deregister" />
-                    <field name="manager_id" class="oe_field_manager_id" />
+                    <field name="manager_id" class="oe_field_manager_id" optional="hide" />
                 </tree>
             </field>
         </record>
@@ -67,12 +74,12 @@
                             <field name="training_action_id" class="oe_field_training_action_id"
                                 readonly="context.get('default_training_action_id', False)"
                                 options="{'no_quick_create': True, 'no_create': True, 'no_open': False}" />
+                            <field name="action_code" class="oe_field_action_code"
+                                placeholder="Enter new code" readonly="1" />
                             <field name="start" class="oe_field_start"
                                 placeholder="Enter new date/time" readonly="1" />
                             <field name="end" class="oe_field_end"
                                 placeholder="Enter new date/time" readonly="1" />
-                            <field name="action_code" class="oe_field_action_code"
-                                placeholder="Enter new code" readonly="1" />
 
                             <separator colspan="4" string="Student" class="mt-3" />
 
@@ -146,10 +153,11 @@
                     <field name="deregister" />
                     <field name="training_action_id" />
                     <field name="student_id" />
+                    <field name="color" />
 
                     <templates>
                         <t t-name="kanban-box">
-                            <div class="oe_kanban_global_click oe_kanban_academy_training_action d-flex flex-column justify-content-end">
+                            <div t-attf-class="oe_kanban_global_click oe_kanban_academy_training_action d-flex flex-column justify-content-end #{kanban_color(record.color.raw_value)}">
                                 <div class="flex-fill align-top">
                                     <div class="o_kanban_image">
                                         <t t-if="record.image_128.raw_value">
@@ -194,11 +202,15 @@
                 <search string="academy_training_action_enrolment_search">
 
                     <field name="student_id" />
+                    <field name="vat" />
+                    <field name="email" />
+                    <field name="phone" />
 
                     <separator />
-
+                    <field name="training_activity_id" />
                     <field name="training_action_id" />
                     <field name="competency_unit_ids" />
+                    <field name="training_modality_ids" />
 
                     <separator />
 
@@ -206,9 +218,16 @@
                     <field name="deregister" />
 
                     <separator />
+                    <field name="manager_id" />
 
-                    <filter name="has_finalized" string="Finalized" domain="[('finalized','=', True)]"/>
-                    <filter name="in_progress" string="Initiated" domain="[('finalized','=', False)]"/>
+                    <separator />
+
+                    <filter name="has_finalized" string="Have finished"
+                        domain="[('deregister', '&lt;', (context_today().strftime('%Y-%m-%d')) )]" />
+                    <filter name="in_progress" string="In progress"
+                        domain="['&amp;', ('register', '&lt;=', (context_today().strftime('%Y-%m-%d')) ), '|', ('deregister', '&gt;=', (context_today().strftime('%Y-%m-%d')) ), ('deregister', '=', False)]" />
+                    <filter name="has_not_started" string="Not yet started"
+                        domain="[('register', '&gt;', (context_today().strftime('%Y-%m-%d')) )]" />
 
                     <separator />
 
@@ -231,7 +250,7 @@
 
             <field name="target">current</field>
             <field name="domain">[]</field>
-            <field name="context">{}</field>
+            <field name="context">{"search_default_in_progress": 1}</field>
             <field name="search_view_id" ref="view_academy_training_action_enrolment_search" />
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">

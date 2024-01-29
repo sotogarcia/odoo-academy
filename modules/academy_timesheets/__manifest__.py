@@ -18,13 +18,14 @@
     'depends': [
         'academy_base',
         'base_field_m2m_view',
+        'materialized_views',
         'facility_management',
         'record_ownership'
     ],
 
-    'pre_init_hook': 'pre_init_hook',
-    'post_init_hook': 'post_init_hook',
-    'uninstall_hook': 'uninstall_hook',
+    # 'pre_init_hook': 'pre_init_hook',
+    # 'post_init_hook': 'post_init_hook',
+    # 'uninstall_hook': 'uninstall_hook',
 
     'data': [
         'views/academy_timesheets.xml',
@@ -33,6 +34,7 @@
         'data/html_templates_data.xml',
         'data/report_paperformat_data.xml',
         'data/mail_message_subtype_data.xml',
+        'data/mail_notification_email_data.xml',
 
         'security/academy_non_teaching_task.xml',
         'security/academy_training_session.xml',
@@ -40,6 +42,7 @@
         'security/academy_training_session_affinity.xml',
         'security/academy_training_session_teacher_rel.xml',
         'security/academy_timesheets_clone_wizard_log.xml',
+        'security/academy_teacher_operational_shift.xml',
 
         'views/academy_training_session_view.xml',
         'views/academy_training_session_invitation_view.xml',
@@ -54,6 +57,7 @@
         'views/academy_training_session_teacher_rel_view.xml',
         'views/academy_training_action_enrolment_view.xml',
         'views/academy_timesheets_clone_wizard_log_view.xml',
+        'views/academy_teacher_operational_shift_view.xml',
         'views/res_config_settings_view.xml',
 
         'wizard/academy_timesheets_send_by_mail_wizard_view.xml',
@@ -72,6 +76,8 @@
     ],
 
     'demo': [
+        'demo/facility_facility_demo.xml',
+        'demo/academy_training_action_demo.xml',
         'demo/facility_facility_reservation_demo.xml',
         'demo/academy_training_session_demo.xml',
         'demo/academy_training_session_teacher_rel_demo.xml'

@@ -25,6 +25,22 @@ class AcademyTrainingSessionAffinity(models.Model):
 
     _auto = False
 
+    _check_company_auto = True
+
+    company_id = fields.Many2one(
+        string='Company',
+        required=False,
+        readonly=True,
+        index=True,
+        default=False,
+        help='The company this record belongs to',
+        comodel_name='res.company',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False
+    )
+
     session_id = fields.Many2one(
         string='Session',
         required=True,
@@ -221,7 +237,8 @@ class AcademyTrainingSessionAffinity(models.Model):
             ats.competency_unit_id,
             enrol."id" as enrolment_id,
             enrol.student_id,
-            atd."id"::BOOLEAN AS invited
+            atd."id"::BOOLEAN AS invited,
+            enrol."company_id" as company_id
         FROM
             academy_training_session AS ats
         INNER JOIN academy_training_action AS ata

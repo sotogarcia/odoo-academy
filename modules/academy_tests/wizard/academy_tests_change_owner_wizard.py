@@ -5,7 +5,8 @@
 ###############################################################################
 
 from odoo import models, fields, api
-from odoo.tools.translate import _
+from odoo.osv.expression import OR, FALSE_DOMAIN
+
 from logging import getLogger
 
 
@@ -33,100 +34,64 @@ class ChangeOwnerWizard(models.TransientModel):
     _rec_name = 'id'
     _order = 'id ASC'
 
-    _inherit = ['ownership.mixin']
-
-    question_ids = fields.Many2many(
-        string='Questions',
-        required=False,
-        readonly=False,
-        index=False,
-        default=lambda self: self.default_question_ids(),
-        help='Choose tests who owner will be changed',
-        comodel_name='academy.tests.question',
-        relation='academy_tests_question_change_owner_wizard_rel',
-        column1='change_owner_wizard_id',
-        column2='question_id',
-        domain=[],
-        context={},
-        limit=None
-    )
-
-    test_ids = fields.Many2many(
-        string='Change owner wizard tests',
-        required=False,
-        readonly=False,
-        index=False,
-        default=lambda self: self.default_test_ids(),
-        help='Choose tests who owner will be changed',
-        comodel_name='academy.tests.test',
-        relation='academy_tests_test_change_owner_wizard_rel',
-        column1='change_owner_wizard_id',
-        column2='test_id',
-        domain=[],
-        context={},
-        limit=None
-    )
+    _inherit = ['record.ownership.wizard']
 
     authorship = fields.Selection(
         string='Authorship',
         required=True,
         readonly=False,
         index=False,
-        default='preserve',
+        default='own',
         help=False,
         selection=[
-            ('preserve', 'Preserve'),
             ('own', 'My own'),
             ('third', 'Third-party')
         ]
     )
 
-    state = fields.Selection(
-        string='State',
+    change_authorship = fields.Boolean(
+        string='Change authorship',
         required=False,
         readonly=False,
         index=False,
-        default=lambda self: self.default_state(),
-        help='Current wizard step',
-        selection=WIZARD_STATES
+        default=False,
+        help='Check it to change authorship'
     )
 
-    def default_question_ids(self):
-        """ It computes default question list loading all has been selected
-        before wizard opening
-        """
+    @api.depends('change_owner', 'owner_id', 'change_subrogate',
+                 'subrogate_id', 'change_authorship', 'authorship')
+    @api.depends_context('active_model', 'active_ids', 'active_id')
+    def _compute_target_count(self):
+        parent = super(ChangeOwnerWizard, self)
+        parent._compute_target_count()
 
-        ids = []
-        model = self.env.context.get('active_model', None)
+    def _change_was_indicated(self):
+        parent = super(ChangeOwnerWizard, self)
+        return parent._change_was_indicated() or self.change_authorship
 
-        if model == 'academy.tests.question':
-            ids = self.env.context.get('active_ids', [])
+    def _build_values(self):
+        parent = super(ChangeOwnerWizard, self)
+        values = parent._build_values()
 
-        return [(6, None, ids)] if ids else False
+        values['authorship'] = bool(self.authorship == 'own')
 
-    def default_test_ids(self):
-        """ It computes default question list loading all has been selected
-        before wizard opening
-        """
+        return values
 
-        ids = []
-        model = self.env.context.get('active_model', None)
+    def _build_authorship_domain(self):
+        self.ensure_one()
 
-        if model == 'academy.tests.test':
-            ids = self.env.context.get('active_ids', [])
+        if self.change_authorship:
+            authorship = bool(self.authorship == 'own')
+            authorship_domain = [('authorship', '!=', authorship)]
+        else:
+            authorship_domain = FALSE_DOMAIN
 
-        return [(6, None, ids)] if ids else False
+        return authorship_domain
 
-    def default_state(self):
-        model = self.env.context.get('active_model', None)
+    def _build_property_domain(self):
+        parent = super(ChangeOwnerWizard, self)
+        property_domain = parent._build_property_domain()
 
-        return WIZARD_STATES[1 if model == 'academy.tests.question' else 0][0]
+        authorship_domain = self._build_authorship_domain()
 
-    def update_targets(self):
-        self.question_ids.owner_id = self.owner_id
-        self.test_ids.owner_id = self.owner_id
-
-        if self.authorship != 'preserve':
-            authorship = (self.authorship == 'own')
-            self.question_ids.authorship = authorship
-            self.test_ids.authorship = authorship
+        return OR([property_domain, authorship_domain])

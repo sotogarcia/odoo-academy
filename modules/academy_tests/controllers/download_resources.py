@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-######################################################################################################
+###############################################################################
 #
 # Copyright (C) B.H.C. sprl - All Rights Reserved, http://www.bhc.be
 #
@@ -16,7 +16,8 @@
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>
-######################################################################################################
+###############################################################################
+
 import logging
 try:
     from BytesIO import BytesIO
@@ -30,7 +31,7 @@ from odoo.http import content_disposition
 import mimetypes
 import os
 from odoo.tools.translate import _
-from odoo.exceptions import AccessError
+
 
 _logger = logging.getLogger(__name__)
 
@@ -262,7 +263,8 @@ class TestAttachments(http.Controller):
             return Response(str(ae), status=404)
         except Exception as ex:
             _logger.error(ex)
-            return Response('Unable to display preview. See logs.', status=404)
+            msg = _('Unable to display preview. See logs.')
+            return Response(msg, status=404)
 
         httpheaders = [
             ('Content-Type', 'application/pdf; charset=utf-8'),

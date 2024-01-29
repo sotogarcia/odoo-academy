@@ -13,8 +13,9 @@
             <field name="arch" type="xml">
                 <tree string="academy_non_teaching_task_tree" create="1" delete="1" edit="1" editable="bottom">
                     <field name="name" class="oe_field_name" />
-                    <field name="description" class="oe_field_description" />
-                    <field name="active" class="oe_field_active" />
+                    <field name="company_id" class="oe_field_company_id" optional="hide" />
+                    <field name="description" class="oe_field_description" optional="show" />
+                    <field name="active" class="oe_field_active" widget="boolean_toggle" />
                 </tree>
             </field>
         </record>
@@ -29,6 +30,14 @@
             <field name="arch" type="xml">
                 <search string="academy_non_teaching_task_search">
                     <field name="name" />
+                    <field name="company_id" />
+
+                    <filter string="By company"
+                        name="group_by_company"
+                        domain="[]"
+                        context="{'group_by': 'company_id'}"
+                        help="Use this filter to view data organized by each company registered in the system" />
+
                     <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
                 </search>
             </field>

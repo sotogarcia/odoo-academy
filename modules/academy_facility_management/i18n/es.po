@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-29 23:04+0000\n"
-"PO-Revision-Date: 2023-05-30 01:16+0200\n"
+"POT-Creation-Date: 2023-11-20 23:08+0000\n"
+"PO-Revision-Date: 2023-11-21 00:17+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -26,6 +26,11 @@ msgstr "Unidad de competencia"
 #: model:ir.model,name:academy_facility_management.model_academy_training_action
 msgid "Academy training action"
 msgstr "Acción formativa"
+
+#. module: academy_facility_management
+#: model:ir.model,name:academy_facility_management.model_academy_training_action_enrolment
+msgid "Academy training action enrolment"
+msgstr "Alta en la acción formativa"
 
 #. module: academy_facility_management
 #: model:ir.model,name:academy_facility_management.model_academy_training_action_facility_link
@@ -50,7 +55,17 @@ msgstr "Asignar instalaciones a esta unidad de competencia"
 #. module: academy_facility_management
 #: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__message_attachment_count
 msgid "Attachment Count"
-msgstr "Recuento de archivos adjuntos"
+msgstr "Nº de adjuntos"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,help:academy_facility_management.field_facility_reservation_massive_actions_wizard__update_training_action_id
+msgid "Check it to update related training action"
+msgstr "Marcar para actualizar la acción formativa relacionada"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,help:academy_facility_management.field_facility_reservation__has_training_action
+msgid "Check it when the reservation has a related training action"
+msgstr "Marcar cuando la reserva tenga una acción formativa relacionada"
 
 #. module: academy_facility_management
 #: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__color
@@ -174,7 +189,7 @@ msgstr "Asignaciones de instalaciones"
 #: model:ir.model.fields,field_description:academy_facility_management.field_academy_competency_unit__facility_count
 #: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action__facility_count
 msgid "Facility count"
-msgstr "Recuento de instalaciones"
+msgstr "Nº de instalaciones"
 
 #. module: academy_facility_management
 #: model:ir.model.fields,help:academy_facility_management.field_academy_training_action_facility_link__code
@@ -185,6 +200,21 @@ msgstr "Código interno de la instalación"
 #: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action__facility_link_ids
 msgid "Facility links"
 msgstr "Enlaces de instalaciones"
+
+#. module: academy_facility_management
+#: model:ir.model,name:academy_facility_management.model_facility_reservation
+msgid "Facility reservation"
+msgstr "Reserva de instalaciones"
+
+#. module: academy_facility_management
+#: model:ir.model,name:academy_facility_management.model_facility_reservation_massive_actions_wizard
+msgid "Facility reservation massive actions wizard"
+msgstr "Asistente de acciones masivas sobre las reservas de instalaciones"
+
+#. module: academy_facility_management
+#: model:ir.model,name:academy_facility_management.model_facility_reservation_scheduler
+msgid "Facility reservation scheduler"
+msgstr "Planificador de reservas de instalaciones"
 
 #. module: academy_facility_management
 #: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__message_follower_ids
@@ -200,6 +230,21 @@ msgstr "Seguidores (Canales)"
 #: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__message_partner_ids
 msgid "Followers (Partners)"
 msgstr "Seguidores (Socios)"
+
+#. module: academy_facility_management
+#: model_terms:ir.ui.view,arch_db:academy_facility_management.view_facility_reservation_search
+msgid "Group by related training action"
+msgstr "Agrupar por acción formativa relacionada"
+
+#. module: academy_facility_management
+#: model_terms:ir.ui.view,arch_db:academy_facility_management.view_facility_reservation_search
+msgid "Group by training action"
+msgstr "Agrupar por acción formativa"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_facility_reservation__has_training_action
+msgid "Has training action"
+msgstr "Tiene acción formativa"
 
 #. module: academy_facility_management
 #: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__id
@@ -274,18 +319,20 @@ msgstr "Adjunto principal"
 
 #. module: academy_facility_management
 #: model:ir.model.fields,help:academy_facility_management.field_academy_training_action__primary_complex_id
+#: model:ir.model.fields,help:academy_facility_management.field_academy_training_action_enrolment__primary_complex_id
 msgid "Main educational complex"
 msgstr "Complejo educativo principal"
 
 #. module: academy_facility_management
 #: model:ir.model.fields,help:academy_facility_management.field_academy_training_action__primary_facility_id
+#: model:ir.model.fields,help:academy_facility_management.field_academy_training_action_enrolment__primary_facility_id
 msgid "Main educational facility"
 msgstr "Instalación educativa principal"
 
 #. module: academy_facility_management
 #: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__manager_id
 msgid "Manager"
-msgstr "Administrador"
+msgstr "Responsable"
 
 #. module: academy_facility_management
 #: model:ir.model.fields,help:academy_facility_management.field_academy_training_action_facility_link__excess
@@ -293,15 +340,14 @@ msgid ""
 "Maximum number of students who can be invited to use this feature at the "
 "same time"
 msgstr ""
-"Número máximo de alumnos que pueden ser invitados a usar esta función "
-"al mismo tiempo"
+"Número máximo de alumnos que pueden ser invitados a usar esta función al "
+"mismo tiempo"
 
 #. module: academy_facility_management
 #: model:ir.model.fields,help:academy_facility_management.field_academy_training_action_facility_link__users
 msgid "Maximum number of students who can use this facility at the same time"
 msgstr ""
-"Número máximo de alumnos que pueden usar esta instalación al mismo "
-"tiempo"
+"Número máximo de alumnos que pueden usar esta instalación al mismo tiempo"
 
 #. module: academy_facility_management
 #: model:ir.model.fields,help:academy_facility_management.field_academy_training_action_facility_link__users_str
@@ -412,12 +458,14 @@ msgstr "Prerrogativa"
 
 #. module: academy_facility_management
 #: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action__primary_complex_id
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_enrolment__primary_complex_id
 #: model_terms:ir.ui.view,arch_db:academy_facility_management.view_academy_training_action_search
 msgid "Primary complex"
 msgstr "Complejo primario"
 
 #. module: academy_facility_management
 #: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action__primary_facility_id
+#: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_enrolment__primary_facility_id
 msgid "Primary facility"
 msgstr "Instalación primaria"
 
@@ -452,7 +500,7 @@ msgstr "Instalaciones educativas requeridas en orden de relevancia"
 #. module: academy_facility_management
 #: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__reservation_count
 msgid "Reservation count"
-msgstr "Recuento de reservas"
+msgstr "Nº de reservas"
 
 #. module: academy_facility_management
 #: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__reservation_ids
@@ -480,9 +528,23 @@ msgid "The company this record belongs to"
 msgstr "La empresa a la que pertenece este registro"
 
 #. module: academy_facility_management
+#: model_terms:ir.ui.view,arch_db:academy_facility_management.view_facility_reservation_tree
+msgid "Training"
+msgstr "Formación"
+
+#. module: academy_facility_management
 #: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__training_action_id
+#: model:ir.model.fields,field_description:academy_facility_management.field_facility_reservation_massive_actions_wizard__training_action_id
+#: model:ir.model.fields,field_description:academy_facility_management.field_facility_reservation_scheduler__training_action_id
+#: model:ir.model.fields,field_description:academy_facility_management.field_facility_reservation__training_action_id
 msgid "Training action"
 msgstr "Acción formativa"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,help:academy_facility_management.field_facility_reservation__training_action_id
+#: model:ir.model.fields,help:academy_facility_management.field_facility_reservation_scheduler__training_action_id
+msgid "Training action for which the facility will be reserved"
+msgstr "Acción formativa para la que se reservará la instalación"
 
 #. module: academy_facility_management
 #: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__type_id
@@ -505,6 +567,16 @@ msgid "Unread Messages Counter"
 msgstr "Contador de mensajes no leídos"
 
 #. module: academy_facility_management
+#: model_terms:ir.ui.view,arch_db:academy_facility_management.view_facility_reservation_massive_actions_wizard_form
+msgid "Update training"
+msgstr "Actualizar la formación"
+
+#. module: academy_facility_management
+#: model:ir.model.fields,field_description:academy_facility_management.field_facility_reservation_massive_actions_wizard__update_training_action_id
+msgid "Update training action"
+msgstr "Actualizar la acción formativa"
+
+#. module: academy_facility_management
 #: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__users
 msgid "Users"
 msgstr "Usuarios"
@@ -513,3 +585,23 @@ msgstr "Usuarios"
 #: model:ir.model.fields,field_description:academy_facility_management.field_academy_training_action_facility_link__users_str
 msgid "Users/Excess"
 msgstr "Usuarios/Exceso"
+
+#. module: academy_facility_management
+#: model_terms:ir.ui.view,arch_db:academy_facility_management.view_facility_reservation_search
+msgid "With a related training action"
+msgstr "Con una acción formativa relacionada"
+
+#. module: academy_facility_management
+#: model_terms:ir.ui.view,arch_db:academy_facility_management.view_facility_reservation_search
+msgid "With training action"
+msgstr "Con acción formativa"
+
+#. module: academy_facility_management
+#: model_terms:ir.ui.view,arch_db:academy_facility_management.view_facility_reservation_search
+msgid "Without a related training action"
+msgstr "Sin acción formativa relacionada"
+
+#. module: academy_facility_management
+#: model_terms:ir.ui.view,arch_db:academy_facility_management.view_facility_reservation_search
+msgid "Without training action"
+msgstr "Sin acción formativa"

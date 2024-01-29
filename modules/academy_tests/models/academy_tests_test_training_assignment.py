@@ -6,6 +6,9 @@
 
 from odoo import models, fields, api
 from odoo.tools.translate import _
+from odoo.addons.academy_base.utils.record_utils import get_training_activity
+from odoo.addons.academy_base.utils.record_utils import has_changed
+
 from logging import getLogger
 
 from datetime import datetime
@@ -353,22 +356,51 @@ class AcademyTestsTestTrainingAssignment(models.Model):
     @api.onchange('training_ref')
     def _onchange_training_ref(self):
 
-        for record in self:
-            _super = super(AcademyTestsTestTrainingAssignment, record)
-            _super._onchange_training_ref()
+        _super = super(AcademyTestsTestTrainingAssignment, self)
+        _super._onchange_training_ref()
 
-            record._update_correction_scale_id()
-
-            record.secondary_id = None
+        if self.training_ref and has_changed(self, 'training_ref'):
+            self.update_realization_attributes()
 
     @api.onchange('test_id')
     def _onchange_test_id(self):
 
+        if self.test_id:
+            if has_changed(self, 'test_id'):
+                if self.test_id.name:
+                    self.name = self.test_id.name
+
+                self.update_realization_attributes()
+        else:
+            self.default_name()
+
+    def update_realization_attributes(self):
         for record in self:
-            if record.test_id:
-                record.name = record.test_id.name
+            activity = get_training_activity(record.env, record.training_ref)
+            test = record.test_id
+
+            if test and test.correction_scale_id:
+                record.correction_scale_id = test.correction_scale_id
+            elif activity and activity.correction_scale_id:
+                record.correction_scale_id = activity.correction_scale_id
             else:
-                record.name = record.default_name()
+                record.correction_scale_id = self.default_correction_scale_id()
+
+            if test and test.available_time:
+                record.available_time = test.available_time or 0.5
+                record.time_by = test.time_by
+                record.lock_time = test.lock_time
+            elif activity and activity.available_time:
+                record.available_time = test.available_time or 0.5
+                record.time_by = 'test'
+                record.lock_time = True
+            else:
+                field_names = ['available_time', 'time_by', 'lock_time']
+                defaults = record.default_get(field_names)
+                print(defaults)
+                record.available_time = defaults.get('available_time', 0.5)
+                record.time_by = defaults.get('time_by', 'test')
+                record.lock_time = defaults.get('lock_time', False)
 
     _sql_constraints = [
         (
@@ -386,6 +418,11 @@ class AcademyTestsTestTrainingAssignment(models.Model):
             'UNIQUE(test_id, training_ref)',
             _(u'Assignment of test to training is duplicated')
         ),
+        (
+            'positive_available_time',
+            'CHECK(available_time > 0)',  # It can be zero if not set
+            _(u'Available time attribute must have a positive value')
+        )
     ]
 
     @api.depends('training_ref', 'test_id')
@@ -426,19 +463,6 @@ class AcademyTestsTestTrainingAssignment(models.Model):
             values['secondary_id'] = None
 
         return model, id_str
-
-    def _update_correction_scale_id(self):
-        self.ensure_one()
-
-        if self.training_ref and \
-           hasattr(self.training_ref, 'correction_scale_id') and \
-           self.training_ref.correction_scale_id:
-            scale_id = getattr(self.training_ref, 'correction_scale_id')
-
-        else:
-            scale_id = self.default_correction_scale_id()
-
-        self.correction_scale_id = scale_id
 
     def _get_activity(self):
         self.ensure_one()

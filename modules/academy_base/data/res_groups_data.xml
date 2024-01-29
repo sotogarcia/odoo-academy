@@ -19,7 +19,7 @@
             <field name="name">Consultant</field>
             <field name="comment">Users who can only read base catalog and assigned training actions</field>
             <field name="category_id" ref="module_category_academy"/>
-            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user')), (4, ref('record_ownership.record_ownership_consultant'))]" />
         </record>
 
         <record id="academy_group_teacher" model="res.groups">

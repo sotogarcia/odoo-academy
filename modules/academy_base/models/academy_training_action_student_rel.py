@@ -25,13 +25,35 @@ class AcademyTrainingActionStudentRel(models.Model):
 
     _auto = False
     _table = 'academy_training_action_student_rel'
+    _check_company_auto = True
+
     _view_sql = '''
         SELECT
+            student_id,
             training_action_id,
-            student_id
+            enrol.company_id
         FROM
-            academy_training_action_enrolment
+            academy_training_action_enrolment AS enrol
+        INNER JOIN academy_training_action AS ata
+            ON ata."id" = enrol.training_action_id
+        WHERE
+            register <= CURRENT_TIMESTAMP ( 0 )
+            AND ( deregister > CURRENT_TIMESTAMP ( 0 ) OR deregister IS NULL )
+            AND enrol.active
     '''
+    company_id = fields.Many2one(
+        string='Company',
+        required=True,
+        readonly=True,
+        index=True,
+        default=lambda self: self.env.company,
+        help='The company this record belongs to',
+        comodel_name='res.company',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False
+    )
 
     student_id = fields.Many2one(
         string='Student',

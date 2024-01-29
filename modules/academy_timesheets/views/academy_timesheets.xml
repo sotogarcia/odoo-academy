@@ -34,5 +34,26 @@
             <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
         </record>
 
+        <record id="ir_rule_academy_training_session_affinity_multi_company" model="ir.rule">
+            <field name="name">Restricted Academy Training Session Affinity: multi-company</field>
+            <field name="model_id" ref="academy_timesheets.model_academy_training_session_affinity"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        </record>
+
+        <record id="ir_rule_academy_non_teaching_task_multi_company" model="ir.rule">
+            <field name="name">Restricted academy non teaching task: multi-company</field>
+            <field name="model_id" ref="academy_timesheets.model_academy_non_teaching_task"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        </record>
+
+        <record id="ir_rule_academy_teacher_operational_shift_multi_company" model="ir.rule">
+            <field name="name">Restricted academy teacher operational shift: multi-company</field>
+            <field name="model_id" ref="academy_timesheets.model_academy_teacher_operational_shift"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        </record>
+
     </data>
 </openerp>

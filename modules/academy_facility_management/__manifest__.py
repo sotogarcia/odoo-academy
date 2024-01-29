@@ -50,9 +50,17 @@ Academy facility management Module Project.
 
     'data': [
         'security/academy_training_action_facility_link.xml',
+        'security/facility_reservation.xml',
+
         'views/academy_training_action_facility_link_view.xml',
         'views/academy_competency_unit_view.xml',
-        'views/academy_training_action_view.xml'
+        'views/academy_training_action_view.xml',
+        'views/academy_training_action_enrolment_view.xml',
+
+        'views/facility_reservation_scheduler_view.xml',
+        'views/facility_reservation_view.xml',
+
+        'wizard/facility_reservation_massive_actions_wizard_view.xml'
     ],
 
     'installable': True,

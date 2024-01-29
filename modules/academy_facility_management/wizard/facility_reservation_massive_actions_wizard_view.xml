@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="view_facility_reservation_massive_actions_wizard_form" model="ir.ui.view">
+            <field name="name">Bulk reservation update</field>
+            <field name="model">facility.reservation.massive.actions.wizard</field>
+            <field name="type">form</field>
+            <field name="mode">extension</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="facility_management.view_facility_reservation_massive_actions_wizard_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='date_stop']" position="after">
+                    <field name="update_training_action_id" class="oe_field_update_training_action_id"
+                        string="Update training" />
+                    <field name="training_action_id" class="oe_field_training_action_id"
+                            attrs="{'required': [('update_training_action_id', '=', True)], 'readonly': [('update_training_action_id', '&lt;&gt;', True)]}" />
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>

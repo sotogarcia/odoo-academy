@@ -24,6 +24,41 @@
             <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
         </record>
 
+        <record id="action_academy_competency_unit_go_to_module" model="ir.actions.server">
+            <field name="type">ir.actions.server</field>
+            <field name="name">Go to module</field>
+            <field name="model_id" ref="academy_base.model_academy_competency_unit" />
+            <field name="sequence" eval="5" />
+            <field name="state">code</field>
+            <field name="code">action = records.go_to_module()</field>
+            <field name="binding_model_id" ref="academy_base.model_academy_competency_unit" />
+            <field name="binding_view_types">list,form</field>
+            <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
+        </record>
+
+        <record id="action_academy_training_action_copy_activity_image" model="ir.actions.server">
+            <field name="type">ir.actions.server</field>
+            <field name="name">Copy activity image</field>
+            <field name="model_id" ref="academy_base.model_academy_training_action" />
+            <field name="sequence" eval="5" />
+            <field name="state">code</field>
+            <field name="code">records.copy_activity_image()</field>
+            <field name="binding_model_id" ref="academy_base.model_academy_training_action" />
+            <field name="binding_view_types">list,form</field>
+            <field name="groups_id" eval="[(4, ref('academy_base.academy_group_manager'))]"/>
+        </record>
+
+        <record id="action_academy_student_sanitize_phone_number" model="ir.actions.server">
+            <field name="type">ir.actions.server</field>
+            <field name="name">Sanitize phone</field>
+            <field name="model_id" ref="academy_base.model_academy_student" />
+            <field name="sequence" eval="5" />
+            <field name="state">code</field>
+            <field name="code">records.sanitize_phone_number()</field>
+            <field name="binding_model_id" ref="academy_base.model_academy_student" />
+            <field name="binding_view_types">list,form</field>
+            <field name="groups_id" eval="[(4, ref('academy_base.academy_group_manager'))]"/>
+        </record>
 
     </data>
 </openerp>

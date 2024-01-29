@@ -9,7 +9,7 @@
             - _rec_name·····: name
             - Domain········: []
             - Context·······: {}
-            - Parent menu ··: academy_timesheets.menu_academy_timesheets
+            - Parent menu ··: academy_base.menu_academy_advanced
             - View priority·: 16    Sequence····: 10
             - Action help···: There are no sessions
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -85,6 +85,7 @@
                             <field name="training_action_id" invisible="1" />
                             <field name="task_id" invisible="1" />
                             <field name="training_activity_id" invisible="1" />
+                            <field name="create_date" invisible="1" />
 
                             <label for="task_name" class="oe_edit_only" />
                             <h1>
@@ -100,7 +101,9 @@
                         </group>
 
                         <group col="4">
-                            <field name="kind" class="oe_field_kind" readonly="context.get('default_training_action_id', 0)" />
+                            <field name="kind" class="oe_field_kind"
+                                readonly="context.get('default_training_action_id', 0) or context.get('default_task_id', 0)"
+                                attrs="{'readonly': [('create_date', '&lt;&gt;', False)]}" />
                             <field name="validate" class="oe_field_validate" colspan="2" />
                             <field name="primary_teacher_id" class="oe_field_primary_teacher_id"
                                 options="{'no_quick_create': True, 'no_create': True}" />
@@ -160,6 +163,12 @@
                             </page>
                             <page string="Notes" class="oe_page_notes" accesskey="N">
                                 <field name="description" class="oe_field_description" colspan="4" nolabel="1" />
+                            </page>
+                            <page string="Setup" class="oe_page_setup" accesskey="S">
+                                <group col="4">
+                                    <field name="owner_id" class="oe_field_owner_id" />
+                                    <field name="subrogate_id" class="oe_field_delegate_id" />
+                                </group>
                             </page>
                         </notebook>
 
@@ -425,7 +434,7 @@
             <field name="view_mode">calendar,kanban,tree,pivot,form</field>
             <field name="target">current</field>
             <field name="domain">[]</field>
-            <field name="context">{'search_default_current_year': 1}</field>
+            <field name="context">{}</field>
             <field name="search_view_id" ref="view_academy_training_session_search" />
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">

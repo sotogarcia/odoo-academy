@@ -6,6 +6,7 @@ all training action attributes and behavior.
 """
 
 from logging import getLogger
+from psycopg2 import Error as PsqlError
 
 from odoo.tools.translate import _
 
@@ -13,6 +14,12 @@ from odoo.tools.translate import _
 from odoo import models, fields, api
 from odoo.tools.safe_eval import safe_eval
 from odoo.osv.expression import AND, FALSE_DOMAIN
+from odoo.exceptions import ValidationError
+
+from ..utils.record_utils import create_domain_for_ids
+from ..utils.record_utils import create_domain_for_interval
+from ..utils.record_utils import ARCHIVED_DOMAIN, INCLUDE_ARCHIVED_DOMAIN
+
 from pytz import utc
 from uuid import uuid4
 
@@ -25,6 +32,9 @@ class AcademyTrainingAction(models.Model):
     """ The training actions represent several groups of students for the same
     training activity
     """
+
+    MSG_ATA01 = _('There are enrollments that are outside the range of '
+                  'training action')
 
     _name = 'academy.training.action'
     _description = u'Academy training action'
@@ -340,6 +350,7 @@ class AcademyTrainingAction(models.Model):
                 academy_training_action AS ata
             LEFT JOIN academy_training_action_enrolment AS enrol
                 ON enrol.training_action_id = ata."id"
+            WHERE company_id in ({companies})
             GROUP BY ata."id"
             HAVING COUNT ( enrol."id" ) {op} {value}
         '''
@@ -355,7 +366,8 @@ class AcademyTrainingAction(models.Model):
         elif value is False and operator in ('!=', '<>'):
             operator, value = '>', 0
 
-        sql = sql.format(op=operator, value=value)
+        companies = self.join_allowed_companies()
+        sql = sql.format(companies=companies, op=operator, value=value)
 
         self.env.cr.execute(sql)
         rows = self.env.cr.dictfetchall()
@@ -483,6 +495,67 @@ class AcademyTrainingAction(models.Model):
 
         rec = super(AcademyTrainingAction, self).copy(defaults)
         return rec
+
+    @api.model
+    def _create(self, values):
+        """ Overridden low-level method '_create' to handle custom PostgreSQL
+        exceptions.
+
+        This method handles custom PostgreSQL exceptions, specifically catching
+        the exception with code 'ATE01', triggered by a database trigger that
+        validates enrollment dates in training actions.
+
+        Args:
+            values (dict): The values to create a new record.
+
+        Returns:
+            Record: The newly created record.
+
+        Raises:
+            ValidationError: If a PostgreSQL error with code 'ATE01' is raised.
+        """
+
+        parent = super(AcademyTrainingAction, self)
+
+        try:
+            result = parent._create(values)
+        except PsqlError as ex:
+            if 'ATA01' in str(ex.pgcode):
+                raise ValidationError(self.MSG_ATA01)
+            else:
+                raise
+
+        return result
+
+    def _write(self, values):
+        """ Overridden low-level method '_write' to handle custom PostgreSQL
+        exceptions.
+
+        This method handles custom PostgreSQL exceptions, specifically catching
+        the exception with code 'ATE01', triggered by a database trigger that
+        validates enrollment dates in training actions.
+
+        Args:
+            values (dict): The values to update the record.
+
+        Returns:
+            Boolean: True if the write operation was successful.
+
+        Raises:
+            ValidationError: If a PostgreSQL error with code 'ATE01' is raised.
+        """
+
+        parent = super(AcademyTrainingAction, self)
+
+        try:
+            result = parent._write(values)
+        except PsqlError as ex:
+            if 'ATA01' in str(ex.pgcode):
+                raise ValidationError(self.MSG_ATA01)
+            else:
+                raise
+
+        return result
 
     @api.model
     def create(self, values):
@@ -620,3 +693,56 @@ class AcademyTrainingAction(models.Model):
         }
 
         return action_values
+
+    def copy_activity_image(self):
+        for record in self:
+            if not record.training_activity_id:
+                continue
+
+            if not record.training_activity_id.image_1920:
+                continue
+
+            record.image_1920 = record.training_activity_id.image_1920
+            record.image_1024 = record.training_activity_id.image_1024
+            record.image_512 = record.training_activity_id.image_512
+            record.image_256 = record.training_activity_id.image_256
+            record.image_128 = record.training_activity_id.image_128
+
+    @api.model
+    def join_allowed_companies(self):
+        allowed_ids = self._context.get(
+            'allowed_company_ids', self.env.company.ids)
+
+        return ', '.join([str(item) for item in allowed_ids])
+
+    def fetch_with_enrolled(self, students=None, point_in_time=None,
+                            archived=False):
+
+        training_action_set = self.env['academy.training.action']
+
+        domains = []
+
+        if students:
+            domain = create_domain_for_ids('student_id', students)
+            domains.append(domain)
+
+        if self:
+            domain = create_domain_for_ids('training_action_id', self)
+            domains.append(domain)
+
+        if point_in_time:
+            domain = create_domain_for_interval(
+                'register', 'deregister', point_in_time)
+            domains.append(domain)
+
+        if archived is None:
+            domains.append(INCLUDE_ARCHIVED_DOMAIN)
+        elif archived is True:
+            domains.append(ARCHIVED_DOMAIN)
+
+        if domains:
+            enrolment_obj = self.env['academy.training.action.enrolment']
+            enrolment_set = enrolment_obj.search(AND(domains))
+            training_action_set = enrolment_set.mapped('training_action_id')
+
+        return training_action_set

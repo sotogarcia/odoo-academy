@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="view_academy_teacher_form" model="ir.ui.view">
+            <field name="name">Teacher HR Extended Overview</field>
+            <field name="model">academy.teacher</field>
+            <field name="type">form</field>
+            <field name="mode">extension</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="academy_base.view_academy_teacher_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="before">
+                    <field name="employee_id" invisible="1" />
+                </xpath>
+
+                <xpath expr="//div[@name='button_box']" position="inside">
+                    <button name="convert_teacher_to_employee" type="object" class="oe_stat_button oe_read_only"
+                        icon="fa-user-plus" help="Turn the teacher into an employee of the current company"
+                        attrs="{'invisible': [('employee_id', '&lt;&gt;', False)]}">
+                        Employ
+                    </button>
+                    <button name="view_hr_profile" type="object" class="oe_stat_button oe_read_only"
+                        icon="fa-id-card-o" help="Turn the teacher into an employee of the current company"
+                        attrs="{'invisible': [('employee_id', '=', False)]}">
+                        HR Profile
+                    </button>
+                </xpath>
+
+                <xpath expr="//notebook/page[last()]" position="after">
+                    <page string="Employee" class="oe_page_employee" accesskey="E"
+                        attrs="{'invisible': [('employee_id', '=', False)]}">
+                        <group>
+                            <group>
+                                <field name="mobile_phone" widget="phone" class="oe_field_mobile_phone" />
+                                <field name="work_phone" widget="phone" class="oe_field_work_phone" />
+                                <field name="work_email" widget="email" class="oe_field_work_email" />
+                                <field name="work_location" class="oe_field_work_location" />
+                                <field name="company_id" groups="base.group_multi_company" class="oe_field_company_id" />
+                            </group>
+                            <group>
+                                <field name="department_id" class="oe_field_department_id" />
+                                <field name="job_id" class="oe_field_job_id" />
+                                <field name="parent_id" class="oe_field_parent_id" />
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>

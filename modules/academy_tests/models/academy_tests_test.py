@@ -504,10 +504,10 @@ class AcademyTestsTest(models.Model):
 
     correction_scale_id = fields.Many2one(
         string='Correction scale',
-        required=True,
+        required=False,
         readonly=False,
         index=False,
-        default=lambda self: self.default_correction_scale_id(),
+        default=None,
         help='Choose the scale of correction',
         comodel_name='academy.tests.correction.scale',
         domain=[],
@@ -517,8 +517,40 @@ class AcademyTestsTest(models.Model):
     )
 
     def default_correction_scale_id(self):
+        # This is a public method but it's NOT used to automatically set the
+        # default value for ``correction_scale_id`` field.
         xid = 'academy_tests.academy_tests_correction_scale_default'
         return self.env.ref(xid)
+
+    time_by = fields.Selection(
+        string='Time by',
+        required=True,
+        readonly=False,
+        index=False,
+        default='test',
+        help=False,
+        selection=[('test', 'Test'), ('question', 'Question')]
+    )
+
+    available_time = fields.Float(
+        string='Time',
+        required=False,
+        readonly=False,
+        index=False,
+        default=0.0,
+        digits=(16, 2),
+        help='Available time to complete the exercise'
+    )
+
+    lock_time = fields.Boolean(
+        string='Lock time',
+        required=False,
+        readonly=False,
+        index=False,
+        default=True,
+        help=('Check to not allow the user to continue with ',
+              'the test once the time has passed')
+    )
 
     # -------------------------- PYTHON CONSTRAINS ----------------------------
 
@@ -543,6 +575,13 @@ class AcademyTestsTest(models.Model):
                 if link_id.question_id.status != 'ready':
                     raise ValidationError(ready_msg)
 
+    _sql_constraints = [
+        (
+            'non_negative_available_time',
+            'CHECK(available_time >= 0)',  # It can be zero if not set
+            _(u'Available time cannot be negative')
+        )
+    ]
     # ----------------------- AUXILIARY FIELD METHODS -------------------------
 
     @api.depends('name')

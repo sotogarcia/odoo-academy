@@ -47,12 +47,12 @@
                     <sheet>
                         <div class="oe_button_box" name="button_box">
 
-                            <button name="show_training_modules" type="object" class="oe_stat_button" icon="fa-list-ul">
+                            <!-- <button name="show_training_modules" type="object" class="oe_stat_button" icon="fa-list-ul">
                                 <field name="training_module_count" widget="statinfo" string="Modules" />
-                            </button>
-                            <!-- <button name="show_competency_units" type="object" class="oe_stat_button" icon="fa-list-ul">
-                                <field name="competency_unit_count" widget="statinfo" string="Competencies" />
                             </button> -->
+                            <button name="show_competency_units" type="object" class="oe_stat_button" icon="fa-list-ul">
+                                <field name="competency_unit_count" widget="statinfo" string="Competencies" />
+                            </button>
                             <button name="show_training_actions" type="object" class="oe_stat_button" icon="fa-th-list">
                                 <field name="training_action_count" widget="statinfo" string="Actions" />
                             </button>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="hr_department_educational_staff" model="hr.department">
+            <field name="name">Educational staff</field>
+            <field name="active" eval="True" />
+            <field name="parent_id" />
+        </record>
+
+        <record id="hr_department_teaching" model="hr.department">
+            <field name="name">Teaching department</field>
+            <field name="active" eval="True" />
+            <field name="parent_id" ref="academy_hr_bridge.hr_department_educational_staff" />
+        </record>
+
+    </data>
+</openerp>

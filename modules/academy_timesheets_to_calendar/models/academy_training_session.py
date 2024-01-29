@@ -83,20 +83,10 @@ class AcademyTrainingSession(models.Model):
     def midnight(dt):
         return dt.replace(hour=0, minute=0, second=0, microsecond=0)
 
-    def _build_event_values(self, user=None):
+    def _build_event_values(self):
         self.ensure_one()
 
-        user = user or self.env.user
-        alarm = self.env.ref('calendar.alarm_notif_1')
-
-        attendee_values = {
-            'state': 'accepted',
-            'partner_id': user.partner_id.id,
-            'email': user.partner_id.email,
-            'availability': 'busy'
-        }
-
-        return {
+        result = {
             'name': self.display_name,
             'state': 'draft' if self.state == 'draft' else 'open',
             'start': self.midnight(self.date_start),
@@ -106,18 +96,34 @@ class AcademyTrainingSession(models.Model):
             'stop_datetime': self.date_stop,
             'duration': self.date_delay,
             'description': self.description,
-            'privacy': 'confidential',
             'location': self._get_primary_address(),
-            'show_as': 'busy',
-            'recurrency': False,
-            'user_id': user.id,
+            'show_as': 'busy' if self.kind == 'teach' else 'free',
             'active': self.active,
+            'categ_ids': self._get_calendar_event_type(),
+        }
+
+        return result
+
+    def _update_event_create_values(self, values, user=None):
+        alarm = self.env.ref('calendar.alarm_notif_1')
+        user = user or self.env.user
+
+        attendee_values = {
+            'state': 'accepted',
+            'partner_id': user.partner_id.id,
+            'email': user.partner_id.email,
+            'availability': 'busy' if self.kind == 'teach' else 'free'
+        }
+
+        values.update({
+            'user_id': user.id,
+            'session_id': self.id,
+            'privacy': 'confidential',
+            'recurrency': False,
             'partner_ids': [(5, 0, 0), (4, user.partner_id.id, 0)],
             'attendee_ids': [(5, 0, 0), (0, 0, attendee_values)],
-            # 'category_ids': self._get_calendar_event_type(),
             'alarm_ids': [(5, 0, 0), (4, alarm.id, 0)],
-            'session_id': self.id
-        }
+        })
 
     @api.model
     def _search_for_related_events(self, session_set, user=None):
@@ -147,15 +153,19 @@ class AcademyTrainingSession(models.Model):
 
         return False
 
-    @staticmethod
-    def _save_record(record, values):
-        if record:
-            record.ensure_one()
-            record.write(values)
-        else:
-            record.create(values)
+    def _save_event(self, event, user=False):
+        self.ensure_one()
 
-        return record
+        values = self._build_event_values()
+
+        if event:
+            event.ensure_one()
+            event.write(values)
+        else:
+            self._update_event_create_values(values, user)
+            event.create(values)
+
+        return event
 
     # def sync_interval_with_calendar(self, interval_type, user=None):
     #     today = date.today()
@@ -270,22 +280,19 @@ class AcademyTrainingSession(models.Model):
             event_set = self._search_for_related_events(session_set, user)
 
             for session in session_set:
-                values = session._build_event_values(user)
-
                 updatable_event_set = event_set.filtered(
                     lambda s: s.session_id.id == session.id)
 
                 if user:
-                    event_set += self._save_record(updatable_event_set, values)
+                    event_set += session._save_event(updatable_event_set)
 
                 else:
                     for assign in session.teacher_assignment_ids:
-                        uid = assign.teacher_id.res_users_id.id
-                        values['user_id'] = uid
+                        user = assign.teacher_id.res_users_id
 
                         user_event = updatable_event_set.filtered(
-                            lambda e: e.user_id == uid)
+                            lambda e: e.user_id == user.id)
 
-                        event_set += self._save_record(user_event, values)
+                        event_set += session._save_event(user_event, user)
 
         return event_set

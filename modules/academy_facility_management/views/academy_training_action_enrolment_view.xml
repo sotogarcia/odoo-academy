@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <!-- Tree view for "academy.training.action.enrolment" -->
+        <record id="view_academy_training_action_enrolment_tree" model="ir.ui.view">
+            <field name="name">view.academy.training.action.enrolment.tree</field>
+            <field name="model">academy.training.action.enrolment</field>
+            <field name="type">tree</field>
+            <field name="mode">extension</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="academy_base.view_academy_training_action_enrolment_tree" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='student_id']" position="before">
+                    <field name="primary_complex_id" class="oe_field_primary_complex_id" optional="hide" />
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Search view for "academy.training.action.enrolment" -->
+        <record id="view_academy_training_action_enrolment_search" model="ir.ui.view">
+            <field name="name">view.academy.training.action.enrolment.search</field>
+            <field name="model">academy.training.action.enrolment</field>
+            <field name="type">search</field>
+            <field name="mode">extension</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="academy_base.view_academy_training_action_enrolment_search" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='competency_unit_ids']" position="after">
+                    <field name="primary_complex_id" class="oe_field_primary_complex_id" />
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>

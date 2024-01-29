@@ -6,7 +6,8 @@ stores all training action enrolment attributes and behavior.
 """
 
 from logging import getLogger
-from datetime import datetime
+from datetime import date, datetime, timedelta
+from psycopg2 import DatabaseError as PsqlError
 
 # pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
@@ -14,6 +15,11 @@ from odoo.tools.translate import _
 from odoo.exceptions import UserError
 from odoo.osv.expression import AND, TRUE_DOMAIN, FALSE_DOMAIN
 from odoo.exceptions import ValidationError
+
+from ..utils.record_utils import create_domain_for_ids
+from ..utils.record_utils import create_domain_for_interval
+from ..utils.record_utils import ARCHIVED_DOMAIN, INCLUDE_ARCHIVED_DOMAIN
+
 
 # pylint: disable=locally-disabled, C0103
 _logger = getLogger(__name__)
@@ -23,6 +29,8 @@ _logger = getLogger(__name__)
 class AcademyTrainingActionEnrolment(models.Model):
     """ Enrollment allows the student to be linked to a training action
     """
+
+    MSG_ATE01 = _('Enrollment is outside the range of training action')
 
     _name = 'academy.training.action.enrolment'
     _description = u'Academy training action enrolment'
@@ -37,6 +45,14 @@ class AcademyTrainingActionEnrolment(models.Model):
         'academy.abstract.training',
         'ownership.mixin'
     ]
+
+    _check_company_auto = True
+
+    company_id = fields.Many2one(
+        string='Company',
+        related='training_action_id.company_id',
+        store=True
+    )
 
     # pylint: disable=locally-disabled, W0212
     code = fields.Char(
@@ -69,11 +85,6 @@ class AcademyTrainingActionEnrolment(models.Model):
         default=True,
         help='Enables/disables the record',
         tracking=True
-    )
-
-    company_id = fields.Many2one(
-        string='Company',
-        related='training_action_id.company_id'
     )
 
     student_id = fields.Many2one(
@@ -159,6 +170,30 @@ class AcademyTrainingActionEnrolment(models.Model):
         tracking=True
     )
 
+    training_modality_str = fields.Char(
+        string='Modality',
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help='Name of the modality if it is single or "Mixed" otherwise',
+        size=255,
+        translate=True,
+        compute='_compute_training_modality_str'
+    )
+
+    @api.depends('training_modality_ids')
+    def _compute_training_modality_str(self):
+        for record in self:
+            if not record.training_modality_ids:
+                record.training_modality_str = None
+            elif len(record.training_modality_ids) == 1:
+                record.training_modality_str = \
+                    record.training_modality_ids.name
+            else:
+                record.training_modality_str = \
+                    record.training_modality_str = _('Mixed')
+
     # This will be used in form view to compute domain
     available_modality_ids = fields.Many2many(
         string='Available modalities',
@@ -221,6 +256,31 @@ class AcademyTrainingActionEnrolment(models.Model):
         related="student_id.name"
     )
 
+    vat = fields.Char(
+        string='Vat',
+        related='student_id.vat'
+    )
+
+    email = fields.Char(
+        string='Email',
+        related='student_id.email'
+    )
+
+    phone = fields.Char(
+        string='Phone',
+        related='student_id.phone'
+    )
+
+    mobile = fields.Char(
+        string='Mobile',
+        related='student_id.mobile'
+    )
+
+    zip = fields.Char(
+        string='Zip',
+        related='student_id.zip'
+    )
+
     # It is necessary to keep the difference with the name of the activity
     action_name = fields.Char(
         string='Training action name',
@@ -276,21 +336,6 @@ class AcademyTrainingActionEnrolment(models.Model):
         help='True if period is completed',
         compute='_compute_finalized',
         search='_search_finalized',
-    )
-
-    email = fields.Char(
-        string='Email',
-        related='student_id.res_partner_id.email'
-    )
-
-    phone = fields.Char(
-        string='Phone',
-        related='student_id.res_partner_id.phone'
-    )
-
-    zip = fields.Char(
-        string='Zip',
-        related='student_id.res_partner_id.zip'
     )
 
     action_name = fields.Char(
@@ -375,6 +420,30 @@ class AcademyTrainingActionEnrolment(models.Model):
 
         return domain
 
+    color = fields.Integer(
+        string='Color Index',
+        required=True,
+        readonly=True,
+        index=False,
+        default=10,
+        help='Display color based on dependency and status',
+        store=False,
+        compute=lambda self: self._compute_color()
+    )
+
+    def _compute_color(self):
+        today = date.today()
+
+        for record in self:
+            register = record.register
+            deregister = record.deregister or date.max
+
+            if register <= today and deregister >= today:
+                record.color = 10
+            elif register >= today:
+                record.color = 4
+            else:
+                record.color = 3
     # ---------------------------- ONCHANGE EVENTS ----------------------------
 
     @api.onchange('training_action_id')
@@ -414,24 +483,6 @@ class AcademyTrainingActionEnrolment(models.Model):
                 'training_modality_ids': modality_domain
             }
         }
-
-    # -------------------------- OVERLOADED METHODS ---------------------------
-
-    @api.returns('self', lambda value: value.id)
-    def copy(self, default=None):
-        """ Prevents new record of the inherited (_inherits) models will
-        be created. It also adds the following sequence value.
-        """
-
-        default = dict(default or {})
-        default.update({
-            'student_id': self.student_id.id,
-            'training_action_id': self.training_action_id.id,
-            'code': self._default_code()
-        })
-
-        rec = super(AcademyTrainingActionEnrolment, self).copy(default)
-        return rec
 
     # -------------------------- AUXILIARY METHODS ----------------------------
 
@@ -503,6 +554,23 @@ class AcademyTrainingActionEnrolment(models.Model):
             'check_date_order',
             'CHECK("deregister" IS NULL OR "register" <= "deregister")',
             _(u'End date must be greater then start date')
+        ),
+        (
+            'prevent_overlap',
+            ''' EXCLUDE USING gist
+                (
+                    training_action_id WITH =,
+                    student_id WITH =,
+                    tsrange(
+                        register,
+                        COALESCE(deregister, 'infinity'::date),
+                        '[]'
+                    ) WITH &&
+                )
+                WHERE (active); -- Requires btree_gist
+            ''',
+            _('Student enrollments cannot overlap in time for the same '
+              'training action')
         ),
     ]
 
@@ -580,3 +648,177 @@ class AcademyTrainingActionEnrolment(models.Model):
                     deregister = action.stop
 
                 register = register.strftime('')
+
+    def fetch_enrollments(self, students=None, training_actions=None,
+                          point_in_time=None, archived=False):
+        enrolment_set = self.env['academy.training.action.enrolment']
+
+        domains = []
+
+        if students:
+            domain = create_domain_for_ids('student_id', students)
+            domains.append(domain)
+
+        if training_actions:
+            domain = create_domain_for_ids(
+                'training_action_id', training_actions)
+            domains.append(domain)
+
+        if point_in_time:
+            domain = create_domain_for_interval(
+                'register', 'deregister', point_in_time)
+            domains.append(domain)
+
+        if archived is None:
+            domains.append(INCLUDE_ARCHIVED_DOMAIN)
+        elif archived is True:
+            domains.append(ARCHIVED_DOMAIN)
+
+        if domains:
+            enrolment_set = enrolment_set.search(AND(domains))
+
+        return enrolment_set
+
+    @api.model
+    def _create(self, values):
+        """ Overridden low-level method '_create' to handle custom PostgreSQL
+        exceptions.
+
+        This method handles custom PostgreSQL exceptions, specifically catching
+        the exception with code 'ATE01', triggered by a database trigger that
+        validates enrollment dates in training actions.
+
+        Args:
+            values (dict): The values to create a new record.
+
+        Returns:
+            Record: The newly created record.
+
+        Raises:
+            ValidationError: If a PostgreSQL error with code 'ATE01' is raised.
+        """
+
+        parent = super(AcademyTrainingActionEnrolment, self)
+
+        try:
+            result = parent._create(values)
+        except PsqlError as ex:
+            if 'ATE01' in str(ex.pgcode):
+                raise ValidationError(self.MSG_ATE01)
+            else:
+                raise
+
+        return result
+
+    def _write(self, values):
+        """ Overridden low-level method '_write' to handle custom PostgreSQL
+        exceptions.
+
+        This method handles custom PostgreSQL exceptions, specifically catching
+        the exception with code 'ATE01', triggered by a database trigger that
+        validates enrollment dates in training actions.
+
+        Args:
+            values (dict): The values to update the record.
+
+        Returns:
+            Boolean: True if the write operation was successful.
+
+        Raises:
+            ValidationError: If a PostgreSQL error with code 'ATE01' is raised.
+        """
+
+        parent = super(AcademyTrainingActionEnrolment, self)
+
+        try:
+            result = parent._write(values)
+        except PsqlError as ex:
+            if 'ATE01' in str(ex.pgcode):
+                raise ValidationError(self.MSG_ATE01)
+            else:
+                raise
+
+        return result
+
+    def write(self, values):
+        """ Overridden method 'write'
+        """
+        self._check_that_the_student_is_not_the_template(values)
+
+        parent = super(AcademyTrainingActionEnrolment, self)
+        result = parent.write(values)
+
+        return result
+
+    # -------------------------------------------------------------------------
+    # Copy related methods
+    # -------------------------------------------------------------------------
+
+    @api.returns('self', lambda value: value.id)
+    def copy(self, default=None):
+        """ Prevents new record of the inherited (_inherits) models will
+        be created. It also adds the following sequence value.
+
+        Assign a temporaty student to allow the copy.
+        """
+
+        parent = super(AcademyTrainingActionEnrolment, self)
+
+        xmlid = 'academy_base.academy_student_default_template'
+        imd_obj = self.env['ir.model.data']
+        student = imd_obj.xmlid_to_object(xmlid, raise_if_not_found=True)
+
+        default = dict(default or {})
+        default.update({
+            'student_id': student.id,
+            'training_action_id': self.training_action_id.id,
+            'code': self._default_code()
+        })
+
+        return parent.copy(default)
+
+    def _check_that_the_student_is_not_the_template(self, values):
+        """ When registrations are duplicated, the temporary student is
+        assigned to them. This method generates a validation error when one of
+        them tries to be modified without establishing a real student for it.
+        """
+
+        msg = _('You must assign a real student to each of the enrollments.')
+
+        temp_student_xid = 'academy_base.academy_student_default_template'
+        temp_student = self.env.ref(temp_student_xid)
+
+        if temp_student.id in self.student_id.ids:
+            new_student_id = values.get('student_id', False)
+            if not new_student_id or new_student_id == temp_student.id:
+                raise ValidationError(msg)
+
+    @api.model
+    def remove_temporary_student_enrollments(self):
+        """ When registrations are duplicated, the temporary student is
+        assigned to them. These must be edited to establish the corresponding
+        student or, otherwise, a scheduled task will invoke this method to
+        remove them.
+        """
+
+        temp_student_xid = 'academy_base.academy_student_default_template'
+        temp_student = self.env.ref(temp_student_xid)
+
+        one_hour_ago = datetime.now() - timedelta(hours=1)
+        one_hour_ago = fields.Datetime.to_string(one_hour_ago)
+
+        student_domain = [
+            '&',
+            ('student_id', '=', temp_student.id),
+            '|',
+            ('create_date', '=', False),
+            ('create_date', '<', one_hour_ago)
+        ]
+        domain = AND([INCLUDE_ARCHIVED_DOMAIN, student_domain])
+        enrollment_obj = self.env['academy.training.action.enrolment']
+        enrollment_set = enrollment_obj.search(domain)
+
+        _logger.info('Temporary student enrollments will be removed {}')
+        enrollment_set.unlink()
+
+    # -------------------------------------------------------------------------

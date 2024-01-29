@@ -28,6 +28,7 @@
                     <field name="competency_name" string="Name" class="oe_field_competency_name" />
                     <field name="training_activity_id" class="oe_field_training_activity_id" />
                     <field name="training_module_id" class="oe_field_training_module_id oe_edit_only" />
+                    <field name="manager_id" class="oe_field_manager_id" />
                     <field name="hours" class="oe_field_hours" />
                 </tree>
             </field>

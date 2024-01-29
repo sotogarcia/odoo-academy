@@ -19,6 +19,13 @@
             <field name="domain_force">[('company_id', 'in', company_ids)]</field>
         </record>
 
+        <record id="ir_rule_academy_training_action_student_rel_multi_company" model="ir.rule">
+            <field name="name">Restricted Training Action Enrolment-Student rel: multi-company</field>
+            <field name="model_id" ref="academy_base.model_academy_training_action_student_rel"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        </record>
+
 		<!-- Resources
 		- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 		<record id="academy_teachers_can_only_update_or_unlink_their_own_resources_rule" model="ir.rule">

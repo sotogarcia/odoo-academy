@@ -188,6 +188,14 @@ class AcademyCompetencyUnit(models.Model):
         for record in self:
             record.teacher_count = len(record.teacher_assignment_ids)
 
+    _sql_constraints = [
+        (
+            'unique_module_by_activity',
+            'UNIQUE(training_activity_id, training_module_id)',
+            _(u'The module cannot be duplicated in the same training activity')
+        )
+    ]
+
     # -------------------------- OVERLOADED METHODS ---------------------------
 
     @api.returns('self', lambda value: value.id)
@@ -249,3 +257,37 @@ class AcademyCompetencyUnit(models.Model):
         }
 
         return serialized
+
+    def go_to_module(self):
+        module_set = self.mapped('training_module_id')
+
+        if not module_set:
+            msg = _('There is no training modules')
+            raise UserError(msg)
+        else:
+
+            view_act = {
+                'type': 'ir.actions.act_window',
+                'res_model': 'academy.training.module',
+                'target': 'current',
+                'nodestroy': True,
+                'domain': [('id', 'in', module_set.mapped('id'))]
+            }
+
+            if len(module_set) == 1:
+                view_act.update({
+                    'name': module_set.name,
+                    'view_mode': 'form',
+                    'res_id': module_set.id,
+                    'view_type': 'form'
+                })
+
+            else:
+                view_act.update({
+                    'name': _('Modules'),
+                    'view_mode': 'kanban,tree,form',
+                    'res_id': None,
+                    'view_type': 'form'
+                })
+
+            return view_act

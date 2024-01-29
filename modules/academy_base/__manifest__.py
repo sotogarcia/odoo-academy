@@ -23,6 +23,7 @@
     ],
 
     'data': [
+        'data/academy_interface_help_string_data.xml',
         'data/mail_message_subtype_data.xml',
         'data/res_groups_data.xml',
         'data/ir_sequence_data.xml',
@@ -37,6 +38,8 @@
         'data/academy_training_resource_kind_data.xml',
         'data/academy_professional_field_data.xml',
         'data/academy_professional_sector_data.xml',
+        'data/academy_student_data.xml',
+        'data/ir_cron_data.xml',
 
         'views/academy_base.xml',
 
@@ -73,8 +76,13 @@
         'views/res_partner_view.xml',
         'views/res_config_settings_view.xml',
 
+        'wizard/academy_student_wizard_view.xml',
+        'wizard/academy_training_action_enrolment_wizard_view.xml',
+        'wizard/record_ownership_wizard_view.xml',
+
         'security/academy_base.xml',
 
+        'security/academy_interface_help_string.xml',
         'security/academy_training_methodology.xml',
         'security/academy_application_scope.xml',
         'security/academy_knowledge_area.xml',
@@ -114,6 +122,10 @@
 
         'security/res_users.xml',
     ],
+
+    'pre_init_hook': 'pre_init_hook',
+    'post_init_hook': 'post_init_hook',
+    'uninstall_hook': 'uninstall_hook',
 
     'qweb': [
 
@@ -155,6 +167,3 @@
 
     'license': 'AGPL-3'
 }
-
-
-# Se da de baja el mismo día o al día siguiente
