@@ -65,9 +65,9 @@
 
                         <group col="4" string="Creation">
                             <field name="student_id" class="oe_field_student_id" />
-                            <separator colspan="2" />
-                            <field name="owner_id" class="oe_field_owner_id" />
-                            <field name="subrogate_id" class="oe_field_subrogate_id" />
+                            <separator colspan="2" groups="record_ownership.record_ownership_proxy" />
+                            <field name="owner_id" class="oe_field_owner_id" groups="record_ownership.record_ownership_proxy" />
+                            <field name="subrogate_id" class="oe_field_subrogate_id" groups="record_ownership.record_ownership_proxy" />
                         </group>
 
                         <separator string="Question" />

@@ -7,7 +7,7 @@ all academy tests answer attributes and behavior.
 
 from logging import getLogger
 
-from odoo import models, fields
+from odoo import models, fields, api
 from odoo.tools.translate import _
 
 _logger = getLogger(__name__)
@@ -23,7 +23,7 @@ class AcademyTestsAnswer(models.Model):
     _rec_name = 'name'
     _order = 'sequence ASC, id ASC'
 
-    _inherit = ['academy.abstract.spreadable', 'mail.thread']
+    _inherit = ['mail.thread']
 
     # ---------------------------- ENTITY FIELDS ------------------------------
 
@@ -116,23 +116,19 @@ class AcademyTestsAnswer(models.Model):
             'state': 'paid'
         }
 
-    # def _track_subtype(self, init_values):
-    #     self.ensure_one()
+    @api.model_create_multi
+    def create(self, vals_list):
+        records = super(AcademyTestsAnswer, self).create(vals_list)
 
-    #     if('active' not in init_values):
-    #         xid = 'academy_tests.academy_tests_answer_written'
-    #         return self.env.ref(xid)
-    #     else:
-    #         _super = super(AcademyTestsAnswer, self)
-    #         return _super._track_subtype(init_values)
+        for record in records:
+            record.message_change_thread(record.question_id)
 
-    # def _spread_to(self, subtype_id=False, subtype=None):
-    #     expected = 'academy_tests.academy_tests_answer_written'
+        return records
 
-    #     result = []
-    #     self.ensure_one()
+    def write(self, values):
+        result = super(AcademyTestsAnswer, self).write(values)
 
-    #     if subtype_id == self.env.ref(expected).id:
-    #         result.append(self.question_id)
+        for record in self:
+            record.message_change_thread(record.question_id)
 
-    #     return result
+        return result

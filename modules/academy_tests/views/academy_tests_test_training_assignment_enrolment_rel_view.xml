@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <!-- VIEWS: "Individual test assignments"
+
+            - Model·········: academy.tests.test.training.assignment.enrolment.rel
+            - _rec_name·····: id
+            - Domain········: []
+            - Context·······: {}
+            - Parent menu ··: academy_tests.menu_test_settings_top
+            - View priority·: 16    Sequence····: 10
+            - Action help···: No single test assignments have been stored yet
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+        <!-- Tree view for "academy.tests.test.training.assignment.enrolment.rel" -->
+        <record id="view_academy_tests_test_training_assignment_enrolment_rel_tree" model="ir.ui.view">
+            <field name="name">view.academy.tests.test.training.assignment.enrolment.rel.tree</field>
+            <field name="model">academy.tests.test.training.assignment.enrolment.rel</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <tree string="academy_tests_test_training_assignment_enrolment_rel_tree" create="0" delete="0" edit="0">
+                    <field name="assignment_id" class="oe_field_assignment_id" invisible="context.get('default_assignment_id', 0)" />
+                    <field name="date_start" class="oe_field_date_start" optional="show" />
+                    <field name="date_stop" class="oe_field_date_stop" optional="show" />
+                    <field name="enrolment_id" class="oe_field_enrolment_id" invisible="context.get('default_enrolment_id', 0)" />
+                    <field name="student_id" class="oe_field_student_id" optional="hide" />
+                    <field name="first_attempt_id" class="oe_field_first_attempt_id" optional="hide" />
+                    <field name="last_attempt_id" class="oe_field_last_attempt_id" optional="hide" />
+                    <field name="best_attempt_id" class="oe_field_best_attempt_id" optional="show" />
+                    <field name="attempt_count" class="oe_field_attempt_count" optional="show" />
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form view for "academy.tests.test.training.assignment.enrolment.rel" -->
+        <record id="view_academy_tests_test_training_assignment_enrolment_rel_form" model="ir.ui.view">
+            <field name="name">view.academy.tests.test.training.assignment.enrolment.rel.form</field>
+            <field name="model">academy.tests.test.training.assignment.enrolment.rel</field>
+            <field name="type">form</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <form string="academy_tests_test_training_assignment_enrolment_rel_form" create="1" delete="1" edit="1">
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="view_attempts" type="object" class="oe_stat_button oe_read_only"
+                                icon="fa-check-square-o" help="Show attempts">
+                                <field name="attempt_count" widget="statinfo" string="Attempts" />
+                            </button>
+                        </div>
+
+                        <field name="id" invisible="1" />
+                        <field name="attempt_ids" invisible="1" />
+                        <field name="first_attempt_id" invisible="1" />
+                        <field name="last_attempt_id" invisible="1" />
+                        <field name="best_attempt_id" invisible="1" />
+
+                        <div class="oe_title">
+                            <label for="display_name" class="oe_edit_only" />
+                            <h1>
+                                <field name="display_name" class="oe_field_display_name" />
+                            </h1>
+                        </div>
+
+                        <group col="4" string="Assignment">
+                            <field name="assignment_id" class="oe_field_assignment_id" colspan="4" />
+                            <field name="date_start" class="oe_field_date_start" />
+                            <field name="date_stop" class="oe_field_date_stop" />
+                        </group>
+
+                        <group col="2" string="Enrolment">
+                            <field name="enrolment_id" class="oe_field_assignment_id" colspan="4" />
+                            <field name="student_id" class="oe_field_date_start" />
+                        </group>
+
+                        <group col="3">
+                            <group col="2" string="Count">
+                                <field name="avg_answered_count" class="oe_field_avg_answered_count font-weight-bold" />
+                                <field name="avg_right_count" class="oe_field_avg_right_count text-success" />
+                                <field name="avg_wrong_count" class="oe_field_avg_wrong_count text-danger" />
+                                <field name="avg_blank_count" class="oe_field_avg_blank_count text-warning" />
+                                <separator colspan="2" />
+                                <field name="question_count" class="oe_field_question_count text-info" />
+                            </group>
+
+                            <group col="2" string="Averages">
+                                <field name="avg_final_points" class="oe_field_avg_final_points font-weight-bold" />
+                                <field name="avg_right_points" class="oe_field_avg_right_points text-success" />
+                                <field name="avg_wrong_points" class="oe_field_avg_wrong_points text-danger" />
+                                <field name="avg_blank_points" class="oe_field_avg_blank_points text-warning" />
+                                <separator colspan="2" />
+                                <field name="max_points" class="oe_field_max_points text-info" />
+                            </group>
+
+                            <group col="2" string="Others">
+                                <field name="passed_count" class="oe_field_passed_count text-success" />
+                                <field name="failed_count" class="oe_field_failed_count text-danger" />
+                                <field name="max_final_points" class="oe_field_max_final_points text-success" />
+                                <field name="min_final_points" class="oe_field_min_final_points text-danger" />
+                            </group>
+
+                            <separator colspan="6" />
+
+                            <group col="2" string="First attempt">
+                                <field name="first_attempt" class="oe_field_first_attempt" string="Date/time" />
+                                <field name="first_points" class="oe_field_first_attempt" string="Points" />
+                            </group>
+                            <group col="2" string="Last attempt">
+                                <field name="last_attempt" class="oe_field_last_attempt" string="Date/time" />
+                                <field name="last_points" class="oe_field_last_attempt" string="Points" />
+                            </group>
+                            <group col="2" string="Best attempt">
+                                <field name="best_attempt" class="oe_field_best_attempt" string="Date/time" />
+                                <field name="best_points" class="oe_field_best_attempt" string="Points" />
+                            </group>
+                            <div class="d-flex flex-row" colspan="3">
+                                <button name="fast_update_attempt_data"
+                                        string="Update"
+                                        type="object"
+                                        default_focus="0"
+                                        icon="fa-refresh"
+                                        help="Update attempt data"
+                                        class="btn btn-info" />
+                            </div>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search view for "academy.tests.test.training.assignment.enrolment.rel" -->
+        <record id="view_academy_tests_test_training_assignment_enrolment_rel_search" model="ir.ui.view">
+            <field name="name">view.academy.tests.test.training.assignment.enrolment.rel.search</field>
+            <field name="model">academy.tests.test.training.assignment.enrolment.rel</field>
+            <field name="type">search</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <search string="academy_tests_test_training_assignment_enrolment_rel_search">
+                    <field name="assignment_id" class="oe_field_assignment_id" />
+                    <field name="date_start" class="oe_field_date_start" />
+                    <field name="date_stop" class="oe_field_date_stop" />
+                    <field name="enrolment_id" class="oe_field_enrolment_id" />
+                    <field name="student_id" class="oe_field_student_id" />
+                </search>
+            </field>
+        </record>
+
+        <!-- Main window action for model.name -->
+        <record id="action_single_assignments_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Individual test assignments</field>
+            <field name="res_model">academy.tests.test.training.assignment.enrolment.rel</field>
+            <field name="view_mode">tree,form</field>
+            <field name="target">current</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="search_view_id" ref="view_academy_tests_test_training_assignment_enrolment_rel_search" />
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to add new individual test assignments
+                </p><p>
+                    No single test assignments have been stored yet
+                </p>
+            </field>
+        </record>
+
+        <!-- Main menu for model.name -->
+<!--         <record id="menu_single_assignments" model="ir.ui.menu" >
+            <field name="name">Individual test assignments</field>
+            <field name="sequence" eval="10" />
+            <field name="action" ref="action_single_assignments_act_window" />
+            <field name="parent_id" ref="academy_tests.menu_test_settings_top" />
+        </record> -->
+
+        <record id="action_update_individual_assignments" model="ir.actions.server">
+            <field name="type">ir.actions.server</field>
+            <field name="name">Update individual assignments</field>
+            <field name="state">code</field>
+            <field name="model_id" ref="academy_tests.model_academy_tests_test_training_assignment_enrolment_rel" />
+            <field name="sequence" eval="5" />
+            <field name="code">model.reconcile_records()</field>
+        </record>
+
+    </data>
+</openerp>

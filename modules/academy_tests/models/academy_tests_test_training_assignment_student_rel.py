@@ -22,93 +22,13 @@ class AcademyTestsTestTrainingAssignmentStudentRel(models.Model):
     _auto = False
     _table = 'academy_tests_test_training_assignment_student_rel'
     _view_sql = '''
-    WITH training_enrolments AS (
-
         SELECT DISTINCT
-            tta."id" AS assignment_id,
-            tta.training_ref,
-            tae.student_id
+            ind.assignment_id,
+            enrol.student_id
         FROM
-            academy_tests_test_training_assignment AS tta
-        INNER JOIN academy_training_action_enrolment AS tae
-            ON tae."id" = tta.enrolment_id
-
-    ), training_actions AS (
-
-        SELECT DISTINCT
-            tta."id" AS assignment_id,
-            tta.training_ref,
-            tae.student_id
-        FROM
-            academy_tests_test_training_assignment AS tta
-        INNER JOIN academy_training_action AS ata
-            ON ata."id" = tta."training_action_id"
-        INNER JOIN academy_training_action_enrolment AS tae
-            ON tae.training_action_id = ata."id"
-        WHERE ata.active
-
-    ), training_activities as (
-
-        SELECT DISTINCT
-            tta."id" AS assignment_id,
-            tta.training_ref,
-            tae.student_id
-        FROM
-            academy_tests_test_training_assignment AS tta
-        INNER JOIN academy_training_activity AS atc
-            ON atc."id" = tta.training_activity_id
-        INNER JOIN academy_training_action AS ata
-            ON ata.training_activity_id = atc."id"
-        INNER JOIN academy_training_action_enrolment AS tae
-            ON tae.training_action_id = ata."id"
-        WHERE ata.active AND atc.active
-
-    ), competency_units AS (
-
-        SELECT DISTINCT
-            tta."id" AS assignment_id,
-            tta.training_ref,
-            tae.student_id
-        FROM
-            academy_tests_test_training_assignment AS tta
-        INNER JOIN academy_competency_unit AS acu
-            ON acu."id" = tta.competency_unit_id
-        INNER JOIN academy_training_activity AS atc
-            ON atc."id" = acu.training_activity_id
-        INNER JOIN academy_training_action AS ata
-            ON ata.training_activity_id = atc."id"
-        INNER JOIN academy_training_action_enrolment AS tae
-            ON tae.training_action_id = ata."id"
-        WHERE ata.active AND atc.active AND acu.active
-
-    ), training_modules AS (
-
-        SELECT DISTINCT
-            tta."id" AS assignment_id,
-            tta.training_ref,
-            tae.student_id
-        FROM
-            academy_tests_test_training_assignment AS tta
-        INNER JOIN academy_training_module_tree_readonly AS tree
-            ON tree.requested_module_id = tta."training_module_id"
-        INNER JOIN academy_training_module AS atm
-            ON atm."id" = tree.responded_module_id
-        INNER JOIN academy_competency_unit AS acu
-            ON acu.training_module_id = atm."id"
-        INNER JOIN academy_training_activity AS atc
-            ON atc."id" = acu.training_activity_id
-        INNER JOIN academy_training_action AS ata
-            ON ata.training_activity_id = atc."id"
-        INNER JOIN academy_training_action_enrolment AS tae
-            ON tae.training_action_id = ata."id"
-        WHERE ata.active AND atc.active AND acu.active AND atm.active
-
-    )
-    SELECT assignment_id, student_id FROM training_enrolments UNION ALL
-    SELECT assignment_id, student_id FROM training_actions UNION ALL
-    SELECT assignment_id, student_id FROM training_activities UNION ALL
-    SELECT assignment_id, student_id FROM competency_units UNION ALL
-    SELECT assignment_id, student_id FROM training_modules
+            academy_tests_test_training_assignment_enrolment_rel AS ind
+        INNER JOIN academy_training_action_enrolment as enrol
+            ON enrol."id" = ind.enrolment_id AND enrol.active
     '''
 
     assignment_id = fields.Many2one(

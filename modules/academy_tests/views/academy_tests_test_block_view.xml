@@ -114,12 +114,12 @@
         </record>
 
         <!-- Main menu for model.name -->
-        <record id="menu_block_of_test" model="ir.ui.menu" >
+<!--         <record id="menu_block_of_test" model="ir.ui.menu" >
             <field name="name">Test blocks</field>
             <field name="sequence" eval="10" />
             <field name="action" ref="action_block_of_test_act_window" />
             <field name="parent_id" ref="menu_test_settings_top" />
-        </record>
+        </record> -->
 
     </data>
 </openerp>

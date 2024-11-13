@@ -89,17 +89,17 @@ class AcademyAbstractAttempt(models.AbstractModel):
         readonly=False,
         index=False,
         default=0.0,
-        digits=(16, 2),
+        digits=(16, 10),
         help='Enter the time has been used in attempt'
     )
 
-    available = fields.Float(
+    available_time = fields.Float(
         string='Available time',
         required=True,
         readonly=False,
         index=False,
         default=0.0,
-        digits=(16, 2),
+        digits=(16, 10),
         help='Enter the total time for the attempt'
     )
 
@@ -112,7 +112,7 @@ class AcademyAbstractAttempt(models.AbstractModel):
         help='Choose date and time the attempt ended'
     )
 
-    correction_type = fields.Selection(
+    time_by = fields.Selection(
         string='Correction type',
         required=True,
         readonly=False,
@@ -273,7 +273,7 @@ class AcademyAbstractAttempt(models.AbstractModel):
                 end = fields.Datetime.from_string(record.end)
                 start = fields.Datetime.from_string(record.start)
                 elapsed = (end - start).total_seconds() / 60
-                record.elapsed = min(record.available, elapsed)
+                record.elapsed = min(record.available_time, elapsed)
 
             answered_set = record._get_anwered_link_ids()
             test_set = record._get_tests_link_ids()

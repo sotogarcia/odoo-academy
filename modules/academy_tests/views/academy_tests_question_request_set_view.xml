@@ -25,7 +25,7 @@
             <field name="arch" type="xml">
                 <tree string="academy_tests_question_request_set_tree" create="1" delete="1" edit="1">
                     <field name="name" />
-                    <field name="owner_id" />
+                    <field name="owner_id" groups="record_ownership.record_ownership_consultant" />
                     <field name="expiration" />
                 </tree>
             </field>
@@ -152,7 +152,7 @@
             <field name="arch" type="xml">
                 <search string="academy_tests_question_request_set_search">
                     <field name="name" />
-                    <field name="owner_id" />
+                    <field name="owner_id" groups="record_ownership.record_ownership_consultant" />
                     <field name="test_id" />
                     <field name="state" />
                     <field name="expiration" />

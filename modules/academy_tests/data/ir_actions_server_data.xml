@@ -183,5 +183,32 @@ if records:
             <field name="groups_id" eval="[(4, ref('academy_base.academy_group_teacher'))]"/>
         </record>
 
+        <record id="action_reconcile_all_global_assignments" model="ir.actions.server">
+            <field name="type">ir.actions.server</field>
+            <field name="name">Reconciliate assignments</field>
+            <field name="state">code</field>
+            <field name="model_id" ref="academy_tests.model_academy_tests_test_training_assignment" />
+            <field name="sequence" eval="5" />
+            <field name="code">model.reconcile_records(full_db=True)</field>
+        </record>
+
+        <record id="action_reconcile_all_attempts" model="ir.actions.server">
+            <field name="type">ir.actions.server</field>
+            <field name="name">Reconciliate attempts</field>
+            <field name="state">code</field>
+            <field name="model_id" ref="academy_tests.model_academy_tests_attempt" />
+            <field name="sequence" eval="5" />
+            <field name="code">model.reconcile_all()</field>
+        </record>
+
+        <record id="action_reconcile_all_attempt_answers" model="ir.actions.server">
+            <field name="type">ir.actions.server</field>
+            <field name="name">Reconciliate attempt answers</field>
+            <field name="state">code</field>
+            <field name="model_id" ref="academy_tests.model_academy_tests_attempt_answer" />
+            <field name="sequence" eval="5" />
+            <field name="code">model.reconcile_all()</field>
+        </record>
+
     </data>
 </openerp>

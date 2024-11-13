@@ -9,7 +9,7 @@ from odoo.tools import safe_eval
 from odoo.tools.translate import _
 from odoo.osv.expression import AND, TRUE_DOMAIN, FALSE_DOMAIN
 from odoo.exceptions import UserError, MissingError
-from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DATETIME_FORMAT
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT
 
 from datetime import timedelta, datetime, date, time
 import pytz
@@ -1342,9 +1342,19 @@ class AcademyTrainingSession(models.Model):
         for record in self:
             invitation_ops = []
 
+            date_start = record.date_start.strftime(DATE_FORMAT)
+            date_stop = record.date_stop.strftime(DATE_FORMAT)
+
             enrol_domain = [
+                '&',
+                '&',
+                '&',
                 ('training_action_id', '=', record.training_action_id.id),
-                ('competency_unit_ids', '=', record.competency_unit_id.id)
+                ('competency_unit_ids', '=', record.competency_unit_id.id),
+                ('register', '<=', date_start),
+                '|',
+                ('deregister', '=', False),
+                ('deregister', '>=', date_stop)
             ]
 
             enrol_set = enrol_obj.search(enrol_domain)

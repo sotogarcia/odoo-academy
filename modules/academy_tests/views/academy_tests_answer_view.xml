@@ -128,13 +128,13 @@
         </record>
 
         <!-- Main menu for model.name -->
-        <record id="menu_answers" model="ir.ui.menu" >
+<!--         <record id="menu_answers" model="ir.ui.menu" >
             <field name="name">Answers</field>
             <field name="sequence" eval="90" />
             <field name="action" ref="action_answers_act_window" />
             <field name="parent_id" ref="menu_test_settings_top" />
             <field name="groups_id" eval="[(4, ref('academy_base.academy_group_manager'))]"/>
-        </record>
+        </record> -->
 
     </data>
 </openerp>

@@ -3,15 +3,19 @@
 <openerp>
     <data noupdate="0">
 
+        <record id="academy_tests_test_training_assignment_enrolment_rel_1" model="academy.tests.test.training.assignment.enrolment.rel">
+            <field name="assignment_id" ref="academy_tests.academy_tests_test_training_assignment_tests_demo_1" />
+            <field name="enrolment_id" ref="academy_base.academy_training_action_enrolment_demo_1" />
+        </record>
+
         <record id="academy_tests_attempt_demo_1" model="academy.tests.attempt">
             <field name="active" eval="True" />
-            <field name="student_id" ref="academy_base.academy_demo_student_1" />
-            <field name="assignment_id" ref="academy_tests.academy_tests_test_training_assignment_tests_demo_1" />
+            <field name="individual_id" ref="academy_tests_test_training_assignment_enrolment_rel_1" />
             <field name="start" eval="(DateTime.now().replace(hour=2, minute=0)).strftime('%Y-%m-%d %H:%M:%S')" />
             <field name="elapsed" eval="0.75" />
-            <field name="available" eval="2" />
+            <field name="available_time" eval="2" />
             <field name="end" eval="(DateTime.now().replace(hour=2, minute=0) + timedelta(hours=1)).strftime('%Y-%m-%d %H:%M:%S')" />
-            <field name="correction_type">test</field>
+            <field name="time_by">test</field>
             <field name="right" eval="1" />
             <field name="wrong" eval="-1" />
             <field name="blank" eval="0" />
@@ -20,13 +24,12 @@
 
         <record id="academy_tests_attempt_demo_2" model="academy.tests.attempt">
             <field name="active" eval="True" />
-            <field name="student_id" ref="academy_base.academy_demo_student_1" />
-            <field name="assignment_id" ref="academy_tests.academy_tests_test_training_assignment_tests_demo_1" />
+            <field name="individual_id" ref="academy_tests_test_training_assignment_enrolment_rel_1" />
             <field name="start" eval="(DateTime.now().replace(hour=2, minute=0)).strftime('%Y-%m-%d %H:%M:%S')" />
             <field name="elapsed" eval="0.75" />
-            <field name="available" eval="2" />
+            <field name="available_time" eval="2" />
             <field name="end" eval="(DateTime.now().replace(hour=2, minute=0) + timedelta(hours=1)).strftime('%Y-%m-%d %H:%M:%S')" />
-            <field name="correction_type">test</field>
+            <field name="time_by">test</field>
             <field name="right" eval="1" />
             <field name="wrong" eval="-1" />
             <field name="blank" eval="0" />

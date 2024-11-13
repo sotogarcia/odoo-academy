@@ -61,32 +61,7 @@ class AcademyTestsQuestion(models.Model):
 
     _inherit = [
         'ownership.mixin',
-        'academy.abstract.spreadable',
         'mail.thread'
-    ]
-
-    _selectable = [
-        'id',
-        'description',
-        'preamble',
-        'name',
-        'answer_ids',
-        'ir_attachment_ids',
-        'topic_id',
-        'topic_version_ids',
-        'category_ids',
-        'level_id',
-        'tag_ids',
-        'owner_id',
-        'authorship',
-        'active',
-        'uncategorized',
-        'status',
-        'test_ids',
-        'create_date',
-        'write_date',
-        'create_uid',
-        'write_uid',
     ]
 
     # ---------------------------- ENTITY FIELDS ------------------------------
@@ -110,7 +85,8 @@ class AcademyTestsQuestion(models.Model):
         index=False,
         default=None,
         help='What it is said before beginning to question',
-        translate=True
+        translate=True,
+        track_visibility='onchange'
     )
 
     description = fields.Text(
@@ -130,7 +106,8 @@ class AcademyTestsQuestion(models.Model):
         index=True,
         default=True,
         help=('If the active field is set to false, it will allow you to '
-              'hide record without removing it')
+              'hide record without removing it'),
+        track_visibility='onchange'
     )
 
     topic_id = fields.Many2one(
@@ -263,7 +240,8 @@ class AcademyTestsQuestion(models.Model):
         domain=[],
         context={},
         ondelete='cascade',
-        auto_join=False
+        auto_join=False,
+        track_visibility='onchange'
     )
 
     test_ids = fields.One2many(
@@ -327,7 +305,8 @@ class AcademyTestsQuestion(models.Model):
         readonly=False,
         index=True,
         default=True,
-        help='Check it to indicate that it is your own authorship'
+        help='Check it to indicate that it is your own authorship',
+        track_visibility='onchange'
     )
 
     depends_on_id = fields.Many2one(
@@ -780,24 +759,24 @@ class AcademyTestsQuestion(models.Model):
 
         return result
 
-    @api.onchange('description')
-    def _onchange_description(self):
-        self.markdown = self.to_string(True).strip()
+    # @api.onchange('description')
+    # def _onchange_description(self):
+    #     self.markdown = self.to_string(True).strip()
 
-    @api.onchange('preamble')
-    def _onchange_preamble(self):
-        self.markdown = self.to_string(True).strip()
-        self.html = self.to_html()
+    # @api.onchange('preamble')
+    # def _onchange_preamble(self):
+    #     self.markdown = self.to_string(True).strip()
+    #     self.html = self.to_html()
 
-    @api.onchange('name')
-    def _onchange_name(self):
-        self.markdown = self.to_string(True).strip()
-        self.html = self.to_html()
+    # @api.onchange('name')
+    # def _onchange_name(self):
+    #     self.markdown = self.to_string(True).strip()
+    #     self.html = self.to_html()
 
-    @api.onchange('answer_ids')
-    def _onchange_answer_ids(self):
-        self.markdown = self.to_string(True).strip()
-        self.html = self.to_html()
+    # @api.onchange('answer_ids')
+    # def _onchange_answer_ids(self):
+    #     self.markdown = self.to_string(True).strip()
+    #     self.html = self.to_html()
 
     @api.onchange('topic_id')
     def _onchange_academy_topid_id(self):
@@ -810,8 +789,8 @@ class AcademyTestsQuestion(models.Model):
     @api.onchange('ir_attachment_ids')
     def _onchange_ir_attachment_id(self):
         self._compute_ir_attachment_image_ids()
-        self.markdown = self.to_string(True).strip()
-        self.html = self.to_html()
+        # self.markdown = self.to_string(True).strip()
+        # self.html = self.to_html()
 
     # -------------------------- PYTHON CONSTRAINS ----------------------------
 
@@ -878,16 +857,6 @@ class AcademyTestsQuestion(models.Model):
         return result
 
     @api.model
-    def fields_get(self, fields=None):
-
-        fields = super(AcademyTestsQuestion, self).fields_get()
-
-        for field_name in fields.keys():
-            fields[field_name]['selectable'] = field_name in self._selectable
-
-        return fields
-
-    @api.model
     def create(self, values):
         """ Update attachment records
         """
@@ -914,6 +883,9 @@ class AcademyTestsQuestion(models.Model):
 
         self._update_ir_attachments()
 
+        if self._has_tracked_fields(values):
+            self._notify_related_tests()
+
         return result
 
     # ----------------------- MESSAGING METHODS ------------------------
@@ -931,17 +903,6 @@ class AcademyTestsQuestion(models.Model):
         else:
             _super = super(AcademyTestsQuestion, self)
             return _super._track_subtype(init_values)
-
-    def _spread_to(self, subtype_id=False, subtype=None):
-        expected = 'academy_tests.academy_tests_question_written'
-
-        result = []
-        self.ensure_one()
-
-        if subtype_id == self.env.ref(expected).id:
-            result.append(self.mapped('test_ids.test_id'))
-
-        return result
 
     # -------------------------- AUXILIARY METHODS ----------------------------
 
@@ -1610,3 +1571,53 @@ class AcademyTestsQuestion(models.Model):
             'url': relative_url.format(ids_str),
             'target': 'self',
         }
+
+    def _notify_related_tests(self):
+        """
+        Notify related tests that changes have been made to linked questions.
+
+        This method posts a message to the related academy.tests.test
+        recordset, indicating whether a single question or multiple questions
+        were updated.
+        """
+
+        related_tests = self.mapped('test_ids.test_id')
+        if not related_tests:
+            return self.env['academy.tests.test']  # Empty recordset
+
+        subject = _('Question update notification')
+
+        if len(self) == 1:
+            message = _('Changes have been made to the question with ID {}.')
+            message = message.format(self.id)
+        else:
+            message = _('Changes have been made to several linked questions.')
+
+        for test in related_tests:
+            test.message_post(
+                body=message, subject=subject, message_type='notification')
+
+        return related_tests
+
+    @api.model
+    def _has_tracked_fields(self, values):
+        """
+        Check if any of the updated fields have track_visibility set to
+        something other than 'none'.
+
+        Args:
+            values (dict): The fields and values to be updated.
+
+        Returns:
+            bool: True if any field has track_visibility != 'none', False
+            otherwise.
+        """
+        for field_name in values.keys():
+            if field_name == 'answer_ids':
+                return True
+
+            field = self._fields.get(field_name)
+            if field and getattr(field, 'track_visibility', 'none') != 'none':
+                return True
+
+        return False

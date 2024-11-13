@@ -61,13 +61,14 @@
                         </div>
 
                         <group col="2">
-                            <field name="topic_id" class="oe_field_topic_id" />
+                            <field name="topic_id" class="oe_field_topic_id"
+                                options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
                             <field name="topic_version_ids" class="oe_field_topic_version_ids"
                                 domain="[('topic_id', '=', topic_id)]" widget="many2many_tags"
-                                options="{'no_create': True, 'no_open':True}" string="Versions" />
+                                options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" string="Versions" />
                             <field name="category_ids" class="oe_field_category_ids"
                                 domain="[('topic_id', '=', topic_id)]" widget="many2many_tags"
-                                options="{'no_create': True, 'no_open':True}" />
+                                options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
 
                             <separator colspan="2" />
 

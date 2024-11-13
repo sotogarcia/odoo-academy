@@ -49,7 +49,7 @@ class AcademyTestsTestQuestionRel(models.Model):
         string='Test',
         required=True,
         readonly=False,
-        index=False,
+        index=True,
         default=None,
         help='Test to which this item belongs',
         comodel_name='academy.tests.test',
@@ -63,7 +63,7 @@ class AcademyTestsTestQuestionRel(models.Model):
         string='Question',
         required=True,
         readonly=False,
-        index=False,
+        index=True,
         default=None,
         help='Question will be related with test',
         comodel_name='academy.tests.question',
@@ -83,7 +83,7 @@ class AcademyTestsTestQuestionRel(models.Model):
         string='Sequence',
         required=False,
         readonly=False,
-        index=False,
+        index=True,
         default=0,
         help='Question sequence order'
     )
@@ -106,7 +106,7 @@ class AcademyTestsTestQuestionRel(models.Model):
         string='Index',
         required=False,
         readonly=True,
-        index=False,
+        index=True,
         default=1,
         help='Show the order of the question in the test',
         related="sequence",
@@ -159,19 +159,6 @@ class AcademyTestsTestQuestionRel(models.Model):
                 result.append((record.id, record.question_id.name))
 
         return result
-
-    @api.model
-    def fields_get(self, fields=None):
-
-        fields = super(AcademyTestsTestQuestionRel, self).fields_get()
-
-        selectable = self.question_id._selectable.copy()
-        selectable.append('real_question_id')
-
-        for field_name in fields.keys():
-            fields[field_name]['selectable'] = field_name in selectable
-
-        return fields
 
     def switch_status(self):
         """ This method is only a wrapper will be allows user to call

@@ -274,3 +274,34 @@ def get_training_activity(env, target):
             activity = target.training_activity_id
 
     return activity
+
+
+def ensure_recordset(env, targets, model):
+    """
+    Ensure that the input `targets` is returned as a recordset for the
+    specified model.
+
+    Args:
+        env (Environment): The current Odoo environment.
+        targets (RecordSet or list): Either a recordset or a list of IDs.
+        model (str): The name of the model to which the records belong.
+
+    Returns:
+        RecordSet: A recordset of the specified model.
+
+    Behavior:
+        - If `targets` is already a recordset, it is returned as-is.
+        - If `targets` is a list or tuple of IDs, it is converted into a
+          recordset using `browse()`.
+        - Otherwise it will be returned and empty `model` recordset.
+    """
+    target_set = env[model]
+
+    if isinstance(targets, type(target_set)):  # Si ya es un recordset
+        target_set = targets
+    elif isinstance(targets, (list, tuple)):  # Si es una lista o tupla de IDs
+        target_set = target_set.browse(targets)
+    elif isinstance(targets, int):  # Si es un único ID
+        target_set = target_set.browse(targets)
+
+    return target_set

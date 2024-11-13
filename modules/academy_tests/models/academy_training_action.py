@@ -123,7 +123,7 @@ class AcademyTrainingAction(models.Model):
             'name': _('Attempts of «{}»').format(self.name),
             'view_mode': 'tree,pivot,form',
             'view_mode': 'pivot,tree,form,graph',
-            'res_model': 'academy.tests.attempt.resume.helper',
+            'res_model': 'academy.tests.attempt',
             'type': 'ir.actions.act_window',
             'nodestroy': True,
             'target': 'current',

@@ -121,8 +121,10 @@
                 <xpath expr="//div[@name='button_box']" position="after">
                     <group string="Choose question" attrs="{'invisible': ['|', ('question_id', '!=', False), ('perform', '=', 'new')]}">
                         <field name="perform" required="1" class="oe_field_perform" />
-                        <field name="question_id" class="oe_field_question_id" required="0" />
-                        <field name="test_id" class="oe_field_test_id" invisible="1" colspan="6" />
+                        <field name="question_id" class="oe_field_question_id" required="0"
+                            options="{'no_quick_create': True, 'no_create': False, 'no_open': False}" />
+                        <field name="test_id" class="oe_field_test_id" invisible="1" colspan="6"
+                            options="{'no_quick_create': True, 'no_create': False, 'no_open': False}" />
                     </group>
                 </xpath>
 

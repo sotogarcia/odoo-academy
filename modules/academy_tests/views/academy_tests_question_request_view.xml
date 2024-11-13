@@ -113,9 +113,9 @@
                                 attrs="{'invisible': [('description', '=', False)]}" />
 
                             <group col="2" string="Created">
-                                <field name="owner_id" colspan="4" readonly="1" />
                                 <field name="create_date" readonly="1" />
                                 <field name="expiration" readonly="1" />
+                                <field name="owner_id" colspan="4" readonly="1" groups="record_ownership.record_ownership_proxy" />
                             </group>
                             <group cols="2" string="Required">
                                 <field name="minimum" readonly="1" />

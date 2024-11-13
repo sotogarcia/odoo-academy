@@ -199,7 +199,6 @@ class AcademyTrainingSession(models.Model):
     @api.model
     def btn_syncronize(self, scale, date_start, date_stop, res_model, res_id):
 
-        print(date_start, date_stop)
         date_start = datetime.strptime(date_start, "%Y-%m-%dT%H:%M:%SZ")
         date_stop = datetime.strptime(date_stop, "%Y-%m-%dT%H:%M:%SZ")
 
@@ -221,8 +220,6 @@ class AcademyTrainingSession(models.Model):
 
         elif res_model == 'academy.training.action':
             domain.append(('training_action_id', '=', res_id))
-
-        print(res_model)
 
         session_obj = self.env['academy.training.session']
         session_set = session_obj.search(domain)

@@ -3539,7 +3539,7 @@ msgstr "Nº de elementos"
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_student__function
 #: model:ir.model.fields,field_description:academy_base.field_academy_teacher__function
-msgid "Job Position"
+msgid "Occupation"
 msgstr "Puesto de trabajo"
 
 #. module: academy_base

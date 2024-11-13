@@ -18,7 +18,6 @@
     'depends': [
         'academy_base',
         'base_field_m2m_view',
-        'materialized_views',
         'facility_management',
         'record_ownership'
     ],

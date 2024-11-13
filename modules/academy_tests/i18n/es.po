@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-15 15:15+0000\n"
-"PO-Revision-Date: 2024-01-15 16:22+0100\n"
+"POT-Creation-Date: 2024-02-05 22:41+0000\n"
+"PO-Revision-Date: 2024-02-05 23:44+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -2120,6 +2120,12 @@ msgid "Amend"
 msgstr "Enmendar"
 
 #. module: academy_tests
+#: code:addons/academy_tests/models/academy_tests_tag.py:0
+#, python-format
+msgid "Anonymous"
+msgstr "Anónimo"
+
+#. module: academy_tests
 #: code:addons/academy_tests/models/academy_abstract_attempt_answer.py:0
 #: code:addons/academy_tests/models/academy_tests_test.py:0
 #: model:ir.model.fields,field_description:academy_tests.field_academy_abstract_attempt_answer__answer_id
@@ -3071,6 +3077,11 @@ msgid "Checked means this is a right answer for the question"
 msgstr "Marcar para señalar la respuesta como correcta para la pregunta"
 
 #. module: academy_tests
+#: model:ir.model.fields,help:academy_tests.field_academy_tests_tag__private
+msgid "Checked to restrict the visibility of the tag to the creator only"
+msgstr "Marcar para restringir la visibilidad de la etiqueta solo al creador"
+
+#. module: academy_tests
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_question__checksum
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_test_question_rel__checksum
 msgid "Checksum"
@@ -3317,6 +3328,11 @@ msgstr "Elegir la respuesta para la cual ha sido seleccionado el usuario"
 #: model:ir.model.fields,help:academy_tests.field_academy_tests_attempt_final_answer_helper__attempt_id
 msgid "Choose the attempt which is being done"
 msgstr "Elegir el intento que está siendo realizado"
+
+#. module: academy_tests
+#: model:ir.model.fields,help:academy_tests.field_academy_tests_test__collaborator_ids
+msgid "Choose the collaborator users with whom you wish to share access to this record"
+msgstr "Elegir los usuarios colaboradores con los que desea compartir el acceso a este test"
 
 #. module: academy_tests
 #: model:ir.model.fields,help:academy_tests.field_academy_tests_questions_by_teacher_wizard__end
@@ -3616,6 +3632,11 @@ msgstr "Código"
 #: model:academy.tests.category,description:academy_tests.academy_tests_category_demo_development
 msgid "Code development"
 msgstr "Desarrollo de código"
+
+#. module: academy_tests
+#: model:ir.model.fields,field_description:academy_tests.field_academy_tests_test__collaborator_ids
+msgid "Collaborators"
+msgstr "Colaboradores"
 
 #. module: academy_tests
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_question__color
@@ -5475,6 +5496,11 @@ msgid "Is correct?"
 msgstr "¿Es correcta?"
 
 #. module: academy_tests
+#: model:ir.model.fields,field_description:academy_tests.field_academy_tests_test__collab_self_check
+msgid "Is current user a collaborator"
+msgstr "Es el usuario actual colaborador"
+
+#. module: academy_tests
 #: model:academy.tests.answer,name:academy_tests.academy_tests_answer_D_to_question_2
 msgid "JavaScript"
 msgstr ""
@@ -5696,8 +5722,8 @@ msgstr "Ultima actualización en"
 
 #. module: academy_tests
 #: model:ir.model.fields,help:academy_tests.field_academy_tests_test__last_edition
-msgid "Last editing date/time"
-msgstr "Fecha/hora de la última edición"
+msgid "Automatically calculated field that stores the most recent date/time when the test or any of its related questions or answers were last edited. This date/time is determined by comparing the write dates of the test, its questions, and their answers"
+msgstr "Campo calculado automáticamente que almacena la fecha/hora más reciente en la que se editó por última vez la prueba o cualquiera de sus preguntas o respuestas relacionadas. Esta fecha/hora se determina comparando las fechas de redacción del examen, sus preguntas y sus respuestas"
 
 #. module: academy_tests
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_test__last_edition
@@ -6445,6 +6471,12 @@ msgid "New attempt answer"
 msgstr "Nueva respuesta para el intento"
 
 #. module: academy_tests
+#: code:addons/academy_tests/models/academy_tests_correction_scale.py:0
+#, python-format
+msgid "New correction scale"
+msgstr "Nueva escala de corrección"
+
+#. module: academy_tests
 #: code:addons/academy_tests/models/academy_tests_topic_training_module_link.py:0
 #, python-format
 msgid "New link"
@@ -6466,6 +6498,12 @@ msgstr "Nueva réplica"
 #, python-format
 msgid "New request"
 msgstr "Nueva solicitud"
+
+#. module: academy_tests
+#: code:addons/academy_tests/models/academy_tests_tag.py:0
+#, python-format
+msgid "New tag"
+msgstr "Nueva etiqueta"
 
 #. module: academy_tests
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_tests_random_template_type_wizard_form
@@ -7008,7 +7046,6 @@ msgstr "Odoo es desarrollado por una comunidad heterogénea, pero todos los prog
 
 #. module: academy_tests
 #: model:academy.tests.question,description:academy_tests.academy_tests_question_demo_4
-#: model:academy.tests.test.question.rel,description:academy_tests.academy_tests_test_question_rel_4
 msgid "Odoo logos was available to download in Odoo home page"
 msgstr "Los logotipos de Odoo estaban disponibles para descargar en la página de inicio de Odoo"
 
@@ -7086,7 +7123,6 @@ msgstr "OpenERP (formalmente Odoo) es un completo sistema de gestión empresaria
 
 #. module: academy_tests
 #: model:academy.tests.question,preamble:academy_tests.academy_tests_question_demo_4
-#: model:academy.tests.test.question.rel,preamble:academy_tests.academy_tests_test_question_rel_4
 msgid "OpenERP logo was changed at the same time the name was changed"
 msgstr "El logotipo de OpenERP se cambió al mismo tiempo que se cambió el nombre"
 
@@ -7183,6 +7219,7 @@ msgstr "Propia"
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_test_training_assignment__owner_id
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_topic__owner_id
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_uncategorized_by_user_readonly__owner_id
+#: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_tag_tree
 msgid "Owner"
 msgstr "Titular"
 
@@ -7479,6 +7516,11 @@ msgid "Priority"
 msgstr "Prioridad"
 
 #. module: academy_tests
+#: model:ir.model.fields,field_description:academy_tests.field_academy_tests_tag__private
+msgid "Private"
+msgstr "Privada"
+
+#. module: academy_tests
 #: model_terms:ir.ui.view,arch_db:academy_tests.view_academy_tests_question_import_form
 msgid "Process"
 msgstr "Proceso"
@@ -7506,7 +7548,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_topic__provisional
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_topic_version__provisional
 msgid "Provisional"
-msgstr ""
+msgstr "Provisional"
 
 #. module: academy_tests
 #: model:academy.tests.answer,name:academy_tests.academy_tests_answer_A_to_question_2
@@ -8459,7 +8501,7 @@ msgstr "Mostrar preguntas disponibles en el módulo"
 #. module: academy_tests
 #: model:ir.model.fields,field_description:academy_tests.field_academy_tests_assignment_wizard__show_created_records
 msgid "Show records "
-msgstr "Mostrar registros"
+msgstr "Mostrar registros "
 
 #. module: academy_tests
 #: model:ir.model.fields,help:academy_tests.field_academy_tests_question_changelog_entry__message_id
@@ -9202,7 +9244,7 @@ msgstr "El campo test es obligatorio"
 
 #. module: academy_tests
 #: model:academy.tests.test.training.assignment,name:academy_tests.academy_tests_test_training_assignment_tests_demo_1
-msgid "Test from System - 2024-01-15 15:06:12"
+msgid "Test from System - 2024-02-05 21:23:12"
 msgstr ""
 
 #. module: academy_tests
@@ -9902,6 +9944,18 @@ msgstr "Se requiere tema y categorías antes de continuar"
 #, python-format
 msgid "Topic is mandatory for questions"
 msgstr "El tema es obligatorio para las preguntas"
+
+#. module: academy_tests
+#: code:addons/academy_tests/models/academy_tests_topic.py:0
+#, python-format
+msgid "Topic must have at least one category"
+msgstr "El tema debe tener al menos una categoría"
+
+#. module: academy_tests
+#: code:addons/academy_tests/models/academy_tests_topic.py:0
+#, python-format
+msgid "Topic must have at least one version"
+msgstr "El tema debe tener al menos una versión"
 
 #. module: academy_tests
 #: model:ir.model.fields,help:academy_tests.field_academy_tests_category__topic_id
@@ -10607,7 +10661,6 @@ msgstr ""
 
 #. module: academy_tests
 #: model:academy.tests.question,name:academy_tests.academy_tests_question_demo_5
-#: model:academy.tests.test.question.rel,name:academy_tests.academy_tests_test_question_rel_5
 msgid "Which is the Odoo Spain homepage URL?"
 msgstr "¿Cuál es la URL de la página de inicio de Odoo España?"
 
@@ -10618,7 +10671,6 @@ msgstr "¿De qué color es el Unicornio Rosa Invisible?"
 
 #. module: academy_tests
 #: model:academy.tests.question,name:academy_tests.academy_tests_question_demo_4
-#: model:academy.tests.test.question.rel,name:academy_tests.academy_tests_test_question_rel_4
 msgid "Which of the logos shown in the image corresponds to Odoo?"
 msgstr "¿Cuál de los logos que se muestran en la imagen corresponde a Odoo?"
 

@@ -24,8 +24,10 @@ class AcademyTeacher(models.Model):
     _name = 'academy.teacher'
     _inherit = ['academy.teacher']
 
+    _inherits = {}
+
     employee_id = fields.Many2one(
-        string='Employee',
+        string='Linked to employee',
         required=False,
         readonly=False,
         index=True,
@@ -74,12 +76,12 @@ class AcademyTeacher(models.Model):
     )
 
     job_id = fields.Many2one(
-        string='Job Position',
+        string='Occupation',
         related='employee_id.job_id'
     )
 
     parent_id = fields.Many2one(
-        string='Manager',
+        string='Supervisor',
         related='employee_id.parent_id'
     )
 

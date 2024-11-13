@@ -6,6 +6,8 @@ all academy tests correction scale attributes and behavior.
 """
 
 from odoo import models, fields
+from odoo.tools.translate import _
+
 from logging import getLogger
 
 _logger = getLogger(__name__)
@@ -81,3 +83,19 @@ class AcademyTestsCorrectionScale(models.Model):
         digits=(16, 10),
         help='Score by blank question'
     )
+
+    def name_get(self):
+        pattern = '{} ({}/{}/{})'
+        result = []
+
+        for record in self:
+            name = pattern.format(
+                record.name or _('New correction scale'),
+                str(record.right) or '·',
+                str(record.wrong) or '·',
+                str(record.blank) or '·'
+            )
+
+            result.append((record.id, name))
+
+        return result

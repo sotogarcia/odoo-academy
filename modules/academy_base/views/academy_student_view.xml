@@ -52,7 +52,7 @@
                         <field name="is_company" invisible="1" />
 
                         <div class="oe_button_box" name="button_box">
-                            <button name="edit_enrolments" type="object"
+                            <button name="view_enrolments" type="object"
                                 class="oe_stat_button oe_read_only" icon="fa-id-card-o"
                                 help="View student enrolments">
                                 <field name="enrolment_str" widget="statinfo" string="Enrollments" />
@@ -122,10 +122,12 @@
                             <page string="Comment" class="oe_page_comment" accesskey="C">
                                <field name="comment" />
                             </page>
-                            <page string="Setup" class="oe_page_setup" accesskey="S">
-                                <field name="category_id" widget="many2many_tags"
-                                    options="{'color_field': 'color', 'no_create_edit': True}"
-                                    placeholder="Tags..."/>
+                            <page id="setup" string="Setup" class="oe_page_setup" accesskey="S">
+                                <group col="2">
+                                    <field name="category_id" widget="many2many_tags"
+                                        options="{'color_field': 'color', 'no_create_edit': True}"
+                                        placeholder="Tags..."/>
+                                </group>
                             </page>
                         </notebook>
 
@@ -181,7 +183,7 @@
                                 </div>
                                 <div name="kanban-box-toolbar" class="btn-toolbar d-flex flex-row-reverse justify-content-end align-self-end mt-3" role="toolbar" aria-label="Download as document">
                                     <div class="btn-group" role="group" aria-label="Management">
-                                        <button name="edit_enrolments" type="object"
+                                        <button name="view_enrolments" type="object"
                                             groups="academy_base.academy_group_technical"
                                             class="btn btn-sm btn-light oe_read_only" title="View student enrolments">
                                             <i class="fa fa-id-card-o d-inline-block mr-1" aria-hidden="false"></i>
@@ -243,7 +245,7 @@
 
             <field name="target">current</field>
             <field name="domain" eval="[('id', '&lt;&gt;', ref('academy_base.academy_student_default_template'))]" />
-            <field name="context">{"search_default_enrolled": 1}</field>
+            <field name="context">{}</field>
             <field name="search_view_id" ref="view_academy_student_search" />
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">

@@ -7,7 +7,7 @@
             <field name="action_name">Free software in the office</field>
             <field name="description">Introduces the basic features of the more used office appliances</field>
             <field name="active">True</field>
-            <field name="start" eval="(DateTime.today() - timedelta(days=DateTime.today().weekday())).strftime('%Y-%m-%d 05:00:00')" />
+            <field name="start" eval="(DateTime.today() - relativedelta(months=3)).strftime('%Y-%m-%d 21:00:00')" />
             <field name="end" eval="(DateTime.today() + relativedelta(months=3)).strftime('%Y-%m-%d 21:00:00')" />
             <field name="application_scope_id" ref="academy_base.academy_application_scope_public" />
             <field name="professional_category_id" ref="academy_base.academy_professional_category_administrative" />
@@ -22,8 +22,8 @@
             <field name="action_name">Microsoft Office XP</field>
             <field name="description">Introduces the basic features of the more used Microsoft appliances</field>
             <field name="active">True</field>
-            <field name="start" eval="(DateTime.today() - timedelta(days=DateTime.today().weekday() + 5)).strftime('%Y-%m-%d 08:00:00')" />
-            <field name="end" eval="(DateTime.today() + relativedelta(months=3) - timedelta(days=DateTime.today().weekday() + 5)).strftime('%Y-%m-%d 13:00:00')" />
+            <field name="start" eval="(DateTime.today() - relativedelta(months=3)).strftime('%Y-%m-%d 21:00:00')" />
+            <field name="end" eval="(DateTime.today() + relativedelta(months=6)).strftime('%Y-%m-%d 21:00:00')" />
             <field name="application_scope_id" ref="academy_base.academy_application_scope_public" />
             <field name="professional_category_id" ref="academy_base.academy_professional_category_administrative" />
             <!-- <field name="training_action_category_id"></field> -->

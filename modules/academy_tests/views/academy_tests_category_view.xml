@@ -130,7 +130,7 @@
             <field name="view_mode">tree,form</field>
             <field name="target">current</field>
             <field name="domain">[]</field>
-            <field name="context">{'group_by': ['topic_id']}</field>
+            <field name="context">{}</field> <!-- {'group_by': ['topic_id']} -->
             <field name="search_view_id" ref="view_academy_category_search" />
             <field name="help" type="html">
                <p class="oe_view_nocontent_create">
@@ -143,13 +143,13 @@
         </record>
 
         <!-- Main menu for model.name -->
-        <record id="menu_categories" model="ir.ui.menu" >
+<!--         <record id="menu_categories" model="ir.ui.menu" >
             <field name="name">Categories</field>
             <field name="sequence" eval="20" />
             <field name="action" ref="action_categories_act_window" />
             <field name="parent_id" ref="menu_test_settings_top" />
             <field name="groups_id" eval="[(4, ref('academy_base.academy_group_teacher')), (4, ref('academy_base.academy_group_technical'))]" />
-        </record>
+        </record> -->
 
     </data>
 </openerp>

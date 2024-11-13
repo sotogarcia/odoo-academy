@@ -30,8 +30,12 @@
                         invisible="context.get('default_training_ref', False)" />
                     <field name="test_id" class="oe_field_test_id"
                         invisible="context.get('default_test_id', False)" />
-                    <field name="manager_id" class="oe_field_manager_id" />
+                    <field name="manager_id" class="oe_field_manager_id" optional="show" />
                     <field name="release" class="oe_field_release" />
+                    <field name="first_attempt_id" class="oe_field_first_attempt_id" optional="hide" />
+                    <field name="last_attempt_id" class="oe_field_last_attempt_id" optional="hide" />
+                    <field name="best_attempt_id" class="oe_field_best_attempt_id" optional="show" />
+                    <field name="attempt_count" class="oe_field_attempt_count" optional="show" />
                 </tree>
             </field>
         </record>
@@ -65,9 +69,9 @@
                                 <field name="attempt_count" widget="statinfo" string="Attempts" />
                             </button>
 
-                            <button name="view_students" type="object"
+                            <button name="view_individual_assignments" type="object"
                                 class="oe_stat_button oe_read_only" icon="fa-id-card-o">
-                                <field name="student_count"  widget="statinfo" string="Students" />
+                                <field name="enrolment_count"  widget="statinfo" string="By enrolment" />
                             </button>
                         </div>
 
@@ -80,7 +84,7 @@
                             </h1>
                         </div>
 
-                        <group col="4" class="mt-4">
+                        <group col="4" class="w-100 mt-4">
                             <field name="test_id" class="oe_field_test_id" colspan="4"
                                 readonly="context.get('default_test_id', 0)" required="1"
                                 options="{'no_open': False, 'no_create': True, 'no_quick_create': True, 'no_create_edit': True }" />
@@ -95,19 +99,89 @@
                                     ('training_type', '&lt;&gt;', 'enrolment')
                                 ]}" options="{'no_open': False, 'no_create': True, 'no_quick_create': True, 'no_create_edit': True }" />
 
-                            <separator colspan="4" class="mt-4" />
                             <field name="release" class="oe_field_release" />
                             <field name="expiration" class="oe_field_expiration" />
-                            <field name="owner_id" class="oe_field_owner_id" />
-                            <field name="subrogate_id" class="oe_field_subrogate_id" />
-
-                            <separator colspan="4" string="Realization" class="mt-4" />
-                            <field name="correction_scale_id" class="oe_field_correction_scale_id" />
-                            <field name="time_by" class="oe_field_time_by" />
-                            <field name="available_time" class="oe_field_available_time" widget="float_time" />
-                            <field name="lock_time" class="oe_field_lock_time" />
-
                         </group>
+
+                        <notebook>
+                            <page string="Setup" class="oe_page_setup" accesskey="S">
+                                <group col="4" class="w-100 mt-4" string="Realization">
+                                    <field name="correction_scale_id" class="oe_field_correction_scale_id" />
+                                    <field name="time_by" class="oe_field_time_by" />
+                                    <field name="available_time" class="oe_field_available_time" widget="float_time" />
+                                    <field name="lock_time" class="oe_field_lock_time" />
+                                </group>
+
+                                <group col="4" class="w-100" string="Ownership" groups="record_ownership.record_ownership_consultant">
+                                    <field name="owner_id" class="oe_field_owner_id"
+                                        groups="record_ownership.record_ownership_consultant" />
+                                    <field name="subrogate_id" class="oe_field_subrogate_id"
+                                        groups="record_ownership.record_ownership_consultant" />
+                                </group>
+                            </page>
+                            <page string="Attempts" class="oe_page_attempts" accesskey="A">
+                                <group col="3" class="w-100">
+
+                                    <group col="2" string="Count">
+                                        <field name="avg_answered_count" class="oe_field_avg_answered_count font-weight-bold" />
+                                        <field name="avg_right_count" class="oe_field_avg_right_count text-success" />
+                                        <field name="avg_wrong_count" class="oe_field_avg_wrong_count text-danger" />
+                                        <field name="avg_blank_count" class="oe_field_avg_blank_count text-warning" />
+                                        <separator colspan="2" />
+                                        <field name="question_count" class="oe_field_question_count text-info" />
+                                    </group>
+
+                                    <group col="2" string="Averages">
+                                        <field name="avg_final_points" class="oe_field_avg_final_points font-weight-bold" />
+                                        <field name="avg_right_points" class="oe_field_avg_right_points text-success" />
+                                        <field name="avg_wrong_points" class="oe_field_avg_wrong_points text-danger" />
+                                        <field name="avg_blank_points" class="oe_field_avg_blank_points text-warning" />
+                                        <separator colspan="2" />
+                                        <field name="max_points" class="oe_field_max_points text-info" />
+                                    </group>
+
+                                    <group col="2" string="Others">
+                                        <field name="passed_count" class="oe_field_passed_count text-success" />
+                                        <field name="failed_count" class="oe_field_failed_count text-danger" />
+                                        <field name="max_final_points" class="oe_field_max_final_points text-success" />
+                                        <field name="min_final_points" class="oe_field_min_final_points text-danger" />
+                                    </group>
+
+                                    <separator colspan="6" />
+
+                                    <group col="2" string="First attempt">
+                                        <field name="first_attempt" class="oe_field_first_attempt" string="Date/time" />
+                                        <field name="first_points" class="oe_field_first_attempt" string="Points" />
+                                        <field name="first_student_id" class="oe_field_first_student_id" />
+                                    </group>
+                                    <group col="2" string="Last attempt">
+                                        <field name="last_attempt" class="oe_field_last_attempt" string="Date/time" />
+                                        <field name="last_points" class="oe_field_last_attempt" string="Points" />
+                                        <field name="last_student_id" class="oe_field_last_student_id" />
+                                    </group>
+                                    <group col="2" string="Best attempt">
+                                        <field name="best_attempt" class="oe_field_best_attempt" string="Date/time" />
+                                        <field name="best_points" class="oe_field_best_attempt" string="Points" />
+                                        <field name="best_student_id" class="oe_field_best_student_id" />
+                                    </group>
+                                    <div class="d-flex flex-row" colspan="3">
+                                        <button name="fast_update_attempt_data"
+                                                string="Update"
+                                                type="object"
+                                                default_focus="0"
+                                                icon="fa-refresh"
+                                                help="Update attempt data"
+                                                class="btn btn-info" />
+                                    </div>
+                                </group>
+
+                            </page>
+                            <page string="Description" class="oe_page_description" accesskey="D">
+                                <group col="2" class="w-100" string="Description">
+                                    <field name="description" class="oe_field_description" colspan="2" nolabel="1" />
+                                </group>
+                            </page>
+                        </notebook>
 
                     </sheet>
 
@@ -287,12 +361,12 @@
         </record>
 
         <!-- Main menu for model.name -->
-        <record id="menu_test_assignment" model="ir.ui.menu" >
+<!--         <record id="menu_test_assignment" model="ir.ui.menu" >
             <field name="name">Test assignment</field>
             <field name="sequence" eval="10" />
             <field name="action" ref="action_test_assignment_act_window" />
             <field name="parent_id" ref="academy_tests.menu_test_settings_top" />
-        </record>
+        </record> -->
 
     </data>
 </openerp>

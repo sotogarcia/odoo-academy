@@ -14,7 +14,7 @@ import re
 _logger = getLogger(__name__)
 
 
-class AcademyTestQuestion(models.Model):
+class AcademyTestsQuestion(models.Model):
     """ Extend academy.tests.question functionality adding a new computed fild
     witch will contain a valid GIFT code to export the question
     https://docs.moodle.org/38/en/GIFT_format#Format_symbols_explained
@@ -156,22 +156,22 @@ class AcademyTestQuestion(models.Model):
 
         return '{}{}'.format(text, '\n' if new_line else '')
 
-    @api.onchange('description')
-    def _onchange_description(self):
-        super(AcademyTestQuestion, self)._onchange_description()
-        self.gift = self.to_gift()
+    # @api.onchange('description')
+    # def _onchange_description(self):
+    #     super(AcademyTestsQuestion, self)._onchange_description()
+    #     self.gift = self.to_gift()
 
-    @api.onchange('preamble')
-    def _onchange_preamble(self):
-        super(AcademyTestQuestion, self)._onchange_preamble()
-        self.gift = self.to_gift()
+    # @api.onchange('preamble')
+    # def _onchange_preamble(self):
+    #     super(AcademyTestsQuestion, self)._onchange_preamble()
+    #     self.gift = self.to_gift()
 
-    @api.onchange('name')
-    def _onchange_name(self):
-        super(AcademyTestQuestion, self)._onchange_name()
-        self.gift = self.to_gift()
+    # @api.onchange('name')
+    # def _onchange_name(self):
+    #     super(AcademyTestsQuestion, self)._onchange_name()
+    #     self.gift = self.to_gift()
 
-    @api.onchange('answer_ids')
-    def _onchange_answer_ids(self):
-        super(AcademyTestQuestion, self)._onchange_answer_ids()
-        self.gift = self.to_gift()
+    # @api.onchange('answer_ids')
+    # def _onchange_answer_ids(self):
+    #     super(AcademyTestsQuestion, self)._onchange_answer_ids()
+    #     self.gift = self.to_gift()

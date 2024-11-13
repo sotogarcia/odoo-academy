@@ -833,7 +833,7 @@ msgstr ""
 "    <dd>\n"
 "        <a target=\"_blank\" href=\"${object.schedule_url}?"
 "format=html&week=next\">\n"
-"            ${object.schedule_url}?format=html&week=nex        </a>\n"
+"            ${object.schedule_url}?format=html&week=next</a>\n"
 "    <dd>\n"
 "</dl>\n"
 "\n"
@@ -1804,7 +1804,7 @@ msgstr "Desligar de la sessión"
 #: model:ir.model.fields,field_description:academy_timesheets.field_report_academy_timesheets_view_academy_timesheet_student_qweb__display_name
 #: model:ir.model.fields,field_description:academy_timesheets.field_report_academy_timesheets_view_academy_timesheet_training_action_qweb__display_name
 msgid "Display Name"
-msgstr "Nombre para mostrar"
+msgstr "Nombre mostrado"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_timesheets_search_teachers_wizard__next_schedule

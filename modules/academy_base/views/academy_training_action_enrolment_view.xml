@@ -23,7 +23,8 @@
             <field name="priority" eval="16" />
             <field name="active" eval="True" />
             <field name="arch" type="xml">
-                <tree string="academy_training_action_enrolment_tree" create="1" delete="1" edit="1" decoration-success="register &lt;= current_date and (deregister &gt;= current_date or not deregister)">
+                <tree string="academy_training_action_enrolment_tree" create="1" delete="1" edit="1" decoration-success="is_current">
+                    <field name="is_current" invisible="1" />
                     <field name="training_activity_id" class="oe_field_training_activity_id" optional="hide" />
                     <field name="training_action_id" class="oe_field_training_action_id" />
                     <field name="training_modality_str" class="oe_field_training_modality_str" optional="hide" />
@@ -114,7 +115,7 @@
                                     context="{'tree_view_ref': 'academy_base.view_academy_competency_unit_append_existing_tree'}" />
                             </page>
                             <page id="setup" string="Setup" class="oe_page_setup" accesskey="S">
-                                <group id="ownership" col="4">
+                                <group id="ownership" col="4" string="Ownership" groups="record_ownership.record_ownership_proxy">
                                     <field name="owner_id" class="oe_field_owner_id" />
                                     <field name="subrogate_id" class="oe_field_subrogate_id" />
                                 </group>
@@ -224,8 +225,8 @@
 
                     <filter name="has_finalized" string="Have finished"
                         domain="[('deregister', '&lt;', (context_today().strftime('%Y-%m-%d')) )]" />
-                    <filter name="in_progress" string="In progress"
-                        domain="['&amp;', ('register', '&lt;=', (context_today().strftime('%Y-%m-%d')) ), '|', ('deregister', '&gt;=', (context_today().strftime('%Y-%m-%d')) ), ('deregister', '=', False)]" />
+                    <filter name="is_current" string="In progress"
+                        domain="[('is_current', '=', True)]" />
                     <filter name="has_not_started" string="Not yet started"
                         domain="[('register', '&gt;', (context_today().strftime('%Y-%m-%d')) )]" />
 
@@ -250,7 +251,7 @@
 
             <field name="target">current</field>
             <field name="domain">[]</field>
-            <field name="context">{"search_default_in_progress": 1}</field>
+            <field name="context">{'search_default_is_current': 1}</field>
             <field name="search_view_id" ref="view_academy_training_action_enrolment_search" />
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">

@@ -14,6 +14,7 @@ from odoo import models, fields, api
 from odoo.tools.translate import _
 from odoo.exceptions import UserError
 from odoo.osv.expression import AND, TRUE_DOMAIN, FALSE_DOMAIN
+from odoo.osv.expression import TERM_OPERATORS_NEGATION
 from odoo.exceptions import ValidationError
 
 from ..utils.record_utils import create_domain_for_ids
@@ -137,7 +138,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         string='Signup',
         required=True,
         readonly=False,
-        index=False,
+        index=True,
         default=lambda self: fields.Date.context_today(self),
         help='Date in which student has been enrolled',
         tracking=True
@@ -147,7 +148,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         string='Deregister',
         required=False,
         readonly=False,
-        index=False,
+        index=True,
         default=None,
         help='Date in which student has been unsubscribed',
         tracking=True
@@ -444,6 +445,60 @@ class AcademyTrainingActionEnrolment(models.Model):
                 record.color = 4
             else:
                 record.color = 3
+
+    is_current = fields.Boolean(
+        string='Is current',
+        required=True,
+        readonly=True,
+        index=True,
+        default=False,
+        help='Indicates if the enrolment is currently active',
+        compute='_compute_is_current',
+        search='_search_is_current'
+    )
+
+    @api.depends('active', 'register', 'deregister')
+    def _compute_is_current(self):
+        today = fields.Date.today()
+        for record in self:
+            record.is_current = (
+                record.active
+                and record.register <= today
+                and (not record.deregister or record.deregister >= today)
+            )
+
+    @api.model
+    def _search_is_current(self, operator, value):
+        value = bool(value)  # Converts None to False to prevent errors
+
+        today = fields.Date.today()
+
+        # Toggle operator for negation if `value` is True
+        if value is True:
+            operator = TERM_OPERATORS_NEGATION[operator]
+            value = not value
+
+        if operator == '=':  # = False (not is current)
+            domain = [
+                '|',
+                '|',
+                ('active', '!=', True),
+                ('register', '>', today),
+                ('deregister', '<', today)
+            ]
+        else:
+            domain = [
+                '&',
+                '&',
+                ('active', '=', True),
+                ('register', '<=', today),
+                '|',
+                ('deregister', '>=', today),
+                ('deregister', '=', False)
+            ]
+
+        return domain
+
     # ---------------------------- ONCHANGE EVENTS ----------------------------
 
     @api.onchange('training_action_id')
@@ -822,3 +877,28 @@ class AcademyTrainingActionEnrolment(models.Model):
         enrollment_set.unlink()
 
     # -------------------------------------------------------------------------
+
+    @api.model
+    def _perform_a_full_enrollment(self, values):
+        action_id = values.get('training_action_id', None)
+
+        if action_id:
+            action_obj = self.env['academy.training.action']
+            action_set = action_obj.browse(action_id)
+
+            if action_set and action_set.competency_unit_ids:
+                competency_ids = action_set.competency_unit_ids.ids
+                values['competency_unit_ids'] = [(6, 0, competency_ids)]
+
+    @api.model
+    def create(self, values):
+        """ Overridden method 'create'
+        """
+
+        if 'competency_unit_ids' not in values:
+            self._perform_a_full_enrollment(values)
+
+        parent = super(AcademyTrainingActionEnrolment, self)
+        result = parent.create(values)
+
+        return result

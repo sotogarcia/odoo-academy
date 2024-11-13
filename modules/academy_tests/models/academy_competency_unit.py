@@ -21,7 +21,7 @@ class AcademyCompetencyUnit(models.Model):
         required=True,
         readonly=False,
         index=False,
-        default=0,
+        default=2,
         help='Number of questions will be added in templates'
     )
 

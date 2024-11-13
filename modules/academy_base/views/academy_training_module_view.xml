@@ -67,13 +67,13 @@
 
                         <notebook>
                             <page id="setup" string="Setup" class="oe_page_setup" accesskey="S">
-                                <group col="4">
-                                    <field name="description" class="oe_field_description"
-                                        placeholder="Enter new description" colspan="4" />
-                                    <field name="owner_id" class="oe_field_owner_id" />
-                                    <field name="subrogate_id" class="oe_field_subrogate_id" />
+                                <group col="4" string="Description">
+                                    <field name="description" class="oe_field_description" colspan="2" nolabel="1" />
                                 </group>
-                            </page>
+                                <group col="4" string="Ownership" groups="record_ownership.record_ownership_proxy">
+                                    <field name="owner_id" class="oe_field_owner_id oe_read_only" />
+                                    <field name="subrogate_id" class="oe_field_subrogate_id" />
+                                </group>                            </page>
                             <page string="Resources" class="oe_page_resources" accesskey="R">
                                 <field name="module_resource_ids"
                                     class="oe_field_module_resource_ids oe_edit_only" />

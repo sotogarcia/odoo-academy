@@ -91,9 +91,9 @@ class AcademyTrainingActionEnrolment(models.Model):
         index=False,
         default=None,
         comodel_name='academy.tests.test.training.assignment',
-        relation='academy_training_action_enrolment_available_assignment_rel',
+        relation='academy_tests_test_training_assignment_enrolment_rel',
         column1='enrolment_id',
-        column2='related_id',
+        column2='assignment_id',
         domain=[],
         context={},
         limit=None,
@@ -133,37 +133,40 @@ class AcademyTrainingActionEnrolment(models.Model):
     def view_test_attempts(self):
         self.ensure_one()
 
-        irf = self.env.ref('academy_tests.ir_filter_student_attempts')
-
         return {
             'name': _('Attempts of «{}»').format(self.display_name),
             'view_mode': 'tree,pivot,form',
             'view_mode': 'pivot,tree,form,graph',
-            'res_model': 'academy.tests.attempt.resume.helper',
+            'res_model': 'academy.tests.attempt',
             'type': 'ir.actions.act_window',
             'nodestroy': True,
             'target': 'current',
-            'domain': [('student_id', '=', self.student_id.id)],
-            'context': irf.context
+            'domain': [('student_id', '=', self.student_id.id)]
         }
 
-    # def view_test_assignments(self):
-    #     self.ensure_one()
+    def view_test_assignments(self):
+        parent = super(AcademyTrainingActionEnrolment, self)
 
-    #     path = 'available_assignment_ids.id'
-    #     assignment_ids = self.mapped(path)
+        # Generar la asignaciones individuales que falten
+        ind_model = 'academy.tests.test.training.assignment.enrolment.rel'
+        self.env[ind_model].reconcile_records(enrolments=self)
 
-    #     return {
-    #         'model': 'ir.actions.act_window',
-    #         'type': 'ir.actions.act_window',
-    #         'name': _('Test assignments'),
-    #         'res_model': 'academy.tests.test.training.assignment',
-    #         'target': 'current',
-    #         'view_mode': 'kanban,tree,form',
-    #         'domain': [('id', 'in', assignment_ids)],
-    #         'context': {
-    #             'name_get': 'training',
-    #             'search_default_my_assignments': 1,
-    #             'create': False
-    #         },
-    #     }
+        return parent.view_test_assignments()
+
+        # path = 'available_assignment_ids.id'
+        # assignment_ids = self.mapped(path)
+
+        # return {
+        #     'model': 'ir.actions.act_window',
+        #     'type': 'ir.actions.act_window',
+        #     'name': _('Test assignments'),
+        #     'res_model': 'academy.tests.test.training.assignment',
+        #     'target': 'current',
+        #     'view_mode': 'kanban,tree,form',
+        #     'domain': [('id', 'in', assignment_ids)],
+        #     'context': {
+        #         'name_get': 'training',
+        #         'search_default_my_assignments': 1,
+        #         'create': False
+        #     },
+        # }

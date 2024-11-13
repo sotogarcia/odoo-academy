@@ -279,7 +279,6 @@ class AcademyTrainingActionEnrolmentWizard(models.TransientModel):
 
         training_action_set = self.mapped('enrolment_ids.training_action_id')
         modality_set = training_action_set.mapped('training_modality_ids')
-        print(modality_set)
 
         if modality_set:
             for action in training_action_set:

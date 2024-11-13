@@ -62,5 +62,17 @@
         <field name="state">code</field>
     </record>
 
+    <record id="ir_cron_close_old_attempts" model="ir.cron">
+        <field name="name">Close old attempts</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="nextcall" eval="(DateTime.now().replace(hour=3, minute=45) + timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S')" />
+        <field name="doall" eval="False"/>
+        <field name="model_id" ref="academy_tests.model_academy_tests_attempt"/>
+        <field name="code">model.close_old_attempts()</field>
+        <field name="state">code</field>
+    </record>
+
 </odoo>
 

@@ -8,6 +8,7 @@ all academy tests topic attributes and behavior.
 from odoo import models, fields, api
 from odoo.tools.translate import _
 from odoo.osv.expression import FALSE_DOMAIN
+from odoo.exceptions import ValidationError
 
 import re
 from logging import getLogger
@@ -328,6 +329,17 @@ class AcademyTestsTopic(models.Model):
             _(u'There is already another topic with the same name')
         )
     ]
+
+    @api.constrains('topic_version_ids', 'category_ids')
+    def _check_no_empty(self):
+        ver_msg = _('Topic must have at least one version')
+        cat_msg = _('Topic must have at least one category')
+
+        for record in self:
+            if not record.topic_version_ids:
+                raise ValidationError(ver_msg)
+            if not record.category_ids:
+                raise ValidationError(cat_msg)
 
     # --------------------------- PUBLIC METHODS ------------------------------
 

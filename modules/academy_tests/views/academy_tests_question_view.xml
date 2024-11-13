@@ -129,7 +129,8 @@
 
                             <label for="answer_ids" class="oe_edit_only d-block" />
                             <field name="answer_ids" class="oe_field_answer_ids" nolabel="1" required="0"
-                                context="{'tree_view_ref' : 'academy_tests.view_academy_answer_tree_x2many'}" />
+                                context="{'tree_view_ref' : 'academy_tests.view_academy_answer_tree_x2many'}"
+                                options="{'no_quick_create': True, 'no_create': False, 'no_open': False}" />
 
                         </div>
 
@@ -137,34 +138,37 @@
                             <page string="Properties" class="oe_page_properties" accesskey="P">
                                 <group col="4" id="academy-tests-question-attributes">
                                     <field name="type_id" class="oe_field_type_id"
-                                        options="{'no_create': True}" />
+                                        options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
                                     <field name="level_id" class="oe_field_level_id"
-                                        options="{'no_create': True}" />
+                                        options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
                                     <field name="topic_id" class="oe_field_topic_id"
-                                        options="{'no_create': True}" />
+                                        options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
                                     <field name="topic_version_ids" class="oe_field_topic_version_ids"
-                                        widget="many2many_tags" options="{'no_create': True}"
+                                        widget="many2many_tags"
+                                        options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"
                                         attrs="{'readonly': [('topic_id', '=', False)]}"
                                         domain="[('topic_id', '=', topic_id)]" string="Versions"
                                         context="{'default_topic_id': topic_id}" />
                                     <field name="category_ids" class="oe_field_category_ids"
-                                        widget="many2many_tags" options="{'no_create': True}"
+                                        widget="many2many_tags"
+                                        options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"
                                         attrs="{'readonly': [('topic_id', '=', False)]}"
                                         domain="[('topic_id', '=', topic_id)]"
                                         context="{'default_topic_id': topic_id}" />
                                     <field name="tag_ids" class="oe_field_tag_ids"
-                                        widget="many2many_tags" />
+                                        widget="many2many_tags"
+                                        domain="['|', ('private', '=', False), ('create_uid', '=', uid)]"
+                                        options="{'no_quick_create': True, 'no_create': False, 'no_open': True}"/>
 
-                                    <separator colspan="4" />
-
-                                    <field name="authorship" class="oe_field_authorship" />
-                                    <separator colspan="2" />
+                                </group>
+                                <group col="4" string="Ownership"> <!--  groups="record_ownership.record_ownership_proxy" -->
                                     <field name="owner_id" class="oe_field_owner_id"
                                         groups="academy_base.academy_group_technical"
-                                        options="{'no_create': True}" />
+                                        options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
                                     <field name="subrogate_id" class="oe_field_subrogate_id"
                                         groups="academy_base.academy_group_technical"
-                                        options="{'no_create': True}" />
+                                        options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
+                                    <field name="authorship" class="oe_field_authorship" />
                                 </group>
                             </page>
 
@@ -197,22 +201,25 @@
                                 </group>
 
                                 <group cols="2" string="Questions">
-                                    <field name="depends_on_id" class="oe_field_depends_on_id" />
+                                    <field name="depends_on_id" class="oe_field_depends_on_id"
+                                        options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
                                     <separator colspan="2" />
                                     <field name="depends_on_ids" class="oe_field_depends_on_ids"
-                                        context="{'tree_view_ref' : 'academy_tests.view_academy_question_embed_tree'}" />
+                                        context="{'tree_view_ref' : 'academy_tests.view_academy_question_embed_tree'}"
+                                        options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
                                     <separator colspan="2" />
                                     <field name="dependent_ids" class="oe_field_dependent_ids"
-                                        context="{'tree_view_ref' : 'academy_tests.view_academy_question_embed_tree'}" />
+                                        context="{'tree_view_ref' : 'academy_tests.view_academy_question_embed_tree'}"
+                                        options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
                                 </group>
                             </page>
 
-                            <page id="page-question-preview" string="Preview" class="oe_page_preview" accesskey="P">
-                                <group>
-                                    <field name="html" class="oe_field_html" nolabel="1" />
+                            <page id="page-question-preview" string="Preview" class="oe_page_preview oe_read_only" accesskey="P">
+                                <group class="oe_read_only">
+                                    <field name="html" class="oe_field_html oe_read_only" nolabel="1" />
                                 </group>
-                                <group string="Markdown" id="group-question-markdown">
-                                    <field name="markdown" class="oe_field_markdown" nolabel="1" />
+                                <group string="Markdown" id="group-question-markdown" class="oe_read_only">
+                                    <field name="markdown" class="oe_field_markdown oe_read_only" nolabel="1" />
                                 </group>
                             </page>
 

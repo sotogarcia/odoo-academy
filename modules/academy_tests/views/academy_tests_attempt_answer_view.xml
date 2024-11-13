@@ -26,11 +26,11 @@
                 <tree string="academy_tests_attempt_answer_tree" create="1" delete="1" edit="1">
                     <!-- View only will be invoked from attempt view-->
                     <field name="attempt_id" invisible="1" />
-
                     <field name="question_link_id" context="{'show_question_id': 1}" />
                     <field name="answer_id" />
+                    <field name="is_correct" class="oe_field_is_correct" />
                     <field name="instant" />
-                    <field name="user_action" />
+                    <field name="user_action" string="Action" />
                 </tree>
             </field>
         </record>
@@ -65,7 +65,7 @@
                         <group col="4">
                             <!-- View only will be invoked from attempt view  -->
                             <field name="attempt_id" class="oe_field_attempt_id"
-                                colspan="4" placeholder="Attempt" invisible="1" />
+                                colspan="4" placeholder="Attempt" readonly="context.get('default_attempt_id', 0)" />
                             <field name="question_link_id" class="oe_field_question_link_id"
                                 colspan="4" placeholder="Question" options="{'no_create_edit': True}"
                                 context="{'show_question_id': 1}" />
@@ -119,6 +119,24 @@
                 <p>
                     There are no attempt answers yet
                 </p>
+            </field>
+        </record>
+
+        <record id="view_academy_tests_attempt_final_answer_tree" model="ir.ui.view">
+            <field name="name">view.academy.tests.attempt.answer.tree</field>
+            <field name="model">academy.tests.attempt.answer</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="24" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref='academy_tests.view_academy_tests_attempt_answer_tree' />
+            <field name="arch" type="xml">
+                <xpath expr="//tree" position="attributes">
+                    <attribute name="default_order">link_sequence</attribute>
+                </xpath>
+                <xpath expr="//tree/field[1]" position="before">
+                    <field name="link_sequence" class="oe_field_link_sequence" string="#" />
+                </xpath>
             </field>
         </record>
 

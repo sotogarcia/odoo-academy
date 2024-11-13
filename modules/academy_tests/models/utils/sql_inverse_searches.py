@@ -119,19 +119,6 @@ REQUEST_SUPPLIED_COUNT_SEARCH = '''
     HAVING COUNT ( question_id ) {} {}
 '''
 
-# INVERSE SEARCH: academy_tests.field_academy_tests_attempt__passed
-# Raw sentence used to search passed attempts
-# -----------------------------------------------------------------------------
-REQUEST_ATTEMPT_PASSED_SEARCH = '''
-    SELECT
-        "id"
-    FROM
-        academy_tests_attempt_resume_helper
-    WHERE
-        (final_points >= ( max_points / 2.0 )) = {}
-'''
-
-
 # INVERSE SEARCH: academy_tests.field_academy_tests__attempt_count
 # Raw sentence used to search tests by number of attempts
 # -----------------------------------------------------------------------------

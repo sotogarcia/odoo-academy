@@ -50,7 +50,6 @@
         'security/academy_tests_attempt.xml',
         'security/academy_tests_attempt_answer.xml',
         'security/academy_tests_attempt_final_answer_helper.xml',
-        'security/academy_tests_attempt_resume_helper.xml',
         'security/academy_tests_category.xml',
         'security/academy_tests_correction_scale.xml',
         'security/academy_tests_level.xml',
@@ -86,7 +85,7 @@
         'security/academy_tests_topic_training_module_link_question_rel.xml',
         'security/academy_tests_topic_version.xml',
         'security/academy_tests_uncategorized_questions_by_user.xml',
-        'security/academy_training_action_enrolment_available_assignment_rel.xml',
+        'security/academy_tests_test_training_assignment_enrolment_rel.xml',
         'security/academy_training_module_test_category_rel.xml',
         'security/academy_training_module_test_topic_rel.xml',
         'security/ir_attachment.xml',
@@ -102,6 +101,7 @@
         'views/academy_tests_question_impugnment_view.xml',
         'views/academy_tests_question_impugnment_reply_view.xml',
         'views/academy_tests_question_view.xml',
+        'views/academy_tests_question_type_view.xml',
         'views/academy_tests_tag_view.xml',
         'views/academy_tests_test_question_rel_view.xml',
         'views/academy_tests_test_kind_view.xml',
@@ -131,10 +131,11 @@
         'views/academy_tests_question_request_view.xml',
         'views/academy_tests_question_request_set_view.xml',
         'views/academy_tests_test_block_view.xml',
-        'views/academy_tests_attempt_resume_helper_view.xml',
         'views/academy_tests_attempt_final_answer_helper_view.xml',
 
         'views/academy_tests_test_training_assignment_view.xml',
+        'views/academy_tests_test_training_assignment_enrolment_rel_view.xml',
+        'views/res_config_settings_view.xml',
 
         'report/academy_tests_report_assets.xml',
         'report/academy_test_answers_table_report.xml',
@@ -169,7 +170,8 @@
         'wizard/academy_tests_question_append_wizard_link_view.xml',
         'wizard/academy_tests_random_template_type_wizard_view.xml',
         'wizard/academy_tests_copy_assignments_wizard_view.xml',
-        'wizard/academy_tests_assignment_wizard_view.xml'
+        'wizard/academy_tests_assignment_wizard_view.xml',
+        'wizard/academy_tests_attempt_wizard_view.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

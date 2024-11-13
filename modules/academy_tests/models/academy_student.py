@@ -88,18 +88,15 @@ class AcademyStudent(models.Model):
     def view_test_attempts(self):
         self.ensure_one()
 
-        irf = self.env.ref('academy_tests.ir_filter_student_attempts')
-
         return {
             'name': _('Attempts of «{}»').format(self.name),
             'view_mode': 'tree,pivot,form',
             'view_mode': 'pivot,tree,form,graph',
-            'res_model': 'academy.tests.attempt.resume.helper',
+            'res_model': 'academy.tests.attempt',
             'type': 'ir.actions.act_window',
             'nodestroy': True,
             'target': 'current',
-            'domain': [('student_id', '=', self.id)],
-            'context': irf.context
+            'domain': [('student_id', '=', self.id)]
         }
 
     def view_test_assignments(self):

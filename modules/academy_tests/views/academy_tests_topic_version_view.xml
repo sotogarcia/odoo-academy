@@ -103,7 +103,7 @@
             <field name="view_mode">tree,form</field>
             <field name="target">current</field>
             <field name="domain">[]</field>
-            <field name="context">{'search_default_group_by_topic': 1}</field>
+            <field name="context">{}</field> <!-- {'search_default_group_by_topic': 1} -->
             <field name="search_view_id" ref="view_academy_tests_topic_version_search" />
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
@@ -115,12 +115,12 @@
         </record>
 
         <!-- Main menu for model.name -->
-        <record id="menu_topic_versions" model="ir.ui.menu" >
+<!--         <record id="menu_topic_versions" model="ir.ui.menu" >
             <field name="name">Topic versions</field>
             <field name="sequence" eval="10" />
             <field name="action" ref="action_topic_versions_act_window" />
             <field name="parent_id" ref="menu_test_settings_top" />
-        </record>
+        </record> -->
 
         <!-- Tree view for "academy.tests.topic.version" -->
         <record id="view_academy_tests_topic_version_x2many_tree" model="ir.ui.view">

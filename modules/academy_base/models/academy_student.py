@@ -32,6 +32,8 @@ class AcademyStudent(models.Model):
     _inherit = ['mail.thread']
     _inherits = {'res.partner': 'res_partner_id'}
 
+    _order = 'name ASC'
+
     res_partner_id = fields.Many2one(
         string='Partner',
         required=True,
@@ -330,7 +332,7 @@ class AcademyStudent(models.Model):
 
         return domain
 
-    def edit_enrolments(self):
+    def view_enrolments(self):
 
         self.ensure_one()
 

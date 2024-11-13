@@ -227,38 +227,40 @@ class AcademyTrainingSessionAffinity(models.Model):
     # Raw sentence used to create new model based on SQL VIEW
     _view_sql = '''
         SELECT
-            ROW_NUMBER ( ) OVER ( ) :: INTEGER AS "id",
-            GREATEST ( ats.create_uid, enrol.create_uid ) AS create_uid,
-            GREATEST ( ats.create_date, enrol.create_date ) AS create_date,
-            GREATEST ( ats.write_uid, enrol.write_uid ) AS write_uid,
-            GREATEST ( ats.write_date, enrol.write_date ) AS write_date,
-            ats."id" AS session_id,
-            ats.training_action_id,
-            ats.competency_unit_id,
+            ROW_NUMBER ( ) OVER (wnd) :: INTEGER AS "id",
+            GREATEST ( sess.create_uid, enrol.create_uid ) AS create_uid,
+            GREATEST ( sess.create_date, enrol.create_date ) AS create_date,
+            GREATEST ( sess.write_uid, enrol.write_uid ) AS write_uid,
+            GREATEST ( sess.write_date, enrol.write_date ) AS write_date,
+            sess."id" AS session_id,
+            sess.training_action_id,
+            sess.competency_unit_id,
             enrol."id" as enrolment_id,
             enrol.student_id,
             atd."id"::BOOLEAN AS invited,
             enrol."company_id" as company_id
         FROM
-            academy_training_session AS ats
+            academy_training_session AS sess
         INNER JOIN academy_training_action AS ata
-            ON ata.ID = ats.training_action_id
+            ON ata."id" = sess.training_action_id
+            AND ata.active
         INNER JOIN academy_competency_unit AS acu
-            ON acu.ID = ats.competency_unit_id
+            ON acu.ID = sess.competency_unit_id
+            AND acu.active
         INNER JOIN academy_training_action_enrolment AS enrol
             ON enrol.training_action_id = ata."id"
+            AND enrol.active
         INNER JOIN academy_action_enrolment_competency_unit_rel AS rel
             ON rel.action_enrolment_id = enrol."id"
             AND rel.competency_unit_id = acu."id"
         LEFT JOIN academy_training_session_invitation AS atd
             ON atd.enrolment_id = enrol."id"
-            AND atd.session_id = ats."id"
+            AND atd.session_id = sess."id"
         WHERE
-            ats.date_start >= enrol.register
-            AND ( ats.date_stop <= deregister OR deregister IS NULL )
-            AND ata.active
-            AND acu.active
-            AND enrol.active
+            sess.date_start >= enrol.register::TIMESTAMP
+            AND ( sess.date_stop <=
+                  COALESCE(deregister::TIMESTAMP, 'infinity'::TIMESTAMP))
+        WINDOW wnd AS (ORDER BY enrol."id" ASC, sess."id" ASC)
     '''
 
     def name_get(self):

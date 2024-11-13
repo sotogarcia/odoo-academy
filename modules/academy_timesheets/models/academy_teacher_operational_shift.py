@@ -34,7 +34,6 @@ class AcademyTeacherOperationalShift(models.Model):
 
     _auto = False
     _table = 'academy_teacher_operational_shift'
-    _inherit = ['materialized.view']
 
     _check_company_auto = True
 
@@ -204,6 +203,17 @@ class AcademyTeacherOperationalShift(models.Model):
                 AND sess.state = 'ready'
             INNER JOIN academy_teacher AS teach
                 ON teach.id = rel.teacher_id
+
+            -- BEGIN: Compute information only from last n days
+            LEFT JOIN ir_config_parameter AS icp
+                ON icp."key" = 'academy_timesheets.teacher_shift_lookback_days'
+            WHERE sess.date_start >= (
+                CURRENT_DATE - (
+                    COALESCE(icp."value"::VARCHAR, '45'::VARCHAR)::VARCHAR
+                    || ' days'
+                )::INTERVAL
+            )::TIMESTAMP(0)
+            -- END: Compute information from last n days
         ),
         grouped_sessions AS (
             SELECT

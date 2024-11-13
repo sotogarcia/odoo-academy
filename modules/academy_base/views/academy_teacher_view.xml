@@ -97,6 +97,9 @@
                             <page string="Resources" class="oe_page_lessons" accesskey="L">
                                 <field name="training_resource_ids" class="oe_field_training_resource_ids" />
                             </page>
+                            <page id="setup" string="Setup" class="oe_page_setup" accesskey="S">
+
+                            </page>
                         </notebook>
 
                         <field name="create_uid" invisible="1" />

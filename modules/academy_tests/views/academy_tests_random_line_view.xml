@@ -102,7 +102,8 @@
                             colspan="6" widget="many2many_tags"
                             options="{'no_create': True, 'no_open':True}" />
                         <field name="exclude_owners" class="oe_field_exclude_owners"
-                            string="Exclude" colspan="2" />
+                            string="Exclude" colspan="2"
+                            options="{'no_create': True, 'no_open':True}" />
 
                     </group>
 
@@ -157,7 +158,8 @@
 
                     <group col="6" states="step5">
                         <separator colspan="6" string="Test block" />
-                        <field name="test_block_id" class="oe_field_test_block" colspan="4" />
+                        <field name="test_block_id" class="oe_field_test_block" colspan="4"
+                            options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
                     </group>
 
                     <!-- Required to trigger onchange events -->

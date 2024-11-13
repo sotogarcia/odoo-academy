@@ -92,7 +92,8 @@ class AcademyTrainingActionEnrolment(models.Model):
         parent = super(AcademyTrainingActionEnrolment, self)
         result = parent.create(values)
 
-        result._link_pendent_invitations()
+        # NOTE: too slow
+        # result._link_pendent_invitations()
 
         return result
 
@@ -107,10 +108,11 @@ class AcademyTrainingActionEnrolment(models.Model):
         parent = super(AcademyTrainingActionEnrolment, self)
         result = parent.write(values)
 
-        if not major_changes:
-            self._unlink_expired_invitations(values)
+        # two slow
+        # if not major_changes:
+        #    self._unlink_expired_invitations(values)
 
-        self._link_pendent_invitations()
+        # self._link_pendent_invitations()
 
         return result
 

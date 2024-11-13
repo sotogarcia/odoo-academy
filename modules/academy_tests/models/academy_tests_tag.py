@@ -70,6 +70,16 @@ class AcademyTestsTag(models.Model):
         limit=None,
     )
 
+    private = fields.Boolean(
+        string='Private',
+        required=False,
+        readonly=False,
+        index=False,
+        default=True,
+        help=('Checked to restrict the visibility of the tag to the creator '
+              'only')
+    )
+
     # --------------------------- SQL_CONTRAINTS ------------------------------
 
     _sql_constraints = [
@@ -79,3 +89,18 @@ class AcademyTestsTag(models.Model):
             _(u'There is already another tag with the same name')
         )
     ]
+
+    def name_get(self):
+        result = []
+        current_user = self.env.user
+
+        for record in self:
+            name = record.name or _('New tag')
+
+            if record.private and record.create_uid != current_user:
+                creator = record.create_uid.name or _('Anonymous')
+                name = '{}: {}'.format(creator, name)
+
+            result.append((record.id, name))
+
+        return result

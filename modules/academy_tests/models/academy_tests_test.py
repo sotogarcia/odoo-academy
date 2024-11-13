@@ -11,7 +11,7 @@ from logging import getLogger
 from operator import itemgetter
 from os import linesep
 from odoo.exceptions import ValidationError, UserError
-from odoo.osv.expression import AND
+from odoo.osv.expression import AND, TERM_OPERATORS_NEGATION, FALSE_DOMAIN
 
 import docx
 from io import BytesIO
@@ -23,7 +23,6 @@ from re import split
 from odoo import models, fields, api
 from odoo.tools.translate import _
 
-from odoo.osv.expression import FALSE_DOMAIN
 from .utils.sql_operations import ACADEMY_TESTS_SHUFFLE
 from .utils.sql_operations import ACADEMY_TESTS_ARRANGE_BLOCKS
 from .utils.sql_inverse_searches import QUESTION_COUNT_SEARCH
@@ -46,7 +45,6 @@ class AcademyTestsTest(models.Model):
     _order = 'write_date DESC, create_date DESC'
 
     _inherit = [
-        'academy.abstract.spreadable',
         'ownership.mixin',
         'image.mixin',
         'mail.thread'
@@ -132,24 +130,67 @@ class AcademyTestsTest(models.Model):
         readonly=True,
         index=False,
         default=fields.datetime.now(),
-        help='Last editing date/time',
-        compute='_compute_last_edition'
+        help=('Automatically calculated field that stores the most recent '
+              'date/time when the test or any of its related questions or '
+              'answers were last edited. This date/time is determined by '
+              'comparing the write dates of the test, its questions, and '
+              'their answers'),
+        compute='_compute_last_edition',
+        search='_search_last_edition'
     )
 
     @api.depends('write_date', 'question_ids')
     def _compute_last_edition(self):
+
+        if self.ids:
+            params = (tuple(self.ids),)
+            sql = self._sql_last_edition(main_clause='test."id" IN %s')
+            cursor = self.env.cr
+            cursor.execute(sql, params)
+            result = cursor.dictfetchall()
+        else:
+            result = {}
+
+        date_dict = {row['id']: row['write_date'] for row in result}
+
         for record in self:
-            path = 'question_ids.write_date'
-            links = record.mapped(path)
-            path = 'question_ids.question_id.write_date'
-            questions = record.mapped(path)
-            path = 'question_ids.question_id.answer_ids.write_date'
-            answers = record.mapped(path)
-            test = [record.write_date]
+            last_edition = date_dict.get(record.id, record.write_date)
+            record.last_edition = last_edition
 
-            dates = test + links + questions + answers
+    @api.model
+    def _search_last_edition(self, operator, value):
+        if value is True:
+            operator = TERM_OPERATORS_NEGATION.get(operator, operator)
+            value = not value
 
-            record.last_edition = max(dates)
+        if value is False:
+            if operator == '=':
+                clause = 'write_date IS NULL'
+            else:
+                clause = 'write_date IS NOT NULL'
+            params = ()
+        else:
+            clause = 'write_date {} %s'.format(operator)
+            params = (value,)
+
+        cursor = self.env.cr
+        try:
+            sql = self._sql_last_edition(wrap=True, wrap_clause=clause)
+            cursor.execute(sql, params)
+            result = cursor.fetchall()
+        except Exception as ex:
+            _logger.error("Error executing SQL: %s", ex)
+            result = None
+
+        if result:
+            test_ids = [row[0] for row in result]
+            domain = [('id', 'in', test_ids)]
+        else:
+            domain = FALSE_DOMAIN
+
+        _logger.debug('_search_last_edition: {}'.format(domain))
+
+        return domain
 
     answers_table_ids = fields.One2many(
         string='Answers table',
@@ -1064,3 +1105,94 @@ class AcademyTestsTest(models.Model):
                 'default_test_id': self.id
             }
         }
+
+    collaborator_ids = fields.Many2many(
+        string='Collaborators',
+        required=False,
+        readonly=False,
+        index=True,
+        default=None,
+        help=('Choose the collaborator users with whom you wish to share '
+              'access to this record'),
+        comodel_name='res.users',
+        relation='academy_tests_collaborator_res_users_rel',
+        column1='test_id',
+        column2='user_id',
+        domain=[],
+        context={},
+        limit=None
+    )
+
+    collab_self_check = fields.Boolean(
+        string='Is current user a collaborator',
+        required=True,
+        readonly=True,
+        index=False,
+        default=False,
+        help=False,
+        compute='_compute_collab_self_check'
+    )
+
+    @api.depends('collaborator_ids')
+    def _compute_collab_self_check(self):
+        current_user_id = self.env.uid
+
+        for record in self:
+            collaborator_ids = record.collaborator_ids.ids
+            record.collab_self_check = current_user_id in collaborator_ids
+
+    @staticmethod
+    def _sql_last_edition(main_clause=None, wrap=False, wrap_clause=None):
+        """
+        Generate the SQL query to retrieve the last edition timestamp for
+        tests, optionally wrapping the query with a CTE and additional
+        conditions.
+
+        The last edition value will be the greatest value from the
+        `write_date` of the test, its questions, or the answers to these
+        questions.
+
+        Args:
+            main_clause (str, optional): Additional SQL clause for the main
+            query or within the CTE. Defaults to None.
+            wrap (bool, optional): Whether to wrap the main query with a CTE.
+                Defaults to False.
+            wrap_clause (str, optional): Additional SQL clause for the query
+            outside the CTE. Defaults to None.
+
+        Returns:
+            str: The generated SQL query.
+        """
+
+        main_sql = '''
+            SELECT
+                test."id",
+                MAX(
+                    GREATEST(
+                        test.write_date,
+                        link.write_date,
+                        atq.write_date,
+                        ans.write_date
+                    )
+                )::TIMESTAMP AS write_date
+            FROM
+                academy_tests_test AS test
+            LEFT JOIN academy_tests_test_question_rel AS link
+                ON link.test_id = test."id"
+            LEFT JOIN academy_tests_question AS atq
+                ON atq."id" = link.question_id AND atq.active
+            LEFT JOIN academy_tests_answer AS ans
+                ON ans.question_id = atq."id" AND ans.active
+            WHERE test.active {}
+            GROUP BY test."id"
+        '''
+
+        main_clause = '' if not main_clause else ' AND ' + main_clause
+        sql = main_sql.format(main_clause)
+
+        if wrap:
+            wrap_clause = '' if not wrap_clause else ' WHERE ' + wrap_clause
+            wrapper_sql = 'WITH src AS ({}) SELECT "id" FROM src {}'
+            sql = wrapper_sql.format(sql, wrap_clause)
+
+        return sql

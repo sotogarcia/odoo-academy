@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="res_config_settings_view_form" model="ir.ui.view">
+            <field name="name">res.config.settings.view.form.inherit.academy.tests</field>
+            <field name="model">res.config.settings</field>
+            <field name="priority" eval="20" />
+            <field name="inherit_id" ref="base.res_config_settings_view_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//div[hasclass('settings')]" position="inside">
+                    <div class="app_settings_block" data-string="Tests"
+                         data-key="academy_tests" groups="base.group_system" >
+
+                        <div name="academy_tests_settings_test">
+                            <h2>Test attributes</h2>
+                            <div class="row mt16 o_settings_container" name="publish">
+
+                               <div class="col-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <span class="o_form_label">
+                                            Tests types
+                                        </span>
+                                        <div class="text-muted">
+                                            Add, edit or remove test types
+                                        </div>
+                                         <div class="content-group mt8">
+                                            <button
+                                                name="%(academy_tests.action_kind_of_test_act_window)d"
+                                                string="&#160;Edit test types"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+                                    </div>
+                                </div> <!-- col -->
+
+                               <div class="col-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <span class="o_form_label">
+                                            Tests blocks
+                                        </span>
+                                        <div class="text-muted">
+                                            Add, edit or remove test blocks
+                                        </div>
+                                         <div class="content-group mt8">
+                                            <button
+                                                name="%(academy_tests.action_block_of_test_act_window)d"
+                                                string="&#160;Edit test blocks"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+                                    </div>
+                                </div> <!-- col -->
+
+                            </div> <!-- row -->
+
+                        </div> <!-- academy_tests_settings_test -->
+
+                        <div name="academy_tests_settings_question">
+                            <h2>Question attributes</h2>
+                            <div class="row mt16 o_settings_container" name="publish">
+
+                               <div class="col-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <span class="o_form_label">
+                                            Topics
+                                        </span>
+                                        <div class="text-muted">
+                                            Add, edit or remove topics
+                                        </div>
+                                         <div class="content-group mt8">
+                                            <button
+                                                name="%(academy_tests.action_topics_act_window)d"
+                                                string="&#160;Edit topics"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+                                    </div>
+                                </div> <!-- col -->
+
+                               <div class="col-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <span class="o_form_label">
+                                            Topic versions
+                                        </span>
+                                        <div class="text-muted">
+                                            Add, edit or remove versions
+                                        </div>
+                                         <div class="content-group mt8">
+                                            <button
+                                                name="%(academy_tests.action_topic_versions_act_window)d"
+                                                string="&#160;Edit versions"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+                                    </div>
+                                </div> <!-- col -->
+
+                            </div> <!-- row -->
+                            <div class="row mt16 o_settings_container" name="publish">
+
+                               <div class="col-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <span class="o_form_label">
+                                            Categories
+                                        </span>
+                                        <div class="text-muted">
+                                            Add, edit or remove categories
+                                        </div>
+                                         <div class="content-group mt8">
+                                            <button
+                                                name="%(academy_tests.action_categories_act_window)d"
+                                                string="&#160;Edit categories"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+                                    </div>
+                                </div> <!-- col -->
+
+                               <div class="col-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <span class="o_form_label">
+                                            Levels
+                                        </span>
+                                        <div class="text-muted">
+                                            Add, edit or remove levels
+                                        </div>
+                                         <div class="content-group mt8">
+                                            <button
+                                                name="%(academy_tests.action_levels_act_window)d"
+                                                string="&#160;Edit levels"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+                                    </div>
+                                </div> <!-- col -->
+
+                            </div> <!-- row -->
+                            <div class="row mt16 o_settings_container" name="publish">
+
+                               <div class="col-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <span class="o_form_label">
+                                            Types
+                                        </span>
+                                        <div class="text-muted">
+                                            Add, edit or remove types
+                                        </div>
+                                         <div class="content-group mt8">
+                                            <button
+                                                name="%(academy_tests.action_academy_tests_question_type_act_window)d"
+                                                string="&#160;Edit types"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+                                    </div>
+                                </div> <!-- col -->
+
+                               <div class="col-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <span class="o_form_label">
+                                            Tags
+                                        </span>
+                                        <div class="text-muted">
+                                            Add, edit or remove tags
+                                        </div>
+                                         <div class="content-group mt8">
+                                            <button
+                                                name="%(academy_tests.action_tags_act_window)d"
+                                                string="&#160;Edit tags"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+                                    </div>
+                                </div> <!-- col -->
+
+                            </div> <!-- row -->
+
+                        </div> <!-- academy_tests_settings_question -->
+
+
+                        <div name="academy_tests_settings_answer">
+                            <h2>Answer attributes</h2>
+                            <div class="row mt16 o_settings_container" name="publish">
+
+                               <div class="col-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <span class="o_form_label">
+                                            Answers
+                                        </span>
+                                        <div class="text-muted">
+                                            Add, edit or remove answers
+                                        </div>
+                                         <div class="content-group mt8">
+                                            <button
+                                                name="%(academy_tests.action_answers_act_window)d"
+                                                string="&#160;Edit answers"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+                                    </div>
+                                </div> <!-- col -->
+
+                               <div class="col-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <span class="o_form_label">
+                                            Answer tables
+                                        </span>
+                                        <div class="text-muted">
+                                            View all the test answer tables
+                                        </div>
+                                         <div class="content-group mt8">
+                                            Not implemented yet
+                                        </div>
+                                    </div>
+                                </div> <!-- col -->
+
+                            </div> <!-- row -->
+
+                        </div> <!-- academy_tests_settings_answer -->
+
+                        <div name="academy_tests_settings_assignments">
+                            <h2>Test-training assignments</h2>
+                            <div class="row mt16 o_settings_container" name="publish">
+
+                               <div class="col-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <span class="o_form_label">
+                                            Global assignments
+                                        </span>
+                                        <div class="text-muted">
+                                            Add, edit or remove global assignments
+                                        </div>
+                                         <div class="content-group mt8">
+                                            <button
+                                                name="%(academy_tests.action_test_assignment_act_window)d"
+                                                string="&#160;Edit assignments"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+                                        <div class="content-group mt8">
+                                            <button
+                                                name="%(academy_tests.action_reconcile_all_global_assignments)d"
+                                                string="&#160;Reconcile records"
+                                                type="action"
+                                                class="oe_link btn-warning"
+                                                icon="fa-refresh"
+                                                confirm="This process may take a considerable amount of time and consume significant resources. Do you still wish to proceed?"
+                                                help="By pressing this, all calculated values for the global assignments will be updated"
+                                            />
+                                        </div>
+                                    </div>
+                                </div> <!-- col -->
+
+                               <div class="col-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <span class="o_form_label">
+                                            Individual assignments
+                                        </span>
+                                        <div class="text-muted">
+                                            Add, edit or remove individual assignments
+                                        </div>
+                                        <div class="content-group mt8">
+                                            <button
+                                                name="%(academy_tests.action_single_assignments_act_window)d"
+                                                string="&#160;Edit individual"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+                                        <div class="content-group mt8">
+                                            <button
+                                                name="%(academy_tests.action_update_individual_assignments)d"
+                                                string="&#160;Reconcile records"
+                                                type="action"
+                                                class="oe_link btn-warning"
+                                                icon="fa-refresh"
+                                                confirm="This process may take a considerable amount of time and consume significant resources. Do you still wish to proceed?"
+                                                help="By pressing this, all calculated values for the individual assignments will be updated"
+                                            />
+                                        </div>
+                                    </div>
+                                </div> <!-- col -->
+
+                            </div> <!-- row -->
+
+                        </div> <!-- academy_tests_settings_assigment -->
+
+                        <div name="academy_tests_settings_attempts">
+                            <h2>Test attempts</h2>
+                            <div class="row mt16 o_settings_container" name="publish">
+
+                               <div class="col-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <span class="o_form_label">
+                                            Attempts
+                                        </span>
+                                        <div class="text-muted">
+                                            Add, edit or remove attempts
+                                        </div>
+                                         <div class="content-group mt8">
+                                            <button
+                                                name="%(academy_tests.action_test_attempts_act_window)d"
+                                                string="&#160;Edit attempts"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+                                        <div class="content-group mt8">
+                                            <button
+                                                name="%(academy_tests.action_reconcile_all_attempts)d"
+                                                string="&#160;Reconcile records"
+                                                type="action"
+                                                class="oe_link btn-warning"
+                                                icon="fa-refresh"
+                                                confirm="This process may take a considerable amount of time and consume significant resources. Do you still wish to proceed?"
+                                                help="By pressing this, all calculated values for the attempts will be updated"
+                                            />
+                                        </div>
+                                    </div>
+                                </div> <!-- col -->
+
+                               <div class="col-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <span class="o_form_label">
+                                            Attempt answers
+                                        </span>
+                                        <div class="text-muted">
+                                            Add, edit or remove attempt answers
+                                        </div>
+                                         <div class="content-group mt8">
+                                            <button
+                                                name="%(academy_tests.action_test_attempt_answers_act_window)d"
+                                                string="&#160;Edit answers"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+                                        <div class="content-group mt8">
+                                            <button
+                                                name="%(academy_tests.action_reconcile_all_attempt_answers)d"
+                                                string="&#160;Reconcile records"
+                                                type="action"
+                                                class="oe_link btn-warning"
+                                                icon="fa-refresh"
+                                                confirm="This process may take a considerable amount of time and consume significant resources. Do you still wish to proceed?"
+                                                help="By pressing this, the prevalence for all attempts answers will be updated"
+                                            />
+                                        </div>
+                                    </div>
+                                </div> <!-- col -->
+
+                            </div> <!-- row -->
+
+                            <div class="row mt16 o_settings_container" name="publish">
+
+                               <div class="col-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <span class="o_form_label">
+                                            Defaults
+                                        </span>
+                                        <div class="text-muted">
+                                            Default attempt correction scale
+                                        </div>
+                                         <div class="content-group mt8">
+                                            <field name="correction_scale_id" class="oe_field_correction_scale_id" />
+                                        </div>
+                                    </div>
+                                </div> <!-- col -->
+                                <div class="col-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <span class="o_form_label">
+                                            Attempt lifespan (Days)
+                                        </span>
+                                        <div class="text-muted">
+                                            Number of days the attempt will remain open before being closed automatically
+                                        </div>
+                                         <div class="content-group mt8">
+                                            <field name="attempt_lifespan" class="oe_field_attempt_lifespan" />
+                                        </div>
+                                    </div>
+                                </div> <!-- col -->
+
+                            </div> <!-- row -->
+                        </div> <!-- academy_tests_settings_assigment -->
+
+                    </div>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>

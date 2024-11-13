@@ -104,6 +104,28 @@ class ResConfigSettings(models.TransientModel):
         help='Create upcoming sessions for a teacher with the same information'
     )
 
+    teacher_shift_lookback_days = fields.Integer(
+        string='Shift lookback days',
+        required=True,
+        readonly=False,
+        index=False,
+        default=45,
+        help=('Specifies the number of days in the past from which to '
+              'calculate shift information.'),
+        config_parameter='academy_timesheets.teacher_shift_lookback_days'
+    )
+
+    _sql_constraints = [
+        (
+            'teacher_shift_range',
+            '''CHECK(
+                teacher_shift_lookback_days >=7
+                AND teacher_shift_lookback_days <= 400
+            )''',
+            _('Shift lookback days must be 7 to 400.')
+        )
+    ]
+
     # @api.model
     # def _get_timezone_offset(self):
     #     tz = self.env.user.tz or utc.zone
