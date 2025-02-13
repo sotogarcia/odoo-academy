@@ -227,53 +227,39 @@ ACADEMY_TESTS_SHUFFLE = '''
 # -----------------------------------------------------------------------------
 
 ACADEMY_TESTS_ARRANGE_BLOCKS = '''
-    WITH target_tests AS (
-        -- Set target tests using ID
-        SELECT UNNEST ( ARRAY [ {} ] ) :: INTEGER AS test_id
-    ),
+    WITH indexed_blocks AS (
 
-    block_order AS (
-        -- Computes sequence of the first test block in test exercise
-        SELECT
+        SELECT DISTINCT ON
+            ( test_id, test_block_id ) test_id,
             test_block_id,
-            ROW_NUMBER ( ) OVER (
-                ORDER BY "sequence" ASC ) :: INTEGER AS "sequence"
-        FROM (
-            -- Computes sequence by test ID and subsequence by test block
-            SELECT
-                test_block_id,
-                ROW_NUMBER ( ) OVER (
-                    PARTITION BY test_id
-                    ORDER BY test_id, "sequence" ) AS "sequence",
-                ROW_NUMBER ( ) OVER (
-                    PARTITION BY test_id, test_block_id
-                    ORDER BY test_id, "sequence" ) :: INTEGER AS "subsequence"
-            FROM
-                academy_tests_test_question_rel
-            WHERE
-                test_block_id IS NOT NULL
-            ) AS src
+            "sequence"
+        FROM
+            academy_tests_test_question_rel
         WHERE
-            "subsequence" = 1
-    ),
+            test_id IN ({})
+        ORDER BY
+            test_id,
+            test_block_id,
+            "sequence",
+            "id" DESC
 
-    block_grouping AS (
-        -- Computes new question link sequences grouping by test, and block
+    ), block_grouping AS (
+
         SELECT
             "id" AS link_id,
-            ROW_NUMBER ( ) OVER (
-                PARTITION BY rel.test_id
-                    ORDER BY bo."sequence" ASC NULLS FIRST, rel."sequence"
-            ) :: INTEGER AS "sequence"
+            ROW_NUMBER ( ) OVER ( wnd ) :: INTEGER AS "sequence"
         FROM
             academy_tests_test_question_rel AS rel
-        INNER JOIN target_tests AS tt
-            ON rel."test_id" = tt.test_id
-        LEFT JOIN block_order AS bo
-            ON bo.test_block_id = rel.test_block_id
+            INNER JOIN indexed_blocks AS ib ON ib.test_id = rel.test_id
+            AND ib.test_block_id = rel.test_block_id
+        WINDOW wnd AS (
+            PARTITION BY rel.test_id
+            ORDER BY rel.test_id, ib."sequence", rel."sequence", rel."id" DESC
         )
+
+    )
     UPDATE academy_tests_test_question_rel AS rel
-        SET "sequence" = ns."sequence"
+    SET "sequence" = ns."sequence"
     FROM
         block_grouping AS ns
     WHERE

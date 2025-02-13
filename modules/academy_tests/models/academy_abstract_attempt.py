@@ -99,7 +99,7 @@ class AcademyAbstractAttempt(models.AbstractModel):
         readonly=False,
         index=False,
         default=0.0,
-        digits=(16, 10),
+        digits=(8, 6),
         help='Enter the total time for the attempt'
     )
 
@@ -113,6 +113,16 @@ class AcademyAbstractAttempt(models.AbstractModel):
     )
 
     time_by = fields.Selection(
+        string='Time by',
+        required=True,
+        readonly=False,
+        index=False,
+        default='test',
+        help='Choose how the total time is calculated',
+        selection=[('question', 'By question'), ('test', 'By test')]
+    )
+
+    correction_type = fields.Selection(
         string='Correction type',
         required=True,
         readonly=False,

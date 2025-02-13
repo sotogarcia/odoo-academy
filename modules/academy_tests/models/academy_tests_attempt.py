@@ -11,10 +11,11 @@ from odoo.tools.translate import _
 from odoo.tools import safe_eval
 from odoo.osv.expression import TRUE_DOMAIN
 from odoo.exceptions import ValidationError, UserError
+from odoo.addons.academy_base.utils.sql_helpers import create_index
 
 from logging import getLogger
 from psycopg2.errors import SerializationFailure
-from datetime import timedelta, time
+from datetime import timedelta
 from math import floor
 from sys import maxsize
 from time import sleep
@@ -161,7 +162,7 @@ class AcademyTestAttempt(models.Model):
         readonly=False,
         index=False,
         default=0.0,
-        digits=(16, 10),
+        digits=(8, 6),
         help='Enter the total time for the attempt'
     )
 
@@ -174,7 +175,7 @@ class AcademyTestAttempt(models.Model):
         help='Choose date and time the attempt ended'
     )
 
-    time_by = fields.Selection(
+    correction_type = fields.Selection(
         string='Correction type',
         required=True,
         readonly=False,
@@ -608,6 +609,14 @@ class AcademyTestAttempt(models.Model):
 
         return result
 
+    def init(self):
+        """
+        Ensures the custom index exists in the database.
+        """
+
+        fields = ['individual_id', 'active', 'closed']
+        create_index(self.env, self._table, fields, unique=False)
+
     # -------------------------------------------------------------------------
     # CRUD Methods and Their Helpers
     # -------------------------------------------------------------------------
@@ -702,9 +711,6 @@ class AcademyTestAttempt(models.Model):
         - 'question_count': The number of questions in the test.
         - 'max_points': The maximum possible score for the attempt, based on
           the number of questions and the points for correct answers.
-        - 'time_by': The allowed time for the test, based on the assignment.
-        - 'lock_time': The time when the attempt will be locked, based on
-          the assignment.
 
         Assertions:
         - The number of questions must be a non-negative integer.
@@ -739,12 +745,6 @@ class AcademyTestAttempt(models.Model):
                     'Right points values must be numeric'
                 values['max_points'] = \
                     values['question_count'] * right
-
-            if 'time_by' not in values:
-                values['time_by'] = assignment.time_by
-
-            if 'lock_time' not in values:
-                values['lock_time'] = assignment.lock_time
 
     def _is_natural(self, value, allow_zero=False):
         return isinstance(value, int) \
@@ -888,7 +888,8 @@ class AcademyTestAttempt(models.Model):
     def _update_time_values(self, values):
         self.ensure_one()
 
-        date_start = fields.Datetime.from_string(self.start)
+        date_start = self.last_signal or self.start
+        date_start = fields.Datetime.from_string(date_start)
 
         if self.end:
             date_stop = fields.Datetime.from_string(self.end)
@@ -897,11 +898,12 @@ class AcademyTestAttempt(models.Model):
             date_stop = max(now, date_start)
             values['end'] = date_stop.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
 
-        if not self.elapsed or 'end' in values:
-            seconds = (date_stop - date_start).total_seconds()
-            elapsed = seconds / 3600
-            values['elapsed'] = \
-                min(self.available_time or float(maxsize), elapsed)
+        elapsed = self.elapsed or 0.0
+        seconds = (date_stop - date_start).total_seconds()
+        elapsed = elapsed + (seconds / 3600.0)
+
+        values['elapsed'] = \
+            min(self.available_time or float(maxsize), elapsed)
 
         return values
 

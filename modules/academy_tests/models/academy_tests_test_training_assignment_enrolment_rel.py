@@ -8,13 +8,14 @@ from odoo import models, fields, api
 from odoo.exceptions import UserError
 from odoo.tools.translate import _
 from odoo.tools import safe_eval
-from odoo.exceptions import AccessError, ValidationError
+from odoo.exceptions import AccessError
 from odoo.osv.expression import AND, TRUE_DOMAIN, FALSE_DOMAIN
 from odoo.addons.academy_base.utils.record_utils \
     import create_domain_for_ids as make_domain
+from odoo.addons.academy_base.utils.sql_helpers import create_index
 
 from logging import getLogger
-from psycopg2 import Error as Psycopg2Error
+
 from psycopg2.errors import SerializationFailure
 from datetime import time, datetime, timedelta
 from time import sleep
@@ -553,6 +554,14 @@ class AcademyTestsTestTrainingAssignmentEnrolmentRel(models.Model):
             result.append((record.id, name))
 
         return result
+
+    def init(self):
+        """
+        Ensures the custom index exists in the database.
+        """
+
+        fields = ['enrolment_id', 'assignment_id']
+        create_index(self.env, self._table, fields, unique=False)
 
     # -------------------------------------------------------------------------
     # CRUD Methods
@@ -1219,7 +1228,7 @@ class AcademyTestsTestTrainingAssignmentEnrolmentRel(models.Model):
 
             passed_count = len(self.attempt_ids.filtered(lambda r: r.passed))
             values['passed_count'] = passed_count
-            values['failed_count'] = attempt_count - attempt_count
+            values['failed_count'] = attempt_count - passed_count
 
         return values
 

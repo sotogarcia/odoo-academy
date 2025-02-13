@@ -9,6 +9,7 @@ from logging import getLogger
 
 # pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
+from odoo.tools import safe_eval
 
 from odoo.tools.translate import _
 
@@ -395,18 +396,44 @@ class AcademyTrainingActivity(models.Model):
     def show_competency_units(self):
         self.ensure_one()
 
-        return {
-            'model': 'ir.actions.act_window',
+        action_xid = 'academy_base.action_competency_unit_act_window'
+        act_wnd = self.env.ref(action_xid)
+
+        name = _('Competency units')
+
+        context = self.env.context.copy()
+        context.update(safe_eval(act_wnd.context))
+        context.update({'default_training_activity_id': self.id})
+
+        domain = [('training_activity_id', '=', self.id)]
+
+        serialized = {
             'type': 'ir.actions.act_window',
-            'name': _('Competency units'),
-            'res_model': 'academy.competency.unit',
+            'res_model': act_wnd.res_model,
             'target': 'current',
-            'view_mode': 'kanban,tree,form',
-            'domain': [('training_activity_id', '=', self.id)],
-            'context': {
-                'default_training_activity_id': self.id
-            }
+            'name': name,
+            'view_mode': act_wnd.view_mode,
+            'domain': domain,
+            'context': context,
+            'search_view_id': act_wnd.search_view_id.id,
+            'help': act_wnd.help
         }
+
+        tree_xid = 'academy_base.view_academy_competency_unit_batch_edit_tree'
+        tree_view = self.env.ref(tree_xid)
+
+        views = []
+        for pair in act_wnd.views:
+            if pair[1] == 'tree':
+                views.append((tree_view.id, pair[1]))
+            else:
+                views.append(pair)
+
+        serialized['views'] = views
+
+        print(serialized)
+
+        return serialized
 
     def show_training_modules(self):
         self.ensure_one()

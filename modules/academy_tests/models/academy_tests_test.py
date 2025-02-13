@@ -76,7 +76,7 @@ class AcademyTestsTest(models.Model):
         string='Active',
         required=False,
         readonly=False,
-        index=False,
+        index=True,
         default=True,
         help=('If the active field is set to false, it will allow you to '
               'hide record without removing it')
@@ -579,7 +579,7 @@ class AcademyTestsTest(models.Model):
         readonly=False,
         index=False,
         default=0.0,
-        digits=(16, 2),
+        digits=(8, 6),
         help='Available time to complete the exercise'
     )
 

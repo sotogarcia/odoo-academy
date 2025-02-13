@@ -209,6 +209,19 @@
             </field>
         </record>
 
+        <record id="view_academy_competency_unit_batch_edit_tree" model="ir.ui.view">
+            <field name="name">view.academy.competency.unit.batch.edit.tree</field>
+            <field name="model">academy.competency.unit</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="75" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="academy_base.view_academy_competency_unit_tree" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='training_activity_id']" position="replace" />
+            </field>
+        </record>
+
         <!-- Tree view for "academy.competency.unit" -->
         <record id="view_academy_competency_unit_list_only_tree" model="ir.ui.view">
             <field name="name">view.academy.competency.unit.list.only.tree</field>

@@ -168,7 +168,7 @@ class AcademyTestsAssignmentWizard(models.TransientModel):
         readonly=False,
         index=False,
         default=0.5,
-        digits=(16, 2),
+        digits=(8, 6),
         help='Available time to complete the exercise'
     )
 

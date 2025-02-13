@@ -176,7 +176,7 @@ class AcademyTestsTestTrainingAssignment(models.Model):
         readonly=False,
         index=False,
         default='test',
-        help=False,
+        help='Specify if the available time is per test or per question',
         selection=[('test', 'Test'), ('question', 'Question')]
     )
 
@@ -186,8 +186,8 @@ class AcademyTestsTestTrainingAssignment(models.Model):
         readonly=False,
         index=False,
         default=0.5,
-        digits=(16, 2),
-        help='Available time to complete the exercise'
+        digits=(8, 6),
+        help='Available time per test or question to complete the exercise'
     )
 
     lock_time = fields.Boolean(
@@ -1406,7 +1406,7 @@ class AcademyTestsTestTrainingAssignment(models.Model):
 
             passed_count = len(self.attempt_ids.filtered(lambda r: r.passed))
             values['passed_count'] = passed_count
-            values['failed_count'] = attempt_count - attempt_count
+            values['failed_count'] = attempt_count - passed_count
 
         return values
 
@@ -1432,3 +1432,29 @@ class AcademyTestsTestTrainingAssignment(models.Model):
             result = default
 
         return result
+
+    # -------------------------------------------------------------------------
+    # Public methods
+    # -------------------------------------------------------------------------
+
+    def get_available_time(self):
+        """
+        Compute the total available time for completing the exercise.
+
+        This method calculates the available time based on the configured time
+        per test or question. If the time is set by question, it multiplies the
+        available time by the number of questions in the test. If there are no
+        questions, it defaults to at least one.
+
+        Returns:
+            float: The computed total available time.
+        """
+        self.ensure_one()
+
+        available_time = self.available_time
+
+        if self.time_by == 'question' and self.test_id:
+            question_count = len(self.test_id.question_ids) or 1
+            available_time *= question_count
+
+        return available_time

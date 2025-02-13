@@ -130,3 +130,48 @@ def process_psql_exception(ex):
             result.update({key: value})
 
     return result
+
+
+def create_index(env, table_name, fields, unique=False):
+    """
+    Create an index on the specified fields for the given table.
+
+    Args:
+        env (Environment): The Odoo environment to execute the SQL query.
+        table_name (str): Name of the table where the index will be
+            created.
+        fields (list or str): The field(s) to index.
+        unique (bool): If True, creates a unique index. Default is False.
+
+    Raises:
+        ValueError: If table_name or fields are invalid.
+    """
+    if not table_name or not fields:
+        message = 'Table name and fields must be specified and non-empty.'
+        raise ValueError(message)
+
+    if isinstance(fields, str):
+        fields = [fields]
+
+    unique_str = ' UNIQUE ' if unique else ''
+    field_names = '_'.join(fields)
+    field_list = ', '.join(fields)
+
+    sentence = (f'CREATE {unique_str} INDEX IF NOT EXISTS '
+                f'{table_name}_{field_names}_idx ON {table_name} '
+                f'({field_list})')
+
+    try:
+        env.cr.execute(sentence)
+
+        message = (f'New {unique_str.strip().lower()} index '
+                   f'{table_name}_{field_names}_idx was added to '
+                   f'{table_name} table, using {field_list}.')
+        _logger.debug(message)
+
+    except Exception as ex:
+        message = (f'New {unique_str.strip().lower()} index '
+                   f'{table_name}_{field_names}_idx could not be added to '
+                   f'{table_name} table, using {field_list}. '
+                   f'System says: {ex}')
+        _logger.error(message)

@@ -192,7 +192,7 @@
                                 </group>
 
                                 <group col="6" string="Correction">
-                                    <field name="time_by" class="od_field_time_by" />
+                                    <field name="correction_type" class="od_field_correction_type" />
                                     <separator colspan="4" />
                                     <field name="right" class="oe_field_right" />
                                     <field name="wrong" class="oe_field_wrong" />

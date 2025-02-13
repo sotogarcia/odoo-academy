@@ -20,6 +20,7 @@ from odoo.exceptions import ValidationError
 from ..utils.record_utils import create_domain_for_ids
 from ..utils.record_utils import create_domain_for_interval
 from ..utils.record_utils import ARCHIVED_DOMAIN, INCLUDE_ARCHIVED_DOMAIN
+from odoo.addons.academy_base.utils.sql_helpers import create_index
 
 
 # pylint: disable=locally-disabled, C0103
@@ -804,6 +805,14 @@ class AcademyTrainingActionEnrolment(models.Model):
         result = parent.write(values)
 
         return result
+
+    def init(self):
+        """
+        Ensures the custom index exists in the database.
+        """
+
+        fields = ['active', 'deregister', 'register']
+        create_index(self.env, self._table, fields, unique=False)
 
     # -------------------------------------------------------------------------
     # Copy related methods

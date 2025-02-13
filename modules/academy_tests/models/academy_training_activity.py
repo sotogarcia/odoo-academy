@@ -23,7 +23,7 @@ class AcademyTrainingActivity(models.Model):
         readonly=False,
         index=False,
         default=0.5,
-        digits=(16, 2),
+        digits=(8, 6),
         help=('Default available time to complete exercises. This value will '
               'be used to create new templates')
     )

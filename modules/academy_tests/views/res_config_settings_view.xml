@@ -15,7 +15,7 @@
 
                         <div name="academy_tests_settings_test">
                             <h2>Test attributes</h2>
-                            <div class="row mt16 o_settings_container" name="publish">
+                            <div class="row mt16 o_settings_container" name="test_setup">
 
                                <div class="col-12 col-md-6 o_setting_box">
                                     <div class="o_setting_right_pane">
@@ -49,6 +49,30 @@
                                             <button
                                                 name="%(academy_tests.action_block_of_test_act_window)d"
                                                 string="&#160;Edit test blocks"
+                                                type="action"
+                                                class="oe_link"
+                                                icon="fa-arrow-right"
+                                            />
+                                        </div>
+                                    </div>
+                                </div> <!-- col -->
+
+                            </div> <!-- row -->
+
+                            <div class="row mt16 o_settings_container" name="publish">
+
+                               <div class="col-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <span class="o_form_label">
+                                            Correction scales
+                                        </span>
+                                        <div class="text-muted">
+                                            Add, edit or remove correction scales
+                                        </div>
+                                         <div class="content-group mt8">
+                                            <button
+                                                name="%(academy_tests.action_scale_of_correction_act_window)d"
+                                                string="&#160;Edit correction scales"
                                                 type="action"
                                                 class="oe_link"
                                                 icon="fa-arrow-right"
