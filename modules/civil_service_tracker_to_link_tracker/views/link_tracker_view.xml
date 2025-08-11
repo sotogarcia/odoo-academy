@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="view_link_tracker_form" model="ir.ui.view">
+            <field name="name">link.tracker.view.form</field>
+            <field name="model">link.tracker</field>
+            <field name="type">form</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="99" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="link_tracker.link_tracker_view_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='campaign_id']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                    <attribute name="force_save">1</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="action_link_tracker_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Link Tracker</field>
+            <field name="res_model">link.tracker</field>
+            <field name="view_mode">tree,form,graph</field>
+            <field name="view_id" />
+            <field name="target">main</field>
+            <field name="domain" eval="[('campaign_id', '=', ref('civil_service_tracker_to_link_tracker.utm_campaign_civil_service_tracker'))]"/>
+            <field name="context" eval="{'default_campaign_id': ref('civil_service_tracker_to_link_tracker.utm_campaign_civil_service_tracker'), 'default_medium_id': ref('utm.utm_medium_direct'), 'default_source_id': ref('civil_service_tracker_to_link_tracker.utm_source_official_journal')}"/>
+            <field name="search_view_id" ref="link_tracker.link_tracker_view_search" />
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a link tracker
+                </p><p>
+                    Trackers are used to collect count stat about click on links and generate short URLs.
+                </p>
+            </field>
+        </record>
+
+        <record id="action_link_tracker_act_window_view_tree" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="link_tracker.link_tracker_view_tree"/>
+            <field name="act_window_id" ref="action_link_tracker_act_window"/>
+        </record>
+
+        <record id="action_link_tracker_act_window_view_form" model="ir.actions.act_window.view">
+            <field name="sequence" eval="2"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="civil_service_tracker_to_link_tracker.view_link_tracker_form"/>
+            <field name="act_window_id" ref="action_link_tracker_act_window"/>
+        </record>
+
+        <record id="action_link_tracker_act_window_view_graph" model="ir.actions.act_window.view">
+            <field name="sequence" eval="3"/>
+            <field name="view_mode">graph</field>
+            <field name="view_id" ref="link_tracker.link_tracker_view_graph"/>
+            <field name="act_window_id" ref="action_link_tracker_act_window"/>
+        </record>
+
+        <!-- Main menu for model.name -->
+        <record id="menu_civil_service_tracker_link_tracker" model="ir.ui.menu" >
+            <field name="name">Link tracker</field>
+            <field name="sequence" eval="85" />
+            <field name="action" ref="action_link_tracker_act_window" />
+            <field name="parent_id" ref="civil_service_tracker.menu_civil_service_tracker_tools" />
+            <field name="groups_id" eval="[(4, ref('civil_service_tracker.group_civil_service_tracker_technician'))]"/>
+        </record>
+
+    </data>
+</openerp>

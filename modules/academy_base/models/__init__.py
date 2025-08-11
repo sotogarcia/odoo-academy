@@ -51,3 +51,4 @@ from . import academy_training_module_used_in_training_action_rel
 from . import academy_training_action_enrolment_available_resource_rel
 from . import academy_training_action_available_resource_rel
 from . import academy_training_action_student_rel
+from . import res_config_settings

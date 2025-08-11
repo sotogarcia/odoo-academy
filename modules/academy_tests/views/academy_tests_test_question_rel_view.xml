@@ -24,24 +24,34 @@
             <field name="priority" eval="16" />
             <field name="active" eval="True" />
             <field name="arch" type="xml">
-                <tree string="Question" create="1" delete="1" edit="1" editable="bottom"
+                <tree string="Question" create="1" delete="1" edit="1" editable="top"
                     decoration-success="not depends_on_id and not status == 'draft'"
                     decoration-warning="depends_on_id" decoration-danger="status == 'draft'"
                     class="view_academy_tests_test_question_rel_tree">
 
-                    <field name="test_id" class="oe_field_test_id" invisible="1" />
-                    <field name="status" class="oe_field_status" invisible="1" readonly="1" />
-                    <field name="depends_on_id" class="oe_field_depends_on_id" invisible="1" readonly="1" />
+                    <field name="test_id" class="oe_field_test_id" invisible="1" force_save="1" />
+                    <field name="status" class="oe_field_status" invisible="1" readonly="1" force_save="1" />
+                    <field name="depends_on_id" class="oe_field_depends_on_id" invisible="1" readonly="1" force_save="1" />
 
                     <field name="index" class="oe_field_index oe_read_only" />
-                    <field name="question_id" class="oe_field_name"
+                    <field name="question_id" class="oe_field_question_id"
                         context="{'search_default_all_available_questions': 1}" />
-                    <field name="type_id" class="oe_field_type_id" readonly="1" />
-                    <field name="topic_id" class="oe_field_topic_id" readonly="1" string="Version" />
-                    <field name="topic_version_ids" class="oe_field_topic_version_ids" widget="many2many_tags" readonly="1" />
-                    <field name="category_ids" class="oe_field_category_ids" widget="many2many_tags" readonly="1" />
-                    <field name="level_id" class="oe_field_level_id" readonly="1" />
-                    <field name="attachment_count" class="oe_field_attachment_count" readonly="1" string="Attachments" />
+                    <field name="test_block_id" class="oe_field_test_block_id oe_edit_only" />
+                    <field name="type_id" class="oe_field_type_id" readonly="1" optional="hide" />
+                    <field name="topic_id" class="oe_field_topic_id" readonly="1" optional="show" />
+                    <field name="topic_version_ids" class="oe_field_topic_version_ids" 
+                        widget="many2many_tags" readonly="1" string="Versions" optional="hide" />
+                    <field name="category_ids" class="oe_field_category_ids" 
+                        widget="many2many_tags" readonly="1" optional="show" />
+                    <field name="level_id" class="oe_field_level_id" readonly="1" optional="hide" />
+                    <field name="tag_ids" class="oe_field_tag_ids" widget="many2many_tags" 
+                        readonly="1" optional="show"  />
+                    <field name="manager_id" class="oe_field_manager_id" readonly="1" optional="hide" />
+                    <field name="owner_id" class="oe_field_owner_id" readonly="1" optional="hide"  />
+                    <field name="subrogate_id" class="oe_field_subrogate_id" readonly="1" optional="hide"  />
+                    <field name="authorship" class="oe_field_subrogate_id" readonly="1" optional="hide"  />
+                    <field name="attachment_count" class="oe_field_attachment_count" readonly="1" 
+                        string="Attachments" optional="show" />
 
                 </tree>
             </field>
@@ -62,21 +72,21 @@
                     decoration-warning="depends_on_id" decoration-danger="status == 'draft'"
                     class="view_academy_tests_test_question_rel_tree">
 
-                    <field name="sequence" class="oe_field_sequence oe_edit_only" widget="handle" />
+                    <field name="test_id" class="oe_field_test_id" invisible="1" force_save="1" />
+                    <field name="status" class="oe_field_status" invisible="1" readonly="1" force_save="1" />
+                    <field name="depends_on_id" class="oe_field_depends_on_id" invisible="1" readonly="1" force_save="1" />
 
-                    <field name="test_id" class="oe_field_test_id" invisible="1" />
-                    <field name="status" class="oe_field_status" invisible="1" readonly="1" />
-                    <field name="depends_on_id" class="oe_field_depends_on_id" invisible="1" readonly="1" />
+                    <field name="sequence" class="oe_field_sequence oe_edit_only" widget="handle" />
 
                     <field name="index" class="oe_field_index oe_edit_only" />
 
-                    <field name="question_id" class="oe_field_name oe_edit_only"
+                    <field name="question_id" class="oe_field_question_id oe_edit_only"
                         context="{'search_default_all_available_questions': 1}" />
 
                     <field name="test_block_id" class="oe_field_test_block_id oe_edit_only" />
 
                     <field name="type_id" class="oe_field_type_id oe_edit_only" readonly="1" />
-                    <field name="topic_id" class="oe_field_topic_id oe_edit_only" readonly="1" string="Version" />
+                    <field name="topic_id" class="oe_field_topic_id oe_edit_only" readonly="1" />
 <!--                     <field name="topic_version_ids" class="oe_field_topic_version_ids oe_edit_only" widget="many2many_tags" readonly="1" />
                     <field name="category_ids" class="oe_field_category_ids oe_edit_only" widget="many2many_tags" readonly="1" />
                     <field name="level_id" class="oe_field_level_id oe_edit_only" readonly="1" />
@@ -143,6 +153,8 @@
             <field name="inherit_id" ref="view_academy_tests_question_kanban" />
             <field name="arch" type="xml">
                 <xpath expr="//kanban/field[@name='name']" position="before">
+                    <field name="test_id" class="oe_field_test_id" invisible="1" force_save="1" />
+                    
                     <!-- Required by custom javascript -->
                     <field name="question_id" />
                     <field name="sequence" />
@@ -151,7 +163,7 @@
                     <field name="sequence" class="oe_field_sequence" />.
                 </xpath>
                 <xpath expr="//kanban" position="attributes">
-                    <attribute name="create">0</attribute>
+                    <attribute name="create">1</attribute>
                 </xpath>
             </field>
         </record>
@@ -185,8 +197,26 @@
                 <xpath expr="//field[@name='id']" position="replace">
                     <field name="real_question_id" string="Question ID" />
                 </xpath>
-                <xpath expr="//filter" position="replace" />
-                <xpath expr="//separator" position="replace" />
+
+                <xpath expr="//filter[last()]" position="after">
+                    <separator />
+                    <filter string="Linked to block"
+                            name="with_test_blocks"
+                            domain="[('test_block_id', '&lt;&gt;', False)]"
+                            context="{}"
+                            help="Questions that are linked to a test block" />
+                    <filter string="Not linked to block"
+                            name="without_test_blocks"
+                            domain="[('test_block_id', '=', False)]"
+                            context="{}"
+                            help="Questions that are not linked to any test block" />
+                    <separator />
+                    <filter string="Group by block"
+                            name="group_by_test_block"
+                            domain="[]"
+                            context="{'group_by': 'test_block_id'}"
+                            help="Group questions by their test block" />
+                </xpath>
             </field>
         </record>
 

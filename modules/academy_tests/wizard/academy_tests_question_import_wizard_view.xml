@@ -30,27 +30,29 @@
                             invisible="not context.get('create_new_test', False)" />
 
                         <field name="type_id" class="oe_field_type_id"
-                            options="{'no_create_edit': True, 'no_open': True}" />
+                            options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
                         <field name="level_id" class="oe_field_level_id"
-                            options="{'no_create_edit': True, 'no_open': True}" />
+                            options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
 
                         <separator colspan="4" />
 
                         <field name="topic_id" class="oe_field_topic_id"
-                            options="{'no_create_edit': True, 'no_open': True}" />
+                            options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
 
                         <field name="topic_version_ids" class="oe_field_topic_version_ids"
                             domain="[('topic_id', '=', topic_id)]" string="Versions"
                             context="{'default_topic_id': topic_id}"
                             attrs="{'readonly': [('topic_id', '=', False)]}"
-                            widget="many2many_tags" options="{'no_create_edit': True}" />
+                            widget="many2many_tags"
+                            options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
 
 
                         <field name="category_ids" class="oe_field_category_ids"
                             domain="[('topic_id', '=', topic_id)]"
                             context="{'default_topic_id': topic_id}"
                             attrs="{'readonly': [('topic_id', '=', False)]}"
-                            widget="many2many_tags" options="{'no_create_edit': True}" />
+                            widget="many2many_tags"
+                            options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
 
                         <field name="autocategorize" class="oe_field_autocategorize"
                             string="Autocategorize" />
@@ -86,7 +88,7 @@
 
                         <field name="owner_id" class="oe_field_owner_id"
                             groups="academy_base.academy_group_technical"
-                            options="{'no_create_edit': True, 'no_open': True}" />
+                            options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
 
                         <field name="authorship" class="oe_field_authorship" />
                         <!-- <div colspan="2" class="pr-4">

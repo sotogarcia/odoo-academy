@@ -22,6 +22,7 @@ from re import split
 # pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
 from odoo.tools.translate import _
+from odoo.tools import safe_eval
 
 from .utils.sql_operations import ACADEMY_TESTS_SHUFFLE
 from .utils.sql_operations import ACADEMY_TESTS_ARRANGE_BLOCKS
@@ -663,26 +664,35 @@ class AcademyTestsTest(models.Model):
         }
 
     def show_questions(self):
-        """ Runs default view for academy.tests.question with a filter to
-        show only current test questions
-        """
-
         self.ensure_one()
-
-        xid = 'academy_tests.action_test_question_links_act_window'
-        action = self.env.ref(xid)
-        domain = eval_domain(action.domain)
-        link_ids = self.mapped('question_ids.id')
-
-        return {
-            'name': _('Questions links'),
-            'view_mode': 'kanban,tree,form,pivot',
-            'res_model': 'academy.tests.test.question.rel',
+    
+        action_xid = 'academy_tests.action_test_question_links_act_window'
+        act_wnd = self.env.ref(action_xid)
+    
+        name = (self.name or _('Questions links'))
+        if len(name) > 64:
+            name = f'{name[:61]}...'
+    
+        context = self.env.context.copy()
+        context.update(safe_eval(act_wnd.context or '{}'))
+        context.update({'default_test_id': self.id})
+    
+        domain = eval_domain(act_wnd.domain)
+        domain = AND([domain, [('test_id', '=', self.id)]])
+    
+        serialized = {
             'type': 'ir.actions.act_window',
+            'res_model': act_wnd.res_model,
             'target': 'current',
-            'domain': AND([domain, [('id', 'in', link_ids)]]),
-            'context': {'default_test_id': self.id},
+            'name': name,
+            'view_mode': act_wnd.view_mode,
+            'domain': domain,
+            'context': context,
+            'search_view_id': act_wnd.search_view_id.id,
+            'help': act_wnd.help
         }
+    
+        return serialized
 
     @api.model
     def create(self, values):
@@ -693,7 +703,7 @@ class AcademyTestsTest(models.Model):
         """
 
         result = super(AcademyTestsTest, self).create(values)
-        result.resequence()
+        # result.resequence()
 
         return result
 
@@ -705,7 +715,7 @@ class AcademyTestsTest(models.Model):
         """
 
         result = super(AcademyTestsTest, self).write(values)
-        self.resequence()
+        # self.resequence()
 
         return result
 
@@ -1196,3 +1206,7 @@ class AcademyTestsTest(models.Model):
             sql = wrapper_sql.format(sql, wrap_clause)
 
         return sql
+
+    def view_shuffle_wizard(self, use_context=True):
+        link_set = self.mapped('question_ids')
+        return link_set.view_shuffle_wizard(use_context=False)

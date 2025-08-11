@@ -41,6 +41,7 @@
                     <field name="attachment_count" class="oe_field_attachment_count" string="Attachments" />
                     <field name="manager_id" class="oe_field_manager_id" />
                     <field name="depends_on_id" class="oe_field_depends_on_id" invisible="1" />
+                    <field name="tag_ids" class="oe_field_tag_ids" widget="many2many_tags" optional="hide" />
                </tree>
             </field>
         </record>
@@ -68,6 +69,10 @@
                             <button name="show_impugnments" type="object"
                                 class="oe_stat_button oe_read_only" icon="fa-exclamation">
                                 <field name="impugnment_count" class="oe_field_impugnment_count" />&#160;Discuss
+                            </button>
+                            <button name="update_questions_dialog" type="object"
+                                class="oe_stat_button oe_read_only" icon="fa-file-text">
+                                <span>Text edit</span>
                             </button>
                             <button name="switch_status" type="object" attrs="{'invisible': [('status', '&lt;&gt;', 'ready')]}"
                                 class="oe_stat_button oe_read_only text-success" icon="fa-pencil-square-o">
@@ -157,6 +162,7 @@
                                         context="{'default_topic_id': topic_id}" />
                                     <field name="tag_ids" class="oe_field_tag_ids"
                                         widget="many2many_tags"
+                                        context="{'search_default_my_tags': 1}"
                                         domain="['|', ('private', '=', False), ('create_uid', '=', uid)]"
                                         options="{'no_quick_create': True, 'no_create': False, 'no_open': True}"/>
 

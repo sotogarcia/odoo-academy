@@ -273,9 +273,25 @@ class AcademyTestsQuestionCategorizeWizard(models.TransientModel):
         before wizard opening
         """
 
-        ids = self.env.context.get('active_ids', [])
+        question_model = 'academy.tests.question'
+        link_model = 'academy.tests.test.question.rel'
 
-        return [(6, None, ids)] if ids else False
+        context = self.env.context
+
+        active_model = context.get('active_model', [])
+        if active_model not in (question_model, link_model):
+            message = _('This wizard cannot be used with model: %s')
+            raise ValidationError(message % active_model)
+
+        model_obj = self.env[active_model]
+
+        active_ids = context.get('active_ids', [])
+        result_set = model_obj.browse(active_ids or [])
+
+        if active_model == 'academy.tests.test.question.rel':
+            result_set = result_set.mapped('question_id')
+
+        return result_set
 
     # ------------------------------- EVENTS ----------------------------------
 

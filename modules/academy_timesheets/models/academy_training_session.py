@@ -632,7 +632,7 @@ class AcademyTrainingSession(models.Model):
         readonly=True,
         index=True,
         default=None,
-        help='List with studentswho have not been invited',
+        help='List with students who have not been invited',
         comodel_name='academy.training.session.affinity',
         inverse_name='session_id',
         domain=[("invited", "<>", True)],
@@ -1367,12 +1367,12 @@ class AcademyTrainingSession(models.Model):
                 invitation = invitation_obj.search(domain, limit=1)
 
                 if invitation:
-                    o2m_op = (1, invitation.id, {'active': True})
+                    o2m_op = (1, invitation.id, {'active': enrol.active})
                 else:
                     o2m_op = (0, 0, {
                         'session_id': record.id,
                         'enrolment_id': enrol.id,
-                        'active': True
+                        'active': enrol.active
                     })
 
                 invitation_ops.append(o2m_op)

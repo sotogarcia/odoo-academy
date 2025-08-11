@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <!-- VIEWS: "Civil services Process Event"
+        
+            - Model·········: civil.service.tracker.process.event
+            - _rec_name·····: name
+            - Domain········: []
+            - Context·······: {}
+            - Parent menu ··: menu_civil_service_tracker_configuration
+            - View priority·: 16    Sequence····: 10
+            - Action help···: No process events have been defined yet.
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        
+        <!-- Tree view for "civil.service.tracker.process.event" -->
+        <record id="view_civil_service_tracker_process_event_tree" model="ir.ui.view">
+            <field name="name">view.civil.service.tracker.process.event.tree</field>
+            <field name="model">civil.service.tracker.process.event</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <tree string="civil_service_tracker_process_event_tree" create="1" delete="1" edit="1">
+                    <field name="id" invisible="1"/>
+                    <field name="active" invisible="1"/>
+                    <field name="attachment_id" invisible="1" />
+
+                    <field name="selection_process_id" class="oe_field_selection_process_id" />
+                    <field name="name" class="oe_field_name" />
+                    <field name="event_date" class="oe_field_event_date" />
+                    <field name="event_type_id" class="oe_field_event_type_id" />
+                    <field name="issuer_partner_id" class="oe_field_issuer_partner_id" optional="hide" />
+                    <field name="attachment_id" class="oe_field_attachment_id" optional="hide" />
+                    <field name="attachment_url" class="oe_field_effective_url" widget="url_truncated" />
+                    <field name="description" class="oe_field_description" optional="show" />
+                </tree>
+            </field>
+        </record>
+        
+        <!-- Form view for "civil.service.tracker.process.event" -->
+        <record id="view_civil_service_tracker_process_event_form" model="ir.ui.view">
+            <field name="name">view.civil.service.tracker.process.event.form</field>
+            <field name="model">civil.service.tracker.process.event</field>
+            <field name="type">form</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <form string="civil_service_tracker_process_event_form" create="1" delete="1" edit="1">
+                    <sheet>
+                        <field name="id" invisible="1"/>
+                        <field name="active" invisible="1"/>
+                        <field name="attachment_id" invisible="1" />
+                        
+                        <div class="oe_button_box" name="button_box" />
+                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only" />
+                            <h1>
+                                <field name="name" class="oe_field_name" 
+                                    attrs="{'readonly': [('event_type_id', '=', False)]}" />
+                            </h1>
+                        </div>
+
+                        <group col="4">
+                            <field name="event_type_id" class="oe_field_event_type_id" />
+                            <field name="selection_process_id" class="oe_field_selection_process_id"
+                                options="{'no_quick_create': True, 'no_create': False, 'no_open': False}" 
+                                attrs="{'readonly': [('event_type_id', '=', False)]}" />
+                            <field name="event_date" class="oe_field_event_date" 
+                                    attrs="{'readonly': [('event_type_id', '=', False)]}" />
+                            <field name="all_day" class="oe_field_all_day"
+                                    attrs="{'readonly': [('event_type_id', '=', False)]}" />
+                            <field name="issuer_partner_id" class="oe_field_issuer_partner_id"
+                                options="{'no_quick_create': True, 'no_create': False, 'no_open': False}" />
+                            <field name="attachment_url" class="oe_field_attachment_url oe_read_only" widget="url_truncated"
+                                attrs="{'invisible': [('attachment_id', '=', False)]}" />
+                        </group>
+
+                        <group col="4" string="Attachment" class="oe_edit_only">
+                            <field name="attach_new_type" class="oe_field_attach_new_type o_horizontal" 
+                                widget="radio" options="{'horizontal': true}"
+                                attrs="{'readonly': [('event_type_id', '=', False)]}" />
+
+                            <field name="attach_new_url" class="oe_field_attach_new_url" widget="url" colspan="4" string="New URL"
+                                attrs="{'invisible': ['|', ('event_type_id', '=', False), ('attach_new_type', '&lt;&gt;', 'url')]}"  />
+
+                            <field name="attach_new_binary" filename="attach_new_name" class="oe_field_attach_new_binary"
+                                widget="binary" attrs="{'invisible': ['|', ('event_type_id', '=', False), ('attach_new_type', '&lt;&gt;', 'binary')]}" />
+                            <field name="attach_new_name" class="oe_field_attach_new_name"
+                                attrs="{'invisible': ['|', ('event_type_id', '=', False), ('attach_new_type', '&lt;&gt;', 'binary')]}" />
+                        </group>
+
+                        <group col="2" string="Description">
+                            <field name="description" class="oe_field_description" nolabel="1" />
+                        </group>
+
+                    </sheet>
+
+                </form>
+            </field>
+        </record>
+        
+        <record id="view_civil_service_tracker_process_event_calendar" model="ir.ui.view">
+            <field name="name">view.civil.service.tracker.process.event.calendar</field>
+            <field name="model">civil.service.tracker.process.event</field>
+            <field name="type">calendar</field>
+            <field name="arch" type="xml">
+                <calendar string="Events Calendar" date_start="event_date" all_day="all_day" color="selection_process_id"
+                          quick_add="false" mode="month" event_open_popup="true">
+                    <field name="event_type_id" class="oe_field_event_type_id"
+                        options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
+                    <field name="selection_process_id" class="oe_field_selection_process_id"
+                        options="{'no_quick_create': True, 'no_create': True, 'no_open': False}" />
+                    <field name="attachment_url" class="oe_field_attachment_url" widget="url_truncated" />
+                </calendar>
+            </field>
+        </record>
+
+
+        <!-- Search view for "civil.service.tracker.process.event" -->
+        <record id="view_civil_service_tracker_process_event_search" model="ir.ui.view">
+            <field name="name">view.civil.service.tracker.process.event.search</field>
+            <field name="model">civil.service.tracker.process.event</field>
+            <field name="type">search</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <search string="civil_service_tracker_process_event_search">
+                    <field name="name" />
+                    <field name="event_date" />
+                    <field name="event_type_id" />
+                    <field name="selection_process_id" />
+                    <field name="issuer_partner_id" />
+
+                    <separator />
+                    <filter string="By process"
+                        name="group_by_selection_process_id"
+                        domain="[]"
+                        context="{'group_by': 'selection_process_id'}"
+                        help="Group events by their associated selection process." />
+
+                    <filter string="By issuer"
+                        name="group_by_issuer_partner_id"
+                        domain="[]"
+                        context="{'group_by': 'issuer_partner_id'}"
+                        help="Group events by the entity responsible for publishing them." />
+
+                    <filter string="By type"
+                        name="group_by_event_type_id"
+                        domain="[]"
+                        context="{'group_by': 'event_type_id'}"
+                        help="Group events by their classification or category." />
+
+                    <separator />
+                    <filter name="inactive" string="Archived" 
+                        domain="[('active','=',False)]"
+                        help="Filter to show records marked as inactive."/>
+                </search>
+            </field>
+        </record>
+        
+        <!-- Main window action for model.name -->
+        <record id="action_civil_services_process_event_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Process events</field>
+            <field name="res_model">civil.service.tracker.process.event</field>
+            <field name="view_mode">calendar,tree,form</field>
+            <field name="target">current</field>
+            <field name="domain">[]</field>
+            <field name="context">{'include_process_in_event_name': True}</field>
+            <field name="search_view_id" ref="view_civil_service_tracker_process_event_search" />
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to add new process events.
+                </p><p>
+                    No process events have been defined yet.
+                </p>
+            </field>
+        </record>
+        
+        <!-- Main menu for model.name -->
+        <record id="menu_civil_services_process_event" model="ir.ui.menu" >
+            <field name="name">Process Events</field>
+            <field name="sequence" eval="20" />
+            <field name="action" ref="action_civil_services_process_event_act_window" />
+            <field name="parent_id" ref="menu_civil_service_tracker_tracking" />
+        </record>
+ 
+        <!-- Attach the window action to the module main menú
+            ······························································· -->
+
+        <record id="menu_civil_service_tracker_root" model="ir.ui.menu" >
+            <field name="action" ref="action_civil_services_process_event_act_window" />
+        </record>
+
+        <!-- ······························································ -->
+
+        <record id="view_civil_service_tracker_process_event_tree_on_process" model="ir.ui.view">
+            <field name="name">view.civil.service.tracker.process.event.tree.on.process</field>
+            <field name="model">civil.service.tracker.process.event</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="99" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="view_civil_service_tracker_process_event_tree" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='selection_process_id']" position="replace" />
+            </field>
+        </record>
+
+        <record id="view_civil_service_tracker_process_event_form_on_process" model="ir.ui.view">
+            <field name="name">view.civil.service.tracker.process.event.form.on.process</field>
+            <field name="model">civil.service.tracker.process.event</field>
+            <field name="type">form</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="99" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="view_civil_service_tracker_process_event_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='selection_process_id']" position="replace" />
+            </field>
+        </record>
+
+    </data>
+</openerp>

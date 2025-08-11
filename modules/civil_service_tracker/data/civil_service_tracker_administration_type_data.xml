@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <!-- Administración General del Estado (AGE) -->
+        <record id="civil_service_tracker_administration_type_age" model="civil.service.tracker.administration.type">
+            <field name="name">General State Administration (AGE)</field>
+            <field name="description">General State Administration</field>
+            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
+        </record>
+
+        <!-- Administración Institucional del Estado -->
+        <record id="civil_service_tracker_administration_type_state_institutional" model="civil.service.tracker.administration.type">
+            <field name="name">State Institutional Administration</field>
+            <field name="description">Institutions and agencies under the State</field>
+            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
+        </record>
+
+        <!-- Administración de la Seguridad Social -->
+        <record id="civil_service_tracker_administration_type_social_security" model="civil.service.tracker.administration.type">
+            <field name="name">Social Security Administration</field>
+            <field name="description">Public bodies managing Social Security at national level</field>
+            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
+        </record>
+
+        <!-- Administración de Justicia (ámbito estatal) -->
+        <record id="civil_service_tracker_administration_type_state_justice" model="civil.service.tracker.administration.type">
+            <field name="name">State-level Justice Administration</field>
+            <field name="description">Justice services under State jurisdiction</field>
+            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
+        </record>
+
+        <!-- Empresas públicas estatales -->
+        <record id="civil_service_tracker_administration_type_state_public_companies" model="civil.service.tracker.administration.type">
+            <field name="name">State-owned Companies</field>
+            <field name="description">Public companies managed by the national government</field>
+            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
+        </record>
+
+        <!-- Administración General de la Comunidad Autónoma -->
+        <record id="civil_service_tracker_administration_type_autonomous_general" model="civil.service.tracker.administration.type">
+            <field name="name">Autonomous Community Administration</field>
+            <field name="description">General administration of the autonomous region</field>
+            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_autonomous"/>
+        </record>
+
+        <!-- Administración Institucional de la Comunidad Autónoma -->
+        <record id="civil_service_tracker_administration_type_autonomous_institutional" model="civil.service.tracker.administration.type">
+            <field name="name">Autonomous Institutional Administration</field>
+            <field name="description">Agencies and institutions under the autonomous community</field>
+            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_autonomous"/>
+        </record>
+
+        <!-- Administración Parlamentaria autonómica -->
+        <record id="civil_service_tracker_administration_type_autonomous_parliamentary" model="civil.service.tracker.administration.type">
+            <field name="name">Autonomous Parliamentary Administration</field>
+            <field name="description">Administrative structure of the regional parliament</field>
+            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_autonomous"/>
+        </record>
+
+        <!-- Administración de Justicia (ámbito autonómico) -->
+        <record id="civil_service_tracker_administration_type_autonomous_justice" model="civil.service.tracker.administration.type">
+            <field name="name">Autonomous-level Justice Administration</field>
+            <field name="description">Justice services managed by the autonomous region</field>
+            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_autonomous"/>
+        </record>
+
+        <!-- Universidades -->
+        <record id="civil_service_tracker_administration_type_autonomous_universities" model="civil.service.tracker.administration.type">
+            <field name="name">Autonomous Universities</field>
+            <field name="description">Public universities managed by the autonomous community</field>
+            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_autonomous"/>
+        </record>
+
+        <!-- Otras entidades públicas autonómicas -->
+        <record id="civil_service_tracker_administration_type_autonomous_other" model="civil.service.tracker.administration.type">
+            <field name="name">Other Autonomous Entities</field>
+            <field name="description">Other public organisations of the autonomous community</field>
+            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_autonomous"/>
+        </record>
+
+        <!-- Empresas públicas autonómicas -->
+        <record id="civil_service_tracker_administration_type_autonomous_public_companies" model="civil.service.tracker.administration.type">
+            <field name="name">Autonomous Public Companies</field>
+            <field name="description">Public companies managed by the autonomous community</field>
+            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_autonomous"/>
+        </record>
+
+        <!-- Entidades Locales Territoriales -->
+        <record id="civil_service_tracker_administration_type_local_entities" model="civil.service.tracker.administration.type">
+            <field name="name">Local Territorial Entities</field>
+            <field name="description">Provincial councils, city councils, and other local entities</field>
+            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_local"/>
+        </record>
+
+        <!-- Estructura administrativa dentro de un Ayuntamiento -->
+        <record id="civil_service_tracker_administration_type_local_internal_structure" model="civil.service.tracker.administration.type">
+            <field name="name">Municipal Administrative Structure</field>
+            <field name="description">Departments and units within a city or town council</field>
+            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_local"/>
+        </record>
+
+        <!-- Organismos autónomos municipales -->
+        <record id="civil_service_tracker_administration_type_local_autonomous_bodies" model="civil.service.tracker.administration.type">
+            <field name="name">Municipal Autonomous Bodies</field>
+            <field name="description">Municipal bodies with independent management</field>
+            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_local"/>
+        </record>
+
+        <!-- Entes del sector público local -->
+        <record id="civil_service_tracker_administration_type_local_public_sector" model="civil.service.tracker.administration.type">
+            <field name="name">Local Public Sector Entities</field>
+            <field name="description">Companies and organisations of the local public sector</field>
+            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_local"/>
+        </record>
+
+    </data>
+</openerp>

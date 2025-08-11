@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <!-- VIEWS: "Civil services Contract Type"
+        
+            - Model·········: civil.service.tracker.contract.type
+            - _rec_name·····: name
+            - Domain········: []
+            - Context·······: {}
+            - Parent menu ··: menu_civil_service_tracker_configuration
+            - View priority·: 16    Sequence····: 10
+            - Action help···: No contract types have been defined yet.
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        
+        <!-- Tree view for "civil.service.tracker.contract.type" -->
+        <record id="view_civil_service_tracker_contract_type_tree" model="ir.ui.view">
+            <field name="name">view.civil.service.tracker.contract.type.tree</field>
+            <field name="model">civil.service.tracker.contract.type</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <tree string="civil_service_tracker_contract_type_tree" create="1" delete="1" edit="1" editable="bottom">
+                    <field name="id" invisible="1"/>
+                    <field name="active" invisible="1"/>
+
+                    <field name="name" class="oe_field_name" />
+                    <field name="description" class="oe_field_description" />
+                        
+                </tree>
+            </field>
+        </record>
+        
+        <!-- Form view for "civil.service.tracker.contract.type" -->
+        <record id="view_civil_service_tracker_contract_type_form" model="ir.ui.view">
+            <field name="name">view.civil.service.tracker.contract.type.form</field>
+            <field name="model">civil.service.tracker.contract.type</field>
+            <field name="type">form</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <form string="civil_service_tracker_contract_type_form" create="1" delete="1" edit="1">
+                    <sheet>
+                        <field name="id" invisible="1"/>
+                        <field name="active" invisible="1"/>
+                        
+                        <div class="oe_button_box" name="button_box" />
+                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only" />
+                            <h1>
+                                <field name="name" class="oe_field_name" />
+                            </h1>
+                        </div>
+
+                        <group col="2" string="Description">
+                            <field name="description" class="oe_field_description" nolabel="1" />
+                        </group>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+        <!-- Search view for "civil.service.tracker.contract.type" -->
+        <record id="view_civil_service_tracker_contract_type_search" model="ir.ui.view">
+            <field name="name">view.civil.service.tracker.contract.type.search</field>
+            <field name="model">civil.service.tracker.contract.type</field>
+            <field name="type">search</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <search string="civil_service_tracker_contract_type_search">
+                    <field name="name" />
+
+                    <filter name="inactive" string="Archived" 
+                        domain="[('active','=',False)]"
+                        help="Filter to show records marked as inactive."/>
+                </search>
+            </field>
+        </record>
+        
+        <!-- Main window action for model.name -->
+        <record id="action_civil_services_contract_type_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Contract types</field>
+            <field name="res_model">civil.service.tracker.contract.type</field>
+            <field name="view_mode">tree,form</field>
+            <field name="target">current</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="search_view_id" ref="view_civil_service_tracker_contract_type_search" />
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to add new contract types.
+                </p><p>
+                    No contract types have been defined yet.
+                </p>
+            </field>
+        </record>
+        
+        <!-- Main menu for model.name -->
+        <record id="menu_civil_services_contract_type" model="ir.ui.menu" >
+            <field name="name">Contract Types</field>
+            <field name="sequence" eval="60" />
+            <field name="action" ref="action_civil_services_contract_type_act_window" />
+            <field name="parent_id" ref="menu_civil_service_tracker_configuration" />
+        </record>
+
+    </data>
+</openerp>

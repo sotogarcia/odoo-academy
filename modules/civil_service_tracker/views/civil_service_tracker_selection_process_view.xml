@@ -1,0 +1,478 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <!-- VIEWS: "Civil services Selection Process"
+        
+            - Model·········: civil.service.tracker.selection.process
+            - _rec_name·····: name
+            - Domain········: []
+            - Context·······: {}
+            - Parent menu ··: menu_civil_service_tracker_configuration
+            - View priority·: 16    Sequence····: 10
+            - Action help···: No selection processs have been defined yet.
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        
+        <!-- Tree view for "civil.service.tracker.selection.process" -->
+        <record id="view_civil_service_tracker_selection_process_tree" model="ir.ui.view">
+            <field name="name">view.civil.service.tracker.selection.process.tree</field>
+            <field name="model">civil.service.tracker.selection.process</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <tree string="civil_service_tracker_selection_process_tree" create="1" delete="1" edit="1">
+                    <field name="id" invisible="1"/>
+                    <field name="active" invisible="1"/>
+
+                    <field name="display_name" class="oe_field_display_name" string="Name" />
+                    <field name="name" class="oe_field_name" optional="hide" string="Full name" />
+                    <field name="short_name" class="oe_field_short_name" optional="hide" string="Short name" />
+
+                    <field name="public_offer_id" class="oe_field_public_offer_id" optional="hide" />
+                    <field name="offer_year" class="oe_field_offer_year" optional="hide" />
+
+                    <field name="selection_method_id" class="oe_field_selection_method_id" optional="show" />
+                    <field name="employment_group_id" class="oe_field_employment_group_id" optional="hide" />
+                    <field name="service_position_id" class="oe_field_service_position_id" optional="hide" />
+                    <field name="contract_type_id" class="oe_field_contract_type_id" optional="hide" />
+                    <field name="access_type_id" class="oe_field_access_type_id" optional="hide" />
+                    
+                    <field name="stage_id" class="oe_field_stage_id" optional="show"
+                        options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
+                    <field name="process_event_ids" class="oe_field_process_event_ids" optional="show"
+                        options="{'no_quick_create': True, 'no_create': False, 'no_open': False}" />
+                    <field name="last_event_id" class="oe_field_last_event_id" optional="show"
+                        options="{'no_quick_create': True, 'no_create': True, 'no_open': False}" />
+                    <field name="last_event_date" class="oe_field_last_event_date" optional="show" />
+                    
+                    <field name="offer_date" class="oe_field_offer_date text-center" optional="hide" />
+                    <field name="call_date" class="oe_field_call_date text-center" optional="show" />
+                    <field name="ready_date" class="oe_field_ready_date text-center" optional="show" />
+                    <field name="resolution_date" class="oe_field_resolution_date text-center" optional="hide" />
+                    
+                    <field name="position_total" class="oe_field_position_total text-center" optional="show" />
+                    
+                    <field name="dossier_summary" class="oe_field_dossier_summary text-center" 
+                        optional="hide" string="Dossier" groups="civil_service_tracker.group_civil_service_tracker_dossier_editor"/>
+                    <field name="public_administration_id" class="oe_field_public_administration_id" optional="hide"
+                        options="{'no_quick_create': True, 'no_create': True, 'no_open': False}" />
+                    <field name="description" class="oe_field_description" optional="hide" />
+                    <field name="token" class="oe_field_token" optional="hide" />
+
+                </tree>
+            </field>
+        </record>
+        
+        <!-- Form view for "civil.service.tracker.selection.process" -->
+        <record id="view_civil_service_tracker_selection_process_form" model="ir.ui.view">
+            <field name="name">view.civil.service.tracker.selection.process.form</field>
+            <field name="model">civil.service.tracker.selection.process</field>
+            <field name="type">form</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <form string="civil_service_tracker_selection_process_form" create="1" delete="1" edit="1">
+                    <sheet>
+                        <field name="id" invisible="1"/>
+                        <field name="active" invisible="1"/>
+
+                        <div class="oe_button_box" name="button_box" />
+
+                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+                        <field name="image_1920" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}'/>
+
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only" />
+                            <h1>
+                                <field name="name" class="oe_field_name" widget="text" required="0" />
+                            </h1>
+                        </div>
+
+                        <group col="4" string="Offer" name="offer">
+                            <field name="public_offer_id" class="oe_field_public_offer_id"
+                                options="{'no_quick_create': True, 'no_create': False, 'no_open': False}"
+                                readonly="context.get('default_public_offer_id', False)" force_save="1" />
+                            <field name="offer_year" class="oe_field_offer_year" />
+                            <field name="public_administration_id" class="oe_field_public_administration_id"
+                                options="{'no_quick_create': True, 'no_create': True, 'no_open': False}" />
+                            <field name="issuing_authority_id" class="oe_field_issuing_authority_id" string="Authority"
+                                options="{'no_quick_create': True, 'no_create': True, 'no_open': False}" />
+                        </group>
+
+                        <group col="4" string="Profile" name="profile">
+                            
+                            <field name="employment_group_id" class="oe_field_employment_group_id"
+                                options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
+                            <field name="service_position_id" class="oe_field_service_position_id"
+                                options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"
+                                attrs="{'readonly': [('employment_group_id', '=', False)]}" />
+                            <separator colspan="4" />
+                            <field name="contract_type_id" class="oe_field_contract_type_id"
+                                options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
+                            <field name="access_type_id" class="oe_field_access_type_id"
+                                options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
+                            <field name="selection_method_id" class="oe_field_selection_method_id"
+                                options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
+                            <field name="position_total" class="oe_field_position_total"
+                                options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
+                        
+                        </group>
+
+                        <group col="4" string="Dates and events">
+                            <field name="offer_date" class="oe_field_offer_date" string="Offer" />
+                            <field name="call_date" class="oe_field_call_date" string="Call" />
+                            <field name="resolution_date" class="oe_field_resolution_date" string="Resolution" />
+                            <field name="stage_id" class="oe_field_stage_id"
+                                options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
+                            <field name="last_event_id" class="oe_field_last_event_id"
+                                options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
+                            <field name="last_event_date" class="oe_field_last_event_date" string="Last event (Date)" />
+                        </group>
+
+                        <notebook>
+                            <page string="Events" class="oe_page_events" accesskey="E">
+                                <group col="2" class="w-100">
+                                    <field name="process_event_ids" class="oe_field_process_event_ids" nolabel="1"
+                                            options="{'no_quick_create': True, 'no_create': False, 'no_open': False}"
+                                        context="{
+                                            'tree_view_ref': 'civil_service_tracker.view_civil_service_tracker_process_event_tree_on_process',
+                                            'form_view_ref': 'civil_service_tracker.view_civil_service_tracker_process_event_form_on_process'
+                                        }" />
+                                </group>
+                                <group col="4">
+                                    <button name="synchronize_offer_approval_event" string="Approval Event" type="object" 
+                                        default_focus="0" icon="fa-refresh" class="btn btn-sm btn-info oe_edit_only" colspan="2"
+                                        help="Creates or updates the event that records the official approval of the linked public offer." 
+                                        attrs="{'invisible': ['|', '|', ('public_offer_id', '=', False), ('offer_year', '=', False), ('position_total', '=', 0)]}" />
+                                </group>
+                            </page>
+
+                            <page string="Vacancies" class="oe_page_vacancies" accesskey="V">
+                                <group col="2" class="w-100">
+                                    <field name="vacancy_position_ids" class="oe_field_vacancy_position_ids" nolabel="1"
+                                        options="{'no_quick_create': True, 'no_create': False, 'no_open': False}"
+                                        context="{'tree_view_ref': 'civil_service_tracker.view_civil_service_tracker_vacancy_position_tree_embed'}" />
+                                </group>
+                            </page>
+
+                            <page id="page-details" string="Details" class="oe_page_details" accesskey="D">
+                                <group col="4" class="mt-4" id="group-details-salary" string="Salary forecast">
+                                    <field name="salary_min" class="oe_field_salary_min" wiget="monetary" />
+                                    <field name="salary_max" class="oe_field_salary_max" wiget="monetary" />
+                                    <field name="currency_id" class="oe_field_currency_id" />
+                                    <field name="annual_payments" class="oe_field_annual_payments" />
+                                </group>
+                                <group col="4" string="Description">
+                                    <field name="description" class="oe_field_description" colspan="2" widget="html" nolabel="1" />
+                                </group>
+                                <group col="2" string="Access requirements" id="group-access-requirements">
+                                    <field name="access_requirements" class="oe_field_access_requirements" widget="html" nolabel="1" />
+                                </group>
+                                <group col="2" string="Exam" id="group-details-exam">
+                                    <field name="exam_description" class="oe_field_exam_description" widget="html" nolabel="1" />
+                                </group>
+                                <group col="2" string="Syllabus" id="group-details-syllabus">
+                                    <field name="syllabus_details" class="oe_field_syllabus_details" widget="html" nolabel="1" />
+                                </group>
+                                <group col="2" string="Job description" id="group-job-description">
+                                    <field name="job_description" class="oe_field_job_description" widget="html" nolabel="1" />
+                                </group>
+
+                            </page>
+
+                            <page string="Dossier" class="oe_page_knowledgebase_" accesskey="K" 
+                                groups="civil_service_tracker.group_civil_service_tracker_dossier_editor">
+
+                                <group col="2" colspan="2" string="Process infographics">
+                                    <field name="process_infographics_ids" class="oe_field_process_infographics_ids" nolabel="1"
+                                        options="{'no_quick_create': True, 'no_create': False, 'no_open': False}"
+                                        groups="civil_service_tracker.group_civil_service_tracker_dossier_editor"
+                                        context="{
+                                          'tree_view_ref': 'civil_service_tracker.view_ir_attachment_tree',
+                                          'default_company_id': None
+                                        }" widget="one2many" />
+                                </group>
+
+                                <group col="2" colspan="2" string="Exam infographics">
+                                    <field name="content_structure_ids" class="oe_field_content_structure_ids" nolabel="1"
+                                        options="{'no_quick_create': True, 'no_create': False, 'no_open': False}"
+                                        groups="civil_service_tracker.group_civil_service_tracker_dossier_editor"
+                                        context="{
+                                          'tree_view_ref': 'civil_service_tracker.view_ir_attachment_tree',
+                                          'default_company_id': None
+                                        }" widget="one2many" />
+                                </group>
+
+                                <group col="2" colspan="2" string="Exam infographics">
+                                    <field name="exam_infographics_ids" class="oe_field_exam_infographics_ids" nolabel="1"
+                                        options="{'no_quick_create': True, 'no_create': False, 'no_open': False}"
+                                        groups="civil_service_tracker.group_civil_service_tracker_dossier_editor"
+                                        context="{
+                                          'tree_view_ref': 'civil_service_tracker.view_ir_attachment_tree',
+                                          'default_company_id': None
+                                        }" widget="one2many" />
+                                </group>
+
+                                <group col="2" colspan="2" string="Syllabus breakdown">
+                                    <field name="syllabus_breakdown_ids" class="oe_field_syllabus_breakdown_ids" nolabel="1"
+                                        options="{'no_quick_create': True, 'no_create': False, 'no_open': False}"
+                                        groups="civil_service_tracker.group_civil_service_tracker_dossier_editor"
+                                        context="{
+                                          'tree_view_ref': 'civil_service_tracker.view_ir_attachment_tree',
+                                          'default_company_id': None
+                                        }" widget="one2many" />
+                                </group>
+
+                                <group col="2" colspan="2" string="Student results">
+                                    <field name="student_results_ids" class="oe_field_student_results_ids" nolabel="1"
+                                        options="{'no_quick_create': True, 'no_create': False, 'no_open': False}"
+                                        groups="civil_service_tracker.group_civil_service_tracker_dossier_editor"
+                                        context="{
+                                          'tree_view_ref': 'civil_service_tracker.view_ir_attachment_tree',
+                                          'default_company_id': None
+                                        }" widget="one2many" />
+                                </group>
+                            </page>
+
+                            <page string="Setup" class="oe_page_setup" accesskey="S">
+                                <group col="4">
+                                    <field name="short_name" class="oe_field_short_name" />
+                                    <field name="ready_date" class="oe_field_ready_date" widget="date" />
+                                </group>
+                                <group col="2" string="Description" class="w-100">
+                                    <field name="description" class="oe_field_description" nolabel="1" />
+                                </group>
+                                <group col="4" string="Publish" class="w-100">
+                                    <field name="token" class="oe_field_token" />
+                                </group>
+                                <group col="4" string="Ownership" groups="record_ownership.record_ownership_proxy">
+                                    <field name="owner_id" class="oe_field_owner_id"
+                                        options="{'no_quick_create': True, 'no_create': True, 'no_open': False}" />
+                                    <field name="subrogate_id" class="oe_field_subrogate_id"
+                                        options="{'no_quick_create': True, 'no_create': True, 'no_open': False}" />
+                                </group>
+                            </page>
+                            
+                            <page id="page-attachments" string="Attachments" class="oe_page_attachments" accesskey="A">
+                                <field name="attachment_ids" class="oe_field_attachment_ids oe_edit_only" widget="one2many"
+                                        options="{'no_quick_create': True, 'no_create': False, 'no_open': False}"
+                                    context="{'tree_view_ref': 'civil_service_tracker.view_ir_attachment_tree'}" />
+                                <field name="aggregated_attachment_ids" class="oe_field_attachment_ids oe_read_only" widget="one2many"
+                                    context="{'tree_view_ref': 'civil_service_tracker.view_ir_attachment_tree'}" />
+                            </page>
+                                
+                        </notebook>
+
+                    </sheet>
+
+                    <!-- Chatter: begin -->
+                    <div class="oe_chatter">
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                    <!-- Chatter: end -->
+
+                </form>
+            </field>
+        </record>
+
+        <!-- Kanban view for "civil.service.tracker.selection.process" -->
+        <record id="view_civil_service_tracker_selection_process_kanban" model="ir.ui.view">
+            <field name="name">view.civil.service.tracker.selection.process.kanban</field>
+            <field name="model">civil.service.tracker.selection.process</field>
+            <field name="type">kanban</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <kanban create="1" delete="1" edit="1" default_group_by="stage_id">
+                    <field name="image_128"/>
+
+                    <field name="display_name" />
+                    <field name="name" />
+                    <field name="stage_id" />
+                    <field name="public_offer_id" />
+                    <field name="offer_date" />
+                    <field name="call_date" />
+                    <field name="resolution_date" />
+                    <field name="offer_year" />
+                    <field name="public_administration_id" />
+                    <field name="vacancy_position_ids" />
+                    <field name="process_event_ids" />
+                    <field name="position_total" />
+
+                    <templates>
+                        <t t-name="kanban-box">
+                            
+                            <div class="oe_kanban_global_click oe_kanban_academy_training_activity">
+                                
+                                <div class="o_kanban_image">
+                                    <t t-if="record.image_128.raw_value">
+                                        <field name="image_128" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}' />
+                                    </t>
+                                    <t t-else="">
+                                        <img t-att-src="_s + &quot;/base/static/img/company_image.png&quot;" class="o_kanban_image" alt="Training activity photo" />
+                                    </t>
+                                </div> <!-- o_kanban_image -->
+
+                                <div class="oe_kanban_details">
+                                    <h4><strong class="oe_partner_heading"><field name="display_name"/></strong></h4>
+                                    <ul>
+                                        <li class="o_ellipsis text-truncate mt-3 mb-1" t-att-title="record.public_administration_id.value">
+                                            <strong><field name="public_administration_id" /></strong>
+                                        </li>
+                                        <li class="o_ellipsis d-flex flex-row justify-content-start my-1">
+                                            <strong class="mr-2">Call:&#160;</strong>
+                                            <span>
+                                                <field name="offer_year" />
+                                                <t t-if="record.offer_date.raw_value">
+                                                    ― <field name="call_date" widget="date" />
+                                                </t>
+                                            </span>
+                                        </li>
+                                        <li class="o_ellipsis d-flex my-1">
+                                            <div class="w-50">
+                                                <strong class="mr-2">Events:&#160;</strong>
+                                                <field name="process_event_count" />
+                                            </div>
+                                            <div class="w-50 ">
+                                                <strong class="mr-2">Vacancies:&#160;</strong>
+                                                <field name="position_total" />
+                                            </div>
+                                        </li>
+                                     </ul>
+                                </div> <!-- oe_kanban_details -->
+                            </div>
+
+                        </t> <!-- kanban-box -->
+                    </templates>
+
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Search view for "civil.service.tracker.selection.process" -->
+        <record id="view_civil_service_tracker_selection_process_search" model="ir.ui.view">
+            <field name="name">view.civil.service.tracker.selection.process.search</field>
+            <field name="model">civil.service.tracker.selection.process</field>
+            <field name="type">search</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <search string="civil_service_tracker_selection_process_search">
+                    <field name="name" />
+                    <field name="public_administration_id" />
+                    <field name="issuing_authority_id" string="Authority" />
+                    <field name="public_offer_id" />
+                    <field name="offer_year" />
+                    <field name="offer_date" />
+                    <field name="stage_id" />
+                    <field name="last_event_id" />
+                    <field name="last_event_date" />
+                    <field name="call_date" />
+                    <field name="resolution_date" />
+                    <field name="token" />
+
+                    <!-- Date state filters -->
+                    <separator />
+                    <filter name="offered" string="With offer date" 
+                        domain="[('offer_date', '!=', False)]"/>
+                    <filter name="not_offered" string="Without offer date" 
+                        domain="[('offer_date', '=', False)]"/>
+
+                    <separator />
+                    <filter name="called" string="With call date" 
+                        domain="[('call_date', '!=', False)]"/>
+                    <filter name="not_called" string="Without call date" 
+                        domain="[('call_date', '=', False)]"/>
+
+                    <separator />
+                    <filter name="resolved" string="With resolution date" 
+                        domain="[('resolution_date', '!=', False)]"/>
+                    <filter name="not_resolved" string="Without resolution date" 
+                        domain="[('resolution_date', '=', False)]"/>
+
+                    <!-- Computed domains using fields_view_get: begin
+                      ····················································· -->
+                    <separator />
+                    <filter name="complete_dossier" string="Complete dossier (Chosen companies)"
+                        domain="[]" groups="civil_service_tracker.group_civil_service_tracker_dossier_editor" />
+                    <filter name="incomplete_dossier" string="Incomplete dossier (Chosen companies)"
+                        domain="[]" groups="civil_service_tracker.group_civil_service_tracker_dossier_editor" />
+                    <!-- Computed domains using fields_view_get: end
+                      ····················································· -->
+
+                    <separator />
+                    <filter name="following" string="I am following"
+                        domain="[('is_followed_by_user', '=', True)]"/>
+                        
+                    <separator />
+                    <filter name="inactive" string="Archived" 
+                        domain="[('active','=',False)]"
+                        help="Filter to show records marked as inactive."/>
+            
+                    <!-- Group by fields -->
+                    <filter name="group_by_public_offer_id" string="By public offer" 
+                        context="{'group_by': 'public_offer_id'}" />
+                    <filter name="group_by_offer_year" string="By call year" 
+                        context="{'group_by': 'offer_year'}" />
+                    <filter name="group_by_stage_id" string="By stage" 
+                        context="{'group_by': 'stage_id'}" />
+                    <filter name="group_by_public_administration_id" string="By administration" 
+                        context="{'group_by': 'public_administration_id'}" />
+
+                </search>
+            </field>
+        </record>
+        
+        <!-- Main window action for model.name -->
+        <record id="action_civil_services_selection_process_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Selection processes</field>
+            <field name="res_model">civil.service.tracker.selection.process</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <field name="target">current</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="search_view_id" ref="view_civil_service_tracker_selection_process_search" />
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to add new selection processes.
+                </p><p>
+                    No selection processs have been defined yet.
+                </p>
+            </field>
+        </record>
+        
+        <!-- Main menu for model.name -->
+        <record id="menu_civil_services_selection_process" model="ir.ui.menu" >
+            <field name="name">Processes</field>
+            <field name="sequence" eval="15" />
+            <field name="action" ref="action_civil_services_selection_process_act_window" />
+            <field name="parent_id" ref="menu_civil_service_tracker_tracking" />
+        </record>
+
+        <!-- ================== Particular Views Section ================== -->
+        
+        <record id="view_civil_service_tracker_selection_process_form_on_offer" model="ir.ui.view">
+            <field name="name">view.civil.service.tracker.selection.process.form.on.offer</field>
+            <field name="model">civil.service.tracker.selection.process</field>
+            <field name="type">form</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="99" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="view_civil_service_tracker_selection_process_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='offer']" position="replace" />
+                <xpath expr="//button[@name='synchronize_offer_approval_event']/.." position="replace" />
+            </field>
+        </record>
+
+    </data>
+</openerp>

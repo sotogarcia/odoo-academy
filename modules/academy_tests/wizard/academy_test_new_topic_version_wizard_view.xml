@@ -30,7 +30,8 @@
 
                     <group states="step1">
                         <field name="topic_id" class="oe_field_topic_id"
-                            attrs="{'readonly': [('topic_id', '&lt;&gt;', False)]}"/>
+                            attrs="{'readonly': [('topic_id', '&lt;&gt;', False)]}"
+                            options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
                         <field name="description" class="oe_field_description" />
                         <separator colspan="2" string="With existing questions" />
                         <field name="update_questions" class="oe_field_update_questions" />
@@ -44,7 +45,8 @@
                             The new version will apply to all existing questions that do not have any of the following categories
                         </div>
                         <field name="chosen_category_ids" class="oe_field_chosen_category_ids"
-                            domain="[('topic_id', '=', topic_id)]" colspan="2" nolabel="1">
+                            domain="[('topic_id', '=', topic_id)]" colspan="2" nolabel="1"
+                            options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" >
                             <tree string="Categories" create="1" delete="1" edit="1" editable="top">
                                 <field name="name" class="oe_field_name" string="Name" />
                             </tree>

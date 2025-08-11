@@ -807,12 +807,15 @@ class AcademyTestsQuestion(models.Model):
                 raise ValidationError(message)
 
     @api.constrains('depends_on_id')
-    def _cyclic_redundancy_check(self):
-        msg = 'Cyclic redundancy error when setting question dependencies.'
+    def _check_no_circular_dependency(self):
+        message = _('Circular dependency detected in question "%s".')
+
         for record in self:
-            dependent_ids = record.dependent_ids.mapped('id')
-            if record.depends_on_id.id in dependent_ids:
-                raise ValidationError(msg)
+            current = record.depends_on_id
+            while current:
+                if current == record:
+                    raise ValidationError(message % record.name)
+                current = current.depends_on_id
 
     # ------------------------- OVERWRITTEN METHODS ---------------------------
 
@@ -1323,6 +1326,24 @@ class AcademyTestsQuestion(models.Model):
 
         return act_dict
 
+    def update_questions_dialog(self):
+        wizard_model = 'academy.tests.update.questions.wizard'
+        
+        wizard_set = self.env[wizard_model]
+        wizard_set = wizard_set.create({})
+        wizard_set.set_questions(self)
+
+        return {
+            'name': _('Update questions'),
+            'type': 'ir.actions.act_window',
+            'res_model': wizard_model,
+            'view_mode': 'form',
+            'views': [(False, 'form')],
+            'target': 'new',
+            'domain': [],
+            'res_id': wizard_set.id
+        }
+
     def show_impugnments(self):
         self.ensure_one()
 
@@ -1521,13 +1542,15 @@ class AcademyTestsQuestion(models.Model):
 
     @staticmethod
     def _round_to_moodle(value):
-        valid = [100.0, 90.0, 83.33333, 80.0, 75.0, 70.0, 66.66667, 60.0, 50.0,
-                 40.0, 33.33333, 30.0, 25.0, 20.0, 16.66667, 14.28571, 12.5,
-                 11.11111, 10.0, 5.0, 0.0]
-        sign = -1 if value < 0 else 1
-        value = min(valid, key=lambda x: abs(x - value))
+        valid = [
+            0, 5, 10, 11.11111, 12.5, 14.28571, 16.66667, 20, 25, 30,
+            33.33333, 40, 50, 60, 66.66667, 70, 75, 80, 83.33333, 90, 100
+        ]
 
-        return sign * value
+        abs_value = abs(value)
+        closest = min(valid, key=lambda x: abs(x - abs_value))
+
+        return closest if value >= 0 else -closest
 
     def _to_moodle(self, name=None, correction_scale=None):
         self.ensure_one()
@@ -1538,8 +1561,11 @@ class AcademyTestsQuestion(models.Model):
             scale_xid = 'academy_tests.academy_tests_correction_scale_default'
             correction_scale = self.env.ref(scale_xid)
 
-        good = correction_scale.right * 100
-        bad = correction_scale.wrong * 100
+        wrong = float(correction_scale.wrong)
+        right = float(correction_scale.right)
+
+        good = 100.0
+        bad = round((wrong / right) * 100.0, 5)
 
         good = self._round_to_moodle(good)
         bad = self._round_to_moodle(bad)
@@ -1552,7 +1578,6 @@ class AcademyTestsQuestion(models.Model):
 
         for answer in self.answer_ids:
             fraction = str(good) if answer.is_correct else str(bad)
-
             self._moodle_append_answer(node, answer, fraction)
 
         return node

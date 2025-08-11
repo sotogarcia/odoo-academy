@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <!-- VIEWS: "Civil services Administration Type"
+        
+            - Model·········: civil.service.tracker.administration.type
+            - _rec_name·····: name
+            - Domain········: []
+            - Context·······: {}
+            - Parent menu ··: menu_civil_service_tracker_configuration
+            - View priority·: 16    Sequence····: 10
+            - Action help···: No administration types have been defined yet.
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        
+        <!-- Tree view for "civil.service.tracker.administration.type" -->
+        <record id="view_civil_service_tracker_administration_type_tree" model="ir.ui.view">
+            <field name="name">view.civil.service.tracker.administration.type.tree</field>
+            <field name="model">civil.service.tracker.administration.type</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <tree string="civil_service_tracker_administration_type_tree" create="1" delete="1" edit="1">
+                    <field name="id" invisible="1"/>
+                    <field name="active" invisible="1"/>
+
+                    <field name="name" class="oe_field_name" />
+                    <field name="public_administration_ids" class="oe_field_administration_ids" />
+                    <field name="administration_scope_id" class="oe_field_administration_scope_id" />
+                    <field name="region_required" class="oe_field_region_required" />
+                    <field name="description" class="oe_field_description" />
+                </tree>
+            </field>
+        </record>
+        
+        <!-- Form view for "civil.service.tracker.administration.type" -->
+        <record id="view_civil_service_tracker_administration_type_form" model="ir.ui.view">
+            <field name="name">view.civil.service.tracker.administration.type.form</field>
+            <field name="model">civil.service.tracker.administration.type</field>
+            <field name="type">form</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <form string="civil_service_tracker_administration_type_form" create="1" delete="1" edit="1">
+                    <sheet>
+                        <field name="id" invisible="1"/>
+                        <field name="active" invisible="1"/>
+                        
+                        <div class="oe_button_box" name="button_box" />
+                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only" />
+                            <h1>
+                                <field name="name" class="oe_field_name" />
+                            </h1>
+                        </div>
+
+                        <group col="2">
+                            <field name="administration_scope_id" class="oe_field_administration_scope_id" />
+                            <field name="description" class="oe_field_description" />
+                        </group>
+
+                        <group col="2" string="Administrations">
+                            <field name="public_administration_ids" class="oe_field_public_administration_ids" nolabel="1" />
+                        </group>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+        <!-- Search view for "civil.service.tracker.administration.type" -->
+        <record id="view_civil_service_tracker_administration_type_search" model="ir.ui.view">
+            <field name="name">view.civil.service.tracker.administration.type.search</field>
+            <field name="model">civil.service.tracker.administration.type</field>
+            <field name="type">search</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <search string="civil_service_tracker_administration_type_search">
+                    <field name="name" />
+                    <field name="public_administration_ids" />
+                    <field name="administration_scope_id" />
+
+                    <separator />
+                    <filter string="With administrations"
+                        name="with_administrations"
+                        domain="[('public_administration_ids', '&lt;&gt;', False)]"
+                        context="{}"
+                        help="" />
+
+                    <filter string="Without administrations"
+                        name="without_administrations"
+                        domain="[('public_administration_ids', '=', False)]"
+                        context="{}"
+                        help="" />
+
+                    <separator />
+                    <filter string="By scope"
+                        name="group_by_administration_scope_id"
+                        domain="[]"
+                        context="{'group_by': 'administration_scope_id'}"
+                        help="" />
+
+                    <separator />
+                    <filter name="inactive" string="Archived" 
+                        domain="[('active','=',False)]"
+                        help="Filter to show records marked as inactive."/>
+                </search>
+            </field>
+        </record>
+        
+        <!-- Main window action for model.name -->
+        <record id="action_civil_services_administration_type_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Administration types</field>
+            <field name="res_model">civil.service.tracker.administration.type</field>
+            <field name="view_mode">tree,form</field>
+            <field name="target">current</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="search_view_id" ref="view_civil_service_tracker_administration_type_search" />
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to add new administration types.
+                </p><p>
+                    No administration types have been defined yet.
+                </p>
+            </field>
+        </record>
+        
+        <!-- Main menu for model.name -->
+        <record id="menu_civil_services_administration_type" model="ir.ui.menu" >
+            <field name="name">Administration Types</field>
+            <field name="sequence" eval="20" />
+            <field name="action" ref="action_civil_services_administration_type_act_window" />
+            <field name="parent_id" ref="menu_civil_service_tracker_configuration" />
+        </record>
+
+
+        <!-- ================== Particular Views Section ================== -->
+        
+        <record id="view_civil_service_tracker_administration_type_tree_on_scope" model="ir.ui.view">
+            <field name="name">view.civil.service.tracker.administration.type.tree.on.scope</field>
+            <field name="model">civil.service.tracker.administration.type</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="99" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="view_civil_service_tracker_administration_type_tree" />
+            <field name="arch" type="xml">
+                <xpath expr="//tree" position="attributes">
+                    <attribute name="editable">bottom</attribute>
+                </xpath>
+                <xpath expr="//field[@name='administration_scope_id']" position="replace" />
+                <xpath expr="//field[@name='region_required']" position="replace" />
+            </field>
+        </record>
+
+    </data>
+</openerp>

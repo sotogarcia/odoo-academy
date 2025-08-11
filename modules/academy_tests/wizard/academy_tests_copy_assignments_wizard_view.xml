@@ -34,13 +34,16 @@
                     </group>
 
                     <group col="2" states="step2">
-                        <field name="training_activity_id" invisible="1" />
-                        <field name="training_ref" class="oe_field_training_ref" />
+                        <field name="training_activity_id" invisible="1"
+                            options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
+                        <field name="training_ref" class="oe_field_training_ref"
+                            options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
                         <field name="choose_actions" class="oe_field_choose_actions"
                             attrs="{'invisible': [('training_activity_id', '=', False)]}" />
                         <field name="training_action_ids" class="oe_field_training_action_ids" widget="many2many_tags"
                             attrs="{'invisible': ['|', ('training_activity_id', '=', False), ('choose_actions', '&lt;&gt;', True)]}"
-                            domain="[('training_activity_id', '=', training_activity_id)]" />
+                            domain="[('training_activity_id', '=', training_activity_id)]"
+                            options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
                     </group>
 
                     <footer />

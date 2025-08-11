@@ -70,10 +70,14 @@
                                 <group col="4" string="Description">
                                     <field name="description" class="oe_field_description" colspan="2" nolabel="1" />
                                 </group>
+                                <group col="4" string="Publish">
+                                    <field name="token" class="oe_field_token" />
+                                </group>
                                 <group col="4" string="Ownership" groups="record_ownership.record_ownership_proxy">
-                                    <field name="owner_id" class="oe_field_owner_id oe_read_only" />
+                                    <field name="owner_id" class="oe_field_owner_id" />
                                     <field name="subrogate_id" class="oe_field_subrogate_id" />
-                                </group>                            </page>
+                                </group>                            
+                            </page>
                             <page string="Resources" class="oe_page_resources" accesskey="R">
                                 <field name="module_resource_ids"
                                     class="oe_field_module_resource_ids oe_edit_only" />

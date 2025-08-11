@@ -62,7 +62,8 @@ if records:
             <field name="binding_view_types">form</field>
             <field name="groups_id" eval="[(4, ref('academy_base.academy_group_teacher'))]"/>
         </record>
-
+        
+        <!-- Old method. This has been replaced by a wizard
         <record id="action_shuffle_the_questions" model="ir.actions.server">
             <field name="type">ir.actions.server</field>
             <field name="name">Shuffle</field>
@@ -73,7 +74,7 @@ if records:
             <field name="binding_model_id" ref="academy_tests.model_academy_tests_test" />
             <field name="binding_view_types">list,form</field>
             <field name="groups_id" eval="[(4, ref('academy_base.academy_group_teacher'))]"/>
-        </record>
+        </record> -->
 
         <record id="action_view_enrolment_available_questions_server" model="ir.actions.server">
             <field name="type">ir.actions.server</field>

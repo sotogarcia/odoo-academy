@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="civil_service_tracker_administration_scope_state" model="civil.service.tracker.administration.scope">
+            <field name="name">State-level</field>
+            <field name="description">State-level administration (national)</field>
+            <field name="region_required" eval="False" />
+        </record>
+
+        <record id="civil_service_tracker_administration_scope_autonomous" model="civil.service.tracker.administration.scope">
+            <field name="name">Autonomous</field>
+            <field name="description">Autonomous community-level administration</field>
+            <field name="region_required" eval="True" />
+        </record>
+
+        <record id="civil_service_tracker_administration_scope_local" model="civil.service.tracker.administration.scope">
+            <field name="name">Local</field>
+            <field name="region_required" eval="False" />
+            <field name="description">Local administration (municipal, provincial, etc.)</field>
+        </record>
+
+    </data>
+</openerp>

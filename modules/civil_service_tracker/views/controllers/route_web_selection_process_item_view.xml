@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+<template id="route_web_selection_process_item" name="Controller template: Selection Process">
+  <t t-call="website.layout">
+  <t t-set="title" t-value="page_title" />
+
+<!-- HTML content:begin -->    
+<div id="wrap" class="container my-5">
+
+  <section class="row my-5">
+
+    <!-- general header:begin -->
+    <header class="col-12">
+      <h1 class="my-0"><t t-esc="process.name" /></h1>
+      <p class="text-muted my-3">
+        <span><t t-esc="process.public_offer_id.name" /></span>
+        <t t-if="process.public_offer_id.offer_date">
+            – <t t-esc="process.public_offer_id.offer_date" />
+        </t>
+      </p>
+      
+      <p class="mt-4 mb-3">
+        On this page, you will find all relevant information about the selection process for the Administrative Corps of the Andalusian Regional Government, including the requirements, stages of the process, official published documentation, and details of the public employment offer under which this call is issued
+      </p>
+
+      <nav role="navigation" aria-label="Table of contents">
+          <ul class="my-0" style="list-style-type: '–&#160;&#160;';">
+            <li>
+                <a target="_self" class="text-reset text-decoration-none" href="#process-details">
+                    Process details.
+                </a>
+            </li>
+            <li>
+                <a target="_self" class="text-reset text-decoration-none" href="#description">
+                    Description.
+                </a>
+            </li>
+            <li>
+                <a target="_self" class="text-reset text-decoration-none" href="#official-docs">
+                    Official documentation.
+                </a>
+            </li>
+            <li>
+                <a target="_self" class="text-reset text-decoration-none" href="#process-events">
+                    Process events.
+                </a>
+            </li>
+            <li>
+                <a target="_self" class="text-reset text-decoration-none" href="#public-offer">
+                    Related public employment offer.
+                </a>
+            </li>
+            <li>
+                <a target="_self" class="text-reset text-decoration-none" href="#organizing-authority">
+                    Organizing authority.
+                </a>
+            </li>
+          </ul>
+        </nav>
+
+    </header>
+    <!-- general header:end -->
+
+    <div class="section-body col-12">
+
+      <!-- process-details: begin -->
+      <section class="card my-5" id="process-details" role="region" aria-labelledby="process-details-heading">
+        
+        <header class="card-header">
+          <h2 id="process-details-heading" class="h4 my-0">Process details</h2>
+        </header>
+
+        <div class="card-body">
+
+          <div class="row">
+            <div class="text-center text-md-left my-2 col-md-4 col-xl-2"><strong>Employment group:</strong></div>
+            <div class="text-center text-md-left my-2 col-md-8 col-xl-4 text-truncate">
+              <t t-esc="process.employment_group_id.name" />
+            </div>
+
+            <div class="text-center text-md-left my-2 col-md-4 col-xl-2"><strong><t t-esc="process.service_position_id.position_label or _('Service position')" />:</strong></div>
+            <div class="text-center text-md-left my-2 col-md-8 col-xl-4 text-truncate">
+              <t t-esc="process.service_position_id.name" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="text-center text-md-left my-2 col-md-4 col-xl-2"><strong>Access type:</strong></div>
+            <div class="text-center text-md-left my-2 col-md-8 col-xl-4 text-truncate">
+              <t t-esc="process.access_type_id.name" />
+            </div>
+
+            <div class="text-center text-md-left my-2 col-md-4 col-xl-2"><strong>Selection method:</strong></div>
+            <div class="text-center text-md-left my-2 col-md-8 col-xl-4 text-truncate">
+              <t t-esc="process.selection_method_id.name" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="text-center text-md-left my-2 col-md-4 col-xl-2"><strong>Contract type:</strong></div>
+            <div class="text-center text-md-left my-2 col-md-8 col-xl-4 text-truncate">
+              <t t-esc="process.contract_type_id.name" />
+            </div>
+
+            <div class="text-center text-md-left my-2 col-md-4 col-xl-2"><strong>Vacancies:</strong></div>
+            <div class="text-center text-md-left my-2 col-md-8 col-xl-4 text-truncate">
+              <t t-esc="process.position_total" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="text-center text-md-left my-2 col-md-4 col-xl-2"><strong>Ready date:</strong></div>
+            <div class="text-center text-md-left my-2 col-md-8 col-xl-4 text-truncate">
+              <t t-esc="format_date(process.ready_date)" />
+            </div>
+
+            <div class="text-center text-md-left my-2 col-md-4 col-xl-2"><strong>Stage:</strong></div>
+            <div class="text-center text-md-left my-2 col-md-8 col-xl-4 text-truncate">
+              <t t-esc="process.stage_id.name" />
+            </div>
+          </div>
+
+        </div> <!-- card-body -->
+      </section>
+      <!-- process-details: end -->
+
+      <!-- description: begin -->
+      <section class="card my-5" id="description" role="region" aria-labelledby="description-heading">
+
+        <header class="card-header">
+          <h2 id="description-heading" class="h4 my-0">Description</h2>
+        </header>
+        
+        <div class="card-body">
+
+          <t t-if="description">
+            <t t-esc="process.description" />
+          </t>
+
+          <t t-if="not description">
+            <div class="alert alert-warning my-0" role="alert">
+              No description available.
+            </div>
+          </t>
+
+        </div> <!-- card-body -->
+
+      </section>
+      <!-- description: end -->
+
+
+      <!-- official-docs:begin -->
+      <section class="card my-5" id="official-docs" role="region" aria-labelledby="official-docs-heading">
+
+        <header class="card-header">
+          <h2 id="official-docs-heading" class="h4 my-0">Official documentation</h2>
+        </header>
+
+        <div class="card-body">
+
+          <div class="row">
+            <div class="text-center text-md-left my-2 col-md-4 col-xl-2"><strong>Bulletin board:</strong></div>
+            <div class="text-center text-md-left my-2 col-md-8 col-xl-10 text-truncate">
+              
+              <!-- t-if -->
+              <t t-if="process.public_offer_id.bulletin_board_url">
+              <a class="link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                 t-att-href="process.public_offer_id.bulletin_board_url" target="_blank" rel="noopener noreferrer"
+                 aria-label="Visit the bulletin board">
+                <t t-esc="remove_scheme(process.public_offer_id.bulletin_board_url)" />
+              </a>
+              </t>
+              <!-- t-if -->
+
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="text-center text-md-left my-2 col-md-4 col-xl-2"><strong>Official journal:</strong></div>
+            <div class="text-center text-md-left my-2 col-md-8 col-xl-10 text-truncate">
+              
+              <!-- t-if -->
+              <t t-if="process.public_offer_id.official_journal_url">
+              <a class="link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                 t-att-href="process.public_offer_id.official_journal_url" target="_blank" rel="noopener noreferrer"
+                 aria-label="Visit the official journal">
+                <t t-esc="remove_scheme(process.public_offer_id.official_journal_url)" />
+              </a>
+              </t>
+              <!-- t-if -->
+
+            </div>
+          </div>
+
+        </div> <!-- card-body -->
+
+      </section>
+      <!-- official-docs:end -->
+
+
+      <!-- process-events:begin -->
+      <section class="card my-5" id="process-events" role="region" aria-labelledby="process-events-heading">
+
+        <header class="card-header">
+          <h2 id="process-events-heading" class="h4 my-0">Process events</h2>
+        </header>
+
+        <div class="card-body">
+
+          <!-- t-if -->
+          <t t-if="process.process_event_ids">
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th class="border-top-0">Date</th>
+                <th class="border-top-0">Event</th>
+                <th class="border-top-0">Description</th>
+                <th class="border-top-0">Attachments</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <!-- loop for rows:begin -->
+              <t t-foreach="process.process_event_ids" t-as="event">
+                <tr>
+                  <td><t t-esc="format_date(event.event_date)" /></td>
+                  <td><t t-esc="event.name" /></td>
+                  <td class="text-truncate"><t t-esc="event.description" /></td>
+                  <td class="text-center">
+                    <t t-if="event.attachment_id">
+                    <t t-set="attachment" t-value="event.attachment_id" />
+                    <a t-attf-href="{{ abs_url(abs_urlattachment_url) }}" target="_blank" title="attachment.name" class="text-reset">
+                        <i class="fa fa-download" aria-hidden="false"></i>
+                    </a>
+                    </t>
+                  </td>
+                </tr>
+              </t>
+              <!-- loop for rows:end -->
+
+            </tbody>
+          </table>
+
+          </t>
+          <!-- t-if -->
+
+          <!-- t-if not -->
+          <t t-if="not process.process_event_ids">
+            <div class="alert alert-warning my-0" role="alert">
+              There are no process events yet.
+            </div>
+          </t>
+          <!-- t-if not -->
+
+        </div> <!-- card-body -->
+
+      </section>
+      <!-- process-events:end -->
+
+
+      <!-- public-offer:begin -->
+      <section class="card my-5" id="public-offer" role="region" aria-labelledby="public-offer-heading">
+
+        <header class="card-header">
+          <h2 id="public-offer-heading" class="h4 my-0">Related public employment offer</h2>
+        </header>
+
+        <t t-set="offer" t-value="process.public_offer_id" />
+
+        <div class="card-body">
+          <div class="row">
+            <div class="text-center text-md-left my-2 col-md-4 col-xl-2"><strong>Administration:</strong></div>
+            <div class="text-center text-md-left my-2 col-md-8 col-xl-4 text-truncate">
+              <t t-esc="offer.public_administration_id.name" />
+            </div>
+
+            <div class="text-center text-md-left my-2 col-md-4 col-xl-2"><strong>Approved on:</strong></div>
+            <div class="text-center text-md-left my-2 col-md-8 col-xl-4 text-truncate">
+              <t t-esc="format_date(offer.offer_date)" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="text-center text-md-left my-2 col-md-4 col-xl-2"><strong>Title:</strong></div>
+            <div class="text-center text-md-left my-2 col-md-8 col-xl-10 text-truncate">
+              <t t-esc="offer.name" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="text-center text-md-left my-2 col-md-4 col-xl-2"><strong>Bulletin board:</strong></div>
+            <div class="text-center text-md-left my-2 col-md-8 col-xl-10 text-truncate">
+              
+              <!-- t-if -->
+              <t t-if="offer.bulletin_board_url">
+              <a class="link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                 t-att-href="offer.bulletin_board_url" target="_blank" rel="noopener noreferrer"
+                 aria-label="Visit the bulletin board">
+                <t t-esc="remove_scheme(offer.bulletin_board_url)" />
+              </a>
+              </t>
+              <!-- t-if -->
+
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="text-center text-md-left my-2 col-md-4 col-xl-2"><strong>Official journal:</strong></div>
+            <div class="text-center text-md-left my-2 col-md-8 col-xl-10 text-truncate">
+
+              <!-- t-if -->
+              <t t-if="offer.official_journal_url">
+              <a class="link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                 t-att-href="offer.official_journal_url" target="_blank" rel="noopener noreferrer"
+                 aria-label="Visit the official journal">
+                <t t-esc="remove_scheme(offer.official_journal_url)" />
+              </a>
+              </t>
+              <!-- t-if -->
+
+            </div>
+          </div>
+
+        </div> <!-- card-body -->
+      </section>
+      <!-- public-offer:end -->
+
+
+      <!-- organizing-authority:begin -->
+      <section class="card my-5" id="organizing-authority" role="region" aria-labelledby="organizing-authority-heading">
+
+        <header class="card-header">
+          <h2 id="organizing-authority-heading" class="h4 my-0">Organizing authority</h2>
+        </header>
+
+        <t t-set="admin" t-value="process.public_offer_id.public_administration_id" />
+
+        <div class="card-body">
+          <div class="row">
+            <div class="text-center text-md-left my-2 col-md-4 col-xl-2"><strong>Organizing authority:</strong></div>
+            <div class="text-center text-md-left my-2 col-md-8 col-xl-4 text-truncate">
+              <t t-esc="admin.name" />
+            </div>
+
+            <div class="text-center text-md-left my-2 col-md-4 col-xl-2"><strong>Subrogated authority:</strong></div>
+            <div class="text-center text-md-left my-2 col-md-8 col-xl-4 text-truncate">---</div>
+          </div>
+
+          <div class="row">
+            <div class="text-center text-md-left my-2 col-md-4 col-xl-2"><strong>Type:</strong></div>
+            <div class="text-center text-md-left my-2 col-md-8 col-xl-4 text-truncate">
+              <t t-esc="admin.administration_type_id.name" />
+            </div>
+
+            <div class="text-center text-md-left my-2 col-md-4 col-xl-2"><strong>Tax ID:</strong></div>
+            <div class="text-center text-md-left my-2 col-md-8 col-xl-4 text-truncate">
+              <t t-esc="admin.vat" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="text-center text-md-left my-2 col-md-4 col-xl-2"><strong>Address:</strong></div>
+            <div class="text-center text-md-left my-2 col-md-8 col-xl-4 text-truncate">
+              <span t-if="admin.street"><t t-esc="admin.street" /></span>
+              <span t-if="admin.street2"><t t-esc="admin.street2" /></span>
+            </div>
+
+            <div class="text-center text-md-left my-2 col-md-4 col-xl-2"><strong>City:</strong></div>
+            <div class="text-center text-md-left my-2 col-md-8 col-xl-4 text-truncate">
+              <span t-if="admin.zip"><t t-esc="admin.zip" /></span><!--
+           --><span t-if="admin.zip and admin.city">, </span><!--
+           --><span t-if="admin.city"><t t-esc="admin.city" /></span>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="text-center text-md-left my-2 col-md-4 col-xl-2"><strong>Region:</strong></div>
+            <div class="text-center text-md-left my-2 col-md-8 col-xl-4 text-truncate">
+              <span t-if="admin.state_id"><t t-esc="admin.state_id.name" /></span>
+              <span t-if="admin.administrative_region_id">(<t t-esc="admin.administrative_region_id.name" />)</span>
+            </div>
+
+            <div class="text-center text-md-left my-2 col-md-4 col-xl-2"><strong>Country:</strong></div>
+            <div class="text-center text-md-left my-2 col-md-8 col-xl-4 text-truncate"><t t-esc="admin.country_id.name" /></div>
+          </div>
+
+          <div class="row">
+            <div class="text-center text-md-left my-2 col-md-4 col-xl-2"><strong>Phone:</strong></div>
+            <div class="text-center text-md-left my-2 col-md-8 col-xl-4 text-truncate">
+              <span t-if="admin.phone"><t t-esc="admin.phone" /></span>
+              <span t-if="admin.phone and admin.mobile"> / </span>
+              <span t-if="admin.mobile"><t t-esc="admin.mobile" /></span>
+            </div>
+
+            <div class="text-center text-md-left my-2 col-md-4 col-xl-2"><strong>Fax:</strong></div>
+            <div class="text-center text-md-left my-2 col-md-8 col-xl-4 text-truncate"><t t-esc="admin.fax" /></div>
+          </div>
+
+          <div class="row">
+            <div class="text-center text-md-left my-2 col-md-4 col-xl-2"><strong>Email:</strong></div>
+            <div class="text-center text-md-left my-2 col-md-8 col-xl-4 text-truncate">
+
+              <!-- t-if -->
+              <t t-if="admin.email">
+              <a class="link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                 target="_blank" t-attf-href="mailto:{{admin.email}}"
+                 rel="noopener noreferrer"
+                 aria-label="Send an email to the organizing authority"
+                 t-attf-title="Email address of {{admin.name}}">
+                <t t-esc="admin.email" />
+              </a>
+              </t>
+              <!-- t-if -->
+
+            </div>
+
+            <div class="text-center text-md-left my-2 col-md-4 col-xl-2"><strong>Website:</strong></div>
+            <div class="text-center text-md-left my-2 col-md-8 col-xl-4 text-truncate">
+
+              <!-- t-if -->
+              <t t-if="admin.website_url">
+              <a class="link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                 target="_blank" t-att-href="admin.website_url"
+                 rel="noopener noreferrer"
+                 aria-label="Visit the organizing authority's website"
+                 t-attf-title="Website of {{admin.name}}">
+                <t t-esc="remove_scheme(admin.website_url)" />
+              </a>
+              </t>
+              <!-- t-if -->
+
+            </div>
+          </div>
+        </div>
+
+      </section>
+      <!-- organizing-authority:end -->
+
+
+    </div> <!-- section-body -->
+
+
+    <footer class="col-12">
+      <p class="text-muted" style="text-align: justify;">
+        <small>
+          The information provided on this page is for guidance purposes only. To obtain complete and official details, requirements, and conditions of the selection process, please always refer to the documentation published through official channels.
+        </small>
+      </p>
+    </footer>
+
+
+  </section>
+  
+</div>
+<!-- HTML content:end -->    
+
+  </t>
+</template>
+
+    </data>
+</openerp>

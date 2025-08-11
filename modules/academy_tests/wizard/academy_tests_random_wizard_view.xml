@@ -97,7 +97,8 @@
                         </page>
                         <page string="Options" class="oe_page_options" accesskey="O">
                             <group col="4" groups="academy_base.academy_group_technical">
-                                <field name="owner_id" class="oe_field_owner_id" options="{'no_create': True}"
+                                <field name="owner_id" class="oe_field_owner_id"
+                                    options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"
                                     groups="academy_base.academy_group_technical" />
                                 <separator colspan="2" />
                             </group>

@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+    <data noupdate="0">
+
+        <record id="res_config_settings_view_form" model="ir.ui.view">
+            <field name="name">res.config.settings.view.form.civil.service.tracker</field>
+            <field name="model">res.config.settings</field>
+            <field name="priority" eval="20" />
+            <field name="inherit_id" ref="base.res_config_settings_view_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//div[hasclass('settings')]" position="inside">
+                    <div class="app_settings_block"
+                         data-string="Civil service tracker"
+                         data-key="civil_service_tracker"
+                         groups="base.group_system">
+
+                        <div name="civil_service_tracker_responsibility">
+                            <h2>Responsibility</h2>
+
+                            <div class="row mt16 o_settings_container" name="responsible_users">
+
+                                <!-- Selection Process Supervisor -->
+                                <div class="col-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <span class="o_form_label">
+                                            Selection Process Supervisor
+                                        </span>
+                                        <div class="text-muted">
+                                            Person responsible for supervising civil service selection processes
+                                        </div>
+                                        <div class="content-group mt8">
+                                            <field name="tracking_responsible_id"
+                                                   class="oe_inline"
+                                                   options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"
+                                                   reload_on_change="0" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Module Maintainer -->
+                                <div class="col-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <span class="o_form_label">
+                                            ERP Manager
+                                        </span>
+                                        <div class="text-muted">
+                                            Person in charge of maintaining the civil service tracker module
+                                        </div>
+                                        <div class="content-group mt8">
+                                            <field name="erp_manager_id"
+                                                   class="oe_inline"
+                                                   options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"
+                                                   reload_on_change="0" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div> <!-- row -->
+                        </div>
+
+
+                        <div name="civil_service_tracker_usability">
+                            <h2>Usability</h2>
+
+                            <div class="row mt16 o_settings_container" name="functional_users">
+
+                                <!-- Campo booleano -->
+                                <div class="col-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <span class="o_form_label">
+                                            Selection process short name
+                                        </span>
+                                        <div class="text-muted">
+                                            Show short name in selection process displays
+                                        </div>
+                                        <div class="content-group mt8">
+                                            <field name="display_process_short_name"
+                                                   class="oe_inline"
+                                                   options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"
+                                                   reload_on_change="1"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Campo Many2one -->
+                                <div class="col-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <span class="o_form_label">
+                                            Main window
+                                        </span>
+                                        <div class="text-muted">
+                                            Main window associated with civil service tracker menu
+                                        </div>
+                                        <div class="content-group mt8">
+                                            <field name="main_act_window_id"
+                                                   class="oe_inline"
+                                                   options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div> <!-- row -->
+
+                        </div>
+
+                        <div name="civil_service_tracker_usability">
+                            <h2>Defaults</h2>
+
+                            <div class="row mt16 o_settings_container" name="functional_users">
+
+                                <!-- Campo booleano -->
+                                <div class="col-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <span class="o_form_label">
+                                            Selection method
+                                        </span>
+                                        <div class="text-muted">
+                                            Method used to select candidates (e.g. exam, merit-based)
+                                        </div>
+                                        <div class="content-group mt8">
+                                            <field name="selection_method_id"
+                                                   class="oe_inline"
+                                                   options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <!-- Campo Many2one -->
+                                <div class="col-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <span class="o_form_label">
+                                            Access_type
+                                        </span>
+                                        <div class="text-muted">
+                                            Type of access to the position (e.g. internal promotion)
+                                        </div>
+                                        <div class="content-group mt8">
+                                            <field name="access_type_id"
+                                                   class="oe_inline"
+                                                   options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div> <!-- row -->
+
+                        </div>
+
+                    </div>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

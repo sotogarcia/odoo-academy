@@ -11,6 +11,7 @@ from odoo.osv.expression import TRUE_DOMAIN, FALSE_DOMAIN
 from odoo.tools import safe_eval
 
 from logging import getLogger
+from uuid import uuid4
 
 _logger = getLogger(__name__)
 
@@ -66,6 +67,18 @@ class AcademyTrainingModule(models.Model):
         help='Enables/disables the record'
     )
 
+    token = fields.Char(
+        string='Token',
+        required=True,
+        readonly=True,
+        index=True,
+        default=lambda self: str(uuid4()),
+        help='Unique token used to track this answer',
+        translate=False,
+        copy=False,
+        track_visibility='always'
+    )
+    
     training_module_id = fields.Many2one(
         string='Training module',
         required=False,

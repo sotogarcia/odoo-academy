@@ -25,9 +25,11 @@
             <field name="arch" type="xml">
                 <tree string="academy_topic_tree" create="1" delete="1" edit="1">
                     <field name="name" class="oe_field_name" string="Name" />
-                    <field name="category_count" class="oe_field_category_count" string="Categories" />
-                    <field name="description" class="oe_field_category_count" />
-                    <field name="provisional" class="oe_field_provisional" />
+                    <field name="description" class="oe_field_category_count" optional="hide" />
+                    <field name="category_count" class="oe_field_category_count" string="Categories" optional="show" />
+                    <field name="version_count" class="oe_field_version_count" string="Versions" optional="show" />
+                    <field name="last_version_id" class="oe_field_last_version_id" optional="show" />
+                    <field name="provisional" class="oe_field_provisional" optional="show" />
                 </tree>
             </field>
         </record>
@@ -62,7 +64,9 @@
                             </h1>
                         </div>
 
-                        <group col="4">
+                        <group col="4" id="topic-info">
+                            <field name="version_count" class="oe_field_version_count" />
+                            <field name="last_version_id" class="oe_field_last_version_id" />
                             <field name="category_count" class="oe_field_category_count" string="Categories" />
                             <field name="question_count" class="oe_field_question_count" string="Questions" />
                         </group>
@@ -115,11 +119,29 @@
                     <field name="training_activity_ids" />
                     <field name="competency_unit_ids" />
                     <field name="training_module_ids" />
-                    <field name="id" string="Topic ID" />
-                    <field name="manager_id" class="oe_field_manager_id" />
+                    <field name="manager_id" />
 
+                    <separator/>
+                    <filter name="in_use" string="In use"
+                            domain="[('training_module_ids', '&lt;&gt;', False)]"/>
+                    <filter name="not_in_use" string="Not in use"
+                            domain="[('training_module_ids','=', False)]"/>
+
+                    <separator/>
+                    <filter name="consolidated" string="Consolidated"
+                            domain="[('provisional','&lt;&gt;', True)]"/>
+                    <filter name="provisional" string="Provisional"
+                            domain="[('provisional','=', True)]"/>
+
+                    <separator/>
+                    <filter name="with_questions" string="With questions"
+                            domain="[('question_ids','&lt;&gt;', False)]"/>
+                    <filter name="without_questions" string="Without questions"
+                            domain="[('question_ids','=', False)]"/>
+                            
+                    <separator/>
                     <filter name="inactive" string="Archived"
-                            domain="[('active','=',False)]"/>
+                            domain="[('active','=', False)]"/>
                 </search>
             </field>
         </record>

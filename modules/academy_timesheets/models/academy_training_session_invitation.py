@@ -97,7 +97,7 @@ class AcademyTrainingInvitation(models.Model):
 
     exclusion_ids = fields.One2many(
         string='Exclusions',
-        help='List with studentswho have not been invited',
+        help='List with students who have not been invited',
         related='session_id.exclusion_ids'
     )
 

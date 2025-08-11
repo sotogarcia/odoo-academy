@@ -19,6 +19,7 @@ from logging import getLogger
 # pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
 from odoo.tools.translate import _
+from odoo.tools import safe_eval
 
 from io import BytesIO
 
@@ -287,6 +288,36 @@ class AcademyTestsTestQuestionRel(models.Model):
         for record in self:
             record.link_html = record.to_html()
 
+    # -------------------------------------------------------------------------
+    # CONTRAINTS
+    # -------------------------------------------------------------------------
+
+    @api.constrains('sequence', 'question_id')
+    def _check_dependency_sequence_order(self):
+        for record in self:
+            dependent = record.question_id
+            dependency = dependent.depends_on_id
+
+            if not dependency:
+                continue
+
+            sibling = self.search([
+                ('test_id', '=', record.test_id.id),
+                ('question_id', '=', dependency.id)
+            ], limit=1)
+
+            if sibling and sibling.sequence > record.sequence:
+                raise ValidationError(_(
+                    'In test "%(test)s", question "%(child)s" must appear '
+                    'after or at the same position '
+                    'as its dependency "%(parent)s".'
+                ) % {
+                    'test': record.test_id.display_name,
+                    'child': dependent.display_name,
+                    'parent': dependency.display_name
+                })
+
+
     def _get_values_for_template(self):
         self.ensure_one()
 
@@ -295,6 +326,45 @@ class AcademyTestsTestQuestionRel(models.Model):
 
         return result
 
+    @api.model
+    def _get_shuffle_wizard_targets(self, context=None):
+        context = context or self.env.context
+
+        link_obj = self.env[self._name]
+        expected_models = ['academy.tests.test', self._name]
+        
+        active_model = context.get('active_model', False)
+        active_ids = []
+
+        if not(active_model and active_model in expected_models):
+            return link_obj
+
+        record_set = env[active_model]
+        active_ids = context.get('active_ids', [])
+        if not active_ids:
+            active_id = context.get('active_id', None)
+            if active_id:
+                active_ids = [active_id]
+
+        if not active_ids:
+            return link_obj
+
+        if active_model == self._name:
+            link_domain = [('id', 'in', active_ids)]
+            link_set = link_obj.search(link_domain)
+            link_set = link_set.mapped('test_id.question_ids')
+        else:
+            test_domain = [('id', '=', 1)]
+            test_obj = self.env['academy.tests.test']
+            test_set = test_obj.search(test_domain)
+            link_set = link_set.mapped('question_ids')
+            
+        return link_set
+
+    # -------------------------------------------------------------------------
+    # PUBLIC METHODS
+    # -------------------------------------------------------------------------
+ 
     def to_html(self):
         output = ''
 
@@ -333,3 +403,52 @@ class AcademyTestsTestQuestionRel(models.Model):
                    xml_declaration=xml_declaration)
 
         return file.getvalue()
+
+    def view_shuffle_wizard(self, use_context=True):
+
+        wact = 'action_academy_tests_test_question_shuffle_wizard_act_window'
+        action_xid = f'academy_tests.{wact}'
+        act_wnd = self.env.ref(action_xid)
+    
+        context = self.env.context.copy()
+        context.update(safe_eval(act_wnd.context))
+
+        if use_context:
+            target_link_ids = self._get_shuffle_wizard_targets(context).ids
+        else:
+            target_link_ids = self.mapped('test_id.question_ids').ids
+
+        context.update(default_target_link_ids=target_link_ids)
+    
+        serialized = {
+            'type': 'ir.actions.act_window',
+            'res_model': act_wnd.res_model,
+            'target': 'new',
+            'name': act_wnd.name,
+            'view_mode': act_wnd.view_mode,
+            'domain': [],
+            'context': context,
+            'search_view_id': act_wnd.search_view_id.id,
+            'help': act_wnd.help
+        }
+        
+        return serialized
+
+    def update_questions_dialog(self):
+        wizard_model = 'academy.tests.update.questions.wizard'
+        question_set = self.mapped('question_id')
+        
+        wizard_set = self.env[wizard_model]
+        wizard_set = wizard_set.create({})
+        wizard_set.set_questions(question_set)
+
+        return {
+            'name': _('Update questions'),
+            'type': 'ir.actions.act_window',
+            'res_model': wizard_model,
+            'view_mode': 'form',
+            'views': [(False, 'form')],
+            'target': 'new',
+            'domain': [],
+            'res_id': wizard_set.id
+        }

@@ -3,7 +3,7 @@
 <openerp>
     <data noupdate="0">
 
-        <record id="view_academy_competency_unit_tree" model="ir.ui.view">
+<!--         <record id="view_academy_competency_unit_tree" model="ir.ui.view">
             <field name="name">view.academy.competency.unit.form</field>
             <field name="model">academy.competency.unit</field>
             <field name="type">form</field>
@@ -16,7 +16,7 @@
                     <attribute name="invisible">1</attribute>
                 </xpath>
             </field>
-        </record>
+        </record> -->
 
         <record id="view_academy_competency_unit_search" model="ir.ui.view">
             <field name="name">view.academy.competency.unit.form</field>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="employment_scheme_civil_servant_state" model="civil.service.tracker.employment.scheme">
+            <field name="name">Civil Servants</field>
+            <field name="description">Staff employed under administrative law and governed by public service statutes.</field>
+        </record>
+
+        <record id="employment_scheme_labor_state" model="civil.service.tracker.employment.scheme">
+            <field name="name">Labor Staff</field>
+            <field name="description">Public employees under common labor law, with contractual employment terms.</field>
+        </record>
+
+        <record id="employment_scheme_statutory" model="civil.service.tracker.employment.scheme">
+            <field name="name">Statutory Staff</field>
+            <field name="description">Personnel governed by special statutory frameworks, including healthcare and other sectors.</field>
+        </record>
+
+        <record id="employment_scheme_civil_guard" model="civil.service.tracker.employment.scheme">
+            <field name="name">Civil Guard</field>
+            <field name="description">Law enforcement officers with military status within the Civil Guard corps.</field>
+        </record>
+
+        <record id="employment_scheme_police" model="civil.service.tracker.employment.scheme">
+            <field name="name">National Police</field>
+             <field name="description">Security forces with civil status, part of the National Police corps.</field>
+        </record>
+
+        <record id="employment_scheme_military" model="civil.service.tracker.employment.scheme">
+            <field name="name">Military Personnel</field>
+            <field name="description">Members of the armed forces with a military career structure.</field>
+        </record>
+
+
+    </data>
+</openerp>
+
+
+
+

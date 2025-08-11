@@ -24,7 +24,7 @@
             <field name="active" eval="True" />
             <field name="arch" type="xml">
                 <tree string="academy_tag_tree" create="1" delete="1" edit="1" >
-                    <field name="name" class="oe_field_name" />
+                    <field name="display_name" class="oe_field_display_name" />
                     <field name="private" class="oe_field_private" />
                     <field name="create_uid" class="oe_field_create_uid"
                         attrs="{'invisible': [('private', '=', False)]}"
@@ -81,11 +81,18 @@
                 <search string="academy_tag_search">
                     <field name="name" string="Name" />
 
-                    <filter string="My tags"
+                    <filter string="My Tags"
                         name="my_tags"
-                        domain="[('create_uid', '=', uid)]"
+                        domain="[('private', '=', True), ('create_uid', '=', uid)]"
                         context="{}"
-                        help="List only the own tags" />
+                        help="Show only the tags I created" />
+
+                    <filter string="Shared Tags"
+                        name="common_tags"
+                        domain="[('private', '!=', True)]"
+                        context="{}"
+                        help="Show tags shared with all users" />
+
                 </search>
             </field>
         </record>

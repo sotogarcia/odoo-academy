@@ -5,8 +5,6 @@ This module contains the academy.training.action Odoo model which stores
 all training action attributes and behavior.
 """
 
-from logging import getLogger
-from psycopg2 import Error as PsqlError
 
 from odoo.tools.translate import _
 
@@ -20,8 +18,10 @@ from ..utils.record_utils import create_domain_for_ids
 from ..utils.record_utils import create_domain_for_interval
 from ..utils.record_utils import ARCHIVED_DOMAIN, INCLUDE_ARCHIVED_DOMAIN
 
+from logging import getLogger
 from pytz import utc
 from uuid import uuid4
+from psycopg2 import Error as PsqlError
 
 # pylint: disable=locally-disabled, C0103
 _logger = getLogger(__name__)
@@ -96,6 +96,18 @@ class AcademyTrainingAction(models.Model):
         help='Enables/disables the record'
     )
 
+    token = fields.Char(
+        string='Token',
+        required=True,
+        readonly=True,
+        index=True,
+        default=lambda self: str(uuid4()),
+        help='Unique token used to track this answer',
+        translate=False,
+        copy=False,
+        track_visibility='always'
+    )
+    
     # pylint: disable=locally-disabled, w0212
     start = fields.Datetime(
         string='Start',
@@ -466,6 +478,11 @@ class AcademyTrainingAction(models.Model):
             'USERS_GREATER_OR_EQUAL_TO_ZERO',
             'CHECK(seating >= 0)',
             _('The number of users must be greater than or equal to zero')
+        ),
+        (
+            'unique_token',
+            'UNIQUE(token)',
+            'The token must be unique.'
         )
     ]
 

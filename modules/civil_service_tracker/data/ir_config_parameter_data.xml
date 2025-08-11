@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="civil_service_tracker_display_process_short_name" model="ir.config_parameter">
+            <field name="key">civil_service_tracker.display_process_short_name</field>
+            <field name="value">True</field>
+        </record>
+
+        <record id="civil_service_tracker_default_access_type_id" model="ir.config_parameter">
+            <field name="key">civil_service_tracker.default_access_type_id</field>
+            <field name="value" ref="civil_service_tracker.civil_service_tracker_access_type_free_access"/>
+        </record>
+        
+        <record id="civil_service_tracker_default_selection_method_id" model="ir.config_parameter">
+            <field name="key">civil_service_tracker.default_selection_method_id</field>
+            <field name="value" ref="civil_service_tracker.selection_method_exam"/>
+        </record>
+
+    </data>
+</openerp>

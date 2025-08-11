@@ -133,7 +133,10 @@
 
                             </page>
                             <page id="setup" string="Setup" class="oe_page_setup" accesskey="S">
-                                <group col="4">
+                                <group col="4" string="Publish">
+                                    <field name="token" class="oe_field_token" />
+                                </group>
+                                <group col="4" string="Ownership" groups="record_ownership.record_ownership_proxy">
                                     <field name="owner_id" class="oe_field_owner_id" />
                                     <field name="subrogate_id" class="oe_field_subrogate_id" />
                                 </group>

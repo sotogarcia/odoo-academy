@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record model="utm.source" id="utm_source_official_journal">
+            <field name="name">Official journal</field>
+        </record>
+
+    </data>
+</openerp>

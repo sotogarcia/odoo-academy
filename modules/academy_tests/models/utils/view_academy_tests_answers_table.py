@@ -60,6 +60,8 @@ ordered_quesions AS (
         ) AS atq_index
     FROM
         academy_tests_test_question_rel AS rel
+    INNER JOIN academy_tests_question AS atq 
+        ON atq."id" = rel.question_id AND atq.active
     ORDER BY
         rel.test_id DESC,
         rel."sequence" ASC,
@@ -93,7 +95,7 @@ SELECT
     ) :: INTEGER AS "sequence",
     mq."name",
     description,
-        rel."id" AS link_id
+    rel."id" AS link_id
 FROM
     main_query AS mq
 INNER JOIN academy_tests_question AS atq

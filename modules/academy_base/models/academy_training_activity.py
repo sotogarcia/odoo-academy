@@ -5,13 +5,15 @@ This module contains the academy.training.activity Odoo model which stores
 all training activity attributes and behavior.
 """
 
-from logging import getLogger
 
 # pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
+from odoo.osv.expression import TRUE_DOMAIN, FALSE_DOMAIN
 from odoo.tools import safe_eval
-
 from odoo.tools.translate import _
+
+from logging import getLogger
+from uuid import uuid4
 
 # pylint: disable=locally-disabled, C0103
 _logger = getLogger(__name__)
@@ -64,6 +66,18 @@ class AcademyTrainingActivity(models.Model):
         index=False,
         default=True,
         help='Enables/disables the record'
+    )
+
+    token = fields.Char(
+        string='Token',
+        required=True,
+        readonly=True,
+        index=True,
+        default=lambda self: str(uuid4()),
+        help='Unique token used to track this answer',
+        translate=False,
+        copy=False,
+        track_visibility='always'
     )
 
     professional_family_id = fields.Many2one(
@@ -292,6 +306,80 @@ class AcademyTrainingActivity(models.Model):
 
     # -------------------------- MANAGEMENT FIELDS ----------------------------
 
+    hours = fields.Float(
+        string='Hours',
+        required=True,
+        readonly=True,
+        index=False,
+        default=0.0,
+        digits=(16, 2),
+        help='Total number of hours of length for the activity',
+        compute='_compute_hours',
+        search='_search_hours'
+    )
+
+    @api.depends('competency_unit_ids.training_module_id')
+    def _compute_hours(self):
+        for record in self:
+            if record.competency_unit_ids:
+                path = 'competency_unit_ids.training_module_id.hours'
+                hours_list = record.mapped(path)
+                record.hours = sum(hours_list)
+            else:
+                record.hours = 0.0
+
+    @api.model
+    def _search_hours(self, operator, value):
+        sql = '''
+            WITH module_length AS (
+              SELECT
+                atm."id" AS training_module_id,
+                COALESCE (SUM(atu.ownhours), MIN(atm.ownhours), 0.0) :: FLOAT AS hours 
+              FROM
+                academy_training_module AS atm
+                LEFT JOIN academy_training_module AS atu ON atu.training_module_id = atm."id" 
+                AND atu.active 
+              WHERE
+                atm.active 
+              GROUP BY
+                atm."id"
+            ), activity_length AS ( 
+              SELECT
+                acu.training_activity_id,
+                SUM(ml.hours) AS hours 
+              FROM
+                academy_competency_unit AS acu
+                INNER JOIN module_length AS ml ON ml."training_module_id" = acu.training_module_id 
+              GROUP BY
+                acu.training_activity_id
+            )
+            SELECT
+              act."id" AS training_activity_id 
+            FROM
+              academy_training_activity AS act
+              LEFT JOIN activity_length AS al ON al.training_activity_id = act."id" 
+            WHERE
+              COALESCE (al.hours, 0.0) {operator} {value}
+        '''
+    
+        if value is True:
+            domain = TRUE_DOMAIN if operator == '=' else FALSE_DOMAIN
+        elif value is False:
+            domain = FALSE_DOMAIN if operator == '=' else TRUE_DOMAIN
+        else:
+
+            sql = sql.format(operator=operator, value=value)
+            self.env.cr.execute(sql)
+            results = self.env.cr.dictfetchall()
+
+            if results:
+                record_ids = [item['training_activity_id'] for item in results]
+                domain = [('id', 'in', record_ids)]
+            else:
+                domain = FALSE_DOMAIN
+
+        return domain
+
     @api.onchange('professional_field_id')
     def _onchange_professional_field_id(self):
         _id = self.professional_field_id.id
@@ -430,8 +518,6 @@ class AcademyTrainingActivity(models.Model):
                 views.append(pair)
 
         serialized['views'] = views
-
-        print(serialized)
 
         return serialized
 

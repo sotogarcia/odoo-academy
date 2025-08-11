@@ -74,9 +74,8 @@
                         <field name="id" class="oe_field_id" invisible="1" />
 
                         <group col="4">
-                            <field name="activity_code" class="oe_field_activity_code"
-                                placeholder="Enter new code" />
-                            <field name="attainment_id" class="oe_field_attainment_id" string="Required" />
+                            <field name="activity_code" class="oe_field_activity_code" />
+                            <field name="hours" class="oe_field_hours" />
                             <separator colspan="4" string="Grants" />
                             <field name="professional_family_id" class="oe_field_professional_family_id" />
                             <field name="professional_area_id" class="oe_field_professional_area_id" />
@@ -84,6 +83,7 @@
                             <field name="professional_field_id" class="oe_field_professional_field" />
                             <field name="professional_sector_ids" class="oe_field_professional_sector_ids"
                                 widget="many2many_tags" colspan="4" string="Sectors" />
+                            <field name="attainment_id" class="oe_field_attainment_id" string="Required" />
                             <field name="general_competence" class="oe_field_general_competence"
                                 placeholder="Tasks will carry out in the future" colspan="4" />
                         </group>
@@ -94,9 +94,11 @@
                                     context="{'tree_view_ref': 'academy_base.view_academy_competency_unit_inline_edit_tree'}" />
                             </page>
                             <page id="setup" string="Setup" class="oe_page_setup" accesskey="S">
-                                <group col="4">
-                                    <field name="description" class="oe_field_description"
-                                        placeholder="Enter new description" colspan="4" />
+                                <group col="4" string="Description">
+                                    <field name="description" class="oe_field_description" colspan="2" nolabel="1" />
+                                </group>
+                                <group col="4" string="Publish">
+                                    <field name="token" class="oe_field_token" />
                                 </group>
                                 <group col="4" string="Ownership" groups="record_ownership.record_ownership_proxy">
                                     <field name="owner_id" class="oe_field_owner_id" />
@@ -234,7 +236,7 @@
             <field name="sequence" eval="10" />
             <field name="action" ref="action_academy_training_activity_act_window" />
             <field name="parent_id" ref="academy_base.menu_academy_catalog" />
-            <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
+            <field name="groups_id" eval="[(4, ref('academy_base.academy_group_teacher'))]"/>
         </record>
 
         <!-- Quick update by Head of Studies

@@ -613,18 +613,15 @@ class AcademyTrainingActionEnrolment(models.Model):
         ),
         (
             'prevent_overlap',
-            ''' EXCLUDE USING gist
-                (
-                    training_action_id WITH =,
-                    student_id WITH =,
-                    tsrange(
-                        register,
-                        COALESCE(deregister, 'infinity'::date),
-                        '[]'
-                    ) WITH &&
-                )
-                WHERE (active); -- Requires btree_gist
-            ''',
+            '''EXCLUDE USING gist (
+                training_action_id WITH =,
+                student_id WITH =,
+                tsrange(
+                    register,
+                    COALESCE(deregister, 'infinity'::date),
+                    '[]'
+                ) WITH &&
+            )''',
             _('Student enrollments cannot overlap in time for the same '
               'training action')
         ),

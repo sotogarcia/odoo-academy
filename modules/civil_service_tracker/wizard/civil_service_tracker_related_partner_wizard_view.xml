@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="view_civil_service_tracker_related_partner_wizard_wizard" model="ir.ui.view">
+            <field name="name">Related partners</field>
+            <field name="model">civil.service.tracker.related.partner.wizard</field>
+            <field name="type">form</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <form string="Related partners wizard">
+        
+                    <header>
+                        <button name="do_action"
+                                string="Show"
+                                type="object"
+                                icon="fa-users"
+                                help="Show partners of the chosen types" />
+                    </header>
+        
+                    <group col="4">
+                        <field name="public_administrations" class="oe_field_public_administrations" />
+                        <field name="issuing_authorities" class="oe_field_issuing_authorities" />
+                        <field name="delegated_authorities" class="oe_field_delegated_authorities" />
+                        <field name="process_event_issuers" class="oe_field_process_event_issuers" />
+                    </group>
+        
+                    <footer />
+        
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_civil_service_tracker_related_partner_wizard_wizard_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Related partners</field>
+            <field name="res_model">civil.service.tracker.related.partner.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+        </record>
+        
+        <!-- Main menu for model.name -->
+        <record id="menu_civil_service_tracker_related_partner_wizard_wizard" model="ir.ui.menu" >
+            <field name="name">Related partners</field>
+            <field name="sequence" eval="20" />
+            <field name="action" ref="action_civil_service_tracker_related_partner_wizard_wizard_act_window" />
+            <field name="parent_id" ref="civil_service_tracker.menu_civil_service_tracker_tools" />
+            <field name="groups_id" eval="[(4, ref('civil_service_tracker.group_civil_service_tracker_technician'))]"/>
+        </record>
+        
+    </data>
+</openerp>

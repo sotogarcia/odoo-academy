@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <!-- VIEWS: "Civil services Employment Scheme"
+        
+            - Model·········: civil.service.tracker.employment.scheme
+            - _rec_name·····: name
+            - Domain········: []
+            - Context·······: {}
+            - Parent menu ··: menu_civil_service_tracker_configuration
+            - View priority·: 16    Sequence····: 10
+            - Action help···: No employment schemes have been defined yet.
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        
+        <!-- Tree view for "civil.service.tracker.employment.scheme" -->
+        <record id="view_civil_service_tracker_employment_scheme_tree" model="ir.ui.view">
+            <field name="name">view.civil.service.tracker.employment.scheme.tree</field>
+            <field name="model">civil.service.tracker.employment.scheme</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <tree string="civil_service_tracker_employment_scheme_tree" create="1" delete="1" edit="1">
+                    <field name="id" invisible="1"/>
+                    <field name="active" invisible="1"/>
+
+                    <field name="name" class="oe_field_name" />
+                    <field name="employment_group_ids" class="oe_field_employment_group_ids" />
+                    <field name="group_label" class="oe_field_group_label" optional="show" />
+                    <field name="public_administration_ids" class="oe_field_public_administration_ids" string="Used in" />
+                    <field name="official_journal_url" class="oe_field_official_journal_url" widget="url_truncated" optional="hide" />
+                    <field name="description" class="oe_field_description" optional="show" />
+                        
+                </tree>
+            </field>
+        </record>
+        
+        <!-- Form view for "civil.service.tracker.employment.scheme" -->
+        <record id="view_civil_service_tracker_employment_scheme_form" model="ir.ui.view">
+            <field name="name">view.civil.service.tracker.employment.scheme.form</field>
+            <field name="model">civil.service.tracker.employment.scheme</field>
+            <field name="type">form</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <form string="civil_service_tracker_employment_scheme_form" create="1" delete="1" edit="1">
+                    <sheet>
+                        <field name="id" invisible="1"/>
+                        <field name="active" invisible="1"/>
+                        
+                        <div class="oe_button_box" name="button_box">
+                            <button name="view_public_administrations" type="object"
+                                class="oe_stat_button oe_read_only" icon="fa-id-card-o"
+                                help="View public administrations">
+                                <field name="public_administration_count" widget="statinfo" string="Administrations" />
+                            </button>
+                        </div>
+
+                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only" />
+                            <h1>
+                                <field name="name" class="oe_field_name" />
+                            </h1>
+                        </div>
+
+                        <group col="4" string="Labels">
+                            <field name="group_label" class="oe_field_group_label" string="Group" />
+                            <field name="official_journal_url" class="oe_field_official_journal_url" widget="url_truncated" />
+                        </group>
+
+                        <group col="2" string="Description">
+                            <field name="description" class="oe_field_description" nolabel="1" />
+                        </group>
+
+                        <group col="2" string="Groups">
+                            <field name="employment_group_ids" class="oe_field_employment_group_ids" nolabel="1"
+                                options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"
+                                context="{'tree_view_ref': 'civil_service_tracker.view_civil_service_tracker_employment_group_tree_on_schema'}" />
+                        </group>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+        <!-- Search view for "civil.service.tracker.employment.scheme" -->
+        <record id="view_civil_service_tracker_employment_scheme_search" model="ir.ui.view">
+            <field name="name">view.civil.service.tracker.employment.scheme.search</field>
+            <field name="model">civil.service.tracker.employment.scheme</field>
+            <field name="type">search</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <search string="civil_service_tracker_employment_scheme_search">
+                    <field name="name" />
+
+                    <filter name="without_groups" string="Without groups" 
+                        domain="[('employment_group_ids', '=', False)]"
+                        help="Filter schemes without any linked employment groups."/>
+
+                    <filter name="inactive" string="Archived" 
+                        domain="[('active','=',False)]"
+                        help="Filter to show records marked as inactive."/>
+                </search>
+            </field>
+        </record>
+        
+        <!-- Main window action for model.name -->
+        <record id="action_civil_services_employment_scheme_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Employment schemes</field>
+            <field name="res_model">civil.service.tracker.employment.scheme</field>
+            <field name="view_mode">tree,form</field>
+            <field name="target">current</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="search_view_id" ref="view_civil_service_tracker_employment_scheme_search" />
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to add new employment schemes.
+                </p><p>
+                    No employment schemes have been defined yet.
+                </p>
+            </field>
+        </record>
+        
+        <!-- Main menu for model.name -->
+        <record id="menu_civil_services_employment_scheme" model="ir.ui.menu" >
+            <field name="name">Employment Schemes</field>
+            <field name="sequence" eval="25" />
+            <field name="action" ref="action_civil_services_employment_scheme_act_window" />
+            <field name="parent_id" ref="menu_civil_service_tracker_configuration" />
+        </record>
+
+    </data>
+</openerp>

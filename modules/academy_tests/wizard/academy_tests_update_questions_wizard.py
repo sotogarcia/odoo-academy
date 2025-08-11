@@ -190,7 +190,7 @@ class AcademyTestsUpdateQuestionsWizard(models.TransientModel):
                 link_set = link_set.search(domain, order='sequence ASC')
 
             elif active_model == 'academy.tests.test':
-                domain = [('tes_id', 'in', active_ids)]
+                domain = [('test_id', 'in', active_ids)]
                 link_set = link_set.search(
                     domain, order='test_id DESC, sequence ASC')
 

@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <!-- VIEWS: "Civil services Issuing Authority"
+        
+            - Model·········: civil.service.tracker.issuing.authority
+            - _rec_name·····: name
+            - Domain········: []
+            - Context·······: {}
+            - Parent menu ··: menu_civil_service_tracker_configuration
+            - View priority·: 16    Sequence····: 10
+            - Action help···: No issuing authoritys have been defined yet.
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        
+        <!-- Tree view for "civil.service.tracker.issuing.authority" -->
+        <record id="view_civil_service_tracker_issuing_authority_tree" model="ir.ui.view">
+            <field name="name">view.civil.service.tracker.issuing.authority.tree</field>
+            <field name="model">civil.service.tracker.issuing.authority</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="base.view_partner_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='email']" position="attributes">
+                    <attribute name="optional">hide</attribute>
+                </xpath>
+                <xpath expr="//field[@name='phone']" position="attributes">
+                    <attribute name="optional">hide</attribute>
+                </xpath>
+                <xpath expr="//field[@name='company_id']" position="attributes">
+                    <attribute name="optional">hide</attribute>
+                </xpath>
+                <xpath expr="//field[@name='display_name']" position="after">
+                    <field name="administration_scope_id" class="oe_field_administration_scope_id" optional="show" />
+                    <field name="city" class="oe_field_city" optional="hide" />
+                    <field name="state_id" class="oe_field_state_id" optional="show"
+                        options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
+                    <field name="administrative_region_id" class="oe_field_administrative_region_id" optional="show"
+                        options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
+                    <field name="country_id" class="oe_field_country_id" optional="hide"
+                        options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
+                    <field name="website" class="oe_field_website" widget="url_truncated" optional="show" />
+                    <field name="category_id" class="oe_field_category_id" optional="hide"
+                        options="{'no_quick_create': True, 'no_create': False, 'no_open': False}" />
+                    <field name="public_offer_ids" class="oe_field_public_offer_ids" optional="show"
+                        options="{'no_quick_create': True, 'no_create': False, 'no_open': False}" />
+                </xpath>
+            </field>
+        </record>
+        
+        <!-- Form view for "civil.service.tracker.issuing.authority" -->
+        <record id="view_civil_service_tracker_issuing_authority_form" model="ir.ui.view">
+            <field name="name">view.civil.service.tracker.issuing.authority.form</field>
+            <field name="model">civil.service.tracker.issuing.authority</field>
+            <field name="type">form</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="999" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='company_type']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='parent_id']" position="attributes">
+                    <attribute name="placeholder">Belongs to (partner)</attribute>
+                </xpath>
+                
+                <xpath expr="//field[@name='country_id']" position="attributes">
+                    <attribute name="required">1</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='company_type']" position="before">
+                    <field name="creation_mode" class="oe_edit_only"
+                        attrs="{'invisible': [('partner_id', '&lt;&gt;', False)]}"
+                        widget="radio" options="{'horizontal': true}" groups="base.group_no_one"/>
+                </xpath>
+
+                <xpath expr="//field[@name='name']" position="replace">
+                    <field name="partner_id" class="oe_field_partner_id"
+                        attrs="{
+                            'required' : [('creation_mode', '=', 'link')],
+                            'invisible': [('creation_mode', '=', 'new')]
+                        }" /> 
+                    <field name="name" default_focus="1" placeholder="Name" 
+                        attrs="{
+                            'required' : [('type', '=', 'contact')],
+                            'invisible': [('creation_mode', '=', 'link')]
+                        }" />
+                </xpath>
+
+                <xpath expr="//div[@name='button_box']" position="replace">
+                    <div class="oe_button_box" name="button_box">
+                        <button name="view_public_offers" type="object" class="oe_stat_button oe_read_only" 
+                            icon="fa-files-o" help="View related public offers">
+                            <field name="public_offer_count" widget="statinfo" string="Offers" />
+                        </button>
+                    </div>
+                    <field name="region_required" invisible="1" />
+                </xpath>
+
+                <xpath expr="//notebook" position="before">
+                    <group col="4" string="Issuing authority">
+                        <field name="administration_scope_id" class="oe_field_administration_scope_id"
+                            options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
+                        <field name="administrative_region_id" class="oe_field_administrative_region_id"
+                                options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"
+                            domain="[('country_id', '=', country_id)]" attrs="{'required': [('region_required', '=', True)]}" />
+                    </group>
+                </xpath>
+
+                <xpath expr="//notebook" position="replace">
+                    <notebook name="issuing_authority_notebook">
+                        <page string="Offers" class="public_offer_ids" accesskey="O">
+                            <group col="2" class="w-100">
+                                <field name="public_offer_ids" class="oe_field_public_offer_ids" nolabel="1"
+                                    options="{'no_quick_create': True, 'no_create': False, 'no_open': False}" />
+                            </group>
+                        </page>
+                        <page string="Setup" class="oe_page_setup" accesskey="S">
+                            <group col="2" string="Description">
+                                <field name="description" class="oe_field_description" />
+                            </group>
+                            <group col="4" string="Publish">
+                                <field name="token" class="oe_field_token" />
+                            </group>
+                        </page>
+                    </notebook>
+                </xpath>
+
+            </field>
+        </record>
+        
+        <record id="view_civil_service_tracker_issuing_authority_kanban" model="ir.ui.view">
+            <field name="name">view.civil.service.tracker.issuing.authority.kanban</field>
+            <field name="model">civil.service.tracker.issuing.authority</field>
+            <field name="type">kanban</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <kanban class="o_res_partner_kanban">
+                    <field name="id"/>
+                    <field name="color"/>
+                    <field name="display_name"/>
+                    <field name="email"/>
+                    <field name="country_id"/>
+                    <field name="state_id"/>
+                    <field name="image_128"/>
+                    <field name="administration_scope_id" />
+                    <field name="region_required" />
+                    <field name="administrative_region_id" />
+                    <field name="public_offer_count" />
+
+                    <templates>
+                        <t t-name="kanban-box">
+                            
+                            <div class="oe_kanban_global_click oe_kanban_academy_training_activity">
+                                
+                                <div class="o_kanban_image">
+                                    <t t-if="record.image_128.raw_value">
+                                        <field name="image_128" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}' />
+                                    </t>
+                                    <t t-else="">
+                                        <img t-att-src="_s + &quot;/base/static/img/company_image.png&quot;" class="o_kanban_image" alt="Training activity photo" />
+                                    </t>
+                                </div> <!-- o_kanban_image -->
+
+                                <div class="oe_kanban_details">
+                                    <strong class="o_kanban_record_title oe_partner_heading"><field name="display_name"/></strong>
+
+                                    <ul>
+                                        <li><span class="text-muted">Scope:</span> <field name="administration_scope_id"/></li>
+                                        <li t-if="record.region_required.raw_value"> <span class="text-muted">Region:</span><field name="administrative_region_id"/></li>
+                                        <li><a t-att-href="record.website.raw_value" target="_blank" title="View website"><field name="website"/></a></li>
+                                        <li><span class="text-muted">Offers:</span> <field name="public_offer_count"/></li>
+                                    </ul>
+
+                                </div> <!-- oe_kanban_details -->
+
+                            </div> <!-- oe_kanban_global_click -->
+
+                        </t> <!-- kanban-box -->
+
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Search view for "civil.service.tracker.issuing.authority" -->
+        <record id="view_civil_service_tracker_issuing_authority_search" model="ir.ui.view">
+            <field name="name">view.civil.service.tracker.issuing.authority.search</field>
+            <field name="model">civil.service.tracker.issuing.authority</field>
+            <field name="type">search</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" />
+            <field name="arch" type="xml">
+                <field name="name" />
+                <field name="vat" />
+                <field name="administration_scope_id" />
+                <field name="state_id" />
+                <field name="administrative_region_id" />
+                <field name="email" />
+                <field name="country_id" />
+
+                <separator />
+
+                <!-- Filter: With active public offers -->
+                <filter name="with_public_offers"
+                        string="With offers"
+                        domain="[('public_offer_ids', '&lt;&gt;', False)]"
+                        help="Show records linked to one or more public offers."/>
+                
+                <!-- Filter: Without any public offers -->
+                <filter name="without_public_offers"
+                        string="Without offers"
+                        domain="[('public_offer_ids', '=', False)]"
+                        help="Show records not linked to any public offers."/>
+                
+                <separator />
+
+                <!-- Filter: Inactive or archived records -->
+                <filter name="inactive"
+                        string="Archived"
+                        domain="[('active','=',False)]"
+                        help="Show records marked as inactive or archived."/>
+                
+                <separator />
+                <filter string="By scope"
+                    name="group_by_administration_scope_id"
+                    domain="[]"
+                    context="{'group_by': 'administration_scope_id'}"
+                    help="" />
+
+                <filter string="By administrative region"
+                    name="group_by_administrative_region_id"
+                    domain="[]"
+                    context="{'group_by': 'administrative_region_id'}"
+                    help="" />
+
+                <filter string="By state"
+                    name="group_by_state_id"
+                    domain="[]"
+                    context="{'group_by': 'state_id'}"
+                    help="" />
+
+                <filter string="By city"
+                    name="group_by_city"
+                    domain="[]"
+                    context="{'group_by': 'city'}"
+                    help="" />
+
+            </field>
+        </record>
+        
+        <!-- Main window action for model.name -->
+        <record id="action_civil_services_issuing_authority_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Issuing Authorities</field>
+            <field name="res_model">civil.service.tracker.issuing.authority</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="target">current</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="search_view_id" ref="view_civil_service_tracker_issuing_authority_search" />
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to add new issuing authorities.
+                </p><p>
+                    No issuing authoritys have been defined yet.
+                </p>
+            </field>
+        </record>
+        
+        <!-- Main menu for model.name -->
+        <record id="menu_civil_services_issuing_authority" model="ir.ui.menu" >
+            <field name="name">Issuing Authorities</field>
+            <field name="sequence" eval="15" />
+            <field name="action" ref="action_civil_services_issuing_authority_act_window" />
+            <field name="parent_id" ref="menu_civil_service_tracker_catalog" />
+        </record>
+
+    </data>
+</openerp>

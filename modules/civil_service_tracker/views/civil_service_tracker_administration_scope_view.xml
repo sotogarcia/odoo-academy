@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <!-- VIEWS: "Civil services Administration Scope"
+        
+            - Model·········: civil.service.tracker.administration.scope
+            - _rec_name·····: name
+            - Domain········: []
+            - Context·······: {}
+            - Parent menu ··: menu_civil_service_tracker_configuration
+            - View priority·: 16    Sequence····: 10
+            - Action help···: No administration scopes have been defined yet.
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        
+        <!-- Tree view for "civil.service.tracker.administration.scope" -->
+        <record id="view_civil_service_tracker_administration_scope_tree" model="ir.ui.view">
+            <field name="name">view.civil.service.tracker.administration.scope.tree</field>
+            <field name="model">civil.service.tracker.administration.scope</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <tree string="civil_service_tracker_administration_scope_tree" create="1" delete="1" edit="1">
+                    <field name="id" invisible="1"/>
+                    <field name="active" invisible="1"/>
+
+                    <field name="name" class="oe_field_name" />
+                    <field name="region_required" class="oe_field_region_required" />
+                    <field name="administration_type_ids" class="oe_field_administration_type_ids" />
+                    <field name="public_administration_ids" class="oe_field_administration_type_ids" />
+                    <field name="description" class="oe_field_description" />
+                        
+                </tree>
+            </field>
+        </record>
+        
+        <!-- Form view for "civil.service.tracker.administration.scope" -->
+        <record id="view_civil_service_tracker_administration_scope_form" model="ir.ui.view">
+            <field name="name">view.civil.service.tracker.administration.scope.form</field>
+            <field name="model">civil.service.tracker.administration.scope</field>
+            <field name="type">form</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <form string="civil_service_tracker_administration_scope_form" create="1" delete="1" edit="1">
+                    <sheet>
+                        <field name="id" invisible="1"/>
+                        <field name="active" invisible="1"/>
+                        
+                        <div class="oe_button_box" name="button_box" />
+                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only" />
+                            <h1>
+                                <field name="name" class="oe_field_name" />
+                            </h1>
+                        </div>
+
+                        <group col="2">
+                            <field name="region_required" class="oe_field_region_required" />
+                            <field name="description" class="oe_field_description" />
+                        </group>
+
+                        <group col="2" string="Administration types">
+                            <field name="administration_type_ids" class="oe_field_administration_type_ids" 
+                                nolabel="1" context="{
+                                    'default_administration_scope_id': id,
+                                    'tree_view_ref': 'civil_service_tracker.view_civil_service_tracker_administration_type_tree_on_scope'
+                                }" />
+                        </group>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+        <!-- Search view for "civil.service.tracker.administration.scope" -->
+        <record id="view_civil_service_tracker_administration_scope_search" model="ir.ui.view">
+            <field name="name">view.civil.service.tracker.administration.scope.search</field>
+            <field name="model">civil.service.tracker.administration.scope</field>
+            <field name="type">search</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <search string="civil_service_tracker_administration_scope_search">
+                    <field name="name" />
+                    <field name="administration_type_ids" />
+                    <field name="public_administration_ids" />
+
+                    <separator />
+                    <filter string="With administrations"
+                        name="with_administrations"
+                        domain="[('public_administration_ids', '&lt;&gt;', False)]"
+                        context="{}"
+                        help="" />
+                    <filter string="Without administrations"
+                        name="without_administrations"
+                        domain="[('public_administration_ids', '=', False)]"
+                        context="{}"
+                        help="" />
+
+                    <separator />
+                    <filter name="inactive" string="Archived" 
+                        domain="[('active','=',False)]"
+                        help="Filter to show records marked as inactive."/>
+                </search>
+            </field>
+        </record>
+        
+        <!-- Main window action for model.name -->
+        <record id="action_civil_services_administration_scope_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Administration scopes</field>
+            <field name="res_model">civil.service.tracker.administration.scope</field>
+            <field name="view_mode">tree,form</field>
+            <field name="target">current</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="search_view_id" ref="view_civil_service_tracker_administration_scope_search" />
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to add new administration scopes.
+                </p><p>
+                    No administration scopes have been defined yet.
+                </p>
+            </field>
+        </record>
+        
+        <!-- Main menu for model.name -->
+        <record id="menu_civil_services_administration_scope" model="ir.ui.menu" >
+            <field name="name">Administration Scopes</field>
+            <field name="sequence" eval="15" />
+            <field name="action" ref="action_civil_services_administration_scope_act_window" />
+            <field name="parent_id" ref="menu_civil_service_tracker_configuration" />
+        </record>
+
+    </data>
+</openerp>

@@ -33,3 +33,8 @@ from . import academy_tests_copy_assignments_wizard
 from . import academy_tests_assignment_wizard
 
 from . import academy_tests_attempt_wizard
+
+from . import academy_tests_test_question_block_position
+from . import academy_tests_test_question_shuffle_wizard
+
+from . import academy_tests_set_test_block_wizard

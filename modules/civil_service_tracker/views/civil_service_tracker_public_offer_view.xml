@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <!-- VIEWS: "Civil services Public Offer"
+        
+            - Model·········: civil.service.tracker.public.offer
+            - _rec_name·····: name
+            - Domain········: []
+            - Context·······: {}
+            - Parent menu ··: menu_civil_service_tracker_configuration
+            - View priority·: 16    Sequence····: 10
+            - Action help···: No public offers have been defined yet.
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+        
+        <!-- Tree view for "civil.service.tracker.public.offer" -->
+        <record id="view_civil_service_tracker_public_offer_tree" model="ir.ui.view">
+            <field name="name">view.civil.service.tracker.public.offer.tree</field>
+            <field name="model">civil.service.tracker.public.offer</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <tree string="civil_service_tracker_public_offer_tree" create="1" delete="1" edit="1">
+                    <field name="id" invisible="1"/>
+                    <field name="active" invisible="1"/>
+
+                    <field name="display_name" class="oe_field_display_name" string="Name" />
+                    <field name="offer_year" class="oe_field_offer_year" optional="show" />
+                    <field name="offer_date" class="oe_field_offer_date" optional="show" />
+                    <field name="issuing_authority_id" class="oe_field_issuing_authority_id" optional="hide" />
+                    <field name="delegated_authority_id" class="oe_field_delegated_authority_id" optional="hide" />
+                    <field name="public_administration_id" class="oe_field_public_administration_id" optional="show" />
+                    <field name="selection_process_ids" class="oe_field_selection_process_ids" optional="show" />
+                    <field name="position_total" class="oe_field_position_total" optional="show" />
+                    <field name="bulletin_board_url" class="oe_field_bulletin_board_url" widget="url_truncated" optional="show" />
+                    <field name="official_journal_url" class="oe_field_official_journal_url" widget="url_truncated" optional="hide" />
+                    <field name="token" class="oe_field_token" optional="hide" />
+                    <field name="description" class="oe_field_description" optional="hide" />
+                        
+                </tree>
+            </field>
+        </record>
+        
+        <!-- Form view for "civil.service.tracker.public.offer" -->
+        <record id="view_civil_service_tracker_public_offer_form" model="ir.ui.view">
+            <field name="name">view.civil.service.tracker.public.offer.form</field>
+            <field name="model">civil.service.tracker.public.offer</field>
+            <field name="type">form</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <form string="civil_service_tracker_public_offer_form" create="1" delete="1" edit="1">
+                    <sheet>
+                        <field name="id" invisible="1"/>
+                        <field name="active" invisible="1"/>
+                        
+                        <div class="oe_button_box" name="button_box">
+                            <button name="view_selection_process" type="object" class="oe_stat_button oe_read_only" 
+                                icon="fa-th-large" help="Clic to view and edit the related selection processes">
+                                <field name="public_process_count" widget="statinfo" string="Processes" />
+                            </button>
+                        </div>
+
+                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+                        <field name="image_1920" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}'/>
+
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only"/>
+                            <h1>
+                                <field name="name" class="oe_field_name" required="False" />
+                            </h1>
+                        </div>
+
+                        <group col="4">
+                            <field name="public_administration_id" class="oe_field_public_administration_id" colspan="4" />
+                            <field name="issuing_authority_id" class="oe_field_issuing_authority_id" string="Authority" />
+                            <field name="delegated_authority_id" class="oe_field_delegated_authority_id" />
+                            <separator colspan="4" />
+                            <field name="offer_year" class="oe_field_offer_year" />
+                            <field name="offer_date" class="oe_field_offer_date" />
+                            <separator colspan="4" />
+                            <field name="bulletin_board_url" class="oe_field_bulletin_board_url" colspan="4" widget="url_truncated" />
+                            <field name="official_journal_url" class="oe_field_official_journal_url" colspan="4" widget="url_truncated" />
+                        </group>
+
+                        <notebook>
+                            <page string="Processes" class="oe_page_processes" accesskey="P">
+                                <group col="2" class="w-100">
+                                    <field name="selection_process_ids" class="oe_field_selection_process_ids w-100" nolabel="1"
+                                        context="{'default_public_offer_id': id}" attrs="{'readonly': [('id', '=', False)]}" />
+                                </group>
+                            </page>
+                            <page string="Setup" class="oe_page_setup" accesskey="S">
+                               <group col="4">
+                                    <field name="short_name" class="oe_field_short_name" />
+                                </group>
+                                <group col="2" string="Description" class="w-100">
+                                        <field name="description" class="oe_field_description" nolabel="1" />
+                                </group>
+                                <group col="4" string="Publish" class="w-100">
+                                    <field name="token" class="oe_field_token" />
+                                </group>
+                            </page>
+                        </notebook>
+
+                    </sheet>
+
+                    <!-- Chatter: begin -->
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                    <!-- Chatter: end -->
+
+                </form>
+            </field>
+        </record>
+
+        <!-- Form view for "civil.service.tracker.public.offer" -->
+        <record id="view_civil_service_tracker_public_offer_kanban" model="ir.ui.view">
+            <field name="name">view.civil.service.tracker.public.offer.kanban</field>
+            <field name="model">civil.service.tracker.public.offer</field>
+            <field name="type">kanban</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <kanban create="1" delete="1" edit="1">
+                    <field name="image_128"/>
+
+                    <field name="name" />
+                    <field name="selection_process_ids" />
+                    <field name="public_administration_id" />
+                    <field name="issuing_authority_id" string="Authority" />
+                    <field name="delegated_authority_id" />
+                    <field name="offer_year" />
+                    <field name="offer_date" />
+                    <field name="position_total" />
+                    <field name="bulletin_board_url" />
+                    <field name="official_journal_url" />
+
+
+                    <templates>
+                        <t t-name="kanban-box">
+                            
+                            <div class="oe_kanban_global_click oe_kanban_academy_training_activity">
+                                
+                                <div class="o_kanban_image">
+                                    <t t-if="record.image_128.raw_value">
+                                        <field name="image_128" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}' />
+                                    </t>
+                                    <t t-else="">
+                                        <img t-att-src="_s + &quot;/base/static/img/company_image.png&quot;" class="o_kanban_image" alt="Training activity photo" />
+                                    </t>
+                                </div> <!-- o_kanban_image -->
+
+                                <div class="oe_kanban_details">
+                                    <h4><strong class="oe_partner_heading"><field name="name"/></strong></h4>
+                                    <ul>
+                                        <li class="o_ellipsis text-truncate mt-3 mb-1" t-att-title="record.public_administration_id.value">
+                                            <strong><field name="public_administration_id" /></strong>
+                                        </li>
+                                        <li class="o_ellipsis d-flex flex-row justify-content-start my-1">
+                                            <strong class="mr-2">Offer:&#160;</strong>
+                                            <span>
+                                                <field name="offer_year" />
+                                                <t t-if="record.offer_date.raw_value">
+                                                    ― <field name="offer_date" widget="date" />
+                                                </t>
+                                            </span>
+                                        </li>
+                                        <li class="o_ellipsis d-flex my-1">
+                                            <div class="w-50">
+                                                <strong class="mr-2">Processes:&#160;</strong>
+                                                <field name="public_process_count" />
+                                            </div>
+                                            <div class="w-50 ">
+                                                <strong class="mr-2">Vacancies:&#160;</strong>
+                                                <field name="position_total" />
+                                            </div>
+                                        </li>
+                                        <li class="o_ellipsis d-flex flex-row justify-content-between mt-3">
+                                            <t t-if="record.bulletin_board_url.raw_value">
+                                                <a t-att-href="record.bulletin_board_url.raw_value" target="_blank" t-att-title="record.bulletin_board_url.raw_value" aria-label="Navigate to the bulletin board" class="text-primary font-weight-bold text-nowrap">
+                                                    <i class="fa fa-globe" aria-hidden="false"></i>
+                                                    Bulletin board
+                                                </a>
+                                            </t>
+                                            <t t-if="record.official_journal_url.raw_value">
+                                                <a t-att-href="record.official_journal_url.raw_value" target="_blank" t-att-title="record.official_journal_url.raw_value" aria-label="Navigate to the official journal" class="text-primary font-weight-bold text-nowrap">
+                                                    <i class="fa fa-globe" aria-hidden="false"></i>
+                                                    Official journal
+                                                </a>
+                                            </t>
+                                            <t t-if="!(record.official_journal_url.raw_value || record.bulletin_board_url.raw_value)">
+                                                <span>&#160;</span>
+                                            </t>
+                                        </li>
+                                     </ul>
+                                </div> <!-- oe_kanban_details -->
+                            </div>
+
+                        </t> <!-- kanban-box -->
+                    </templates>
+
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Search view for "civil.service.tracker.public.offer" -->
+        <record id="view_civil_service_tracker_public_offer_search" model="ir.ui.view">
+            <field name="name">view.civil.service.tracker.public.offer.search</field>
+            <field name="model">civil.service.tracker.public.offer</field>
+            <field name="type">search</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <search string="civil_service_tracker_public_offer_search">
+                    <field name="name" />
+                    <field name="offer_year" />
+                    <field name="issuing_authority_id" />
+                    <field name="delegated_authority_id" />
+                    <field name="public_administration_id" />
+                    <field name="selection_process_ids" />
+                    <field name="position_total" />
+                    <field name="token" />
+
+                    <group string="__YEAR_FILTERS__"/>
+
+                    <separator />
+                    <filter name="has_processes" string="With processes"
+                        domain="[('selection_process_ids','!=',False)]" />
+                    <filter name="no_processes" string="Without processes"
+                        domain="[('selection_process_ids','=',False)]" />
+
+                    <separator />
+                    <filter name="inactive" string="Archived"
+                        domain="[('active','=',False)]"
+                        help="Filter to show records marked as inactive." />
+
+                    <group expand="0" string="Group By">
+                        <filter name="group_by_offer_year" string="Offer year"
+                            context="{'group_by':'offer_year'}" />
+                        <filter name="group_by_issuing_authority" string="Issuing authority"
+                            context="{'group_by':'issuing_authority_id'}" />
+                        <filter name="group_by_public_admin" string="Public administration"
+                            context="{'group_by':'public_administration_id'}" />
+                    </group>
+                </search>
+            </field>
+        </record>
+        
+        <!-- Main window action for model.name -->
+        <record id="action_civil_services_public_offer_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Public offers</field>
+            <field name="res_model">civil.service.tracker.public.offer</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="target">current</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="search_view_id" ref="view_civil_service_tracker_public_offer_search" />
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to add new public offers.
+                </p><p>
+                    No public offers have been defined yet.
+                </p>
+            </field>
+        </record>
+        
+        <!-- Main menu for model.name -->
+        <record id="menu_civil_services_public_offer" model="ir.ui.menu" >
+            <field name="name">Public offers</field>
+            <field name="sequence" eval="10" />
+            <field name="action" ref="action_civil_services_public_offer_act_window" />
+            <field name="parent_id" ref="menu_civil_service_tracker_tracking" />
+        </record>
+
+    </data>
+</openerp>

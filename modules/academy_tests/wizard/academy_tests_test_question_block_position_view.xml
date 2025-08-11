@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="view_academy_tests_test_question_block_position_tree" model="ir.ui.view">
+            <field name="name">Tests question block position tree view</field>
+            <field name="model">academy.tests.test.question.block.position</field>
+            <field name="type">tree</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <tree string="Block position" create="0" delete="0" edit="1" editable="top">
+                    <field name="wizard_id" invisible="1" force_save="1" />
+                    <field name="sequence" class="oe_field_sequence" widget="handle" force_save="1" />
+                    <field name="block_id" class="oe_field_block_id" force_save="1" />
+                </tree>
+            </field>
+        </record>
+
+    </data>
+</openerp>

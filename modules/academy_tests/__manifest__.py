@@ -154,6 +154,8 @@
         'templates/mail_template_you_have_impugnments.xml',
         'templates/check_training_module.xml',
         'templates/check_competency_unit.xml',
+        'templates/impugnments_summary.xml',
+        'templates/impugnments_summary_table_html.xml',
 
         'wizard/academy_tests_question_categorize_wizard_view.xml',
         'wizard/academy_tests_question_append_wizard_view.xml',
@@ -171,7 +173,10 @@
         'wizard/academy_tests_random_template_type_wizard_view.xml',
         'wizard/academy_tests_copy_assignments_wizard_view.xml',
         'wizard/academy_tests_assignment_wizard_view.xml',
-        'wizard/academy_tests_attempt_wizard_view.xml'
+        'wizard/academy_tests_attempt_wizard_view.xml',
+        'wizard/academy_tests_test_question_block_position_view.xml',
+        'wizard/academy_tests_test_question_shuffle_wizard_view.xml',
+        'wizard/academy_tests_set_test_block_wizard_view.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

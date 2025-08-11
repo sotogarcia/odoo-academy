@@ -1,4 +1,4 @@
-odoo.define('academy_tests.listview_button', function (require) {
+odoo.define('academy_tests.all_header_buttons', function (require) {
     "use strict";
 
     var core = require('web.core');
@@ -7,77 +7,105 @@ odoo.define('academy_tests.listview_button', function (require) {
     var KanbanController = require("web.KanbanController");
     var ListController = require("web.ListController");
 
-    var IncludeListView = {
-        renderButtons: function() {
-
+    var IncludeCustomButtons = {
+        renderButtons: function () {
             this._super.apply(this, arguments);
 
-            let model = 'academy.tests.random.template';
-            let btn_id = '#11B3838D16FB4B5F8814077387FCAF3C';
-            let template = 'create_template_from_training';
-            let method = this.proxy('create_template_from_training');
+            if (!this.$buttons) {
+                return;
+            }
 
-            let custom = null;
-            let button = null;
-            let element = null;
-            let selector = null;
+            const view_type = this.viewType;
+            const is_kanban_or_list = view_type === 'kanban' || view_type === 'list';
+            const template_prefix = view_type === 'kanban' ? 'KanbanView.buttons.' : 'ListView.buttons.';
 
-            let vt = this.viewType
-
-            if (this.modelName == model && (vt === 'kanban' || vt === 'list')
-                && this.$buttons && !this.$buttons.find(btn_id).length)
-            {
-                switch(this.viewType) {
-
-                    case 'kanban':
-                        template = 'KanbanView.buttons.' + template;
-                        selector = 'button:last';
-                        break;
-
-                    case 'list':
-                        template = 'ListView.buttons.' + template;
-                        selector = 'button:last';
-                        break;
-                } // switch
-
-                element = this.$buttons.last().find(selector);
-
-                if(element.length === 1) {
-                    custom = $(QWeb.render(template));
-                    custom = element.after(custom);
-
-                    button = this.$buttons.find(btn_id);
-                    button.on('click', method);
+            const buttons = [
+                {
+                    model: 'academy.tests.random.template',
+                    id: '11B3838D16FB4B5F8814077387FCAF3C',
+                    template: 'create_template_from_training',
+                    handler: '_create_template_from_training'
+                    // args: ['A']  // optional
+                },
+                {
+                    model: 'academy.tests.test.question.rel',
+                    id: '3E46E901F83C4EABB2364AA81B29327B',
+                    template: 'open_shuffle_wizard',
+                    handler: '_open_shuffle_wizard'
+                    // args: ['A']  // optional
                 }
+            ];
 
-            } // if
+            buttons.forEach(btn => {
+                if (
+                    this.modelName === btn.model &&
+                    is_kanban_or_list &&
+                    !this.$buttons.find('#' + btn.id).length
+                ) {
+                    const template_name = template_prefix + btn.template;
+                    const $element = this.$buttons.last().find('button:last');
 
+                    if ($element.length === 1) {
+                        const $custom = $(QWeb.render(template_name));
+                        $element.after($custom);
+
+                        const $btn = this.$buttons.find('#' + btn.id);
+                        const handler = this[btn.handler];
+
+                        if (btn.args) {
+                            $btn.on('click', () => handler.apply(this, btn.args));
+                        } else {
+                            $btn.on('click', this.proxy(handler));
+                        }
+                    }
+                }
+            });
         },
 
-        create_template_from_training: function() {
-            let self = this;
+        _create_template_from_training: function () {
+            const data = this.model.get(this.handle);
+            const training_ref = data.context['default_training_ref'];
 
-            let data = this.model.get(this.handle);
-            let training_ref = data.context['default_training_ref'];
-
-            let action = {
+            return this.do_action({
                 type: "ir.actions.act_window",
                 name: "Choose type",
                 res_model: "academy.tests.random.template.type.wizard",
-                views: [[false,'form']],
-                target: 'new',
                 views: [[false, 'form']],
-                view_type : 'form',
-                view_mode : 'form',
+                target: 'new',
                 context: {'training_ref': training_ref},
-                flags: {'form': {'action_buttons': true, 'options': {'mode': 'edit'}}}
-            };
-
-            return this.do_action(action);
+                flags: {
+                    form: {
+                        action_buttons: true,
+                        options: {mode: 'edit'}
+                    }
+                }
+            });
         },
 
+        _open_shuffle_wizard: function (type) {
+            const data = this.model.get(this.handle);
+            const test_id = data.context['default_test_id'];
+
+            return this.do_action({
+                type: "ir.actions.act_window",
+                name: "Shuffle questions",
+                res_model: "academy.tests.test.question.shuffle.wizard",
+                views: [[false, 'form']],
+                target: 'new',
+                context: {
+                    'default_test_id': test_id,
+                    'shuffle_type': type
+                },
+                flags: {
+                    form: {
+                        action_buttons: true,
+                        options: {mode: 'edit'}
+                    }
+                }
+            });
+        }
     };
 
-    KanbanController.include(IncludeListView);
-    ListController.include(IncludeListView);
+    KanbanController.include(IncludeCustomButtons);
+    ListController.include(IncludeCustomButtons);
 });

@@ -23,6 +23,7 @@
     ],
 
     'data': [
+        'data/academy_teacher_data.xml',
         'data/academy_interface_help_string_data.xml',
         'data/mail_message_subtype_data.xml',
         'data/res_groups_data.xml',

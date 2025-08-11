@@ -1,0 +1,39 @@
+/* view_civil_service_tracker_employment_group_tree_embed 
+   ------------------------------------------------------------------------- */
+
+div.o_field_one2many.oe_field_employment_group_ids th[data-name="active"] {
+  max-width: 75px!important;
+  text-align: center!important;
+}
+
+div.o_field_one2many.oe_field_employment_group_ids td.o_boolean_toggle_cell {
+  text-align: center;
+}
+
+/* view_civil_service_tracker_selection_process_form 
+   ------------------------------------------------------------------------- */
+
+.o_form_view.o_form_readonly .oe_form_field .oe_field_process_infographics_ids tr + tr > td[colspan="6"],
+.o_form_view.o_form_readonly .oe_form_field .oe_field_content_structure_ids tr + tr > td[colspan="6"],
+.o_form_view.o_form_readonly .oe_form_field .oe_field_exam_infographics_ids tr + tr > td[colspan="6"],
+.o_form_view.o_form_readonly .oe_form_field .oe_field_syllabus_breakdown_ids tr + tr > td[colspan="6"],
+.o_form_view.o_form_readonly .oe_form_field .oe_field_student_results_ids tr + tr > td[colspan="6"] {
+    display: none!important;
+}
+
+.o_form_view.o_form_readonly .oe_field_process_infographics_ids tr + tr:has(td[colspan="6"]),
+.o_form_view.o_form_readonly .oe_field_content_structure_ids tr + tr:has(td[colspan="6"]),
+.o_form_view.o_form_readonly .oe_field_exam_infographics_ids tr + tr:has(td[colspan="6"]),
+.o_form_view.o_form_readonly .oe_field_syllabus_breakdown_ids tr + tr:has(td[colspan="6"]),
+.o_form_view.o_form_readonly .oe_field_student_results_ids tr + tr:has(td[colspan="6"]) {
+    display: none!important;
+}
+
+/* view_civil_service_tracker_quick_offer_wizard_wizard 
+   @see: quick_offer_form_patch.js
+   ------------------------------------------------------------------------- */
+
+div[role="dialog"].quick-offer-modal > .modal-dialog {
+  width: 1200px!important;
+  max-width: 95%!important;
+}

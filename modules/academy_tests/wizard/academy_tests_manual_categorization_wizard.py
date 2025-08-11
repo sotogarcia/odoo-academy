@@ -102,7 +102,7 @@ class AcademyTestsCategorizacionWizard(models.TransientModel):
         required=False,
         readonly=False,
         index=False,
-        default=True,
+        default=False,
         help='Check it to apply default filter'
     )
 

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <!-- General privileges -->
+        <record id="access_civil_service_tracker_vacancy_type_group_consultant" model="ir.model.access">
+            <field name="name">Civil Service Tracker: Vacancy Type / Consultant</field>
+            <field name="model_id" ref="model_civil_service_tracker_vacancy_type"/>
+            <field name="group_id" ref="civil_service_tracker.group_civil_service_tracker_consultant"/>
+            <field name="perm_read" eval="True" />
+            <field name="perm_create" eval="False" />
+            <field name="perm_write" eval="False" />
+            <field name="perm_unlink" eval="False" />
+            <field name="active" eval="True" />
+        </record>
+
+        <record id="access_civil_service_tracker_vacancy_type_group_admin" model="ir.model.access">
+            <field name="name">Civil Service Tracker: Vacancy Type / Admin</field>
+            <field name="model_id" ref="model_civil_service_tracker_vacancy_type"/>
+            <field name="group_id" ref="civil_service_tracker.group_civil_service_tracker_admin"/>
+            <field name="perm_read" eval="True" />
+            <field name="perm_create" eval="True" />
+            <field name="perm_write" eval="True" />
+            <field name="perm_unlink" eval="True" />
+            <field name="active" eval="True" />
+        </record>
+
+    </data>
+</openerp>

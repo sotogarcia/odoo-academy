@@ -73,6 +73,11 @@ class AcademyTestsCopyAssignmentsWizard(models.TransientModel):
         selection=MAPPING_TRAINING_REFERENCES
     )
 
+    @api.onchange('training_ref')
+    def _onchange_training_ref(self):
+        self.training_action_ids = None
+    
+
     training_activity_id = fields.Many2one(
         string='Training activity',
         required=False,

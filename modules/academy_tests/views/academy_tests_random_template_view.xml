@@ -78,6 +78,7 @@
                         </div>
 
                         <group col="2">
+                            <field name="quantity" />
                             <field name="description" class="oe_field_description"
                                 placeholder="Enter new description" />
                         </group>

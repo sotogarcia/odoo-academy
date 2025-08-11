@@ -29,7 +29,8 @@
                     </group>
 
                     <group col="2" string="Teachers" states="step2">
-                        <field name="teacher_ids" class="oe_field_teacher_ids" nolabel="1">
+                        <field name="teacher_ids" class="oe_field_teacher_ids" nolabel="1" 
+                            options="{'no_quick_create': True, 'no_create': True, 'no_open': True}">
                             <tree>
                                 <field name="name" class="oe_field_name" />
                                 <field name="email" class="oe_field_name" />
@@ -38,7 +39,8 @@
                     </group>
 
                     <group col="2" string="Topics" states="step3">
-                        <field name="topic_ids" class="oe_field_topic_ids" nolabel="1">
+                        <field name="topic_ids" class="oe_field_topic_ids" nolabel="1"
+                            options="{'no_quick_create': True, 'no_create': True, 'no_open': True}">
                             <tree>
                                 <field name="name" class="oe_field_name"
                                     style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" />

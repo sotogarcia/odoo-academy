@@ -13,6 +13,54 @@
                     <div class="app_settings_block" data-string="Academy base"
                          data-key="academy_base" groups="base.group_system" >
 
+                        <div name="academy_base_settings_responsibility">
+                            <h2>Responsibility</h2>
+
+                            <div class="row mt16 o_settings_container" name="functional_users">
+
+                                <div class="col-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <span class="o_form_label">
+                                            Head of studies
+                                        </span>
+                                        <div class="text-muted">
+                                            Head of Studies for the educational platform
+                                        </div>
+                                        <div class="content-group mt8">
+
+                                            <!-- Head of Studies -->
+                                            <field name="head_of_studies_id"
+                                                   widget="res_users"
+                                                   options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"
+                                                   class="oe_inline"/>
+
+                                        </div>
+                                    </div>
+                                </div> <!-- col -->
+
+                                <div class="col-12 col-md-6 o_setting_box">
+                                    <div class="o_setting_right_pane">
+                                        <span class="o_form_label">
+                                            ERP Manager
+                                        </span>
+                                        <div class="text-muted">
+                                            ERP Manager at the institution (non technical)
+                                        </div>
+                                        <div class="content-group mt8">
+                                            
+                                            <field name="erp_manager_id"
+                                               widget="res_users"
+                                               options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"
+                                               class="oe_inline"/>
+
+                                        </div>
+                                    </div>
+                                </div> <!-- col -->
+
+                            </div> <!-- row -->
+
+                        </div>
+
                         <div name="academy_base_settings_others_values">
                             <h2>Professional qualification</h2>
 

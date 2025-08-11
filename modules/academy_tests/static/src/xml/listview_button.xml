@@ -14,4 +14,16 @@
         </button>
     </t>
 
+    <t t-name="ListView.buttons.open_shuffle_wizard">
+        <button type="button" class="btn btn-info" id="3E46E901F83C4EABB2364AA81B29327B">
+            Shuffle wizard
+        </button>
+    </t>
+
+    <t t-name="KanbanView.buttons.open_shuffle_wizard">
+        <button type="button" class="btn btn-info" id="3E46E901F83C4EABB2364AA81B29327B">
+            Shuffle wizard
+        </button>
+    </t>
+
 </templates>

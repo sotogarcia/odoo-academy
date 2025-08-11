@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="link_tracker_my_boe" model="link.tracker">
+            <field name="title">Search in BOE</field>
+            <field name="campaign_id" ref="utm_campaign_civil_service_tracker" />
+            <field name="url">https://www.boe.es/mi_boe/</field>
+            <field name="source_id" ref="civil_service_tracker_to_link_tracker.utm_source_official_journal" />
+            <field name="medium_id" ref="utm.utm_medium_direct" />
+        </record>
+
+    </data>
+</openerp>

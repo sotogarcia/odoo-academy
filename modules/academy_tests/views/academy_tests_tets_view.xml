@@ -31,6 +31,7 @@
                     <field name="question_count" class="oe_field_question_count" string="Questions" optional="show" />
                     <field name="test_kind_id" class="od_field_test_kind_id" optional="show" />
                     <field name="last_edition" class="oe_field_last_edition" optional="show" />
+                    <field name="tag_ids" class="oe_field_tag_ids" widget="many2many_tags" optional="hide" />
                 </tree>
             </field>
         </record>
@@ -48,6 +49,11 @@
                     <sheet>
                         <div class="oe_button_box" name="button_box">
                                 <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+
+                                <button name="view_shuffle_wizard" type="object"
+                                    class="oe_stat_button oe_read_only" icon="fa-random">
+                                    <span>Shuffle</span>
+                                </button>
 
                                 <button name="%(action_report_full_printable_test)d" type="action"
                                     class="oe_stat_button oe_read_only" icon="fa-file-pdf-o">
@@ -121,8 +127,9 @@
                                     <field name="code" class="oe_field_code"
                                         placeholder="Enter new code" />
                                     <field name="tag_ids" class="oe_field_tag_ids"
-                                        widget="many2many_tags"
+                                        widget="many2many_tags" 
                                         domain="['|', ('private', '=', False), ('create_uid', '=', uid)]"
+                                        context="{'search_default_my_tags': 1}"
                                         options="{'no_quick_create': True, 'no_create': False, 'no_open': True}" />
 
                                     <separator string="Proprietary" colspan="4" />

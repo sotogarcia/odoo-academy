@@ -7,7 +7,8 @@ all academy tests topic attributes and behavior.
 
 from odoo import models, fields, api
 from odoo.tools.translate import _
-from odoo.osv.expression import FALSE_DOMAIN
+from odoo.osv.expression import NEGATIVE_TERM_OPERATORS as NEGATIVE
+from odoo.osv.expression import TRUE_DOMAIN, FALSE_DOMAIN
 from odoo.exceptions import ValidationError
 
 import re
@@ -127,20 +128,61 @@ class AcademyTestsTopic(models.Model):
         default=0,
         help='Show number of categories',
         store=False,
-        compute=lambda self: self.compute_category_count()
+        compute='_compute_category_count'
     )
 
     @api.depends('category_ids')
-    def compute_category_count(self):
+    def _compute_category_count(self):
         """ Computes `category_count` field value, this will be the number
         of categories related with this topic
         """
         for record in self:
             record.category_count = len(record.category_ids)
 
-    @api.onchange('category_ids')
-    def _onchange_category_ids(self):
-        self.compute_category_count()
+    version_count = fields.Integer(
+        string='Number of versions',
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        help='Show number of versions',
+        store=False,
+        compute='_compute_version_count'
+    )
+
+    @api.depends('topic_version_ids')
+    def _compute_version_count(self):
+        """ Computes `version_count` field value, this will be the number
+        of categories related with this topic
+        """
+        for record in self:
+            record.version_count = len(record.topic_version_ids)
+
+    last_version_id = fields.Many2one(
+        string='Last version',
+        required=False,
+        readonly=True,
+        index=True,
+        default=None,
+        help='Most recent version based on sequence',
+        comodel_name='academy.tests.topic.version',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False,
+        compute='_compute_last_version_id',
+        store=True
+    )
+
+    @api.depends('topic_version_ids.sequence')
+    def _compute_last_version_id(self):
+        for record in self:
+            versions = record.topic_version_ids
+            if versions:
+                record.last_version_id = \
+                    max(versions, key=lambda v: v.sequence)
+            else:
+                record.last_version_id = False
 
     question_count = fields.Integer(
         string='Number of questions',
@@ -150,8 +192,59 @@ class AcademyTestsTopic(models.Model):
         default=0,
         help='Show number of questions',
         store=False,
-        compute=lambda self: self.compute_question_count()
+        compute='_compute_question_count',
+        search='_search_question_count'
     )
+
+    @api.depends('question_ids')
+    def _compute_question_count(self):
+        """ Computes `question_count` field value, this will be the number
+        of categories related with this topic
+        """
+        for record in self:
+            record.question_count = len(record.question_ids)
+
+
+    @api.model
+    def _search_question_count(self, operator, value):
+        domain = FALSE_DOMAIN
+
+        sql = f'''
+            WITH grouped_question_count AS (
+              SELECT
+                topic_id,
+                COUNT(atq."id")::INTEGER AS question_count
+              FROM
+                academy_tests_question AS atq
+              WHERE
+                active 
+              GROUP BY
+                topic_id
+            )
+            SELECT
+              top."id" AS topic_id
+            FROM
+              academy_tests_topic AS top
+            LEFT JOIN grouped_question_count AS gqc 
+              ON gqc.topic_id = top."id"
+            WHERE COALESCE(question_count, 0) {operator} {value}
+        '''
+
+        if isinstance(value, bool):
+            # =True or !=False. agreement_coun is always established
+            if (operator not in NEGATIVE and value is True) or \
+               (operator in NEGATIVE and value is False):
+                domain = TRUE_DOMAIN
+        else:
+            sql = sql.format(operator=operator, value=value)
+            self.env.cr.execute(sql)
+            rows = self.env.cr.dictfetchall()
+
+            if rows:
+                topic_ids = [row['topic_id'] for row in (rows or [])]
+                domain = [('id', 'in', topic_ids)]
+
+        return domain
 
     training_activity_ids = fields.Many2many(
         string='Activities',
@@ -191,7 +284,7 @@ class AcademyTestsTopic(models.Model):
         search='_search_competency_unit_ids'
     )
 
-    training_module_ids = fields.Many2many(
+    training_module_ids = fields.Many2manyView(
         string='Modules',
         required=False,
         readonly=True,
@@ -205,9 +298,6 @@ class AcademyTestsTopic(models.Model):
         domain=[],
         context={},
         limit=None,
-        store=False,
-        compute='_compute_training_module_ids',
-        search='_search_training_module_ids'
     )
 
     def _compute_training_activity_ids(self):
@@ -246,18 +336,6 @@ class AcademyTestsTopic(models.Model):
                     competency_ids = competency_set.mapped('id')
                     record.competency_unit_ids = [(6, None, competency_ids)]
 
-    def _compute_training_module_ids(self):
-        for record in self:
-            model = 'academy.tests.topic.training.module.link'
-            domain = [('topic_id', '=', record.id)]
-            module_ids = self._read_field_values(
-                model, domain, 'training_module_id.id')
-
-            if module_ids:
-                record.training_module_ids = [(6, None, module_ids)]
-            else:
-                record.training_module_ids = [(5, None, None)]
-
     def _search_training_activity_ids(self, operator, value):
 
         domain = [('name', operator, value)]
@@ -284,16 +362,6 @@ class AcademyTestsTopic(models.Model):
 
         return domain
 
-    def _search_training_module_ids(self, operator, value):
-
-        model = 'academy.training.module'
-        domain = [('name', operator, value)]
-        module_ids = self._read_field_values(model, domain, 'id')
-
-        domain = self._topic_domain_from_module_ids(module_ids)
-
-        return domain
-
     def _read_field_values(self, model, domain, field):
         model_obj = self.env[model]
         model_set = model_obj.search(domain)
@@ -311,14 +379,6 @@ class AcademyTestsTopic(models.Model):
                 result = [('id', 'in', topic_ids)]
 
         return result
-
-    @api.depends('question_ids')
-    def compute_question_count(self):
-        """ Computes `question_count` field value, this will be the number
-        of categories related with this topic
-        """
-        for record in self:
-            record.question_count = len(record.question_ids)
 
     # --------------------------- SQL_CONTRAINTS ------------------------------
 
