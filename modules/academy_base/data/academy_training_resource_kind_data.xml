@@ -1,27 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="1">
+<odoo nopudate="1">
 
-        <record id="academy_training_resource_kind_1" model="academy.training.resource.kind">
-            <field name="name">Schoolbook</field>
-            <field name="description">Giving information on a particular subject, used in school</field>
-        </record>
+    <record id="academy_training_resource_kind_1" model="academy.training.resource.kind">
+        <field name="name">Schoolbook</field>
+        <field name="description">Giving information on a particular subject, used in school</field>
+    </record>
 
-        <record id="academy_training_resource_kind_2" model="academy.training.resource.kind">
-            <field name="name">Exercise book</field>
-            <field name="description">Book with blank pages/sections that students use to write their work in</field>
-        </record>
+    <record id="academy_training_resource_kind_2" model="academy.training.resource.kind">
+        <field name="name">Exercise book</field>
+        <field name="description">Book with blank pages/sections that students use to write their
+            work in</field>
+    </record>
 
-        <record id="academy_training_resource_kind_2" model="academy.training.resource.kind">
-            <field name="name">Summary</field>
-            <field name="description">An abstract or a condensed presentation of the substance of a body of material</field>
-        </record>
+    <record id="academy_training_resource_kind_2" model="academy.training.resource.kind">
+        <field name="name">Summary</field>
+        <field name="description">An abstract or a condensed presentation of the substance of a body
+            of material</field>
+    </record>
 
-        <record id="academy_training_resource_kind_2" model="academy.training.resource.kind">
-            <field name="name">Multimedia</field>
-            <field name="description">Image, video or audio whose function is to support the training</field>
-        </record>
+    <record id="academy_training_resource_kind_2" model="academy.training.resource.kind">
+        <field name="name">Multimedia</field>
+        <field name="description">Image, video or audio whose function is to support the
+            training</field>
+    </record>
 
-    </data>
-</openerp>
+</odoo>

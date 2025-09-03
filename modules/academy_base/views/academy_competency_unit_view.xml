@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo nopudate="0">
 
-        <!-- VIEWS: "Competency Unit"
+    <!-- VIEWS: "Competency Unit"
 
             - Model·········: academy.competency.unit
             - _rec_name·····: name
@@ -14,258 +13,262 @@
             - Action help···: There are not competency units in catalog
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-        <!-- Tree view for "academy.competency.unit" -->
-        <record id="view_academy_competency_unit_tree" model="ir.ui.view">
-            <field name="name">view.academy.competency.unit.tree</field>
-            <field name="model">academy.competency.unit</field>
-            <field name="type">tree</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="16" />
-            <field name="active" eval="True" />
-            <field name="arch" type="xml">
-                <tree string="academy_competency_unit_tree" create="1" delete="1" edit="1">
-                    <field name="competency_code" string="Code" class="oe_field_competency_code" />
-                    <field name="competency_name" string="Name" class="oe_field_competency_name w-100" />
-                    <field name="training_activity_id" class="oe_field_training_activity_id" />
-                    <field name="training_module_id" class="oe_field_training_module_id oe_edit_only" />
-                    <field name="manager_id" class="oe_field_manager_id" />
-                    <field name="hours" class="oe_field_hours" />
-                </tree>
-            </field>
-        </record>
+    <!-- List view for "academy.competency.unit" -->
+    <record id="view_academy_competency_unit_tree" model="ir.ui.view">
+        <field name="name">view.academy.competency.unit.tree</field>
+        <field name="model">academy.competency.unit</field>
+        <field name="type">list</field>
+        <field name="mode">primary</field>
+        <field name="priority" eval="16"/>
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <list string="academy_competency_unit_tree" create="1" delete="1" edit="1">
+                <field name="competency_code" string="Code" class="oe_field_competency_code"/>
+                <field name="competency_name" string="Name" class="oe_field_competency_name w-100"/>
+                <field name="training_activity_id" class="oe_field_training_activity_id"/>
+                <field name="training_module_id" class="oe_field_training_module_id oe_edit_only"/>
+                <field name="manager_id" class="oe_field_manager_id"/>
+                <field name="hours" class="oe_field_hours"/>
+            </list>
+        </field>
+    </record>
 
-        <!-- Form view for "academy.competency.unit" -->
-        <record id="view_academy_competency_unit_form" model="ir.ui.view">
-            <field name="name">view.academy.competency.unit.form</field>
-            <field name="model">academy.competency.unit</field>
-            <field name="type">form</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="16" />
-            <field name="active" eval="True" />
-            <field name="arch" type="xml">
-                <form string="academy_competency_unit_form" create="1" delete="1" edit="1">
-                    <sheet>
-                        <div class="oe_button_box" name="button_box"/>
-                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+    <!-- Form view for "academy.competency.unit" -->
+    <record id="view_academy_competency_unit_form" model="ir.ui.view">
+        <field name="name">view.academy.competency.unit.form</field>
+        <field name="model">academy.competency.unit</field>
+        <field name="type">form</field>
+        <field name="mode">primary</field>
+        <field name="priority" eval="16"/>
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <form string="academy_competency_unit_form" create="1" delete="1" edit="1">
+                <sheet>
+                    <div class="oe_button_box" name="button_box"/>
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger"
+                        invisible="active == True"/>
 
-                        <field name="image_1920" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}'/>
+                    <field name="image_1920" widget="image" class="oe_avatar"
+                        options='{"preview_image": "image_128"}'/>
 
-                        <div class="oe_title">
-                            <field name="id" invisible="1" />
-                            <field name="active" invisible="1"/>
+                    <div class="oe_title">
+                        <field name="id" invisible="1"/>
+                        <field name="active" invisible="1"/>
 
-                            <label for="name" class="oe_edit_only" />
-                            <h1>
-                                <field name="competency_name" class="oe_field_name"
-                                    placeholder="Enter new name" />
-                            </h1>
-                        </div>
-                        <group col="2">
-                            <field name="competency_code" class="oe_field_competency_code"
-                                placeholder="Enter new code" string="Code" />
-                            <field name="training_activity_id" class="oe_field_training_activity_id"
-                                readonly="context.get('default_training_activity_id', False)" />
-                            <field name="training_module_id" class="oe_field_training_module_id"
-                                readonly="context.get('default_training_module_id', False)" />
-                        </group>
-
-                        <notebook>
-                            <page id="setup" string="Setup" class="oe_page_setup" accesskey="S">
-                                <group col="4" string="Description">
-                                    <field name="description" class="oe_field_description" colspan="2" nolabel="1" />
-                                </group>
-                                <group col="4" string="Ownership" groups="record_ownership.record_ownership_proxy">
-                                    <field name="owner_id" class="oe_field_owner_id oe_read_only" />
-                                    <field name="subrogate_id" class="oe_field_subrogate_id" />
-                                </group>
-                            </page>
-                        </notebook>
-                    </sheet>
-
-                    <div class="oe_chatter">
-                        <field name="message_follower_ids" widget="mail_followers"/>
-                        <field name="message_ids" widget="mail_thread"/>
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="competency_name" class="oe_field_name"
+                                placeholder="Enter new name"/>
+                        </h1>
                     </div>
-                </form>
-            </field>
-        </record>
+                    <group col="2">
+                        <field name="competency_code" class="oe_field_competency_code"
+                            placeholder="Enter new code" string="Code"/>
+                        <field name="training_activity_id" class="oe_field_training_activity_id"
+                            readonly="context.get('default_training_activity_id', False)"/>
+                        <field name="training_module_id" class="oe_field_training_module_id"
+                            readonly="context.get('default_training_module_id', False)"/>
+                    </group>
 
-        <!-- Kanban view for "academy.competency.unit" -->
-        <record id="view_academy_competency_unit_kanban" model="ir.ui.view">
-            <field name="name">view.academy.competency.unit.kanban</field>
-            <field name="model">academy.competency.unit</field>
-            <field name="type">kanban</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="16" />
-            <field name="active" eval="True" />
-            <field name="arch" type="xml">
-                <kanban create="1" delete="1" edit="1">
-                    <field name="image_128" />
-                    <field name="competency_name" />
-                    <field name="hours" />
-                    <field name="owner_id" />
-                    <field name="competency_code" />
+                    <notebook>
+                        <page id="setup" string="Setup" class="oe_page_setup" accesskey="S">
+                            <group col="4" string="Description">
+                                <field name="description" class="oe_field_description" colspan="2"
+                                    nolabel="1"/>
+                            </group>
+                            <group col="4" string="Ownership"
+                                groups="record_ownership.record_ownership_proxy">
+                                <field name="owner_id" class="oe_field_owner_id oe_read_only"/>
+                                <field name="subrogate_id" class="oe_field_subrogate_id"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
 
-                    <templates>
-                        <t t-name="kanban-box">
-                             <div class="oe_kanban_global_click oe_kanban_academy_training_module">
-                                <div class="o_kanban_image">
-                                    <t t-if="record.image_128.raw_value">
-                                        <field name="image_128" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}' />
-                                    </t>
-                                    <t t-else="">
-                                        <img t-att-src="_s + &quot;/academy_base/static/src/img/compentency-unit.png&quot;" class="o_kanban_image" alt="Competency unit photo" />
-                                    </t>
-                                </div>
-                                <div class="oe_kanban_details">
-                                    <strong class="oe_partner_heading"><field name="competency_name"/></strong>
-                                    <ul>
-                                        <li><strong>Code:&#160;</strong><field name="competency_code" /></li>
-                                        <li><strong>Owner:&#160;</strong><field name="owner_id" /></li>
-                                        <li><strong>Lifespan:&#160;</strong><field name="hours" />&#160;hours</li>
-                                     </ul>
-                                </div>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Kanban view for "academy.competency.unit" -->
+    <record id="view_academy_competency_unit_kanban" model="ir.ui.view">
+        <field name="name">view.academy.competency.unit.kanban</field>
+        <field name="model">academy.competency.unit</field>
+        <field name="type">kanban</field>
+        <field name="mode">primary</field>
+        <field name="priority" eval="16"/>
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <kanban create="1" delete="1" edit="1">
+                <field name="image_128"/>
+                <field name="competency_name"/>
+                <field name="hours"/>
+                <field name="owner_id"/>
+                <field name="competency_code"/>
+
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click oe_kanban_academy_training_module">
+                            <div class="o_kanban_image">
+                                <t t-if="record.image_128.raw_value">
+                                    <field name="image_128" widget="image" class="oe_avatar"
+                                        options='{"preview_image": "image_128"}'/>
+                                </t>
+                                <t t-else="">
+                                    <img
+                                        t-att-src="_s + &quot;/academy_base/static/src/img/compentency-unit.png&quot;"
+                                        class="o_kanban_image" alt="Competency unit photo"/>
+                                </t>
                             </div>
-                        </t>
-                    </templates>
-                </kanban>
-            </field>
-        </record>
+                            <div class="oe_kanban_details">
+                                <strong class="oe_partner_heading">
+                                    <field name="competency_name"/>
+                                </strong>
+                                <ul>
+                                    <li>
+                                        <strong>Code:&#160;</strong>
+                                        <field name="competency_code"/>
+                                    </li>
+                                    <li>
+                                        <strong>Owner:&#160;</strong>
+                                        <field name="owner_id"/>
+                                    </li>
+                                    <li><strong>Lifespan:&#160;</strong><field name="hours"
+                                        />&#160;hours</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
 
-        <!-- Search view for "academy.competency.unit" -->
-        <record id="view_academy_competency_unit_search" model="ir.ui.view">
-            <field name="name">view.academy.competency.unit.search</field>
-            <field name="model">academy.competency.unit</field>
-            <field name="type">search</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="16" />
-            <field name="active" eval="True" />
-            <field name="arch" type="xml">
-                <search string="academy_competency_unit_search">
-                    <field name="competency_name" string="Name" />
-                    <field name="competency_code" />
+    <!-- Search view for "academy.competency.unit" -->
+    <record id="view_academy_competency_unit_search" model="ir.ui.view">
+        <field name="name">view.academy.competency.unit.search</field>
+        <field name="model">academy.competency.unit</field>
+        <field name="type">search</field>
+        <field name="mode">primary</field>
+        <field name="priority" eval="16"/>
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <search string="academy_competency_unit_search">
+                <field name="competency_name" string="Name"/>
+                <field name="competency_code"/>
 
-                    <field name="training_activity_id" />
-                    <field name="training_module_id" />
+                <field name="training_activity_id"/>
+                <field name="training_module_id"/>
 
-                    <filter string="By training activity"
-                        name="competency_units_by_training_activity"
-                        domain="[]"
-                        context="{'group_by': 'training_activity_id'}"
-                        help="Group the competency units by training activity" />
+                <filter string="By training activity" name="competency_units_by_training_activity"
+                    domain="[]" context="{'group_by': 'training_activity_id'}"
+                    help="Group the competency units by training activity"/>
 
-                    <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
+                <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
 
-                </search>
-            </field>
-        </record>
+            </search>
+        </field>
+    </record>
 
-        <!-- Main window action for model.name -->
-        <record id="action_competency_unit_act_window" model="ir.actions.act_window">
-            <field name="type">ir.actions.act_window</field>
-            <field name="name">Competency units</field>
-            <field name="res_model">academy.competency.unit</field>
-            <field name="view_mode">kanban,tree,form</field>
+    <!-- Main window action for model.name -->
+    <record id="action_competency_unit_act_window" model="ir.actions.act_window">
+        <field name="type">ir.actions.act_window</field>
+        <field name="name">Competency units</field>
+        <field name="res_model">academy.competency.unit</field>
+        <field name="view_mode">kanban,list,form</field>
 
-            <field name="target">current</field>
-            <field name="domain">[]</field>
-            <field name="context">{}</field>
-            <field name="search_view_id" ref="view_academy_competency_unit_search" />
-            <field name="help" type="html">
-                <p class="oe_view_nocontent_create">
-                    Click to add new competency units
-                </p><p>
-                    There are no competency units yet
-                </p>
-            </field>
-        </record>
+        <field name="target">current</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="search_view_id" ref="view_academy_competency_unit_search"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create"> Click to add new competency units </p>
+            <p> There are no competency units yet </p>
+        </field>
+    </record>
 
-        <!-- Main menu for model.name -->
-        <record id="menu_competency_unit" model="ir.ui.menu" >
-            <field name="name">Competency units</field>
-            <field name="sequence" eval="25" />
-            <field name="action" ref="action_competency_unit_act_window" />
-            <field name="parent_id" ref="academy_base.menu_academy_settings_helper" />
-            <field name="groups_id" eval="[(4, ref('academy_base.academy_group_manager'))]"/>
-        </record>
+    <!-- Main menu for model.name -->
+    <record id="menu_competency_unit" model="ir.ui.menu">
+        <field name="name">Competency units</field>
+        <field name="sequence" eval="25"/>
+        <field name="action" ref="action_competency_unit_act_window"/>
+        <field name="parent_id" ref="academy_base.menu_academy_settings_helper"/>
+        <field name="groups_id" eval="[(4, ref('academy_base.academy_group_manager'))]"/>
+    </record>
 
-        <!-- Tree view for "academy.competency.unit" -->
-        <record id="view_academy_competency_unit_inline_edit_tree" model="ir.ui.view">
-            <field name="name">view.academy.competency.unit.inline.edit.tree</field>
-            <field name="model">academy.competency.unit</field>
-            <field name="type">tree</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="50" />
-            <field name="active" eval="True" />
-            <field name="inherit_id" ref="academy_base.view_academy_competency_unit_tree" />
-            <field name="arch" type="xml">
-                <xpath expr="//tree" position="attributes">
-                    <attribute name="editable">bottom</attribute>
-                </xpath>
-                <xpath expr="//tree/*[1]" position="before">
-                    <field name="sequence" class="oe_field_sequence" widget="handle" />
-                </xpath>
-                <xpath expr="//field[@name='training_activity_id']" position="replace" />
-            </field>
-        </record>
+    <!-- List view for "academy.competency.unit" -->
+    <record id="view_academy_competency_unit_inline_edit_tree" model="ir.ui.view">
+        <field name="name">view.academy.competency.unit.inline.edit.tree</field>
+        <field name="model">academy.competency.unit</field>
+        <field name="type">list</field>
+        <field name="mode">primary</field>
+        <field name="priority" eval="50"/>
+        <field name="active" eval="True"/>
+        <field name="inherit_id" ref="academy_base.view_academy_competency_unit_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="attributes">
+                <attribute name="editable">bottom</attribute>
+            </xpath>
+            <xpath expr="//list/*[1]" position="before">
+                <field name="sequence" class="oe_field_sequence" widget="handle"/>
+            </xpath>
+            <xpath expr="//field[@name='training_activity_id']" position="replace"/>
+        </field>
+    </record>
 
-        <record id="view_academy_competency_unit_batch_edit_tree" model="ir.ui.view">
-            <field name="name">view.academy.competency.unit.batch.edit.tree</field>
-            <field name="model">academy.competency.unit</field>
-            <field name="type">tree</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="75" />
-            <field name="active" eval="True" />
-            <field name="inherit_id" ref="academy_base.view_academy_competency_unit_tree" />
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='training_activity_id']" position="replace" />
-            </field>
-        </record>
+    <record id="view_academy_competency_unit_batch_edit_tree" model="ir.ui.view">
+        <field name="name">view.academy.competency.unit.batch.edit.tree</field>
+        <field name="model">academy.competency.unit</field>
+        <field name="type">list</field>
+        <field name="mode">primary</field>
+        <field name="priority" eval="75"/>
+        <field name="active" eval="True"/>
+        <field name="inherit_id" ref="academy_base.view_academy_competency_unit_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='training_activity_id']" position="replace"/>
+        </field>
+    </record>
 
-        <!-- Tree view for "academy.competency.unit" -->
-        <record id="view_academy_competency_unit_list_only_tree" model="ir.ui.view">
-            <field name="name">view.academy.competency.unit.list.only.tree</field>
-            <field name="model">academy.competency.unit</field>
-            <field name="type">tree</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="55" />
-            <field name="active" eval="True" />
-            <field name="inherit_id" ref="academy_base.view_academy_competency_unit_tree" />
-            <field name="arch" type="xml">
-                <xpath expr="//tree" position="attributes">
-                    <attribute name="create">0</attribute>
-                    <attribute name="delete">0</attribute>
-                    <attribute name="edit">0</attribute>
-                </xpath>
-                <xpath expr="//field[@name='training_activity_id']" position="replace" />
-                <xpath expr="//tree/*[last()]" position="after">
-                    <button name="view_teacher_assignments"
-                            string="Teachers"
-                            type="object"
-                            default_focus="0"
-                            icon="fa-user-plus"
-                            help="Assign teachers to this competency unit" />
-                </xpath>
-            </field>
-        </record>
+    <!-- List view for "academy.competency.unit" -->
+    <record id="view_academy_competency_unit_list_only_tree" model="ir.ui.view">
+        <field name="name">view.academy.competency.unit.list.only.tree</field>
+        <field name="model">academy.competency.unit</field>
+        <field name="type">list</field>
+        <field name="mode">primary</field>
+        <field name="priority" eval="55"/>
+        <field name="active" eval="True"/>
+        <field name="inherit_id" ref="academy_base.view_academy_competency_unit_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="attributes">
+                <attribute name="create">0</attribute>
+                <attribute name="delete">0</attribute>
+                <attribute name="edit">0</attribute>
+            </xpath>
+            <xpath expr="//field[@name='training_activity_id']" position="replace"/>
+            <xpath expr="//list/*[last()]" position="after">
+                <button name="view_teacher_assignments" string="Teachers" type="object"
+                    default_focus="0" icon="fa-user-plus"
+                    help="Assign teachers to this competency unit"/>
+            </xpath>
+        </field>
+    </record>
 
-        <!-- Tree view for "academy.competency.unit" -->
-        <record id="view_academy_competency_unit_append_existing_tree" model="ir.ui.view">
-            <field name="name">view.academy.competency.unit.append.existing.tree</field>
-            <field name="model">academy.competency.unit</field>
-            <field name="type">tree</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="60" />
-            <field name="active" eval="True" />
-            <field name="inherit_id" ref="academy_base.view_academy_competency_unit_tree" />
-            <field name="arch" type="xml">
-                <xpath expr="//tree" position="attributes">
-                    <attribute name="editable">bottom</attribute>
-                </xpath>
-                <xpath expr="//field[@name='training_activity_id']" position="replace" />
-                <xpath expr="//field[@name='training_module_id']" position="replace" />
-            </field>
-        </record>
+    <!-- List view for "academy.competency.unit" -->
+    <record id="view_academy_competency_unit_append_existing_tree" model="ir.ui.view">
+        <field name="name">view.academy.competency.unit.append.existing.tree</field>
+        <field name="model">academy.competency.unit</field>
+        <field name="type">list</field>
+        <field name="mode">primary</field>
+        <field name="priority" eval="60"/>
+        <field name="active" eval="True"/>
+        <field name="inherit_id" ref="academy_base.view_academy_competency_unit_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="attributes">
+                <attribute name="editable">bottom</attribute>
+            </xpath>
+            <xpath expr="//field[@name='training_activity_id']" position="replace"/>
+            <xpath expr="//field[@name='training_module_id']" position="replace"/>
+        </field>
+    </record>
 
-    </data>
-</openerp>
+</odoo>

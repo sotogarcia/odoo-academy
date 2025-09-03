@@ -1,152 +1,149 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="1">
+<odoo nopudate="1">
 
-        <record id="professional_field_11" model="academy.professional.field">
-            <field name="name">Logic</field>
-            <field name="code">11</field>
-            <field name="active" eval="1" />
-        </record>
+    <record id="professional_field_11" model="academy.professional.field">
+        <field name="name">Logic</field>
+        <field name="code">11</field>
+        <field name="active" eval="1"/>
+    </record>
 
-        <record id="professional_field_12" model="academy.professional.field">
-            <field name="name">Mathematics</field>
-            <field name="code">12</field>
-            <field name="active" eval="1" />
-        </record>
+    <record id="professional_field_12" model="academy.professional.field">
+        <field name="name">Mathematics</field>
+        <field name="code">12</field>
+        <field name="active" eval="1"/>
+    </record>
 
-        <record id="professional_field_21" model="academy.professional.field">
-            <field name="name">Astronomy, Astrophysics</field>
-            <field name="code">21</field>
-            <field name="active" eval="1" />
-        </record>
+    <record id="professional_field_21" model="academy.professional.field">
+        <field name="name">Astronomy, Astrophysics</field>
+        <field name="code">21</field>
+        <field name="active" eval="1"/>
+    </record>
 
-        <record id="professional_field_22" model="academy.professional.field">
-            <field name="name">Physics</field>
-            <field name="code">22</field>
-            <field name="active" eval="1" />
-        </record>
+    <record id="professional_field_22" model="academy.professional.field">
+        <field name="name">Physics</field>
+        <field name="code">22</field>
+        <field name="active" eval="1"/>
+    </record>
 
-        <record id="professional_field_23" model="academy.professional.field">
-            <field name="name">Chemistry</field>
-            <field name="code">23</field>
-            <field name="active" eval="1" />
-        </record>
+    <record id="professional_field_23" model="academy.professional.field">
+        <field name="name">Chemistry</field>
+        <field name="code">23</field>
+        <field name="active" eval="1"/>
+    </record>
 
-        <record id="professional_field_24" model="academy.professional.field">
-            <field name="name">Life Sciences</field>
-            <field name="code">24</field>
-            <field name="active" eval="1" />
-        </record>
+    <record id="professional_field_24" model="academy.professional.field">
+        <field name="name">Life Sciences</field>
+        <field name="code">24</field>
+        <field name="active" eval="1"/>
+    </record>
 
-        <record id="professional_field_25" model="academy.professional.field">
-            <field name="name">Earth and space science</field>
-            <field name="code">25</field>
-            <field name="active" eval="1" />
-        </record>
+    <record id="professional_field_25" model="academy.professional.field">
+        <field name="name">Earth and space science</field>
+        <field name="code">25</field>
+        <field name="active" eval="1"/>
+    </record>
 
-        <record id="professional_field_31" model="academy.professional.field">
-            <field name="name">Agricultural Sciences</field>
-            <field name="code">31</field>
-            <field name="active" eval="1" />
-        </record>
+    <record id="professional_field_31" model="academy.professional.field">
+        <field name="name">Agricultural Sciences</field>
+        <field name="code">31</field>
+        <field name="active" eval="1"/>
+    </record>
 
-        <record id="professional_field_32" model="academy.professional.field">
-            <field name="name">Medical Sciences</field>
-            <field name="code">32</field>
-            <field name="active" eval="1" />
-        </record>
+    <record id="professional_field_32" model="academy.professional.field">
+        <field name="name">Medical Sciences</field>
+        <field name="code">32</field>
+        <field name="active" eval="1"/>
+    </record>
 
-        <record id="professional_field_33" model="academy.professional.field">
-            <field name="name">Technological Sciences</field>
-            <field name="code">33</field>
-            <field name="active" eval="1" />
-        </record>
+    <record id="professional_field_33" model="academy.professional.field">
+        <field name="name">Technological Sciences</field>
+        <field name="code">33</field>
+        <field name="active" eval="1"/>
+    </record>
 
-        <record id="professional_field_51" model="academy.professional.field">
-            <field name="name">Anthropology</field>
-            <field name="code">51</field>
-            <field name="active" eval="1" />
-        </record>
+    <record id="professional_field_51" model="academy.professional.field">
+        <field name="name">Anthropology</field>
+        <field name="code">51</field>
+        <field name="active" eval="1"/>
+    </record>
 
-        <record id="professional_field_52" model="academy.professional.field">
-            <field name="name">Demography</field>
-            <field name="code">52</field>
-            <field name="active" eval="1" />
-        </record>
+    <record id="professional_field_52" model="academy.professional.field">
+        <field name="name">Demography</field>
+        <field name="code">52</field>
+        <field name="active" eval="1"/>
+    </record>
 
-        <record id="professional_field_53" model="academy.professional.field">
-            <field name="name">Economic Sciences</field>
-            <field name="code">53</field>
-            <field name="active" eval="1" />
-        </record>
+    <record id="professional_field_53" model="academy.professional.field">
+        <field name="name">Economic Sciences</field>
+        <field name="code">53</field>
+        <field name="active" eval="1"/>
+    </record>
 
-        <record id="professional_field_54" model="academy.professional.field">
-            <field name="name">Geography</field>
-            <field name="code">54</field>
-            <field name="active" eval="1" />
-        </record>
+    <record id="professional_field_54" model="academy.professional.field">
+        <field name="name">Geography</field>
+        <field name="code">54</field>
+        <field name="active" eval="1"/>
+    </record>
 
-        <record id="professional_field_55" model="academy.professional.field">
-            <field name="name">History</field>
-            <field name="code">55</field>
-            <field name="active" eval="1" />
-        </record>
+    <record id="professional_field_55" model="academy.professional.field">
+        <field name="name">History</field>
+        <field name="code">55</field>
+        <field name="active" eval="1"/>
+    </record>
 
-        <record id="professional_field_56" model="academy.professional.field">
-            <field name="name">Juridical Science and Law</field>
-            <field name="code">56</field>
-            <field name="active" eval="1" />
-        </record>
+    <record id="professional_field_56" model="academy.professional.field">
+        <field name="name">Juridical Science and Law</field>
+        <field name="code">56</field>
+        <field name="active" eval="1"/>
+    </record>
 
-        <record id="professional_field_57" model="academy.professional.field">
-            <field name="name">Linguistics</field>
-            <field name="code">57</field>
-            <field name="active" eval="1" />
-        </record>
+    <record id="professional_field_57" model="academy.professional.field">
+        <field name="name">Linguistics</field>
+        <field name="code">57</field>
+        <field name="active" eval="1"/>
+    </record>
 
-        <record id="professional_field_58" model="academy.professional.field">
-            <field name="name">Pedagogy</field>
-            <field name="code">58</field>
-            <field name="active" eval="1" />
-        </record>
+    <record id="professional_field_58" model="academy.professional.field">
+        <field name="name">Pedagogy</field>
+        <field name="code">58</field>
+        <field name="active" eval="1"/>
+    </record>
 
-        <record id="professional_field_59" model="academy.professional.field">
-            <field name="name">Political Science</field>
-            <field name="code">59</field>
-            <field name="active" eval="1" />
-        </record>
+    <record id="professional_field_59" model="academy.professional.field">
+        <field name="name">Political Science</field>
+        <field name="code">59</field>
+        <field name="active" eval="1"/>
+    </record>
 
-        <record id="professional_field_61" model="academy.professional.field">
-            <field name="name">Psychology</field>
-            <field name="code">61</field>
-            <field name="active" eval="1" />
-        </record>
+    <record id="professional_field_61" model="academy.professional.field">
+        <field name="name">Psychology</field>
+        <field name="code">61</field>
+        <field name="active" eval="1"/>
+    </record>
 
-        <record id="professional_field_62" model="academy.professional.field">
-            <field name="name">Sciences of Arts and Letters</field>
-            <field name="code">62</field>
-            <field name="active" eval="1" />
-        </record>
+    <record id="professional_field_62" model="academy.professional.field">
+        <field name="name">Sciences of Arts and Letters</field>
+        <field name="code">62</field>
+        <field name="active" eval="1"/>
+    </record>
 
-        <record id="professional_field_63" model="academy.professional.field">
-            <field name="name">Sociology</field>
-            <field name="code">63</field>
-            <field name="active" eval="1" />
-        </record>
+    <record id="professional_field_63" model="academy.professional.field">
+        <field name="name">Sociology</field>
+        <field name="code">63</field>
+        <field name="active" eval="1"/>
+    </record>
 
-        <record id="professional_field_71" model="academy.professional.field">
-            <field name="name">Ethics</field>
-            <field name="code">71</field>
-            <field name="active" eval="1" />
-        </record>
+    <record id="professional_field_71" model="academy.professional.field">
+        <field name="name">Ethics</field>
+        <field name="code">71</field>
+        <field name="active" eval="1"/>
+    </record>
 
-        <record id="professional_field_72" model="academy.professional.field">
-            <field name="name">Philosophy</field>
-            <field name="code">72</field>
-            <field name="active" eval="1" />
-        </record>
+    <record id="professional_field_72" model="academy.professional.field">
+        <field name="name">Philosophy</field>
+        <field name="code">72</field>
+        <field name="active" eval="1"/>
+    </record>
 
-
-    </data>
-</openerp>
+</odoo>

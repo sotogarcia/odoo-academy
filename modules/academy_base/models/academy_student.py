@@ -345,7 +345,7 @@ class AcademyStudent(models.Model):
         ctx = self.env.context.copy()
         ctx.update(safe_eval(action.context))
         ctx.update({'default_student_id': self.id})
-        ctx.update({'tree_view_ref': view_xid})
+        ctx.update({'list_view_ref': view_xid})
 
         domain = self._eval_domain(action.domain)
         domain = AND([domain, [('student_id', '=', self.id)]])

@@ -1,88 +1,95 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<openerp>
-	<data noupdate="0">
+<odoo nopudate="0">
 
-        <!-- Multicompany
+    <!-- Multicompany
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-        <record id="ir_rule_restricted_training_action_multi_company" model="ir.rule">
-            <field name="name">Restricted Training Action: multi-company</field>
-            <field name="model_id" ref="academy_base.model_academy_training_action"/>
-            <field name="global" eval="True"/>
-            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
-        </record>
+    <record id="ir_rule_restricted_training_action_multi_company" model="ir.rule">
+        <field name="name">Restricted Training Action: multi-company</field>
+        <field name="model_id" ref="academy_base.model_academy_training_action"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
 
-        <record id="ir_rule_restricted_training_action_enrolment_multi_company" model="ir.rule">
-            <field name="name">Restricted Training Action Enrolment: multi-company</field>
-            <field name="model_id" ref="academy_base.model_academy_training_action_enrolment"/>
-            <field name="global" eval="True"/>
-            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
-        </record>
+    <record id="ir_rule_restricted_training_action_enrolment_multi_company" model="ir.rule">
+        <field name="name">Restricted Training Action Enrolment: multi-company</field>
+        <field name="model_id" ref="academy_base.model_academy_training_action_enrolment"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
 
-        <record id="ir_rule_academy_training_action_student_rel_multi_company" model="ir.rule">
-            <field name="name">Restricted Training Action Enrolment-Student rel: multi-company</field>
-            <field name="model_id" ref="academy_base.model_academy_training_action_student_rel"/>
-            <field name="global" eval="True"/>
-            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
-        </record>
+    <record id="ir_rule_academy_training_action_student_rel_multi_company" model="ir.rule">
+        <field name="name">Restricted Training Action Enrolment-Student rel: multi-company</field>
+        <field name="model_id" ref="academy_base.model_academy_training_action_student_rel"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
 
-		<!-- Resources
+    <!-- Resources
 		- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-		<record id="academy_teachers_can_only_update_or_unlink_their_own_resources_rule" model="ir.rule">
-			<field name="name">Academy: Teachers can only update or unlink their own resources</field>
-			<field name="model_id" ref="academy_base.model_academy_training_resource" />
-			<field name="groups" eval="[(4, ref('academy_base.academy_group_teacher'))]" />
-			<field name="global" eval="False" />
-			<field name="perm_read" eval="False" />
-			<field name="perm_create" eval="False" />
-			<field name="perm_write" eval="True" />
-			<field name="perm_unlink" eval="True" />
-			<field name="domain_force">['|',('create_uid', '=', user.id), ('write_uid', '=', user.id)]</field>
-			<field name="active" eval="True" />
-		</record>
+    <record id="academy_teachers_can_only_update_or_unlink_their_own_resources_rule" model="ir.rule">
+        <field name="name">Academy: Teachers can only update or unlink their own resources</field>
+        <field name="model_id" ref="academy_base.model_academy_training_resource"/>
+        <field name="groups" eval="[(4, ref('academy_base.academy_group_teacher'))]"/>
+        <field name="global" eval="False"/>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="domain_force">['|',('create_uid', '=', user.id), ('write_uid', '=',
+            user.id)]</field>
+        <field name="active" eval="True"/>
+    </record>
 
-		<record id="academy_technicians_and_managers_can_update_or_unlink_their_own_resources_rule" model="ir.rule">
-			<field name="name">Academy: Technicians and managers can update or unlink their own resources</field>
-			<field name="model_id" ref="academy_base.model_academy_training_resource"/>
-			<field name="groups" eval="[(4, ref('academy_base.academy_group_technical')), (4, ref('academy_base.academy_group_manager'))]"/>
-			<field name="global" eval="False" />
-			<field name="perm_read" eval="False" />
-			<field name="perm_create" eval="False" />
-			<field name="perm_write" eval="True" />
-			<field name="perm_unlink" eval="True" />
-			<field name="domain_force">[(1,'=',1)]</field>
-			<field name="active" eval="True" />
-		</record>
+    <record id="academy_technicians_and_managers_can_update_or_unlink_their_own_resources_rule"
+        model="ir.rule">
+        <field name="name">Academy: Technicians and managers can update or unlink their own
+            resources</field>
+        <field name="model_id" ref="academy_base.model_academy_training_resource"/>
+        <field name="groups"
+            eval="[(4, ref('academy_base.academy_group_technical')), (4, ref('academy_base.academy_group_manager'))]"/>
+        <field name="global" eval="False"/>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="domain_force">[(1,'=',1)]</field>
+        <field name="active" eval="True"/>
+    </record>
 
 
-	    <!-- Resource files 
+    <!-- Resource files 
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-        <record id="academy_teachers_can_only_update_or_unlink_their_own_resource_files_rule" model="ir.rule">
-            <field name="name">Academy: Teachers can only update or unlink their own resource files</field>
-            <field name="model_id" ref="academy_base.model_academy_training_resource_file" />
-            <field name="groups" eval="[(4, ref('academy_base.academy_group_teacher'))]" />
-            <field name="global" eval="False" />
-            <field name="perm_read" eval="False" />
-            <field name="perm_create" eval="False" />
-            <field name="perm_write" eval="True" />
-            <field name="perm_unlink" eval="True" />
-            <field name="domain_force">['|',('create_uid', '=', user.id), ('write_uid', '=', user.id)]</field>
-            <field name="active" eval="True" />
-        </record>
+    <record id="academy_teachers_can_only_update_or_unlink_their_own_resource_files_rule"
+        model="ir.rule">
+        <field name="name">Academy: Teachers can only update or unlink their own resource
+            files</field>
+        <field name="model_id" ref="academy_base.model_academy_training_resource_file"/>
+        <field name="groups" eval="[(4, ref('academy_base.academy_group_teacher'))]"/>
+        <field name="global" eval="False"/>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="domain_force">['|',('create_uid', '=', user.id), ('write_uid', '=',
+            user.id)]</field>
+        <field name="active" eval="True"/>
+    </record>
 
-        <record id="academy_technicians_and_managers_can_update_or_unlink_their_own_resource_files_rule" model="ir.rule">
-            <field name="name">Academy: Technicians and managers can update or unlink their own resource files</field>
-            <field name="model_id" ref="academy_base.model_academy_training_resource_file"/>
-            <field name="groups" eval="[(4, ref('academy_base.academy_group_technical')), (4, ref('academy_base.academy_group_manager'))]"/>
-            <field name="global" eval="False" />
-            <field name="perm_read" eval="False" />
-            <field name="perm_create" eval="False" />
-            <field name="perm_write" eval="True" />
-            <field name="perm_unlink" eval="True" />
-            <field name="domain_force">[(1,'=',1)]</field>
-            <field name="active" eval="True" />
-        </record>
+    <record id="academy_technicians_and_managers_can_update_or_unlink_their_own_resource_files_rule"
+        model="ir.rule">
+        <field name="name">Academy: Technicians and managers can update or unlink their own resource
+            files</field>
+        <field name="model_id" ref="academy_base.model_academy_training_resource_file"/>
+        <field name="groups"
+            eval="[(4, ref('academy_base.academy_group_technical')), (4, ref('academy_base.academy_group_manager'))]"/>
+        <field name="global" eval="False"/>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="domain_force">[(1,'=',1)]</field>
+        <field name="active" eval="True"/>
+    </record>
 
-        
-	</data>
-</openerp>
+</odoo>

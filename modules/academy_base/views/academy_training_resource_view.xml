@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo nopudate="0">
 
-        <!-- VIEWS: "Resources"
+    <!-- VIEWS: "Resources"
 
             - Model·········: academy.training.resource
             - _rec_name·····: name
@@ -14,252 +13,258 @@
             - Action help···: Here are not training resources
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-        <!-- Tree view for "academy.training.resource" -->
-        <record id="view_academy_training_resource_tree" model="ir.ui.view">
-            <field name="name">view.academy.training.resource.tree</field>
-            <field name="model">academy.training.resource</field>
-            <field name="type">tree</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="16" />
-            <field name="active" eval="True" />
-            <field name="arch" type="xml">
-                <tree string="academy_training_resource_tree" create="1" delete="1" edit="1">
-                    <field name="name" />
-                    <field name="manager_id" />
-                    <field name="last_update" />
-                    <field name="attachmentcounting" />
-                    <field name="directory_filecounting" />
-                </tree>
-            </field>
-        </record>
+    <!-- List view for "academy.training.resource" -->
+    <record id="view_academy_training_resource_tree" model="ir.ui.view">
+        <field name="name">view.academy.training.resource.tree</field>
+        <field name="model">academy.training.resource</field>
+        <field name="type">list</field>
+        <field name="mode">primary</field>
+        <field name="priority" eval="16"/>
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <list string="academy_training_resource_tree" create="1" delete="1" edit="1">
+                <field name="name"/>
+                <field name="manager_id"/>
+                <field name="last_update"/>
+                <field name="attachmentcounting"/>
+                <field name="directory_filecounting"/>
+            </list>
+        </field>
+    </record>
 
-        <!-- Form view for "academy.training.resource" -->
-        <record id="view_academy_training_resource_form" model="ir.ui.view">
-            <field name="name">view.academy.training.resource.form</field>
-            <field name="model">academy.training.resource</field>
-            <field name="type">form</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="16" />
-            <field name="active" eval="True" />
-            <field name="arch" type="xml">
-                <form string="academy_training_resource_form" create="1" delete="1" edit="1">
-                    <sheet>
-                        <field name="training_resource_id" invisible="1" />
-                        <field name="id" invisible="1" />
+    <!-- Form view for "academy.training.resource" -->
+    <record id="view_academy_training_resource_form" model="ir.ui.view">
+        <field name="name">view.academy.training.resource.form</field>
+        <field name="model">academy.training.resource</field>
+        <field name="type">form</field>
+        <field name="mode">primary</field>
+        <field name="priority" eval="16"/>
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <form string="academy_training_resource_form" create="1" delete="1" edit="1">
+                <sheet>
+                    <field name="training_resource_id" invisible="1"/>
+                    <field name="id" invisible="1"/>
 
-                        <div class="oe_button_box" name="button_box">
-                            <button name="download_directory" type="object" class="oe_stat_button"
-                                icon="fa-download" attrs="{'invisible': [('training_resource_id', '!=', False)]}">
-                                <field name="zip_attachment_id" class="o_ellipsis" />
-                            </button>
-                            <button name="button_snapshot" type="object" class="oe_stat_button"
-                                icon="fa-history" attrs="{'invisible': [('training_resource_id', '!=', False)]}">
-                                <field name="historical_count" widget="integer"/>
-                            </button>
-                            <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
-                        </div>
-
-                        <field name="image_1920" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}'/>
-
-                        <div class="oe_title">
-                            <field name="active" invisible="1"/>
-                            <label for="name" class="oe_edit_only" />
-                            <h1>
-                                <field name="name" class="oe_field_name"
-                                    placeholder="Enter new name" />
-                            </h1>
-                        </div>
-
-                        <separator />
-
-                        <group col="4">
-                            <field name="manager_id" class="oe_field_manager_id" />
-
-                            <field name="updater_id" class="oe_field_updater_id" />
-                            <field name="last_update" class="oe_field_last_update" />
-                            <field name="kind_id" class="od_field_kind_id" />
-                        </group>
-
-                        <group col="2" class="oe_edit_only">
-                            <field name="directory" class="oe_field_directory"
-                                placeholder="Enter directory full path" />
-                        </group>
-
-                        <notebook>
-                            <page string="Description" class="oe_page_description" accesskey="D">
-                                <field name="description" class="oe_field_description"
-                                    placeholder="Enter new description" />
-                            </page>
-                            <page string="Attachments" class="oe_page_attachments" accesskey="A">
-                                <field name="ir_attachment_ids" class="oe_field_ir_attachment_ids">
-                                    <tree>
-                                        <field name="name" class="oe_field_name"
-                                            placeholder="Enter new name" />
-                                        <field name="type" class="oe_field_type"
-                                            placeholder="Enter new type" />
-                                        <field name="mimetype" class="oe_field_mimetype"
-                                            placeholder="Enter new MIME type" />
-                                        <field name="file_size" class="oe_field_file_size"
-                                            placeholder="Enter the file size" />
-                                    </tree>
-                                </field>
-                            </page>
-                            <page string="Directory" class="oe_page_files" accesskey="F" attrs="{'invisible': [('directory', '=', False)]}">
-                                <field name="directory_file_ids" class="oe_field_directory_file_ids"
-                                    placeholder="Press button to reload directory" />
-                                <group cols="2">
-                                    <button name="reload_directory"
-                                            string="Reload"
-                                            type="object"
-                                            default_focus="0"
-                                            icon="fa-refresh"
-                                            help="Click it to reload directory file list" />
-                                </group>
-                            </page>
-
-                        </notebook>
-                    </sheet>
-
-                    <div class="oe_chatter">
-                        <field name="message_follower_ids" widget="mail_followers"/>
-                        <field name="message_ids" widget="mail_thread"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="download_directory" type="object" class="oe_stat_button"
+                            icon="fa-download" invisible="training_resource_id != False">
+                            <field name="zip_attachment_id" class="o_ellipsis"/>
+                        </button>
+                        <button name="button_snapshot" type="object" class="oe_stat_button"
+                            icon="fa-history" invisible="training_resource_id != False">
+                            <field name="historical_count" widget="integer"/>
+                        </button>
+                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger"
+                            invisible="active == True"/>
                     </div>
-                </form>
-            </field>
-        </record>
 
+                    <field name="image_1920" widget="image" class="oe_avatar"
+                        options='{"preview_image": "image_128"}'/>
 
-        <record id="view_academy_training_resource_kanban" model="ir.ui.view">
-            <field name="name">view.academy.training.resource.kanban</field>
-            <field name="model">academy.training.resource</field>
-            <field name="type">kanban</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="16" />
-            <field name="active" eval="True" />
-            <field name="arch" type="xml">
-                <kanban create="1" delete="1" edit="1">
-                    <field name="image_128"/>
-                    <field name="name" />
-
-                    <field name="manager_id" />
-                    <field name="updater_id" />
-                    <field name="last_update" />
-
-                    <templates>
-                        <t t-name="kanban-box">
-                            <div class="oe_kanban_global_click oe_kanban_academy_training_resource">
-                                <div class="o_kanban_image">
-                                    <t t-if="record.image_128.raw_value">
-                                        <field name="image_128" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}' />
-                                    </t>
-                                    <t t-else="">
-                                        <img t-att-src="_s + &quot;/academy_base/static/src/img/resource.png&quot;" class="o_kanban_image" alt="Training resource photo" />
-                                    </t>
-                                </div>
-                                <div class="oe_kanban_details">
-                                    <h4><strong class="oe_partner_heading"><field name="name"/></strong></h4>
-                                    <ul>
-                                        <li class="o_ellipsis"><strong>Manager:&#160;</strong><field name="manager_id" /></li>
-                                        <li class="o_ellipsis"><strong>Updater:&#160;</strong><field name="updater_id" /></li>
-                                        <li class="o_ellipsis"><strong>Last update:&#160;</strong><field name="last_update" /></li>
-                                     </ul>
-                                </div>
-                            </div>
-                        </t>
-                    </templates>
-                </kanban>
-            </field>
-        </record>
-
-
-        <!-- Search view for "academy.training.resource" -->
-        <record id="view_academy_training_resource_search" model="ir.ui.view">
-            <field name="name">view.academy.training.resource.search</field>
-            <field name="model">academy.training.resource</field>
-            <field name="type">search</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="16" />
-            <field name="active" eval="True" />
-            <field name="arch" type="xml">
-                <search string="academy_training_resource_search">
-
-                    <field name="name" />
-                    <field name="directory" />
-                    <field name="ir_attachment_ids" />
-                    <field name="directory_file_ids" />
-
-                    <filter string="From directory"
-                        name="directory_resource"
-                        domain="[('directory', '!=', False)]"
-                        context="{}"
-                        help="Show only resources with a related directory" />
-
-                    <filter string="With attachments"
-                        name="attachment_resource"
-                        domain="[('ir_attachment_ids', '!=', False)]"
-                        context="{}"
-                        help="Show only resources with related attachments " />
+                    <div class="oe_title">
+                        <field name="active" invisible="1"/>
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name" class="oe_field_name" placeholder="Enter new name"/>
+                        </h1>
+                    </div>
 
                     <separator/>
 
-                    <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
+                    <group col="4">
+                        <field name="manager_id" class="oe_field_manager_id"/>
 
-<!--                     <group expand="1" string="Group By">
+                        <field name="updater_id" class="oe_field_updater_id"/>
+                        <field name="last_update" class="oe_field_last_update"/>
+                        <field name="kind_id" class="od_field_kind_id"/>
+                    </group>
+
+                    <group col="2" class="oe_edit_only">
+                        <field name="directory" class="oe_field_directory"
+                            placeholder="Enter directory full path"/>
+                    </group>
+
+                    <notebook>
+                        <page string="Description" class="oe_page_description" accesskey="D">
+                            <field name="description" class="oe_field_description"
+                                placeholder="Enter new description"/>
+                        </page>
+                        <page string="Attachments" class="oe_page_attachments" accesskey="A">
+                            <field name="ir_attachment_ids" class="oe_field_ir_attachment_ids">
+                                <list>
+                                    <field name="name" class="oe_field_name"
+                                        placeholder="Enter new name"/>
+                                    <field name="type" class="oe_field_type"
+                                        placeholder="Enter new type"/>
+                                    <field name="mimetype" class="oe_field_mimetype"
+                                        placeholder="Enter new MIME type"/>
+                                    <field name="file_size" class="oe_field_file_size"
+                                        placeholder="Enter the file size"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Directory" class="oe_page_files" accesskey="F"
+                            invisible="directory == False">
+                            <field name="directory_file_ids" class="oe_field_directory_file_ids"
+                                placeholder="Press button to reload directory"/>
+                            <group cols="2">
+                                <button name="reload_directory" string="Reload" type="object"
+                                    default_focus="0" icon="fa-refresh"
+                                    help="Click it to reload directory file list"/>
+                            </group>
+                        </page>
+
+                    </notebook>
+                </sheet>
+
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="view_academy_training_resource_kanban" model="ir.ui.view">
+        <field name="name">view.academy.training.resource.kanban</field>
+        <field name="model">academy.training.resource</field>
+        <field name="type">kanban</field>
+        <field name="mode">primary</field>
+        <field name="priority" eval="16"/>
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <kanban create="1" delete="1" edit="1">
+                <field name="image_128"/>
+                <field name="name"/>
+
+                <field name="manager_id"/>
+                <field name="updater_id"/>
+                <field name="last_update"/>
+
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click oe_kanban_academy_training_resource">
+                            <div class="o_kanban_image">
+                                <t t-if="record.image_128.raw_value">
+                                    <field name="image_128" widget="image" class="oe_avatar"
+                                        options='{"preview_image": "image_128"}'/>
+                                </t>
+                                <t t-else="">
+                                    <img
+                                        t-att-src="_s + &quot;/academy_base/static/src/img/resource.png&quot;"
+                                        class="o_kanban_image" alt="Training resource photo"/>
+                                </t>
+                            </div>
+                            <div class="oe_kanban_details">
+                                <h4>
+                                    <strong class="oe_partner_heading">
+                                        <field name="name"/>
+                                    </strong>
+                                </h4>
+                                <ul>
+                                    <li class="o_ellipsis">
+                                        <strong>Manager:&#160;</strong>
+                                        <field name="manager_id"/>
+                                    </li>
+                                    <li class="o_ellipsis">
+                                        <strong>Updater:&#160;</strong>
+                                        <field name="updater_id"/>
+                                    </li>
+                                    <li class="o_ellipsis">
+                                        <strong>Last update:&#160;</strong>
+                                        <field name="last_update"/>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+
+    <!-- Search view for "academy.training.resource" -->
+    <record id="view_academy_training_resource_search" model="ir.ui.view">
+        <field name="name">view.academy.training.resource.search</field>
+        <field name="model">academy.training.resource</field>
+        <field name="type">search</field>
+        <field name="mode">primary</field>
+        <field name="priority" eval="16"/>
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <search string="academy_training_resource_search">
+
+                <field name="name"/>
+                <field name="directory"/>
+                <field name="ir_attachment_ids"/>
+                <field name="directory_file_ids"/>
+
+                <filter string="From directory" name="directory_resource"
+                    domain="[('directory', '!=', False)]" context="{}"
+                    help="Show only resources with a related directory"/>
+
+                <filter string="With attachments" name="attachment_resource"
+                    domain="[('ir_attachment_ids', '!=', False)]" context="{}"
+                    help="Show only resources with related attachments "/>
+
+                <separator/>
+
+                <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
+
+                <!--                     <group expand="1" string="Group By">
                         <filter string="By training activity"
                             name="by_training_activity"
                             domain="[]"
                             context="{'group_by':'training_activity_ids'}"
                             help="" />
                     </group> -->
-                </search>
-            </field>
-        </record>
+            </search>
+        </field>
+    </record>
 
-        <!-- Main window action for model.name -->
-        <record id="action_resources_act_window" model="ir.actions.act_window">
-            <field name="type">ir.actions.act_window</field>
-            <field name="name">Resources</field>
-            <field name="res_model">academy.training.resource</field>
-            <field name="view_mode">kanban,tree,form</field>
+    <!-- Main window action for model.name -->
+    <record id="action_resources_act_window" model="ir.actions.act_window">
+        <field name="type">ir.actions.act_window</field>
+        <field name="name">Resources</field>
+        <field name="res_model">academy.training.resource</field>
+        <field name="view_mode">kanban,list,form</field>
 
-            <field name="target">current</field>
-            <field name="domain">[]</field>
-            <field name="context">{}</field>
-            <field name="search_view_id" ref="view_academy_training_resource_search" />
-            <field name="help" type="html">
-                <p class="oe_view_nocontent_create">
-                    Click to add new training resources
-                </p><p>
-                    There are no resources yet
-                </p>
-            </field>
-        </record>
+        <field name="target">current</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="search_view_id" ref="view_academy_training_resource_search"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create"> Click to add new training resources </p>
+            <p> There are no resources yet </p>
+        </field>
+    </record>
 
-        <!-- Main menu for model.name -->
-        <record id="menu_resources" model="ir.ui.menu" >
-            <field name="name">Training resources</field>
-            <field name="sequence" eval="10" />
-            <field name="action" ref="action_resources_act_window" />
-            <field name="parent_id" ref="academy_base.menu_academy_resources" />
-            <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical')), (4, ref('academy_base.academy_group_teacher'))]"/>
-        </record>
+    <!-- Main menu for model.name -->
+    <record id="menu_resources" model="ir.ui.menu">
+        <field name="name">Training resources</field>
+        <field name="sequence" eval="10"/>
+        <field name="action" ref="action_resources_act_window"/>
+        <field name="parent_id" ref="academy_base.menu_academy_resources"/>
+        <field name="groups_id"
+            eval="[(4, ref('academy_base.academy_group_technical')), (4, ref('academy_base.academy_group_teacher'))]"
+        />
+    </record>
 
-        <!-- Tree view for "academy.training.resource" -->
-        <record id="view_academy_training_resource_embed_tree" model="ir.ui.view">
-            <field name="name">view.academy.training.resource.embed.tree</field>
-            <field name="model">academy.training.resource</field>
-            <field name="type">tree</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="20" />
-            <field name="active" eval="True" />
-            <field name="inherit_id" ref="academy_base.view_academy_training_resource_tree" />
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='manager_id']" position="replace" />
-                <xpath expr="//field[@name='name']" position="after">
-                    <field name="create_date" string="Snapshot date" />
-                </xpath>
-            </field>
-        </record>
+    <!-- List view for "academy.training.resource" -->
+    <record id="view_academy_training_resource_embed_tree" model="ir.ui.view">
+        <field name="name">view.academy.training.resource.embed.tree</field>
+        <field name="model">academy.training.resource</field>
+        <field name="type">list</field>
+        <field name="mode">primary</field>
+        <field name="priority" eval="20"/>
+        <field name="active" eval="True"/>
+        <field name="inherit_id" ref="academy_base.view_academy_training_resource_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='manager_id']" position="replace"/>
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="create_date" string="Snapshot date"/>
+            </xpath>
+        </field>
+    </record>
 
-    </data>
-</openerp>
+</odoo>

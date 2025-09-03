@@ -1,29 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo nopudate="0">
 
-        <record id="academy_training_activity_ADGD0308" model="academy.training.activity">
-            <field name="name">Administrative management activities</field>
-            <field name="description">Planning and coordinating administrative procedures and systems and devising ways to streamline processes</field>
-            <field name="active">True</field>
-            <field name="professional_family_id" ref="academy_base.academy_professional_family_02" />
-            <field name="professional_area_id" ref="academy_base.academy_profressional_area_icm" />
-            <field name="qualification_level_id" ref="academy_base.academy_qualification_level_03" />
-            <field name="activity_code">ADGD0308</field>
-            <field name="general_competence">Perform administrative management operations</field>
-        </record>
+    <record id="academy_training_activity_ADGD0308" model="academy.training.activity">
+        <field name="name">Administrative management activities</field>
+        <field name="description">Planning and coordinating administrative procedures and systems
+            and devising ways to streamline processes</field>
+        <field name="active">True</field>
+        <field name="professional_family_id" ref="academy_base.academy_professional_family_02"/>
+        <field name="professional_area_id" ref="academy_base.academy_profressional_area_icm"/>
+        <field name="qualification_level_id" ref="academy_base.academy_qualification_level_03"/>
+        <field name="activity_code">ADGD0308</field>
+        <field name="general_competence">Perform administrative management operations</field>
+    </record>
 
-        <record id="academy_training_activity_ms" model="academy.training.activity">
-            <field name="name">Basic knowledge of Microsoft software</field>
-            <field name="description">Knowledge and basic skills to use Microsoft software in the home and workplace</field>
-            <field name="active">True</field>
-            <field name="professional_family_id" ref="academy_base.academy_professional_family_02" />
-            <field name="professional_area_id" ref="academy_base.academy_profressional_area_icm" />
-            <field name="qualification_level_id" ref="academy_base.academy_qualification_level_03" />
-            <field name="activity_code">ADGD0100</field>
-            <field name="general_competence">Perform basic computer operations with Microsoft Software</field>
-        </record>
+    <record id="academy_training_activity_ms" model="academy.training.activity">
+        <field name="name">Basic knowledge of Microsoft software</field>
+        <field name="description">Knowledge and basic skills to use Microsoft software in the home
+            and workplace</field>
+        <field name="active">True</field>
+        <field name="professional_family_id" ref="academy_base.academy_professional_family_02"/>
+        <field name="professional_area_id" ref="academy_base.academy_profressional_area_icm"/>
+        <field name="qualification_level_id" ref="academy_base.academy_qualification_level_03"/>
+        <field name="activity_code">ADGD0100</field>
+        <field name="general_competence">Perform basic computer operations with Microsoft
+            Software</field>
+    </record>
 
-    </data>
-</openerp>
+</odoo>

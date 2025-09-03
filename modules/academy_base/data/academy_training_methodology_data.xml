@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="1">
+<odoo nopudate="1">
 
-        <record id="academy_training_methodology_auto" model="academy.training.methodology">
-            <field name="name">Self-development</field>
-            <field name="description">Individual learning supported by tools, materials and participant support services</field>
-        </record>
+    <record id="academy_training_methodology_auto" model="academy.training.methodology">
+        <field name="name">Self-development</field>
+        <field name="description">Individual learning supported by tools, materials and participant
+            support services</field>
+    </record>
 
-        <record id="academy_training_methodology_coaching" model="academy.training.methodology">
-            <field name="name">Coaching</field>
-            <field name="description">It allows directing, instructing and training in accordance with the objectives and expectations defined, starting from the current student knowledge</field>
-        </record>
+    <record id="academy_training_methodology_coaching" model="academy.training.methodology">
+        <field name="name">Coaching</field>
+        <field name="description">It allows directing, instructing and training in accordance with
+            the objectives and expectations defined, starting from the current student
+            knowledge</field>
+    </record>
 
-        <record id="academy_training_methodology_direct" model="academy.training.methodology">
-            <field name="name">Direct teaching</field>
-            <field name="description">Imparted by one or more experts in each discipline, allowing continuous and direct interaction between the participants and teacher</field>
-        </record>
+    <record id="academy_training_methodology_direct" model="academy.training.methodology">
+        <field name="name">Direct teaching</field>
+        <field name="description">Imparted by one or more experts in each discipline, allowing
+            continuous and direct interaction between the participants and teacher</field>
+    </record>
 
-   </data>
-</openerp>
+</odoo>

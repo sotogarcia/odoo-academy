@@ -488,7 +488,6 @@ class AcademyTrainingAction(models.Model):
 
     # -------------------------- OVERLOADED METHODS ---------------------------
 
-    # @api.one
     @api.returns('self', lambda value: value.id)
     def copy(self, defaults=None):
         """ Prevents new record of the inherited (_inherits) model will be

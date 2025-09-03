@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo nopudate="0">
 
-
-        <!-- VIEWS: "student"
+    <!-- VIEWS: "student"
 
             - Model·········: academy.student
             - _rec_name·····: name
@@ -15,256 +13,296 @@
             - Action help···: Here are not students
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-        <!-- Tree view for "academy.student" -->
-        <record id="view_academy_student_tree" model="ir.ui.view">
-            <field name="name">view.academy.student.tree</field>
-            <field name="model">academy.student</field>
-            <field name="type">tree</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="16" />
-            <field name="active" eval="True" />
-            <field name="arch" type="xml">
-                <tree string="academy_student_tree" create="1" delete="1" edit="1">
-                    <field name="vat" class="oe_field_vat" optional="show" />
-                    <field name="title" class="oe_field_title" optional="hide" />
-                    <field name="name" class="oe_field_name" optional="show" />
-                    <field name="email" class="oe_field_email" optional="show" />
-                    <field name="phone" class="oe_field_phone" optional="show" />
-                    <field name="mobile" class="oe_field_mobile" optional="show" />
-                    <field name="zip" class="oe_field_zip" optional="hide" />
-                    <field name="enrolment_str" class="oe_field_enrolment_str" optional="show" />
-                </tree>
-            </field>
-        </record>
+    <!-- List view for "academy.student" -->
+    <record id="view_academy_student_tree" model="ir.ui.view">
+        <field name="name">view.academy.student.tree</field>
+        <field name="model">academy.student</field>
+        <field name="type">list</field>
+        <field name="mode">primary</field>
+        <field name="priority" eval="16"/>
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <list string="academy_student_tree" create="1" delete="1" edit="1">
+                <field name="vat" class="oe_field_vat" optional="show"/>
+                <field name="title" class="oe_field_title" optional="hide"/>
+                <field name="name" class="oe_field_name" optional="show"/>
+                <field name="email" class="oe_field_email" optional="show"/>
+                <field name="phone" class="oe_field_phone" optional="show"/>
+                <field name="mobile" class="oe_field_mobile" optional="show"/>
+                <field name="zip" class="oe_field_zip" optional="hide"/>
+                <field name="enrolment_str" class="oe_field_enrolment_str" optional="show"/>
+            </list>
+        </field>
+    </record>
 
-        <!-- Form view for "academy.student" -->
-        <record id="view_academy_student_form" model="ir.ui.view">
-            <field name="name">view.academy.student.form</field>
-            <field name="model">academy.student</field>
-            <field name="type">form</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="16" />
-            <field name="active" eval="True" />
-            <field name="arch" type="xml">
-                <form string="academy_student_form" create="1" delete="1" edit="1">
-                    <sheet>
-                        <field name="id" class="oe_field_id" invisible="1" />
-                        <field name="is_company" invisible="1" />
+    <!-- Form view for "academy.student" -->
+    <record id="view_academy_student_form" model="ir.ui.view">
+        <field name="name">view.academy.student.form</field>
+        <field name="model">academy.student</field>
+        <field name="type">form</field>
+        <field name="mode">primary</field>
+        <field name="priority" eval="16"/>
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <form string="academy_student_form" create="1" delete="1" edit="1">
+                <sheet>
+                    <field name="id" class="oe_field_id" invisible="1"/>
+                    <field name="is_company" invisible="1"/>
 
-                        <div class="oe_button_box" name="button_box">
-                            <button name="view_enrolments" type="object"
-                                class="oe_stat_button oe_read_only" icon="fa-id-card-o"
-                                help="View student enrolments">
-                                <field name="enrolment_str" widget="statinfo" string="Enrollments" />
-                            </button>
-                            <button class="oe_stat_button" name="go_to_contact"
-                                string="Contact" type="object" default_focus="0"
-                                icon="fa-user-o" help="Go to contact" />
-                        </div>
-
-                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
-
-                        <field name="image_1920" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}'/>
-
-                        <div class="oe_title">
-                            <field name="active" invisible="1"/>
-                            <label for="name" class="oe_edit_only" />
-                            <h1>
-                                <field name="name" class="oe_field_name" required="1"
-                                    placeholder="Enter new name" />
-                            </h1>
-                        </div>
-
-                        <group>
-                            <group>
-                                <field name="type" groups="base.group_no_one" attrs="{'invisible': [('is_company','=', True)], 'readonly': [('user_ids', '!=', [])]}"/>
-                                <label for="" name="address_name">
-                                    <b attrs="{'invisible': [('type', '!=', 'contact')]}">Company Address</b>
-                                    <b attrs="{'invisible': [('type', '!=', 'invoice')]}">Invoice Address</b>
-                                    <b attrs="{'invisible': [('type', '!=', 'delivery')]}">Delivery Address</b>
-                                    <b attrs="{'invisible': [('type', '!=', 'other')]}">Other Address</b>
-                                    <b attrs="{'invisible': [('type', '!=', 'private')]}">Private Address</b>
-                                    <b attrs="{'invisible': [('type', '!=', False)]}">Address</b>
-                                </label>
-                                <div class="o_address_format">
-                                    <field name="street" placeholder="Street..." class="o_address_street" attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}"/>
-                                    <field name="street2" placeholder="Street 2..." class="o_address_street" attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}"/>
-                                    <field name="city" placeholder="City" class="o_address_city" attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}"/>
-                                    <field name="state_id" class="o_address_state" placeholder="State" options="{&quot;no_open&quot;: True}" attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}" context="{'country_id': country_id, 'zip': zip}"/>
-                                    <field name="zip" placeholder="ZIP" class="o_address_zip" attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}"/>
-                                    <field name="country_id" placeholder="Country" class="o_address_country" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}"/>
-                                </div>
-                                <separator colspan="2" />
-                                <field name="vat" placeholder="e.g. BE0477472701" attrs="{'readonly': [('parent_id','!=',False)]}"/>
-                            </group>
-                            <group>
-                                <field name="phone" widget="phone"/>
-                                <field name="mobile" widget="phone"/>
-                                <field name="user_ids" invisible="1"/>
-                                <field name="email" widget="email" context="{'gravatar_image': True}" attrs="{'required': [('user_ids','!=', [])]}"/>
-                                <field name="website" widget="url" placeholder="e.g. https://www.odoo.com"/>
-                                <field name="title" options="{&quot;no_open&quot;: True}" placeholder="e.g. Mister" attrs="{'invisible': [('is_company', '=', True)]}"/>
-                                <field name="active_lang_count" invisible="1"/>
-                                <label for="lang" attrs="{'invisible': [('active_lang_count', '&lt;=', 1)]}"/>
-                                <div class="o_row" attrs="{'invisible': [('active_lang_count', '&lt;=', 1)]}">
-                                    <field name="lang"/>
-                                    <button type="action" name="55" class="btn-sm btn-link mb4 fa fa-globe" aria-label="More languages" groups="base.group_system" title="More languages"/>
-                                </div>
-                                <field name="birthday" class="oe_field_birthday" />
-                            </group>
-                        </group>
-
-                        <group col="4" string="Qualification">
-                            <field name="attainment_id" class="oe_field_attainment_id" string="Attainment" />
-                        </group>
-
-                        <notebook>
-                            <page string="Comment" class="oe_page_comment" accesskey="C">
-                               <field name="comment" />
-                            </page>
-                            <page id="setup" string="Setup" class="oe_page_setup" accesskey="S">
-                                <group col="2">
-                                    <field name="category_id" widget="many2many_tags"
-                                        options="{'color_field': 'color', 'no_create_edit': True}"
-                                        placeholder="Tags..."/>
-                                </group>
-                            </page>
-                        </notebook>
-
-                        <field name="create_uid" invisible="1" />
-                        <field name="parent_id" class="oe_field_parent_id"  invisible="1"  />
-                        <field name="type" class="oe_field_type"  invisible="1"  />
-                    </sheet>
-
-                    <div class="oe_chatter">
-                        <field name="message_follower_ids" widget="mail_followers"/>
-                        <field name="message_ids" widget="mail_thread"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="view_enrolments" type="object"
+                            class="oe_stat_button oe_read_only" icon="fa-id-card-o"
+                            help="View student enrolments">
+                            <field name="enrolment_str" widget="statinfo" string="Enrollments"/>
+                        </button>
+                        <button class="oe_stat_button" name="go_to_contact" string="Contact"
+                            type="object" default_focus="0" icon="fa-user-o" help="Go to contact"/>
                     </div>
-                </form>
-            </field>
-        </record>
 
-        <record id="view_academy_student_kanban" model="ir.ui.view">
-            <field name="name">view.academy.student.kanban</field>
-            <field name="model">academy.student</field>
-            <field name="type">kanban</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="16" />
-            <field name="active" eval="True" />
-            <field name="arch" type="xml">
-                <kanban create="1" delete="1" edit="1">
-                    <field name="image_128"/>
-                    <field name="name" />
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger"
+                        invisible="active == True"/>
 
-                    <field name="phone" />
-                    <field name="mobile" />
-                    <field name="email" />
+                    <field name="image_1920" widget="image" class="oe_avatar"
+                        options='{"preview_image": "image_128"}'/>
 
-                    <templates>
-                        <t t-name="kanban-box">
-                            <div class="oe_kanban_global_click oe_kanban_academy_student d-flex flex-column justify-content-end">
-                                <div class="flex-fill align-top">
-                                    <div class="o_kanban_image">
-                                        <t t-if="record.image_128.raw_value">
-                                            <field name="image_128" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}' />
-                                        </t>
-                                        <t t-else="">
-                                            <img t-att-src="_s + &quot;/academy_base/static/src/img/student.png&quot;" class="o_kanban_image" alt="student photo" />
-                                        </t>
-                                    </div>
-                                    <div class="oe_kanban_details">
-                                        <h4><strong class="oe_partner_heading"><field name="name"/></strong></h4>
-                                        <ul>
-                                            <li class="o_ellipsis"><strong>Phone:&#160;</strong><field name="phone" /></li>
-                                            <li class="o_ellipsis"><strong>Mobile:&#160;</strong><field name="mobile" /></li>
-                                            <li class="o_ellipsis"><strong>Email:&#160;</strong><field name="email" /></li>
-                                         </ul>
-                                    </div>
+                    <div class="oe_title">
+                        <field name="active" invisible="1"/>
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name" class="oe_field_name" required="1"
+                                placeholder="Enter new name"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="type" groups="base.group_no_one"
+                                invisible="is_company == True"
+                                readonly="user_ids != []"/>
+                            <label for="" name="address_name">
+                                <b invisible="type != 'contact'">Company Address</b>
+                                <b invisible="type != 'invoice'">Invoice Address</b>
+                                <b invisible="type != 'delivery'">Delivery Address</b>
+                                <b invisible="type != 'other'">Other Address</b>
+                                <b invisible="type != 'private'">Private Address</b>
+                                <b invisible="type != False">Address</b>
+                            </label>
+                            <div class="o_address_format">
+                                <field name="street" placeholder="Street..."
+                                    class="o_address_street"
+                                    readonly="[('type', '=', 'contact'),('parent_id', '!=', False)]"/>
+                                <field name="street2" placeholder="Street 2..."
+                                    class="o_address_street"
+                                    readonly="[('type', '=', 'contact'),('parent_id', '!=', False)]"/>
+                                <field name="city" placeholder="City" class="o_address_city"
+                                    readonly="[('type', '=', 'contact'),('parent_id', '!=', False)]"/>
+                                <field name="state_id" class="o_address_state" placeholder="State"
+                                    options="{&quot;no_open&quot;: True}"
+                                    readonly="[('type', '=', 'contact'),('parent_id', '!=', False)]"
+                                    context="{'country_id': country_id, 'zip': zip}"/>
+                                <field name="zip" placeholder="ZIP" class="o_address_zip"
+                                    readonly="[('type', '=', 'contact'),('parent_id', '!=', False)]"/>
+                                <field name="country_id" placeholder="Country"
+                                    class="o_address_country"
+                                    options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}"
+                                    readonly="[('type', '=', 'contact'),('parent_id', '!=', False)]"
+                                />
+                            </div>
+                            <separator colspan="2"/>
+                            <field name="vat" placeholder="e.g. BE0477472701"
+                                readonly="parent_id != False"/>
+                        </group>
+                        <group>
+                            <field name="phone" widget="phone"/>
+                            <field name="mobile" widget="phone"/>
+                            <field name="user_ids" invisible="1"/>
+                            <field name="email" widget="email" context="{'gravatar_image': True}"
+                                required="user_ids != []"/>
+                            <field name="website" widget="url"
+                                placeholder="e.g. https://www.odoo.com"/>
+                            <field name="title" options="{&quot;no_open&quot;: True}"
+                                placeholder="e.g. Mister" invisible="is_company == True"/>
+                            <field name="active_lang_count" invisible="1"/>
+                            <label for="lang" invisible="active_lang_count &lt;== 1"/>
+                            <div class="o_row" invisible="active_lang_count &lt;== 1">
+                                <field name="lang"/>
+                                <button type="action" name="55"
+                                    class="btn-sm btn-link mb4 fa fa-globe"
+                                    aria-label="More languages" groups="base.group_system"
+                                    title="More languages"/>
+                            </div>
+                            <field name="birthday" class="oe_field_birthday"/>
+                        </group>
+                    </group>
+
+                    <group col="4" string="Qualification">
+                        <field name="attainment_id" class="oe_field_attainment_id"
+                            string="Attainment"/>
+                    </group>
+
+                    <notebook>
+                        <page string="Comment" class="oe_page_comment" accesskey="C">
+                            <field name="comment"/>
+                        </page>
+                        <page id="setup" string="Setup" class="oe_page_setup" accesskey="S">
+                            <group col="2">
+                                <field name="category_id" widget="many2many_tags"
+                                    options="{'color_field': 'color', 'no_create_edit': True}"
+                                    placeholder="Tags..."/>
+                            </group>
+                        </page>
+                    </notebook>
+
+                    <field name="create_uid" invisible="1"/>
+                    <field name="parent_id" class="oe_field_parent_id" invisible="1"/>
+                    <field name="type" class="oe_field_type" invisible="1"/>
+                </sheet>
+
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_academy_student_kanban" model="ir.ui.view">
+        <field name="name">view.academy.student.kanban</field>
+        <field name="model">academy.student</field>
+        <field name="type">kanban</field>
+        <field name="mode">primary</field>
+        <field name="priority" eval="16"/>
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <kanban create="1" delete="1" edit="1">
+                <field name="image_128"/>
+                <field name="name"/>
+
+                <field name="phone"/>
+                <field name="mobile"/>
+                <field name="email"/>
+
+                <templates>
+                    <t t-name="kanban-box">
+                        <div
+                            class="oe_kanban_global_click oe_kanban_academy_student d-flex flex-column justify-content-end">
+                            <div class="flex-fill align-top">
+                                <div class="o_kanban_image">
+                                    <t t-if="record.image_128.raw_value">
+                                        <field name="image_128" widget="image" class="oe_avatar"
+                                            options='{"preview_image": "image_128"}'/>
+                                    </t>
+                                    <t t-else="">
+                                        <img
+                                            t-att-src="_s + &quot;/academy_base/static/src/img/student.png&quot;"
+                                            class="o_kanban_image" alt="student photo"/>
+                                    </t>
                                 </div>
-                                <div name="kanban-box-toolbar" class="btn-toolbar d-flex flex-row-reverse justify-content-end align-self-end mt-3" role="toolbar" aria-label="Download as document">
-                                    <div class="btn-group" role="group" aria-label="Management">
-                                        <button name="view_enrolments" type="object"
-                                            groups="academy_base.academy_group_technical"
-                                            class="btn btn-sm btn-light oe_read_only" title="View student enrolments">
-                                            <i class="fa fa-id-card-o d-inline-block mr-1" aria-hidden="false"></i>
-                                            <field name="enrolment_str" />
-                                        </button>
-                                    </div>
+                                <div class="oe_kanban_details">
+                                    <h4>
+                                        <strong class="oe_partner_heading">
+                                            <field name="name"/>
+                                        </strong>
+                                    </h4>
+                                    <ul>
+                                        <li class="o_ellipsis">
+                                            <strong>Phone:&#160;</strong>
+                                            <field name="phone"/>
+                                        </li>
+                                        <li class="o_ellipsis">
+                                            <strong>Mobile:&#160;</strong>
+                                            <field name="mobile"/>
+                                        </li>
+                                        <li class="o_ellipsis">
+                                            <strong>Email:&#160;</strong>
+                                            <field name="email"/>
+                                        </li>
+                                    </ul>
                                 </div>
-                            </div> <!-- oe_kanban_global_click -->
-                        </t>
-                    </templates>
-                </kanban>
-            </field>
-        </record>
+                            </div>
+                            <div name="kanban-box-toolbar"
+                                class="btn-toolbar d-flex flex-row-reverse justify-content-end align-self-end mt-3"
+                                role="toolbar" aria-label="Download as document">
+                                <div class="btn-group" role="group" aria-label="Management">
+                                    <button name="view_enrolments" type="object"
+                                        groups="academy_base.academy_group_technical"
+                                        class="btn btn-sm btn-light oe_read_only"
+                                        title="View student enrolments">
+                                        <i class="fa fa-id-card-o d-inline-block mr-1"
+                                            aria-hidden="false"/>
+                                        <field name="enrolment_str"/>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- oe_kanban_global_click -->
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
 
-        <!-- Search view for "academy.student" -->
-        <record id="view_academy_student_search" model="ir.ui.view">
-            <field name="name">view.academy.student.search</field>
-            <field name="model">academy.student</field>
-            <field name="type">search</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="16" />
-            <field name="active" eval="True" />
-            <field name="inherit_id" />
-            <field name="arch" type="xml">
-                <search string="academy_student_search">
-                    <field name="name" />
-                    <field name="phone" />
-                    <field name="mobile" />
-                    <field name="email" />
+    <!-- Search view for "academy.student" -->
+    <record id="view_academy_student_search" model="ir.ui.view">
+        <field name="name">view.academy.student.search</field>
+        <field name="model">academy.student</field>
+        <field name="type">search</field>
+        <field name="mode">primary</field>
+        <field name="priority" eval="16"/>
+        <field name="active" eval="True"/>
+        <field name="inherit_id"/>
+        <field name="arch" type="xml">
+            <search string="academy_student_search">
+                <field name="name"/>
+                <field name="phone"/>
+                <field name="mobile"/>
+                <field name="email"/>
 
-                    <field name="city" />
-                    <field name="state_id" />
-                    <field name="country_id" />
+                <field name="city"/>
+                <field name="state_id"/>
+                <field name="country_id"/>
 
-                    <field name="vat" />
-                    <field name="category_id" />
+                <field name="vat"/>
+                <field name="category_id"/>
 
-                    <field name="training_action_ids" />
+                <field name="training_action_ids"/>
 
-                    <field name="id" string="Student ID" />
+                <field name="id" string="Student ID"/>
 
-                    <filter name="inactive" string="Archived"
-                            domain="[('active', '=', False)]"/>
+                <filter name="inactive" string="Archived" domain="[('active', '=', False)]"/>
 
-                    <separator />
-                    <filter name="enrolled" string="Enrolled" domain="[('current_enrolment_count', '>', 0)]" />
-                    <filter name="not_enrolled" string="Not Enrolled" domain="[('current_enrolment_count', '=', 0)]" />
+                <separator/>
+                <filter name="enrolled" string="Enrolled"
+                    domain="[('current_enrolment_count', '>', 0)]"/>
+                <filter name="not_enrolled" string="Not Enrolled"
+                    domain="[('current_enrolment_count', '=', 0)]"/>
 
-                </search>
-            </field>
-        </record>
+            </search>
+        </field>
+    </record>
 
-        <!-- Main window action for model.name -->
-        <record id="action_student_act_window" model="ir.actions.act_window">
-            <field name="type">ir.actions.act_window</field>
-            <field name="name">Students</field>
-            <field name="res_model">academy.student</field>
-            <field name="view_mode">kanban,tree,form</field>
+    <!-- Main window action for model.name -->
+    <record id="action_student_act_window" model="ir.actions.act_window">
+        <field name="type">ir.actions.act_window</field>
+        <field name="name">Students</field>
+        <field name="res_model">academy.student</field>
+        <field name="view_mode">kanban,list,form</field>
 
-            <field name="target">current</field>
-            <field name="domain" eval="[('id', '&lt;&gt;', ref('academy_base.academy_student_default_template'))]" />
-            <field name="context">{}</field>
-            <field name="search_view_id" ref="view_academy_student_search" />
-            <field name="help" type="html">
-                <p class="oe_view_nocontent_create">
-                    Click to add new students
-                </p><p>
-                    There are no students yet
-                </p>
-            </field>
-        </record>
+        <field name="target">current</field>
+        <field name="domain"
+            eval="[('id', '&lt;&gt;', ref('academy_base.academy_student_default_template'))]"/>
+        <field name="context">{}</field>
+        <field name="search_view_id" ref="view_academy_student_search"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create"> Click to add new students </p>
+            <p> There are no students yet </p>
+        </field>
+    </record>
 
-        <!-- Main menu for model.name -->
-        <record id="menu_student" model="ir.ui.menu" >
-            <field name="name">Students</field>
-            <field name="sequence" eval="15" />
-            <field name="action" ref="action_student_act_window" />
-            <field name="parent_id" ref="academy_base.menu_academy_monitoring" />
-            <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
-        </record>
+    <!-- Main menu for model.name -->
+    <record id="menu_student" model="ir.ui.menu">
+        <field name="name">Students</field>
+        <field name="sequence" eval="15"/>
+        <field name="action" ref="action_student_act_window"/>
+        <field name="parent_id" ref="academy_base.menu_academy_monitoring"/>
+        <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
+    </record>
 
-
-    </data>
-</openerp>
+</odoo>

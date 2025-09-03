@@ -1,42 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo nopudate="0">
 
-        <record id="ir_attachment_academy_resource_word" model="ir.attachment">
-            <field name="name">Word</field>
-            <!-- <field name="datas_fname">Word.png</field> -->
-            <field name="datas" type="base64" file="academy_base/demo/ir_attachment/word.png"></field>
-            <field name="res_model">hr.applicant</field>
-        </record>
+    <record id="ir_attachment_academy_resource_word" model="ir.attachment">
+        <field name="name">Word</field>
+        <!-- <field name="datas_fname">Word.png</field> -->
+        <field name="datas" type="base64" file="academy_base/demo/ir_attachment/word.png"/>
+        <field name="res_model">hr.applicant</field>
+    </record>
 
-        <record id="ir_attachment_academy_resource_excel" model="ir.attachment">
-            <field name="name">Excel</field>
-            <!-- <field name="datas_fname">excel.png</field> -->
-            <field name="datas" type="base64" file="academy_base/demo/ir_attachment/excel.png"></field>
-            <field name="res_model">hr.applicant</field>
-        </record>
+    <record id="ir_attachment_academy_resource_excel" model="ir.attachment">
+        <field name="name">Excel</field>
+        <!-- <field name="datas_fname">excel.png</field> -->
+        <field name="datas" type="base64" file="academy_base/demo/ir_attachment/excel.png"/>
+        <field name="res_model">hr.applicant</field>
+    </record>
 
-        <record id="ir_attachment_academy_resource_writer" model="ir.attachment">
-            <field name="name">Writer</field>
-            <!-- <field name="datas_fname">writer.png</field> -->
-            <field name="datas" type="base64" file="academy_base/demo/ir_attachment/writer.png"></field>
-            <field name="res_model">hr.applicant</field>
-        </record>
+    <record id="ir_attachment_academy_resource_writer" model="ir.attachment">
+        <field name="name">Writer</field>
+        <!-- <field name="datas_fname">writer.png</field> -->
+        <field name="datas" type="base64" file="academy_base/demo/ir_attachment/writer.png"/>
+        <field name="res_model">hr.applicant</field>
+    </record>
 
-        <record id="ir_attachment_academy_resource_calc" model="ir.attachment">
-            <field name="name">Calc</field>
-            <!-- <field name="datas_fname">calc.png</field> -->
-            <field name="datas" type="base64" file="academy_base/demo/ir_attachment/calc.png"></field>
-            <field name="res_model">hr.applicant</field>
-        </record>
+    <record id="ir_attachment_academy_resource_calc" model="ir.attachment">
+        <field name="name">Calc</field>
+        <!-- <field name="datas_fname">calc.png</field> -->
+        <field name="datas" type="base64" file="academy_base/demo/ir_attachment/calc.png"/>
+        <field name="res_model">hr.applicant</field>
+    </record>
 
-        <record id="ir_attachment_academy_resource_libre" model="ir.attachment">
-            <field name="name">Libre</field>
-            <!-- <field name="datas_fname">libre.svg</field> -->
-            <field name="datas" type="base64" file="academy_base/demo/ir_attachment/libre.svg"></field>
-            <field name="res_model">hr.applicant</field>
-        </record>
+    <record id="ir_attachment_academy_resource_libre" model="ir.attachment">
+        <field name="name">Libre</field>
+        <!-- <field name="datas_fname">libre.svg</field> -->
+        <field name="datas" type="base64" file="academy_base/demo/ir_attachment/libre.svg"/>
+        <field name="res_model">hr.applicant</field>
+    </record>
 
-    </data>
-</openerp>
+</odoo>

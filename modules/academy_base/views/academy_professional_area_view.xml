@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo nopudate="0">
 
-        <!-- VIEWS: "Professional Area"
+    <!-- VIEWS: "Professional Area"
 
             - Model·········: academy.professional.area
             - _rec_name·····: name
@@ -14,110 +13,107 @@
             - Action help···: There are not professional areas in catalog
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-        <!-- Tree view for "academy.professional.area" -->
-        <record id="view_academy_professional_area_tree" model="ir.ui.view">
-            <field name="name">view.academy.professional.area.tree</field>
-            <field name="model">academy.professional.area</field>
-            <field name="type">tree</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="16" />
-            <field name="active" eval="True" />
-            <field name="arch" type="xml">
-                <tree string="academy_professional_area_tree" create="1" delete="1" edit="1">
-                    <field name="name" />
-                    <field name="professional_family_id" />
-                </tree>
-            </field>
-        </record>
+    <!-- List view for "academy.professional.area" -->
+    <record id="view_academy_professional_area_tree" model="ir.ui.view">
+        <field name="name">view.academy.professional.area.tree</field>
+        <field name="model">academy.professional.area</field>
+        <field name="type">list</field>
+        <field name="mode">primary</field>
+        <field name="priority" eval="16"/>
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <list string="academy_professional_area_tree" create="1" delete="1" edit="1">
+                <field name="name"/>
+                <field name="professional_family_id"/>
+            </list>
+        </field>
+    </record>
 
-        <!-- Form view for "academy.professional.area" -->
-        <record id="view_academy_professional_area_form" model="ir.ui.view">
-            <field name="name">view.academy.professional.area.form</field>
-            <field name="model">academy.professional.area</field>
-            <field name="type">form</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="16" />
-            <field name="active" eval="True" />
-            <field name="arch" type="xml">
-                <form string="academy_professional_area_form" create="1" delete="1" edit="1">
-                    <sheet>
-                        <div class="oe_button_box" name="button_box"/>
-                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+    <!-- Form view for "academy.professional.area" -->
+    <record id="view_academy_professional_area_form" model="ir.ui.view">
+        <field name="name">view.academy.professional.area.form</field>
+        <field name="model">academy.professional.area</field>
+        <field name="type">form</field>
+        <field name="mode">primary</field>
+        <field name="priority" eval="16"/>
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <form string="academy_professional_area_form" create="1" delete="1" edit="1">
+                <sheet>
+                    <div class="oe_button_box" name="button_box"/>
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger"
+                        invisible="active == True"/>
 
-                        <field name="image_1920" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}'/>
+                    <field name="image_1920" widget="image" class="oe_avatar"
+                        options='{"preview_image": "image_128"}'/>
 
-                        <div class="oe_title">
-                            <field name="active" invisible="1"/>
-                            <label for="name" class="oe_edit_only" />
-                            <h1>
-                                <field name="name" class="oe_field_name"
-                                    placeholder="Enter new name" />
-                            </h1>
-                        </div>
-                        <group col="2">
-                            <field name="professional_family_id" class="oe_field_professional_family_id" />
-                        </group>
-                        <notebook>
-                            <page string="Description" class="oe_page_description" accesskey="D">
-                                <field name="description" class="oe_field_description"
-                                    placeholder="Enter new description" />
-                            </page>
-                        </notebook>
-                    </sheet>
-                </form>
-            </field>
-        </record>
+                    <div class="oe_title">
+                        <field name="active" invisible="1"/>
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name" class="oe_field_name" placeholder="Enter new name"/>
+                        </h1>
+                    </div>
+                    <group col="2">
+                        <field name="professional_family_id" class="oe_field_professional_family_id"
+                        />
+                    </group>
+                    <notebook>
+                        <page string="Description" class="oe_page_description" accesskey="D">
+                            <field name="description" class="oe_field_description"
+                                placeholder="Enter new description"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
 
-        <!-- Search view for "academy.professional.area" -->
-        <record id="view_academy_professional_area_search" model="ir.ui.view">
-            <field name="name">view.academy.professional.area.search</field>
-            <field name="model">academy.professional.area</field>
-            <field name="type">search</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="16" />
-            <field name="active" eval="True" />
-            <field name="arch" type="xml">
-                <search string="academy_professional_area_search">
-                    <field name="name" />
-                    <field name="professional_family_id" />
-                    <field name="professional_qualification_ids" />
+    <!-- Search view for "academy.professional.area" -->
+    <record id="view_academy_professional_area_search" model="ir.ui.view">
+        <field name="name">view.academy.professional.area.search</field>
+        <field name="model">academy.professional.area</field>
+        <field name="type">search</field>
+        <field name="mode">primary</field>
+        <field name="priority" eval="16"/>
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <search string="academy_professional_area_search">
+                <field name="name"/>
+                <field name="professional_family_id"/>
+                <field name="professional_qualification_ids"/>
 
-                    <filter string="By family"
-                        name="professional_area_grouped_by_professional_family"
-                        domain="[]"
-                        context="{'group_by': 'professional_family_id'}"
-                        help="Group by professional family" />
+                <filter string="By family" name="professional_area_grouped_by_professional_family"
+                    domain="[]" context="{'group_by': 'professional_family_id'}"
+                    help="Group by professional family"/>
 
-                    <separator/>
+                <separator/>
 
-                    <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
+                <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
 
-                </search>
-            </field>
-        </record>
+            </search>
+        </field>
+    </record>
 
-        <!-- Main window action for model.name -->
-        <record id="action_professional_area_act_window" model="ir.actions.act_window">
-            <field name="type">ir.actions.act_window</field>
-            <field name="name">Professional areas</field>
-            <field name="res_model">academy.professional.area</field>
-            <field name="view_mode">tree,form</field>
+    <!-- Main window action for model.name -->
+    <record id="action_professional_area_act_window" model="ir.actions.act_window">
+        <field name="type">ir.actions.act_window</field>
+        <field name="name">Professional areas</field>
+        <field name="res_model">academy.professional.area</field>
+        <field name="view_mode">list,form</field>
 
-            <field name="target">current</field>
-            <field name="domain">[]</field>
-            <field name="context">{}</field>
-            <field name="search_view_id" ref="view_academy_professional_area_search" />
-            <field name="help" type="html">
-                <p class="oe_view_nocontent_create">
-                    Click to add new professional areas
-                </p><p>
-                    There are no professional areas yet
-                </p>
-            </field>
-        </record>
+        <field name="target">current</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="search_view_id" ref="view_academy_professional_area_search"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create"> Click to add new professional areas </p>
+            <p> There are no professional areas yet </p>
+        </field>
+    </record>
 
-        <!-- Main menu for model.name -->
-<!--         <record id="menu_professional_area" model="ir.ui.menu" >
+    <!-- Main menu for model.name -->
+    <!--         <record id="menu_professional_area" model="ir.ui.menu" >
             <field name="name">Professional areas</field>
             <field name="sequence" eval="15" />
             <field name="action" ref="action_professional_area_act_window" />
@@ -125,5 +121,4 @@
             <field name="groups_id" eval="[(4, ref('academy_base.academy_group_manager'))]"/>
         </record> -->
 
-    </data>
-</openerp>
+</odoo>

@@ -1,365 +1,293 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo nopudate="0">
 
-        <record id="res_config_settings_view_form" model="ir.ui.view">
-            <field name="name">res.config.settings.view.form.inherit.academy.base</field>
-            <field name="model">res.config.settings</field>
-            <field name="priority" eval="20" />
-            <field name="inherit_id" ref="base.res_config_settings_view_form" />
-            <field name="arch" type="xml">
-                <xpath expr="//div[hasclass('settings')]" position="inside">
-                    <div class="app_settings_block" data-string="Academy base"
-                         data-key="academy_base" groups="base.group_system" >
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.academy.base</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="20"/>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('settings')]" position="inside">
+                <div class="app_settings_block" data-string="Academy base" data-key="academy_base"
+                    groups="base.group_system">
 
-                        <div name="academy_base_settings_responsibility">
-                            <h2>Responsibility</h2>
+                    <div name="academy_base_settings_responsibility">
+                        <h2>Responsibility</h2>
 
-                            <div class="row mt16 o_settings_container" name="functional_users">
+                        <div class="row mt16 o_settings_container" name="functional_users">
 
-                                <div class="col-12 col-md-6 o_setting_box">
-                                    <div class="o_setting_right_pane">
-                                        <span class="o_form_label">
-                                            Head of studies
-                                        </span>
-                                        <div class="text-muted">
-                                            Head of Studies for the educational platform
-                                        </div>
-                                        <div class="content-group mt8">
+                            <div class="col-12 col-md-6 o_setting_box">
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label"> Head of studies </span>
+                                    <div class="text-muted"> Head of Studies for the educational
+                                        platform </div>
+                                    <div class="content-group mt8">
 
-                                            <!-- Head of Studies -->
-                                            <field name="head_of_studies_id"
-                                                   widget="res_users"
-                                                   options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"
-                                                   class="oe_inline"/>
+                                        <!-- Head of Studies -->
+                                        <field name="head_of_studies_id" widget="res_users"
+                                            options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"
+                                            class="oe_inline"/>
 
-                                        </div>
                                     </div>
-                                </div> <!-- col -->
+                                </div>
+                            </div>
+                            <!-- col -->
 
-                                <div class="col-12 col-md-6 o_setting_box">
-                                    <div class="o_setting_right_pane">
-                                        <span class="o_form_label">
-                                            ERP Manager
-                                        </span>
-                                        <div class="text-muted">
-                                            ERP Manager at the institution (non technical)
-                                        </div>
-                                        <div class="content-group mt8">
-                                            
-                                            <field name="erp_manager_id"
-                                               widget="res_users"
-                                               options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"
-                                               class="oe_inline"/>
+                            <div class="col-12 col-md-6 o_setting_box">
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label"> ERP Manager </span>
+                                    <div class="text-muted"> ERP Manager at the institution (non
+                                        technical) </div>
+                                    <div class="content-group mt8">
 
-                                        </div>
+                                        <field name="erp_manager_id" widget="res_users"
+                                            options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"
+                                            class="oe_inline"/>
+
                                     </div>
-                                </div> <!-- col -->
-
-                            </div> <!-- row -->
+                                </div>
+                            </div>
+                            <!-- col -->
 
                         </div>
-
-                        <div name="academy_base_settings_others_values">
-                            <h2>Professional qualification</h2>
-
-                            <div class="row mt16 o_settings_container" name="hidden_resources">
-
-                                <div class="col-12 col-md-6 o_setting_box">
-                                    <div class="o_setting_right_pane">
-                                        <span class="o_form_label">
-                                            Professional qualification
-                                        </span>
-                                        <div class="text-muted">
-                                            View and edit professional qualifications
-                                        </div>
-                                        <div class="content-group mt8">
-                                            <button
-                                                name="%(academy_base.action_professional_qualification_act_window)d"
-                                                string="&#160;Update qualifications"
-                                                type="action"
-                                                class="oe_link"
-                                                icon="fa-arrow-right"
-                                            />
-                                        </div>
-                                    </div>
-                                </div> <!-- col -->
-
-                                <div class="col-12 col-md-6 o_setting_box">
-                                    <div class="o_setting_right_pane">
-                                        <span class="o_form_label">
-                                            Qualification level
-                                        </span>
-                                        <div class="text-muted">
-                                            View and edit qualification levels
-                                        </div>
-                                        <div class="content-group mt8">
-                                            <button
-                                                name="%(academy_base.action_qualification_level_act_window)d"
-                                                string="&#160;Update levels"
-                                                type="action"
-                                                class="oe_link"
-                                                icon="fa-arrow-right"
-                                            />
-                                        </div>
-                                    </div>
-                                </div> <!-- col -->
-
-                            </div> <!-- row -->
-
-                            <div class="row mt16 o_settings_container" name="hidden_resources">
-
-                                <div class="col-12 col-md-6 o_setting_box">
-                                    <div class="o_setting_right_pane">
-                                        <span class="o_form_label">
-                                            Professional family
-                                        </span>
-                                        <div class="text-muted">
-                                            View and edit professional families
-                                        </div>
-                                        <div class="content-group mt8">
-                                            <button
-                                                name="%(academy_base.action_professional_family_act_window)d"
-                                                string="&#160;Update families"
-                                                type="action"
-                                                class="oe_link"
-                                                icon="fa-arrow-right"
-                                            />
-                                        </div>
-                                    </div>
-                                </div> <!-- col -->
-
-                                <div class="col-12 col-md-6 o_setting_box">
-                                   <div class="o_setting_right_pane">
-                                        <span class="o_form_label">
-                                            Professional area
-                                        </span>
-                                        <div class="text-muted">
-                                            View and edit professional areas
-                                        </div>
-                                        <div class="content-group mt8">
-                                            <button
-                                                name="%(academy_base.action_professional_area_act_window)d"
-                                                string="&#160;Update areas"
-                                                type="action"
-                                                class="oe_link"
-                                                icon="fa-arrow-right"
-                                            />
-                                        </div>
-                                    </div>
-                                </div> <!-- col -->
-
-                            </div> <!-- row -->
-
-                        </div>
-
-                        <div name="academy_base_settings_others_values">
-                            <h2>Training activity</h2>
-
-                            <div class="row mt16 o_settings_container" name="hidden_resources">
-
-                                <div class="col-12 col-md-6 o_setting_box">
-                                    <div class="o_setting_right_pane">
-                                        <span class="o_form_label">
-                                            Professional sector
-                                        </span>
-                                        <div class="text-muted">
-                                            View and edit professional sectors
-                                        </div>
-                                        <div class="content-group mt8">
-                                            <button
-                                                name="%(academy_base.action_professional_sector_act_window)d"
-                                                string="&#160;Update sectors"
-                                                type="action"
-                                                class="oe_link"
-                                                icon="fa-arrow-right"
-                                            />
-                                        </div>
-                                    </div>
-                                </div> <!-- col -->
-
-                                <div class="col-12 col-md-6 o_setting_box">
-                                    <div class="o_setting_right_pane">
-                                        <span class="o_form_label">
-                                            Professional field
-                                        </span>
-                                        <div class="text-muted">
-                                            View and edit professional fields
-                                        </div>
-                                        <div class="content-group mt8">
-                                            <button
-                                                name="%(academy_base.action_professional_field_act_window)d"
-                                                string="&#160;Update fields"
-                                                type="action"
-                                                class="oe_link"
-                                                icon="fa-arrow-right"
-                                            />
-                                        </div>
-                                    </div>
-                                </div> <!-- col -->
-
-                            </div> <!-- row -->
-
-                        </div>
-
-                        <div name="academy_base_settings_others_values">
-                            <h2>Training action</h2>
-
-                            <div class="row mt16 o_settings_container" name="hidden_resources">
-
-                                <div class="col-12 col-md-6 o_setting_box">
-                                    <div class="o_setting_right_pane">
-                                        <span class="o_form_label">
-                                            Professional category
-                                        </span>
-                                        <div class="text-muted">
-                                            View and edit professional categories
-                                        </div>
-                                        <div class="content-group mt8">
-                                            <button
-                                                name="%(academy_base.action_professional_category_act_window)d"
-                                                string="&#160;Update categories"
-                                                type="action"
-                                                class="oe_link"
-                                                icon="fa-arrow-right"
-                                            />
-                                        </div>
-                                    </div>
-                                </div> <!-- col -->
-
-                                <div class="col-12 col-md-6 o_setting_box">
-                                   <div class="o_setting_right_pane">
-                                        <span class="o_form_label">
-                                            Application scope
-                                        </span>
-                                        <div class="text-muted">
-                                            View and edit application scopes
-                                        </div>
-                                        <div class="content-group mt8">
-                                            <button
-                                                name="%(academy_base.action_application_scope_act_window)d"
-                                                string="&#160;Update scopes"
-                                                type="action"
-                                                class="oe_link"
-                                                icon="fa-arrow-right"
-                                            />
-                                        </div>
-                                    </div>
-                                </div> <!-- col -->
-
-                            </div> <!-- row -->
-
-                            <div class="row mt16 o_settings_container" name="hidden_resources">
-
-                                <div class="col-12 col-md-6 o_setting_box">
-                                    <div class="o_setting_right_pane">
-                                        <span class="o_form_label">
-                                            Training modality
-                                        </span>
-                                        <div class="text-muted">
-                                            View and edit training modalities
-                                        </div>
-                                        <div class="content-group mt8">
-                                            <button
-                                                name="%(academy_base.action_training_modality_act_window)d"
-                                                string="&#160;Update modalities"
-                                                type="action"
-                                                class="oe_link"
-                                                icon="fa-arrow-right"
-                                            />
-                                        </div>
-                                    </div>
-                                </div> <!-- col -->
-
-                                <div class="col-12 col-md-6 o_setting_box">
-                                    <div class="o_setting_right_pane">
-                                        <span class="o_form_label">
-                                            Training methodology
-                                        </span>
-                                        <div class="text-muted">
-                                            View and edit training methodologies
-                                        </div>
-                                        <div class="content-group mt8">
-                                            <button
-                                                name="%(academy_base.action_training_methodology_act_window)d"
-                                                string="&#160;Update methodologies"
-                                                type="action"
-                                                class="oe_link"
-                                                icon="fa-arrow-right"
-                                            />
-                                        </div>
-                                    </div>
-                                </div> <!-- col -->
-
-                            </div> <!-- row -->
-
-                            <div class="row mt16 o_settings_container" name="hidden_resources">
-
-                                <div class="col-12 col-md-6 o_setting_box">
-                                    <div class="o_setting_right_pane">
-                                        <span class="o_form_label">
-                                            Knowledge area
-                                        </span>
-                                        <div class="text-muted">
-                                            View and edit knowledge areas
-                                        </div>
-                                        <div class="content-group mt8">
-                                            <button
-                                                name="%(academy_base.action_knowledge_area_act_window)d"
-                                                string="&#160;Update knowledge areas"
-                                                type="action"
-                                                class="oe_link"
-                                                icon="fa-arrow-right"
-                                            />
-                                        </div>
-                                    </div>
-                                </div> <!-- col -->
-
-                                <div class="col-12 col-md-6 o_setting_box">
-
-                                </div> <!-- col -->
-
-                            </div> <!-- row -->
-
-                        </div>
-
-                        <div name="academy_base_settings_others_values">
-                            <h2>Students</h2>
-
-                            <div class="row mt16 o_settings_container" name="hidden_resources">
-
-                                <div class="col-12 col-md-6 o_setting_box">
-                                    <div class="o_setting_right_pane">
-                                        <span class="o_form_label">
-                                            Educational attainment
-                                        </span>
-                                        <div class="text-muted">
-                                            Student educational attainment information
-                                        </div>
-                                        <div class="content-group mt8">
-                                            <button
-                                                name="%(academy_base.action_educational_attainment_act_window)d"
-                                                string="&#160;Update educational attainments"
-                                                type="action"
-                                                class="oe_link"
-                                                icon="fa-arrow-right"
-                                            />
-                                        </div>
-                                    </div>
-                                </div> <!-- col -->
-
-                                <div class="col-12 col-md-6 o_setting_box">
-
-                                </div> <!-- col -->
-
-                            </div> <!-- row -->
-                        </div>
+                        <!-- row -->
 
                     </div>
-                </xpath>
-            </field>
-        </record>
-    </data>
 
-</openerp>
+                    <div name="academy_base_settings_others_values">
+                        <h2>Professional qualification</h2>
+
+                        <div class="row mt16 o_settings_container" name="hidden_resources">
+
+                            <div class="col-12 col-md-6 o_setting_box">
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label"> Professional qualification </span>
+                                    <div class="text-muted"> View and edit professional
+                                        qualifications </div>
+                                    <div class="content-group mt8">
+                                        <button
+                                            name="%(academy_base.action_professional_qualification_act_window)d"
+                                            string="&#160;Update qualifications" type="action"
+                                            class="oe_link" icon="fa-arrow-right"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- col -->
+
+                            <div class="col-12 col-md-6 o_setting_box">
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label"> Qualification level </span>
+                                    <div class="text-muted"> View and edit qualification levels </div>
+                                    <div class="content-group mt8">
+                                        <button
+                                            name="%(academy_base.action_qualification_level_act_window)d"
+                                            string="&#160;Update levels" type="action"
+                                            class="oe_link" icon="fa-arrow-right"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- col -->
+
+                        </div>
+                        <!-- row -->
+
+                        <div class="row mt16 o_settings_container" name="hidden_resources">
+
+                            <div class="col-12 col-md-6 o_setting_box">
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label"> Professional family </span>
+                                    <div class="text-muted"> View and edit professional families </div>
+                                    <div class="content-group mt8">
+                                        <button
+                                            name="%(academy_base.action_professional_family_act_window)d"
+                                            string="&#160;Update families" type="action"
+                                            class="oe_link" icon="fa-arrow-right"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- col -->
+
+                            <div class="col-12 col-md-6 o_setting_box">
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label"> Professional area </span>
+                                    <div class="text-muted"> View and edit professional areas </div>
+                                    <div class="content-group mt8">
+                                        <button
+                                            name="%(academy_base.action_professional_area_act_window)d"
+                                            string="&#160;Update areas" type="action"
+                                            class="oe_link" icon="fa-arrow-right"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- col -->
+
+                        </div>
+                        <!-- row -->
+
+                    </div>
+
+                    <div name="academy_base_settings_others_values">
+                        <h2>Training activity</h2>
+
+                        <div class="row mt16 o_settings_container" name="hidden_resources">
+
+                            <div class="col-12 col-md-6 o_setting_box">
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label"> Professional sector </span>
+                                    <div class="text-muted"> View and edit professional sectors </div>
+                                    <div class="content-group mt8">
+                                        <button
+                                            name="%(academy_base.action_professional_sector_act_window)d"
+                                            string="&#160;Update sectors" type="action"
+                                            class="oe_link" icon="fa-arrow-right"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- col -->
+
+                            <div class="col-12 col-md-6 o_setting_box">
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label"> Professional field </span>
+                                    <div class="text-muted"> View and edit professional fields </div>
+                                    <div class="content-group mt8">
+                                        <button
+                                            name="%(academy_base.action_professional_field_act_window)d"
+                                            string="&#160;Update fields" type="action"
+                                            class="oe_link" icon="fa-arrow-right"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- col -->
+
+                        </div>
+                        <!-- row -->
+
+                    </div>
+
+                    <div name="academy_base_settings_others_values">
+                        <h2>Training action</h2>
+
+                        <div class="row mt16 o_settings_container" name="hidden_resources">
+
+                            <div class="col-12 col-md-6 o_setting_box">
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label"> Professional category </span>
+                                    <div class="text-muted"> View and edit professional categories </div>
+                                    <div class="content-group mt8">
+                                        <button
+                                            name="%(academy_base.action_professional_category_act_window)d"
+                                            string="&#160;Update categories" type="action"
+                                            class="oe_link" icon="fa-arrow-right"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- col -->
+
+                            <div class="col-12 col-md-6 o_setting_box">
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label"> Application scope </span>
+                                    <div class="text-muted"> View and edit application scopes </div>
+                                    <div class="content-group mt8">
+                                        <button
+                                            name="%(academy_base.action_application_scope_act_window)d"
+                                            string="&#160;Update scopes" type="action"
+                                            class="oe_link" icon="fa-arrow-right"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- col -->
+
+                        </div>
+                        <!-- row -->
+
+                        <div class="row mt16 o_settings_container" name="hidden_resources">
+
+                            <div class="col-12 col-md-6 o_setting_box">
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label"> Training modality </span>
+                                    <div class="text-muted"> View and edit training modalities </div>
+                                    <div class="content-group mt8">
+                                        <button
+                                            name="%(academy_base.action_training_modality_act_window)d"
+                                            string="&#160;Update modalities" type="action"
+                                            class="oe_link" icon="fa-arrow-right"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- col -->
+
+                            <div class="col-12 col-md-6 o_setting_box">
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label"> Training methodology </span>
+                                    <div class="text-muted"> View and edit training methodologies </div>
+                                    <div class="content-group mt8">
+                                        <button
+                                            name="%(academy_base.action_training_methodology_act_window)d"
+                                            string="&#160;Update methodologies" type="action"
+                                            class="oe_link" icon="fa-arrow-right"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- col -->
+
+                        </div>
+                        <!-- row -->
+
+                        <div class="row mt16 o_settings_container" name="hidden_resources">
+
+                            <div class="col-12 col-md-6 o_setting_box">
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label"> Knowledge area </span>
+                                    <div class="text-muted"> View and edit knowledge areas </div>
+                                    <div class="content-group mt8">
+                                        <button
+                                            name="%(academy_base.action_knowledge_area_act_window)d"
+                                            string="&#160;Update knowledge areas" type="action"
+                                            class="oe_link" icon="fa-arrow-right"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- col -->
+
+                            <div class="col-12 col-md-6 o_setting_box"> </div>
+                            <!-- col -->
+
+                        </div>
+                        <!-- row -->
+
+                    </div>
+
+                    <div name="academy_base_settings_others_values">
+                        <h2>Students</h2>
+
+                        <div class="row mt16 o_settings_container" name="hidden_resources">
+
+                            <div class="col-12 col-md-6 o_setting_box">
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label"> Educational attainment </span>
+                                    <div class="text-muted"> Student educational attainment
+                                        information </div>
+                                    <div class="content-group mt8">
+                                        <button
+                                            name="%(academy_base.action_educational_attainment_act_window)d"
+                                            string="&#160;Update educational attainments"
+                                            type="action" class="oe_link" icon="fa-arrow-right"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- col -->
+
+                            <div class="col-12 col-md-6 o_setting_box"> </div>
+                            <!-- col -->
+
+                        </div>
+                        <!-- row -->
+                    </div>
+
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

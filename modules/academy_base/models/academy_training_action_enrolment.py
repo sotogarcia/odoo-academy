@@ -590,7 +590,7 @@ class AcademyTrainingActionEnrolment(models.Model):
             if len(student_set) == 1:
                 view_act.update({
                     'name': student_set.name,
-                    'view_mode': 'form,kanban,tree',
+                    'view_mode': 'form,kanban,list',
                     'res_id': student_set.id,
                     'view_type': 'form'
                 })
@@ -598,7 +598,7 @@ class AcademyTrainingActionEnrolment(models.Model):
             else:
                 view_act.update({
                     'name': _('Students'),
-                    'view_mode': 'tree',
+                    'view_mode': 'list',
                     'res_id': None,
                     'view_type': 'form'
                 })

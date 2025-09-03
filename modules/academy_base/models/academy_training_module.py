@@ -361,7 +361,7 @@ class AcademyTrainingModule(models.Model):
             'name': _('Training units'),
             'res_model': 'academy.training.module',
             'target': 'current',
-            'view_mode': 'kanban,tree,form',
+            'view_mode': 'kanban,list,form',
             'domain': [('training_module_id', '=', self.id)],
             'context': {
                 'default_training_module_id': self.id

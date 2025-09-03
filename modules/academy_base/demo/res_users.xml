@@ -1,52 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo nopudate="0">
 
-        <record id="res_users_demo_consultant" model="res.users">
-            <field name="name">Consultant</field>
-            <field name="partner_id" ref="academy_demo_consultant"/>
-            <field name="email">consultant</field>
-            <field name="login">consultant</field>
-            <field name="password">consultant</field>
-            <field name="signature"><![CDATA[<span>-- <br/>Mr Demo Consultant</span>]]></field>
-            <field name="groups_id" eval="[(5,),(4,ref('academy_group_consultant'))]"/>
-        </record>
+    <record id="res_users_demo_consultant" model="res.users">
+        <field name="name">Consultant</field>
+        <field name="partner_id" ref="academy_demo_consultant"/>
+        <field name="email">consultant</field>
+        <field name="login">consultant</field>
+        <field name="password">consultant</field>
+        <field name="signature"><![CDATA[<span>-- <br/>Mr Demo Consultant</span>]]></field>
+        <field name="groups_id" eval="[(5,),(4,ref('academy_group_consultant'))]"/>
+    </record>
 
-        <record id="res_users_demo_teacher" model="res.users">
-            <field name="name">Teacher</field>
-            <field name="partner_id" ref="academy_demo_teacher"/>
-            <field name="email">teacher</field>
-            <field name="login">teacher</field>
-            <field name="password">teacher</field>
-            <field name="signature"><![CDATA[<span>-- <br/>Mr Demo Teacher</span>]]></field>
-            <field name="groups_id" eval="[(5,),(4,ref('academy_group_teacher'))]"/>
-        </record>
+    <record id="res_users_demo_teacher" model="res.users">
+        <field name="name">Teacher</field>
+        <field name="partner_id" ref="academy_demo_teacher"/>
+        <field name="email">teacher</field>
+        <field name="login">teacher</field>
+        <field name="password">teacher</field>
+        <field name="signature"><![CDATA[<span>-- <br/>Mr Demo Teacher</span>]]></field>
+        <field name="groups_id" eval="[(5,),(4,ref('academy_group_teacher'))]"/>
+    </record>
 
-        <record id="res_users_demo_technical" model="res.users">
-            <field name="name">Technical</field>
-            <field name="partner_id" ref="academy_demo_technical"/>
-            <field name="email">technical</field>
-            <field name="login">technical</field>
-            <field name="password">technical</field>
-            <field name="signature"><![CDATA[<span>-- <br/>Mr Demo Technical</span>]]></field>
-            <field name="groups_id" eval="[(5,),(4,ref('academy_group_technical'))]"/>
-        </record>
+    <record id="res_users_demo_technical" model="res.users">
+        <field name="name">Technical</field>
+        <field name="partner_id" ref="academy_demo_technical"/>
+        <field name="email">technical</field>
+        <field name="login">technical</field>
+        <field name="password">technical</field>
+        <field name="signature"><![CDATA[<span>-- <br/>Mr Demo Technical</span>]]></field>
+        <field name="groups_id" eval="[(5,),(4,ref('academy_group_technical'))]"/>
+    </record>
 
-        <record id="res_users_demo_manager" model="res.users">
-            <field name="name">Manager</field>
-            <field name="partner_id" ref="academy_demo_manager"/>
-            <field name="email">manager</field>
-            <field name="login">manager</field>
-            <field name="password">manager</field>
-            <field name="signature"><![CDATA[<span>-- <br/>Mr Demo Manager</span>]]></field>
-            <field name="groups_id" eval="[(5,),(4,ref('academy_group_manager'))]"/>
-        </record>
+    <record id="res_users_demo_manager" model="res.users">
+        <field name="name">Manager</field>
+        <field name="partner_id" ref="academy_demo_manager"/>
+        <field name="email">manager</field>
+        <field name="login">manager</field>
+        <field name="password">manager</field>
+        <field name="signature"><![CDATA[<span>-- <br/>Mr Demo Manager</span>]]></field>
+        <field name="groups_id" eval="[(5,),(4,ref('academy_group_manager'))]"/>
+    </record>
 
-        <record id="base.user_admin" model="res.users">
-            <field name="groups_id" eval="[(4, ref('base.group_multi_company'), 0)]" />
-            <field name="company_ids" eval="[(4, ref('academy_base.res_company_my_academy'), 0)]" />
-        </record>
+    <record id="base.user_admin" model="res.users">
+        <field name="groups_id" eval="[(4, ref('base.group_multi_company'), 0)]"/>
+        <field name="company_ids" eval="[(4, ref('academy_base.res_company_my_academy'), 0)]"/>
+    </record>
 
-    </data>
-</openerp>
+</odoo>

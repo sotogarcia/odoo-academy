@@ -285,7 +285,7 @@ class AcademyCompetencyUnit(models.Model):
             else:
                 view_act.update({
                     'name': _('Modules'),
-                    'view_mode': 'kanban,tree,form',
+                    'view_mode': 'kanban,list,form',
                     'res_id': None,
                     'view_type': 'form'
                 })

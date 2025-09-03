@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="2">
+<odoo nopudate="1">
 
-        <!-- Required by academy.training.action.enrolment copy method
+    <!-- Required by academy.training.action.enrolment copy method
         ····································································-->
-        <record id="academy_student_default_template" model="academy.student">
-            <field name="name">Default Student Template</field>
-            <field name="active" eval="False" />
-        </record>
+    <record id="academy_student_default_template" model="academy.student">
+        <field name="name">Default Student Template</field>
+        <field name="active" eval="False"/>
+    </record>
 
-    </data>
-</openerp>
+</odoo>

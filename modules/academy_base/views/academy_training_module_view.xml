@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo nopudate="0">
 
-
-        <!-- VIEWS: "Training Module"
+    <!-- VIEWS: "Training Module"
 
             - Model·········: academy.training.module
             - _rec_name·····: name
@@ -15,422 +13,437 @@
             - Action help···: There are not training modules in catalog
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-        <!-- Tree view for "academy.training.module" -->
-        <record id="view_academy_training_module_tree" model="ir.ui.view">
-            <field name="name">view.academy.training.module.tree</field>
-            <field name="model">academy.training.module</field>
-            <field name="type">tree</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="25" />
-            <field name="active" eval="True" />
-            <field name="arch" type="xml">
-                <tree string="academy_training_module_tree" create="1" delete="1" edit="1">
-                    <field name="module_code" />
-                    <field name="name" />
-                    <field name="hours" class="oe_field_hours" widget="float_time" />
-                    <field name="manager_id" class="oe_field_manager_id" />
-                </tree>
-            </field>
-        </record>
+    <!-- List view for "academy.training.module" -->
+    <record id="view_academy_training_module_tree" model="ir.ui.view">
+        <field name="name">view.academy.training.module.tree</field>
+        <field name="model">academy.training.module</field>
+        <field name="type">list</field>
+        <field name="mode">primary</field>
+        <field name="priority" eval="25"/>
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <list string="academy_training_module_tree" create="1" delete="1" edit="1">
+                <field name="module_code"/>
+                <field name="name"/>
+                <field name="hours" class="oe_field_hours" widget="float_time"/>
+                <field name="manager_id" class="oe_field_manager_id"/>
+            </list>
+        </field>
+    </record>
 
 
-        <!-- Form view for "academy.training.module" -->
-        <record id="view_academy_training_module_form" model="ir.ui.view">
-            <field name="name">view.academy.training.module.form</field>
-            <field name="model">academy.training.module</field>
-            <field name="type">form</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="25" />
-            <field name="active" eval="True" />
-            <field name="arch" type="xml">
-                <form string="academy_training_module_form" create="1" delete="1" edit="1">
-                    <sheet>
-                        <div class="oe_button_box" name="button_box"/>
+    <!-- Form view for "academy.training.module" -->
+    <record id="view_academy_training_module_form" model="ir.ui.view">
+        <field name="name">view.academy.training.module.form</field>
+        <field name="model">academy.training.module</field>
+        <field name="type">form</field>
+        <field name="mode">primary</field>
+        <field name="priority" eval="25"/>
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <form string="academy_training_module_form" create="1" delete="1" edit="1">
+                <sheet>
+                    <div class="oe_button_box" name="button_box"/>
 
-                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger"
+                        invisible="active == True"/>
 
-                        <field name="image_1920" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}'/>
+                    <field name="image_1920" widget="image" class="oe_avatar"
+                        options='{"preview_image": "image_128"}'/>
 
-                        <div class="oe_title">
-                            <field name="active" invisible="1"/>
-                            <label for="name" class="oe_edit_only" />
-                            <h1>
-                                <field name="name" class="oe_field_name"
-                                    placeholder="Enter new name" />
-                            </h1>
-                        </div>
-
-                        <group col="2">
-                            <field name="module_code" class="oe_field_module_code"
-                                placeholder="Enter new code" />
-                        </group>
-
-                        <notebook>
-                            <page id="setup" string="Setup" class="oe_page_setup" accesskey="S">
-                                <group col="4" string="Description">
-                                    <field name="description" class="oe_field_description" colspan="2" nolabel="1" />
-                                </group>
-                                <group col="4" string="Publish">
-                                    <field name="token" class="oe_field_token" />
-                                </group>
-                                <group col="4" string="Ownership" groups="record_ownership.record_ownership_proxy">
-                                    <field name="owner_id" class="oe_field_owner_id" />
-                                    <field name="subrogate_id" class="oe_field_subrogate_id" />
-                                </group>                            
-                            </page>
-                            <page string="Resources" class="oe_page_resources" accesskey="R">
-                                <field name="module_resource_ids"
-                                    class="oe_field_module_resource_ids oe_edit_only" />
-
-                                <field name="available_resource_ids"
-                                       class="oe_field_available_resource_ids oe_read_only" />
-                            </page>
-                        </notebook>
-                    </sheet>
-
-                    <div class="oe_chatter">
-                        <field name="message_follower_ids" widget="mail_followers"/>
-                        <field name="message_ids" widget="mail_thread"/>
+                    <div class="oe_title">
+                        <field name="active" invisible="1"/>
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name" class="oe_field_name" placeholder="Enter new name"/>
+                        </h1>
                     </div>
-                </form>
-            </field>
-        </record>
+
+                    <group col="2">
+                        <field name="module_code" class="oe_field_module_code"
+                            placeholder="Enter new code"/>
+                    </group>
+
+                    <notebook>
+                        <page id="setup" string="Setup" class="oe_page_setup" accesskey="S">
+                            <group col="4" string="Description">
+                                <field name="description" class="oe_field_description" colspan="2"
+                                    nolabel="1"/>
+                            </group>
+                            <group col="4" string="Publish">
+                                <field name="token" class="oe_field_token"/>
+                            </group>
+                            <group col="4" string="Ownership"
+                                groups="record_ownership.record_ownership_proxy">
+                                <field name="owner_id" class="oe_field_owner_id"/>
+                                <field name="subrogate_id" class="oe_field_subrogate_id"/>
+                            </group>
+                        </page>
+                        <page string="Resources" class="oe_page_resources" accesskey="R">
+                            <field name="module_resource_ids"
+                                class="oe_field_module_resource_ids oe_edit_only"/>
+
+                            <field name="available_resource_ids"
+                                class="oe_field_available_resource_ids oe_read_only"/>
+                        </page>
+                    </notebook>
+                </sheet>
+
+                <chatter/>
+            </form>
+        </field>
+    </record>
 
 
-        <!-- Search view for "academy.training.module" -->
-        <record id="view_academy_training_module_search" model="ir.ui.view">
-            <field name="name">view.academy.training.module.search</field>
-            <field name="model">academy.training.module</field>
-            <field name="type">search</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="25" />
-            <field name="active" eval="True" />
-            <field name="arch" type="xml">
-                <search string="academy_training_module_search">
-                    <field name="name" />
-                    <field name="module_code" />
-                    <field name="training_activity_ids" />
+    <!-- Search view for "academy.training.module" -->
+    <record id="view_academy_training_module_search" model="ir.ui.view">
+        <field name="name">view.academy.training.module.search</field>
+        <field name="model">academy.training.module</field>
+        <field name="type">search</field>
+        <field name="mode">primary</field>
+        <field name="priority" eval="25"/>
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <search string="academy_training_module_search">
+                <field name="name"/>
+                <field name="module_code"/>
+                <field name="training_activity_ids"/>
 
-                    <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
+                <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
 
-                </search>
-            </field>
-        </record>
+            </search>
+        </field>
+    </record>
 
 
-        <!-- Kanban view for "academy.training.module" -->
-        <record id="view_academy_training_module_kanban" model="ir.ui.view">
-            <field name="name">view.academy.training.module.kanban</field>
-            <field name="model">academy.training.module</field>
-            <field name="type">kanban</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="25" />
-            <field name="active" eval="True" />
-            <field name="arch" type="xml">
-                <kanban create="1" delete="1" edit="1">
-                    <field name="training_module_id" />
-                    <field name="image_128"/>
-                    <field name="name" />
-                    <field name="hours" />
-                    <field name="owner_id" />
-                    <field name="module_code" />
+    <!-- Kanban view for "academy.training.module" -->
+    <record id="view_academy_training_module_kanban" model="ir.ui.view">
+        <field name="name">view.academy.training.module.kanban</field>
+        <field name="model">academy.training.module</field>
+        <field name="type">kanban</field>
+        <field name="mode">primary</field>
+        <field name="priority" eval="25"/>
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <kanban create="1" delete="1" edit="1">
+                <field name="training_module_id"/>
+                <field name="image_128"/>
+                <field name="name"/>
+                <field name="hours"/>
+                <field name="owner_id"/>
+                <field name="module_code"/>
 
-                    <templates>
-                        <t t-name="kanban-box">
-                            <div class="oe_kanban_global_click oe_kanban_academy_training_module">
-                                <div class="o_kanban_image">
-                                    <t t-if="record.image_128.raw_value">
-                                        <field name="image_128" widget='image' class="oe_avatar" options='{"preview_image": "image_128"}' />
-                                    </t>
-                                    <t t-else="">
-                                        <img t-att-src="_s + &quot;/academy_base/static/src/img/training-module.png&quot;" class="o_kanban_image" alt="Training module photo" />
-                                    </t>
-                                </div>
-                                <div class="oe_kanban_details">
-                                    <strong class="oe_partner_heading"><field name="name"/></strong>
-                                    <ul>
-                                        <li><strong>Code:&#160;</strong><field name="module_code" /></li>
-                                        <li><strong>Owner:&#160;</strong><field name="owner_id" /></li>
-                                        <li><strong>Lifespan:&#160;</strong><field name="hours" widget="float_time" />&#160;hours</li>
-                                     </ul>
-                                </div>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click oe_kanban_academy_training_module">
+                            <div class="o_kanban_image">
+                                <t t-if="record.image_128.raw_value">
+                                    <field name="image_128" widget="image" class="oe_avatar"
+                                        options='{"preview_image": "image_128"}'/>
+                                </t>
+                                <t t-else="">
+                                    <img
+                                        t-att-src="_s + &quot;/academy_base/static/src/img/training-module.png&quot;"
+                                        class="o_kanban_image" alt="Training module photo"/>
+                                </t>
                             </div>
-                        </t>
-                    </templates>
+                            <div class="oe_kanban_details">
+                                <strong class="oe_partner_heading">
+                                    <field name="name"/>
+                                </strong>
+                                <ul>
+                                    <li>
+                                        <strong>Code:&#160;</strong>
+                                        <field name="module_code"/>
+                                    </li>
+                                    <li>
+                                        <strong>Owner:&#160;</strong>
+                                        <field name="owner_id"/>
+                                    </li>
+                                    <li><strong>Lifespan:&#160;</strong><field name="hours"
+                                            widget="float_time"/>&#160;hours</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
 
-                </kanban>
-            </field>
-        </record>
+            </kanban>
+        </field>
+    </record>
 
 
 
-        <!-- MODULES AS MAIN MODULES
+    <!-- MODULES AS MAIN MODULES
              Folowing lines are specific to shown main modules (without units)
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-        <!-- Tree view for "academy.training.module" -->
-        <record id="view_academy_training_module_module_tree" model="ir.ui.view">
-            <field name="name">view.academy.training.module.module.tree</field>
-            <field name="model">academy.training.module</field>
-            <field name="type">tree</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="16" />
-            <field name="active" eval="True" />
-            <field name="inherit_id" ref="academy_base.view_academy_training_module_tree" />
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='hours']" position="before">
-                    <field name="training_unit_count" class="oe_field_training_unit_count" string="Units" />
-                </xpath>
-                <xpath expr="//field[@name='hours']" position="before">
-                    <field name="training_activity_count" class="oe_field_training_activity_count" string="Activities" />
-                </xpath>
-            </field>
-        </record>
+    <!-- List view for "academy.training.module" -->
+    <record id="view_academy_training_module_module_tree" model="ir.ui.view">
+        <field name="name">view.academy.training.module.module.tree</field>
+        <field name="model">academy.training.module</field>
+        <field name="type">list</field>
+        <field name="mode">primary</field>
+        <field name="priority" eval="16"/>
+        <field name="active" eval="True"/>
+        <field name="inherit_id" ref="academy_base.view_academy_training_module_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='hours']" position="before">
+                <field name="training_unit_count" class="oe_field_training_unit_count"
+                    string="Units"/>
+            </xpath>
+            <xpath expr="//field[@name='hours']" position="before">
+                <field name="training_activity_count" class="oe_field_training_activity_count"
+                    string="Activities"/>
+            </xpath>
+        </field>
+    </record>
 
 
-        <!-- Tree view for "academy.training.module" -->
-        <record id="view_academy_training_module_module_form" model="ir.ui.view">
-            <field name="name">view.academy.training.module.module.form</field>
-            <field name="model">academy.training.module</field>
-            <field name="type">form</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="16" />
-            <field name="active" eval="True" />
-            <field name="inherit_id" ref="academy_base.view_academy_training_module_form" />
-            <field name="arch" type="xml">
-                <xpath expr="//div[@name='button_box']" position="inside">
-                    <button name="view_training_activities" type="object" class="oe_stat_button" icon="fa-th-list">
-                        <field name="training_activity_count" widget="statinfo" string="Activities" />
-                    </button>
-                </xpath>
-                <xpath expr="//div[@name='button_box']" position="inside">
-                    <button name="view_training_units" type="object" class="oe_stat_button" icon="fa-list-ul">
-                        <field name="training_unit_count" widget="statinfo" string="Units" />
-                    </button>
-                </xpath>
-                <xpath expr="//notebook/page" position="after">
-                   <page string="Training units" class="oe_page_training_units" accesskey="U">
-                        <field name="training_unit_ids" class="oe_field_training_unit_ids"
-                            context="{'form_view_ref':'academy_base.view_academy_training_module_unit_form', 'default_training_module_id': id}" />
-                    </page>
-                </xpath>
-                <xpath expr="//field[@name='module_code']" position="after">
-                    <field name="ownhours" class="oe_field_ownhours"
-                        placeholder="Enter number of hours to this module"
-                        attrs="{'invisible': [('training_unit_count', '!=', 0)]}"/>
-                    <field name="hours" class="oe_field_hours"
-                        placeholder="Total of hours from all units in module"
-                        attrs="{'invisible': [('training_unit_count', '=', 0)]}"/>
-                </xpath>
-            </field>
-        </record>
+    <!-- List view for "academy.training.module" -->
+    <record id="view_academy_training_module_module_form" model="ir.ui.view">
+        <field name="name">view.academy.training.module.module.form</field>
+        <field name="model">academy.training.module</field>
+        <field name="type">form</field>
+        <field name="mode">primary</field>
+        <field name="priority" eval="16"/>
+        <field name="active" eval="True"/>
+        <field name="inherit_id" ref="academy_base.view_academy_training_module_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="view_training_activities" type="object" class="oe_stat_button"
+                    icon="fa-th-list">
+                    <field name="training_activity_count" widget="statinfo" string="Activities"/>
+                </button>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="view_training_units" type="object" class="oe_stat_button"
+                    icon="fa-list-ul">
+                    <field name="training_unit_count" widget="statinfo" string="Units"/>
+                </button>
+            </xpath>
+            <xpath expr="//notebook/page" position="after">
+                <page string="Training units" class="oe_page_training_units" accesskey="U">
+                    <field name="training_unit_ids" class="oe_field_training_unit_ids"
+                        context="{'form_view_ref':'academy_base.view_academy_training_module_unit_form', 'default_training_module_id': id}"
+                    />
+                </page>
+            </xpath>
+            <xpath expr="//field[@name='module_code']" position="after">
+                <field name="ownhours" class="oe_field_ownhours"
+                    placeholder="Enter number of hours to this module"
+                    invisible="training_unit_count != 0"/>
+                <field name="hours" class="oe_field_hours"
+                    placeholder="Total of hours from all units in module"
+                    invisible="training_unit_count == 0"/>
+            </xpath>
+        </field>
+    </record>
 
 
-        <!-- Tree view for "academy.training.module" -->
-        <record id="view_academy_training_module_module_kanban" model="ir.ui.view">
-            <field name="name">view.academy.training.module.module.kanban</field>
-            <field name="model">academy.training.module</field>
-            <field name="type">kanban</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="16" />
-            <field name="active" eval="True" />
-            <field name="inherit_id" ref="academy_base.view_academy_training_module_kanban" />
-            <field name="arch" type="xml">
-                <xpath expr="//ul/li[1]" position="after">
-                    <li><strong>Units:&#160;</strong><field name="training_unit_count" /></li>
-                </xpath>
-            </field>
-        </record>
+    <!-- List view for "academy.training.module" -->
+    <record id="view_academy_training_module_module_kanban" model="ir.ui.view">
+        <field name="name">view.academy.training.module.module.kanban</field>
+        <field name="model">academy.training.module</field>
+        <field name="type">kanban</field>
+        <field name="mode">primary</field>
+        <field name="priority" eval="16"/>
+        <field name="active" eval="True"/>
+        <field name="inherit_id" ref="academy_base.view_academy_training_module_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//ul/li[1]" position="after">
+                <li>
+                    <strong>Units:&#160;</strong>
+                    <field name="training_unit_count"/>
+                </li>
+            </xpath>
+        </field>
+    </record>
 
 
-        <!-- Main window action for model.name -->
-        <record id="action_training_module_act_window" model="ir.actions.act_window">
-            <field name="type">ir.actions.act_window</field>
-            <field name="name">Training modules</field>
-            <field name="res_model">academy.training.module</field>
-            <field name="view_mode">kanban,tree,form</field>
+    <!-- Main window action for model.name -->
+    <record id="action_training_module_act_window" model="ir.actions.act_window">
+        <field name="type">ir.actions.act_window</field>
+        <field name="name">Training modules</field>
+        <field name="res_model">academy.training.module</field>
+        <field name="view_mode">kanban,list,form</field>
 
-            <field name="target">current</field>
-            <field name="domain">[('training_module_id', '=', False)]</field>
-            <field name="context">{}</field>
-            <field name="search_view_id" ref="view_academy_training_module_search" />
-            <field name="help" type="html">
-                <p class="oe_view_nocontent_create">
-                    Click to add new training modules
-                </p><p>
-                    There are no training modules yet
-                </p>
-            </field>
-        </record>
+        <field name="target">current</field>
+        <field name="domain">[('training_module_id', '=', False)]</field>
+        <field name="context">{}</field>
+        <field name="search_view_id" ref="view_academy_training_module_search"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create"> Click to add new training modules </p>
+            <p> There are no training modules yet </p>
+        </field>
+    </record>
 
 
-        <record id="action_training_module_act_window_kanban" model="ir.actions.act_window.view" >
-            <field name="sequence" eval="1"/>
-            <field name="view_mode">kanban</field>
-            <field name="view_id" ref="academy_base.view_academy_training_module_module_kanban"/>
-            <field name="act_window_id" ref="action_training_module_act_window"/>
-        </record>
+    <record id="action_training_module_act_window_kanban" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">kanban</field>
+        <field name="view_id" ref="academy_base.view_academy_training_module_module_kanban"/>
+        <field name="act_window_id" ref="action_training_module_act_window"/>
+    </record>
 
 
-        <record id="action_training_module_act_window_form" model="ir.actions.act_window.view" >
-            <field name="sequence" eval="2"/>
-            <field name="view_mode">form</field>
-            <field name="view_id" ref="academy_base.view_academy_training_module_module_form"/>
-            <field name="act_window_id" ref="action_training_module_act_window"/>
-        </record>
+    <record id="action_training_module_act_window_form" model="ir.actions.act_window.view">
+        <field name="sequence" eval="2"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="academy_base.view_academy_training_module_module_form"/>
+        <field name="act_window_id" ref="action_training_module_act_window"/>
+    </record>
 
 
-        <record id="action_training_module_act_window_tree" model="ir.actions.act_window.view" >
-            <field name="sequence" eval="3"/>
-            <field name="view_mode">tree</field>
-            <field name="view_id" ref="academy_base.view_academy_training_module_module_tree"/>
-            <field name="act_window_id" ref="action_training_module_act_window"/>
-        </record>
+    <record id="action_training_module_act_window_tree" model="ir.actions.act_window.view">
+        <field name="sequence" eval="3"/>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="academy_base.view_academy_training_module_module_tree"/>
+        <field name="act_window_id" ref="action_training_module_act_window"/>
+    </record>
 
 
-        <!-- Main menu for model.name -->
-        <record id="menu_training_module" model="ir.ui.menu" >
-            <field name="name">Training modules</field>
-            <field name="sequence" eval="15" />
-            <field name="action" ref="action_training_module_act_window" />
-            <field name="parent_id" ref="academy_base.menu_academy_catalog" />
-            <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
-        </record>
+    <!-- Main menu for model.name -->
+    <record id="menu_training_module" model="ir.ui.menu">
+        <field name="name">Training modules</field>
+        <field name="sequence" eval="15"/>
+        <field name="action" ref="action_training_module_act_window"/>
+        <field name="parent_id" ref="academy_base.menu_academy_catalog"/>
+        <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
+    </record>
 
 
 
-        <!-- MODULES AS UNITS
+    <!-- MODULES AS UNITS
              Folowing lines are specific to shown submodules (units)
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-        <!-- Tree view for "academy.training.module" -->
-        <record id="view_academy_training_module_unit_tree" model="ir.ui.view">
-            <field name="name">view.academy.training.module.unit.tree</field>
-            <field name="model">academy.training.module</field>
-            <field name="type">tree</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="30" />
-            <field name="active" eval="True" />
-            <field name="inherit_id" ref="academy_base.view_academy_training_module_tree" />
-            <field name="arch" type="xml">
-                <xpath expr="//tree" position="attributes">
-                    <attribute name="create">0</attribute>
-                </xpath>
-                <xpath expr="//field[@name='hours']" position="before">
-                    <field name="training_module_id" class="oe_field_training_module_id" />
-                </xpath>
-            </field>
-        </record>
+    <!-- List view for "academy.training.module" -->
+    <record id="view_academy_training_module_unit_tree" model="ir.ui.view">
+        <field name="name">view.academy.training.module.unit.tree</field>
+        <field name="model">academy.training.module</field>
+        <field name="type">list</field>
+        <field name="mode">primary</field>
+        <field name="priority" eval="30"/>
+        <field name="active" eval="True"/>
+        <field name="inherit_id" ref="academy_base.view_academy_training_module_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="attributes">
+                <attribute name="create">0</attribute>
+            </xpath>
+            <xpath expr="//field[@name='hours']" position="before">
+                <field name="training_module_id" class="oe_field_training_module_id"/>
+            </xpath>
+        </field>
+    </record>
 
 
-        <record id="view_academy_training_module_unit_form" model="ir.ui.view">
-            <field name="name">view.academy.training.module.unit.form</field>
-            <field name="model">academy.training.module</field>
-            <field name="type">form</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="30" />
-            <field name="active" eval="True" />
-            <field name="inherit_id" ref="academy_base.view_academy_training_module_form" />
-            <field name="arch" type="xml">
-                <xpath expr="//sheet/group/field[1]" position="after">
-                    <field name="training_module_id" class="oe_field_training_module_id"
-                        attrs="{'invisible': [('training_module_id', '&lt;&gt;', False)]}" />
-                </xpath>
-                 <xpath expr="//field[@name='module_code']" position="after">
-                    <field name="ownhours" class="oe_field_ownhours" />
-                </xpath>
-            </field>
-        </record>
+    <record id="view_academy_training_module_unit_form" model="ir.ui.view">
+        <field name="name">view.academy.training.module.unit.form</field>
+        <field name="model">academy.training.module</field>
+        <field name="type">form</field>
+        <field name="mode">primary</field>
+        <field name="priority" eval="30"/>
+        <field name="active" eval="True"/>
+        <field name="inherit_id" ref="academy_base.view_academy_training_module_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/group/field[1]" position="after">
+                <field name="training_module_id" class="oe_field_training_module_id"
+                    invisible="training_module_id &lt;&gt; False"/>
+            </xpath>
+            <xpath expr="//field[@name='module_code']" position="after">
+                <field name="ownhours" class="oe_field_ownhours"/>
+            </xpath>
+        </field>
+    </record>
 
 
-        <record id="view_academy_training_module_unit_kanban" model="ir.ui.view">
-            <field name="name">view.academy.training.module.unit.kanban</field>
-            <field name="model">academy.training.module</field>
-            <field name="type">kanban</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="30" />
-            <field name="active" eval="True" />
-            <field name="inherit_id" ref="academy_base.view_academy_training_module_kanban" />
-            <field name="arch" type="xml">
-                <xpath expr="//ul/li[1]" position="after">
-                    <li><strong>Module:&#160;</strong><field name="training_module_id" /></li>
-                </xpath>
-            </field>
-        </record>
+    <record id="view_academy_training_module_unit_kanban" model="ir.ui.view">
+        <field name="name">view.academy.training.module.unit.kanban</field>
+        <field name="model">academy.training.module</field>
+        <field name="type">kanban</field>
+        <field name="mode">primary</field>
+        <field name="priority" eval="30"/>
+        <field name="active" eval="True"/>
+        <field name="inherit_id" ref="academy_base.view_academy_training_module_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//ul/li[1]" position="after">
+                <li>
+                    <strong>Module:&#160;</strong>
+                    <field name="training_module_id"/>
+                </li>
+            </xpath>
+        </field>
+    </record>
 
 
-        <!-- Main window action for model.name -->
-        <record id="action_training_module_units_act_window" model="ir.actions.act_window">
-            <field name="type">ir.actions.act_window</field>
-            <field name="name">Training units</field>
-            <field name="res_model">academy.training.module</field>
-            <field name="view_mode">kanban,tree,form</field>
+    <!-- Main window action for model.name -->
+    <record id="action_training_module_units_act_window" model="ir.actions.act_window">
+        <field name="type">ir.actions.act_window</field>
+        <field name="name">Training units</field>
+        <field name="res_model">academy.training.module</field>
+        <field name="view_mode">kanban,list,form</field>
 
-            <field name="target">current</field>
-            <field name="domain">[('training_module_id', '!=', False)]</field>
-            <field name="context">{}</field>
-            <field name="search_view_id" ref="view_academy_training_module_search" />
-            <field name="help" type="html">
-                <p class="oe_view_nocontent_create">
-                    Click to add new training units
-                </p><p>
-                    There are no training units yet
-                </p>
-            </field>
-        </record>
+        <field name="target">current</field>
+        <field name="domain">[('training_module_id', '!=', False)]</field>
+        <field name="context">{}</field>
+        <field name="search_view_id" ref="view_academy_training_module_search"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create"> Click to add new training units </p>
+            <p> There are no training units yet </p>
+        </field>
+    </record>
 
 
-        <record id="action_training_module_units_act_window_kanban" model="ir.actions.act_window.view" >
-            <field name="sequence" eval="1"/>
-            <field name="view_mode">kanban</field>
-            <field name="view_id" ref="view_academy_training_module_unit_kanban"/>
-            <field name="act_window_id" ref="action_training_module_units_act_window"/>
-        </record>
+    <record id="action_training_module_units_act_window_kanban" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">kanban</field>
+        <field name="view_id" ref="view_academy_training_module_unit_kanban"/>
+        <field name="act_window_id" ref="action_training_module_units_act_window"/>
+    </record>
 
 
-        <record id="action_training_module_units_act_window_form" model="ir.actions.act_window.view" >
-            <field name="sequence" eval="2"/>
-            <field name="view_mode">form</field>
-            <field name="view_id" ref="view_academy_training_module_unit_form"/>
-            <field name="act_window_id" ref="action_training_module_units_act_window"/>
-        </record>
+    <record id="action_training_module_units_act_window_form" model="ir.actions.act_window.view">
+        <field name="sequence" eval="2"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_academy_training_module_unit_form"/>
+        <field name="act_window_id" ref="action_training_module_units_act_window"/>
+    </record>
 
 
-        <record id="action_training_module_units_act_window_tree" model="ir.actions.act_window.view" >
-            <field name="sequence" eval="3"/>
-            <field name="view_mode">tree</field>
-            <field name="view_id" ref="view_academy_training_module_unit_tree"/>
-            <field name="act_window_id" ref="action_training_module_units_act_window"/>
-        </record>
+    <record id="action_training_module_units_act_window_tree" model="ir.actions.act_window.view">
+        <field name="sequence" eval="3"/>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="view_academy_training_module_unit_tree"/>
+        <field name="act_window_id" ref="action_training_module_units_act_window"/>
+    </record>
 
 
-        <!-- Main menu for model.name -->
-        <record id="menu_training_module_unit" model="ir.ui.menu" >
-            <field name="name">Training units</field>
-            <field name="sequence" eval="35" />
-            <field name="action" ref="action_training_module_units_act_window" />
-            <field name="parent_id" ref="academy_base.menu_academy_settings_helper" />
-            <field name="groups_id" eval="[(4, ref('academy_base.academy_group_manager'))]"/>
-        </record>
+    <!-- Main menu for model.name -->
+    <record id="menu_training_module_unit" model="ir.ui.menu">
+        <field name="name">Training units</field>
+        <field name="sequence" eval="35"/>
+        <field name="action" ref="action_training_module_units_act_window"/>
+        <field name="parent_id" ref="academy_base.menu_academy_settings_helper"/>
+        <field name="groups_id" eval="[(4, ref('academy_base.academy_group_manager'))]"/>
+    </record>
 
 
-        <record id="view_academy_training_module_embed_units_tree" model="ir.ui.view">
-            <field name="name">view.academy.training.module.embed_unitstree</field>
-            <field name="model">academy.training.module</field>
-            <field name="type">tree</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="16" />
-            <field name="active" eval="True" />
-            <field name="inherit_id" ref="academy_base.view_academy_training_module_tree" />
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='module_code']" position="before">
-                    <field name="sequence" widget="handle" />
-                </xpath>
-                <xpath expr="//field[@name='hours']" position="replace">
-                    <field name="ownhours" class="oe_field_own_hours" widget="float_time" />
-                </xpath>
-            </field>
-        </record>
+    <record id="view_academy_training_module_embed_units_tree" model="ir.ui.view">
+        <field name="name">view.academy.training.module.embed_unitstree</field>
+        <field name="model">academy.training.module</field>
+        <field name="type">list</field>
+        <field name="mode">primary</field>
+        <field name="priority" eval="16"/>
+        <field name="active" eval="True"/>
+        <field name="inherit_id" ref="academy_base.view_academy_training_module_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='module_code']" position="before">
+                <field name="sequence" widget="handle"/>
+            </xpath>
+            <xpath expr="//field[@name='hours']" position="replace">
+                <field name="ownhours" class="oe_field_own_hours" widget="float_time"/>
+            </xpath>
+        </field>
+    </record>
 
-
-    </data>
-</openerp>
+</odoo>

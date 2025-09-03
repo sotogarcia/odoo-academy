@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo nopudate="0">
 
-        <record id="academy_teacher_teacher_demo" model="academy.teacher">
-            <field name="res_users_id" ref="academy_base.res_users_demo_teacher" />
-        </record>
+    <record id="academy_teacher_teacher_demo" model="academy.teacher">
+        <field name="res_users_id" ref="academy_base.res_users_demo_teacher"/>
+    </record>
 
-        <record id="academy_teacher_admin_demo" model="academy.teacher">
-            <field name="res_users_id" ref="base.user_admin" />
-        </record>
+    <record id="academy_teacher_admin_demo" model="academy.teacher">
+        <field name="res_users_id" ref="base.user_admin"/>
+    </record>
 
-    </data>
-</openerp>
+</odoo>

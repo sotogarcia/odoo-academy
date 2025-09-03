@@ -1,21 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo nopudate="0">
 
-        <record id="academy_professional_category_administrative" model="academy.professional.category">
-            <field name="name">Civil Administrative</field>
-            <field name="description">Civil servant</field>
-            <field name="active">True</field>
-            <field name="sequence">1</field>
-        </record>
+    <record id="academy_professional_category_administrative" model="academy.professional.category">
+        <field name="name">Civil Administrative</field>
+        <field name="description">Civil servant</field>
+        <field name="active">True</field>
+        <field name="sequence">1</field>
+    </record>
 
-        <record id="academy_prefessional_category_assistant" model="academy.professional.category">
-            <field name="name">Civil Administrative Assistant</field>
-            <field name="description">Civil servant</field>
-            <field name="active">True</field>
-            <field name="sequence">2</field>
-        </record>
+    <record id="academy_prefessional_category_assistant" model="academy.professional.category">
+        <field name="name">Civil Administrative Assistant</field>
+        <field name="description">Civil servant</field>
+        <field name="active">True</field>
+        <field name="sequence">2</field>
+    </record>
 
-    </data>
-</openerp>
+</odoo>

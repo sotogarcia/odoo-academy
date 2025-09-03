@@ -474,7 +474,7 @@ class AcademyTrainingActivity(models.Model):
             'name': _('Training actions'),
             'res_model': 'academy.training.action',
             'target': 'current',
-            'view_mode': 'kanban,tree,form',
+            'view_mode': 'kanban,list,form',
             'domain': [('training_activity_id', '=', self.id)],
             'context': {
                 'default_training_activity_id': self.id
@@ -532,7 +532,7 @@ class AcademyTrainingActivity(models.Model):
             'name': _('Training modules'),
             'res_model': 'academy.training.module',
             'target': 'current',
-            'view_mode': 'kanban,tree,form',
+            'view_mode': 'kanban,list,form',
             'domain': [('id', 'in', mids)],
             'context': {
                 'default_training_activity_id': self.id

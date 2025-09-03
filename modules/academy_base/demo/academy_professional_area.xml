@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo nopudate="0">
 
-        <record id="academy_profressional_area_icm" model="academy.professional.area">
-            <field name="name">Information and Communication Management</field>
-            <field name="description">Concerns a cycle of organizational activity: the acquisition of information from one or more sources, the custodianship and the distribution of that information to those who need it, and its ultimate disposition through archiving or deletion</field>
-            <field name="active">True</field>
-            <field name="professional_family_id" ref="academy_base.academy_professional_family_02" />
-        </record>
+    <record id="academy_profressional_area_icm" model="academy.professional.area">
+        <field name="name">Information and Communication Management</field>
+        <field name="description">Concerns a cycle of organizational activity: the acquisition of
+            information from one or more sources, the custodianship and the distribution of that
+            information to those who need it, and its ultimate disposition through archiving or
+            deletion</field>
+        <field name="active">True</field>
+        <field name="professional_family_id" ref="academy_base.academy_professional_family_02"/>
+    </record>
 
-    </data>
-</openerp>
+</odoo>
