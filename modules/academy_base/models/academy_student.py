@@ -7,7 +7,7 @@ all student attributes and behavior.
 
 from odoo import models, fields, api
 from odoo.tools.translate import _
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, UserError
 from odoo.tools.safe_eval import safe_eval
 from odoo.osv.expression import OR
 from odoo.osv.expression import AND, TRUE_DOMAIN, FALSE_DOMAIN
@@ -20,7 +20,20 @@ from ..utils.record_utils import INCLUDE_ARCHIVED_DOMAIN, ARCHIVED_DOMAIN
 
 from logging import getLogger
 
+
 _logger = getLogger(__name__)
+
+
+def _make_partner_proxy(method_name):
+    """Factory that returns a proxy method delegating to partner_id."""
+
+    def _proxy(self, *args, **kwargs):
+        partners = self.mapped("partner_id")
+        return getattr(partners, method_name)(*args, **kwargs)
+
+    _proxy.__name__ = method_name
+    _proxy.__doc__ = f"Proxy to res.partner.{method_name}"
+    return _proxy
 
 
 class AcademyStudent(models.Model):
@@ -30,22 +43,80 @@ class AcademyStudent(models.Model):
     _description = "Academy student"
 
     _inherit = ["mail.thread"]
-    _inherits = {"res.partner": "res_partner_id"}
+    _inherits = {"res.partner": "partner_id"}
 
     _order = "name ASC"
 
-    res_partner_id = fields.Many2one(
+    partner_id = fields.Many2one(
         string="Partner",
         required=True,
         readonly=False,
         index=False,
         default=None,
-        help=False,
+        help="Linked contact record (res.partner) for this student",
         comodel_name="res.partner",
         domain=[],
         context={},
         ondelete="cascade",
         auto_join=False,
+    )
+
+    signup_code = fields.Char(
+        string="Sign-up code",
+        required=False,
+        readonly=True,
+        index=True,
+        default=None,
+        help="Unique center sign-up code.",
+        copy=False,
+    )
+
+    signup_date = fields.Date(
+        string="Sign-up date",
+        required=True,
+        readonly=False,
+        index=False,
+        default=lambda self: fields.Date.context_today(self),
+        help="Date the student signed up to the center.",
+        tracking=True,
+    )
+
+    attainment_id = fields.Many2one(
+        string="Educational attainment",
+        required=False,
+        readonly=False,
+        index=True,
+        default=None,
+        help="Student’s highest educational attainment",
+        comodel_name="academy.educational.attainment",
+        domain=[],
+        context={},
+        ondelete="cascade",
+        auto_join=False,
+        tracking=True,
+    )
+
+    birthday = fields.Date(
+        string="Date of birth",
+        required=False,
+        readonly=False,
+        index=True,
+        default=None,
+        help="Student’s date of birth",
+        tracking=True,
+    )
+
+    creation_mode = fields.Selection(
+        string="Creation Mode",
+        required=True,
+        readonly=False,
+        index=False,
+        default="from_scratch",
+        help="Create from scratch or use an existing contact.",
+        selection=[
+            ("from_scratch", "Create from scratch"),
+            ("from_existing", "Use existing contact"),
+        ],
     )
 
     enrolment_ids = fields.One2many(
@@ -54,10 +125,7 @@ class AcademyStudent(models.Model):
         readonly=False,
         index=True,
         default=None,
-        help=(
-            "List all the enrollments, including those that are current, "
-            "past, and future"
-        ),
+        help="All enrolments: past, current and future",
         comodel_name="academy.training.action.enrolment",
         inverse_name="student_id",
         domain=[],
@@ -65,13 +133,61 @@ class AcademyStudent(models.Model):
         auto_join=False,
     )
 
+    current_enrolment_ids = fields.One2many(
+        string="Current enrolments",
+        required=False,
+        readonly=False,
+        index=True,
+        default=None,
+        help="Enrolments active at the current date/time",
+        comodel_name="academy.training.action.enrolment",
+        inverse_name="student_id",
+        domain=[
+            "&",
+            ("register", "<=", fields.Datetime.now()),
+            "|",
+            ("deregister", "=", False),
+            ("deregister", ">", fields.Datetime.now()),
+        ],
+        context={},
+        auto_join=False,
+    )
+
+    # -- Computed field: current_enrolment_ids --------------------------------
+
+    current_enrolment_ids = fields.One2many(
+        string="Current enrolments",
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help="Enrolments active at the current date/time",
+        comodel_name="academy.training.action.enrolment",
+        inverse_name="student_id",
+        domain=[],
+        context={},
+        auto_join=False,
+        compute="_compute_current_enrolment_ids",
+        store=False,
+    )
+
+    def _compute_current_enrolment_ids(self):
+        now = fields.Datetime.now()
+        for record in self:
+            record.current_enrolment_ids = record.enrolment_ids.filtered(
+                lambda e: (e.register and e.register <= now)
+                and (not e.deregister or e.deregister > now)
+            )
+
+    # -- Computed field: enrolment_count --------------------------------------
+
     enrolment_count = fields.Integer(
         string="Nº enrolments",
         required=False,
         readonly=True,
         index=False,
         default=0,
-        help="Show total number of enrolments",
+        help="Total number of enrolments",
         compute="_compute_enrolment_count",
         search="_search_enrolment_count",
     )
@@ -81,7 +197,7 @@ class AcademyStudent(models.Model):
         counts = one2many_count(self, "enrolment_ids")
 
         for record in self:
-            record.reservation_count = counts.get(record.id, 0)
+            record.enrolment_count = counts.get(record.id, 0)
 
     @api.model
     def _search_enrolment_count(self, operator, value):
@@ -100,28 +216,7 @@ class AcademyStudent(models.Model):
 
         return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
-    current_enrolment_ids = fields.One2many(
-        string="Current enrolments",
-        required=False,
-        readonly=False,
-        index=True,
-        default=None,
-        help=(
-            "List all the enrollments, including those that are current, "
-            "past, and future"
-        ),
-        comodel_name="academy.training.action.enrolment",
-        inverse_name="student_id",
-        domain=[
-            "&",
-            ("register", "<=", fields.Datetime.now()),
-            "|",
-            ("deregister", "=", False),
-            ("deregister", ">", fields.Datetime.now()),
-        ],
-        context={},
-        auto_join=False,
-    )
+    # -- Computed field: current_enrolment_count ------------------------------
 
     current_enrolment_count = fields.Integer(
         string="Nº current enrolments",
@@ -129,17 +224,21 @@ class AcademyStudent(models.Model):
         readonly=True,
         index=False,
         default=0,
-        help="Show total number of enrolments",
+        help="Number of currently active enrolments",
         compute="_compute_current_enrolment_count",
         search="_search_current_enrolment_count",
     )
 
-    @api.depends("current_enrolment_ids")
+    @api.depends(
+        "current_enrolment_ids",
+        "enrolment_ids.register",
+        "enrolment_ids.deregister",
+    )
     def _compute_current_enrolment_count(self):
         counts = one2many_count(self, "current_enrolment_ids")
 
         for record in self:
-            record.reservation_count = counts.get(record.id, 0)
+            record.current_enrolment_count = counts.get(record.id, 0)
 
     @api.model
     def _search_current_enrolment_count(self, operator, value):
@@ -158,13 +257,15 @@ class AcademyStudent(models.Model):
 
         return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
+    # -- Computed field: enrolment_str ----------------------------------------
+
     enrolment_str = fields.Char(
         string="Enrolment str",
         required=False,
         readonly=True,
         index=False,
         default=None,
-        help="Current enrollments over total number of student enrollments",
+        help="Current over total enrolments (e.g., “2 / 5”)",
         size=6,
         translate=False,
         compute="_compute_enrolment_str",
@@ -186,16 +287,15 @@ class AcademyStudent(models.Model):
             else:
                 record.enrolment_str = "{} / {}".format(current, total)
 
+    # -- Computed field: training_action_ids ----------------------------------
+
     training_action_ids = fields.Many2many(
         string="Training actions",
         required=False,
         readonly=True,
         index=False,
         default=None,
-        help=(
-            "List the training actions for which the student has active "
-            "enrollments"
-        ),
+        help="Training actions with active enrolments",
         comodel_name="academy.training.action",
         relation="academy_training_action_student_rel",
         column1="student_id",
@@ -207,54 +307,57 @@ class AcademyStudent(models.Model):
         search="_search_training_action_ids",
     )
 
-    @api.depends("enrolment_ids", "enrolment_ids.training_action_id")
+    @api.depends(
+        "enrolment_ids",
+        "enrolment_ids.training_action_id",
+        "enrolment_ids.register",
+        "enrolment_ids.deregister",
+    )
     def _compute_training_action_ids(self):
+        now = fields.Datetime.now()
         for record in self:
-            record.field = self.mapped("enrolment_ids.training_action_id")
+            current = record.enrolment_ids.filtered(
+                lambda e: (e.register and e.register <= now)
+                and (not e.deregister or e.deregister > now)
+            )
+            record.training_action_ids = current.mapped("training_action_id")
 
     @api.model
     def _search_training_action_ids(self, operator, value):
-        return [("enrolment_ids.training_action_id", operator, value)]
+        now = fields.Datetime.now()
 
-    attainment_id = fields.Many2one(
-        string="Educational attainment",
-        required=False,
-        readonly=False,
-        index=True,
-        default=None,
-        help="Choose related educational attainment",
-        comodel_name="academy.educational.attainment",
-        domain=[],
-        context={},
-        ondelete="cascade",
-        auto_join=False,
-    )
+        return [
+            "&",
+            ("enrolment_ids.register", "<=", now),
+            "|",
+            ("enrolment_ids.deregister", "=", False),
+            ("enrolment_ids.deregister", ">", now),
+            ("enrolment_ids.training_action_id", operator, value),
+        ]
 
-    birthday = fields.Date(
-        string="Birthday",
-        required=False,
-        readonly=False,
-        index=True,
-        default=None,
-        help="Date on which the student was born",
-    )
+    # -- Constraints ----------------------------------------------------------
 
     _sql_constraints = [
         (
             "unique_partner",
-            "UNIQUE(res_partner_id)",
+            "UNIQUE(partner_id)",
             "There is already a student for this contact",
-        )
+        ),
+        (
+            "uniq_signup_code_company",
+            "unique(signup_code, company_id)",
+            "The sign-up code must be unique per company.",
+        ),
     ]
 
-    @api.constrains("res_partner_id")
-    def _check_res_partner_id(self):
+    @api.constrains("partner_id")
+    def _check_partner_id(self):
         partner_obj = self.env["res.partner"]
         msg = _("There is already a student with that VAT number or email")
 
         for record in self:
-            if record.res_partner_id:
-                leafs = [FALSE_DOMAIN]
+            if record.partner_id:
+                leafs = []
 
                 if record.vat:
                     leafs.append([("vat", "=ilike", record.vat)])
@@ -262,8 +365,10 @@ class AcademyStudent(models.Model):
                 if record.email:
                     leafs.append([("email", "=ilike", record.email)])
 
-                if partner_obj.search_count(OR(leafs)) > 1:
+                if leafs and partner_obj.search_count(OR(leafs)) > 1:
                     raise ValidationError(msg)
+
+    # -- Standard methods overrides -------------------------------------------
 
     @api.model
     def default_get(self, fields):
@@ -276,41 +381,36 @@ class AcademyStudent(models.Model):
 
         return values
 
-    @staticmethod
-    def _eval_domain(domain):
-        """Evaluate a domain expresion (str, False, None, list or tuple) an
-        returns a valid domain
+    @api.model_create_multi
+    def create(self, vals_list):
+        self._ensure_signup_date(vals_list)
 
-        Arguments:
-            domain {mixed} -- domain expresion
+        for values in vals_list:
+            company_id = values.get("company_id") or self.env.company.id
 
-        Returns:
-            mixed -- Odoo valid domain. This will be a tuple or list
-        """
+            if not values.get("signup_code"):
+                values["signup_code"] = self._next_signup_code(company_id)
 
-        if domain in [False, None]:
-            domain = []
-        elif not isinstance(domain, (list, tuple)):
-            try:
-                domain = eval(domain)
-            except Exception:
-                domain = []
+        return super().create(vals_list)
 
-        return domain
+    # -- Public methods -------------------------------------------------------
 
     def view_enrolments(self):
         self.ensure_one()
 
-        act_xid = "academy_base.action_training_action_enrolment_act_window"
+        act_xid = "{module}.{name}".format(
+            module="academy_base",
+            name="action_training_action_enrolment_act_window",
+        )
         action = self.env.ref(act_xid)
 
-        view_xid = (
-            "academy_base."
-            "view_academy_training_action_enrolment_edit_by_user_tree"
+        view_xid = "{module}.{name}".format(
+            module="academy_base",
+            name="view_academy_training_action_enrolment_edit_by_user_tree",
         )
 
         ctx = self.env.context.copy()
-        ctx.update(safe_eval(action.context))
+        ctx.update(safe_eval(action.domain or "[]", {"uid": self.env.uid}))
         ctx.update({"default_student_id": self.id})
         ctx.update({"list_view_ref": view_xid})
 
@@ -324,29 +424,48 @@ class AcademyStudent(models.Model):
             "domain": domain,
             "context": ctx,
             "res_model": action.res_model,
-            "target": action.target,
+            "target": action.target,  # "current",
             "view_mode": action.view_mode,
             "search_view_id": action.search_view_id.id,
-            "target": "current",
             "nodestroy": True,
         }
 
         return action_values
 
-    def go_to_contact(self):
+    def view_res_partner(self):
         self.ensure_one()
 
-        return {
-            "name": self.res_partner_id.name,
-            "view_mode": "form",
-            "view_id": False,
-            "view_type": "form",
-            "res_model": "res.partner",
-            "res_id": self.res_partner_id.id,
+        action_xid = "base.action_partner_form"
+        act_wnd = self.env.ref(action_xid)
+
+        context = (self.env.context or {}).copy()
+        context.update(
+            {
+                "uid": self.env.uid,
+                "default_student_id": [(4, 0, self.id)],
+                "active_model": "res.partner",
+                "active_id": self.partner_id.id,
+                "active_ids": [self.partner_id.id],
+            }
+        )
+        domain = self._eval_domain(act_wnd.domain)
+        domain = AND([domain, [("student_id", "=", self.id)]])
+
+        serialized = {
             "type": "ir.actions.act_window",
-            "nodestroy": True,
-            "target": "main",
+            "res_model": act_wnd.res_model,
+            "name": act_wnd.name,
+            "domain": domain,
+            "context": context,
+            "search_view_id": act_wnd.search_view_id.id,
+            "help": act_wnd.help,
+            "target": "new",
+            "view_mode": "form",
+            "res_id": self.partner_id.id,
+            "views": [(False, "form")],
         }
+
+        return serialized
 
     def sanitize_phone_number(self):
         msg = "Web scoring calculator: Invalid {} number {}. System says: {}"
@@ -414,3 +533,98 @@ class AcademyStudent(models.Model):
             student_set = enrolment_set.mapped("student_id")
 
         return student_set
+
+    # -- Required by res.partner views ----------------------------------------
+
+    def mail_action_blacklist_remove(self):
+        return self.partner_id.mail_action_blacklist_remove()
+
+    def create_company(self):
+        return self.partner_id.create_company()
+
+    def update_address(self, vals):
+        return self.partner_id.update_address(vals)
+
+    def open_commercial_entity(self):
+        return self.partner_id.open_commercial_entity()
+
+    def address_get(self, adr_pref=None):
+        return self.partner_id.address_get(adr_pref)
+
+    @api.model
+    def get_import_templates(self):
+        return self.partner_id.get_import_templates()
+
+    # -- Signup sequence methods ----------------------------------------------
+
+    @api.model
+    def _ensure_signup_date(self, vals_list):
+        today = fields.Date.context_today(self)
+        for values in vals_list:
+            if not values.get("signup_date"):
+                values["signup_date"] = today
+
+    @api.model
+    def _next_signup_code(self, company_id):
+        """Return next sign-up code using company-specific sequence,
+        falling back to a known default XMLID."""
+        sequence_obj = self.env["ir.sequence"].with_company(company_id)
+
+        # 1) Try company-specific sequence (same code, bound to company)
+        sequence_domain = [
+            ("code", "=", "academy.student.signup"),
+            ("company_id", "=", company_id),
+        ]
+        sequence = sequence_obj.search(sequence_domain, limit=1)
+        if sequence:
+            return sequence.with_company(company_id).next_by_id()
+
+        # 2) Explicit fallback to the known default sequence XMLID
+        sequence_xid = "academy_base.ir_sequence_academy_student_signup"
+        fallback = self.env.ref(sequence_xid, raise_if_not_found=False)
+        if fallback:
+            return fallback.with_company(company_id).next_by_id()
+
+        # 3) Last resort: let Odoo try any global sequence with that code
+        code = sequence_obj.next_by_code("academy.student.signup")
+        if code:
+            _logger.warning(
+                "Using global sequence by code for company_id=%s", company_id
+            )
+            return code
+
+        raise UserError(
+            _(
+                "Missing sequence for student sign-up. "
+                "Create a company-specific sequence with code %(code)s "
+                "or define the fallback %(xid)s."
+            )
+            % {
+                "code": "academy.student.signup",
+                "xid": "academy_base.ir_sequence_academy_student_signup",
+            }
+        )
+
+    # -- Auxiliary methods ----------------------------------------------------
+
+    @staticmethod
+    def _eval_domain(domain):
+        """Evaluate a domain expresion (str, False, None, list or tuple) an
+        returns a valid domain
+
+        Arguments:
+            domain {mixed} -- domain expresion
+
+        Returns:
+            mixed -- Odoo valid domain. This will be a tuple or list
+        """
+
+        if domain in [False, None]:
+            domain = []
+        elif not isinstance(domain, (list, tuple)):
+            try:
+                domain = eval(domain)
+            except Exception:
+                domain = []
+
+        return domain

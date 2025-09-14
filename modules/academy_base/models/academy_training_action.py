@@ -6,7 +6,7 @@ all training action attributes and behavior.
 """
 
 
-from odoo.tools.translate import _
+from odoo.tools.translate import _, _lt
 
 # pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
@@ -34,7 +34,7 @@ class AcademyTrainingAction(models.Model):
     training activity
     """
 
-    MSG_ATA01 = _(
+    MSG_ATA01 = _lt(
         "There are enrollments that are outside the range of "
         "training action"
     )
@@ -108,7 +108,7 @@ class AcademyTrainingAction(models.Model):
         help="Unique token used to track this answer",
         translate=False,
         copy=False,
-        track_visibility="always",
+        tracking=True,
     )
 
     # pylint: disable=locally-disabled, w0212
@@ -379,7 +379,7 @@ class AcademyTrainingAction(models.Model):
         readonly=False,
         index=False,
         default=0,
-        help=_(
+        help=(
             "Maximum number of students who can be invited to use this "
             "feature at the same time"
         ),
@@ -445,7 +445,7 @@ class AcademyTrainingAction(models.Model):
         (
             "unique_action_code",
             "UNIQUE(action_code)",
-            _("The given action code already exists"),
+            "The given action code already exists",
         ),
         (
             "check_date_order",
@@ -678,7 +678,6 @@ class AcademyTrainingAction(models.Model):
             "target": action.target,
             "view_mode": action.view_mode,
             "search_view_id": action.search_view_id.id,
-            "target": "current",
         }
 
         return action_values

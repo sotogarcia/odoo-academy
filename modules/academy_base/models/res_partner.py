@@ -25,7 +25,7 @@ class ResPartner(models.Model):
         default=None,
         help="Show related student",
         comodel_name="academy.student",
-        inverse_name="res_partner_id",
+        inverse_name="partner_id",
         domain=[],
         context={},
         auto_join=False,
@@ -87,7 +87,7 @@ class ResPartner(models.Model):
 
         for record in self:
             if not record.student_id:
-                values = {"res_partner_id": record.id}
+                values = {"partner_id": record.id}
                 record.student_id = student_set.create(values)
                 record._log_convert_to_student_result(exists=False)
 

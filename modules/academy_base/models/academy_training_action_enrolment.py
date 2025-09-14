@@ -11,7 +11,7 @@ from psycopg2 import DatabaseError as PsqlError
 
 # pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
-from odoo.tools.translate import _
+from odoo.tools.translate import _, _lt
 from odoo.exceptions import UserError
 from odoo.osv.expression import AND, TRUE_DOMAIN, FALSE_DOMAIN
 from odoo.osv.expression import TERM_OPERATORS_NEGATION
@@ -31,7 +31,7 @@ _logger = getLogger(__name__)
 class AcademyTrainingActionEnrolment(models.Model):
     """Enrollment allows the student to be linked to a training action"""
 
-    MSG_ATE01 = _("Enrollment is outside the range of training action")
+    MSG_ATE01 = _lt("Enrollment is outside the range of training action")
 
     _name = "academy.training.action.enrolment"
     _description = "Academy training action enrolment"
@@ -559,7 +559,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         (
             "check_date_order",
             'CHECK("deregister" IS NULL OR "register" <= "deregister")',
-            _("End date must be greater then start date"),
+            "End date must be greater then start date",
         ),
         (
             "prevent_overlap",
@@ -572,7 +572,7 @@ class AcademyTrainingActionEnrolment(models.Model):
                     '[]'
                 ) WITH &&
             )""",
-            _(
+            (
                 "Student enrollments cannot overlap in time for the same "
                 "training action"
             ),

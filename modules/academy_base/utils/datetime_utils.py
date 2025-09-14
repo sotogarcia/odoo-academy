@@ -1,5 +1,5 @@
 from odoo import fields
-from odoo.tools.translate import _
+from odoo.tools.translate import _lt
 
 from datetime import date, datetime, time, timedelta
 from pytz import utc, timezone
@@ -26,7 +26,7 @@ def localized_dt(value, tz, remove_tz=True):
     elif isinstance(value, date):
         dt = datetime.combine(value, time.min)
     else:
-        msg = _('Given value «{}» is not a valid date or datetime.')
+        msg = _lt("Given value «{}» is not a valid date or datetime.")
         raise ValueError(msg.format(value))
 
     dt = utc.localize(dt)

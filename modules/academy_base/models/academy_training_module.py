@@ -77,7 +77,7 @@ class AcademyTrainingModule(models.Model):
         help="Unique token used to track this answer",
         translate=False,
         copy=False,
-        track_visibility="always",
+        tracking=True,
     )
 
     training_module_id = fields.Many2one(

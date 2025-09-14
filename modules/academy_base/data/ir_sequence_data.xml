@@ -14,4 +14,16 @@
         <field name="company_id" eval="False"/>
     </record>
 
+    <record id="ir_sequence_academy_student_signup" model="ir.sequence">
+        <field name="name">Academy student sign-up sequence</field>
+        <field name="active" eval="True"/>
+        <field name="code">academy.student.signup.sequence</field>
+        <field name="prefix">STU-</field>
+        <field name="number_next" eval="1"/>
+        <field name="number_increment" eval="1"/>
+        <field name="padding" eval="5"/>
+        <field name="suffix"/>
+        <field name="company_id" eval="False"/>
+    </record>
+
 </odoo>

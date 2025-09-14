@@ -1136,7 +1136,7 @@ msgstr "Biofísica"
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_student__birthday
 msgid "Birthday"
-msgstr "Cumpleaños"
+msgstr "Nacimiento"
 
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_student__is_blacklisted
@@ -4909,7 +4909,7 @@ msgid "Parent name"
 msgstr "Nombre principal"
 
 #. module: academy_base
-#: model:ir.model.fields,field_description:academy_base.field_academy_student__res_partner_id
+#: model:ir.model.fields,field_description:academy_base.field_academy_student__partner_id
 msgid "Partner"
 msgstr "Socio"
 

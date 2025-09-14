@@ -413,7 +413,6 @@ class AcademyTrainingActionEnrolmentWizard(models.TransientModel):
         column2="modality_id",
         domain=[],
         context={},
-        tracking=True,
     )
 
     # -------------------------------------------------------------------------
