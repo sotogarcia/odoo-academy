@@ -11,8 +11,9 @@ from odoo.tools.translate import _
 # pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
 from odoo.tools.safe_eval import safe_eval
-from odoo.osv.expression import AND, FALSE_DOMAIN
 from odoo.exceptions import ValidationError
+from odoo.osv.expression import AND, TRUE_DOMAIN, FALSE_DOMAIN
+from ..utils.helpers import OPERATOR_MAP, one2many_count
 
 from ..utils.record_utils import create_domain_for_ids
 from ..utils.record_utils import create_domain_for_interval
@@ -29,93 +30,95 @@ _logger = getLogger(__name__)
 
 # pylint: disable=locally-disabled, R0903
 class AcademyTrainingAction(models.Model):
-    """ The training actions represent several groups of students for the same
+    """The training actions represent several groups of students for the same
     training activity
     """
 
-    MSG_ATA01 = _('There are enrollments that are outside the range of '
-                  'training action')
+    MSG_ATA01 = _(
+        "There are enrollments that are outside the range of "
+        "training action"
+    )
 
-    _name = 'academy.training.action'
-    _description = u'Academy training action'
+    _name = "academy.training.action"
+    _description = "Academy training action"
 
-    _rec_name = 'action_name'
-    _order = 'action_name ASC'
+    _rec_name = "action_name"
+    _order = "action_name ASC"
 
     _inherit = [
-        'image.mixin',
-        'mail.thread',
-        'academy.abstract.observable',
-        'academy.abstract.training',
-        'ownership.mixin'
+        "image.mixin",
+        "mail.thread",
+        "academy.abstract.observable",
+        "academy.abstract.training",
+        "ownership.mixin",
     ]
 
     _check_company_auto = True
 
     company_id = fields.Many2one(
-        string='Company',
+        string="Company",
         required=True,
         readonly=True,
         index=True,
         default=lambda self: self.env.company,
-        help='The company this record belongs to',
-        comodel_name='res.company',
+        help="The company this record belongs to",
+        comodel_name="res.company",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
     action_name = fields.Char(
-        string='Action name',
+        string="Action name",
         required=True,
         readonly=False,
         index=True,
         default=None,
-        help='Enter new name',
+        help="Enter new name",
         size=1024,
         translate=True,
     )
 
     description = fields.Text(
-        string='Description',
+        string="Description",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='Enter new description',
-        translate=True
+        help="Enter new description",
+        translate=True,
     )
 
     active = fields.Boolean(
-        string='Active',
+        string="Active",
         required=False,
         readonly=False,
         index=False,
         default=True,
-        help='Enables/disables the record'
+        help="Enables/disables the record",
     )
 
     token = fields.Char(
-        string='Token',
+        string="Token",
         required=True,
         readonly=True,
         index=True,
         default=lambda self: str(uuid4()),
-        help='Unique token used to track this answer',
+        help="Unique token used to track this answer",
         translate=False,
         copy=False,
-        track_visibility='always'
+        track_visibility="always",
     )
-    
+
     # pylint: disable=locally-disabled, w0212
     start = fields.Datetime(
-        string='Start',
+        string="Start",
         required=True,
         readonly=False,
         index=False,
         default=lambda self: self.default_start(),
-        help='Start date of an event, without time for full day events'
+        help="Start date of an event, without time for full day events",
     )
 
     def default_start(self):
@@ -127,12 +130,12 @@ class AcademyTrainingAction(models.Model):
 
     # pylint: disable=locally-disabled, w0212
     end = fields.Datetime(
-        string='End',
+        string="End",
         required=False,
         readonly=False,
         index=False,
         default=lambda self: self.default_end(),
-        help='Stop date of an event, without time for full day events',
+        help="Stop date of an event, without time for full day events",
     )
 
     def default_end(self):
@@ -143,378 +146,350 @@ class AcademyTrainingAction(models.Model):
         return now.astimezone(utc).replace(tzinfo=None)
 
     application_scope_id = fields.Many2one(
-        string='Application scope',
+        string="Application scope",
         required=False,
         readonly=False,
         index=False,
         default=None,
         help=False,
-        comodel_name='academy.application.scope',
+        comodel_name="academy.application.scope",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
     professional_category_id = fields.Many2one(
-        string='Professional category',
+        string="Professional category",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='Choose related professional category',
-        comodel_name='academy.professional.category',
+        help="Choose related professional category",
+        comodel_name="academy.professional.category",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
     training_action_category_id = fields.Many2one(
-        string='Training action category',
+        string="Training action category",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='Choose related training action',
-        comodel_name='academy.training.action',
+        help="Choose related training action",
+        comodel_name="academy.training.action",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
     knowledge_area_ids = fields.Many2many(
-        string='Knowledge areas',
+        string="Knowledge areas",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='Choose related knowledge areas',
-        comodel_name='academy.knowledge.area',
-        relation='academy_training_action_knowledge_area_rel',
-        column1='training_action_id',
-        column2='knowledge_area_id',
+        help="Choose related knowledge areas",
+        comodel_name="academy.knowledge.area",
+        relation="academy_training_action_knowledge_area_rel",
+        column1="training_action_id",
+        column2="knowledge_area_id",
         domain=[],
         context={},
-        limit=None
     )
 
     training_modality_ids = fields.Many2many(
-        string='Training modalities',
+        string="Training modalities",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='Choose training modalities',
-        comodel_name='academy.training.modality',
-        relation='academy_training_action_training_modality_rel',
-        column1='training_action_id',
-        column2='training_modality_id',
+        help="Choose training modalities",
+        comodel_name="academy.training.modality",
+        relation="academy_training_action_training_modality_rel",
+        column1="training_action_id",
+        column2="training_modality_id",
         domain=[],
         context={},
-        limit=None
     )
 
     training_methodology_ids = fields.Many2many(
-        string='Training methodology',
+        string="Training methodology",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='Choose training methodologies',
-        comodel_name='academy.training.methodology',
-        relation='academy_training_action_training_methodology_rel',
-        column1='training_action_id',
-        column2='training_methodology_id',
+        help="Choose training methodologies",
+        comodel_name="academy.training.methodology",
+        relation="academy_training_action_training_methodology_rel",
+        column1="training_action_id",
+        column2="training_methodology_id",
         domain=[],
         context={},
-        limit=None
     )
 
     training_activity_id = fields.Many2one(
-        string='Training activity',
+        string="Training activity",
         required=True,
         readonly=False,
         index=False,
         default=None,
-        help='Training activity will be imparted in this action',
-        comodel_name='academy.training.activity',
+        help="Training activity will be imparted in this action",
+        comodel_name="academy.training.activity",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
     action_code = fields.Char(
-        string='Internal code',
+        string="Internal code",
         required=True,
         readonly=False,
         index=False,
         default=None,
-        help='Enter new internal code',
+        help="Enter new internal code",
         size=30,
-        translate=False
+        translate=False,
     )
 
     seating = fields.Integer(
-        string='Seating',
+        string="Seating",
         required=True,
         readonly=False,
         index=False,
         default=20,
-        help='Maximum number of signups allowed'
+        help="Maximum number of signups allowed",
     )
 
-    @api.onchange('seating')
+    @api.onchange("seating")
     def _onchange_seating(self):
         self.excess = max(self.seating, self.excess)
 
     training_action_enrolment_ids = fields.One2many(
-        string='Action enrolments',
+        string="Action enrolments",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='Show the number of enrolments related with the training action',
-        comodel_name='academy.training.action.enrolment',
-        inverse_name='training_action_id',
+        help="Show the number of enrolments related with the training action",
+        comodel_name="academy.training.action.enrolment",
+        inverse_name="training_action_id",
         domain=[],
         context={},
         auto_join=False,
-        limit=None,
-        copy=False
+        copy=False,
     )
 
     action_resource_ids = fields.Many2many(
-        string='Action resources',
+        string="Action resources",
         required=False,
         readonly=False,
         index=False,
         default=None,
         help=False,
-        comodel_name='academy.training.resource',
-        relation='academy_training_action_training_resource_rel',
-        column1='training_action_id',
-        column2='training_resource_id',
+        comodel_name="academy.training.resource",
+        relation="academy_training_action_training_resource_rel",
+        column1="training_action_id",
+        column2="training_resource_id",
         domain=[],
         context={},
-        limit=None
     )
 
     available_resource_ids = fields.Many2manyView(
-        string='Available action resources',
+        string="Available action resources",
         required=False,
         readonly=True,
         index=False,
         default=None,
         help=False,
-        comodel_name='academy.training.resource',
-        relation='academy_training_action_available_resource_rel',
-        column1='training_action_id',
-        column2='training_resource_id',
+        comodel_name="academy.training.resource",
+        relation="academy_training_action_available_resource_rel",
+        column1="training_action_id",
+        column2="training_resource_id",
         domain=[],
         context={},
-        limit=None,
-        copy=False
+        copy=False,
     )
 
     student_ids = fields.Many2manyView(
-        string='Students',
+        string="Students",
         required=False,
         readonly=True,
         index=False,
         default=None,
-        help='Show the students have been enrolled in this training action',
-        comodel_name='academy.student',
-        relation='academy_training_action_student_rel',
-        column1='training_action_id',
-        column2='student_id',
+        help="Show the students have been enrolled in this training action",
+        comodel_name="academy.student",
+        relation="academy_training_action_student_rel",
+        column1="training_action_id",
+        column2="student_id",
         domain=[],
         context={},
-        limit=None,
-        copy=False
+        copy=False,
     )
 
     enrolment_count = fields.Integer(
-        string='Enrolment count',
+        string="Enrolment count",
         required=False,
         readonly=True,
         index=False,
         default=0,
-        help='Show number of enrolments',
-        compute='_compute_training_action_enrolment_count',
-        search='_search_training_action_enrolment_count'
+        help="Show number of enrolments",
+        compute="_compute_training_action_enrolment_count",
+        search="_search_training_action_enrolment_count",
     )
 
-    @api.depends('training_action_enrolment_ids')
+    @api.depends("training_action_enrolment_ids")
     def _compute_training_action_enrolment_count(self):
+        counts = one2many_count(self, "training_action_enrolment_ids")
+
         for record in self:
-            record.enrolment_count = \
-                len(record.training_action_enrolment_ids)
+            record.reservation_count = counts.get(record.id, 0)
 
     @api.model
     def _search_training_action_enrolment_count(self, operator, value):
-        sql = '''
-            SELECT
-                ata."id" AS training_action_id
-            FROM
-                academy_training_action AS ata
-            LEFT JOIN academy_training_action_enrolment AS enrol
-                ON enrol.training_action_id = ata."id"
-            WHERE company_id in ({companies})
-            GROUP BY ata."id"
-            HAVING COUNT ( enrol."id" ) {op} {value}
-        '''
+        # Handle boolean-like searches Odoo may pass for required fields
+        if value is True:
+            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
+        if value is False:
+            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
 
-        domain = FALSE_DOMAIN
+        cmp_func = OPERATOR_MAP.get(operator)
+        if not cmp_func:
+            return FALSE_DOMAIN  # unsupported operator
 
-        if value is True and operator == '=':
-            operator, value = '>', 0
-        elif value is True and operator in ('!=', '<>'):
-            operator, value = '=', 0
-        elif value is False and operator == '=':
-            operator, value = '=', 0
-        elif value is False and operator in ('!=', '<>'):
-            operator, value = '>', 0
+        counts = one2many_count(
+            self.search([]), "training_action_enrolment_ids"
+        )
+        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
 
-        companies = self.join_allowed_companies()
-        sql = sql.format(companies=companies, op=operator, value=value)
+        return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
-        self.env.cr.execute(sql)
-        rows = self.env.cr.dictfetchall()
-        if rows:
-            ids = [row['training_action_id'] for row in (rows or [])]
-            domain = [('id', 'in', ids)]
-
-        return domain
-
-    @api.onchange('training_action_enrolment_ids')
+    @api.onchange("training_action_enrolment_ids")
     def _onchange_training_action_enrolment_ids(self):
         self._compute_training_action_enrolment_count()
 
     excess = fields.Integer(
-        string='Excess',
+        string="Excess",
         required=True,
         readonly=False,
         index=False,
         default=0,
-        help=_('Maximum number of students who can be invited to use this '
-               'feature at the same time')
+        help=_(
+            "Maximum number of students who can be invited to use this "
+            "feature at the same time"
+        ),
     )
 
     # ------------------------- ACTIVITY RELATED FIELDS -----------------------
     # _inherits from training activity raises an error with multicompany
 
-    name = fields.Char(
-        string='Name',
-        related='training_activity_id.name'
-    )
+    name = fields.Char(string="Name", related="training_activity_id.name")
 
     professional_family_id = fields.Many2one(
-        string='Professional family',
-        related='training_activity_id.professional_family_id'
+        string="Professional family",
+        related="training_activity_id.professional_family_id",
     )
 
     professional_area_id = fields.Many2one(
-        string='Professional area',
-        related='training_activity_id.professional_area_id'
+        string="Professional area",
+        related="training_activity_id.professional_area_id",
     )
 
     qualification_level_id = fields.Many2one(
-        string='Qualification level',
-        related='training_activity_id.qualification_level_id'
+        string="Qualification level",
+        related="training_activity_id.qualification_level_id",
     )
 
     attainment_id = fields.Many2one(
-        string='Educational attainment',
-        related='training_activity_id.attainment_id'
+        string="Educational attainment",
+        related="training_activity_id.attainment_id",
     )
 
     activity_code = fields.Char(
-        string='Activity code',
-        related='training_activity_id.activity_code'
+        string="Activity code", related="training_activity_id.activity_code"
     )
 
     general_competence = fields.Text(
-        string='General competence',
-        related='training_activity_id.general_competence'
+        string="General competence",
+        related="training_activity_id.general_competence",
     )
 
     professional_field_id = fields.Many2one(
-        string='Professional field',
-        related='training_activity_id.professional_field_id'
+        string="Professional field",
+        related="training_activity_id.professional_field_id",
     )
 
     professional_sector_ids = fields.Many2many(
-        string='Professional sectors',
-        related='training_activity_id.professional_sector_ids'
+        string="Professional sectors",
+        related="training_activity_id.professional_sector_ids",
     )
 
     competency_unit_ids = fields.One2many(
-        string='Competency units',
-        related='training_activity_id.competency_unit_ids'
+        string="Competency units",
+        related="training_activity_id.competency_unit_ids",
     )
 
     competency_unit_count = fields.Integer(
-        string='Number of competency units',
-        related='training_activity_id.competency_unit_count'
+        string="Number of competency units",
+        related="training_activity_id.competency_unit_count",
     )
 
     # ------------------------------ CONSTRAINS -------------------------------
 
     _sql_constraints = [
         (
-            'unique_action_code',
-            'UNIQUE(action_code)',
-            _(u'The given action code already exists')
+            "unique_action_code",
+            "UNIQUE(action_code)",
+            _("The given action code already exists"),
         ),
         (
-            'check_date_order',
+            "check_date_order",
             'CHECK("end" IS NULL OR "start" < "end")',
-            _(u'End date must be greater then start date')
+            "End date must be greater then start date",
         ),
         (
-            'USERS_GREATER_OR_EQUAL_TO_ZERO',
-            'CHECK(seating >= 0)',
-            _('The number of users must be greater than or equal to zero')
+            "USERS_GREATER_OR_EQUAL_TO_ZERO",
+            "CHECK(seating >= 0)",
+            "The number of users must be greater than or equal to zero",
         ),
-        (
-            'unique_token',
-            'UNIQUE(token)',
-            'The token must be unique.'
-        )
+        ("unique_token", "UNIQUE(token)", "The token must be unique."),
     ]
 
     # -------------------------- OVERLOADED METHODS ---------------------------
 
-    @api.returns('self', lambda value: value.id)
+    @api.returns("self", lambda value: value.id)
     def copy(self, defaults=None):
-        """ Prevents new record of the inherited (_inherits) model will be
+        """Prevents new record of the inherited (_inherits) model will be
         created
         """
 
         action_obj = self.env[self._name]
-        action_set = action_obj.search([], order='id DESC', limit=1)
+        action_set = action_obj.search([], order="id DESC", limit=1)
 
         defaults = dict(defaults or {})
         # default.update({
         #     'training_activity_id': self.training_activity_id.id
         # })
         #
-        if 'action_code' not in defaults:
-            defaults['action_code'] = uuid4().hex.upper()
+        if "action_code" not in defaults:
+            defaults["action_code"] = uuid4().hex.upper()
 
-        if 'action_name' not in defaults:
-            defaults['action_name'] = '{} - {}'.format(
-                self.action_name, action_set.id + 1)
+        if "action_name" not in defaults:
+            defaults["action_name"] = "{} - {}".format(
+                self.action_name, action_set.id + 1
+            )
 
         rec = super(AcademyTrainingAction, self).copy(defaults)
         return rec
 
     @api.model
     def _create(self, values):
-        """ Overridden low-level method '_create' to handle custom PostgreSQL
+        """Overridden low-level method '_create' to handle custom PostgreSQL
         exceptions.
 
         This method handles custom PostgreSQL exceptions, specifically catching
@@ -536,7 +511,7 @@ class AcademyTrainingAction(models.Model):
         try:
             result = parent._create(values)
         except PsqlError as ex:
-            if 'ATA01' in str(ex.pgcode):
+            if "ATA01" in str(ex.pgcode):
                 raise ValidationError(self.MSG_ATA01)
             else:
                 raise
@@ -544,7 +519,7 @@ class AcademyTrainingAction(models.Model):
         return result
 
     def _write(self, values):
-        """ Overridden low-level method '_write' to handle custom PostgreSQL
+        """Overridden low-level method '_write' to handle custom PostgreSQL
         exceptions.
 
         This method handles custom PostgreSQL exceptions, specifically catching
@@ -566,28 +541,26 @@ class AcademyTrainingAction(models.Model):
         try:
             result = parent._write(values)
         except PsqlError as ex:
-            if 'ATA01' in str(ex.pgcode):
+            if "ATA01" in str(ex.pgcode):
                 raise ValidationError(self.MSG_ATA01)
             else:
                 raise
 
         return result
 
-    @api.model
-    def create(self, values):
-        """ Overridden method 'create'
-        """
+    @api.model_create_multi
+    def create(self, value_list):
+        """Overridden method 'create'"""
 
         parent = super(AcademyTrainingAction, self)
-        result = parent.create(values)
+        result = parent.create(value_list)
 
         result.update_enrolments()
 
         return result
 
     def write(self, values):
-        """ Overridden method 'write'
-        """
+        """Overridden method 'write'"""
 
         parent = super(AcademyTrainingAction, self)
         result = parent.write(values)
@@ -599,32 +572,33 @@ class AcademyTrainingAction(models.Model):
     # --------------------------- PUBLIC METHODS ------------------------------
 
     def update_enrolments(self, force=False):
-        dtformat = '%Y-%m-%d %H:%M:%S.%f'
+        dtformat = "%Y-%m-%d %H:%M:%S.%f"
 
         for record in self:
             enrol_set = record.training_action_enrolment_ids
 
             # Enrolment start must be great or equal than record start
             target_set = enrol_set.filtered(lambda r: r.start < record.start)
-            target_set.write({'start': record.start.strftime(dtformat)})
+            target_set.write({"start": record.start.strftime(dtformat)})
 
             # Enrolment end must be less or equal than record end
             # NOTE: end date can be null
             if record.end:
                 target_set = enrol_set.filtered(
-                    lambda r: r.end and r.end > record.end)
-                target_set.write({'end': record.end.strftime(dtformat)})
+                    lambda r: r.end and r.end > record.end
+                )
+                target_set.write({"end": record.end.strftime(dtformat)})
 
     def session_wizard(self):
-        """ Launch the Session wizard.
+        """Launch the Session wizard.
         This wizard has a related window action, this method reads the action,
         updates context using current evironment and sets the wizard training
         action to this action.
         """
 
-        module = 'academy_base'
-        name = 'action_academy_training_session_wizard_act_window'
-        act_xid = '{}.{}'.format(module, name)
+        module = "academy_base"
+        name = "action_academy_training_session_wizard_act_window"
+        act_xid = "{}.{}".format(module, name)
 
         self.ensure_one()
 
@@ -634,8 +608,8 @@ class AcademyTrainingAction(models.Model):
 
         # STEP 2 Update context:
         ctx = dict()
-        ctx.update(self.env.context)    # dictionary from environment
-        ctx.update(actx)                # add action context
+        ctx.update(self.env.context)  # dictionary from environment
+        ctx.update(actx)  # add action context
 
         # STEP 3: Set training action for wizard. This action will be send in
         # context as a default value. If this recordset have not records,
@@ -645,15 +619,15 @@ class AcademyTrainingAction(models.Model):
 
         # STEP 4: Map training action and add computed context
         action_map = {
-            'type': action.type,
-            'name': action.name,
-            'res_model': action.res_model,
-            'view_mode': action.view_mode,
-            'target': action.target,
-            'domain': action.domain,
-            'context': ctx,
-            'search_view_id': action.search_view_id,
-            'help': action.help,
+            "type": action.type,
+            "name": action.name,
+            "res_model": action.res_model,
+            "view_mode": action.view_mode,
+            "target": action.target,
+            "domain": action.domain,
+            "context": ctx,
+            "search_view_id": action.search_view_id,
+            "help": action.help,
         }
 
         # STEP 5: Return the action
@@ -661,7 +635,7 @@ class AcademyTrainingAction(models.Model):
 
     @staticmethod
     def _eval_domain(domain):
-        """ Evaluate a domain expresion (str, False, None, list or tuple) an
+        """Evaluate a domain expresion (str, False, None, list or tuple) an
         returns a valid domain
 
         Arguments:
@@ -682,30 +656,29 @@ class AcademyTrainingAction(models.Model):
         return domain
 
     def show_training_action_enrolments(self):
-
         self.ensure_one()
 
-        act_xid = 'academy_base.action_training_action_enrolment_act_window'
+        act_xid = "academy_base.action_training_action_enrolment_act_window"
         action = self.env.ref(act_xid)
 
         ctx = self.env.context.copy()
         ctx.update(safe_eval(action.context))
-        ctx.update({'default_training_action_id': self.id})
+        ctx.update({"default_training_action_id": self.id})
 
         domain = self._eval_domain(action.domain)
-        domain = AND([domain, [('training_action_id', '=', self.id)]])
+        domain = AND([domain, [("training_action_id", "=", self.id)]])
 
         action_values = {
-            'name': '{} {}'.format(_('Enrolled in'), self.name),
-            'type': action.type,
-            'help': action.help,
-            'domain': domain,
-            'context': ctx,
-            'res_model': action.res_model,
-            'target': action.target,
-            'view_mode': action.view_mode,
-            'search_view_id': action.search_view_id.id,
-            'target': 'current',
+            "name": "{} {}".format(_("Enrolled in"), self.name),
+            "type": action.type,
+            "help": action.help,
+            "domain": domain,
+            "context": ctx,
+            "res_model": action.res_model,
+            "target": action.target,
+            "view_mode": action.view_mode,
+            "search_view_id": action.search_view_id.id,
+            "target": "current",
         }
 
         return action_values
@@ -727,28 +700,30 @@ class AcademyTrainingAction(models.Model):
     @api.model
     def join_allowed_companies(self):
         allowed_ids = self._context.get(
-            'allowed_company_ids', self.env.company.ids)
+            "allowed_company_ids", self.env.company.ids
+        )
 
-        return ', '.join([str(item) for item in allowed_ids])
+        return ", ".join([str(item) for item in allowed_ids])
 
-    def fetch_with_enrolled(self, students=None, point_in_time=None,
-                            archived=False):
-
-        training_action_set = self.env['academy.training.action']
+    def fetch_with_enrolled(
+        self, students=None, point_in_time=None, archived=False
+    ):
+        training_action_set = self.env["academy.training.action"]
 
         domains = []
 
         if students:
-            domain = create_domain_for_ids('student_id', students)
+            domain = create_domain_for_ids("student_id", students)
             domains.append(domain)
 
         if self:
-            domain = create_domain_for_ids('training_action_id', self)
+            domain = create_domain_for_ids("training_action_id", self)
             domains.append(domain)
 
         if point_in_time:
             domain = create_domain_for_interval(
-                'register', 'deregister', point_in_time)
+                "register", "deregister", point_in_time
+            )
             domains.append(domain)
 
         if archived is None:
@@ -757,8 +732,8 @@ class AcademyTrainingAction(models.Model):
             domains.append(ARCHIVED_DOMAIN)
 
         if domains:
-            enrolment_obj = self.env['academy.training.action.enrolment']
+            enrolment_obj = self.env["academy.training.action.enrolment"]
             enrolment_set = enrolment_obj.search(AND(domains))
-            training_action_set = enrolment_set.mapped('training_action_id')
+            training_action_set = enrolment_set.mapped("training_action_id")
 
         return training_action_set

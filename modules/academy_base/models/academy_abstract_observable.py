@@ -27,34 +27,33 @@ _logger = getLogger(__name__)
 
 # pylint: disable=locally-disabled, R0903,W0212
 class AcademyObservableModel(models.AbstractModel):
-    """ Models can extend this to touch related models through 'x2many' fields
-    """
+    """Models can extend this to touch related models through 'x2many' fields"""
 
-    _name = 'academy.abstract.observable'
-    _description = u'Academy observer pattern: observable class'
+    _name = "academy.abstract.observable"
+    _description = "Academy observer pattern: observable class"
 
     # -------------------------- AUXILIARY METHODS ----------------------------
 
     @staticmethod
     def _is_relational(field):
-        """ Check if given field is a relational field """
+        """Check if given field is a relational field"""
 
         relational = (fields.Many2one, fields.One2many, fields.Many2many)
         return isinstance(field, relational)
 
     @staticmethod
     def _is_not_magic(field):
-        """ Check if given field is a Odoo special field """
+        """Check if given field is a Odoo special field"""
 
         return field.name not in models.MAGIC_COLUMNS
 
     def _is_observer(self, field):
-        """ Check if given field is related with a model which has a method
+        """Check if given field is related with a model which has a method
         named ``update_from_external``, this method will be called when this
         model record changes
         """
 
-        mname = 'update_from_external'
+        mname = "update_from_external"
         comodel = self.env[field.comodel_name]
 
         if hasattr(comodel, mname):
@@ -64,22 +63,22 @@ class AcademyObservableModel(models.AbstractModel):
         return False
 
     def _get_observers(self):
-        """ Walk over relational fields checking if comodel has update method
-        """
+        """Walk over relational fields checking if comodel has update method"""
 
         result = []
 
         for name, field in self._fields.items():
-            if self._is_relational(field) and \
-               self._is_not_magic(field) and \
-               self._is_observer(field):
-
+            if (
+                self._is_relational(field)
+                and self._is_not_magic(field)
+                and self._is_observer(field)
+            ):
                 result.append(name)
 
         return result
 
     def _get_state(self, observers):
-        """ Returns a dictionary {field name: field value} with all fields
+        """Returns a dictionary {field name: field value} with all fields
         in ONE RECORD of this model which must be updated
         """
 
@@ -94,7 +93,7 @@ class AcademyObservableModel(models.AbstractModel):
         return result
 
     def _get_states(self):
-        """ Returns a list of dictionaries {field name: field value} with all
+        """Returns a list of dictionaries {field name: field value} with all
         fields in each one of records of this model which must be updated
         """
 
@@ -110,46 +109,43 @@ class AcademyObservableModel(models.AbstractModel):
     def _notify(self, crud, targets):
         for target in targets:
             for fieldname, recordset in target.items():
-                method = getattr(recordset, 'update_from_external')
+                method = getattr(recordset, "update_from_external")
                 method(crud, fieldname, self)
 
     # -------------------------- OVERLOADED METHODS ---------------------------
 
-    @api.model
-    def create(self, values):
-        """ Call update method in observers
-        """
+    @api.model_create_multi
+    def create(self, value_list):
+        """Overridden method 'create'"""
 
-        result = super(AcademyObservableModel, self).create(values)
+        result = super(AcademyObservableModel, self).create(value_list)
         newstates = result._get_states()
 
         # Send notice to the observers
-        self._notify('write', newstates)
+        self._notify("write", newstates)
 
         return result
 
     def write(self, values):
-        """ Call update method in observers
-        """
+        """Call update method in observers"""
 
         oldstates = self._get_states()
         result = super(AcademyObservableModel, self).write(values)
         newstates = self._get_states()
 
         # Send notice to the observers
-        self._notify('write', oldstates)
-        self._notify('write', newstates)
+        self._notify("write", oldstates)
+        self._notify("write", newstates)
 
         return result
 
     def unlink(self):
-        """ Call update method in observers
-        """
+        """Call update method in observers"""
 
         oldstates = self._get_states()
         result = super(AcademyObservableModel, self).unlink()
 
         # Send notice to the observers
-        self._notify('write', oldstates)
+        self._notify("write", oldstates)
 
         return result

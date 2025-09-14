@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<odoo nopudate="0">
+<odoo noupdate="0">
 
     <record id="academy_interface_student_wizard_action_enroll"
         model="academy.interface.help.string">

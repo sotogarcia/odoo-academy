@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<odoo nopudate="0">
+<odoo noupdate="0">
 
     <record id="view_academy_student_enrolment_wizard_tree" model="ir.ui.view">
         <field name="name">Students embed in wizard</field>
@@ -49,6 +49,7 @@
             <form string="Facility reporting wizard" create="1" delete="1" edit="1">
 
                 <field name="enrolment_ids" invisible="1"/>
+                <field name="available_training_modality_ids" invisible="1" />
 
                 <header>
                     <button name="perform_action" string="Execute" type="object" default_focus="0"
@@ -62,23 +63,24 @@
                     <field name="update_date_start" class="oe_field_update_date_start"
                         string="Enrollment date"/>
                     <field name="date_start" class="oe_field_date_start" string="New value"
-                        readonly="update_date_start &lt;&gt; True"
-                        required="[('update_date_start', '=', True)]}"/>
+                        readonly="not update_date_start"
+                        required="update_date_start"/>
 
                     <field name="update_date_stop" class="oe_field_update_date_stop"
                         string="Termination date"/>
                     <field name="date_stop" class="oe_field_date_stop" string="New value"
-                        readonly="update_date_stop &lt;&gt; True"/>
+                        readonly="not update_date_stop"/>
 
                     <field name="update_modalities" class="oe_field_update_modalities"
                         string="Modalities"/>
                     <field name="training_modality_ids" class="oe_field_training_modality_ids"
+                        domain="[('id', 'in', available_training_modality_ids)]"
                         string="New value" widget="many2many_tags"
-                        readonly="update_modalities &lt;&gt; True"/>
+                        readonly="not update_modalities"/>
 
                     <field name="update_material" class="oe_field_update_material" string="Material"/>
                     <field name="material" class="oe_field_material" string="New value"
-                        readonly="update_material &lt;&gt; True"/>
+                        readonly="not update_material"/>
 
                 </group>
 

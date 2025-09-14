@@ -13,50 +13,49 @@ _logger = getLogger(__name__)
 
 
 class AcademyProfessionalCategory(models.Model):
-    """ Professional category is a property of the training action
-    """
+    """Professional category is a property of the training action"""
 
-    _name = 'academy.professional.category'
-    _description = u'Academy professional category'
+    _name = "academy.professional.category"
+    _description = "Academy professional category"
 
-    _rec_name = 'name'
-    _order = 'name ASC'
+    _rec_name = "name"
+    _order = "name ASC"
 
     name = fields.Char(
-        string='Name',
+        string="Name",
         required=True,
         readonly=False,
         index=True,
         default=None,
-        help='Enter new name',
+        help="Enter new name",
         size=255,
-        translate=True
+        translate=True,
     )
 
     description = fields.Text(
-        string='Description',
+        string="Description",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='Enter new description',
-        translate=True
+        help="Enter new description",
+        translate=True,
     )
 
     active = fields.Boolean(
-        string='Active',
+        string="Active",
         required=False,
         readonly=False,
         index=False,
         default=True,
-        help='Enables/disables the record'
+        help="Enables/disables the record",
     )
 
     sequence = fields.Integer(
-        string='Sequence',
+        string="Sequence",
         required=True,
         readonly=False,
         index=False,
         default=0,
-        help='Choose professional category order'
+        help="Choose professional category order",
     )

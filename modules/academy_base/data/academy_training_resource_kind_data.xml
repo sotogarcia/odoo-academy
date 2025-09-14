@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<odoo nopudate="1">
+<odoo noupdate="1">
 
     <record id="academy_training_resource_kind_1" model="academy.training.resource.kind">
         <field name="name">Schoolbook</field>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<odoo nopudate="1">
+<odoo noupdate="1">
 
     <record id="academy_qualification_level_level_isced_2011_0" model="academy.qualification.level">
         <field name="name">Early childhood education</field>

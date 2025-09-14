@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<odoo nopudate="0">
+<odoo noupdate="0">
 
     <!-- VIEWS: "Educational attainment"
 
@@ -97,14 +97,5 @@
             <p> There are no educational attainments yet </p>
         </field>
     </record>
-
-    <!-- Main menu for model.name -->
-    <!--         <record id="menu_educational_attainment" model="ir.ui.menu" >
-            <field name="name">Qualification levels</field>
-            <field name="sequence" eval="25" />
-            <field name="action" ref="action_educational_attainment_act_window" />
-            <field name="parent_id" ref="academy_base.menu_academy_settings_helper" />
-            <field name="groups_id" eval="[(4, ref('academy_base.academy_group_manager'))]"/>
-        </record> -->
 
 </odoo>

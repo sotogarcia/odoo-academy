@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<odoo nopudate="1">
+<odoo noupdate="1">
 
     <record id="professional_sector_1101" model="academy.professional.sector">
         <field name="name">Application of logic</field>

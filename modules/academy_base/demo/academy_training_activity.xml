@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<odoo nopudate="0">
+<odoo noupdate="0">
 
     <record id="academy_training_activity_ADGD0308" model="academy.training.activity">
         <field name="name">Administrative management activities</field>

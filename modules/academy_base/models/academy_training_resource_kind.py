@@ -13,56 +13,54 @@ _logger = getLogger(__name__)
 
 
 class AcademyTrainingResourceKind(models.Model):
-    """ This model allow user to sort out stored resources
-    """
+    """This model allow user to sort out stored resources"""
 
-    _name = 'academy.training.resource.kind'
-    _description = u'Academy training resource kind'
+    _name = "academy.training.resource.kind"
+    _description = "Academy training resource kind"
 
-    _rec_name = 'name'
-    _order = 'name ASC'
+    _rec_name = "name"
+    _order = "name ASC"
 
     name = fields.Char(
-        string='Name',
+        string="Name",
         required=True,
         readonly=False,
         index=True,
         default=None,
         help=False,
         size=50,
-        translate=True
+        translate=True,
     )
 
     description = fields.Text(
-        string='Description',
+        string="Description",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='Enter new description',
-        translate=True
+        help="Enter new description",
+        translate=True,
     )
 
     active = fields.Boolean(
-        string='Active',
+        string="Active",
         required=False,
         readonly=False,
         index=False,
         default=True,
-        help='Enables/disables the record'
+        help="Enables/disables the record",
     )
 
     resource_ids = fields.One2many(
-        string='Tests',
+        string="Tests",
         required=False,
         readonly=True,
         index=False,
         default=None,
         help=False,
-        comodel_name='academy.training.resource',
-        inverse_name='kind_id',
+        comodel_name="academy.training.resource",
+        inverse_name="kind_id",
         domain=[],
         context={},
         auto_join=False,
-        limit=None
     )

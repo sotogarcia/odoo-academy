@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<odoo nopudate="1">
+<odoo noupdate="1">
 
     <!-- Required by academy.training.action.enrolment copy method
         ····································································-->

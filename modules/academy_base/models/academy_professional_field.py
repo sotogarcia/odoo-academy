@@ -13,54 +13,53 @@ _logger = getLogger(__name__)
 
 
 class AcademyProfessionalField(models.Model):
-    """ Professional field is a property of the training activity
-    """
+    """Professional field is a property of the training activity"""
 
-    _name = 'academy.professional.field'
-    _description = u'Academy professional field'
+    _name = "academy.professional.field"
+    _description = "Academy professional field"
 
-    _inherit = ['image.mixin']
+    _inherit = ["image.mixin"]
 
-    _rec_name = 'name'
-    _order = 'name ASC'
+    _rec_name = "name"
+    _order = "name ASC"
 
     name = fields.Char(
-        string='Name',
+        string="Name",
         required=True,
         readonly=False,
         index=True,
         default=None,
-        help='Enter new name',
+        help="Enter new name",
         size=255,
-        translate=True
+        translate=True,
     )
 
     description = fields.Text(
-        string='Description',
+        string="Description",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='Enter new description',
-        translate=True
+        help="Enter new description",
+        translate=True,
     )
 
     active = fields.Boolean(
-        string='Active',
+        string="Active",
         required=False,
         readonly=False,
         index=False,
         default=True,
-        help='Enables/disables the record'
+        help="Enables/disables the record",
     )
 
     code = fields.Char(
-        string='Code',
+        string="Code",
         required=True,
         readonly=False,
         index=True,
         default=None,
-        help='Enter new code',
+        help="Enter new code",
         size=8,
-        translate=False
+        translate=False,
     )

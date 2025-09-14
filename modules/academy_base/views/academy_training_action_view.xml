@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<odoo nopudate="0">
+<odoo noupdate="0">
 
     <!-- VIEWS: "Training Action"
 
@@ -85,9 +85,9 @@
                     <field name="active" invisible="1"/>
 
                     <div class="oe_title" id="title">
-                        <label for="name" class="oe_edit_only"/>
+                        <label for="action_name" class="oe_edit_only"/>
                         <h1>
-                            <field name="action_name" class="oe_field_name"
+                            <field name="action_name" class="oe_field_action_name"
                                 placeholder="Enter new name"/>
                         </h1>
                     </div>
@@ -193,7 +193,7 @@
                 <field name="training_activity_id"/>
 
                 <templates>
-                    <t t-name="kanban-box">
+                    <t t-name="card">
                         <div
                             class="oe_kanban_global_click oe_kanban_academy_training_action d-flex flex-column justify-content-end">
                             <div class="flex-fill align-top">

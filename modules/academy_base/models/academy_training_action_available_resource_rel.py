@@ -14,18 +14,17 @@ _logger = getLogger(__name__)
 
 
 class AcademyTrainingActionAvailableResourceRel(models.Model):
-    """
-    """
+    """ """
 
-    _name = 'academy.training.action.available.resource.rel'
-    _description = u'Academy training action available resource rel'
+    _name = "academy.training.action.available.resource.rel"
+    _description = "Academy training action available resource rel"
 
-    _rec_name = 'id'
-    _order = 'id ASC'
+    _rec_name = "id"
+    _order = "id ASC"
 
     _auto = False
-    _table = 'academy_training_action_available_resource_rel'
-    _view_sql = '''
+    _table = "academy_training_action_available_resource_rel"
+    _view_sql = """
         WITH module_resources AS (
             SELECT
                     atv."id" AS training_activity_id,
@@ -76,38 +75,38 @@ class AcademyTrainingActionAvailableResourceRel(models.Model):
             FROM
                 inherited_resources
         )
-    '''
+    """
 
     training_action_id = fields.Many2one(
-        string='Training action',
+        string="Training action",
         required=True,
         readonly=False,
         index=False,
         default=None,
-        help='Related training action',
-        comodel_name='academy.training.action',
+        help="Related training action",
+        comodel_name="academy.training.action",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
     training_resource_id = fields.Many2one(
-        string='Training resource',
+        string="Training resource",
         required=True,
         readonly=False,
         index=False,
         default=None,
-        help='Related training resource',
-        comodel_name='academy.training.resource',
+        help="Related training resource",
+        comodel_name="academy.training.resource",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
     def init(self):
-        sentence = 'CREATE or REPLACE VIEW {} as ( {} )'
+        sentence = "CREATE or REPLACE VIEW {} as ( {} )"
 
         drop_view_if_exists(self.env.cr, self._table)
 
@@ -116,12 +115,12 @@ class AcademyTrainingActionAvailableResourceRel(models.Model):
         self.prevent_actions()
 
     def prevent_actions(self):
-        actions = ['INSERT', 'UPDATE', 'DELETE']
+        actions = ["INSERT", "UPDATE", "DELETE"]
 
-        BASE_SQL = '''
+        BASE_SQL = """
             CREATE OR REPLACE RULE {table}_{action} AS
                 ON {action} TO {table} DO INSTEAD NOTHING
-        '''
+        """
 
         for action in actions:
             sql = BASE_SQL.format(table=self._table, action=action)

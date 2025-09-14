@@ -10,14 +10,14 @@
 
 - [x] Eliminar `@api.one` y `@api.multi`; usar `ensure_one()` cuando proceda.
 - [x] Sustituir `@api.model_cr` si existe.
-- [ ] Evitar dominios en `onchange`; mover filtrado a vistas/campos.
+- [x] Evitar dominios en `onchange`; mover filtrado a vistas/campos.
 - [x] Ver que se hace con @api.model_create_multi
 
 ## Odoo 14 → 15
 
-- [ ] Definir *assets* en `__manifest__.py` (bundles QWeb/JS/CSS).
+- [x] Definir *assets* en `__manifest__.py` (bundles QWeb/JS/CSS).
 - [ ] Migrar plantillas de email de Jinja a QWeb.
-- [ ] Adoptar OWL y módulos ES; renombrar a `*.esm.js` cuando aplique.
+- [x] Adoptar OWL y módulos ES; renombrar a `*.esm.js` cuando aplique.
 
 ## Odoo 15 → 16
 
@@ -31,13 +31,18 @@
   - [ ] v17: `invisible="state == 'done'"`.
 - [x] Usar `column_invisible` en listas en lugar de `invisible`.
 - [x] Considerar `search_fetch()` y `fetch()` en lugar de `search_read`.
+- [x] Cambiar firma y adaptar hooks de instalación
+    - `def pre_init_hook(env):`
+    - `def post_init_hook(env):`
+    - `def uninstall_hook(env):`
+- [x] Quitar `numbercall` y `doall` en el modelo `ir.cron`.
 
 ## Odoo 17 → 18
 
 - [x] Reemplazar `user_has_groups` por `self.env.user.has_group()`/`has_groups()`.
 - [x] Unificar acceso: usar `check_access()` en lugar de `check_access_*`.
 - [x] Reemplazar `_name_search` por `_search_display_name`.
-- [ ] Importar `Registry` de `odoo.modules.registry`; usar `Registry(db_name)`.
+- [x] Importar `Registry` de `odoo.modules.registry`; usar `Registry(db_name)`.
 - [x] Considerar `self.env._('...')` en lugar de `_('...')`.
 - [x] Limpiar vistas: autoañadir campos invisibles en dominios/atributos.
 - [x] Simplificar *chatter*: `<div class="oe_chatter">…</div>` → `<chatter />`.
@@ -49,8 +54,13 @@
 - [x] Vigilar búsquedas en `related` no almacenados: lanzar excepción.
 - [x] Valorar `search_fetch()` si `search()` no se ejecuta siempre.
 - [x] Definir *field path* en `ir.actions.act_window` para URLs más limpias.
-- [ ] Retirar `/** @odoo-module **/` en JS si no es necesario.
+- [x] Retirar `/** @odoo-module **/` en JS si no es necesario.
 - [x] En tours JS, sustituir `extra_trigger` por un paso independiente.
+
+## Otros
+
+- [x] retirar `_` de los textos de los `_sql_constraints`.
+- [ ] revisar las vistas de los objetos derivados de res.partner
 
 ## Revisiones finales
 - [ ] Comprobar logs y reparar posibles errores
@@ -58,8 +68,7 @@
     1. Exportar traducción y completar en PoEdit
     2. Dar la traducción a ChatGPT para que busque errores y corregir estos   
 - [ ] Revisar lista TODO 
-       · El JS del botón debe comprobar los permisos
-       · Icono al JS
+       · x2many count fields
 
 ## Datos demo
 

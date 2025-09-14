@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<odoo nopudate="0">
+<odoo noupdate="0">
 
     <record id="academy_training_action_enrolment_demo_1" model="academy.training.action.enrolment">
         <field name="student_id" ref="academy_base.academy_demo_student_1"/>

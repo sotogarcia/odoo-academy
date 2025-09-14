@@ -17,108 +17,106 @@ _logger = getLogger(__name__)
 
 
 class AcademyAbstractTrainingReference(models.AbstractModel):
-    """ Provides required fields and methods to make a reference for any kind
+    """Provides required fields and methods to make a reference for any kind
     of training items (enrolment, action, activity, competency, module)
     """
 
-    _name = 'academy.abstract.training.reference'
-    _description = u'Academy training reference'
+    _name = "academy.abstract.training.reference"
+    _description = "Academy training reference"
 
     training_type = fields.Selection(
-        string='Training type',
+        string="Training type",
         required=False,
         readonly=True,
         index=False,
         default=False,
         help=False,
-        selection=MAPPING_TRAINING_TYPES
+        selection=MAPPING_TRAINING_TYPES,
     )
 
     training_ref = fields.Reference(
-        string='Training',
+        string="Training",
         required=False,
         readonly=False,
         index=True,
         default=0,
-        help='Choose training item to which the test will be assigned',
-        selection=MAPPING_TRAINING_REFERENCES
+        help="Choose training item to which the test will be assigned",
+        selection=MAPPING_TRAINING_REFERENCES,
     )
 
     enrolment_id = fields.Many2one(
-        string='Enrolment',
+        string="Enrolment",
         required=False,
         readonly=True,
         index=True,
         default=None,
-        help='The enrolment to which the test will be assigned',
-        comodel_name='academy.training.action.enrolment',
+        help="The enrolment to which the test will be assigned",
+        comodel_name="academy.training.action.enrolment",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
     training_action_id = fields.Many2one(
-        string='Training action',
+        string="Training action",
         required=False,
         readonly=True,
         index=True,
         default=None,
-        help='The training action to which the test will be assigned',
-        comodel_name='academy.training.action',
+        help="The training action to which the test will be assigned",
+        comodel_name="academy.training.action",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
     training_activity_id = fields.Many2one(
-        string='Training activity',
+        string="Training activity",
         required=False,
         readonly=True,
         index=True,
         default=None,
-        help='The training activity to which the test will be assigned',
-        comodel_name='academy.training.activity',
+        help="The training activity to which the test will be assigned",
+        comodel_name="academy.training.activity",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
     competency_unit_id = fields.Many2one(
-        string='Competency unit',
+        string="Competency unit",
         required=False,
         readonly=True,
         index=True,
         default=None,
-        help='The competency unit to which the test will be assigned',
-        comodel_name='academy.competency.unit',
+        help="The competency unit to which the test will be assigned",
+        comodel_name="academy.competency.unit",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
     training_module_id = fields.Many2one(
-        string='Training module',
+        string="Training module",
         required=False,
         readonly=True,
         index=True,
         default=None,
-        help='The training module to which the test will be assigned',
-        comodel_name='academy.training.module',
+        help="The training module to which the test will be assigned",
+        comodel_name="academy.training.module",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
-    @api.onchange('training_ref')
+    @api.onchange("training_ref")
     def _onchange_training_ref(self):
-
         for record in self:
-
             if not record.training_ref:
                 record.training_type = None
             else:
@@ -127,8 +125,8 @@ class AcademyAbstractTrainingReference(models.AbstractModel):
 
     _sql_constraints = [
         (
-            'one_training_reference',
-            '''
+            "one_training_reference",
+            """
                 CHECK(
                     training_ref IS NULL
                     OR
@@ -140,12 +138,12 @@ class AcademyAbstractTrainingReference(models.AbstractModel):
                         training_module_id
                     ) = 1
                 )
-            ''',
-            _(u'Only one type of training item can be set by each record')
+            """,
+            "Only one type of training item can be set by each record",
         ),
         (
-            'check_training_reference',
-            '''
+            "check_training_reference",
+            """
                 CHECK(
                     training_ref IS NULL
                     OR
@@ -158,37 +156,36 @@ class AcademyAbstractTrainingReference(models.AbstractModel):
                         training_module_id
                     )
                 )
-            ''',
-            _(u'Many2one fields must be consistent with the Reference field')
+            """,
+            "Many2one fields must be consistent with the Reference field",
         ),
         (
-            'check_training_type',
-            '''
+            "check_training_type",
+            """
                 CHECK(
                     training_ref IS NULL
                     OR
                     SPLIT_PART(training_ref, ',', 1)
                     ILIKE '%' || training_type || '%'
                 )
-            ''',
-            _(u'Training_type must be consistent with the Reference field')
-        )
+            """,
+            "Training_type must be consistent with the Reference field",
+        ),
     ]
 
-    @api.model
-    def create(self, values):
-        """ Ensures consistency between training_ref and training_*_id fields
-        """
+    @api.model_create_multi
+    def create(self, value_list):
+        """Overridden method 'create'"""
 
         _super = super(AcademyAbstractTrainingReference, self)
 
-        self._ensure_consistency_in_training(values, True)
+        for values in value_list:
+            self._ensure_consistency_in_training(values, True)
 
-        return _super.create(values)
+        return _super.create(value_list)
 
     def write(self, values):
-        """ Ensures consistency between training_ref and training_*_id fields
-        """
+        """Ensures consistency between training_ref and training_*_id fields"""
 
         _super = super(AcademyAbstractTrainingReference, self)
 
@@ -198,7 +195,7 @@ class AcademyAbstractTrainingReference(models.AbstractModel):
 
     @api.model
     def _ensure_consistency_in_training(self, values, create=False):
-        """ Ensures consistency between training_ref and training_*_id fields
+        """Ensures consistency between training_ref and training_*_id fields
 
         Args:
             values (dict): dictionary passed by create or update methods
@@ -211,15 +208,15 @@ class AcademyAbstractTrainingReference(models.AbstractModel):
             methods that override this
         """
 
-        training_ref = values.get('training_ref', False)
+        training_ref = values.get("training_ref", False)
 
         # Tries to get the default training reference from context
         if not training_ref and create:
-            training_ref = self.env.context.get('default_training_ref', False)
+            training_ref = self.env.context.get("default_training_ref", False)
 
         if training_ref:
-            model, id_str = training_ref.split(',')
-            values['training_type'] = self.get_training_type(model)
+            model, id_str = training_ref.split(",")
+            values["training_type"] = self.get_training_type(model)
             self._update_training_references(values, model, int(id_str))
         else:
             model, id_str = (None, None)
@@ -255,8 +252,8 @@ class AcademyAbstractTrainingReference(models.AbstractModel):
             match_list = [
                 pair for pair in MAPPING_TRAINING_TYPES if pair[0] == value
             ]
-            result = match_list[0][1] if match_list else _('Unknown')
+            result = match_list[0][1] if match_list else _("Unknown")
         else:
-            result = _('Not established')
+            result = _("Not established")
 
         return result

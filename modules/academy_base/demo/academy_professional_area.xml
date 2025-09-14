@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<odoo nopudate="0">
+<odoo noupdate="0">
 
     <record id="academy_profressional_area_icm" model="academy.professional.area">
         <field name="name">Information and Communication Management</field>

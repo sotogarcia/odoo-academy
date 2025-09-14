@@ -1,6 +1,6 @@
 <?xml version= "1.0" encoding= "UTF-8"?>
 
-<odoo nopudate="0">
+<odoo noupdate="0">
 
     <record
         id="access_academy_base_model_academy_training_module_available_resource_rel_academy_group_consultant"

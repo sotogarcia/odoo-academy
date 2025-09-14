@@ -13,61 +13,60 @@ _logger = getLogger(__name__)
 
 
 class AcademyEducationalAttainment(models.Model):
-    """ Qualification level is a property of the training activity
-    """
+    """Qualification level is a property of the training activity"""
 
-    _name = 'academy.educational.attainment'
-    _description = u'Academy educational attainment'
+    _name = "academy.educational.attainment"
+    _description = "Academy educational attainment"
 
-    _rec_name = 'name'
-    _order = 'sequence ASC, name ASC'
+    _rec_name = "name"
+    _order = "sequence ASC, name ASC"
 
     name = fields.Char(
-        string='Name',
+        string="Name",
         required=True,
         readonly=False,
         index=True,
         default=None,
-        help='Enter new name',
+        help="Enter new name",
         size=255,
-        translate=True
+        translate=True,
     )
 
     description = fields.Text(
-        string='Description',
+        string="Description",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='Enter new description',
-        translate=True
+        help="Enter new description",
+        translate=True,
     )
 
     level = fields.Char(
-        string='Code',
+        string="Code",
         required=True,
         readonly=False,
         index=True,
         default=None,
-        help='Enter new code',
+        help="Enter new code",
         size=8,
-        translate=True
+        translate=True,
     )
 
     sequence = fields.Integer(
-        string='Sequence',
+        string="Sequence",
         required=True,
         readonly=False,
         index=False,
         default=0,
-        help='Choose level order'
+        help="Choose level order",
     )
 
     active = fields.Boolean(
-        string='Active',
+        string="Active",
         required=False,
         readonly=False,
         index=False,
         default=True,
-        help='Enables/disables the record'
+        help="Enables/disables the record",
     )

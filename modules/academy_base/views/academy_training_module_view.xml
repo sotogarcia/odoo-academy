@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<odoo nopudate="0">
+<odoo noupdate="0">
 
     <!-- VIEWS: "Training Module"
 
@@ -134,7 +134,7 @@
                 <field name="module_code"/>
 
                 <templates>
-                    <t t-name="kanban-box">
+                    <t t-name="card">
                         <div class="oe_kanban_global_click oe_kanban_academy_training_module">
                             <div class="o_kanban_image">
                                 <t t-if="record.image_128.raw_value">
@@ -348,7 +348,7 @@
         <field name="arch" type="xml">
             <xpath expr="//sheet/group/field[1]" position="after">
                 <field name="training_module_id" class="oe_field_training_module_id"
-                    invisible="training_module_id &lt;&gt; False"/>
+                    invisible="not training_module_id"/>
             </xpath>
             <xpath expr="//field[@name='module_code']" position="after">
                 <field name="ownhours" class="oe_field_ownhours"/>
@@ -416,17 +416,6 @@
         <field name="view_id" ref="view_academy_training_module_unit_tree"/>
         <field name="act_window_id" ref="action_training_module_units_act_window"/>
     </record>
-
-
-    <!-- Main menu for model.name -->
-    <record id="menu_training_module_unit" model="ir.ui.menu">
-        <field name="name">Training units</field>
-        <field name="sequence" eval="35"/>
-        <field name="action" ref="action_training_module_units_act_window"/>
-        <field name="parent_id" ref="academy_base.menu_academy_settings_helper"/>
-        <field name="groups_id" eval="[(4, ref('academy_base.academy_group_manager'))]"/>
-    </record>
-
 
     <record id="view_academy_training_module_embed_units_tree" model="ir.ui.view">
         <field name="name">view.academy.training.module.embed_unitstree</field>

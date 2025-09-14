@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<odoo nopudate="0">
-
-    <template id="academy_training_action_assets" name="website assets for my training action views"
-        inherit_id="web.assets_backend">
-        <xpath expr="." position="inside">
-            <link rel="stylesheet" href="academy_base/static/src/css/academy_base_view.css"/>
-        </xpath>
-    </template>
+<odoo noupdate="0">
 
     <record id="menu_academy" model="ir.ui.menu">
         <field name="name">Academy</field>
@@ -50,7 +43,7 @@
         <field name="parent_id" ref="menu_academy"/>
         <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
     </record>
-
+<!--
     <record id="menu_academy_settings" model="ir.ui.menu">
         <field name="name">Academy</field>
         <field name="sequence" eval="90"/>
@@ -66,7 +59,7 @@
         <field name="parent_id" ref="menu_academy_settings"/>
         <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
     </record>
-
+ -->
     <record id="menu_academy_advanced_quick_edit" model="ir.ui.menu">
         <field name="name">Quick edit</field>
         <field name="sequence" eval="60"/>

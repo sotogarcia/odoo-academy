@@ -13,62 +13,61 @@ _logger = getLogger(__name__)
 
 
 class AcademyKnowledgeArea(models.Model):
-    """ Knowledge area is a property of the training action
-    """
+    """Knowledge area is a property of the training action"""
 
-    _name = 'academy.knowledge.area'
-    _description = u'Academy knowledge area'
+    _name = "academy.knowledge.area"
+    _description = "Academy knowledge area"
 
-    _rec_name = 'name'
-    _order = 'name ASC'
+    _rec_name = "name"
+    _order = "name ASC"
 
     name = fields.Char(
-        string='Name',
+        string="Name",
         required=True,
         readonly=False,
         index=True,
         default=None,
         help=False,
         size=255,
-        translate=True
+        translate=True,
     )
 
     description = fields.Text(
-        string='Description',
+        string="Description",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='Enter new description',
-        translate=True
+        help="Enter new description",
+        translate=True,
     )
 
     active = fields.Boolean(
-        string='Active',
+        string="Active",
         required=False,
         readonly=False,
         index=False,
         default=True,
-        help='Enables/disables the record'
+        help="Enables/disables the record",
     )
 
     knowle_code = fields.Char(
-        string='Code',
+        string="Code",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='Enter new code',
+        help="Enter new code",
         size=30,
-        translate=False
+        translate=False,
     )
 
     description = fields.Text(
-        string='Description',
+        string="Description",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='Enter new description',
-        translate=True
+        help="Enter new description",
+        translate=True,
     )

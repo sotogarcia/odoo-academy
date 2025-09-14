@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<odoo nopudate="1">
+<odoo noupdate="1">
 
     <record id="academy_application_scope_public" model="academy.application.scope">
         <field name="name">Public administration</field>

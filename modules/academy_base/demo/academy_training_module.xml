@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<odoo nopudate="0">
+<odoo noupdate="0">
 
     <record id="academy_training_module_ms2010" model="academy.training.module">
         <field name="name">Microsoft Office 2010</field>

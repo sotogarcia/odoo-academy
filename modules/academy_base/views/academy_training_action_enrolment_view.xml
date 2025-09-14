@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<odoo nopudate="0">
+<odoo noupdate="0">
 
     <!-- VIEWS: "Training action enrolment"
 
@@ -159,7 +159,7 @@
                 <field name="color"/>
 
                 <templates>
-                    <t t-name="kanban-box">
+                    <t t-name="card">
                         <div
                             t-attf-class="oe_kanban_global_click oe_kanban_academy_training_action d-flex flex-column justify-content-end #{kanban_color(record.color.raw_value)}">
                             <div class="flex-fill align-top">

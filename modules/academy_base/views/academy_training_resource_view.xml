@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<odoo nopudate="0">
+<odoo noupdate="0">
 
     <!-- VIEWS: "Resources"
 
@@ -141,7 +141,7 @@
                 <field name="last_update"/>
 
                 <templates>
-                    <t t-name="kanban-box">
+                    <t t-name="card">
                         <div class="oe_kanban_global_click oe_kanban_academy_training_resource">
                             <div class="o_kanban_image">
                                 <t t-if="record.image_128.raw_value">

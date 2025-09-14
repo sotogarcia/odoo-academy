@@ -13,68 +13,67 @@ _logger = getLogger(__name__)
 
 
 class AcademyProfessionalSector(models.Model):
-    """ Professional sector is a property of the training activity
-    """
+    """Professional sector is a property of the training activity"""
 
-    _name = 'academy.professional.sector'
-    _description = u'Academy professional sector'
+    _name = "academy.professional.sector"
+    _description = "Academy professional sector"
 
-    _inherit = ['image.mixin']
+    _inherit = ["image.mixin"]
 
-    _rec_name = 'name'
-    _order = 'name ASC'
+    _rec_name = "name"
+    _order = "name ASC"
 
     name = fields.Char(
-        string='Name',
+        string="Name",
         required=True,
         readonly=False,
         index=True,
         default=None,
-        help='Enter new name',
+        help="Enter new name",
         size=255,
-        translate=True
+        translate=True,
     )
 
     description = fields.Text(
-        string='Description',
+        string="Description",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='Enter new description',
-        translate=True
+        help="Enter new description",
+        translate=True,
     )
 
     active = fields.Boolean(
-        string='Active',
+        string="Active",
         required=False,
         readonly=False,
         index=False,
         default=True,
-        help='Enables/disables the record'
+        help="Enables/disables the record",
     )
 
     code = fields.Char(
-        string='Code',
+        string="Code",
         required=True,
         readonly=False,
         index=True,
         default=None,
-        help='Enter new code',
+        help="Enter new code",
         size=8,
-        translate=False
+        translate=False,
     )
 
     professional_field_id = fields.Many2one(
-        string='Professional field',
+        string="Professional field",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='Choose related professional field',
-        comodel_name='academy.professional.field',
+        help="Choose related professional field",
+        comodel_name="academy.professional.field",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )

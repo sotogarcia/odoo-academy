@@ -17,12 +17,12 @@ _logger = getLogger(__name__)
 
 
 class AcademyAbstractTraining(models.AbstractModel):
-    """ Comment fields and methods will be used in all training items
+    """Comment fields and methods will be used in all training items
     Training enrolment, action, activity, competency, module
     """
 
-    _name = 'academy.abstract.training'
-    _description = u'Academy abstract training'
+    _name = "academy.abstract.training"
+    _description = "Academy abstract training"
 
     def get_name(self):
         self.ensure_one()
@@ -35,11 +35,11 @@ class AcademyAbstractTraining(models.AbstractModel):
     def get_reference(self):
         self.ensure_one()
 
-        return '{},{}'.format(self._name, self.id)
+        return "{},{}".format(self._name, self.id)
 
     @staticmethod
     def split_reference(reference):
-        model, id_str = reference.split(',')
+        model, id_str = reference.split(",")
 
         return model, int(id_str)
 
@@ -69,36 +69,36 @@ class AcademyAbstractTraining(models.AbstractModel):
         if stop_model == models[-1]:
             path.append(steps[-1])
 
-        return '.'.join(path)
+        return ".".join(path)
 
-    def get_available(self, field='id'):
+    def get_available(self, field="id"):
         model = self.mapped(field)._name
         model_set = self.env[model]
 
         for record in self:
             cursor_set = record
 
-            if cursor_set._name == 'academy.training.action.enrolment':
+            if cursor_set._name == "academy.training.action.enrolment":
                 if hasattr(cursor_set, field):
                     model_set += cursor_set.mapped(field)
                 cursor_set = cursor_set.training_action_id
 
-            if cursor_set._name == 'academy.training.action':
+            if cursor_set._name == "academy.training.action":
                 if hasattr(cursor_set, field):
                     model_set += cursor_set.mapped(field)
                 cursor_set = cursor_set.training_activity_id
 
-            if cursor_set._name == 'academy.training.activity':
+            if cursor_set._name == "academy.training.activity":
                 if hasattr(cursor_set, field):
                     model_set += cursor_set.mapped(field)
                 cursor_set = cursor_set.competency_unit_ids
 
-            if cursor_set._name == 'academy.competency.unit':
+            if cursor_set._name == "academy.competency.unit":
                 if hasattr(cursor_set, field):
                     model_set += cursor_set.mapped(field)
                 cursor_set = cursor_set.training_module_id.tree_ids
 
-            if cursor_set._name == 'academy.training.module':
+            if cursor_set._name == "academy.training.module":
                 if hasattr(cursor_set, field):
                     model_set += cursor_set.mapped(field)
 

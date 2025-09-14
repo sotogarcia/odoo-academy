@@ -35,14 +35,14 @@ def search_for_path_in_addons(relative_path, file_name=None):
     return result
 
 
-def execute_sql_script(cr, relative_path, file_name, referrer='SQL Script'):
+def execute_sql_script(env, relative_path, file_name, referrer='SQL Script'):
     """
     Executes a SQL script file located in the specified relative path. This
     function is designed for use within Odoo modules, either in the same module
     or from external ones.
 
     Args:
-        cr (cursor): Database cursor provided by the Odoo environment.
+        env (Environment): Odoo Environment.
             relative_path (str/tuple/list): The relative path from the addons
             directory to the SQL file. Can be a string, or a tuple/list of path
             components.
@@ -61,8 +61,6 @@ def execute_sql_script(cr, relative_path, file_name, referrer='SQL Script'):
           will be executed directly in the database.
     """
 
-    env = api.Environment(cr, SUPERUSER_ID, {})
-
     if isinstance(relative_path, (tuple, list)):
         relative_path = path.sep.join(relative_path)
 
@@ -70,7 +68,7 @@ def execute_sql_script(cr, relative_path, file_name, referrer='SQL Script'):
 
     if file_path:
         try:
-            with open(file_path, 'r') as file:
+            with open(file_path, 'r', encoding='utf-8') as file:
                 script = file.read()
                 env.cr.execute(script)
 
@@ -83,7 +81,7 @@ def execute_sql_script(cr, relative_path, file_name, referrer='SQL Script'):
         _logger.warning(f'{referrer}. File not found: {file_name}')
 
 
-def install_extension(cr, extension):
+def install_extension(env, extension):
     """
     Installs the extension in the PostgreSQL database.
     This function should be called with care, preferably during a maintenance
@@ -101,10 +99,8 @@ def install_extension(cr, extension):
     sql = f'CREATE EXTENSION IF NOT EXISTS {extension};'
 
     try:
-        with api.Environment.manage():
-            env = api.Environment(cr, SUPERUSER_ID, {})
-            env.cr.execute(sql)
-            env.cr.commit()
+        env.cr.execute(sql)
+        env.cr.commit()
 
     except Exception as ex:
         message = f'{extension} could not be installed. System says: {ex}'

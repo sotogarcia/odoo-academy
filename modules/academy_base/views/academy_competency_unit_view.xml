@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<odoo nopudate="0">
+<odoo noupdate="0">
 
     <!-- VIEWS: "Competency Unit"
 
@@ -42,11 +42,11 @@
         <field name="priority" eval="16"/>
         <field name="active" eval="True"/>
         <field name="arch" type="xml">
-            <form string="academy_competency_unit_form" create="1" delete="1" edit="1">
+            <form string="academy_competency_unit_form">
                 <sheet>
                     <div class="oe_button_box" name="button_box"/>
                     <widget name="web_ribbon" title="Archived" bg_color="bg-danger"
-                        invisible="active == True"/>
+                        invisible="active"/>
 
                     <field name="image_1920" widget="image" class="oe_avatar"
                         options='{"preview_image": "image_128"}'/>
@@ -55,10 +55,9 @@
                         <field name="id" invisible="1"/>
                         <field name="active" invisible="1"/>
 
-                        <label for="name" class="oe_edit_only"/>
+                        <label for="competency_name" class="oe_edit_only"/>
                         <h1>
-                            <field name="competency_name" class="oe_field_name"
-                                placeholder="Enter new name"/>
+                            <field name="competency_name" class="oe_field_competency_name" />
                         </h1>
                     </div>
                     <group col="2">
@@ -107,7 +106,7 @@
                 <field name="competency_code"/>
 
                 <templates>
-                    <t t-name="kanban-box">
+                    <t t-name="card">
                         <div class="oe_kanban_global_click oe_kanban_academy_training_module">
                             <div class="o_kanban_image">
                                 <t t-if="record.image_128.raw_value">
@@ -116,7 +115,7 @@
                                 </t>
                                 <t t-else="">
                                     <img
-                                        t-att-src="_s + &quot;/academy_base/static/src/img/compentency-unit.png&quot;"
+                                        t-att-src="_s + &quot;/academy_base/static/src/img/competency-unit.png&quot;"
                                         class="o_kanban_image" alt="Competency unit photo"/>
                                 </t>
                             </div>
@@ -187,14 +186,6 @@
         </field>
     </record>
 
-    <!-- Main menu for model.name -->
-    <record id="menu_competency_unit" model="ir.ui.menu">
-        <field name="name">Competency units</field>
-        <field name="sequence" eval="25"/>
-        <field name="action" ref="action_competency_unit_act_window"/>
-        <field name="parent_id" ref="academy_base.menu_academy_settings_helper"/>
-        <field name="groups_id" eval="[(4, ref('academy_base.academy_group_manager'))]"/>
-    </record>
 
     <!-- List view for "academy.competency.unit" -->
     <record id="view_academy_competency_unit_inline_edit_tree" model="ir.ui.view">

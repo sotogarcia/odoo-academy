@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<odoo nopudate="0">
+<odoo noupdate="0">
 
     <record id="academy_professional_category_administrative" model="academy.professional.category">
         <field name="name">Civil Administrative</field>

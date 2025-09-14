@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<odoo nopudate="0">
+<odoo noupdate="0">
 
     <!-- VIEWS: "Academy training activity"
 
@@ -85,6 +85,7 @@
                         <field name="qualification_level_id" class="oe_field_qualification_level_id"/>
                         <field name="professional_field_id" class="oe_field_professional_field"/>
                         <field name="professional_sector_ids"
+                            domain="[('professional_field_id', '!=', False), ('professional_field_id', '=', professional_field_id)]"
                             class="oe_field_professional_sector_ids" widget="many2many_tags"
                             colspan="4" string="Sectors"/>
                         <field name="attainment_id" class="oe_field_attainment_id" string="Required"/>
@@ -93,7 +94,7 @@
                     </group>
 
                     <notebook>
-                        <page string="Competency units" class="oe_page_compentency_units"
+                        <page string="Competency units" class="oe_page_competency_units"
                             accesskey="C">
                             <field name="competency_unit_ids" class="oe_field_competency_unit_ids"
                                 colspan="2" nolabel="1"
@@ -150,7 +151,7 @@
                 <field name="training_action_count"/>
 
                 <templates>
-                    <t t-name="kanban-box">
+                    <t t-name="card">
                         <div class="oe_kanban_global_click oe_kanban_academy_training_activity">
                             <div class="o_kanban_image">
                                 <t t-if="record.image_128.raw_value">

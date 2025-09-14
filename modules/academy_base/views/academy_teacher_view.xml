@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<odoo nopudate="0">
+<odoo noupdate="0">
 
     <!-- VIEWS: "Teacher"
 
@@ -66,12 +66,12 @@
                         <group>
                             <label for="street" string="Address"/>
                             <div class="o_address_format">
-                                <div class="oe_edit_only">
+  <!--                               <div class="oe_edit_only">
                                     <button name="open_parent" type="object" string="(edit)"
                                         class="oe_link"
                                         invisible="['|', ('parent_id', '=', False), ('type', '!=', 'contact')]"
                                     />
-                                </div>
+                                </div> -->
                                 <field name="street" placeholder="Street..."
                                     class="o_address_street"
                                     readonly="[('type', '=', 'contact'),('parent_id', '!=', False)]"/>
@@ -147,7 +147,7 @@
                 <field name="email"/>
 
                 <templates>
-                    <t t-name="kanban-box">
+                    <t t-name="card">
                         <div class="oe_kanban_global_click oe_kanban_academy_teacher">
                             <div class="o_kanban_image">
                                 <t t-if="record.image_128.raw_value">

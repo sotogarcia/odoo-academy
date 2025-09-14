@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<odoo nopudate="0">
+<odoo noupdate="0">
 
     <!-- VIEWS: "Professional Field"
 
@@ -98,14 +98,5 @@
             <p> There are no professional fields yet </p>
         </field>
     </record>
-
-    <!-- Main menu for model.name -->
-    <!--         <record id="menu_professional_field" model="ir.ui.menu" >
-            <field name="name">Professional fields</field>
-            <field name="sequence" eval="10" />
-            <field name="action" ref="action_professional_field_act_window" />
-            <field name="parent_id" ref="academy_base.menu_academy_settings_helper" />
-            <field name="groups_id" eval="[(4, ref('academy_base.academy_group_manager'))]"/>
-        </record> -->
 
 </odoo>
