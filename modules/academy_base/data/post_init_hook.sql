@@ -3,7 +3,7 @@
 --   A trigger that fires before insertion or update on the
 --   'academy_training_action_enrolment' table.
 --   Executes the 'check_enrollment_dates' function to validate that
---   enrollment dates are within the date range of the corresponding
+--   enrolment dates are within the date range of the corresponding
 --   training action.
 
 DROP TRIGGER
@@ -23,7 +23,7 @@ CREATE TRIGGER trigger_check_enrollment_dates
 --   'academy_training_action' table.
 --   Executes the 'check_training_action_dates' function to ensure
 --   that the updated date range of a training action does not
---   conflict with existing enrollment dates.
+--   conflict with existing enrolment dates.
 
 DROP TRIGGER
     IF EXISTS trigger_check_training_action_dates

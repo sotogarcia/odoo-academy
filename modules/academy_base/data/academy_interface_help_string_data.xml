@@ -6,7 +6,7 @@
         model="academy.interface.help.string">
         <field name="name">7CC44BC8-FB02-4DB0-BF74-0735B518624B</field>
         <field name="description"
-            ><![CDATA[All selected students who do not have active enrollments in the specified training action, and whose enrollments do not overlap with the specified date range, will be enrolled in that training action.]]></field>
+            ><![CDATA[All selected students who do not have active enrollments in the specified training action, and whose enrollments do not overlap with the specified date range, will be enroled in that training action.]]></field>
     </record>
 
     <record id="academy_interface_student_wizard_action_unenroll"
@@ -20,14 +20,14 @@
         model="academy.interface.help.string">
         <field name="name">F7F8E14E-7785-45BC-AFBC-82D2F74E82A1</field>
         <field name="description"
-            ><![CDATA[The most recently completed enrollment for each selected student will be duplicated, with the specified start and end dates assigned. If no end date is established, the enrollment will be of permanent validity. Students who already have enrollments overlapping with the specified date range will be excluded from the process.]]></field>
+            ><![CDATA[The most recently completed enrolment for each selected student will be duplicated, with the specified start and end dates assigned. If no end date is established, the enrolment will be of permanent validity. Students who already have enrollments overlapping with the specified date range will be excluded from the process.]]></field>
     </record>
 
     <record id="academy_interface_student_wizard_action_switch"
         model="academy.interface.help.string">
         <field name="name">88439C1E-0CB9-491F-9149-1CE29A94FB99</field>
         <field name="description"
-            ><![CDATA[A new enrollment will be created in the target training action, with a validity period defined by the provided dates. If no end date is specified, the new enrollments will have permanent validity. The specified enrollment date will be assigned to enrollments that are active as of today in the original training action.]]></field>
+            ><![CDATA[A new enrolment will be created in the target training action, with a validity period defined by the provided dates. If no end date is specified, the new enrollments will have permanent validity. The specified enrolment date will be assigned to enrollments that are active as of today in the original training action.]]></field>
     </record>
 
     <record id="academy_interface_student_wizard_action_show" model="academy.interface.help.string">

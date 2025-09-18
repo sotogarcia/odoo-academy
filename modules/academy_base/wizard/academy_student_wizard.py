@@ -98,7 +98,7 @@ class AcademyStudentWizard(models.TransientModel):
         counts = one2many_count(self, "student_ids")
 
         for record in self:
-            record.reservation_count = counts.get(record.id, 0)
+            record.student_count = counts.get(record.id, 0)
 
     @api.model
     def _search_student_count(self, operator, value):
@@ -133,20 +133,20 @@ class AcademyStudentWizard(models.TransientModel):
 
     def default_action(self):
         active_model = self.env.context.get("active_model", False)
-        return "enroll" if active_model == "academy.student" else "unenroll"
+        return "enrol" if active_model == "academy.student" else "unenroll"
 
     def selection_values_for_action(self):
         return [
-            ("enroll", _("Enroll")),
+            ("enrol", _("Enrol")),
             ("unenroll", _("Unenroll")),
-            ("re_enroll", _("Re-enroll")),
+            ("re_enroll", _("Re-enrol")),
             ("switch", _("Switch groups")),
             ("show", _("Show related records")),
         ]
 
     @api.onchange("action")
     def _onchange_action(self):
-        if self.action in ("enroll", "re_enroll", "switch"):
+        if self.action in ("enrol", "re_enroll", "switch"):
             if self.action != "switch":
                 self.current_training_action_id = None
 
@@ -172,7 +172,7 @@ class AcademyStudentWizard(models.TransientModel):
         readonly=False,
         index=False,
         default=lambda self: self.default_current_training_action_id(),
-        help="The group in which the student is currently enrolled",
+        help="The group in which the student is currently enroled",
         comodel_name="academy.training.action",
         domain=[],
         context={},
@@ -342,7 +342,7 @@ class AcademyStudentWizard(models.TransientModel):
     )
     def _compute_target_student_ids(self):
         for record in self:
-            if record.action == "enroll":
+            if record.action == "enrol":
                 record._compute_enroll_target_student_ids()
             elif record.action in "unenroll":
                 record._compute_unenroll_target_student_ids()
@@ -479,7 +479,7 @@ class AcademyStudentWizard(models.TransientModel):
     # -------------------------------------------------------------------------
 
     date_start = fields.Date(
-        string="Enrollment date",
+        string="Enrolment date",
         required=False,
         readonly=False,
         index=False,
@@ -743,7 +743,7 @@ class AcademyStudentWizard(models.TransientModel):
         return serialized
 
     def _perform_action(self):
-        if self.action == "enroll":
+        if self.action == "enrol":
             result = self._perform_action_enroll()
         elif self.action == "unenroll":
             result = self._perform_action_unenroll()

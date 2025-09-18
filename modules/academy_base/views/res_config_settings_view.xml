@@ -169,6 +169,12 @@
               </div>
             </setting>
 
+            <setting string="Validation" help="Validate student input data.">
+              <group class="content-group mt8">
+                <field name="student_email_required" class="oe_inline" />
+                <field name="student_vat_required" class="oe_inline" />
+              </group>
+            </setting>
           </block>
           <!-- Settings block: end -->
 

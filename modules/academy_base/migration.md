@@ -113,3 +113,26 @@ attrs=["']\{["'](readonly|invisible|required)["']: *(\[[^\]]+\])\}["']
 ---
 \n\n</odoo>
 ```
+
+
+- [x] Error followers con training activity al guardar
+- [x] Añadir a estudiante bótón de matrículas.
+- [x] Añadir a estudiante ficha de matrículas.
+- [x] Añadir a estudiante idiomas.
+- [x] Autoetiquetar como estudiante sólo al crear.
+- [ ] Corregir los Onchange de student
+- [x] Student: Name and surname
+- [ ] Validar NIF e email dentro del create y del write
+- [ ] Kanban de student
+- [ ] Mostrar móvil o teléfono, el que tenga.
+- [ ] Secuencia para las matrículas
+- [ ] Añadir token a todo
+- [ ] Botón ver actividades
+- [ ] Token de alumno y profesor (uuid7)
+- [ ] Errores y warnings del log
+- [ ] "depends": ["dms", "dms_field", "dms_attachment_link"]
+- [ ] Poner internal notes en una ficha separada tanto para student compara training action
+- [ ] En el enrolment los datos del alumno en una ficha y los de la acción en otra, el apartado admisión arriba de todo
+- [ ] Cómo llevar cuenta de si se imprimió el material
+- [ ] ¿Qué ocurre si, por fuera de student, se elige company?
+- [ ] No mostrar información de parent_id en student

@@ -23,14 +23,22 @@
     <field name="active" eval="True"/>
     <field name="arch" type="xml">
       <list string="academy_student_tree" create="1" delete="1" edit="1">
+        <field name="ref" class="oe_field_signup_code" string="Sign-up code"/>
+        <field name="signup_date" class="oe_field_signup_date"/>
         <field name="vat" class="oe_field_vat" optional="show"/>
         <field name="title" class="oe_field_title" optional="hide"/>
         <field name="name" class="oe_field_name" optional="show"/>
+        <field name="lastname" class="oe_field_lastname" optional="hide"/>
+        <field name="firstname" class="oe_field_firstname" optional="hide"/>
         <field name="email" class="oe_field_email" optional="show"/>
-        <field name="phone" class="oe_field_phone" optional="show"/>
-        <field name="mobile" class="oe_field_mobile" optional="show"/>
-        <field name="zip" class="oe_field_zip" optional="hide"/>
-        <field name="enrolment_str" class="oe_field_enrolment_str" optional="show"/>
+        <field name="call_number" class="oe_field_call_number" optional="show"/>
+        <field name="phone" class="oe_field_phone" optional="hide"/>
+        <field name="mobile" class="oe_field_mobile" optional="hide"/>
+        <field name="zip" class="oe_field_zip" optional="show"/>
+        <field name="city" class="oe_field_city" optional="show"/>
+        <field name="state_id" class="oe_field_state_id" optional="show"/>
+        <field name="country_id" class="oe_field_country_id" optional="hide"/>
+        <field name="enrolment_str" class="oe_field_enrolment_str text-center" optional="show"/>
       </list>
     </field>
   </record>
@@ -47,46 +55,59 @@
     <field name="arch" type="xml">
       <form string="Student" create="1" delete="1" edit="1">
         <sheet>
+          <field name="id" invisible="1"/>
           <field name="company_type" invisible="1"/>
           <field name="is_company" invisible="1"/>
-          <field name="id" invisible="1"/>
+          <field name="type" invisible="1"/>
+          <field name="form_has_lastname_first" invisible="1"/>
+          <field name="implied_cefrl_ids" invisible="1"/>
+          <field name="vat_required" invisible="1"/>
+          <field name="email_required" invisible="1"/>
 
           <div class="oe_button_box" name="button_box">
             <button name="view_res_partner" type="object" class="oe_stat_button oe_read_only"
-              icon="fa-id-card-o" help="Open contact form">
+              icon="fa-user-o" help="Open contact form">
               <field name="type" widget="statinfo" string="Sheet"/>
+            </button>
+            <button name="view_enrolments" type="object" class="oe_stat_button oe_read_only"
+              icon="fa-id-card-o" help="View student enrolments">
+              <field name="enrolment_str" widget="statinfo" string="Enrolments"/>
             </button>
           </div>
 
-          <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+          <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger"
+            invisible="(not id) or (not partner_id) or active"/>
           <field name="image_1920" widget="image" class="oe_avatar"
             options='{"preview_image": "avatar_128"}'/>
 
-          <div class="oe_title mb24">
+          <div class="oe_title">
             <field name="creation_mode" widget="radio" options="{'horizontal': true}" invisible="id"/>
-            <h1>
+            <div class="mt-3 mb-4">
               <field name="partner_id" class="oe_field_partner_id"
                 invisible="(creation_mode == 'from_scratch') or id"/>
-              <field id="individual" options="{'line_breaks': False}" widget="text"
-                class="text-break" name="name" default_focus="1" placeholder="e.g. Brandon Freeman"
-                required="type == 'contact'"
-                invisible="(creation_mode == 'from_existing') and (not id)"/>
-            </h1>
-            <group>
-              <field name="company_id" class="oe_field_company_id" string="Restrict to institution"
-              />
-            </group>
+              <group col="2">
+                <field
+                  invisible="((creation_mode == 'from_existing') and (not id)) or not form_has_lastname_first"
+                  name="lastname" required="form_has_lastname_first and not firstname"/>
+                <field invisible="((creation_mode == 'from_existing') and (not id))"
+                  name="firstname" required="not lastname"/>
+                <field
+                  invisible="((creation_mode == 'from_existing') and (not id)) or form_has_lastname_first"
+                  name="lastname" required="not form_has_lastname_first and not firstname"/>
+              </group>
+            </div>
           </div>
 
-          <group>
+          <group class="mt-5">
             <group>
-              <field name="vat" placeholder="e.g. BE0477472701" readonly="parent_id" required="1"/>
+              <field name="vat" placeholder="e.g. BE0477472701" readonly="parent_id"
+                required="vat_required"/>
               <field name="birthday" class="oe_field_birthday"/>
 
               <span class="o_form_label o_td_label o_address_type" name="address_name">
                 <span>Address</span>
               </span>
-              <div class="o_address_format">
+              <div class="o_address_format mt-4">
                 <field name="street" placeholder="Street..." class="o_address_street"
                   readonly="type == 'contact' and parent_id"/>
                 <field name="street2" placeholder="Street 2..." class="o_address_street"
@@ -111,7 +132,7 @@
               <field name="phone" widget="phone"/>
               <field name="mobile" widget="phone"/>
               <field name="email" widget="email" context="{'gravatar_image': True}"
-                required="user_ids or 1"/>
+                required="user_ids or email_required"/>
               <field name="website" string="Website" widget="url"
                 placeholder="e.g. https://www.odoo.com"/>
               <field name="title" options='{"no_open": True}' placeholder="e.g. Mister"/>
@@ -121,18 +142,37 @@
             </group>
           </group>
 
-          <notebook colspan="4">
-            <page string="Academics" class="oe_page_Academics" accesskey="A" autofocus="autofocus">
-              <group col="4">
-                <group col="2" colspan="2">
-                  <field name="signup_code" class="oe_field_signup_code"/>
+          <notebook colspan="4" class="mt-4">
+            <page string="Enrolments" class="oe_page_enrolments" accesskey="E" autofocus="autofocus">
+              <field name="enrolment_ids" class="oe_field_current_enrolment_ids"
+                domain="[('is_current', '=', True)]"
+                context="{'list_view_ref': 'academy_base.view_academy_training_action_enrolment_embed'}"
+              />
+            </page>
+            <page string="Details" class="oe_page_Academics" accesskey="D">
+              <group col="12" class="mt-2">
+                <group colspan="4">
+                  <field name="ref" class="oe_field_signup_code" string="Sign-up code" />
                 </group>
-                <group col="2" colspan="2">
+                <group colspan="4">
                   <field name="signup_date" class="oe_field_signup_date"/>
                 </group>
-                <group col="2" colspan="2">
-                  <field name="attainment_id" class="oe_field_attainment_id"/>
+                <group colspan="4">
+                  <field name="company_id" class="oe_field_company_id" string="Restrict to"
+                    options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"/>
                 </group>
+                <group colspan="6">
+                  <field name="attainment_id" class="oe_field_attainment_id"
+                    options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"/>
+                </group>
+                <group colspan="6">
+                  <field name="cefrl_ids" class="oe_field_cefrl_ids"
+                    options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"
+                    widget="many2many_tags" context="{'m2m_tags_display_name': 'code'}"/>
+                </group>
+              </group>
+              <group string="Internal notes">
+                <field name="comment" placeholder="Internal notes..." nolabel="1"/>
               </group>
             </page>
             <page string="Contacts &amp; Addresses" name="contact_addresses">
@@ -246,9 +286,6 @@
                 </group>
               </group>
             </page>
-            <page name="internal_notes" string="Internal Notes">
-              <field name="comment" placeholder="Internal notes..."/>
-            </page>
           </notebook>
         </sheet>
 
@@ -269,6 +306,8 @@
         <field name="avatar_128"/>
         <field name="is_company"/>
         <field name="active"/>
+        <field name="mobile" />
+        <field name="phone" />
         <templates>
           <t t-name="card" class="flex-row">
             <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
@@ -288,27 +327,27 @@
               </t>
             </aside>
             <main class="ps-2 ps-md-0">
-              <div class="mb-1">
-                <field name="display_name" class="mb-0 fw-bold fs-5"/>
-                <field t-if="record.parent_id.raw_value and !record.function.raw_value"
-                  class="text-muted" name="parent_id"/>
-                <field t-elif="!record.parent_id.raw_value and record.function.raw_value"
-                  class="text-muted" name="function"/>
-                <div t-elif="record.parent_id.raw_value and record.function.raw_value"
-                  class="text-muted">
-                  <field name="function"/> at <field name="parent_id"/>
+                <field name="display_name" />
+                <field name="email" class="text-truncate" />
+                <div class="flex justify-content-start">
+                  <t t-if="record.phone.raw_value">
+                    <span class="text-truncate" t-attf-title="record.phone.raw_value" >
+                      <t t-esc="record.phone.raw_value" />
+                    </span>
+                  </t>
+                  <t t-if="record.phone.raw_value and record.mobile.raw_value">
+                    <span> / </span>
+                  </t>
+                  <t t-if="record.mobile.raw_value">
+                    <span class="text-truncate" t-attf-title="record.mobile.raw_value" >
+                      <t t-esc="record.mobile.raw_value" />
+                    </span>
+                  </t>
                 </div>
-              </div>
-              <div t-if="record.city.raw_value or record.country_id.raw_value">
-                <field name="city"/>
-                <span t-if="record.city.raw_value and record.country_id.raw_value">, </span>
-                <field name="country_id"/>
-              </div>
-              <field name="email" class="text-truncate"/>
-              <footer>
-                <div/>
-              </footer>
             </main>
+            <footer>
+              <field name="activity_ids" widget="kanban_activity" class="ms-auto mt-auto"/>
+            </footer>
           </t>
         </templates>
       </kanban>
@@ -326,9 +365,10 @@
     <field name="inherit_id"/>
     <field name="arch" type="xml">
       <search string="academy_student_search">
-        <field name="name"/>
-        <field name="phone"/>
-        <field name="mobile"/>
+        <field name="name"
+          filter_domain="['|', '|', '|', '|', ('complete_name', 'ilike', self), ('ref', 'ilike', self), ('email', 'ilike', self), ('vat', 'ilike', self), ('company_registry', 'ilike', self)]"/>
+        <field name="phone"
+          filter_domain="['|', ('phone', 'ilike', self), ('mobile', 'ilike', self)]"/>
         <field name="email"/>
 
         <field name="city"/>
@@ -345,10 +385,15 @@
         <filter name="inactive" string="Archived" domain="[('active', '=', False)]"/>
 
         <separator/>
-        <filter name="enrolled" string="Enrolled" domain="[('current_enrolment_count', '>', 0)]"/>
-        <filter name="not_enrolled" string="Not Enrolled"
+        <filter name="enroled" string="Enroled" domain="[('current_enrolment_count', '>', 0)]"/>
+        <filter name="not_enrolled" string="Not Enroled"
           domain="[('current_enrolment_count', '=', 0)]"/>
-
+        <group expand="0" name="group_by" string="Group By">
+          <filter name="salesperson" string="Salesperson" domain="[]"
+            context="{'group_by' : 'user_id'}"/>
+          <filter name="group_company" string="Company" context="{'group_by': 'parent_id'}"/>
+          <filter name="group_country" string="Country" context="{'group_by': 'country_id'}"/>
+        </group>
       </search>
     </field>
   </record>
@@ -378,6 +423,27 @@
     <field name="action" ref="action_student_act_window"/>
     <field name="parent_id" ref="academy_base.menu_academy_monitoring"/>
     <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
+  </record>
+
+
+  <record id="view_academy_training_action_enrolment_embed" model="ir.ui.view">
+    <field name="name">academy.enrolment.list.embed_on_student</field>
+    <field name="model">academy.training.action.enrolment</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="99"/>
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <list string="Current enrolments" create="true" delete="true" edit="true" editable="top">
+        <field name="student_id" column_invisible="1"/>
+        <field name="available_modality_ids" column_invisible="1"/>
+        <field name="code" class="oe_field_code oe_edit_only"/>
+        <field name="training_action_id" class="oe_field_training_action_id"/>
+        <field name="register" class="oe_field_register" widget="date" string="Enrol"/>
+        <field name="deregister" class="oe_field_deregister" widget="date" string="Unenrol"/>
+        <field name="training_modality_ids" class="oe_field_training_modality_ids"
+          widget="many2many_tags"/>
+      </list>
+    </field>
   </record>
 
 </odoo>

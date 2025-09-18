@@ -29,8 +29,8 @@
 
                 <group col="4" string="Enrolments">
                     <field name="current_training_action_id"
-                        class="oe_field_current_training_action_id" string="Enrolled in"
-                        readonly="['|', ('action', '=', False), ('action', 'in', ('enroll', 're_enroll'))]"
+                        class="oe_field_current_training_action_id" string="Enroled in"
+                        readonly="['|', ('action', '=', False), ('action', 'in', ('enrol', 're_enroll'))]"
                         required="[('action', '&lt;&gt;', False), ('action', 'in', ('unenroll', 'show', 'switch'))]"
                         options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"
                         domain="[('id', '&lt;&gt;', joining_training_action_id)]"/>

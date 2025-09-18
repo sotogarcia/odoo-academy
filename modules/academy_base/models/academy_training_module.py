@@ -248,7 +248,7 @@ class AcademyTrainingModule(models.Model):
         counts = many2many_count(self, "training_activity_ids")
 
         for record in self:
-            record.reservation_count = counts.get(record.id, 0)
+            record.training_activity_count = counts.get(record.id, 0)
 
     @api.model
     def _search_training_activity_count(self, operator, value):
@@ -311,7 +311,7 @@ class AcademyTrainingModule(models.Model):
         counts = one2many_count(self, "training_unit_ids")
 
         for record in self:
-            record.reservation_count = counts.get(record.id, 0)
+            record.training_unit_count = counts.get(record.id, 0)
 
     @api.model
     def _search_training_unit_count(self, operator, value):

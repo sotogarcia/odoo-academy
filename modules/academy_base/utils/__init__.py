@@ -9,3 +9,4 @@ from . import datetime_utils
 from . import helpers
 from . import record_utils
 from . import sql_helpers
+from . import res_config

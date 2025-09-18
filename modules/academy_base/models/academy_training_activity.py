@@ -392,7 +392,7 @@ class AcademyTrainingActivity(models.Model):
         counts = one2many_count(self, "competency_unit_ids")
 
         for record in self:
-            record.reservation_count = counts.get(record.id, 0)
+            record.competency_unit_count = counts.get(record.id, 0)
 
     @api.model
     def _search_competency_unit_count(self, operator, value):
@@ -428,7 +428,7 @@ class AcademyTrainingActivity(models.Model):
         counts = many2many_count(self, "training_module_ids")
 
         for record in self:
-            record.reservation_count = counts.get(record.id, 0)
+            record.training_module_count = counts.get(record.id, 0)
 
     @api.model
     def _search_training_module_count(self, operator, value):
@@ -464,7 +464,7 @@ class AcademyTrainingActivity(models.Model):
         counts = one2many_count(self, "training_action_ids")
 
         for record in self:
-            record.reservation_count = counts.get(record.id, 0)
+            record.training_action_count = counts.get(record.id, 0)
 
     @api.model
     def _search_training_action_count(self, operator, value):
@@ -500,7 +500,7 @@ class AcademyTrainingActivity(models.Model):
         counts = many2many_count(self, "activity_resource_ids")
 
         for record in self:
-            record.reservation_count = counts.get(record.id, 0)
+            record.training_resource_count = counts.get(record.id, 0)
 
     @api.model
     def _search_training_resource_count(self, operator, value):

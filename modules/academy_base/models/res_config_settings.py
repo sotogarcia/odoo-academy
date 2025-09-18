@@ -47,3 +47,39 @@ class ResConfigSettings(models.TransientModel):
         auto_join=False,
         config_parameter="academy_base.erp_manager_id",
     )
+
+    student_email_required = fields.Selection(
+        string="Require email for students",
+        required=True,
+        readonly=False,
+        index=False,
+        default="never",
+        help=(
+            "Control when email address is mandatory: never, always, or "
+            "except when developer mode is active."
+        ),
+        selection=[
+            ("never", "Never"),
+            ("always", "Always"),
+            ("except_debug", "Except in debug"),
+        ],
+        config_parameter="academy_base.student_email_required",
+    )
+
+    student_vat_required = fields.Selection(
+        string="Require VAT for students",
+        required=True,
+        readonly=False,
+        index=False,
+        default="never",
+        help=(
+            "Control when VAT number is mandatory: never, always, or "
+            "except when developer mode is active."
+        ),
+        selection=[
+            ("never", "Never"),
+            ("always", "Always"),
+            ("except_debug", "Except in debug"),
+        ],
+        config_parameter="academy_base.student_vat_required",
+    )

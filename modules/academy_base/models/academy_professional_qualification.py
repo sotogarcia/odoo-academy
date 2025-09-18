@@ -145,7 +145,7 @@ class AcademyProfessionalQualification(models.Model):
         counts = one2many_count(self, "competency_unit_ids")
 
         for record in self:
-            record.reservation_count = counts.get(record.id, 0)
+            record.competency_unit_count = counts.get(record.id, 0)
 
     @api.model
     def _search_competency_unit_count(self, operator, value):

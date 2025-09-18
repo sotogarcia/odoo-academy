@@ -412,7 +412,7 @@ class AcademyTrainingResource(models.Model):
         counts = one2many_count(self, "historical_ids")
 
         for record in self:
-            record.reservation_count = counts.get(record.id, 0)
+            record.historical_count = counts.get(record.id, 0)
 
     @api.model
     def _search_historical_count(self, operator, value):

@@ -90,28 +90,38 @@
                             <field name="action_name" class="oe_field_action_name"
                                 placeholder="Enter new name"/>
                         </h1>
+                        <div class="mt-2 mb-3">
+                          <group>
+                            <field name="training_activity_id" class="oe_field_training_activity_id"
+                            options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"
+                            readonly="context.get('default_training_activity_id', False)"/>
+                          </group>
+                        </div>
                     </div>
 
-                    <group col="2" id="action" class="mt-3">
-                        <field name="action_code" class="oe_field_code"/>
-                        <field name="training_activity_id" class="oe_field_training_activity_id"
-                            readonly="context.get('default_training_activity_id', False)"/>
-                        <field name="application_scope_id" class="od_field_application_scope"/>
-                    </group>
-
-                    <group col="2" id="details">
-                        <group col="2" class="my-0" string="Seating">
-                            <field name="seating" class="oe_field_seating"/>
-                            <field name="excess" class="oe_field_excess"/>
+                    <div class="row">
+                      <group col="2" id="action">
+                        <group string="Base">
+                          <field name="action_code" class="oe_field_code"/>
+                          <field name="manager_id" class="oe_field_manager_id" string="Supervisor" />
                         </group>
-                        <group col="2" class="my-0" string="Interval">
-                            <field name="start" class="oe_field_start"/>
-                            <field name="end" class="oe_field_end"/>
+                        <group string="Training">
+                          <field name="training_methodology_ids" class="od_field_training_methodology" widget="many2many_tags" string="Methodology" title="Training methodology"/>
+                          <field name="training_modality_ids" class="od_field_training_modality" widget="many2many_tags" string="Modality" title="Training modality"/>
                         </group>
-                    </group>
+                        <group string="Dates">
+                          <field name="start" class="oe_field_start" />
+                          <field name="end" class="oe_field_end" />
+                        </group>
+                        <group string="Seats">
+                          <field name="seating" class="oe_field_seating" />
+                          <field name="excess" class="oe_field_excess" />
+                        </group>
+                      </group>
+                    </div>
 
-                    <notebook>
-                        <page id="competency" string="Competency units"
+                    <notebook class="mt-3">
+ <!--                        <page id="competency" string="Competency units"
                             class="oe_page_competency_units" accesskey="C">
                             <field name="competency_unit_ids"
                                 class="oe_field_competency_unit_ids w-100" colspan="2" nolabel="1"
@@ -119,32 +129,40 @@
                                         'list_view_ref': 'academy_base.view_academy_competency_unit_list_only_tree',
                                         'default_training_action_id': id
                                     }"/>
+                        </page> -->
+
+                        <page id="resources" string="Resources" class="oe_page_available_resources"
+                            accesskey="R">
+                            <field name="action_resource_ids" nolabel="1"
+                              options="{'no_quick_create': False, 'no_create': False, 'no_open': False}"
+                                class="oe_field_action_resource_ids oe_edit_only w-100"/>
+
+                            <field name="available_resource_ids" nolabel="1"
+                              options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"
+                                class="oe_field_available_resource_ids oe_read_only w-100"/>
                         </page>
+
                         <page id="data" string="Data" class="oe_page_data" accesskey="T">
 
-                            <group col="4">
-                                <field name="knowledge_area_ids" class="od_field_knowledge_area"
-                                    widget="many2many_tags" string="Area" title="Knowledge area"/>
-                                <field name="professional_category_id"
-                                    class="od_field_professional_category" string="Category"
-                                    title="Professional category"/>
-                                <field name="training_modality_ids"
-                                    class="od_field_training_modality" widget="many2many_tags"
-                                    string="Modality" title="Training modality"/>
-                                <field name="training_methodology_ids"
-                                    class="od_field_training_methodology" widget="many2many_tags"
-                                    string="Methodology" title="Training methodology"/>
-
-                                <field name="professional_family_id"
-                                    class="oe_field_professional_family_id" readonly="1"/>
-                                <field name="professional_area_id"
-                                    class="oe_field_professional_area_id" readonly="1"/>
-                                <field name="activity_code" class="oe_field_action_code"
-                                    placeholder="Enter new internal code" readonly="1"/>
-                                <field name="qualification_level_id"
-                                    class="oe_field_qualification_level_id" readonly="1"/>
-                                <field name="description" class="oe_field_description"
-                                    placeholder="Enter new description" colspan="4"/>
+                            <group string="Internal notes">
+                                <field name="description" class="oe_field_description" placeholder="Enter new description" colspan="4" nolabel="1" />
+                            </group>
+                            <group string="Action details">
+                              <group><field name="application_scope_id" class="od_field_application_scope"
+                                options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"/></group>
+                              <group><field name="knowledge_area_ids"
+                                options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" class="od_field_knowledge_area" widget="many2many_tags" string="Area" title="Knowledge area"/></group>
+                              <group><field name="professional_category_id"
+                                options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" class="od_field_professional_category" string="Category" title="Professional category"/></group>
+                            </group>
+                            <group string="Activity details">
+                                <group><field name="professional_family_id"
+                                  options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" class="oe_field_professional_family_id" readonly="1"/></group>
+                                <group><field name="professional_area_id"
+                                  options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" class="oe_field_professional_area_id" readonly="1"/></group>
+                                <group><field name="activity_code" class="oe_field_action_code" placeholder="Enter new internal code" readonly="1"/></group>
+                                <group><field name="qualification_level_id"
+                                  options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" class="oe_field_qualification_level_id" readonly="1"/></group>
                             </group>
 
                         </page>
@@ -154,18 +172,9 @@
                             </group>
                             <group col="4" string="Ownership"
                                 groups="record_ownership.record_ownership_proxy">
-                                <field name="owner_id" class="oe_field_owner_id"/>
-                                <field name="subrogate_id" class="oe_field_subrogate_id"/>
+                                <field name="owner_id" class="oe_field_owner_id" options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
+                                <field name="subrogate_id" class="oe_field_subrogate_id" options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
                             </group>
-                        </page>
-
-                        <page id="resources" string="Resources" class="oe_page_available_resources"
-                            accesskey="R">
-                            <field name="action_resource_ids" nolabel="1"
-                                class="oe_field_action_resource_ids oe_edit_only w-100"/>
-
-                            <field name="available_resource_ids" nolabel="1"
-                                class="oe_field_available_resource_ids oe_read_only w-100"/>
                         </page>
 
                     </notebook>

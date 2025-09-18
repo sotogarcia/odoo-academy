@@ -5,7 +5,7 @@
 # Raw SQL used in Many2manyThroughView
 # Link training actions and modules through an activity and a competency unit
 # -----------------------------------------------------------------------------
-ACADEMY_TRAINING_MODULE_USED_IN_TRAINING_ACTION_REL = '''
+ACADEMY_TRAINING_MODULE_USED_IN_TRAINING_ACTION_REL = """
     SELECT
         atm."id" AS training_module_id,
         ata."id" AS training_action_id
@@ -17,7 +17,7 @@ ACADEMY_TRAINING_MODULE_USED_IN_TRAINING_ACTION_REL = '''
         ON atc."id" = acu.training_activity_id
     INNER JOIN academy_training_action AS ata
         ON ata.training_activity_id = atc."id"
-'''
+"""
 
 # Raw SQL used in Many2manyThroughView
 # Link training activities and modules through a competency unit
@@ -157,7 +157,7 @@ ACADEMY_TRAINING_ACTION_AVAILABLE_RESOURCE_REL = """
 """
 
 # Raw SQL used in Many2manyThroughView
-# List the resources in the enrollment, its action, activity or modules
+# List the resources in the enrolment, its action, activity or modules
 # -----------------------------------------------------------------------------
 ACADEMY_TRAINING_ACTION_ENROLMENT_AVAILABLE_RESOURCE_REL = """
     WITH training_enrolments AS (
@@ -252,10 +252,10 @@ ACADEMY_TRAINING_ACTION_ENROLMENT_AVAILABLE_RESOURCE_REL = """
 # Raw SQL used in Many2manyThroughView
 # Middle relations between training actions and students
 # -----------------------------------------------------------------------------
-ACADEMY_TRAINING_ACTION_STUDENT_REL = '''
+ACADEMY_TRAINING_ACTION_STUDENT_REL = """
     SELECT
         training_action_id,
         student_id
     FROM
         academy_training_action_enrolment
-'''
+"""

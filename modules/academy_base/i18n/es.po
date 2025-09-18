@@ -370,8 +370,8 @@ msgstr ""
 #. module: academy_base
 #: model:academy.interface.help.string,description:academy_base.academy_interface_student_wizard_action_switch
 msgid ""
-"A new enrollment will be created in the target training action, with a validity period defined by the provided dates. "
-"If no end date is specified, the new enrollments will have permanent validity. The specified enrollment date will be "
+"A new enrolment will be created in the target training action, with a validity period defined by the provided dates. "
+"If no end date is specified, the new enrollments will have permanent validity. The specified enrolment date will be "
 "assigned to enrollments that are active as of today in the original training action."
 msgstr ""
 "Se creará una nueva matrícula en la acción formativa de destino, con un intervalo de vigencia delimitado por las fechas "
@@ -843,7 +843,7 @@ msgstr ""
 #: model:academy.interface.help.string,description:academy_base.academy_interface_student_wizard_action_enroll
 msgid ""
 "All selected students who do not have active enrollments in the specified training action, and whose enrollments do not "
-"overlap with the specified date range, will be enrolled in that training action."
+"overlap with the specified date range, will be <enroled> in that training action."
 msgstr ""
 "Todos los estudiantes seleccionados que no tengan matrículas activas en la acción formativa indicada, solapadas con el "
 "intervalo de fechas especificado, serán matriculados en dicha acción."
@@ -1289,7 +1289,7 @@ msgstr "Marcar para actualizar el tipo de material"
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment__competency_unit_ids
-msgid "Choose competency units in which the student will be enrolled"
+msgid "Choose competency units in which the student will be <enroled>"
 msgstr "Elegir las unidades de competencia en las que se matriculará el estudiante"
 
 #. module: academy_base
@@ -1299,7 +1299,7 @@ msgstr "Elegir el formato del material educativo"
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment__student_id
-msgid "Choose enrolled student"
+msgid "Choose <enroled> student"
 msgstr "Elegir estudiante matriculado"
 
 #. module: academy_base
@@ -1396,7 +1396,7 @@ msgstr "Elegir el orden para la unidad de competencia"
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment__training_action_id
-msgid "Choose training action in which the student will be enrolled"
+msgid "Choose training action in which the student will be <enroled>"
 msgstr "Elegir la acción formativa en la que se matriculará al estudiante"
 
 #. module: academy_base
@@ -1937,7 +1937,7 @@ msgstr "Fecha"
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment__register
-msgid "Date in which student has been enrolled"
+msgid "Date in which student has been <enroled>"
 msgstr "Fecha en la cual el estudiante ha sido matriculado"
 
 #. module: academy_base
@@ -2199,7 +2199,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action__attainment_id
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_activity__attainment_id
 msgid "Educational attainment"
-msgstr "Logro educativo"
+msgstr "Nivel educativo"
 
 #. module: academy_base
 #: model:academy.professional.sector,name:academy_base.professional_sector_6104
@@ -2338,41 +2338,41 @@ msgstr "Ingeniería de Procesos de Manufactura"
 #. module: academy_base
 #: code:addons/academy_base/wizard/academy_student_wizard.py:0
 #, python-format
-msgid "Enroll"
+msgid "<Enrol>"
 msgstr "Matricula"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_student_search
-msgid "Enrolled"
+msgid "<Enroled>"
 msgstr "Matriculado"
 
 #. module: academy_base
 #: code:addons/academy_base/models/academy_training_action.py:0
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_student_wizard
 #, python-format
-msgid "Enrolled in"
+msgid "<Enroled> in"
 msgstr "Matriculado en"
 
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_student_wizard__date_start
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_enrolment_wizard_wizard
-msgid "Enrollment date"
+msgid "Enrolment date"
 msgstr "Fecha de alta"
 
 #. module: academy_base
 #: code:addons/academy_base/models/academy_training_action_enrolment.py:0
 #, python-format
-msgid "Enrollment is outside the range of training action"
+msgid "Enrolment is outside the range of training action"
 msgstr "La matrícula queda fuera del ámbito de la acción formativa"
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment_wizard__date_start
-msgid "Enrollment start date will be set for all the selected enrollments"
+msgid "Enrolment start date will be set for all the selected enrollments"
 msgstr "Se establecerá fecha de alta para todas las matrículas seleccionadas"
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment_wizard__date_stop
-msgid "Enrollment stop date will be set for all the selected enrollments"
+msgid "Enrolment stop date will be set for all the selected enrollments"
 msgstr "Se establecerá fecha de baja para todas las matrículas seleccionadas"
 
 #. module: academy_base
@@ -4417,7 +4417,7 @@ msgstr "Correo electrónico normalizado"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_student_search
-msgid "Not Enrolled"
+msgid "Not <Enroled>"
 msgstr "No inscrito"
 
 #. module: academy_base
@@ -5532,7 +5532,7 @@ msgstr "Tecnología ferroviaria"
 #. module: academy_base
 #: code:addons/academy_base/wizard/academy_student_wizard.py:0
 #, python-format
-msgid "Re-enroll"
+msgid "Re-enrol"
 msgstr "Re-matricular"
 
 #. module: academy_base
@@ -5885,7 +5885,7 @@ msgstr "Mostrar el número de unidades formativas para el módulo formativo"
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_action__student_ids
-msgid "Show the students have been enrolled in this training action"
+msgid "Show the students have been <enroled> in this training action"
 msgstr "Mostrar los estudiantes que se han matriculado en esta acción formativa"
 
 #. module: academy_base
@@ -6148,7 +6148,7 @@ msgstr "Matrículas de estudiantes"
 #. module: academy_base
 #: code:addons/academy_base/models/academy_training_action_enrolment.py:0
 #, python-format
-msgid "Student is already enrolled in the training action"
+msgid "Student is already <enroled> in the training action"
 msgstr "El estudiante ya está inscrito en la acción formativa"
 
 #. module: academy_base
@@ -6399,7 +6399,7 @@ msgstr "El código de acción dado ya existe"
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_student_wizard__current_training_action_id
-msgid "The group in which the student is currently enrolled"
+msgid "The group in which the student is currently <enroled>"
 msgstr "El grupo en el que el estudiante está matriculado actualmente"
 
 #. module: academy_base
@@ -6438,8 +6438,8 @@ msgstr "El módulo no se puede duplicar en la misma actividad formativa"
 #. module: academy_base
 #: model:academy.interface.help.string,description:academy_base.academy_interface_student_wizard_action_re_enroll
 msgid ""
-"The most recently completed enrollment for each selected student will be duplicated, with the specified start and end "
-"dates assigned. If no end date is established, the enrollment will be of permanent validity. Students who already have "
+"The most recently completed enrolment for each selected student will be duplicated, with the specified start and end "
+"dates assigned. If no end date is established, the enrolment will be of permanent validity. Students who already have "
 "enrollments overlapping with the specified date range will be excluded from the process."
 msgstr ""
 "La matrícula más recientemente finalizada de cada estudiante seleccionado será duplicada, asignándole las fechas de "

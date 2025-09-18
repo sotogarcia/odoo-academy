@@ -322,7 +322,7 @@ class AcademyTrainingAction(models.Model):
         readonly=True,
         index=False,
         default=None,
-        help="Show the students have been enrolled in this training action",
+        help="Show the students have been enroled in this training action",
         comodel_name="academy.student",
         relation="academy_training_action_student_rel",
         column1="training_action_id",
@@ -348,7 +348,7 @@ class AcademyTrainingAction(models.Model):
         counts = one2many_count(self, "training_action_enrolment_ids")
 
         for record in self:
-            record.reservation_count = counts.get(record.id, 0)
+            record.enrolment_count = counts.get(record.id, 0)
 
     @api.model
     def _search_training_action_enrolment_count(self, operator, value):
@@ -494,7 +494,7 @@ class AcademyTrainingAction(models.Model):
 
         This method handles custom PostgreSQL exceptions, specifically catching
         the exception with code 'ATE01', triggered by a database trigger that
-        validates enrollment dates in training actions.
+        validates enrolment dates in training actions.
 
         Args:
             values (dict): The values to create a new record.
@@ -524,7 +524,7 @@ class AcademyTrainingAction(models.Model):
 
         This method handles custom PostgreSQL exceptions, specifically catching
         the exception with code 'ATE01', triggered by a database trigger that
-        validates enrollment dates in training actions.
+        validates enrolment dates in training actions.
 
         Args:
             values (dict): The values to update the record.
@@ -669,7 +669,7 @@ class AcademyTrainingAction(models.Model):
         domain = AND([domain, [("training_action_id", "=", self.id)]])
 
         action_values = {
-            "name": "{} {}".format(_("Enrolled in"), self.name),
+            "name": "{} {}".format(_("Enroled in"), self.name),
             "type": action.type,
             "help": action.help,
             "domain": domain,

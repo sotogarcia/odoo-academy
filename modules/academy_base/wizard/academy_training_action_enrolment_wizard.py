@@ -96,7 +96,7 @@ class AcademyTrainingActionEnrolmentWizard(models.TransientModel):
         counts = many2many_count(self, "enrolment_ids")
 
         for record in self:
-            record.reservation_count = counts.get(record.id, 0)
+            record.enrolment_count = counts.get(record.id, 0)
 
     @api.model
     def _search_enrolment_count(self, operator, value):
@@ -164,7 +164,7 @@ class AcademyTrainingActionEnrolmentWizard(models.TransientModel):
         counts = many2many_count(self, "student_ids")
 
         for record in self:
-            record.reservation_count = counts.get(record.id, 0)
+            record.student_count = counts.get(record.id, 0)
 
     @api.model
     def _search_student_count(self, operator, value):
@@ -232,7 +232,7 @@ class AcademyTrainingActionEnrolmentWizard(models.TransientModel):
         counts = many2many_count(self, "training_action_ids")
 
         for record in self:
-            record.reservation_count = counts.get(record.id, 0)
+            record.training_action_count = counts.get(record.id, 0)
 
     @api.model
     def _search_training_action_count(self, operator, value):
@@ -283,7 +283,7 @@ class AcademyTrainingActionEnrolmentWizard(models.TransientModel):
         index=False,
         default=None,
         help=(
-            "Enrollment start date will be set for all the selected "
+            "Enrolment start date will be set for all the selected "
             "enrollments"
         ),
     )
@@ -320,7 +320,7 @@ class AcademyTrainingActionEnrolmentWizard(models.TransientModel):
         index=False,
         default=None,
         help=(
-            "Enrollment stop date will be set for all the selected "
+            "Enrolment stop date will be set for all the selected "
             "enrollments"
         ),
     )

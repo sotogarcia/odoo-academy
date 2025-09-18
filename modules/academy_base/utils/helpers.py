@@ -325,3 +325,8 @@ def many2many_count(parent_set, m2m_field_name, domain=None):
         counts[parent_id] = cnt
 
     return counts
+
+
+def is_debug_mode(env):
+    debug_val = str(env.context.get("debug", False) or "").lower()
+    return debug_val in ("1", "true", "assets", "tests", "debug")

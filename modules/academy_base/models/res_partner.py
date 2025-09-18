@@ -4,10 +4,12 @@
 #    __openerp__.py file at the root folder of this module.                   #
 ###############################################################################
 
+from stdnum.util import ValidationError
 from odoo import models, fields, api
 from odoo.tools.translate import _
 from logging import getLogger
 from odoo.exceptions import UserError
+from odoo.osv.expression import AND, OR
 
 _logger = getLogger(__name__)
 
@@ -31,6 +33,8 @@ class ResPartner(models.Model):
         auto_join=False,
     )
 
+    # -- Computed field: is_student--------------------------------------------
+
     is_student = fields.Boolean(
         string="Is student",
         required=False,
@@ -47,15 +51,6 @@ class ResPartner(models.Model):
         for record in self:
             record.is_student = bool(record.student_id)
 
-    @staticmethod
-    def _check_operator(operator):
-        if operator in ["is", "="]:
-            return "="
-        elif operator in ["not is", "not is", "!=", "<>"]:
-            return "!="
-        else:
-            raise UserError("Operator not supported")
-
     def _search_is_student(self, operator, value):
         operator = self._check_operator(operator)
 
@@ -65,51 +60,176 @@ class ResPartner(models.Model):
 
         return [("student_id", operator, value)]
 
-    def go_to_student(self):
-        self.ensure_one()
+    # -- Constraints ----------------------------------------------------------
 
-        return {
-            "name": self.student_id.name,
-            "view_mode": "form",
-            "view_id": False,
-            "view_type": "form",
-            "res_model": "academy.student",
-            "res_id": self.student_id.id,
-            "type": "ir.actions.act_window",
-            "nodestroy": True,
-            "target": "main",
-        }
-
-    def convert_to_student(self):
-        """Convert partner in student"""
-
-        student_set = self.env["academy.student"]
+    @api.constrains("ref", "vat", "email")
+    def _check_unique_partner(self):
+        if self.env.context.get("skip_partner_unique_check"):
+            return
 
         for record in self:
             if not record.student_id:
-                values = {"partner_id": record.id}
-                record.student_id = student_set.create(values)
-                record._log_convert_to_student_result(exists=False)
+                continue
 
-            else:
-                record._log_convert_to_student_result(exists=True)
+            self._validate_unique_partner_identifiers(record)
 
-            student_set += record.student_id
+    # -- Standard methods overrides -------------------------------------------
 
-        return student_set
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Sanitize key fields before creating partner records.
 
-    def _log_convert_to_student_result(self, exists):
-        self.ensure_one()
+        Works with multi-create (list of dicts) and single dict (legacy).
+        """
+        vals_list = self._sanitize_indexing_values(vals_list)
+        return super().create(vals_list)
 
-        if exists:
-            msg = _("Student {} already exists for partner {}.").format(
-                self.student_id.id, self.id
-            )
-            _logger.warning(msg)
+    def write(self, values):
+        """Sanitize key fields before updating partner records.
 
+        Applies to all records in the current recordset.
+        """
+        values = self._sanitize_indexing_values(values)
+        return super().write(values)
+
+    # -- Sanitize some relevant fields-----------------------------------------
+
+    @api.model
+    def _validate_unique_partner_identifiers(self, partner):
+        partner_obj = self.env["res.partner"].with_context(active_test=False)
+        message = _("Contact with the same %s (%s) already exists")
+
+        # Apply only to partners linked to at least one student
+        if not partner.student_id:
+            return
+
+        # Build an OR of exact, case-insensitive matches for provided keys.
+        # This constraint runs on res.partner, so we exclude partner.id.
+        leafs = []
+        for key in ["ref", "vat", "email"]:
+            value = getattr(partner, key, False)
+            if isinstance(value, str):
+                value = value.strip()
+            if value:
+                leafs.append([(key, "=ilike", value)])
+
+        # Nothing to validate if no identifiers present
+        if not leafs:
+            return
+
+        # Fast duplicate check (any field collides), excluding self
+        domain = AND(
+            [
+                [("id", "!=", partner.id), ("student_id", "!=", False)],
+                OR(leafs),
+            ]
+        )
+        if partner_obj.search_count(domain) == 0:
+            return
+
+        # Duplicates found: identify the culprit field to report it
+        for key in ["ref", "vat", "email"]:
+            value = getattr(partner, key, False)
+            if isinstance(value, str):
+                value = value.strip()
+            if not value:
+                continue
+
+            # Pinpoint which field collides to craft a precise message
+            domain = [
+                "&",
+                "&",
+                ("id", "!=", partner.id),
+                ("student_id", "!=", False),
+                (key, "=ilike", value),
+            ]
+            if partner_obj.search_count(domain):
+                raise ValidationError(message % (key, value))
+
+    @staticmethod
+    def _sanitize_indexing_values(value_list):
+        """Normalize partner indexing fields before storing.
+
+        Accepts a dict (single record) or a list/tuple of dicts (multi).
+        Operates in place and returns the same container.
+
+        Rules:
+        - ref: strip
+        - vat: strip + upper
+        - email: strip + lower
+        - Empty result: remove key
+        """
+        sanitize = dict(ref=None, vat="upper", email="lower")
+
+        if not value_list:
+            return value_list
+
+        if isinstance(value_list, dict):
+            target_list = [value_list]
         else:
-            msg = _("New student {} created for partner {}.").format(
-                self.student_id.id, self.id
-            )
+            target_list = value_list
 
-            _logger.debug(msg)
+        for values in target_list:
+            for key, operation in sanitize.items():
+                if key not in values:
+                    continue
+
+                value = values.get(key, False)
+                if not isinstance(value, str):
+                    continue
+
+                value = value.strip()
+                if not value:
+                    values.pop(key)
+                    continue
+
+                if operation:
+                    value = getattr(value, operation)()
+
+                values[key] = value
+
+        return value_list
+
+    # -- Auxiliary methods ----------------------------------------------------
+
+    @staticmethod
+    def _check_operator(operator):
+        if operator in ["is", "="]:
+            return "="
+        elif operator in ["not is", "not is", "!=", "<>"]:
+            return "!="
+        else:
+            raise UserError("Operator not supported")
+
+    def _avoid_double_unique_check(self, values):
+        keys = {"ref", "vat", "email"}
+        value_list = values if isinstance(values, (list, tuple)) else [values]
+        touching_ids = any(any(k in vals for k in keys) for vals in value_list)
+        if touching_ids:
+            return super()
+
+        context = self.env.context.copy()
+        context.update(skip_partner_unique_check=True)
+        return super().with_context(context)
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Create students; avoid double unique-check when not touching IDs."""
+        keys = {"ref", "vat", "email"}
+        seq = (
+            vals_list if isinstance(vals_list, (list, tuple)) else [vals_list]
+        )
+        touching_ids = any(any(k in vals for k in keys) for vals in seq)
+        if touching_ids:
+            return super().create(vals_list)
+        return (
+            super()
+            .with_context(skip_partner_unique_check=True)
+            .create(vals_list)
+        )
+
+    def write(self, vals):
+        """Write students; avoid double unique-check when not touching IDs."""
+        if any(k in vals for k in ("ref", "vat", "email")):
+            return super().write(vals)
+        return super().with_context(skip_partner_unique_check=True).write(vals)

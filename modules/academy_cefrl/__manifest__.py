@@ -21,33 +21,20 @@
 #
 ###############################################################################
 {
-    'name': 'Academy CEFR for Languages',
-    'summary': 'Connect students with language certificates',
-    'version': '13.0.1.0.0',
-
-    'description': '''Connect students with Common European Framework of
+    "name": "Academy CEFR for Languages",
+    "summary": "Connect students with language certificates",
+    "version": "18.0.1.0.0",
+    "description": """Connect students with Common European Framework of
 Reference for Languages
-    ''',
-
-    'author': 'Jorge Soto Garcia',
-    'maintainer': 'Jorge Soto Garcia',
-    'contributors': ['Jorge Soto Garcia <sotogarcia@gmail.com>'],
-
-    'website': 'http://www.gitlab.com/',
-
-    'license': 'AGPL-3',
-    'category': 'Academy',
-
-    'depends': [
-        'base',
-        'academy_base',
-        'cefrl'
-    ],
-
-    'data': [
-        'views/academy_student_view.xml'
-    ],
-
-    'installable': True,
-    'auto_install': True
+    """,
+    "author": "Jorge Soto Garcia",
+    "maintainer": "Jorge Soto Garcia",
+    "contributors": ["Jorge Soto Garcia <sotogarcia@gmail.com>"],
+    "website": "http://www.github.com/sotogarcia",
+    "license": "AGPL-3",
+    "category": "Academy",
+    "depends": ["base", "academy_base", "cefrl"],
+    "data": ["views/academy_student_view.xml"],
+    "installable": True,
+    "auto_install": True,
 }

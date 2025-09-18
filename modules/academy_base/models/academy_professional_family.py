@@ -106,7 +106,7 @@ class AcademyProfessionalFamily(models.Model):
         counts = one2many_count(self, "professional_area_ids")
 
         for record in self:
-            record.reservation_count = counts.get(record.id, 0)
+            record.professional_area_count = counts.get(record.id, 0)
 
     @api.model
     def _search_professional_area_count(self, operator, value):

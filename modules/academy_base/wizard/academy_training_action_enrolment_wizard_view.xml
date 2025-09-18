@@ -61,7 +61,7 @@
                 <group col="4" invisible="[(state != 'main')]">
 
                     <field name="update_date_start" class="oe_field_update_date_start"
-                        string="Enrollment date"/>
+                        string="Enrolment date"/>
                     <field name="date_start" class="oe_field_date_start" string="New value"
                         readonly="not update_date_start"
                         required="update_date_start"/>

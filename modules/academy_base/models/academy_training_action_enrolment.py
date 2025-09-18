@@ -29,9 +29,9 @@ _logger = getLogger(__name__)
 
 # pylint: disable=locally-disabled, R0903
 class AcademyTrainingActionEnrolment(models.Model):
-    """Enrollment allows the student to be linked to a training action"""
+    """Enrolment allows the student to be linked to a training action"""
 
-    MSG_ATE01 = _lt("Enrollment is outside the range of training action")
+    MSG_ATE01 = _lt("Enrolment is outside the range of training action")
 
     _name = "academy.training.action.enrolment"
     _description = "Academy training action enrolment"
@@ -92,7 +92,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         readonly=False,
         index=False,
         default=None,
-        help="Choose enrolled student",
+        help="Choose enroled student",
         comodel_name="academy.student",
         domain=[],
         context={},
@@ -106,7 +106,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         readonly=False,
         index=False,
         default=None,
-        help="Choose training action in which the student will be enrolled",
+        help="Choose training action in which the student will be enroled",
         comodel_name="academy.training.action",
         domain=[],
         context={},
@@ -120,7 +120,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         readonly=False,
         index=True,
         default=None,
-        help="Choose competency units in which the student will be enrolled",
+        help="Choose competency units in which the student will be enroled",
         comodel_name="academy.competency.unit",
         relation="academy_action_enrolment_competency_unit_rel",
         column1="action_enrolment_id",
@@ -137,7 +137,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         readonly=False,
         index=True,
         default=lambda self: fields.Date.context_today(self),
-        help="Date in which student has been enrolled",
+        help="Date in which student has been enroled",
         tracking=True,
     )
 
@@ -592,7 +592,7 @@ class AcademyTrainingActionEnrolment(models.Model):
     )
     def _check_unique_enrolment(self):
         """ """
-        message = _("Student is already enrolled in the training action")
+        message = _("Student is already enroled in the training action")
         enrolment_obj = self.env["academy.training.action.enrolment"]
 
         for record in self:
@@ -701,7 +701,7 @@ class AcademyTrainingActionEnrolment(models.Model):
 
         This method handles custom PostgreSQL exceptions, specifically catching
         the exception with code 'ATE01', triggered by a database trigger that
-        validates enrollment dates in training actions.
+        validates enrolment dates in training actions.
 
         Args:
             values (dict): The values to create a new record.
@@ -731,7 +731,7 @@ class AcademyTrainingActionEnrolment(models.Model):
 
         This method handles custom PostgreSQL exceptions, specifically catching
         the exception with code 'ATE01', triggered by a database trigger that
-        validates enrollment dates in training actions.
+        validates enrolment dates in training actions.
 
         Args:
             values (dict): The values to update the record.

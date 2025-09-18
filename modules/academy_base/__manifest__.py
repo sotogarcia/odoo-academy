@@ -10,8 +10,16 @@
     "website": "https://github.com/sotogarcia",
     "category": "Academy",
     "version": "18.0.1.0.0",
-    "depends": ["base", "record_ownership", "base_field_m2m_view", "mail"],
+    "depends": [
+        "base",
+        "record_ownership",
+        "base_field_m2m_view",
+        "mail",
+        "partner_firstname",
+        "cefrl",
+    ],
     "data": [
+        "data/res_partner_category_data.xml",
         "data/academy_teacher_data.xml",
         "data/academy_interface_help_string_data.xml",
         "data/mail_message_subtype_data.xml",
