@@ -2,8 +2,133 @@
 
 <odoo noupdate="0">
 
-    <delete id="view_res_partner_form" model="ir.ui.view" />
 
-    <delete id="view_res_partner_filter" model="ir.ui.view" />
+<!-- =======================================================================
+     EMBED – CONTACTS/ADDRESSES (FORM)
+     Usage: this form view is embedded inside `academy.student` and
+     `academy.teacher` to create/edit related addresses/contacts.
+     Code origin: copied/adapted from the embedded view inside `res.partner`
+     base module form (Contacts / base).
+     Purpose: capture address type (contact/invoice/delivery/other) and related
+     contact data (name, title, job, address, email, phones).
+     ====================================================================== -->
+
+  <record id="view_res_partner_kanban_address_form_embed" model="ir.ui.view">
+      <field name="name">res.partner.kanban.address.form.embed</field>
+      <field name="model">res.partner</field>
+      <field name="mode">primary</field>
+      <field name="priority" eval="99"/>
+      <field name="active" eval="True"/>
+      <field name="arch" type="xml">
+        <form string="Contact / Address">
+          <sheet>
+            <field name="type" required="1" widget="radio" options="{'horizontal': true}"/>
+            <div class="text-muted oe_edit_only">
+              <p class="mb-0" invisible="type != 'contact'">
+                <span>Use this to organize the contact details of employees of a given
+                  company (e.g. CEO, CFO, ...).</span>
+              </p>
+              <p class="mb-0" invisible="type != 'invoice'">
+                <span>Preferred address for all invoices. Selected by default when you
+                  invoice an order that belongs to this company.</span>
+              </p>
+              <p class="mb-0" invisible="type != 'delivery'">
+                <span>Preferred address for all deliveries. Selected by default when you
+                  deliver an order that belongs to this company.</span>
+              </p>
+              <p class="mb-0" invisible="type != 'other'">
+                <span>Other address for the company (e.g. subsidiary, ...)</span>
+              </p>
+            </div>
+            <hr/>
+            <group>
+              <group>
+                <field name="name" string="Contact Name" required="type == 'contact'"
+                  placeholder="e.g. New Address"/>
+                <field name="title" options="{'no_open': True}" placeholder="e.g. Mr."
+                  invisible="type != 'contact'"/>
+                <field name="function" placeholder="e.g. Sales Director"
+                  invisible="type != 'contact'"/>
+                <label for="street" string="Address" invisible="type == 'contact'"/>
+                <div invisible="type == 'contact'">
+                  <div class="o_address_format" name="div_address">
+                    <field name="street" placeholder="Street..." class="o_address_street"/>
+                    <field name="street2" placeholder="Street 2..." class="o_address_street"/>
+                    <field name="city" placeholder="City" class="o_address_city"/>
+                    <field name="state_id" class="o_address_state" placeholder="State"
+                      options="{'no_open': True, 'no_quick_create': True}"
+                      context="{'country_id': country_id, 'default_country_id': country_id, 'zip': zip}"/>
+                    <field name="zip" placeholder="ZIP" class="o_address_zip"/>
+                    <field name="country_id" placeholder="Country" class="o_address_country"
+                      options='{"no_open": True, "no_create": True}'/>
+                  </div>
+                </div>
+              </group>
+              <group>
+                <field name="email" widget="email"/>
+                <field name="phone" widget="phone"/>
+                <field name="mobile" widget="phone"/>
+                <field name="company_id" invisible="1"/>
+                <!-- Need to save value from parented record, cf onchange -->
+              </group>
+            </group>
+            <group>
+              <field name="comment" placeholder="Internal notes..." nolabel="1"/>
+            </group>
+            <field name="lang" invisible="True"/>
+            <!-- Need to add lang to save default value from parented record -->
+          </sheet>
+        </form>
+      </field>
+  </record>
+
+
+<!-- =======================================================================
+     EMBED – CONTACTS/ADDRESSES (KANBAN)
+     Usage: this kanban view is embedded inside `academy.student` and
+     `academy.teacher` to display related addresses/contacts as cards.
+     Code origin: copied/adapted from the embedded view inside `res.partner`
+     base module form (Contacts / base).
+     Purpose: summarized view with image, name, job title and contact details.
+     ====================================================================== -->
+
+  <record id="view_res_partner_kanban_address_kanban_embed" model="ir.ui.view">
+      <field name="name">res.partner.kanban.address.kanban.embed</field>
+      <field name="model">res.partner</field>
+      <field name="mode">primary</field>
+      <field name="priority" eval="99"/>
+      <field name="active" eval="True"/>
+      <field name="arch" type="xml">
+        <kanban color="color">
+          <field name="color"/>
+          <field name="type"/>
+          <field name="is_company"/>
+          <templates>
+            <t t-name="card" class="flex-row">
+              <aside class="o_kanban_aside_full">
+                <field name="avatar_128" class="o_kanban_image_fill w-100" widget="image"
+                  options="{'img_class': 'object-fit-cover'}" alt="Contact image"/>
+              </aside>
+              <main class="ps-2 ps-md-0">
+                <field name="name" class="fw-bold"/>
+                <field name="function"/>
+                <field name="email" widget="email"/>
+                <div t-if="record.type.raw_value != 'contact'">
+                  <div>
+                    <field class="me-1" name="zip"/>
+                    <field name="city"/>
+                  </div>
+                  <field class="me-1" name="state_id"/>
+                  <field name="country_id"/>
+                </div>
+                <div t-if="record.phone.raw_value">Phone: <field name="phone"/></div>
+                <div t-if="record.mobile.raw_value">Mobile: <field name="mobile"/></div>
+              </main>
+            </t>
+          </templates>
+        </kanban>
+
+      </field>
+  </record>
 
 </odoo>

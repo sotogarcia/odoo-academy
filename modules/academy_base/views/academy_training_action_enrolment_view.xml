@@ -336,4 +336,33 @@
         </field>
     </record>
 
+<!-- =======================================================================
+     EMBED – ACADEMY: ENROLMENTS
+     Usage: this list view is embedded inside `academy.student` and
+     `academy.teacher` forms.
+     Purpose: manage student/teacher enrolments directly from their form
+     (quick register/unregister and modalities).
+     ====================================================================== -->
+
+  <record id="view_academy_training_action_enrolment_tree_embed" model="ir.ui.view">
+    <field name="name">view.academy.training.action.enrolment.tree.embed</field>
+    <field name="model">academy.training.action.enrolment</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="99"/>
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <list string="Current enrolments" create="true" delete="true" edit="true" editable="top">
+        <field name="student_id" column_invisible="1"/>
+        <field name="available_modality_ids" column_invisible="1"/>
+        <field name="code" class="oe_field_code oe_edit_only"/>
+        <field name="training_action_id" class="oe_field_training_action_id"/>
+        <field name="register" class="oe_field_register" widget="date" string="Enrol"/>
+        <field name="deregister" class="oe_field_deregister" widget="date" string="Unenrol"/>
+        <field name="training_modality_ids" class="oe_field_training_modality_ids"
+          widget="many2many_tags"/>
+      </list>
+    </field>
+  </record>
+
+
 </odoo>

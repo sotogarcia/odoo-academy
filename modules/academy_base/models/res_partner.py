@@ -15,7 +15,36 @@ _logger = getLogger(__name__)
 
 
 class ResPartner(models.Model):
-    """Partner can be converted to a student"""
+    """
+    Extension of ``res.partner`` to integrate student and teacher roles.
+
+    Features added:
+      * Relations:
+        - ``student_id``: one2many link to ``academy.student``.
+          Although technically defined as one2many, the ``UNIQUE(partner_id)``
+          constraint on ``academy.student`` ensures that each partner can be
+          linked to at most one student record. Effectively behaves as a
+          one-to-one relation.
+        - ``teacher_id``: one2many link to ``academy.teacher``.
+          Same as above: constraints in ``academy.teacher`` enforce a
+          one-to-one relation between partner and teacher.
+      * Computed booleans:
+        - ``is_student``: True if the partner has an associated student record.
+        - ``is_teacher``: True if the partner has an associated teacher record.
+      * Data integrity:
+        - Partial unique indexes on ``ref``, ``vat`` and ``email`` are created,
+          enforced only when the partner is marked as student or teacher.
+        - Indexing fields are normalized before insert/update
+          (``ref``: strip, ``vat``: strip+upper, ``email``: strip+lower).
+      * ORM overrides:
+        - ``create`` / ``write`` sanitize input values before saving.
+      * Helpers:
+        - ``_check_operator`` validates operators for custom search methods.
+
+    This model ensures consistent identification and uniqueness rules for
+    partners acting as students or teachers, while remaining fully compatible
+    with the standard ``res.partner`` features.
+    """
 
     _inherit = "res.partner"
 
@@ -25,7 +54,7 @@ class ResPartner(models.Model):
         readonly=True,
         index=True,
         default=None,
-        help="Show the single related ",
+        help="Show the single related student",
         comodel_name="academy.student",
         inverse_name="partner_id",
         domain=[],
@@ -220,3 +249,16 @@ class ResPartner(models.Model):
             return "!="
         else:
             raise UserError(f"Operator not supported: {operator!r}")
+
+    # @api.model
+    # def default_get(self, fields):
+    #     values = super().default_get(fields)
+
+    #     values["parent_id"] = None
+    #     values["state_id"] = 455
+    #     values["country_id"] = 68
+    #     values["city"] = "Vigo"
+
+    #     print(values)
+
+    #     return values

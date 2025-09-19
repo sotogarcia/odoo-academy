@@ -48,8 +48,8 @@ class ResConfigSettings(models.TransientModel):
         config_parameter="academy_base.erp_manager_id",
     )
 
-    student_email_required = fields.Selection(
-        string="Require email for students",
+    partner_email_required = fields.Selection(
+        string="Require email for partners",
         required=True,
         readonly=False,
         index=False,
@@ -63,11 +63,11 @@ class ResConfigSettings(models.TransientModel):
             ("always", "Always"),
             ("except_debug", "Except in debug"),
         ],
-        config_parameter="academy_base.student_email_required",
+        config_parameter="academy_base.partner_email_required",
     )
 
-    student_vat_required = fields.Selection(
-        string="Require VAT for students",
+    partner_vat_required = fields.Selection(
+        string="Require VAT for partners",
         required=True,
         readonly=False,
         index=False,
@@ -81,5 +81,5 @@ class ResConfigSettings(models.TransientModel):
             ("always", "Always"),
             ("except_debug", "Except in debug"),
         ],
-        config_parameter="academy_base.student_vat_required",
+        config_parameter="academy_base.partner_vat_required",
     )

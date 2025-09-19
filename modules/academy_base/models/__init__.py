@@ -6,6 +6,7 @@
 
 from . import academy_abstract_observable
 from . import academy_abstract_training
+from . import res_partner_inherits_mixin
 
 from . import academy_interface_help_string
 

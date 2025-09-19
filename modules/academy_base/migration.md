@@ -136,3 +136,4 @@ attrs=["']\{["'](readonly|invisible|required)["']: *(\[[^\]]+\])\}["']
 - [ ] ¿Qué ocurre si, por fuera de student, se elige company?
 - [ ] No mostrar información de parent_id en student
 - [ ] Botón actividades en kanban y form
+- [ ] barcode

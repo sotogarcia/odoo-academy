@@ -158,10 +158,10 @@
           <!-- Settings block: end -->
 
           <!-- Settings block: begin -->
-          <block title="Students" name="academy_base_students">
+          <block title="Partners (Students and teachers)" name="academy_base_partner">
 
             <setting string="Educational attainments"
-              help="Edit student educational attainment information.">
+              help="Edit partner educational attainment information.">
               <div class="content-group mt8">
                 <button name="%(academy_base.action_educational_attainment_act_window)d"
                   string="&#160;Update educational attainments" type="action" class="oe_link"
@@ -169,10 +169,10 @@
               </div>
             </setting>
 
-            <setting string="Validation" help="Validate student input data.">
+            <setting string="Validation" help="Validate partner input data.">
               <group class="content-group mt8">
-                <field name="student_email_required" class="oe_inline" />
-                <field name="student_vat_required" class="oe_inline" />
+                <field name="partner_email_required" class="oe_inline" />
+                <field name="partner_vat_required" class="oe_inline" />
               </group>
             </setting>
           </block>
