@@ -77,16 +77,6 @@ class AcademyStudent(models.Model):
         auto_join=False,
     )
 
-    # signup_code = fields.Char(
-    #     string="Sign-up code",
-    #     required=False,
-    #     readonly=True,
-    #     index=True,
-    #     default=None,
-    #     help="Unique sign-up code identifying the student.",
-    #     copy=False,
-    # )
-
     signup_date = fields.Date(
         string="Sign-up date",
         required=True,
@@ -572,40 +562,40 @@ class AcademyStudent(models.Model):
                     error = _("VAT with a known country code is required.")
                     raise ValidationError(error)
 
-    @api.constrains("partner_id")
-    def _check_partner_id(self):
-        partner_obj = self.env["res.partner"]
-        msg = _("There is already a student with that VAT number or email")
+    # @api.constrains("partner_id")
+    # def _check_partner_id(self):
+    #     partner_obj = self.env["res.partner"]
+    #     msg = _("There is already a student with that VAT number or email")
 
-        for record in self:
-            if record.partner_id:
-                leafs = []
+    #     for record in self:
+    #         if record.partner_id:
+    #             leafs = []
 
-                if record.vat:
-                    leafs.append([("vat", "=ilike", record.vat)])
+    #             if record.vat:
+    #                 leafs.append([("vat", "=ilike", record.vat)])
 
-                if record.email:
-                    leafs.append([("email", "=ilike", record.email)])
+    #             if record.email:
+    #                 leafs.append([("email", "=ilike", record.email)])
 
-                domain = OR(leafs)
+    #             domain = OR(leafs)
 
-                if isinstance(record.partner_id.id, int):
-                    exclude_self = [("id", "!=", record.partner_id.id)]
-                    domain = AND([domain, exclude_self])
+    #             if isinstance(record.partner_id.id, int):
+    #                 exclude_self = [("id", "!=", record.partner_id.id)]
+    #                 domain = AND([domain, exclude_self])
 
-                if leafs and partner_obj.search_count(domain) > 1:
-                    raise ValidationError(msg)
+    #             if leafs and partner_obj.search_count(domain) > 1:
+    #                 raise ValidationError(msg)
 
-    @api.constrains("partner_id")
-    def _check_unique_student_partner(self):
-        for record in self:
-            partner = record.partner_id
-            if not partner:
-                continue
+    # @api.constrains("partner_id")
+    # def _check_unique_student_partner(self):
+    #     for record in self:
+    #         partner = record.partner_id
+    #         if not partner:
+    #             continue
 
-            self.env["res.partner"]._validate_unique_partner_identifiers(
-                partner
-            )
+    #         self.env["res.partner"]._validate_unique_partner_identifiers(
+    #             partner
+    #         )
 
     # -- Standard methods overrides -------------------------------------------
 

@@ -152,7 +152,7 @@
             <page string="Details" class="oe_page_Academics" accesskey="D">
               <group col="12" class="mt-2">
                 <group colspan="4">
-                  <field name="ref" class="oe_field_signup_code" string="Sign-up code" />
+                  <field name="ref" class="oe_field_signup_code" string="Sign-up code"/>
                 </group>
                 <group colspan="4">
                   <field name="signup_date" class="oe_field_signup_date"/>
@@ -306,8 +306,8 @@
         <field name="avatar_128"/>
         <field name="is_company"/>
         <field name="active"/>
-        <field name="mobile" />
-        <field name="phone" />
+        <field name="mobile"/>
+        <field name="phone"/>
         <templates>
           <t t-name="card" class="flex-row">
             <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
@@ -327,23 +327,23 @@
               </t>
             </aside>
             <main class="ps-2 ps-md-0">
-                <field name="display_name" />
-                <field name="email" class="text-truncate" />
-                <div class="flex justify-content-start">
-                  <t t-if="record.phone.raw_value">
-                    <span class="text-truncate" t-attf-title="record.phone.raw_value" >
-                      <t t-esc="record.phone.raw_value" />
-                    </span>
-                  </t>
-                  <t t-if="record.phone.raw_value and record.mobile.raw_value">
-                    <span> / </span>
-                  </t>
-                  <t t-if="record.mobile.raw_value">
-                    <span class="text-truncate" t-attf-title="record.mobile.raw_value" >
-                      <t t-esc="record.mobile.raw_value" />
-                    </span>
-                  </t>
-                </div>
+              <field name="display_name"/>
+              <field name="email" class="text-truncate"/>
+              <div class="flex justify-content-start">
+                <t t-if="record.phone.raw_value">
+                  <span class="text-truncate" t-attf-title="record.phone.raw_value">
+                    <t t-esc="record.phone.raw_value"/>
+                  </span>
+                </t>
+                <t t-if="record.phone.raw_value and record.mobile.raw_value">
+                  <span> / </span>
+                </t>
+                <t t-if="record.mobile.raw_value">
+                  <span class="text-truncate" t-attf-title="record.mobile.raw_value">
+                    <t t-esc="record.mobile.raw_value"/>
+                  </span>
+                </t>
+              </div>
             </main>
             <footer>
               <field name="activity_ids" widget="kanban_activity" class="ms-auto mt-auto"/>

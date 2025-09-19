@@ -4,12 +4,12 @@
 #    __openerp__.py file at the root folder of this module.                   #
 ###############################################################################
 
-from stdnum.util import ValidationError
 from odoo import models, fields, api
-from odoo.tools.translate import _
-from logging import getLogger
 from odoo.exceptions import UserError
-from odoo.osv.expression import AND, OR
+from ..utils.sql_helpers import create_index
+
+
+from logging import getLogger
 
 _logger = getLogger(__name__)
 
@@ -25,8 +25,22 @@ class ResPartner(models.Model):
         readonly=True,
         index=True,
         default=None,
-        help="Show related student",
+        help="Show the single related ",
         comodel_name="academy.student",
+        inverse_name="partner_id",
+        domain=[],
+        context={},
+        auto_join=False,
+    )
+
+    teacher_id = fields.One2many(
+        string="Teacher",
+        required=False,
+        readonly=True,
+        index=True,
+        default=None,
+        help="Show the single related teacher",
+        comodel_name="academy.teacher",
         inverse_name="partner_id",
         domain=[],
         context={},
@@ -44,12 +58,15 @@ class ResPartner(models.Model):
         help="Check if partner is a student",
         compute="_compute_is_student",
         search="_search_is_student",
+        store=True,
     )
 
     @api.depends("student_id")
     def _compute_is_student(self):
         for record in self:
-            record.is_student = bool(record.student_id)
+            record.is_student = bool(
+                record.with_context(active_test=False).student_id
+            )
 
     def _search_is_student(self, operator, value):
         operator = self._check_operator(operator)
@@ -58,26 +75,84 @@ class ResPartner(models.Model):
             operator = "!=" if operator == "=" else "="
             value = not value
 
-        return [("student_id", operator, value)]
+        return [("student_id", operator, bool(value))]
 
-    # -- Constraints ----------------------------------------------------------
+    # -- Computed field: is_teacher -------------------------------------------
 
-    @api.constrains("ref", "vat", "email")
-    def _check_unique_partner(self):
-        if self.env.context.get("skip_partner_unique_check"):
-            return
+    is_teacher = fields.Boolean(
+        string="Is teacher",
+        required=False,
+        readonly=True,
+        index=False,
+        default=False,
+        help="Check if partner is a teacher",
+        compute="_compute_is_teacher",
+        search="_search_is_teacher",
+        store=True,
+    )
 
+    @api.depends("teacher_id")
+    def _compute_is_teacher(self):
         for record in self:
-            if not record.student_id:
-                continue
+            record.is_teacher = bool(
+                record.with_context(active_test=False).teacher_id
+            )
 
-            self._validate_unique_partner_identifiers(record)
+    def _search_is_teacher(self, operator, value):
+        operator = self._check_operator(operator)
+
+        if value:
+            operator = "!=" if operator == "=" else "="
+            value = not value
+
+        return [("teacher_id", operator, bool(value))]
+
+    # -- Expand the capabilities of the standard ORM model --------------------
+
+    def init(self):
+        """Create partial unique indexes for student and teacher partners
+        in vat, ref and email.
+
+        Enforces uniqueness only when is_student = TRUE or is_teacher = TRUE,
+        matching the normalization rules used at ORM level.
+        """
+        teacher_or_student = "(is_teacher = TRUE or is_student = TRUE)"
+
+        where_clause = f"{teacher_or_student} AND btrim(\"ref\") <> ''"
+        create_index(
+            self.env,
+            "res_partner",
+            "lower(btrim(ref))",
+            unique=True,
+            name="res_partner__ref_student_teacher_pindex",
+            where=where_clause,
+        )
+
+        where_clause = f"{teacher_or_student} AND btrim(vat) <> ''"
+        create_index(
+            self.env,
+            "res_partner",
+            "upper(btrim(vat))",
+            unique=True,
+            name="res_partner__vat_student_teacher_pindex",
+            where=where_clause,
+        )
+
+        where_clause = f"{teacher_or_student} AND btrim(email) <> ''"
+        create_index(
+            self.env,
+            "res_partner",
+            "lower(btrim(email))",
+            unique=True,
+            name="res_partner__email_student_teacher_pindex",
+            where=where_clause,
+        )
 
     # -- Standard methods overrides -------------------------------------------
 
     @api.model_create_multi
     def create(self, vals_list):
-        """Sanitize key fields before creating partner records.
+        """Sanitize values (ref, vat, email) before creating partner records.
 
         Works with multi-create (list of dicts) and single dict (legacy).
         """
@@ -85,7 +160,7 @@ class ResPartner(models.Model):
         return super().create(vals_list)
 
     def write(self, values):
-        """Sanitize key fields before updating partner records.
+        """Sanitize values (ref, vat, email) before creating partner records.
 
         Applies to all records in the current recordset.
         """
@@ -93,58 +168,6 @@ class ResPartner(models.Model):
         return super().write(values)
 
     # -- Sanitize some relevant fields-----------------------------------------
-
-    @api.model
-    def _validate_unique_partner_identifiers(self, partner):
-        partner_obj = self.env["res.partner"].with_context(active_test=False)
-        message = _("Contact with the same %s (%s) already exists")
-
-        # Apply only to partners linked to at least one student
-        if not partner.student_id:
-            return
-
-        # Build an OR of exact, case-insensitive matches for provided keys.
-        # This constraint runs on res.partner, so we exclude partner.id.
-        leafs = []
-        for key in ["ref", "vat", "email"]:
-            value = getattr(partner, key, False)
-            if isinstance(value, str):
-                value = value.strip()
-            if value:
-                leafs.append([(key, "=ilike", value)])
-
-        # Nothing to validate if no identifiers present
-        if not leafs:
-            return
-
-        # Fast duplicate check (any field collides), excluding self
-        domain = AND(
-            [
-                [("id", "!=", partner.id), ("student_id", "!=", False)],
-                OR(leafs),
-            ]
-        )
-        if partner_obj.search_count(domain) == 0:
-            return
-
-        # Duplicates found: identify the culprit field to report it
-        for key in ["ref", "vat", "email"]:
-            value = getattr(partner, key, False)
-            if isinstance(value, str):
-                value = value.strip()
-            if not value:
-                continue
-
-            # Pinpoint which field collides to craft a precise message
-            domain = [
-                "&",
-                "&",
-                ("id", "!=", partner.id),
-                ("student_id", "!=", False),
-                (key, "=ilike", value),
-            ]
-            if partner_obj.search_count(domain):
-                raise ValidationError(message % (key, value))
 
     @staticmethod
     def _sanitize_indexing_values(value_list):
@@ -157,7 +180,7 @@ class ResPartner(models.Model):
         - ref: strip
         - vat: strip + upper
         - email: strip + lower
-        - Empty result: remove key
+        - If the value is empty `''`, set it to `None`
         """
         sanitize = dict(ref=None, vat="upper", email="lower")
 
@@ -179,14 +202,10 @@ class ResPartner(models.Model):
                     continue
 
                 value = value.strip()
-                if not value:
-                    values.pop(key)
-                    continue
-
                 if operation:
                     value = getattr(value, operation)()
 
-                values[key] = value
+                values[key] = value or None
 
         return value_list
 
@@ -194,42 +213,10 @@ class ResPartner(models.Model):
 
     @staticmethod
     def _check_operator(operator):
-        if operator in ["is", "="]:
+        op = (operator or "").strip().lower()
+        if op in ["is", "="]:
             return "="
-        elif operator in ["not is", "not is", "!=", "<>"]:
+        elif op in ["not is", "is not", "!=", "<>"]:
             return "!="
         else:
-            raise UserError("Operator not supported")
-
-    def _avoid_double_unique_check(self, values):
-        keys = {"ref", "vat", "email"}
-        value_list = values if isinstance(values, (list, tuple)) else [values]
-        touching_ids = any(any(k in vals for k in keys) for vals in value_list)
-        if touching_ids:
-            return super()
-
-        context = self.env.context.copy()
-        context.update(skip_partner_unique_check=True)
-        return super().with_context(context)
-
-    @api.model_create_multi
-    def create(self, vals_list):
-        """Create students; avoid double unique-check when not touching IDs."""
-        keys = {"ref", "vat", "email"}
-        seq = (
-            vals_list if isinstance(vals_list, (list, tuple)) else [vals_list]
-        )
-        touching_ids = any(any(k in vals for k in keys) for vals in seq)
-        if touching_ids:
-            return super().create(vals_list)
-        return (
-            super()
-            .with_context(skip_partner_unique_check=True)
-            .create(vals_list)
-        )
-
-    def write(self, vals):
-        """Write students; avoid double unique-check when not touching IDs."""
-        if any(k in vals for k in ("ref", "vat", "email")):
-            return super().write(vals)
-        return super().with_context(skip_partner_unique_check=True).write(vals)
+            raise UserError(f"Operator not supported: {operator!r}")

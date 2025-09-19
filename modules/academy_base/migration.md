@@ -122,9 +122,8 @@ attrs=["']\{["'](readonly|invisible|required)["']: *(\[[^\]]+\])\}["']
 - [x] Autoetiquetar como estudiante sólo al crear.
 - [ ] Corregir los Onchange de student
 - [x] Student: Name and surname
-- [ ] Validar NIF e email dentro del create y del write
 - [ ] Kanban de student
-- [ ] Mostrar móvil o teléfono, el que tenga.
+- [x] Mostrar móvil o teléfono, el que tenga.
 - [ ] Secuencia para las matrículas
 - [ ] Añadir token a todo
 - [ ] Botón ver actividades
@@ -136,3 +135,4 @@ attrs=["']\{["'](readonly|invisible|required)["']: *(\[[^\]]+\])\}["']
 - [ ] Cómo llevar cuenta de si se imprimió el material
 - [ ] ¿Qué ocurre si, por fuera de student, se elige company?
 - [ ] No mostrar información de parent_id en student
+- [ ] Botón actividades en kanban y form

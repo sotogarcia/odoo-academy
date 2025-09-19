@@ -770,7 +770,13 @@ class AcademyTrainingActionEnrolment(models.Model):
         """
 
         fields = ["active", "deregister", "register"]
-        create_index(self.env, self._table, fields, unique=False)
+        create_index(
+            self.env,
+            self._table,
+            fields,
+            unique=False,
+            name=f'{self._table}__{'search_active_by_dates_index'}',
+        )
 
     # -------------------------------------------------------------------------
     # Copy related methods

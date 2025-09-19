@@ -9,6 +9,7 @@ from . import controllers
 from . import wizard
 
 from .utils.sql_helpers import execute_sql_script, install_extension
+from odoo.tools.sql import drop_index
 
 
 def pre_init_hook(env):
@@ -29,3 +30,15 @@ def uninstall_hook(env):
     rel_path = ("academy_base", "data")
     execute_sql_script(env, rel_path, "uninstall_hook.sql", "uninstall_hook")
 
+    """Drop partial unique indexes created by this module."""
+    # Keep names in sync with init() where they were created
+    indexes_to_be_dropped = [
+        ("academy_training_action_enrolment", "search_active_by_dates_index"),
+        ("res_partner", "ref_student_teacher_pindex"),
+        ("res_partner", "vat_student_teacher_pindex"),
+        ("res_partner", "email_student_teacher_pindex"),
+    ]
+
+    for table, name in indexes_to_be_dropped:
+        full_name = f"{table}__{name}"
+        drop_index(env.cr, full_name, table)
