@@ -284,37 +284,6 @@ class AcademyTrainingAction(models.Model):
         copy=False,
     )
 
-    action_resource_ids = fields.Many2many(
-        string="Action resources",
-        required=False,
-        readonly=False,
-        index=False,
-        default=None,
-        help=False,
-        comodel_name="academy.training.resource",
-        relation="academy_training_action_training_resource_rel",
-        column1="training_action_id",
-        column2="training_resource_id",
-        domain=[],
-        context={},
-    )
-
-    available_resource_ids = fields.Many2manyView(
-        string="Available action resources",
-        required=False,
-        readonly=True,
-        index=False,
-        default=None,
-        help=False,
-        comodel_name="academy.training.resource",
-        relation="academy_training_action_available_resource_rel",
-        column1="training_action_id",
-        column2="training_resource_id",
-        domain=[],
-        context={},
-        copy=False,
-    )
-
     student_ids = fields.Many2manyView(
         string="Students",
         required=False,

@@ -264,37 +264,6 @@ class AcademyTrainingActionEnrolment(models.Model):
         related="training_action_id.action_name",
     )
 
-    enrolment_resource_ids = fields.Many2many(
-        string="Enrolment resources",
-        required=False,
-        readonly=False,
-        index=False,
-        default=None,
-        help=False,
-        comodel_name="academy.training.resource",
-        relation="academy_training_action_enrolment_training_resource_rel",
-        column1="enrolment_id",
-        column2="training_resource_id",
-        domain=[],
-        context={},
-    )
-
-    available_resource_ids = fields.Many2manyView(
-        string="Available enrolment resources",
-        required=False,
-        readonly=True,
-        index=False,
-        default=None,
-        help=False,
-        comodel_name="academy.training.resource",
-        relation="academy_training_action_enrolment_available_resource_rel",
-        column1="enrolment_id",
-        column2="training_resource_id",
-        domain=[],
-        context={},
-        copy=False,
-    )
-
     finalized = fields.Boolean(
         string="Finalized",
         required=True,

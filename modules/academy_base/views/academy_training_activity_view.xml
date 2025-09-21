@@ -116,14 +116,6 @@
                             </group>
                         </page>
 
-                        <page string="Resources" class="oe_page_available_resources" accesskey="R">
-                            <field name="activity_resource_ids" nolabel="1"
-                                class="oe_field_activity_resource_ids oe_edit_only"/>
-
-                            <field name="available_resource_ids" nolabel="1"
-                                class="oe_field_available_resource_ids oe_read_only"/>
-                        </page>
-
                     </notebook>
                 </sheet>
 

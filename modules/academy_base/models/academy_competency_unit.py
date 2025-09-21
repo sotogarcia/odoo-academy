@@ -123,21 +123,6 @@ class AcademyCompetencyUnit(models.Model):
         auto_join=False,
     )
 
-    competency_unit_resource_ids = fields.Many2many(
-        string="Competency unit resources",
-        required=False,
-        readonly=False,
-        index=False,
-        default=None,
-        help=False,
-        comodel_name="academy.training.resource",
-        relation="academy_competency_unit_training_resource_rel",
-        column1="competency_unit_id",
-        column2="training_resource_id",
-        domain=[],
-        context={},
-    )
-
     teacher_assignment_ids = fields.One2many(
         string="Teacher assignments",
         required=False,

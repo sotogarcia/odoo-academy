@@ -23,9 +23,7 @@ _logger = getLogger(__name__)
 
 # pylint: disable=locally-disabled, R0903
 class AcademyTrainingActivity(models.Model):
-    """This describes the activity offered, its modules, training units
-    and available resources.
-    """
+    """This describes the activity offered, its modules and training units"""
 
     _name = "academy.training.activity"
     _description = "Academy training activity"
@@ -252,38 +250,6 @@ class AcademyTrainingActivity(models.Model):
         copy=False,
     )
 
-    activity_resource_ids = fields.Many2many(
-        string="Activity resources",
-        required=False,
-        readonly=False,
-        index=False,
-        default=None,
-        help=False,
-        comodel_name="academy.training.resource",
-        relation="academy_training_activity_training_resource_rel",
-        column1="training_activity_id",
-        column2="training_resource_id",
-        domain=[],
-        context={},
-        copy=False,
-    )
-
-    available_resource_ids = fields.Many2manyView(
-        string="Available activity resources",
-        required=False,
-        readonly=True,
-        index=False,
-        default=None,
-        help=False,
-        comodel_name="academy.training.resource",
-        relation="academy_training_activity_available_resource_rel",
-        column1="training_activity_id",
-        column2="training_resource_id",
-        domain=[],
-        context={},
-        copy=False,
-    )
-
     # This no needs an SQL statement
     training_module_ids = fields.Many2manyView(
         string="Modules",
@@ -479,42 +445,6 @@ class AcademyTrainingActivity(models.Model):
             return FALSE_DOMAIN  # unsupported operator
 
         counts = one2many_count(self.search([]), "training_action_ids")
-        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
-
-        return [("id", "in", matched)] if matched else FALSE_DOMAIN
-
-    # pylint: disable=W0212
-    training_resource_count = fields.Integer(
-        string="Resources",
-        required=False,
-        readonly=True,
-        index=False,
-        default=0,
-        help=False,
-        compute="_compute_training_resource_count",
-        search="_search_training_resource_count",
-    )
-
-    @api.depends("activity_resource_ids")
-    def _compute_training_resource_count(self):
-        counts = many2many_count(self, "activity_resource_ids")
-
-        for record in self:
-            record.training_resource_count = counts.get(record.id, 0)
-
-    @api.model
-    def _search_training_resource_count(self, operator, value):
-        # Handle boolean-like searches Odoo may pass for required fields
-        if value is True:
-            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
-        if value is False:
-            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
-
-        cmp_func = OPERATOR_MAP.get(operator)
-        if not cmp_func:
-            return FALSE_DOMAIN  # unsupported operator
-
-        counts = many2many_count(self.search([]), "activity_resource_ids")
         matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
 
         return [("id", "in", matched)] if matched else FALSE_DOMAIN

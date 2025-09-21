@@ -79,13 +79,6 @@
                                 <field name="subrogate_id" class="oe_field_subrogate_id"/>
                             </group>
                         </page>
-                        <page string="Resources" class="oe_page_resources" accesskey="R">
-                            <field name="module_resource_ids"
-                                class="oe_field_module_resource_ids oe_edit_only"/>
-
-                            <field name="available_resource_ids"
-                                class="oe_field_available_resource_ids oe_read_only"/>
-                        </page>
                     </notebook>
                 </sheet>
 

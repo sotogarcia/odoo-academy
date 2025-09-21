@@ -159,37 +159,6 @@ class AcademyTrainingModule(models.Model):
         help="Length in hours",
     )
 
-    module_resource_ids = fields.Many2many(
-        string="Module resources",
-        required=False,
-        readonly=False,
-        index=False,
-        default=None,
-        help=False,
-        comodel_name="academy.training.resource",
-        relation="academy_training_module_training_resource_rel",
-        column1="training_module_id",
-        column2="training_resource_id",
-        domain=[],
-        context={},
-    )
-
-    available_resource_ids = fields.Many2manyView(
-        string="Available resources",
-        required=False,
-        readonly=True,
-        index=False,
-        default=None,
-        help=False,
-        comodel_name="academy.training.resource",
-        relation="academy_training_module_available_resource_rel",
-        column1="training_module_id",
-        column2="training_resource_id",
-        domain=[],
-        context={},
-        copy=False,
-    )
-
     used_in_action_ids = fields.Many2manyView(
         string="Used in actions",
         required=False,
