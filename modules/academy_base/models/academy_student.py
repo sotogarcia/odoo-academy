@@ -12,34 +12,14 @@ from odoo.tools.safe_eval import safe_eval
 from odoo.osv.expression import OR
 from odoo.osv.expression import AND, TRUE_DOMAIN, FALSE_DOMAIN
 
-
 from ..utils.record_utils import create_domain_for_ids
 from ..utils.record_utils import create_domain_for_interval
 from ..utils.record_utils import INCLUDE_ARCHIVED_DOMAIN, ARCHIVED_DOMAIN
 from ..utils.helpers import OPERATOR_MAP, one2many_count
 
-
 from logging import getLogger
 
-try:
-    # Robust per-country VAT validation if available
-    from stdnum import util as stdnum_util
-except Exception:
-    stdnum_util = None
-
 _logger = getLogger(__name__)
-
-
-def _make_partner_proxy(method_name):
-    """Factory that returns a proxy method delegating to partner_id."""
-
-    def _proxy(self, *args, **kwargs):
-        partners = self.mapped("partner_id")
-        return getattr(partners, method_name)(*args, **kwargs)
-
-    _proxy.__name__ = method_name
-    _proxy.__doc__ = f"Proxy to res.partner.{method_name}"
-    return _proxy
 
 
 class AcademyStudent(models.Model):
@@ -48,9 +28,15 @@ class AcademyStudent(models.Model):
     _name = "academy.student"
     _description = "Academy student"
 
-    _inherit = ["res.partner.inherits.mixin", "mail.thread"]
+    _inherit = [
+        "mail.thread",
+        "mail.activity.mixin",
+        "academy.member.mixin",
+    ]
 
     _order = "complete_name ASC, id DESC"
+
+    _rec_name = "complete_name"
     _rec_names_search = [
         "complete_name",
         "email",

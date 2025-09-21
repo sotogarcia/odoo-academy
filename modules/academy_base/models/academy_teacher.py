@@ -15,32 +15,27 @@ _logger = getLogger(__name__)
 
 
 class AcademyTeacher(models.Model):
-    """Teachers are Odoo users who can perform some limited actions over
-    academy records
-    """
+    """A teacher is a partner who can be enroled on training actions"""
 
     _name = "academy.teacher"
     _description = "Academy teacher"
 
-    _rec_name = "name"
-    _order = "name ASC"
+    _inherit = [
+        "mail.thread",
+        "mail.activity.mixin",
+        "academy.member.mixin",
+    ]
 
-    _inherit = ["mail.thread"]
-    _inherits = {"res.users": "res_users_id"}
+    _order = "complete_name ASC, id DESC"
 
-    res_users_id = fields.Many2one(
-        string="Platform user",
-        required=True,
-        readonly=False,
-        index=False,
-        default=None,
-        help=False,
-        comodel_name="res.users",
-        domain=[],
-        context={},
-        ondelete="cascade",
-        auto_join=False,
-    )
+    _rec_name = "complete_name"
+    _rec_names_search = [
+        "complete_name",
+        "email",
+        "ref",
+        "vat",
+        "company_registry",
+    ]
 
     training_unit_ids = fields.Many2many(
         string="Training units",

@@ -48,7 +48,6 @@ class AcademyTrainingAction(models.Model):
     _inherit = [
         "image.mixin",
         "mail.thread",
-        "academy.abstract.observable",
         "academy.abstract.training",
         "ownership.mixin",
     ]

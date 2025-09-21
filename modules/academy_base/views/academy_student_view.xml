@@ -23,7 +23,7 @@
     <field name="active" eval="True"/>
     <field name="arch" type="xml">
       <list string="academy_student_tree" create="1" delete="1" edit="1">
-        <field name="ref" class="oe_field_signup_code" string="Sign-up code" readonly="1" />
+        <field name="ref" class="oe_field_signup_code" string="Sign-up code" readonly="1"/>
         <field name="signup_date" class="oe_field_signup_date"/>
         <field name="vat" class="oe_field_vat" optional="show"/>
         <field name="title" class="oe_field_title" optional="hide"/>
@@ -152,7 +152,8 @@
             <page string="Details" class="oe_page_Academics" accesskey="D">
               <group col="12" class="mt-2">
                 <group colspan="4">
-                  <field name="ref" class="oe_field_signup_code" string="Sign-up code" readonly="1" />
+                  <field name="ref" class="oe_field_signup_code" string="Sign-up code" readonly="1"
+                  />
                 </group>
                 <group colspan="4">
                   <field name="signup_date" class="oe_field_signup_date"/>
@@ -162,7 +163,7 @@
                     options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"/>
                 </group>
                 <group colspan="6">
-                  <field name="attainment_id" class="oe_field_attainment_id"
+                  <field name="attainment_id" class="oe_field_attainment_id" string="Qualification"
                     options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"/>
                 </group>
                 <group colspan="6">
@@ -173,8 +174,7 @@
               </group>
             </page>
             <page string="Contacts &amp; Addresses" name="contact_addresses">
-              <field name="child_ids" mode="kanban"
-                context="{
+              <field name="child_ids" mode="kanban" context="{
                   'default_parent_id': partner_id, 'default_user_id': user_id,
                   'default_street': street, 'default_street2': street2,
                   'default_city': city, 'default_state_id': state_id,
@@ -182,8 +182,7 @@
                   'default_lang': lang, 'default_type': 'other',
                   'form_view_ref': 'academy_base.view_res_partner_kanban_address_form_embed',
                   'kanban_view_ref': 'academy_base.view_res_partner_kanban_address_kanban_embed'
-                }">
-              </field>
+                }"> </field>
             </page>
             <page name="sales_purchases" string="Sales &amp; Purchase">
               <group name="container_row_2">
@@ -204,8 +203,8 @@
                 </group>
               </group>
             </page>
-            <page name='internal_notes' string="Internal Notes">
-                <field name="comment" placeholder="Internal notes..."/>
+            <page name="internal_notes" string="Internal Notes">
+              <field name="comment" placeholder="Internal notes..."/>
             </page>
           </notebook>
         </sheet>

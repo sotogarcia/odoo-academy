@@ -19,30 +19,12 @@ from logging import getLogger
 _logger = getLogger(__name__)
 
 
-class ResPartnerInheritsMixin(models.AbstractModel):
-    """
-    Abstract mixin to delegate to ``res.partner`` via ``_inherits``.
-
-    Purpose:
-      * Ensure each record is linked to exactly one partner
-        (enforced by ``UNIQUE(partner_id)``).
-      * Provide common fields and logic (e.g. signup date, contact info,
-        dynamic requirements) for models such as students or teachers.
-      * Define abstract hooks to be implemented by derived models
-        (category, sequence, inverse field).
-      * Expose the methods required so that all standard partner views
-        and behaviors (address, company creation, blacklist, etc.)
-        continue working transparently on derived models.
-      * Manage Odoo sequences to generate values shared by ``ref`` and
-        ``barcode``, ensuring consistent identifiers across partner-based
-        models.
-
-    In practice, this mixin guarantees that partner-based models behave
-    consistently as natural persons while still keeping their own identity.
-    """
-
-    _name = "res.partner.inherits.mixin"
-    _description = "Res partner inherits mixin"
+class AcademyMemberMixin(models.AbstractModel):
+    _name = "academy.member.mixin"
+    _description = (
+        "Common fields and methods for all models that represent "
+        "people within the academy community."
+    )
 
     _inherits = {"res.partner": "partner_id"}
 
@@ -103,8 +85,8 @@ class ResPartnerInheritsMixin(models.AbstractModel):
         default=None,
         help=False,
         comodel_name="cefrl.certificate",
-        relation="academy_student_cefrl_certificate_rel",
-        column1="student_id",
+        # relation="academy_student_cefrl_certificate_rel",
+        column1="person_id",
         column2="certificate_id",
         domain=[],
         context={},
@@ -120,8 +102,8 @@ class ResPartnerInheritsMixin(models.AbstractModel):
         default=None,
         help=False,
         comodel_name="cefrl.certificate",
-        relation="academy_student_implied_cefrl_certificate_rel",
-        column1="student_id",
+        # relation="academy_student_implied_cefrl_certificate_rel",
+        column1="person_id",
         column2="certificate_id",
         domain=[],
         context={},
@@ -270,7 +252,7 @@ class ResPartnerInheritsMixin(models.AbstractModel):
     def _check_email(self):
         required = get_config_param(
             self.env,
-            "academy_base.student_email_required",
+            "academy_base.partner_email_required",
             cast=str,
             default="except_debug",
             lower=True,
@@ -293,7 +275,7 @@ class ResPartnerInheritsMixin(models.AbstractModel):
     def _check_vat(self):
         required = get_config_param(
             self.env,
-            "academy_base.student_vat_required",
+            "academy_base.partner_vat_required",
             cast=str,
             default="except_debug",
             lower=True,
@@ -395,24 +377,50 @@ class ResPartnerInheritsMixin(models.AbstractModel):
 
     # -- Required by res.partner views ----------------------------------------
 
-    def mail_action_blacklist_remove(self):
-        return self.partner_id.mail_action_blacklist_remove()
-
-    def create_company(self):
-        return self.partner_id.create_company()
-
     def update_address(self, vals):
-        return self.partner_id.update_address(vals)
+        partner_set = self._get_partner_with_context()
+        return partner_set.update_address(vals)
 
     def open_commercial_entity(self):
-        return self.partner_id.open_commercial_entity()
+        partner_set = self._get_partner_with_context()
+        return partner_set.open_commercial_entity()
 
     def address_get(self, adr_pref=None):
-        return self.partner_id.address_get(adr_pref)
+        partner_set = self._get_partner_with_context()
+        return partner_set.address_get(adr_pref=None)
+
+    @api.model
+    def view_header_get(self, view_id, view_type):
+        partner_set = self._get_partner_with_context()
+        return partner_set.view_header_get(view_id, view_type)
 
     @api.model
     def get_import_templates(self):
-        return self.partner_id.get_import_templates()
+        partner_set = self._get_partner_with_context()
+        return partner_set.get_import_templates()
+
+    def mail_action_blacklist_remove(self):
+        partner_set = self._get_partner_with_context()
+        return partner_set.partner_id.mail_action_blacklist_remove()
+
+    def create_company(self):
+        partner_set = self._get_partner_with_context()
+        return partner_set.partner_id.create_company()
+
+    @api.model
+    @api.returns("self", lambda value: value.id)
+    def find_or_create(self, email, assert_valid_email=False):
+        self.partner_id.find_or_create(email, assert_valid_email=False)
+
+    @api.readonly
+    @api.model
+    def im_search(self, name, limit=20, excluded_ids=None):
+        self.partner_id.im_search(name, limit=20, excluded_ids=None)
+
+    @api.readonly
+    @api.model
+    def get_mention_suggestions(self, search, limit=8):
+        self.partner_id.get_mention_suggestions(search, limit=8)
 
     # -- Base model methods overrides -----------------------------------------
 
@@ -428,7 +436,7 @@ class ResPartnerInheritsMixin(models.AbstractModel):
             values["employee"] = False
 
         if not values.get("firstname") and not values.get("lastname"):
-            values["firstname"] = values.get("name", _("New student"))
+            values["firstname"] = values.get("name", _("Creating new"))
 
         return values
 
@@ -649,7 +657,7 @@ class ResPartnerInheritsMixin(models.AbstractModel):
             return fallback.with_company(company_id).next_by_id()
 
         # 3) Last resort: let Odoo try any global sequence with that code
-        code = sequence_obj.next_by_code("academy.student.signup.sequence")
+        code = sequence_obj.next_by_code(signup_code)
         if code:
             _logger.warning(
                 "Using global sequence by code for company_id=%s", company_id
@@ -658,13 +666,13 @@ class ResPartnerInheritsMixin(models.AbstractModel):
 
         raise UserError(
             _(
-                "Missing sequence for student sign-up. "
+                "Missing sequence for partner sign-up. "
                 "Create a company-specific sequence with code %(code)s "
                 "or define the fallback %(xid)s."
             )
             % {
-                "code": "academy.student.signup.sequence",
-                "xid": "academy_base.ir_sequence_academy_student_signup",
+                "code": signup_code,
+                "xid": sequence_xid,
             }
         )
 
@@ -677,6 +685,19 @@ class ResPartnerInheritsMixin(models.AbstractModel):
 
         if not values.get("signup_date", False):
             values["signup_date"] = fields.Date.context_today(self)
+
+    def _get_partner_with_context(self):
+        partner_set = self.mapped("partner_id")
+
+        context = self.env.context.copy()
+        context.update(active_model="res.partner")
+
+        if len(self.partner_id) == 1:
+            context.update(active_id=self.partner_id.id)
+        elif len(self.partner_id) > 1:
+            context.update(active_ids=self.partner_id.ids)
+
+        return partner_set.with_context(context)
 
     # -- Methods need to be implemented in derivated models -------------------
 

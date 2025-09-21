@@ -3,7 +3,7 @@
 <odoo noupdate="0">
 
     <record id="academy_default_teacher" model="academy.teacher">
-        <field name="res_users_id" ref="base.default_user"/>
+        <field name="user_id" ref="base.default_user"/>
     </record>
 
 </odoo>
