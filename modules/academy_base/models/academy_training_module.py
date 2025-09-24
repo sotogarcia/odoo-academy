@@ -8,6 +8,7 @@ all training module attributes and behavior.
 from odoo import models, fields, api
 from odoo.tools.translate import _
 from odoo.tools import safe_eval
+from odoo.exceptions import ValidationError
 from odoo.osv.expression import TRUE_DOMAIN, FALSE_DOMAIN
 from ..utils.helpers import OPERATOR_MAP, one2many_count, many2many_count
 
@@ -29,14 +30,19 @@ class AcademyTrainingModule(models.Model):
     _inherit = [
         "image.mixin",
         "mail.thread",
-        "academy.abstract.training",
         "ownership.mixin",
     ]
 
     _rec_name = "name"
-    _order = "name ASC"
+    _order = "parent_path, sequence, name"
+
+    _parent_name = "training_module_id"
+    _parent_store = True
 
     # ---------------------------- ENTITY FIELDS ------------------------------
+
+    # Required by _parent_store for efficient child_of searches
+    parent_path = fields.Char(index=True)
 
     name = fields.Char(
         string="Name",
@@ -120,22 +126,6 @@ class AcademyTrainingModule(models.Model):
         domain=[],
         context={},
         auto_join=False,
-    )
-
-    tree_ids = fields.Many2manyView(
-        string="Module tree",
-        required=False,
-        readonly=True,
-        index=False,
-        default=None,
-        help="List this module and all its training units",
-        comodel_name="academy.training.module",
-        relation="academy_training_module_tree_readonly",
-        column1="requested_module_id",
-        column2="responded_module_id",
-        domain=[],
-        context={},
-        copy=False,
     )
 
     module_code = fields.Char(
@@ -235,6 +225,27 @@ class AcademyTrainingModule(models.Model):
         matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
 
         return [("id", "in", matched)] if matched else FALSE_DOMAIN
+
+    # --------------------------- COMPUTED FIELDS -----------------------------
+
+    @api.constrains("training_module_id", "training_unit_ids")
+    def _check_two_level_hierarchy(self):
+        """Enforce a two-level hierarchy:
+        - A unit (record with ``training_module_id`` set) cannot have subunits.
+        - Only top-level modules (without a parent) can be selected as parent.
+        """
+        for record in self:
+            if record.training_module_id and record.training_unit_ids:
+                raise ValidationError(
+                    _("A training unit cannot have subunits.")
+                )
+            if (
+                record.training_module_id
+                and record.training_module_id.training_module_id
+            ):
+                raise ValidationError(
+                    _("Only top-level modules can be selected as parent.")
+                )
 
     # --------------------------- COMPUTED FIELDS -----------------------------
 

@@ -29,8 +29,6 @@ class AcademyCompetencyUnit(models.Model):
 
     _inherits = {"academy.training.module": "training_module_id"}
 
-    _inherit = ["academy.abstract.training"]
-
     competency_code = fields.Char(
         string="Unit code",
         required=False,

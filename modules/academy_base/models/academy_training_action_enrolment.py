@@ -43,7 +43,6 @@ class AcademyTrainingActionEnrolment(models.Model):
         "mail.thread",
         "mail.activity.mixin",
         "image.mixin",
-        "academy.abstract.training",
         "ownership.mixin",
     ]
 

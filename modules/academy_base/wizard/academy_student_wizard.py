@@ -21,6 +21,35 @@ from dateutil.relativedelta import relativedelta
 
 _logger = getLogger(__name__)
 
+HS_ENROLL = (
+    "All selected students who do not have active enrollments in the "
+    "specified training action, and whose enrollments do not overlap with the "
+    "specified date range, will be enrolled in that training action."
+)
+HS_UNENROLL = (
+    "The specified withdrawal date will be assigned to all the enrollments "
+    "that are active as of today for the selected students in the chosen "
+    "training action."
+)
+HS_RE_ENROLL = (
+    "The most recently completed enrollment for each selected student will be "
+    "duplicated, with the specified start and end dates assigned. If no end "
+    "date is established, the enrollment will be of permanent validity. "
+    "Students who already have enrollments overlapping with the specified "
+    "date range will be excluded from the process."
+)
+HS_SWITCH = (
+    "A new enrollment will be created in the target training action, with a "
+    "validity period defined by the provided dates. If no end date is "
+    "specified, the new enrollments will have permanent validity. The "
+    "specified enrollment date will be assigned to enrollments that are "
+    "active as of today in the original training action."
+)
+HS_SHOW = (
+    "All enrollments of the selected students for the indicated training "
+    "action that overlap with the given date range will be displayed."
+)
+
 
 class AcademyStudentWizard(models.TransientModel):
     """Allow to perform massive actions over a student recordset"""
@@ -138,10 +167,11 @@ class AcademyStudentWizard(models.TransientModel):
     def selection_values_for_action(self):
         return [
             ("enrol", _("Enrol")),
-            ("unenroll", _("Unenroll")),
-            ("re_enroll", _("Re-enrol")),
-            ("switch", _("Switch groups")),
-            ("show", _("Show related records")),
+            HS_ENROLL("unenroll", _("Unenroll")),
+            HS_UNENROLL("re_enroll", _("Re-enrol")),
+            HS_RE_ENROLL("switch", _("Switch groups")),
+            HS_SWITCH("show", _("Show related records")),
+            HS_SHOW,
         ]
 
     @api.onchange("action")
@@ -526,15 +556,17 @@ class AcademyStudentWizard(models.TransientModel):
 
     @api.depends("action")
     def _compute_description(self):
-        name_pattern = "academy_interface_student_wizard_action_{}"
-        module = "academy_base"
-
-        help_obj = self.env["academy.interface.help.string"]
-
         for record in self:
-            if record.action:
-                name = name_pattern.format(record.action)
-                record.description = help_obj.get_by_ref([module, name])
+            if record.action == "enrol":
+                record.description = HS_ENROLL
+            elif record.action == "unenroll":
+                record.description = HS_UNENROLL
+            elif record.action == "re_enroll":
+                record.description = HS_RE_ENROLL
+            elif record.action == "switch":
+                record.description = HS_SWITCH
+            elif record.action == "show":
+                record.description = HS_SHOW
             else:
                 record.description = _(
                     "Choose an action to perform on selected students"

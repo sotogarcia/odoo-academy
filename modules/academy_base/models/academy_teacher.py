@@ -5,7 +5,7 @@ This module contains the academy.teacher Odoo model which stores
 all teacher attributes and behavior.
 """
 
-from odoo import models, fields
+from odoo import models, fields, api
 from odoo.tools import safe_eval
 from odoo.tools.translate import _
 
@@ -55,3 +55,21 @@ class AcademyTeacher(models.Model):
         ],
         context={},
     )
+
+    # -- Methods overrides -------------------------------------------
+
+    @api.model
+    def _get_relevant_category_external_id(self):
+        return "academy_base.res_partner_category_teacher"
+
+    @api.model
+    def _get_relevant_signup_sequence_code(self):
+        return "academy.teacher.signup.sequence"
+
+    @api.model
+    def _get_relevant_signup_sequence_external_id(self):
+        return "academy_base.ir_sequence_academy_teacher_signup"
+
+    @api.model
+    def _get_inverse_field_name(self):
+        return "teacher_id"
