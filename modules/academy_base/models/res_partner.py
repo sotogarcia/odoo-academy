@@ -249,16 +249,3 @@ class ResPartner(models.Model):
             return "!="
         else:
             raise UserError(f"Operator not supported: {operator!r}")
-
-    # @api.model
-    # def default_get(self, fields):
-    #     values = super().default_get(fields)
-
-    #     values["parent_id"] = None
-    #     values["state_id"] = 455
-    #     values["country_id"] = 68
-    #     values["city"] = "Vigo"
-
-    #     print(values)
-
-    #     return values

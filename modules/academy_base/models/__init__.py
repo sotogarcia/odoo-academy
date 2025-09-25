@@ -59,14 +59,17 @@ from . import academy_training_modality
 # Training structure: modules, units, activities and actions
 # ---------------------------------------------------------------------------
 """
-    └── Training Specialty              (academy.training.specialty)
-        └── Competency Unit             (academy.competency.unit)
+└── Training Framework                  (academy.training.framework)
+    └── Training Program                (academy.training.program)
+        └── Training Program Line       (academy.training.program.line)
             └── Training Module         (academy.training.module)
-                └── Training Module       (academy.training.Module)
+                └── Training Block      (academy.training.module)
 """
+from . import academy_training_framework
 from . import academy_training_module
-from . import academy_competency_unit
 from . import academy_training_activity
+from . import academy_training_program_line
+from . import academy_competency_unit
 
 # ---------------------------------------------------------------------------
 # Training delivery (instances / sessions)
@@ -77,11 +80,11 @@ from . import academy_training_action_enrolment
 # ---------------------------------------------------------------------------
 # Relationships between training models
 # ---------------------------------------------------------------------------
-from . import academy_competency_unit_teacher_rel
-from . import academy_training_activity_training_module_rel
-from . import academy_training_activity_training_unit_rel
-from . import academy_training_module_used_in_training_action_rel
-from . import academy_training_action_student_rel
+# from . import academy_competency_unit_teacher_rel
+# from . import academy_training_activity_training_module_rel
+# from . import academy_training_activity_training_unit_rel
+# from . import academy_training_module_used_in_training_action_rel
+# from . import academy_training_action_student_rel
 
 # ---------------------------------------------------------------------------
 # Settings

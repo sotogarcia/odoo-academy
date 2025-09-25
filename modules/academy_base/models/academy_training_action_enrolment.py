@@ -81,7 +81,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         readonly=False,
         index=False,
         default=True,
-        help="Enables/disables the record",
+        help="Disable to archive without deleting.",
         tracking=True,
     )
 
@@ -111,22 +111,6 @@ class AcademyTrainingActionEnrolment(models.Model):
         context={},
         ondelete="cascade",
         auto_join=False,
-    )
-
-    competency_unit_ids = fields.Many2many(
-        string="Competency units",
-        required=True,
-        readonly=False,
-        index=True,
-        default=None,
-        help="Choose competency units in which the student will be enroled",
-        comodel_name="academy.competency.unit",
-        relation="academy_action_enrolment_competency_unit_rel",
-        column1="action_enrolment_id",
-        column2="competency_unit_id",
-        domain=[],
-        context={},
-        tracking=True,
     )
 
     # pylint: disable=locally-disabled, W0108
@@ -438,21 +422,13 @@ class AcademyTrainingActionEnrolment(models.Model):
 
     @api.onchange("training_action_id")
     def _onchange_training_action_id(self):
-        competency_path = (
-            "training_action_id.training_activity_id." "competency_unit_ids.id"
-        )
         modality_path = "training_action_id.training_modality_ids"
 
         for record in self:
             if self.training_action_id:
-                unit_ids = record.mapped(competency_path)
-                if unit_ids:
-                    record.competency_unit_ids = [(6, 0, unit_ids)]
-
                 self.training_modality_ids = self.mapped(modality_path)
                 self.deregister = self.training_action_id.end
             else:
-                record.competency_unit_ids = [(5, 0, 0)]
                 self.training_modality_ids = None
                 self.deregister = None
 
@@ -546,14 +522,6 @@ class AcademyTrainingActionEnrolment(models.Model):
             ),
         ),
     ]
-
-    @api.constrains("competency_unit_ids")
-    def _check_competency_unit_ids(self):
-        message = _("Enrolment must have at least one related competency unit")
-
-        for record in self:
-            if not record.competency_unit_ids:
-                raise ValidationError(message)
 
     @api.constrains(
         "student_id", "training_action_id", "register", "deregister"
@@ -829,17 +797,17 @@ class AcademyTrainingActionEnrolment(models.Model):
             action_obj = self.env["academy.training.action"]
             action_set = action_obj.browse(action_id)
 
-            if action_set and action_set.competency_unit_ids:
-                competency_ids = action_set.competency_unit_ids.ids
-                values["competency_unit_ids"] = [(6, 0, competency_ids)]
+            # if action_set and action_set.competency_unit_ids:
+            #     competency_ids = action_set.competency_unit_ids.ids
+            #     values["competency_unit_ids"] = [(6, 0, competency_ids)]
 
     @api.model_create_multi
     def create(self, value_list):
         """Overridden method 'create'"""
 
-        for values in value_list:
-            if "competency_unit_ids" not in values:
-                self._perform_a_full_enrollment(values)
+        # for values in value_list:
+        #     if "competency_unit_ids" not in values:
+        #         self._perform_a_full_enrollment(values)
 
         parent = super(AcademyTrainingActionEnrolment, self)
         result = parent.create(value_list)

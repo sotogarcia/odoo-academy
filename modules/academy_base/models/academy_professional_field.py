@@ -50,7 +50,7 @@ class AcademyProfessionalField(models.Model):
         readonly=False,
         index=False,
         default=True,
-        help="Enables/disables the record",
+        help="Disable to archive without deleting.",
     )
 
     code = fields.Char(
@@ -62,4 +62,18 @@ class AcademyProfessionalField(models.Model):
         help="Enter new code",
         size=8,
         translate=False,
+    )
+
+    professional_sector_ids = fields.One2many(
+        string="Professional sectors",
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help="List of sectors related with this professional field.",
+        comodel_name="academy.professional.sector",
+        inverse_name="professional_field_id",
+        domain=[],
+        context={},
+        auto_join=False,
     )

@@ -7,10 +7,10 @@ all training activity attributes and behavior.
 
 
 # pylint: disable=locally-disabled, E0401
-from re import search
 from odoo import models, fields, api
 from odoo.osv.expression import TRUE_DOMAIN, FALSE_DOMAIN
 from ..utils.helpers import OPERATOR_MAP, one2many_count, many2many_count
+from ..utils.helpers import sanitize_code
 from odoo.tools import safe_eval
 from odoo.tools.translate import _
 
@@ -28,14 +28,15 @@ class AcademyTrainingActivity(models.Model):
     _name = "academy.training.activity"
     _description = "Academy training activity"
 
-    _rec_name = "name"
-    _order = "name ASC"
-
     _inherit = [
         "image.mixin",
         "mail.thread",
         "ownership.mixin",
     ]
+
+    _rec_name = "name"
+    _order = "name ASC"
+    _rec_names_search = ["name", "code", "training_framework_id"]
 
     name = fields.Char(
         string="Name",
@@ -64,19 +65,32 @@ class AcademyTrainingActivity(models.Model):
         readonly=False,
         index=False,
         default=True,
-        help="Enables/disables the record",
+        help="Disable to archive without deleting.",
     )
 
-    token = fields.Char(
-        string="Token",
-        required=True,
-        readonly=True,
+    code = fields.Char(
+        string="Code",
+        required=False,
+        readonly=False,
         index=True,
-        default=lambda self: str(uuid4()),
-        help="Unique token used to track this answer",
+        default=None,
+        help="Reference code that identifies the program",
+        size=30,
         translate=False,
-        copy=False,
-        tracking=True,
+    )
+
+    training_framework_id = fields.Many2one(
+        string="Training framework",
+        required=True,
+        readonly=False,
+        index=True,
+        default=None,
+        help="Training framework to which this program belongs",
+        comodel_name="academy.training.framework",
+        domain=[],
+        context={},
+        ondelete="cascade",
+        auto_join=False,
     )
 
     professional_family_id = fields.Many2one(
@@ -93,6 +107,10 @@ class AcademyTrainingActivity(models.Model):
         auto_join=False,
     )
 
+    @api.onchange("professional_family_id")
+    def _onchange_professional_family_id(self):
+        self.professional_area_id = None
+
     professional_area_id = fields.Many2one(
         string="Professional area",
         required=False,
@@ -105,6 +123,39 @@ class AcademyTrainingActivity(models.Model):
         context={},
         ondelete="cascade",
         auto_join=False,
+    )
+
+    professional_field_id = fields.Many2one(
+        string="Professional field",
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help="Choose related professional field",
+        comodel_name="academy.professional.field",
+        domain=[],
+        context={},
+        ondelete="cascade",
+        auto_join=False,
+    )
+
+    @api.onchange("professional_field_id")
+    def _onchange_professional_field_id(self):
+        self.professional_sector_ids = [(5, 0, 0)]
+
+    professional_sector_ids = fields.Many2many(
+        string="Professional sectors",
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help="Choose related professional sectors",
+        comodel_name="academy.professional.sector",
+        relation="academy_training_activity_professional_sector_rel",
+        column1="training_activity_id",
+        column2="professional_sector_id",
+        domain=[],
+        context={},
     )
 
     qualification_level_id = fields.Many2one(
@@ -135,17 +186,6 @@ class AcademyTrainingActivity(models.Model):
         auto_join=False,
     )
 
-    activity_code = fields.Char(
-        string="Activity code",
-        required=False,
-        readonly=False,
-        index=False,
-        default=None,
-        help="Reference code that identifies the activity",
-        size=30,
-        translate=False,
-    )
-
     general_competence = fields.Text(
         string="General competence",
         required=False,
@@ -159,48 +199,53 @@ class AcademyTrainingActivity(models.Model):
         translate=True,
     )
 
-    professional_field_id = fields.Many2one(
-        string="Professional field",
-        required=False,
+    program_line_ids = fields.One2many(
+        string="Program lines",
+        required=True,
         readonly=False,
-        index=False,
-        default=None,
-        help="Choose related professional field",
-        comodel_name="academy.professional.field",
-        domain=[],
-        context={},
-        ondelete="cascade",
-        auto_join=False,
-    )
-
-    professional_sector_ids = fields.Many2many(
-        string="Professional sectors",
-        required=False,
-        readonly=False,
-        index=False,
-        default=None,
-        help="Choose related professional sectors",
-        comodel_name="academy.professional.sector",
-        relation="academy_training_activity_professional_sector_rel",
-        column1="training_activity_id",
-        column2="professional_sector_id",
-        domain=[],
-        context={},
-    )
-
-    competency_unit_ids = fields.One2many(
-        string="Competency units",
-        required=False,
-        readonly=False,
-        index=False,
+        index=True,
         default=None,
         help=False,
-        comodel_name="academy.competency.unit",
-        inverse_name="training_activity_id",
+        comodel_name="academy.training.program.line",
+        inverse_name="training_program_id",
         domain=[],
         context={},
         auto_join=False,
     )
+
+    program_line_count = fields.Integer(
+        string="Program line count",
+        required=True,
+        readonly=True,
+        index=False,
+        default=0,
+        help=False,
+        compute="_compute_program_line_count",
+        search="_search_program_line_count",
+    )
+
+    @api.depends("program_line_ids")
+    def _compute_program_line_count(self):
+        counts = one2many_count(self, "program_line_ids")
+
+        for record in self:
+            record.program_line_count = counts.get(record.id, 0)
+
+    @api.model
+    def _search_program_line_count(self, operator, value):
+        if value is True:
+            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
+        if value is False:
+            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
+
+        cmp_func = OPERATOR_MAP.get(operator)
+        if not cmp_func:
+            return FALSE_DOMAIN  # unsupported operator
+
+        counts = many2many_count(self.search([]), "program_line_ids")
+        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
+
+        return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
     training_action_ids = fields.One2many(
         string="Training actions",
@@ -217,52 +262,16 @@ class AcademyTrainingActivity(models.Model):
         check_company=True,
     )
 
-    available_module_ids = fields.Many2manyView(
-        string="Training modules",
-        required=False,
+    token = fields.Char(
+        string="Token",
+        required=True,
         readonly=True,
-        index=False,
-        default=None,
-        help=False,
-        comodel_name="academy.training.module",
-        relation="academy_training_activity_training_module_rel",
-        column1="training_activity_id",
-        column2="training_module_id",
-        domain=[],
-        context={},
+        index=True,
+        default=lambda self: str(uuid4()),
+        help="Unique token used to track this answer",
+        translate=False,
         copy=False,
-    )
-
-    available_unit_ids = fields.Many2manyView(
-        string="Available training units",
-        required=False,
-        readonly=True,
-        index=False,
-        default=None,
-        help=False,
-        comodel_name="academy.training.module",
-        relation="academy_training_activity_training_unit_rel",
-        column1="training_activity_id",
-        column2="training_unit_id",
-        domain=[],
-        context={},
-        copy=False,
-    )
-
-    # This no needs an SQL statement
-    training_module_ids = fields.Many2manyView(
-        string="Modules",
-        required=False,
-        readonly=True,
-        index=False,
-        default=None,
-        help="Training activities in which module is used",
-        comodel_name="academy.training.module",
-        relation="academy_competency_unit",
-        column1="training_activity_id",
-        column2="training_module_id",
-        domain=[],
-        context={},
+        tracking=True,
     )
 
     # -------------------------- MANAGEMENT FIELDS ----------------------------
@@ -275,142 +284,9 @@ class AcademyTrainingActivity(models.Model):
         default=0.0,
         digits=(16, 2),
         help="Total number of hours of length for the activity",
-        compute="_compute_hours",
-        search="_search_hours",
+        # compute="_compute_hours",
+        # search="_search_hours",
     )
-
-    @api.depends("competency_unit_ids.training_module_id")
-    def _compute_hours(self):
-        for record in self:
-            if record.competency_unit_ids:
-                path = "competency_unit_ids.training_module_id.hours"
-                hours_list = record.mapped(path)
-                record.hours = sum(hours_list)
-            else:
-                record.hours = 0.0
-
-    @api.model
-    def _search_hours(self, operator, value):
-        sql = """
-            WITH module_length AS (
-              SELECT
-                atm."id" AS training_module_id,
-                COALESCE (SUM(atu.ownhours), MIN(atm.ownhours), 0.0) :: FLOAT AS hours
-              FROM
-                academy_training_module AS atm
-                LEFT JOIN academy_training_module AS atu ON atu.training_module_id = atm."id"
-                AND atu.active
-              WHERE
-                atm.active
-              GROUP BY
-                atm."id"
-            ), activity_length AS (
-              SELECT
-                acu.training_activity_id,
-                SUM(ml.hours) AS hours
-              FROM
-                academy_competency_unit AS acu
-                INNER JOIN module_length AS ml ON ml."training_module_id" = acu.training_module_id
-              GROUP BY
-                acu.training_activity_id
-            )
-            SELECT
-              act."id" AS training_activity_id
-            FROM
-              academy_training_activity AS act
-              LEFT JOIN activity_length AS al ON al.training_activity_id = act."id"
-            WHERE
-              COALESCE (al.hours, 0.0) {operator} {value}
-        """
-
-        if value is True:
-            domain = TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
-        elif value is False:
-            domain = FALSE_DOMAIN if operator == "=" else TRUE_DOMAIN
-        else:
-            sql = sql.format(operator=operator, value=value)
-            self.env.cr.execute(sql)
-            results = self.env.cr.dictfetchall()
-
-            if results:
-                record_ids = [item["training_activity_id"] for item in results]
-                domain = [("id", "in", record_ids)]
-            else:
-                domain = FALSE_DOMAIN
-
-        return domain
-
-    # pylint: disable=W0212
-    competency_unit_count = fields.Integer(
-        string="Number of competency units",
-        required=False,
-        readonly=True,
-        index=False,
-        default=0,
-        help="Show the number of competency units in the training activity",
-        compute="_compute_competency_unit_count",
-        search="_search_competency_unit_count",
-    )
-
-    @api.depends("competency_unit_ids")
-    def _compute_competency_unit_count(self):
-        counts = one2many_count(self, "competency_unit_ids")
-
-        for record in self:
-            record.competency_unit_count = counts.get(record.id, 0)
-
-    @api.model
-    def _search_competency_unit_count(self, operator, value):
-        # Handle boolean-like searches Odoo may pass for required fields
-        if value is True:
-            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
-        if value is False:
-            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
-
-        cmp_func = OPERATOR_MAP.get(operator)
-        if not cmp_func:
-            return FALSE_DOMAIN  # unsupported operator
-
-        counts = one2many_count(self.search([]), "competency_unit_ids")
-        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
-
-        return [("id", "in", matched)] if matched else FALSE_DOMAIN
-
-    # pylint: disable=W0212
-    training_module_count = fields.Integer(
-        string="Number of training modules",
-        required=False,
-        readonly=True,
-        index=False,
-        default=0,
-        help="Show the number of training modules in the training activity",
-        compute="_compute_training_module_count",
-        search="_search_training_module_count",
-    )
-
-    @api.depends("training_module_ids")
-    def _compute_training_module_count(self):
-        counts = many2many_count(self, "training_module_ids")
-
-        for record in self:
-            record.training_module_count = counts.get(record.id, 0)
-
-    @api.model
-    def _search_training_module_count(self, operator, value):
-        # Handle boolean-like searches Odoo may pass for required fields
-        if value is True:
-            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
-        if value is False:
-            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
-
-        cmp_func = OPERATOR_MAP.get(operator)
-        if not cmp_func:
-            return FALSE_DOMAIN  # unsupported operator
-
-        counts = many2many_count(self.search([]), "training_module_ids")
-        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
-
-        return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
     # pylint: disable=W0212
     training_action_count = fields.Integer(
@@ -448,6 +324,16 @@ class AcademyTrainingActivity(models.Model):
 
         return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
+    # -------------------------- Contraints -----------------------------------
+
+    _sql_constraints = [
+        (
+            "code_unique",
+            "unique(code)",
+            "Module code must be unique",
+        ),
+    ]
+
     # ---------------------------- PUBLIC FIELDS ------------------------------
 
     # pylint: disable=locally-disabled, W0613
@@ -469,25 +355,23 @@ class AcademyTrainingActivity(models.Model):
             "context": {"default_training_activity_id": self.id},
         }
 
-    def show_competency_units(self):
+    def view_training_program_lines(self):
         self.ensure_one()
 
-        action_xid = "academy_base.action_competency_unit_act_window"
+        action_xid = "academy_base.action_training_program_line_act_window"
         act_wnd = self.env.ref(action_xid)
-
-        name = _("Competency units")
 
         context = self.env.context.copy()
         context.update(safe_eval(act_wnd.context))
-        context.update({"default_training_activity_id": self.id})
+        context.update({"default_training_program_id": self.id})
 
-        domain = [("training_activity_id", "=", self.id)]
+        domain = [("training_program_id", "=", self.id)]
 
         serialized = {
             "type": "ir.actions.act_window",
             "res_model": act_wnd.res_model,
             "target": "current",
-            "name": name,
+            "name": act_wnd.name,
             "view_mode": act_wnd.view_mode,
             "domain": domain,
             "context": context,
@@ -495,39 +379,19 @@ class AcademyTrainingActivity(models.Model):
             "help": act_wnd.help,
         }
 
-        tree_xid = "academy_base.view_academy_competency_unit_batch_edit_tree"
-        tree_view = self.env.ref(tree_xid)
-
-        views = []
-        for pair in act_wnd.views:
-            if pair[1] == "tree":
-                views.append((tree_view.id, pair[1]))
-            else:
-                views.append(pair)
-
-        serialized["views"] = views
-
         return serialized
 
-    def show_training_modules(self):
-        self.ensure_one()
+    # -- Methods overrides ----------------------------------------------------
 
-        mids = self.mapped("competency_unit_ids.training_module_id.id")
-
-        return {
-            "model": "ir.actions.act_window",
-            "type": "ir.actions.act_window",
-            "name": _("Training modules"),
-            "res_model": "academy.training.module",
-            "target": "current",
-            "view_mode": "kanban,list,form",
-            "domain": [("id", "in", mids)],
-            "context": {"default_training_activity_id": self.id},
-        }
+    @api.model_create_multi
+    def create(self, value_list):
+        sanitize_code(value_list, "upper")
+        return super().create(value_list)
 
     def write(self, values):
         """Overridden method 'write'"""
         values = values or {}
+        sanitize_code(values, "upper")
 
         user = self.env.user
         if not user.has_group("academy_base.academy_group_manager"):

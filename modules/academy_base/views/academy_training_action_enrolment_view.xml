@@ -111,14 +111,6 @@
                     </group>
 
                     <notebook>
-                        <page string="Competencies" class="oe_page_competencies" accesskey="M">
-                            <field name="competency_unit_ids" class="oe_field_competency_unit_ids"
-                                colspan="2" nolabel="1" widget="many2many"
-                                options="{'no_create': True}"
-                                domain="[('training_activity_id', '=', training_activity_id)]"
-                                context="{'list_view_ref': 'academy_base.view_academy_competency_unit_append_existing_tree'}"
-                            />
-                        </page>
                         <page id="setup" string="Setup" class="oe_page_setup" accesskey="S">
                             <group id="ownership" col="4" string="Ownership"
                                 groups="record_ownership.record_ownership_proxy">
@@ -231,7 +223,6 @@
                 <separator/>
                 <field name="training_activity_id"/>
                 <field name="training_action_id"/>
-                <field name="competency_unit_ids"/>
                 <field name="training_modality_ids"/>
 
                 <separator/>
@@ -303,7 +294,6 @@
             <list string="view_academy_training_action_enrolment_embed_tree" create="1" delete="1"
                 edit="1">
                 <field name="training_action_id" class="oe_field_training_action_id"/>
-                <field name="competency_unit_ids" class="oe_field_competency_unit_ids"/>
                 <field name="register" class="oe_field_register"/>
                 <field name="deregister" class="oe_field_deregister"/>
             </list>
@@ -324,8 +314,6 @@
             <list string="view_academy_training_action_enrolment_edit_by_user_tree" create="1"
                 delete="1" edit="1" editable="top">
                 <field name="training_action_id" class="oe_field_training_action_id"/>
-                <field name="competency_unit_ids" class="oe_field_competency_unit_ids"
-                    widget="many2many_tags"/>
                 <field name="register" class="oe_field_register"/>
                 <field name="deregister" class="oe_field_deregister"/>
             </list>

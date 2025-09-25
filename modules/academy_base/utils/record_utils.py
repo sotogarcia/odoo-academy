@@ -25,8 +25,8 @@ _logger = getLogger(__name__)
 # from odoo.addons.academy_base.utils.record_utils import ARCHIVED_DOMAIN
 # -----------------------------------------------------------------------------.
 
-ARCHIVED_DOMAIN = [('active', '!=', True)]
-INCLUDE_ARCHIVED_DOMAIN = ['|', ('active', '=', True), ('active', '!=', True)]
+ARCHIVED_DOMAIN = [("active", "!=", True)]
+INCLUDE_ARCHIVED_DOMAIN = ["|", ("active", "=", True), ("active", "!=", True)]
 
 
 def get_active_records(env, expected=None):
@@ -45,10 +45,10 @@ def get_active_records(env, expected=None):
         context's active model, or None if no active model found.
     """
 
-    _logger.debug(f'get_active_records({env}, {expected})')
+    _logger.debug(f"get_active_records({env}, {expected})")
 
     context = env.context
-    active_model = context.get('active_model', False)
+    active_model = context.get("active_model", False)
 
     if isinstance(expected, str):
         expected = [expected]
@@ -58,10 +58,10 @@ def get_active_records(env, expected=None):
     if active_model and (expected is None or active_model in expected):
         record_set = env[active_model]
 
-        active_ids = context.get('active_ids', [])
+        active_ids = context.get("active_ids", [])
 
         if not active_ids:
-            active_id = context.get('active_id', None)
+            active_id = context.get("active_id", None)
             if active_id:
                 active_ids = [active_id]
 
@@ -71,7 +71,7 @@ def get_active_records(env, expected=None):
     else:
         record_set = None
 
-    _logger.debug(f'get_active_records > {record_set}')
+    _logger.debug(f"get_active_records > {record_set}")
 
     return record_set
 
@@ -101,7 +101,7 @@ def has_changed(record, field_name):
         database.
     """
 
-    _logger.debug(f'has_changed({record}, {field_name})')
+    _logger.debug(f"has_changed({record}, {field_name})")
 
     record.ensure_one()
 
@@ -114,7 +114,7 @@ def has_changed(record, field_name):
         else:
             result = True
 
-    _logger.debug(f'has_changed > {result}')
+    _logger.debug(f"has_changed > {result}")
 
     return result
 
@@ -144,7 +144,7 @@ def create_domain_for_ids(field_name, targets, restrictive=True):
     """
 
     _logger.debug(
-        f'create_domain_for_ids({field_name}, {targets}, {restrictive})'
+        f"create_domain_for_ids({field_name}, {targets}, {restrictive})"
     )
 
     if isinstance(targets, models.Model):
@@ -154,23 +154,24 @@ def create_domain_for_ids(field_name, targets, restrictive=True):
     elif isinstance(targets, (tuple, list)):
         targets = targets
     else:
-        msg = _('Unknown data for targets parameter')
+        msg = _("Unknown data for targets parameter")
         raise UserError(msg)
 
     if targets:
-        domain = [(field_name, 'in', targets)]
+        domain = [(field_name, "in", targets)]
     elif restrictive:
         domain = FALSE_DOMAIN
     else:
         domain = TRUE_DOMAIN
 
-    _logger.debug(f'create_domain_for_ids > {domain}')
+    _logger.debug(f"create_domain_for_ids > {domain}")
 
     return domain
 
 
-def create_domain_for_interval(field_start, field_stop, point_in_time,
-                               trunc_to_date=False):
+def create_domain_for_interval(
+    field_start, field_stop, point_in_time, trunc_to_date=False
+):
     """
     Creates a domain to find records where a time interval overlaps with a
     given point in time or another interval. This is useful for filtering
@@ -199,8 +200,8 @@ def create_domain_for_interval(field_start, field_stop, point_in_time,
     """
 
     _logger.debug(
-        f'create_domain_for_interval({field_start}, {field_stop}, '
-        f'{point_in_time}, {trunc_to_date})'
+        f"create_domain_for_interval({field_start}, {field_stop}, "
+        f"{point_in_time}, {trunc_to_date})"
     )
     if isinstance(point_in_time, (list, tuple)):
         date_start, date_stop = point_in_time[0], point_in_time[1]
@@ -214,38 +215,38 @@ def create_domain_for_interval(field_start, field_stop, point_in_time,
         date_stop = date_stop.strftime(pattern)
 
     domain = [
-        '&',
-        (field_start, '<=', date_stop),
-        '|',
-        (field_stop, '>=', date_start),
-        (field_stop, '=', False)
+        "&",
+        (field_start, "<=", date_stop),
+        "|",
+        (field_stop, ">=", date_start),
+        (field_stop, "=", False),
     ]
 
-    _logger.debug(f'create_domain_for_interval > {domain}')
+    _logger.debug(f"create_domain_for_interval > {domain}")
 
     return domain
 
 
 def get_by_ref(env, xmlid, raise_if_not_found=False):
     if isinstance(xmlid, (tuple, list)) and len(xmlid) == 2:
-        xmlid = '.'.join(xmlid)
+        xmlid = ".".join(xmlid)
     elif not isinstance(str):
-        msg = _('Invalid external identifier «{}» for help string')
+        msg = _("Invalid external identifier «{}» for help string")
         raise UserError(msg.format(xmlid))
 
-    imd_obj = env['ir.model.data']
+    imd_obj = env["ir.model.data"]
     return imd_obj.xmlid_to_object(xmlid, raise_if_not_found=False)
 
 
 def single_or_default(items, default=None):
-    if (items and len(items) == 1 and items[0]):
+    if items and len(items) == 1 and items[0]:
         return items[0]
     else:
         return default
 
 
 def get_training_activity(env, target):
-    """ Get the related training activity record based on the given target
+    """Get the related training activity record based on the given target
     record.
 
     This is useful to get the activity from a training ``fields.Reference``
@@ -259,18 +260,18 @@ def get_training_activity(env, target):
         academy.training.activity: The related training activity record.
     """
 
-    activity = env['academy.training.activity']
+    activity = env["academy.training.activity"]
 
     if target:
         model = target._name
 
-        if model == 'academy.training.action.enrolment':
+        if model == "academy.training.action.enrolment":
             activity = target.training_action_id.training_activity_id
-        elif model == 'academy.training.action':
+        elif model == "academy.training.action":
             activity = target.training_activity_id
-        elif model == 'academy.training.activity':
+        elif model == "academy.training.activity":
             activity = target
-        elif model == 'academy.competency.unit':
+        elif model == "academy.competency.unit":
             activity = target.training_activity_id
 
     return activity

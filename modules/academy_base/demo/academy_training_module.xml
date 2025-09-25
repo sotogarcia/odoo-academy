@@ -7,7 +7,7 @@
         <field name="description">Students will gain basic hands-on experience using the integrated
             programs of Microsoft Office 2010</field>
         <field name="active">True</field>
-        <field name="module_code">MS2010</field>
+        <field name="code">MS2010</field>
     </record>
 
     <record id="academy_training_module_lb5" model="academy.training.module">
@@ -15,7 +15,7 @@
         <field name="description">Students will gain basic hands-on experience using the integrated
             programs of Microsoft Office 2010</field>
         <field name="active">True</field>
-        <field name="module_code">LBO50</field>
+        <field name="code">LBO50</field>
     </record>
 
     <record id="academy_training_module_win10" model="academy.training.module">
@@ -23,8 +23,8 @@
         <field name="description">Students will gain basic practical experience using the current
             most used operating system</field>
         <field name="active">True</field>
-        <field name="ownhours">5</field>
-        <field name="module_code">WIN10</field>
+        <field name="hours">5</field>
+        <field name="code">WIN10</field>
     </record>
 
     <!---  TRAINING UNITS  -->
@@ -34,8 +34,8 @@
         <field name="description">You will create, edit, and enhance standard business documents
             using Microsoft® Office Word 2010</field>
         <field name="sequence">1</field>
-        <field name="ownhours">4</field>
-        <field name="module_code">MSW2010</field>
+        <field name="hours">4</field>
+        <field name="code">MSW2010</field>
         <field name="active">True</field>
         <field name="training_module_id" ref="academy_base.academy_training_module_ms2010"/>
     </record>
@@ -46,8 +46,8 @@
             necessary skills to create, edit, format, and print basic Microsoft Excel 2010
             worksheets</field>
         <field name="sequence">1</field>
-        <field name="ownhours">6</field>
-        <field name="module_code">MSX2010</field>
+        <field name="hours">6</field>
+        <field name="code">MSX2010</field>
         <field name="active">True</field>
         <field name="training_module_id" ref="academy_base.academy_training_module_ms2010"/>
     </record>
@@ -57,8 +57,8 @@
         <field name="description">You will create, edit, and enhance standard business documents
             using LibreOffice Writer 5</field>
         <field name="sequence">1</field>
-        <field name="ownhours">4</field>
-        <field name="module_code">LBW5</field>
+        <field name="hours">4</field>
+        <field name="code">LBW5</field>
         <field name="active">True</field>
         <field name="training_module_id" ref="academy_base.academy_training_module_lb5"/>
     </record>
@@ -68,8 +68,8 @@
         <field name="description">This course is designed for students who want to gain the
             necessary skills to create, edit, format, and print basic LibreOffice worksheets</field>
         <field name="sequence">1</field>
-        <field name="ownhours">6</field>
-        <field name="module_code">LBC5</field>
+        <field name="hours">6</field>
+        <field name="code">LBC5</field>
         <field name="active">True</field>
         <field name="training_module_id" ref="academy_base.academy_training_module_lb5"/>
     </record>
@@ -78,8 +78,8 @@
         <field name="name">Odoo ERP</field>
         <field name="description">This course is designed for students who want to gain the
             necessary skills to operate with Odoo ERP</field>
-        <field name="ownhours">8</field>
-        <field name="module_code">ODOO</field>
+        <field name="hours">8</field>
+        <field name="code">ODOO</field>
         <field name="active">True</field>
     </record>
 

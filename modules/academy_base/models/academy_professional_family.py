@@ -53,7 +53,7 @@ class AcademyProfessionalFamily(models.Model):
         readonly=False,
         index=False,
         default=True,
-        help="Enables/disables the record",
+        help="Disable to archive without deleting.",
     )
 
     professional_area_ids = fields.One2many(

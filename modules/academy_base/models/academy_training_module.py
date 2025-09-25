@@ -11,6 +11,7 @@ from odoo.tools import safe_eval
 from odoo.exceptions import ValidationError
 from odoo.osv.expression import TRUE_DOMAIN, FALSE_DOMAIN
 from ..utils.helpers import OPERATOR_MAP, one2many_count, many2many_count
+from ..utils.helpers import sanitize_code
 
 from logging import getLogger
 from uuid import uuid4
@@ -35,6 +36,7 @@ class AcademyTrainingModule(models.Model):
 
     _rec_name = "name"
     _order = "parent_path, sequence, name"
+    _rec_names_search = ["name", "code"]
 
     _parent_name = "training_module_id"
     _parent_store = True
@@ -71,19 +73,7 @@ class AcademyTrainingModule(models.Model):
         readonly=False,
         index=False,
         default=True,
-        help="Enables/disables the record",
-    )
-
-    token = fields.Char(
-        string="Token",
-        required=True,
-        readonly=True,
-        index=True,
-        default=lambda self: str(uuid4()),
-        help="Unique token used to track this answer",
-        translate=False,
-        copy=False,
-        tracking=True,
+        help="Disable to archive without deleting.",
     )
 
     training_module_id = fields.Many2one(
@@ -114,21 +104,7 @@ class AcademyTrainingModule(models.Model):
         auto_join=False,
     )
 
-    competency_unit_ids = fields.One2many(
-        string="Competency units",
-        required=False,
-        readonly=True,
-        index=True,
-        default=None,
-        help="List all competency units which use this training module",
-        comodel_name="academy.competency.unit",
-        inverse_name="training_module_id",
-        domain=[],
-        context={},
-        auto_join=False,
-    )
-
-    module_code = fields.Char(
+    code = fields.Char(
         string="Code",
         required=False,
         readonly=False,
@@ -139,30 +115,14 @@ class AcademyTrainingModule(models.Model):
         translate=False,
     )
 
-    ownhours = fields.Float(
-        string="Own hours",
+    hours = fields.Float(
+        string="Hours",
         required=True,
         readonly=False,
         index=False,
         default=0.0,
         digits=(16, 2),
         help="Length in hours",
-    )
-
-    used_in_action_ids = fields.Many2manyView(
-        string="Used in actions",
-        required=False,
-        readonly=True,
-        index=False,
-        default=None,
-        help=False,
-        comodel_name="academy.training.action",
-        relation="academy_training_module_used_in_training_action_rel",
-        column1="training_module_id",
-        column2="training_action_id",
-        domain=[],
-        context={},
-        copy=False,
     )
 
     sequence = fields.Integer(
@@ -174,44 +134,40 @@ class AcademyTrainingModule(models.Model):
         help="Choose the unit order",
     )
 
-    # This no needs an SQL statement
-    training_activity_ids = fields.Many2manyView(
-        string="Activities",
-        required=False,
-        readonly=True,
-        index=False,
+    program_line_ids = fields.One2many(
+        string="Program lines",
+        required=True,
+        readonly=False,
+        index=True,
         default=None,
-        help="Training activities in which module is used",
-        comodel_name="academy.training.activity",
-        relation="academy_competency_unit",
-        column1="training_module_id",
-        column2="training_activity_id",
+        help=False,
+        comodel_name="academy.training.program.line",
+        inverse_name="training_module_id",
         domain=[],
         context={},
-        copy=False,
+        auto_join=False,
     )
 
-    training_activity_count = fields.Integer(
-        string="Training activity count",
+    program_line_count = fields.Integer(
+        string="Program line count",
         required=True,
         readonly=True,
         index=False,
         default=0,
-        help="Number of training activities that use this module",
-        compute="_compute_training_activity_count",
-        search="_search_training_activity_count",
+        help=False,
+        compute="_compute_program_line_count",
+        search="_search_program_line_count",
     )
 
-    @api.depends("training_activity_ids")
-    def _compute_training_activity_count(self):
-        counts = many2many_count(self, "training_activity_ids")
+    @api.depends("program_line_ids")
+    def _compute_program_line_count(self):
+        counts = one2many_count(self, "program_line_ids")
 
         for record in self:
-            record.training_activity_count = counts.get(record.id, 0)
+            record.program_line_count = counts.get(record.id, 0)
 
     @api.model
-    def _search_training_activity_count(self, operator, value):
-        # Handle boolean-like searches Odoo may pass for required fields
+    def _search_program_line_count(self, operator, value):
         if value is True:
             return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
         if value is False:
@@ -221,59 +177,24 @@ class AcademyTrainingModule(models.Model):
         if not cmp_func:
             return FALSE_DOMAIN  # unsupported operator
 
-        counts = many2many_count(self.search([]), "training_activity_ids")
+        counts = many2many_count(self.search([]), "program_line_ids")
         matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
 
         return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
-    # --------------------------- COMPUTED FIELDS -----------------------------
-
-    @api.constrains("training_module_id", "training_unit_ids")
-    def _check_two_level_hierarchy(self):
-        """Enforce a two-level hierarchy:
-        - A unit (record with ``training_module_id`` set) cannot have subunits.
-        - Only top-level modules (without a parent) can be selected as parent.
-        """
-        for record in self:
-            if record.training_module_id and record.training_unit_ids:
-                raise ValidationError(
-                    _("A training unit cannot have subunits.")
-                )
-            if (
-                record.training_module_id
-                and record.training_module_id.training_module_id
-            ):
-                raise ValidationError(
-                    _("Only top-level modules can be selected as parent.")
-                )
-
-    # --------------------------- COMPUTED FIELDS -----------------------------
-
-    hours = fields.Float(
-        string="Hours",
-        required=False,
+    token = fields.Char(
+        string="Token",
+        required=True,
         readonly=True,
-        index=False,
-        default=0.0,
-        digits=(16, 2),
-        help="Length in hours",
-        compute=lambda self: self._compute_hours(),
+        index=True,
+        default=lambda self: str(uuid4()),
+        help="Unique token used to track this answer",
+        translate=False,
+        copy=False,
+        tracking=True,
     )
 
-    @api.depends("training_unit_ids", "ownhours")
-    def _compute_hours(self):
-        units_obj = self.env["academy.training.module"]
-
-        for record in self:
-            units_domain = [("training_module_id", "=", record.id)]
-            units_set = units_obj.search(
-                units_domain, offset=0, limit=None, order=None, count=False
-            )
-
-            if units_set:
-                record.hours = sum(units_set.mapped("ownhours"))
-            else:
-                record.hours = record.ownhours
+    # --------------------------- COMPUTED FIELDS -----------------------------
 
     training_unit_count = fields.Integer(
         string="Units",
@@ -310,6 +231,125 @@ class AcademyTrainingModule(models.Model):
 
         return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
+    # --- SQL constraints --------------------------------------------------
+    _sql_constraints = [
+        (
+            "code_unique",
+            "unique(code)",
+            "Module code must be unique",
+        ),
+        (
+            "hours_non_negative",
+            "CHECK(hours >= 0)",
+            "Hours must be a non-negative number",
+        ),
+    ]
+
+    @api.constrains("training_module_id", "training_unit_ids")
+    def _check_two_level_hierarchy(self):
+        """Enforce a two-level hierarchy and prevent cycles:
+        - A unit (has training_module_id) cannot have subunits.
+        - Only top-level modules (without parent) can be selected as parent.
+        - No cyclic parent chains.
+        """
+        for record in self:
+            # 1) A unit cannot have subunits
+            if record.training_module_id and record.training_unit_ids:
+                raise ValidationError(
+                    _("A training unit cannot have subunits.")
+                )
+
+            # 2) Only top-level modules can be selected as parent
+            parent = record.training_module_id
+            if parent and parent.training_module_id:
+                raise ValidationError(
+                    _("Only top-level modules can be selected as parent.")
+                )
+
+    @api.constrains("training_module_id")
+    def _check_no_cycles(self):
+        if not self._check_recursion():
+            raise ValidationError(_("Cyclic hierarchy is not allowed."))
+
+    # -- Methods overrides ----------------------------------------------------
+
+    @api.model_create_multi
+    def create(self, value_list):
+        sanitize_code(value_list, "upper")
+
+        result = super().create(value_list)
+        after_parents = result.mapped("parent_id")
+
+        self._update_parent_hours(parents=after_parents)
+
+        return result
+
+    def write(self, values):
+        sanitize_code(values, "upper")
+
+        before_parents = self.mapped("parent_id")
+        result = super().write(values)
+        after_parents = self.mapped("parent_id")
+
+        affected = before_parents | after_parents
+        self._update_parent_hours(parents=affected)
+
+        return result
+
+    # -------------------------- PUBLIC METHODS -------------------------------
+
+    def view_training_units(self):
+        self.ensure_one()
+
+        action_xid = "academy_base.action_training_module_units_act_window"
+        act_wnd = self.env.ref(action_xid)
+
+        context = self.env.context.copy()
+        context.update(safe_eval(act_wnd.context))
+        context.update({"default_training_module_id": self.id})
+
+        domain = [("training_module_id", "=", self.id)]
+
+        serialized = {
+            "type": "ir.actions.act_window",
+            "res_model": act_wnd.res_model,
+            "target": "current",
+            "name": act_wnd.name,
+            "view_mode": act_wnd.view_mode,
+            "domain": domain,
+            "context": context,
+            "search_view_id": act_wnd.search_view_id.id,
+            "help": act_wnd.help,
+        }
+
+        return serialized
+
+    def view_training_program_lines(self):
+        self.ensure_one()
+
+        action_xid = "academy_base.action_training_program_line_act_window"
+        act_wnd = self.env.ref(action_xid)
+
+        context = self.env.context.copy()
+        context.update(safe_eval(act_wnd.context))
+        context.update({"default_training_module_id": self.id})
+
+        domain = [("training_module_id", "=", self.id)]
+
+        serialized = {
+            "type": "ir.actions.act_window",
+            "res_model": act_wnd.res_model,
+            "target": "current",
+            "name": act_wnd.name,
+            "view_mode": act_wnd.view_mode,
+            "domain": domain,
+            "context": context,
+            "search_view_id": act_wnd.search_view_id.id,
+            "help": act_wnd.help,
+        }
+
+        return serialized
+
     # -------------------------- AUXILIARY METHODS ----------------------------
 
     def _get_id(self, model_or_id):
@@ -322,42 +362,39 @@ class AcademyTrainingModule(models.Model):
 
         return result
 
-    def view_training_units(self):
-        return {
-            "model": "ir.actions.act_window",
-            "type": "ir.actions.act_window",
-            "name": _("Training units"),
-            "res_model": "academy.training.module",
-            "target": "current",
-            "view_mode": "kanban,list,form",
-            "domain": [("training_module_id", "=", self.id)],
-            "context": {"default_training_module_id": self.id},
-        }
+    @api.model
+    def _update_parent_hours(self, parents=None):
+        """
+        Recompute the 'hours' field for the given parent modules.
 
-    def view_training_activities(self):
-        self.ensure_one()
+        This method sums the 'hours' of all active child modules and updates
+        each parent module with the total. It is called after create/write
+        operations to keep parent hours consistent with their children.
 
-        action_xid = "academy_base.action_academy_training_activity_act_window"
-        act_wnd = self.env.ref(action_xid)
+        Args:
+            parents (recordset[academy.training.module] | None):
+                Optional recordset of parent modules to update. If None,
+                the method will use the parents of the current recordset.
 
-        name = _("View {}").format("Name")
+        Returns:
+            None
+        """
+        if not parents:
+            return
 
-        context = self.env.context.copy()
-        context.update(safe_eval(act_wnd.context))
+        module_obj = self.env["academy.training.module"]
+        rows = module_obj.read_group(
+            domain=[
+                ("parent_id", "in", parents.ids),
+                ("active", "=", True),
+            ],
+            fields=["hours:sum"],
+            groupby=["parent_id"],
+        )
 
-        activity_ids = self.training_activity_ids.ids
-        domain = [("id", "in", activity_ids)]
+        for row in rows:
+            parent_id = row["parent_id"][0]
+            total_hours = row["hours_sum"] or 0.0
 
-        serialized = {
-            "type": "ir.actions.act_window",
-            "res_model": act_wnd.res_model,
-            "target": "current",
-            "name": name,
-            "view_mode": act_wnd.view_mode,
-            "domain": domain,
-            "context": context,
-            "search_view_id": act_wnd.search_view_id.id,
-            "help": act_wnd.help,
-        }
-
-        return serialized
+            module = module_obj.browse(parent_id)
+            module.write({"hours": total_hours})

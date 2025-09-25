@@ -94,7 +94,7 @@ class AcademyTrainingAction(models.Model):
         readonly=False,
         index=False,
         default=True,
-        help="Enables/disables the record",
+        help="Disable to archive without deleting.",
     )
 
     token = fields.Char(
@@ -283,22 +283,6 @@ class AcademyTrainingAction(models.Model):
         copy=False,
     )
 
-    student_ids = fields.Many2manyView(
-        string="Students",
-        required=False,
-        readonly=True,
-        index=False,
-        default=None,
-        help="Show the students have been enroled in this training action",
-        comodel_name="academy.student",
-        relation="academy_training_action_student_rel",
-        column1="training_action_id",
-        column2="student_id",
-        domain=[],
-        context={},
-        copy=False,
-    )
-
     enrolment_count = fields.Integer(
         string="Enrolment count",
         required=False,
@@ -377,9 +361,7 @@ class AcademyTrainingAction(models.Model):
         related="training_activity_id.attainment_id",
     )
 
-    activity_code = fields.Char(
-        string="Activity code", related="training_activity_id.activity_code"
-    )
+    code = fields.Char(string="Code", related="training_activity_id.code")
 
     general_competence = fields.Text(
         string="General competence",
@@ -394,16 +376,6 @@ class AcademyTrainingAction(models.Model):
     professional_sector_ids = fields.Many2many(
         string="Professional sectors",
         related="training_activity_id.professional_sector_ids",
-    )
-
-    competency_unit_ids = fields.One2many(
-        string="Competency units",
-        related="training_activity_id.competency_unit_ids",
-    )
-
-    competency_unit_count = fields.Integer(
-        string="Number of competency units",
-        related="training_activity_id.competency_unit_count",
     )
 
     # ------------------------------ CONSTRAINS -------------------------------

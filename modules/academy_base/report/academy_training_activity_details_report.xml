@@ -31,7 +31,7 @@
                                     <dt class="mr-2" style="float: left;">Denomination:</dt>
                                     <dd style="float: left;"><t t-esc="o.name"/>&#160;</dd>
                                     <dt class="mr-2" style="float: left; clear: left;">Code:</dt>
-                                    <dd style="float: left;"><t t-esc="o.activity_code"/>&#160;</dd>
+                                    <dd style="float: left;"><t t-esc="o.code"/>&#160;</dd>
                                     <dt class="mr-2" style="float: left; clear: left;">Professional
                                         family:</dt>
                                     <dd style="float: left;">
@@ -61,12 +61,12 @@
                                             t-as="competency_unit_id">
                                             <li>
                                                 <strong class="mr-2">
-                                                  <span t-if="competency_unit_id.competency_code"><t
-                                                  t-esc="competency_unit_id.competency_code"
+                                                  <span t-if="competency_unit_id.code"><t
+                                                  t-esc="competency_unit_id.code"
                                                   /></span>
                                                   <span t-else="" class="unit_item">UNIT </span>: </strong>
                                                 <span>
-                                                  <t t-esc="competency_unit_id.competency_name"/>
+                                                  <t t-esc="competency_unit_id.name"/>
                                                 </span>
                                             </li>
                                         </t>
@@ -120,8 +120,8 @@
                                                 <t t-set="module_id"
                                                   t-value="competency_unit_id.training_module_id"/>
                                                 <strong class="mr-2">
-                                                  <span t-if="module_id.module_code"><t
-                                                  t-esc="module_id.module_code"/></span>
+                                                  <span t-if="module_id.code"><t
+                                                  t-esc="module_id.code"/></span>
                                                   <span t-else="" class="module_item">MODULE
                                                   </span>: </strong>
                                                 <span>
@@ -158,12 +158,12 @@
                                             <dt class="mr-2" style="float: left; clear: left;"
                                                 >Denomination:</dt>
                                             <dd style="float: left;"><t
-                                                  t-esc="competency_unit_id.competency_name"
+                                                  t-esc="competency_unit_id.name"
                                                 />&#160;</dd>
                                             <dt class="mr-2" style="float: left; clear: left;"
                                                 >Code:</dt>
                                             <dd style="float: left;"><t
-                                                  t-esc="competency_unit_id.competency_code"
+                                                  t-esc="competency_unit_id.code"
                                                 />&#160;</dd>
                                             <dt class="mr-2" style="float: left; clear: left;"
                                                 >Description:</dt>
@@ -175,8 +175,8 @@
                                             <dt class="mr-2" style="float: left; clear: left;"
                                                 >Module:</dt>
                                             <dd style="float: left;">
-                                                <span t-if="module_id.module_code"><t
-                                                  t-esc="module_id.module_code"/> - </span>
+                                                <span t-if="module_id.code"><t
+                                                  t-esc="module_id.code"/> - </span>
                                                 <t t-esc="module_id.name"/>&#160; </dd>
                                         </dl>
 
@@ -186,8 +186,8 @@
                                                   <t t-foreach="module_id.training_unit_ids"
                                                   t-as="unit_id">
                                                   <li>
-                                                  <span t-if="unit_id.module_code"><t
-                                                  t-esc="unit_id.module_code"/> - </span>
+                                                  <span t-if="unit_id.code"><t
+                                                  t-esc="unit_id.code"/> - </span>
                                                   <t t-esc="unit_id.name"/>
                                                   </li>
                                                   </t>

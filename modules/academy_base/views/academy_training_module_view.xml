@@ -23,7 +23,7 @@
         <field name="active" eval="True"/>
         <field name="arch" type="xml">
             <list string="academy_training_module_tree" create="1" delete="1" edit="1">
-                <field name="module_code"/>
+                <field name="code"/>
                 <field name="name"/>
                 <field name="hours" class="oe_field_hours" widget="float_time"/>
                 <field name="manager_id" class="oe_field_manager_id"/>
@@ -43,7 +43,12 @@
         <field name="arch" type="xml">
             <form string="academy_training_module_form" create="1" delete="1" edit="1">
                 <sheet>
-                    <div class="oe_button_box" name="button_box"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="view_training_program_lines" type="object" class="oe_stat_button"
+                            icon="fa-th-list">
+                            <field name="program_line_count" widget="statinfo" string="Program lines"/>
+                        </button>
+                    </div>
 
                     <widget name="web_ribbon" title="Archived" bg_color="bg-danger"
                         invisible="active == True"/>
@@ -60,7 +65,7 @@
                     </div>
 
                     <group col="2">
-                        <field name="module_code" class="oe_field_module_code"
+                        <field name="code" class="oe_field_module_code"
                             placeholder="Enter new code"/>
                     </group>
 
@@ -99,8 +104,7 @@
         <field name="arch" type="xml">
             <search string="academy_training_module_search">
                 <field name="name"/>
-                <field name="module_code"/>
-                <field name="training_activity_ids"/>
+                <field name="code"/>
 
                 <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
 
@@ -124,7 +128,7 @@
                 <field name="name"/>
                 <field name="hours"/>
                 <field name="owner_id"/>
-                <field name="module_code"/>
+                <field name="code"/>
 
                 <templates>
                     <t t-name="card">
@@ -147,7 +151,7 @@
                                 <ul>
                                     <li>
                                         <strong>Code:&#160;</strong>
-                                        <field name="module_code"/>
+                                        <field name="code"/>
                                     </li>
                                     <li>
                                         <strong>Owner:&#160;</strong>
@@ -185,10 +189,6 @@
                 <field name="training_unit_count" class="oe_field_training_unit_count"
                     string="Units"/>
             </xpath>
-            <xpath expr="//field[@name='hours']" position="before">
-                <field name="training_activity_count" class="oe_field_training_activity_count"
-                    string="Activities"/>
-            </xpath>
         </field>
     </record>
 
@@ -204,12 +204,6 @@
         <field name="inherit_id" ref="academy_base.view_academy_training_module_form"/>
         <field name="arch" type="xml">
             <xpath expr="//div[@name='button_box']" position="inside">
-                <button name="view_training_activities" type="object" class="oe_stat_button"
-                    icon="fa-th-list">
-                    <field name="training_activity_count" widget="statinfo" string="Activities"/>
-                </button>
-            </xpath>
-            <xpath expr="//div[@name='button_box']" position="inside">
                 <button name="view_training_units" type="object" class="oe_stat_button"
                     icon="fa-list-ul">
                     <field name="training_unit_count" widget="statinfo" string="Units"/>
@@ -222,8 +216,8 @@
                     />
                 </page>
             </xpath>
-            <xpath expr="//field[@name='module_code']" position="after">
-                <field name="ownhours" class="oe_field_ownhours"
+            <xpath expr="//field[@name='code']" position="after">
+                <field name="hours" class="oe_field_ownhours"
                     placeholder="Enter number of hours to this module"
                     invisible="training_unit_count != 0"/>
                 <field name="hours" class="oe_field_hours"
@@ -299,7 +293,7 @@
     <!-- Main menu for model.name -->
     <record id="menu_training_module" model="ir.ui.menu">
         <field name="name">Training modules</field>
-        <field name="sequence" eval="15"/>
+        <field name="sequence" eval="20"/>
         <field name="action" ref="action_training_module_act_window"/>
         <field name="parent_id" ref="academy_base.menu_academy_catalog"/>
         <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
@@ -343,8 +337,8 @@
                 <field name="training_module_id" class="oe_field_training_module_id"
                     invisible="not training_module_id"/>
             </xpath>
-            <xpath expr="//field[@name='module_code']" position="after">
-                <field name="ownhours" class="oe_field_ownhours"/>
+            <xpath expr="//field[@name='code']" position="after">
+                <field name="hours" class="oe_field_ownhours"/>
             </xpath>
         </field>
     </record>
@@ -419,11 +413,11 @@
         <field name="active" eval="True"/>
         <field name="inherit_id" ref="academy_base.view_academy_training_module_tree"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='module_code']" position="before">
+            <xpath expr="//field[@name='code']" position="before">
                 <field name="sequence" widget="handle"/>
             </xpath>
             <xpath expr="//field[@name='hours']" position="replace">
-                <field name="ownhours" class="oe_field_own_hours" widget="float_time"/>
+                <field name="hours" class="oe_field_own_hours" widget="float_time"/>
             </xpath>
         </field>
     </record>

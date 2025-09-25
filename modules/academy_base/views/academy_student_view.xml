@@ -298,8 +298,6 @@
         <field name="vat"/>
         <field name="category_id"/>
 
-        <field name="training_action_ids"/>
-
         <field name="id" string="Student ID"/>
 
         <filter name="inactive" string="Archived" domain="[('active', '=', False)]"/>

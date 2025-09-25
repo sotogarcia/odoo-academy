@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo noupdate="0">
+
+    <!-- VIEWS: "Academy training activity"
+
+            - Model·········: academy.training.framework
+            - _rec_name·····: name
+            - Domain········: []
+            - Context·······: {}
+            - Parent menu ··: academy_base.menu_academy_catalog
+            - View priority·: 16    Sequence····: 10
+            - Action help···: There are not training activities in catalog
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+    <!-- List view for "academy.training.framework" -->
+    <record id="view_academy_training_framework_tree" model="ir.ui.view">
+        <field name="name">view.academy.training.framework.tree</field>
+        <field name="model">academy.training.framework</field>
+        <field name="type">list</field>
+        <field name="mode">primary</field>
+        <field name="priority" eval="16"/>
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <list string="academy_training_framework_tree" create="1" delete="1" edit="1">
+              <field name="display_name" class="oe_field_display_name" />
+              <field name="code" class="oe_field_code" optional="show" />
+              <field name="training_program_count" class="oe_field_training_program_count" string="Programs" optional="show" />
+              <field name="is_modular" class="oe_field_is_modular" optional="show" />
+              <field name="issuing_authority_id" class="oe_field_issuing_authority_id" optional="hide" />
+              <field name="legal_code" class="oe_field_legal_code" optional="hide" />
+            </list>
+        </field>
+    </record>
+
+    <!-- Form view for "academy.training.framework" -->
+    <record id="view_academy_training_framework_form" model="ir.ui.view">
+        <field name="name">view.academy.training.framework.form</field>
+        <field name="model">academy.training.framework</field>
+        <field name="type">form</field>
+        <field name="mode">primary</field>
+        <field name="priority" eval="16"/>
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <form string="academy_training_framework_form" create="1" delete="1" edit="1">
+                <sheet>
+                  <field name="active" invisible="1"/>
+
+                  <div class="oe_button_box" name="button_box">
+                    <button name="view_training_programs" type="object" class="oe_stat_button"
+                        icon="fa-id-card-o">
+                      <field name="training_program_count" widget="statinfo"
+                          string="Programs"/>
+                    </button>
+                  </div>
+
+                  <widget name="web_ribbon" title="Archived" bg_color="bg-danger"
+                    invisible="active == True"/>
+
+                  <field name="image_1920" widget="image" class="oe_avatar"
+                    options='{"preview_image": "image_128"}'/>
+
+                  <div class="oe_title">
+                    <h1 class="h2 mb-2">
+                      <label for="name" class="oe_edit_only"/>
+                      <field name="name" class="oe_field_name" placeholder="Enter new name"/>
+                    </h1>
+                    <group col="2">
+                      <field name="code" class="oe_field_code" string="Code" />
+                    </group>
+                  </div>
+
+                  <group col="2">
+                    <group col="2" string="Main settings">
+
+                      <field name="is_modular" class="oe_field_is_modular" optional="show" />
+                    </group>
+                    <group string="Legal framework">
+                      <field name="issuing_authority_id" class="oe_field_issuing_authority_id" optional="hide" />
+                      <field name="legal_code" class="oe_field_legal_code" optional="hide" />
+                    </group>
+                  </group>
+
+                  <notebook>
+                      <page string="Programs" class="oe_page_training_programs" accesskey="C">
+                        <field name="training_program_ids" class="oe_field_training_program_ids" />
+                      </page>
+                      <page id="setup" string="Setup" class="oe_page_setup" accesskey="S">
+                        <group col="2" string="Description">
+                            <field name="description" class="oe_field_description" nolabel="1" placeholder="Enter new description" />
+                        </group>
+                        <group string="Ownership" groups="record_ownership.record_ownership_proxy">
+                            <group><field name="owner_id" class="oe_field_owner_id"/></group>
+                            <group><field name="subrogate_id" class="oe_field_subrogate_id"/></group>
+                        </group>
+                      </page>
+
+                  </notebook>
+                </sheet>
+
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_academy_training_framework_kanban" model="ir.ui.view">
+        <field name="name">view.academy.training.framework.kanban</field>
+        <field name="model">academy.training.framework</field>
+        <field name="type">kanban</field>
+        <field name="mode">primary</field>
+        <field name="priority" eval="16"/>
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+           <kanban sample="1">
+              <field name="display_name"/>
+              <field name="image_128"/>
+              <field name="active"/>
+              <field name="is_modular"/>
+              <field name="training_program_count"/>
+              <field name="legal_code"/>
+              <field name="code"/>
+
+              <templates>
+                 <t t-name="card" class="flex-row">
+                  <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                  <aside class="o_kanban_aside_full">
+                    <field name="image_128" class="w-100" widget="image"
+                      options="{'img_class': 'w-100 h-auto ps-2 py-2 align-top'}"/>
+                  </aside>
+                  <main class="ps-2 ps-md-0">
+                    <h2 class="h4"><field name="display_name"/></h2>
+                    <table border="0" cellpadding="0" cellspacing="0" style="border: 0px none transparent;">
+                      <tbody>
+                        <tr>
+                          <th>Code:</th>
+                          <td class="text-truncate">
+                            <span t-if="record.code.raw_value"><t t-esc="record.code.raw_value" /></span>
+                            <span t-if="!record.code.raw_value">---</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th>Is modular:</th>
+                          <td>
+                            <span t-if="record.is_modular.raw_value">Yes</span>
+                            <span t-if="!record.is_modular.raw_value">No</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th>Programs:</th>
+                          <td>
+                            <t t-esc="record.training_program_count.raw_value" />
+                          </td>
+                        </tr>
+                        <tr>
+                          <th>Legal code:</th>
+                          <td>
+                            <span t-if="record.legal_code.raw_value"><t t-esc="record.legal_code.raw_value" /></span>
+                            <span t-if="!record.legal_code.raw_value">---</span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </main>
+                </t>
+              </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Search view for "academy.training.framework" -->
+    <record id="view_academy_training_framework_search" model="ir.ui.view">
+        <field name="name">view.academy.training.framework.search</field>
+        <field name="model">academy.training.framework</field>
+        <field name="type">search</field>
+        <field name="mode">primary</field>
+        <field name="priority" eval="16"/>
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <search string="academy_training_framework_search">
+                <field name="name" class="oe_field_name" />
+                <field name="code" class="oe_field_code" optional="show" />
+                <field name="is_modular" class="oe_field_is_modular" optional="show" />
+                <field name="issuing_authority_id" class="oe_field_issuing_authority_id" optional="hide" />
+                <field name="legal_code" class="oe_field_legal_code" optional="hide" />
+
+
+                <filter name="filter_by_training_program_count" help="Have programs"
+                    domain="[('training_program_count','>', 0)]"/>
+
+                <filter string="Is modular"
+                    name="filter_is_modular"
+                    domain="[('is_modular', '=', True)]"
+                    context="{}"
+                    help="List only modular training frameworks" />
+
+                <separator/>
+
+                <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
+                <group expand="0" name="group_by" string="Group By">
+                    <filter name="group_by_issuing_authority_id" string="Issuing authority"
+                        domain="[]" context="{'group_by' : 'issuing_authority_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Main window action for model.name -->
+    <record id="action_academy_training_framework_act_window" model="ir.actions.act_window">
+        <field name="type">ir.actions.act_window</field>
+        <field name="name">Training frameworks</field>
+        <field name="res_model">academy.training.framework</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="target">current</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="search_view_id" ref="view_academy_training_framework_search"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create"> Click to add new training frameworks </p>
+            <p> There are no training frameworks yet </p>
+        </field>
+    </record>
+
+    <record id="menu_training_frameworks" model="ir.ui.menu" >
+        <field name="name">Training frameworks</field>
+        <field name="sequence" eval="10" />
+        <field name="action" ref="action_academy_training_framework_act_window" />
+        <field name="parent_id" ref="academy_base.menu_academy_catalog"/>
+        <field name="groups_id" eval="[(4, ref('academy_base.academy_group_teacher'))]"/>
+    </record>
+
+</odoo>

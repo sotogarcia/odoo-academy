@@ -14,6 +14,7 @@ except ImportError:  # older Odoo (e.g. 13)
 from odoo.tools.translate import _lt
 from odoo.tools.safe_eval import safe_eval
 from operator import eq, ne, lt, le, gt, ge
+from odoo.exceptions import ValidationError
 
 
 INVALID_DOMAIN = _lt("Given domain expression %r is not a valid ORM domain")
@@ -305,7 +306,7 @@ def many2many_count(parent_set, m2m_field_name, domain=None):
     parent_ids = tuple(parent_set.ids)
 
     sql = f"""
-        SELECT 
+        SELECT
             mid_rel.{col_parent} AS parent_id,
             COUNT(mid_rel.{col_child}) AS cnt
         FROM {rel_table} AS mid_rel
@@ -330,3 +331,48 @@ def many2many_count(parent_set, m2m_field_name, domain=None):
 def is_debug_mode(env):
     debug_val = str(env.context.get("debug", False) or "").lower()
     return debug_val in ("1", "true", "assets", "tests", "debug")
+
+
+def sanitize_code(value_list, convert_case=None):
+    """
+    Sanitize the 'code' field in a dict or in a collection of dicts.
+
+    Args:
+        value_list (dict | list[dict] | tuple[dict]):
+            A dict or sequence of dicts containing a 'code' field.
+        convert_case (str, optional):
+            A string specifying a case transformation method to apply.
+            Accepted values are 'lower', 'upper', 'title', 'swapcase'.
+
+    Raises:
+        ValueError: If `value_list` is not a dict, tuple, or list.
+        ValidationError: If the 'code' field exists but is not a string.
+
+    Notes:
+        - Leading and trailing whitespace is removed.
+        - Empty strings are converted to None.
+        - Case conversion is applied *after* stripping and before storage.
+    """
+    if isinstance(value_list, dict):
+        target_list = [value_list]
+    elif isinstance(value_list, (tuple, list)):
+        target_list = value_list
+    else:
+        message = "Argument must be a dict, tuple or list, not %s"
+        raise ValueError(message % type(value_list))
+
+    case_methods = ("lower", "upper", "title", "swapcase")
+
+    for values in target_list:
+        code = values.get("code", None)
+        if code is None or code is False:
+            continue
+
+        if isinstance(code, str):
+            code = code.strip().upper()
+            if code and (convert_case in case_methods):
+                code = getattr(code, convert_case)()
+            values["code"] = code or None
+        else:
+            message = _lt("Field 'code' must be a string.")
+            raise ValidationError(message)

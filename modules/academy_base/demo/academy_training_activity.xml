@@ -10,7 +10,7 @@
         <field name="professional_family_id" ref="academy_base.academy_professional_family_02"/>
         <field name="professional_area_id" ref="academy_base.academy_profressional_area_icm"/>
         <field name="qualification_level_id" ref="academy_base.academy_qualification_level_03"/>
-        <field name="activity_code">ADGD0308</field>
+        <field name="code">ADGD0308</field>
         <field name="general_competence">Perform administrative management operations</field>
     </record>
 
@@ -22,7 +22,7 @@
         <field name="professional_family_id" ref="academy_base.academy_professional_family_02"/>
         <field name="professional_area_id" ref="academy_base.academy_profressional_area_icm"/>
         <field name="qualification_level_id" ref="academy_base.academy_qualification_level_03"/>
-        <field name="activity_code">ADGD0100</field>
+        <field name="code">ADGD0100</field>
         <field name="general_competence">Perform basic computer operations with Microsoft
             Software</field>
     </record>

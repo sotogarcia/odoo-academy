@@ -54,10 +54,15 @@
                             <field name="name" class="oe_field_name" placeholder="Enter new name"/>
                         </h1>
                     </div>
-                    <group col="2">
-                        <field name="description" class="oe_field_description"
-                            placeholder="Enter new description"/>
-                    </group>
+                    <notebook>
+                        <page string="Description" class="oe_page_description" accesskey="D">
+                          <field name="description" class="oe_field_description"
+                              placeholder="Enter new description"/>
+                        </page>
+                        <page string="Sectors" class="oe_page_sectors" accesskey="S">
+                            <field name="professional_sector_ids" class="oe_field_professional_sector_ids" />
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>

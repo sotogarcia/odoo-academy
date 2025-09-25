@@ -56,7 +56,7 @@ class AcademyTeacher(models.Model):
         context={},
     )
 
-    # -- Methods overrides -------------------------------------------
+    # -- Methods overrides ----------------------------------------------------
 
     @api.model
     def _get_relevant_category_external_id(self):

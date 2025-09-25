@@ -650,7 +650,7 @@ msgstr "Estado de la actividad"
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action__activity_code
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_activity__activity_code
-msgid "Activity code"
+msgid "Code"
 msgstr "Código"
 
 #. module: academy_base
@@ -3459,7 +3459,7 @@ msgid "Latest authentication"
 msgstr "Última autenticación"
 
 #. module: academy_base
-#: model:academy.competency.unit,competency_name:academy_base.academy_competency_unit_odoo
+#: model:academy.competency.unit,name:academy_base.academy_competency_unit_odoo
 msgid "Learn Odoo ERP for Absolute Beginners"
 msgstr "Aprenda Odoo ERP para principiantes absolutos"
 
@@ -3598,17 +3598,17 @@ msgid "Main Attachment"
 msgstr "Adjunto principal"
 
 #. module: academy_base
-#: model:academy.competency.unit,competency_name:academy_base.academy_competency_unit_libre
+#: model:academy.competency.unit,name:academy_base.academy_competency_unit_libre
 msgid "Manage LibreOffice software and files in computer support"
 msgstr "Administrar el software y los archivos de LibreOffice en soporte informático"
 
 #. module: academy_base
-#: model:academy.competency.unit,competency_name:academy_base.academy_competency_unit_office
+#: model:academy.competency.unit,name:academy_base.academy_competency_unit_office
 msgid "Manage Microsoft Office software and files in computer support"
 msgstr "Administrar el software y los archivos de Microsoft Office en soporte informático"
 
 #. module: academy_base
-#: model:academy.competency.unit,competency_name:academy_base.academy_competency_unit_mswin
+#: model:academy.competency.unit,name:academy_base.academy_competency_unit_mswin
 msgid "Manage the latest Microsoft operating system"
 msgstr "Administrar el último sistema operativo de Microsoft"
 

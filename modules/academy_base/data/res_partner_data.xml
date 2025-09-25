@@ -1,0 +1,21 @@
+<odoo>
+
+  <data noupdate="0">
+
+    <!-- Issuing authorities -->
+    <record id="partner_mefp" model="res.partner">
+      <field name="name">Ministry of Education and VET (MEFP)</field>
+      <field name="company_type">company</field>
+      <field name="is_company">True</field>
+      <field name="active">True</field>
+    </record>
+
+    <record id="partner_sepe" model="res.partner">
+      <field name="name">SEPE</field>
+      <field name="company_type">company</field>
+      <field name="is_company">True</field>
+      <field name="active">True</field>
+    </record>
+  </data>
+
+</odoo>

@@ -137,3 +137,10 @@ attrs=["']\{["'](readonly|invisible|required)["']: *(\[[^\]]+\])\}["']
 - [ ] No mostrar información de parent_id en student
 - [ ] Botón actividades en kanban y form
 - [ ] barcode
+
+
+
+- [ ] El campo hours del módulo debe desaparecer
+      · Si tiene unidades será de sólo lectura
+      · Si tiene unidades se calculará al guardar
+- [ ] Los campos training_module_id y training_unit_ids pasan a ser parent_id y child_ids

@@ -8,7 +8,7 @@ MAPPING_NAME_FIELD = {
     "academy.training.action.enrolment": "action_name",
     "academy.training.action": "action_name",
     "academy.training.activity": "name",
-    "academy.competency.unit": "competency_name",
+    "academy.competency.unit": "name",
     "academy.training.module": "name",
 }
 

@@ -187,54 +187,6 @@ class AcademyStudent(models.Model):
             else:
                 record.enrolment_str = "{} / {}".format(current, total)
 
-    # -- Computed field: training_action_ids ----------------------------------
-
-    training_action_ids = fields.Many2many(
-        string="Training actions",
-        required=False,
-        readonly=True,
-        index=False,
-        default=None,
-        help="Training actions with active enrolments",
-        comodel_name="academy.training.action",
-        relation="academy_training_action_student_rel",
-        column1="student_id",
-        column2="training_action_id",
-        domain=[],
-        context={},
-        copy=False,
-        compute="_compute_training_action_ids",
-        search="_search_training_action_ids",
-    )
-
-    @api.depends(
-        "enrolment_ids",
-        "enrolment_ids.training_action_id",
-        "enrolment_ids.register",
-        "enrolment_ids.deregister",
-    )
-    def _compute_training_action_ids(self):
-        now = fields.Datetime.now()
-        for record in self:
-            current = record.enrolment_ids.filtered(
-                lambda e: (e.register and e.register <= now)
-                and (not e.deregister or e.deregister > now)
-            )
-            record.training_action_ids = current.mapped("training_action_id")
-
-    @api.model
-    def _search_training_action_ids(self, operator, value):
-        now = fields.Datetime.now()
-
-        return [
-            "&",
-            ("enrolment_ids.register", "<=", now),
-            "|",
-            ("enrolment_ids.deregister", "=", False),
-            ("enrolment_ids.deregister", ">", now),
-            ("enrolment_ids.training_action_id", operator, value),
-        ]
-
     # -- Methods overrides -------------------------------------------
 
     @api.model
