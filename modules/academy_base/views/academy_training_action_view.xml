@@ -23,8 +23,8 @@
         <field name="active" eval="True"/>
         <field name="arch" type="xml">
             <list string="academy_training_action_tree" create="1" delete="1" edit="1">
-                <field name="action_code" class="oe_field_action_code" optional="show"/>
-                <field name="action_name" string="Name"/>
+                <field name="code" class="oe_field_action_code" optional="show"/>
+                <field name="name" string="Name"/>
 
                 <field name="training_modality_ids" class="oe_field_training_modality_ids"
                     optional="hide"/>
@@ -35,7 +35,7 @@
                 <field name="end" class="oe_field_end"/>
 
                 <field name="code" class="oe_field_activity_code" optional="hide"/>
-                <field name="training_activity_id" class="oe_field_training_activity_id"
+                <field name="training_program_id" class="oe_field_training_program_id"
                     optional="show"/>
                 <field name="professional_family_id" class="oe_field_professional_family_id"
                     optional="hide"/>
@@ -83,16 +83,16 @@
                     <field name="active" invisible="1"/>
 
                     <div class="oe_title" id="title">
-                        <label for="action_name" class="oe_edit_only"/>
+                        <label for="name" class="oe_edit_only"/>
                         <h1>
-                            <field name="action_name" class="oe_field_action_name"
+                            <field name="name" class="oe_field_action_name"
                                 placeholder="Enter new name"/>
                         </h1>
                         <div class="mt-2 mb-3">
                           <group>
-                            <field name="training_activity_id" class="oe_field_training_activity_id"
+                            <field name="training_program_id" class="oe_field_training_program_id"
                             options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"
-                            readonly="context.get('default_training_activity_id', False)"/>
+                            readonly="context.get('default_training_program_id', False)"/>
                           </group>
                         </div>
                     </div>
@@ -100,7 +100,7 @@
                     <div class="row">
                       <group col="2" id="action">
                         <group string="Base">
-                          <field name="action_code" class="oe_field_code"/>
+                          <field name="code" class="oe_field_code"/>
                           <field name="manager_id" class="oe_field_manager_id" string="Supervisor" />
                         </group>
                         <group string="Training">
@@ -121,7 +121,7 @@
                     <notebook class="mt-3">
                         <page id="data" string="Data" class="oe_page_data" accesskey="T">
 
-                            <group string="Internal notes">
+                            <group string="Description">
                                 <field name="description" class="oe_field_description" placeholder="Enter new description" colspan="4" nolabel="1" />
                             </group>
                             <group string="Action details">
@@ -144,16 +144,17 @@
 
                         </page>
                         <page id="setup" string="Setup" class="oe_page_setup" accesskey="S">
-                            <group col="4" string="Publish">
-                                <field name="token" class="oe_field_token"/>
-                            </group>
                             <group col="4" string="Ownership"
                                 groups="record_ownership.record_ownership_proxy">
                                 <field name="owner_id" class="oe_field_owner_id" options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
                                 <field name="subrogate_id" class="oe_field_subrogate_id" options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
                             </group>
                         </page>
-
+                        <page string="Internal Notes" class="oe_page_internal_notes" accesskey="I" groups="base.group_user">
+                          <group col="2">
+                            <field name="comment" class="oe_field_comment" nolabel="1" colspan="2" widget="html" />
+                          </group>
+                        </page>
                     </notebook>
                 </sheet>
 
@@ -173,10 +174,10 @@
         <field name="arch" type="xml">
             <kanban create="1" delete="1" edit="1">
                 <field name="image_128"/>
-                <field name="action_name"/>
+                <field name="name"/>
                 <field name="seating"/>
                 <field name="end"/>
-                <field name="training_activity_id"/>
+                <field name="training_program_id"/>
 
                 <templates>
                     <t t-name="card">
@@ -197,17 +198,17 @@
                                 <div class="oe_kanban_details">
                                     <h4>
                                         <strong class="oe_partner_heading">
-                                            <field name="action_name"/>
+                                            <field name="name"/>
                                         </strong>
                                     </h4>
                                     <ul>
                                         <li class="o_ellipsis"
-                                            t-attf-title="record.training_activity_id.raw_value">
-                                            <field name="training_activity_id"/>
+                                            t-attf-title="record.training_program_id.raw_value">
+                                            <field name="training_program_id"/>
                                         </li>
                                         <li class="o_ellipsis">
                                             <strong>Code:&#160;</strong>
-                                            <field name="action_code"/>
+                                            <field name="code"/>
                                         </li>
                                         <li class="o_ellipsis"
                                                 ><strong>Lifespan:&#160;</strong><field name="start"
@@ -248,10 +249,10 @@
         <field name="active" eval="True"/>
         <field name="arch" type="xml">
             <search string="academy_training_action_search">
-                <field name="action_name" string="Name"/>
-                <field name="action_code" string="Code"/>
+                <field name="name" string="Name"/>
+                <field name="code" string="Code"/>
 
-                <field name="training_activity_id"/>
+                <field name="training_program_id"/>
 
                 <field name="training_modality_ids"/>
                 <field name="training_methodology_ids"/>
@@ -272,8 +273,8 @@
                     domain="['|', ('end', '=', False), ('end', '&gt;', (datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))]"/>
 
                 <group expand="0" name="group_by" string="Group By">
-                    <filter name="group_by_training_activity_id" string="Training activity"
-                        domain="[]" context="{'group_by' : 'training_activity_id'}"/>
+                    <filter name="group_by_training_program_id" string="Training program"
+                        domain="[]" context="{'group_by' : 'training_program_id'}"/>
                     <filter name="group_by_professional_family_id" string="Professional family"
                         domain="[]" context="{'group_by' : 'professional_family_id'}"/>
                     <filter name="group_by_professional_area_id" string="Professional area"
@@ -330,8 +331,8 @@
         <field name="active" eval="True"/>
         <field name="arch" type="xml">
             <list string="Quick edit" create="0" delete="0" edit="1" editable="bottom">
-                <field name="action_name" class="oe_field_action_name"/>
-                <field name="action_code" class="oe_field_action_code"/>
+                <field name="name" class="oe_field_action_name"/>
+                <field name="code" class="oe_field_action_code"/>
                 <field name="owner_id" class="oe_field_owner_id"/>
                 <field name="subrogate_id" class="oe_field_subrogate_id"/>
                 <field name="active" class="oe_field_active" widget="boolean_toggle"/>

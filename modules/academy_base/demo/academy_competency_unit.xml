@@ -10,7 +10,7 @@
         <field name="active">True</field>
         <field name="sequence">2</field>
         <field name="training_module_id" ref="academy_base.academy_training_module_ms2010"/>
-        <field name="training_activity_id" ref="academy_base.academy_training_activity_ms"/>
+        <field name="training_program_id" ref="academy_base.academy_training_program_ms"/>
         <field name="professional_qualification_id"
             ref="academy_base.academy_professional_qualification_administrative"/>
     </record>
@@ -22,7 +22,7 @@
         <field name="active">True</field>
         <field name="sequence">1</field>
         <field name="training_module_id" ref="academy_base.academy_training_module_lb5"/>
-        <field name="training_activity_id" ref="academy_base.academy_training_activity_ADGD0308"/>
+        <field name="training_program_id" ref="academy_base.academy_training_program_ADGD0308"/>
         <field name="professional_qualification_id"
             ref="academy_base.academy_professional_qualification_administrative"/>
     </record>
@@ -34,7 +34,7 @@
         <field name="active">True</field>
         <field name="sequence">1</field>
         <field name="training_module_id" ref="academy_base.academy_training_module_win10"/>
-        <field name="training_activity_id" ref="academy_base.academy_training_activity_ms"/>
+        <field name="training_program_id" ref="academy_base.academy_training_program_ms"/>
         <field name="professional_qualification_id"
             ref="academy_base.academy_professional_qualification_administrative"/>
     </record>
@@ -46,7 +46,7 @@
         <field name="active">True</field>
         <field name="sequence">2</field>
         <field name="training_module_id" ref="academy_base.academy_training_module_odoo"/>
-        <field name="training_activity_id" ref="academy_base.academy_training_activity_ADGD0308"/>
+        <field name="training_program_id" ref="academy_base.academy_training_program_ADGD0308"/>
         <field name="professional_qualification_id"
             ref="academy_base.academy_professional_qualification_administrative"/>
     </record>

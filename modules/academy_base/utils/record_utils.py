@@ -245,8 +245,8 @@ def single_or_default(items, default=None):
         return default
 
 
-def get_training_activity(env, target):
-    """Get the related training activity record based on the given target
+def get_training_program(env, target):
+    """Get the related training program record based on the given target
     record.
 
     This is useful to get the activity from a training ``fields.Reference``
@@ -257,22 +257,22 @@ def get_training_activity(env, target):
         target.
 
     Returns:
-        academy.training.activity: The related training activity record.
+        academy.training.program: The related training program record.
     """
 
-    activity = env["academy.training.activity"]
+    activity = env["academy.training.program"]
 
     if target:
         model = target._name
 
         if model == "academy.training.action.enrolment":
-            activity = target.training_action_id.training_activity_id
+            activity = target.training_action_id.training_program_id
         elif model == "academy.training.action":
-            activity = target.training_activity_id
-        elif model == "academy.training.activity":
+            activity = target.training_program_id
+        elif model == "academy.training.program":
             activity = target
         elif model == "academy.competency.unit":
-            activity = target.training_activity_id
+            activity = target.training_program_id
 
     return activity
 

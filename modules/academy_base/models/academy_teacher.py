@@ -6,7 +6,7 @@ all teacher attributes and behavior.
 """
 
 from odoo import models, fields, api
-from odoo.tools import safe_eval
+from odoo.tools.safe_eval import safe_eval
 from odoo.tools.translate import _
 
 from logging import getLogger

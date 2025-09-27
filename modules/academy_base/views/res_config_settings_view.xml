@@ -95,10 +95,10 @@
               </div>
             </setting>
 
-            <setting string="Competency units" help="View and edit competency units">
+            <setting string="Training Program Lines" help="View and edit training program lines">
               <div class="content-group mt8">
-                <button name="%(academy_base.action_competency_unit_act_window)d"
-                  string="&#160;Update competencies" type="action" class="oe_link" icon="fa-arrow-right"/>
+                <button name="%(academy_base.action_training_program_line_act_window)d"
+                  string="&#160;Update program lines" type="action" class="oe_link" icon="fa-arrow-right"/>
               </div>
             </setting>
 

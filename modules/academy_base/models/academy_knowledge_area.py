@@ -27,7 +27,7 @@ class AcademyKnowledgeArea(models.Model):
         readonly=False,
         index=True,
         default=None,
-        help=False,
+        help="Official name of the Knowledge Area",
         size=255,
         translate=True,
     )
@@ -38,7 +38,7 @@ class AcademyKnowledgeArea(models.Model):
         readonly=False,
         index=False,
         default=None,
-        help="Enter new description",
+        help="Detailed description of the Knowledge Area",
         translate=True,
     )
 
@@ -60,14 +60,4 @@ class AcademyKnowledgeArea(models.Model):
         help="Enter new code",
         size=30,
         translate=False,
-    )
-
-    description = fields.Text(
-        string="Description",
-        required=False,
-        readonly=False,
-        index=False,
-        default=None,
-        help="Enter new description",
-        translate=True,
     )

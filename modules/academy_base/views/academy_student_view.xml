@@ -339,7 +339,7 @@
     <field name="name">Students</field>
     <field name="sequence" eval="15"/>
     <field name="action" ref="action_student_act_window"/>
-    <field name="parent_id" ref="academy_base.menu_academy_monitoring"/>
+    <field name="parent_id" ref="academy_base.menu_academy_community"/>
     <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
   </record>
 

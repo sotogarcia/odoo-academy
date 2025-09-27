@@ -38,7 +38,7 @@ class AcademyApplicationScope(models.Model):
         readonly=False,
         index=False,
         default=None,
-        help="Enter new description",
+        help="Detailed description of the application scope",
         translate=True,
     )
 

@@ -3,7 +3,7 @@
 <odoo noupdate="0">
 
     <record id="academy_training_action_demo_1" model="academy.training.action">
-        <field name="action_name">Free software in the office</field>
+        <field name="name">Free software in the office</field>
         <field name="description">Introduces the basic features of the more used office
             appliances</field>
         <field name="active">True</field>
@@ -15,14 +15,14 @@
         <field name="professional_category_id"
             ref="academy_base.academy_professional_category_administrative"/>
         <!-- <field name="training_action_category_id"></field> -->
-        <field name="training_activity_id" ref="academy_base.academy_training_activity_ADGD0308"/>
-        <field name="action_code">AGE2020</field>
+        <field name="training_program_id" ref="academy_base.academy_training_program_ADGD0308"/>
+        <field name="code">AGE2020</field>
         <field name="seating">5</field>
         <field name="excess">6</field>
     </record>
 
     <record id="academy_training_action_demo_2" model="academy.training.action">
-        <field name="action_name">Microsoft Office XP</field>
+        <field name="name">Microsoft Office XP</field>
         <field name="description">Introduces the basic features of the more used Microsoft
             appliances</field>
         <field name="active">True</field>
@@ -34,8 +34,8 @@
         <field name="professional_category_id"
             ref="academy_base.academy_professional_category_administrative"/>
         <!-- <field name="training_action_category_id"></field> -->
-        <field name="training_activity_id" ref="academy_base.academy_training_activity_ms"/>
-        <field name="action_code">AGE2002</field>
+        <field name="training_program_id" ref="academy_base.academy_training_program_ms"/>
+        <field name="code">AGE2002</field>
         <field name="seating">15</field>
         <field name="excess">20</field>
         <field name="company_id" ref="academy_base.res_company_my_academy"/>

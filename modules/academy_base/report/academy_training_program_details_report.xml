@@ -2,15 +2,15 @@
 
 <odoo noupdate="0">
 
-    <record id="view_academy_training_activity_details_document_qweb" model="ir.ui.view">
-        <field name="name">Training activity details document</field>
+    <record id="view_academy_training_program_details_document_qweb" model="ir.ui.view">
+        <field name="name">Training program details document</field>
         <field name="model">academy.tests.test</field>
         <field name="type">qweb</field>
         <field name="mode">primary</field>
         <field name="priority" eval="16"/>
         <field name="active" eval="True"/>
         <field name="arch" type="xml">
-            <t t-name="academy_base.view_academy_training_activity_details_document_qweb">
+            <t t-name="academy_base.view_academy_training_program_details_document_qweb">
 
                 <div class="page">
                     <div class="oe_structure"/>
@@ -214,20 +214,20 @@
     </record>
 
 
-    <record id="view_academy_training_activity_details_qweb" model="ir.ui.view">
-        <field name="name">Training activity details report</field>
-        <field name="model">academy.training.activity</field>
+    <record id="view_academy_training_program_details_qweb" model="ir.ui.view">
+        <field name="name">Training program details report</field>
+        <field name="model">academy.training.program</field>
         <field name="type">qweb</field>
         <field name="mode">primary</field>
         <field name="priority" eval="16"/>
         <field name="active" eval="True"/>
         <field name="arch" type="xml">
-            <t t-name="academy_base.view_academy_training_activity_details_qweb">
+            <t t-name="academy_base.view_academy_training_program_details_qweb">
                 <t t-call="web.html_container">
                     <t t-foreach="docs" t-as="o">
                         <t t-call="web.external_layout">
                             <t
-                                t-call="academy_base.view_academy_training_activity_details_document_qweb"
+                                t-call="academy_base.view_academy_training_program_details_document_qweb"
                             />
                         </t>
                     </t>
@@ -237,16 +237,16 @@
         </field>
     </record>
 
-    <record id="action_report_academy_training_activity_details" model="ir.actions.report">
-        <field name="name">Training activity details</field>
-        <field name="model">academy.training.activity</field>
+    <record id="action_report_academy_training_program_details" model="ir.actions.report">
+        <field name="name">Training program details</field>
+        <field name="model">academy.training.program</field>
         <field name="report_type">qweb-pdf</field>
-        <field name="report_name">academy_base.view_academy_training_activity_details_qweb</field>
+        <field name="report_name">academy_base.view_academy_training_program_details_qweb</field>
         <field name="attachment_use" eval="False"/>
         <field name="attachment">(object.name+'.pdf')</field>
         <field name="paperformat_id" ref="base.paperformat_euro"/>
-        <field name="help">Training activity details report</field>
-        <field name="binding_model_id" ref="academy_base.model_academy_training_activity"/>
+        <field name="help">Training program details report</field>
+        <field name="binding_model_id" ref="academy_base.model_academy_training_program"/>
     </record>
 
 </odoo>

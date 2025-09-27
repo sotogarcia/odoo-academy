@@ -13,7 +13,7 @@ _logger = getLogger(__name__)
 
 
 class AcademyQualificationLevel(models.Model):
-    """Qualification level is a property of the training activity"""
+    """Qualification level is a property of the training program"""
 
     _name = "academy.qualification.level"
     _description = "Academy qualification level"
@@ -27,7 +27,7 @@ class AcademyQualificationLevel(models.Model):
         readonly=False,
         index=True,
         default=None,
-        help="Enter new name",
+        help="Official name of the Qualification Level",
         size=255,
         translate=True,
     )
@@ -38,7 +38,7 @@ class AcademyQualificationLevel(models.Model):
         readonly=False,
         index=False,
         default=None,
-        help="Enter new description",
+        help="Detailed description of the Qualification Level",
         translate=True,
     )
 

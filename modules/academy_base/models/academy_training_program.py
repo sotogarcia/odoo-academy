@@ -1,32 +1,31 @@
 # -*- coding: utf-8 -*-
-""" AcademyTrainingActivity
+""" AcademyTrainingProgram
 
-This module contains the academy.training.activity Odoo model which stores
-all training activity attributes and behavior.
+This module contains the academy.training.program Odoo model which stores
+all training program attributes and behavior.
 """
 
 
 # pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
 from odoo.osv.expression import TRUE_DOMAIN, FALSE_DOMAIN
-from ..utils.helpers import OPERATOR_MAP, one2many_count, many2many_count
+from ..utils.helpers import OPERATOR_MAP, one2many_count
 from ..utils.helpers import sanitize_code
-from odoo.tools import safe_eval
+from odoo.tools.safe_eval import safe_eval
 from odoo.tools.translate import _
 
 from logging import getLogger
 from uuid import uuid4
 
-# pylint: disable=locally-disabled, C0103
+
 _logger = getLogger(__name__)
 
 
-# pylint: disable=locally-disabled, R0903
-class AcademyTrainingActivity(models.Model):
-    """This describes the activity offered, its modules and training units"""
+class AcademyTrainingProgram(models.Model):
+    """This describes the program offered, its modules and training units"""
 
-    _name = "academy.training.activity"
-    _description = "Academy training activity"
+    _name = "academy.training.program"
+    _description = "Academy training program"
 
     _inherit = [
         "image.mixin",
@@ -44,7 +43,7 @@ class AcademyTrainingActivity(models.Model):
         readonly=False,
         index=True,
         default=None,
-        help=False,
+        help="Official name of the Training Program",
         size=1024,
         translate=True,
     )
@@ -55,7 +54,7 @@ class AcademyTrainingActivity(models.Model):
         readonly=False,
         index=False,
         default=None,
-        help="Enter new description",
+        help="Detailed description of the Training Program",
         translate=True,
     )
 
@@ -65,7 +64,23 @@ class AcademyTrainingActivity(models.Model):
         readonly=False,
         index=False,
         default=True,
-        help="Disable to archive without deleting.",
+        help="Disable to archive without deleting",
+    )
+
+    comment = fields.Html(
+        string="Internal notes",
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help=(
+            "Private notes for staff only. Not shown to students, "
+            "not exported, and excluded from printed reports."
+        ),
+        sanitize=True,
+        sanitize_attributes=False,
+        strip_style=True,
+        translate=False,
     )
 
     code = fields.Char(
@@ -74,7 +89,7 @@ class AcademyTrainingActivity(models.Model):
         readonly=False,
         index=True,
         default=None,
-        help="Reference code that identifies the program",
+        help="Public code or short identifier for the program",
         size=30,
         translate=False,
     )
@@ -99,7 +114,7 @@ class AcademyTrainingActivity(models.Model):
         readonly=False,
         index=False,
         default=None,
-        help="Professional family to which this activity belongs",
+        help="Professional family to which this program belongs",
         comodel_name="academy.professional.family",
         domain=[],
         context={},
@@ -117,7 +132,7 @@ class AcademyTrainingActivity(models.Model):
         readonly=False,
         index=False,
         default=None,
-        help="Professional area to which this activity belongs",
+        help="Professional area to which this program belongs",
         comodel_name="academy.professional.area",
         domain=[],
         context={},
@@ -131,7 +146,7 @@ class AcademyTrainingActivity(models.Model):
         readonly=False,
         index=False,
         default=None,
-        help="Choose related professional field",
+        help="Professional field associated with this program",
         comodel_name="academy.professional.field",
         domain=[],
         context={},
@@ -149,10 +164,10 @@ class AcademyTrainingActivity(models.Model):
         readonly=False,
         index=False,
         default=None,
-        help="Choose related professional sectors",
+        help="Professional sectors related to this program",
         comodel_name="academy.professional.sector",
-        relation="academy_training_activity_professional_sector_rel",
-        column1="training_activity_id",
+        relation="academy_training_program_professional_sector_rel",
+        column1="training_program_id",
         column2="professional_sector_id",
         domain=[],
         context={},
@@ -178,7 +193,7 @@ class AcademyTrainingActivity(models.Model):
         readonly=False,
         index=True,
         default=None,
-        help="Choose related educational attainment",
+        help="Minimum educational requirement to access this program",
         comodel_name="academy.educational.attainment",
         domain=[],
         context={},
@@ -192,10 +207,7 @@ class AcademyTrainingActivity(models.Model):
         readonly=False,
         index=False,
         default=None,
-        help=(
-            "Describes the most significant professional functions of the "
-            "professional profile"
-        ),
+        help="Overall competence expected after completing the program",
         translate=True,
     )
 
@@ -205,7 +217,7 @@ class AcademyTrainingActivity(models.Model):
         readonly=False,
         index=True,
         default=None,
-        help=False,
+        help="Program lines (modules) included in this program",
         comodel_name="academy.training.program.line",
         inverse_name="training_program_id",
         domain=[],
@@ -213,15 +225,17 @@ class AcademyTrainingActivity(models.Model):
         auto_join=False,
     )
 
+    # Computed field: program_line_count --------------------------------------
+
     program_line_count = fields.Integer(
         string="Program line count",
         required=True,
         readonly=True,
         index=False,
         default=0,
-        help=False,
+        help="Computed number of program lines",
         compute="_compute_program_line_count",
-        search="_search_program_line_count",
+        store=True,
     )
 
     @api.depends("program_line_ids")
@@ -231,71 +245,30 @@ class AcademyTrainingActivity(models.Model):
         for record in self:
             record.program_line_count = counts.get(record.id, 0)
 
-    @api.model
-    def _search_program_line_count(self, operator, value):
-        if value is True:
-            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
-        if value is False:
-            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
-
-        cmp_func = OPERATOR_MAP.get(operator)
-        if not cmp_func:
-            return FALSE_DOMAIN  # unsupported operator
-
-        counts = many2many_count(self.search([]), "program_line_ids")
-        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
-
-        return [("id", "in", matched)] if matched else FALSE_DOMAIN
-
     training_action_ids = fields.One2many(
         string="Training actions",
         required=False,
         readonly=True,
         index=False,
         default=None,
-        help="Training actions in which this activity is imparted",
+        help="Training actions (editions) that use this program",
         comodel_name="academy.training.action",
-        inverse_name="training_activity_id",
+        inverse_name="training_program_id",
         domain=[],
         context={},
         auto_join=False,
         check_company=True,
     )
 
-    token = fields.Char(
-        string="Token",
-        required=True,
-        readonly=True,
-        index=True,
-        default=lambda self: str(uuid4()),
-        help="Unique token used to track this answer",
-        translate=False,
-        copy=False,
-        tracking=True,
-    )
+    # Computed field: training_action_count -----------------------------------
 
-    # -------------------------- MANAGEMENT FIELDS ----------------------------
-
-    hours = fields.Float(
-        string="Hours",
-        required=True,
-        readonly=True,
-        index=False,
-        default=0.0,
-        digits=(16, 2),
-        help="Total number of hours of length for the activity",
-        # compute="_compute_hours",
-        # search="_search_hours",
-    )
-
-    # pylint: disable=W0212
     training_action_count = fields.Integer(
         string="Number of training actions",
         required=False,
         readonly=True,
         index=False,
         default=0,
-        help=False,
+        help="Computed number of training actions",
         compute="_compute_training_action_count",
         search="_search_training_action_count",
     )
@@ -324,19 +297,39 @@ class AcademyTrainingActivity(models.Model):
 
         return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
+    # Computed field: hours --------------------------------------------------
+
+    hours = fields.Float(
+        string="Hours",
+        required=True,
+        readonly=True,
+        index=False,
+        default=0.0,
+        digits=(16, 2),
+        help="Total hours computed from linked modules",
+        compute="_compute_hours",
+        store=True,
+    )
+
+    @api.depends("program_line_ids.training_module_id.hours")
+    def _compute_hours(self):
+        hours_path = "program_line_ids.training_module_id.hours"
+        for record in self:
+            hours_list = record.mapped(hours_path)
+            record.hours = sum(hours_list) if hours_list else 0.0
+
     # -------------------------- Contraints -----------------------------------
 
     _sql_constraints = [
         (
             "code_unique",
             "unique(code)",
-            "Module code must be unique",
+            "Program code must be unique",
         ),
     ]
 
     # ---------------------------- PUBLIC FIELDS ------------------------------
 
-    # pylint: disable=locally-disabled, W0613
     def update_from_external(self, crud, fieldname, recordset):
         """Observer notify method, will be called by action"""
         self._compute_training_action_count()
@@ -351,8 +344,8 @@ class AcademyTrainingActivity(models.Model):
             "res_model": "academy.training.action",
             "target": "current",
             "view_mode": "kanban,list,form",
-            "domain": [("training_activity_id", "=", self.id)],
-            "context": {"default_training_activity_id": self.id},
+            "domain": [("training_program_id", "=", self.id)],
+            "context": {"default_training_program_id": self.id},
         }
 
     def view_training_program_lines(self):
@@ -362,6 +355,7 @@ class AcademyTrainingActivity(models.Model):
         act_wnd = self.env.ref(action_xid)
 
         context = self.env.context.copy()
+        print(safe_eval(act_wnd.context))
         context.update(safe_eval(act_wnd.context))
         context.update({"default_training_program_id": self.id})
 
@@ -393,12 +387,7 @@ class AcademyTrainingActivity(models.Model):
         values = values or {}
         sanitize_code(values, "upper")
 
-        user = self.env.user
-        if not user.has_group("academy_base.academy_group_manager"):
-            values.pop("training_action_count", False)
-            values.pop("training_module_count", False)
-
-        parent = super(AcademyTrainingActivity, self)
+        parent = super(AcademyTrainingProgram, self)
         result = parent.write(values)
 
         return result

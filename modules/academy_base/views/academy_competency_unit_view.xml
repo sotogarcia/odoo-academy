@@ -2,7 +2,7 @@
 
 <odoo noupdate="0">
 
-    <!-- VIEWS: "Competency Unit"
+    <!-- VIEWS: "Competence Standard"
 
             - Model·········: academy.competency.unit
             - _rec_name·····: name
@@ -88,7 +88,7 @@
     <!-- Main window action for model.name -->
     <record id="action_competency_unit_act_window" model="ir.actions.act_window">
         <field name="type">ir.actions.act_window</field>
-        <field name="name">Competency units</field>
+        <field name="name">Competence Standards</field>
         <field name="res_model">academy.competency.unit</field>
         <field name="view_mode">list,form</field>
 
@@ -104,7 +104,7 @@
 
     <!-- Main menu for model.name -->
     <record id="menu_competency_unit" model="ir.ui.menu">
-        <field name="name">Competency unit</field>
+        <field name="name">Competence Standard</field>
         <field name="sequence" eval="20"/>
         <field name="action" ref="action_competency_unit_act_window"/>
         <field name="parent_id" ref="academy_base.menu_academy_catalog"/>

@@ -27,7 +27,7 @@ class AcademyProfessionalCategory(models.Model):
         readonly=False,
         index=True,
         default=None,
-        help="Enter new name",
+        help="Official name of the Professional Category",
         size=255,
         translate=True,
     )
@@ -38,7 +38,7 @@ class AcademyProfessionalCategory(models.Model):
         readonly=False,
         index=False,
         default=None,
-        help="Enter new description",
+        help="Detailed description of the Professional Category",
         translate=True,
     )
 

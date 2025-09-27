@@ -15,9 +15,16 @@
         <field name="groups_id" eval="[(4, ref('academy_base.academy_group_consultant'))]"/>
     </record>
 
+    <record id="menu_academy_community" model="ir.ui.menu">
+        <field name="name">Community</field>
+        <field name="sequence" eval="20"/>
+        <field name="parent_id" ref="menu_academy"/>
+        <field name="groups_id" eval="[(4, ref('academy_base.academy_group_consultant'))]"/>
+    </record>
+
     <record id="menu_academy_catalog" model="ir.ui.menu">
         <field name="name">Catalog</field>
-        <field name="sequence" eval="20"/>
+        <field name="sequence" eval="25"/>
         <field name="parent_id" ref="menu_academy"/>
         <field name="groups_id" eval="[(4, ref('academy_base.academy_group_consultant'))]"/>
     </record>

@@ -14,7 +14,7 @@ _logger = getLogger(__name__)
 
 # pylint: disable=locally-disabled, R0903
 class AcademyProfessionalArea(models.Model):
-    """Professional area is a property of the training activity"""
+    """Professional area is a property of the training program"""
 
     _name = "academy.professional.area"
     _description = "Academy professional area"
@@ -30,7 +30,7 @@ class AcademyProfessionalArea(models.Model):
         readonly=False,
         index=True,
         default=None,
-        help="Enter new name",
+        help="Official name of the Professional Area",
         size=255,
         translate=True,
     )
@@ -41,7 +41,7 @@ class AcademyProfessionalArea(models.Model):
         readonly=False,
         index=False,
         default=None,
-        help="Enter new description",
+        help="Detailed description of the Professional Area",
         translate=True,
     )
 

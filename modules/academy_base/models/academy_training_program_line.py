@@ -28,7 +28,7 @@ class AcademyTrainingProgramLine(models.Model):
     ]
 
     _rec_name = "name"
-    _order = "sequence ASC, name ASC"
+    _order = "sequence ASC, id DESC"
     _rec_names_search = ["name", "code", "training_module_id"]
 
     name = fields.Char(
@@ -37,7 +37,7 @@ class AcademyTrainingProgramLine(models.Model):
         readonly=False,
         index=True,
         default=None,
-        help="Enter the name of the program line; usually the module or block title",
+        help="Name of the program line; usually the module or block title",
         size=1024,
         translate=True,
     )
@@ -81,6 +81,22 @@ class AcademyTrainingProgramLine(models.Model):
         help="Defines the order in which modules appear inside the program",
     )
 
+    comment = fields.Html(
+        string="Internal notes",
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help=(
+            "Private notes for staff only. Not shown to students, "
+            "not exported, and excluded from printed reports."
+        ),
+        sanitize=True,
+        sanitize_attributes=False,
+        strip_style=True,
+        translate=False,
+    )
+
     optional = fields.Boolean(
         string="Optional",
         required=False,
@@ -107,7 +123,7 @@ class AcademyTrainingProgramLine(models.Model):
         index=True,
         default=None,
         help="Training program this line belongs to",
-        comodel_name="academy.training.activity",
+        comodel_name="academy.training.program",
         domain=[],
         context={},
         ondelete="restrict",
@@ -116,7 +132,7 @@ class AcademyTrainingProgramLine(models.Model):
 
     training_module_id = fields.Many2one(
         string="Training module",
-        required=True,
+        required=False,
         readonly=False,
         index=True,
         default=None,
@@ -137,7 +153,7 @@ class AcademyTrainingProgramLine(models.Model):
 
     competency_unit_ids = fields.Many2many(
         string="Competence Standards (ECP)",
-        required=True,
+        required=False,
         readonly=False,
         index=True,
         default=None,
@@ -153,8 +169,10 @@ class AcademyTrainingProgramLine(models.Model):
         context={},
     )
 
+    # -- Computed field: competency_unit_count --------------------------------
+
     competency_unit_count = fields.Integer(
-        string="Competency unit count",
+        string="Competence Standard count",
         required=True,
         readonly=True,
         index=False,
@@ -187,6 +205,20 @@ class AcademyTrainingProgramLine(models.Model):
 
         return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
+    is_section = fields.Boolean(
+        string="Is section",
+        required=False,
+        readonly=False,
+        index=True,
+        default=False,
+        help="If checked, this record is a visual section/separator",
+    )
+
+    @api.onchange("is_section")
+    def _onchange_is_section(self):
+        if self.is_section:
+            self.training_module_id = None
+
     # -- Constraints ----------------------------------------------------------
 
     _sql_constraints = [
@@ -204,6 +236,15 @@ class AcademyTrainingProgramLine(models.Model):
             "unique_module_by_program",
             "UNIQUE(training_program_id, training_module_id)",
             "The module cannot be duplicated in the same training program",
+        ),
+        (
+            "section_xor_training",
+            """CHECK(
+                COALESCE(is_section, FALSE)
+                <>
+                (training_module_id IS NOT NULL)
+            )""",
+            "Line must be either a section (no training) or a training item.",
         ),
     ]
 

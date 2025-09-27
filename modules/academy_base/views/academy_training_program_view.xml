@@ -2,9 +2,9 @@
 
 <odoo noupdate="0">
 
-    <!-- VIEWS: "Academy training activity"
+    <!-- VIEWS: "Academy training program"
 
-            - Model·········: academy.training.activity
+            - Model·········: academy.training.program
             - _rec_name·····: name
             - Domain········: []
             - Context·······: {}
@@ -13,37 +13,43 @@
             - Action help···: There are not training activities in catalog
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-    <!-- List view for "academy.training.activity" -->
-    <record id="view_academy_training_activity_tree" model="ir.ui.view">
-        <field name="name">view.academy.training.activity.tree</field>
-        <field name="model">academy.training.activity</field>
+    <!-- List view for "academy.training.program" -->
+    <record id="view_academy_training_program_tree" model="ir.ui.view">
+        <field name="name">view.academy.training.program.tree</field>
+        <field name="model">academy.training.program</field>
         <field name="type">list</field>
         <field name="mode">primary</field>
         <field name="priority" eval="16"/>
         <field name="active" eval="True"/>
         <field name="arch" type="xml">
-            <list string="academy_training_activity_tree" create="1" delete="1" edit="1">
-                <field name="code" class="oe_field_activity_code" />
-                <field name="display_name" class="oe_field_display_name" />
-                <field name="professional_family_id" optional="show" />
-                <field name="qualification_level_id" optional="show" />
-                <field name="training_action_count" string="Actions" />
-                <field name="training_framework_id" class="oe_field_training_framework_id" optional="hide" />
-                <field name="manager_id" class="oe_field_manager_id" optional="hide" />
+            <list string="academy_training_program_tree" create="1" delete="1" edit="1">
+              <field name="code" class="oe_field_code" />
+              <field name="name" class="oe_field_name" />
+              <field name="training_framework_id" class="oe_field_training_framework_id" />
+              <field name="professional_family_id" class="oe_field_professional_family_id" optional="hide" />
+              <field name="professional_area_id" class="oe_field_professional_area_id" optional="hide" />
+              <field name="professional_field_id" class="oe_field_professional_field_id" optional="hide" />
+              <field name="professional_sector_ids" class="oe_field_professional_sector_ids" widget="many2many_tags" optional="hide" />
+              <field name="qualification_level_id" class="oe_field_qualification_level_id" optional="hide" />
+              <field name="attainment_id" class="oe_field_attainment_id" optional="hide" />
+              <field name="program_line_count" class="oe_field_program_line_count" string="Lines" optional="show" />
+              <field name="training_action_count" class="oe_field_training_action_count" string="Actions" optional="show" />
+              <field name="hours" class="oe_field_hours" optional="show" />
+              <field name="manager_id" class="oe_field_manager_id" optional="hide" />
             </list>
         </field>
     </record>
 
-    <!-- Form view for "academy.training.activity" -->
-    <record id="view_academy_training_activity_form" model="ir.ui.view">
-        <field name="name">view.academy.training.activity.form</field>
-        <field name="model">academy.training.activity</field>
+    <!-- Form view for "academy.training.program" -->
+    <record id="view_academy_training_program_form" model="ir.ui.view">
+        <field name="name">view.academy.training.program.form</field>
+        <field name="model">academy.training.program</field>
         <field name="type">form</field>
         <field name="mode">primary</field>
         <field name="priority" eval="16"/>
         <field name="active" eval="True"/>
         <field name="arch" type="xml">
-            <form string="academy_training_activity_form" create="1" delete="1" edit="1">
+            <form string="academy_training_program_form" create="1" delete="1" edit="1">
                 <sheet>
                     <field name="active" invisible="1"/>
                     <field name="id" class="oe_field_id" invisible="1"/>
@@ -51,7 +57,7 @@
                     <div class="oe_button_box" name="button_box">
                         <button name="view_training_program_lines" type="object" class="oe_stat_button"
                             icon="fa-th-list">
-                            <field name="program_line_count" widget="statinfo" string="Program lines"/>
+                            <field name="program_line_count" widget="statinfo" string="Lines"/>
                         </button>
                         <button name="show_training_actions" type="object" class="oe_stat_button"
                             icon="fa-th-list">
@@ -71,48 +77,64 @@
                         <field name="name" class="oe_field_name" placeholder="Enter new name"/>
                       </h1>
                       <group>
-                        <group><field name="training_framework_id" class="oe_field_training_framework_id" /></group>
+                        <group>
+                          <field name="training_framework_id" class="oe_field_training_framework_id"
+                            options="{'no_quick_create': True, 'no_create': False, 'no_open': False}"
+                            readonly="context.get('default_training_framework_id', False)" force_save="1" />
+                          </group>
                         <group><field name="code" class="oe_field_activity_code"/></group>
                       </group>
                     </div>
 
-                    <group>
-                      <group string="Classification">
-                        <field name="professional_family_id" class="oe_field_professional_family_id" string="Family"
-                          options="{'no_quick_create': True, 'no_create': False, 'no_open': False}" />
-                        <field name="professional_area_id" class="oe_field_professional_area_id" string="Area"
-                          domain="[('professional_family_id', '=', professional_family_id)]"
-                          options="{'no_quick_create': True, 'no_create': False, 'no_open': False}" />
-                        <field name="professional_field_id" class="oe_field_professional_field" string="Field"
-                          options="{'no_quick_create': True, 'no_create': False, 'no_open': False}" />
-                        <field name="professional_sector_ids"
-                            domain="[('professional_field_id', '=', professional_field_id)]"
-                            class="oe_field_professional_sector_ids" widget="many2many_tags"
-                            string="Sectors"/>
-                      </group>
-                      <group string="Qualification">
-                        <field name="attainment_id" class="oe_field_attainment_id" string="Required"/>
-                        <field name="hours" class="oe_field_hours"/>
-                        <field name="qualification_level_id" class="oe_field_qualification_level_id" string="Granted" />
-                        <field name="general_competence" class="oe_field_general_competence" string="Competence"
-                            placeholder="Tasks will carry out in the future"/>
-                      </group>
-                    </group>
-
                     <notebook>
+                      <page string="Lines" class="oe_page_lines" accesskey="L">
+                          <field name="program_line_ids" class="oe_field_program_line_ids"
+                            context="{
+                              'list_view_ref': 'academy_base.view_academy_training_program_line_editable_tree',
+                              'default_training_program_id': id
+                            }"/>
+                      </page>
+                      <page string="Details" class="oe_page_details" accesskey="D">
+
+                        <group>
+                          <group string="Classification">
+                            <field name="professional_family_id" class="oe_field_professional_family_id" string="Family"
+                              options="{'no_quick_create': True, 'no_create': False, 'no_open': False}" />
+                            <field name="professional_area_id" class="oe_field_professional_area_id" string="Area"
+                              domain="[('professional_family_id', '=', professional_family_id)]"
+                              options="{'no_quick_create': True, 'no_create': False, 'no_open': False}" />
+                            <field name="professional_field_id" class="oe_field_professional_field" string="Field"
+                              options="{'no_quick_create': True, 'no_create': False, 'no_open': False}" />
+                            <field name="professional_sector_ids"
+                                domain="[('professional_field_id', '=', professional_field_id)]"
+                                class="oe_field_professional_sector_ids" widget="many2many_tags"
+                                string="Sectors"/>
+                          </group>
+                          <group string="Qualification">
+                            <field name="attainment_id" class="oe_field_attainment_id" string="Required"/>
+                            <field name="hours" class="oe_field_hours"/>
+                            <field name="qualification_level_id" class="oe_field_qualification_level_id" string="Granted" />
+                            <field name="general_competence" class="oe_field_general_competence" string="Competence"
+                                placeholder="Tasks will carry out in the future"/>
+                          </group>
+                        </group>
+
+                      </page>
                         <page id="setup" string="Setup" class="oe_page_setup" accesskey="S">
                             <group col="4" string="Description">
                                 <field name="description" class="oe_field_description" colspan="2"
                                     nolabel="1"/>
                             </group>
-                            <group col="4" string="Publish">
-                                <field name="token" class="oe_field_token"/>
-                            </group>
-                            <group col="4" string="Ownership"
+                             <group col="4" string="Ownership"
                                 groups="record_ownership.record_ownership_proxy">
-                                <field name="owner_id" class="oe_field_owner_id"/>
-                                <field name="subrogate_id" class="oe_field_subrogate_id"/>
+                                <field name="owner_id" class="oe_field_owner_id" options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
+                                <field name="subrogate_id" class="oe_field_subrogate_id" options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
                             </group>
+                        </page>
+                        <page string="Internal Notes" class="oe_page_internal_notes" accesskey="I" groups="base.group_user">
+                          <group col="2">
+                            <field name="comment" class="oe_field_comment" nolabel="1" colspan="2" widget="html" />
+                          </group>
                         </page>
 
                     </notebook>
@@ -123,9 +145,9 @@
         </field>
     </record>
 
-    <record id="view_academy_training_activity_kanban" model="ir.ui.view">
-        <field name="name">view.academy.training.activity.kanban</field>
-        <field name="model">academy.training.activity</field>
+    <record id="view_academy_training_program_kanban" model="ir.ui.view">
+        <field name="name">view.academy.training.program.kanban</field>
+        <field name="model">academy.training.program</field>
         <field name="type">kanban</field>
         <field name="mode">primary</field>
         <field name="priority" eval="16"/>
@@ -179,54 +201,66 @@
         </field>
     </record>
 
-    <!-- Search view for "academy.training.activity" -->
-    <record id="view_academy_training_activity_search" model="ir.ui.view">
-        <field name="name">view.academy.training.activity.search</field>
-        <field name="model">academy.training.activity</field>
+    <!-- Search view for "academy.training.program" -->
+    <record id="view_academy_training_program_search" model="ir.ui.view">
+        <field name="name">view.academy.training.program.search</field>
+        <field name="model">academy.training.program</field>
         <field name="type">search</field>
         <field name="mode">primary</field>
         <field name="priority" eval="16"/>
         <field name="active" eval="True"/>
         <field name="arch" type="xml">
-            <search string="academy_training_activity_search">
-                <field name="name"/>
-                <field name="code"/>
-                <field name="training_framework_id" />
-                <field name="professional_family_id"/>
-                <field name="professional_area_id"/>
-                <field name="qualification_level_id"/>
+            <search string="academy_training_program_search">
+              <field name="code" />
+              <field name="name" />
+              <field name="training_framework_id" />
+              <field name="professional_family_id" />
+              <field name="professional_area_id" />
+              <field name="professional_field_id" />
+              <field name="professional_sector_ids" />
+              <field name="qualification_level_id" />
+              <field name="attainment_id" />
+              <field name="program_line_ids" />
+              <field name="training_action_ids" />
+              <field name="hours" />
+              <field name="manager_id" />
 
-                <filter name="filter_by_training_action_count" help="Have actions"
-                    domain="[('training_action_count','>', 0)]"/>
+              <filter name="filter_by_training_action_count" help="Have actions"
+                  domain="[('training_action_count','>', 0)]"/>
 
-                <separator/>
+              <separator/>
 
-                <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
-                <group expand="0" name="group_by" string="Group By">
-                    <filter name="group_by_training_framework_id" string="Training Framework"
-                        domain="[]" context="{'group_by' : 'training_framework_id'}"/>
-                    <filter name="group_by_professional_family_id" string="Professional family"
-                        domain="[]" context="{'group_by' : 'professional_family_id'}"/>
-                    <filter name="group_by_professional_area_id" string="Professional area"
-                        context="{'group_by': 'professional_area_id'}"/>
-                    <filter name="group_by_qualification_level_id" string="Qualification level"
-                        context="{'group_by': 'qualification_level_id'}"/>
-                </group>
+              <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
+
+              <group expand="0" name="group_by" string="Group By">
+                  <filter name="group_by_training_framework_id" string="Training Framework"
+                      domain="[]" context="{'group_by' : 'training_framework_id'}"/>
+                  <filter name="group_by_professional_family_id" string="Professional family"
+                      domain="[]" context="{'group_by' : 'professional_family_id'}"/>
+                  <filter name="group_by_professional_area_id" string="Professional area"
+                      context="{'group_by': 'professional_area_id'}"/>
+                  <filter name="group_by_professional_field_id" string="Professional Field"
+                      context="{'group_by': 'professional_field_id'}"/>
+                  <filter name="group_by_qualification_level_id" string="Qualification level"
+                      context="{'group_by': 'qualification_level_id'}"/>
+                  <filter name="group_by_attainment_id" string="Attainment"
+                      context="{'group_by': 'attainment_id'}"/>
+              </group>
             </search>
         </field>
     </record>
 
     <!-- Main window action for model.name -->
-    <record id="action_academy_training_activity_act_window" model="ir.actions.act_window">
+    <record id="action_academy_training_program_act_window" model="ir.actions.act_window">
         <field name="type">ir.actions.act_window</field>
         <field name="name">Training activities</field>
-        <field name="res_model">academy.training.activity</field>
+        <field name="res_model">academy.training.program</field>
         <field name="view_mode">kanban,list,form</field>
 
         <field name="target">current</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
-        <field name="search_view_id" ref="view_academy_training_activity_search"/>
+        <field name="search_view_id" ref="view_academy_training_program_search"/>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create"> Click to add new training activities </p>
             <p> There are no training activities yet </p>
@@ -234,10 +268,10 @@
     </record>
 
     <!-- Main menu for model.name -->
-    <record id="menu_academy_training_activity" model="ir.ui.menu">
+    <record id="menu_academy_training_program" model="ir.ui.menu">
         <field name="name">Training activities</field>
         <field name="sequence" eval="15"/>
-        <field name="action" ref="action_academy_training_activity_act_window"/>
+        <field name="action" ref="action_academy_training_program_act_window"/>
         <field name="parent_id" ref="academy_base.menu_academy_catalog"/>
         <field name="groups_id" eval="[(4, ref('academy_base.academy_group_teacher'))]"/>
     </record>
@@ -249,7 +283,7 @@
 
     <record id="view_academy_training_activites_quick_edit_tree" model="ir.ui.view">
         <field name="name">Quick edit for academy training activites</field>
-        <field name="model">academy.training.activity</field>
+        <field name="model">academy.training.program</field>
         <field name="type">list</field>
         <field name="mode">primary</field>
         <field name="priority" eval="99"/>
@@ -269,13 +303,13 @@
     <record id="activity_training_activites_quick_edit_act_window" model="ir.actions.act_window">
         <field name="type">ir.actions.act_window</field>
         <field name="name">Training activities</field>
-        <field name="res_model">academy.training.activity</field>
+        <field name="res_model">academy.training.program</field>
         <field name="view_mode">list</field>
         <field name="target">current</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="view_id" ref="academy_base.view_academy_training_activites_quick_edit_tree"/>
-        <field name="search_view_id" ref="academy_base.view_academy_training_activity_search"/>
+        <field name="search_view_id" ref="academy_base.view_academy_training_program_search"/>
     </record>
 
     <record id="menu_training_activites_quick_edit" model="ir.ui.menu">

@@ -13,7 +13,7 @@ _logger = getLogger(__name__)
 
 
 class AcademyProfessionalSector(models.Model):
-    """Professional sector is a property of the training activity"""
+    """Professional sector is a property of the training program"""
 
     _name = "academy.professional.sector"
     _description = "Academy professional sector"
@@ -29,7 +29,7 @@ class AcademyProfessionalSector(models.Model):
         readonly=False,
         index=True,
         default=None,
-        help="Enter new name",
+        help="Official name of the Professional Sector",
         size=255,
         translate=True,
     )
@@ -40,7 +40,7 @@ class AcademyProfessionalSector(models.Model):
         readonly=False,
         index=False,
         default=None,
-        help="Enter new description",
+        help="Detailed description of the Professional Sector",
         translate=True,
     )
 

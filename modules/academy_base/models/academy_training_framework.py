@@ -10,7 +10,7 @@ from odoo.exceptions import ValidationError
 from ..utils.helpers import OPERATOR_MAP, one2many_count
 from ..utils.helpers import sanitize_code
 from odoo.osv.expression import TRUE_DOMAIN, FALSE_DOMAIN
-from odoo.tools import safe_eval
+from odoo.tools.safe_eval import safe_eval
 
 _logger = getLogger(__name__)
 
@@ -93,7 +93,7 @@ class AcademyTrainingFramework(models.Model):
         index=False,
         default=None,
         help="Programs governed by this framework",
-        comodel_name="academy.training.activity",
+        comodel_name="academy.training.program",
         inverse_name="training_framework_id",
         domain=[],
         context={},
@@ -182,7 +182,7 @@ class AcademyTrainingFramework(models.Model):
 
         action_xid = "{module}.{name}".format(
             module="academy_base",
-            name="action_academy_training_activity_act_window",
+            name="action_academy_training_program_act_window",
         )
         act_wnd = self.env.ref(action_xid)
 

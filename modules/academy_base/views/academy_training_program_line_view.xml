@@ -60,10 +60,10 @@
                       </h1>
                   </div>
 
-                  <group col="3">
+                  <group col="3" invisible="is_section">
                     <group col="2" colspan="2" string="Training">
                       <field name="training_program_id" class="oe_field_training_program_id" />
-                      <field name="training_module_id" class="oe_field_training_module_id" />
+                      <field name="training_module_id" class="oe_field_training_module_id" required="not is_section" />
                       <field name="competency_unit_ids" class="oe_field_competency_unit_ids" widget="many2many_tags" />
                     </group>
                     <group col="2" colspan="1" string="Main settings">
@@ -73,9 +73,23 @@
                     </group>
                   </group>
 
-                  <group col="2" string="Description">
-                    <field name="description" class="oe_field_description" nolabel="1" colspan="2" />
-                  </group>
+                  <notebook>
+                    <page id="setup" string="Setup" class="oe_page_setup" accesskey="S">
+                      <group col="2" string="Description">
+                        <field name="description" class="oe_field_description" nolabel="1" colspan="2" />
+                      </group>
+                      <group col="4" string="Ownership"
+                          groups="record_ownership.record_ownership_proxy">
+                          <field name="owner_id" class="oe_field_owner_id" options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
+                          <field name="subrogate_id" class="oe_field_subrogate_id" options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
+                      </group>
+                    </page>
+                    <page string="Internal Notes" class="oe_page_internal_notes" accesskey="I" groups="base.group_user">
+                      <group col="2">
+                        <field name="comment" class="oe_field_comment" nolabel="1" colspan="2" widget="html" />
+                      </group>
+                    </page>
+                  </notebook>
               </sheet>
           </form>
       </field>
@@ -146,12 +160,31 @@
       </field>
   </record>
 
-  <!-- Main menu for model.name -->
-  <record id="menu_training_program_line" model="ir.ui.menu" >
-      <field name="name">Training program line</field>
-      <field name="sequence" eval="25" />
-      <field name="action" ref="action_training_program_line_act_window" />
-      <field name="parent_id" ref="academy_base.menu_academy_catalog" />
+  <!-- Tree view for "academy.training.program.line" -->
+  <record id="view_academy_training_program_line_editable_tree" model="ir.ui.view">
+    <field name="name">view.academy.training.program.line.tree</field>
+    <field name="model">academy.training.program.line</field>
+    <field name="type">list</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16" />
+    <field name="active" eval="True" />
+    <field name="arch" type="xml">
+      <list string="academy_training_program_line_tree"  create="1" delete="1" edit="1"
+          decoration-bf="is_section" decoration-muted="is_section" class="academy-program-lines">
+        <field name="sequence" class="oe_field_sequence" widget="handle" />
+        <field name="code" class="oe_field_code" invisible="is_section" />
+        <field name="name" class="oe_field_name academy-section-title" />
+        <field name="training_module_id" class="oe_field_training_module_id"
+          required="not is_section" invisible="is_section" optional="hide" />
+        <field name="hours" class="oe_field_hours" invisible="is_section" />
+        <field name="optional" class="oe_field_optional" invisible="is_section" />
+        <field name="is_section" column_invisible="True"/>
+        <control>
+          <create string="Add line"/>
+          <create string="Add section" context="{'default_is_section': True}"/>
+        </control>
+      </list>
+    </field>
   </record>
 
 </odoo>

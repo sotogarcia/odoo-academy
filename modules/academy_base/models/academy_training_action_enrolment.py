@@ -65,14 +65,18 @@ class AcademyTrainingActionEnrolment(models.Model):
         tracking=True,
     )
 
-    description = fields.Text(
-        string="Description",
+    comment = fields.Html(
+        string='Internal notes',
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help="Enter new description",
-        translate=True,
+        help=('Private notes for staff only. Not shown to students, '
+          'not exported, and excluded from printed reports.'),
+        sanitize=True,
+        sanitize_attributes=False,
+        strip_style=True,
+        translate=False,
     )
 
     active = fields.Boolean(
@@ -235,7 +239,7 @@ class AcademyTrainingActionEnrolment(models.Model):
     zip = fields.Char(string="Zip", related="student_id.zip")
 
     # It is necessary to keep the difference with the name of the activity
-    action_name = fields.Char(
+    name = fields.Char(
         string="Training action name",
         required=False,
         readonly=True,
@@ -244,7 +248,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         help="Show the name of the related training action",
         size=255,
         translate=True,
-        related="training_action_id.action_name",
+        related="training_action_id.name",
     )
 
     finalized = fields.Boolean(
@@ -258,16 +262,16 @@ class AcademyTrainingActionEnrolment(models.Model):
         search="_search_finalized",
     )
 
-    action_name = fields.Char(
+    name = fields.Char(
         string="Action name",
         help="Enter new name",
-        related="training_action_id.action_name",
+        related="training_action_id.name",
     )
 
-    action_code = fields.Char(
+    code = fields.Char(
         string="Internal code",
         help="Enter new internal code",
-        related="training_action_id.action_code",
+        related="training_action_id.code",
     )
 
     start = fields.Datetime(
@@ -282,10 +286,10 @@ class AcademyTrainingActionEnrolment(models.Model):
         related="training_action_id.end",
     )
 
-    training_activity_id = fields.Many2one(
-        string="Training activity",
-        help="Training activity will be imparted in this action",
-        related="training_action_id.training_activity_id",
+    training_program_id = fields.Many2one(
+        string="Training program",
+        help="Training program will be imparted in this action",
+        related="training_action_id.training_program_id",
     )
 
     image_1024 = fields.Image(
@@ -450,7 +454,7 @@ class AcademyTrainingActionEnrolment(models.Model):
 
         for record in self:
             if record.student_id and record.training_action_id:
-                training = record.training_action_id.action_name
+                training = record.training_action_id.name
                 student = record.student_id.name
 
                 name = "{} - {}".format(training, student)

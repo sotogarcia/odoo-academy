@@ -7,7 +7,7 @@ all training module attributes and behavior.
 
 from odoo import models, fields, api
 from odoo.tools.translate import _
-from odoo.tools import safe_eval
+from odoo.tools.safe_eval import safe_eval
 from odoo.exceptions import ValidationError
 from odoo.osv.expression import TRUE_DOMAIN, FALSE_DOMAIN
 from ..utils.helpers import OPERATOR_MAP, one2many_count, many2many_count
@@ -182,18 +182,6 @@ class AcademyTrainingModule(models.Model):
 
         return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
-    token = fields.Char(
-        string="Token",
-        required=True,
-        readonly=True,
-        index=True,
-        default=lambda self: str(uuid4()),
-        help="Unique token used to track this answer",
-        translate=False,
-        copy=False,
-        tracking=True,
-    )
-
     # --------------------------- COMPUTED FIELDS -----------------------------
 
     training_unit_count = fields.Integer(
@@ -278,7 +266,7 @@ class AcademyTrainingModule(models.Model):
         sanitize_code(value_list, "upper")
 
         result = super().create(value_list)
-        after_parents = result.mapped("parent_id")
+        after_parents = result.mapped("training_module_id")
 
         self._update_parent_hours(parents=after_parents)
 
@@ -287,9 +275,9 @@ class AcademyTrainingModule(models.Model):
     def write(self, values):
         sanitize_code(values, "upper")
 
-        before_parents = self.mapped("parent_id")
+        before_parents = self.mapped("training_module_id")
         result = super().write(values)
-        after_parents = self.mapped("parent_id")
+        after_parents = self.mapped("training_module_id")
 
         affected = before_parents | after_parents
         self._update_parent_hours(parents=affected)
@@ -385,16 +373,16 @@ class AcademyTrainingModule(models.Model):
         module_obj = self.env["academy.training.module"]
         rows = module_obj.read_group(
             domain=[
-                ("parent_id", "in", parents.ids),
+                ("training_module_id", "in", parents.ids),
                 ("active", "=", True),
             ],
             fields=["hours:sum"],
-            groupby=["parent_id"],
+            groupby=["training_module_id"],
         )
 
         for row in rows:
-            parent_id = row["parent_id"][0]
+            training_module_id = row["training_module_id"][0]
             total_hours = row["hours_sum"] or 0.0
 
-            module = module_obj.browse(parent_id)
+            module = module_obj.browse(training_module_id)
             module.write({"hours": total_hours})

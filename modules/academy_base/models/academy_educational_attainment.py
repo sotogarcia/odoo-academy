@@ -13,7 +13,7 @@ _logger = getLogger(__name__)
 
 
 class AcademyEducationalAttainment(models.Model):
-    """Qualification level is a property of the training activity"""
+    """Qualification level is a property of the training program"""
 
     _name = "academy.educational.attainment"
     _description = "Academy educational attainment"
@@ -27,7 +27,7 @@ class AcademyEducationalAttainment(models.Model):
         readonly=False,
         index=True,
         default=None,
-        help="Enter new name",
+        help="Official name of the Educational Attainment",
         size=255,
         translate=True,
     )
@@ -38,19 +38,17 @@ class AcademyEducationalAttainment(models.Model):
         readonly=False,
         index=False,
         default=None,
-        help="Enter new description",
+        help="Detailed description of the Educational Attainment",
         translate=True,
     )
 
-    level = fields.Char(
-        string="Code",
-        required=True,
+    active = fields.Boolean(
+        string="Active",
+        required=False,
         readonly=False,
-        index=True,
-        default=None,
-        help="Enter new code",
-        size=8,
-        translate=True,
+        index=False,
+        default=True,
+        help="Disable to archive without deleting.",
     )
 
     sequence = fields.Integer(
@@ -62,11 +60,13 @@ class AcademyEducationalAttainment(models.Model):
         help="Choose level order",
     )
 
-    active = fields.Boolean(
-        string="Active",
-        required=False,
+    level = fields.Char(
+        string="Code",
+        required=True,
         readonly=False,
-        index=False,
-        default=True,
-        help="Disable to archive without deleting.",
+        index=True,
+        default=None,
+        help="Enter new code",
+        size=8,
+        translate=True,
     )

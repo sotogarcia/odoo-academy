@@ -2,7 +2,7 @@
 
 <odoo noupdate="0">
 
-    <record id="academy_training_activity_ADGD0308" model="academy.training.activity">
+    <record id="academy_training_program_ADGD0308" model="academy.training.program">
         <field name="name">Administrative management activities</field>
         <field name="description">Planning and coordinating administrative procedures and systems
             and devising ways to streamline processes</field>
@@ -14,7 +14,7 @@
         <field name="general_competence">Perform administrative management operations</field>
     </record>
 
-    <record id="academy_training_activity_ms" model="academy.training.activity">
+    <record id="academy_training_program_ms" model="academy.training.program">
         <field name="name">Basic knowledge of Microsoft software</field>
         <field name="description">Knowledge and basic skills to use Microsoft software in the home
             and workplace</field>

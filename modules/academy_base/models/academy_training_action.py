@@ -31,7 +31,7 @@ _logger = getLogger(__name__)
 # pylint: disable=locally-disabled, R0903
 class AcademyTrainingAction(models.Model):
     """The training actions represent several groups of students for the same
-    training activity
+    training program
     """
 
     MSG_ATA01 = _lt(
@@ -42,8 +42,8 @@ class AcademyTrainingAction(models.Model):
     _name = "academy.training.action"
     _description = "Academy training action"
 
-    _rec_name = "action_name"
-    _order = "action_name ASC"
+    _rec_name = "name"
+    _order = "name ASC"
 
     _inherit = [
         "image.mixin",
@@ -67,13 +67,13 @@ class AcademyTrainingAction(models.Model):
         auto_join=False,
     )
 
-    action_name = fields.Char(
+    name = fields.Char(
         string="Action name",
         required=True,
         readonly=False,
         index=True,
         default=None,
-        help="Enter new name",
+        help="Official name of the Training Action",
         size=1024,
         translate=True,
     )
@@ -84,7 +84,7 @@ class AcademyTrainingAction(models.Model):
         readonly=False,
         index=False,
         default=None,
-        help="Enter new description",
+        help="Detailed description of the Training Action",
         translate=True,
     )
 
@@ -97,16 +97,20 @@ class AcademyTrainingAction(models.Model):
         help="Disable to archive without deleting.",
     )
 
-    token = fields.Char(
-        string="Token",
-        required=True,
-        readonly=True,
-        index=True,
-        default=lambda self: str(uuid4()),
-        help="Unique token used to track this answer",
+    comment = fields.Html(
+        string="Internal notes",
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help=(
+            "Private notes for staff only. Not shown to students, "
+            "not exported, and excluded from printed reports."
+        ),
+        sanitize=True,
+        sanitize_attributes=False,
+        strip_style=True,
         translate=False,
-        copy=False,
-        tracking=True,
     )
 
     # pylint: disable=locally-disabled, w0212
@@ -230,21 +234,21 @@ class AcademyTrainingAction(models.Model):
         context={},
     )
 
-    training_activity_id = fields.Many2one(
-        string="Training activity",
+    training_program_id = fields.Many2one(
+        string="Training program",
         required=True,
         readonly=False,
         index=False,
         default=None,
-        help="Training activity will be imparted in this action",
-        comodel_name="academy.training.activity",
+        help="Training program will be imparted in this action",
+        comodel_name="academy.training.program",
         domain=[],
         context={},
         ondelete="cascade",
         auto_join=False,
     )
 
-    action_code = fields.Char(
+    code = fields.Char(
         string="Internal code",
         required=True,
         readonly=False,
@@ -337,45 +341,45 @@ class AcademyTrainingAction(models.Model):
     )
 
     # ------------------------- ACTIVITY RELATED FIELDS -----------------------
-    # _inherits from training activity raises an error with multicompany
+    # _inherits from training program raises an error with multicompany
 
-    name = fields.Char(string="Name", related="training_activity_id.name")
+    name = fields.Char(string="Name", related="training_program_id.name")
 
     professional_family_id = fields.Many2one(
         string="Professional family",
-        related="training_activity_id.professional_family_id",
+        related="training_program_id.professional_family_id",
     )
 
     professional_area_id = fields.Many2one(
         string="Professional area",
-        related="training_activity_id.professional_area_id",
+        related="training_program_id.professional_area_id",
     )
 
     qualification_level_id = fields.Many2one(
         string="Qualification level",
-        related="training_activity_id.qualification_level_id",
+        related="training_program_id.qualification_level_id",
     )
 
     attainment_id = fields.Many2one(
         string="Educational attainment",
-        related="training_activity_id.attainment_id",
+        related="training_program_id.attainment_id",
     )
 
-    code = fields.Char(string="Code", related="training_activity_id.code")
+    code = fields.Char(string="Code", related="training_program_id.code")
 
     general_competence = fields.Text(
         string="General competence",
-        related="training_activity_id.general_competence",
+        related="training_program_id.general_competence",
     )
 
     professional_field_id = fields.Many2one(
         string="Professional field",
-        related="training_activity_id.professional_field_id",
+        related="training_program_id.professional_field_id",
     )
 
     professional_sector_ids = fields.Many2many(
         string="Professional sectors",
-        related="training_activity_id.professional_sector_ids",
+        related="training_program_id.professional_sector_ids",
     )
 
     # ------------------------------ CONSTRAINS -------------------------------
@@ -383,7 +387,7 @@ class AcademyTrainingAction(models.Model):
     _sql_constraints = [
         (
             "unique_action_code",
-            "UNIQUE(action_code)",
+            "UNIQUE(code)",
             "The given action code already exists",
         ),
         (
@@ -412,16 +416,14 @@ class AcademyTrainingAction(models.Model):
 
         defaults = dict(defaults or {})
         # default.update({
-        #     'training_activity_id': self.training_activity_id.id
+        #     'training_program_id': self.training_program_id.id
         # })
         #
-        if "action_code" not in defaults:
-            defaults["action_code"] = uuid4().hex.upper()
+        if "code" not in defaults:
+            defaults["code"] = uuid4().hex.upper()
 
-        if "action_name" not in defaults:
-            defaults["action_name"] = "{} - {}".format(
-                self.action_name, action_set.id + 1
-            )
+        if "name" not in defaults:
+            defaults["name"] = "{} - {}".format(self.name, action_set.id + 1)
 
         rec = super(AcademyTrainingAction, self).copy(defaults)
         return rec
@@ -623,17 +625,17 @@ class AcademyTrainingAction(models.Model):
 
     def copy_activity_image(self):
         for record in self:
-            if not record.training_activity_id:
+            if not record.training_program_id:
                 continue
 
-            if not record.training_activity_id.image_1920:
+            if not record.training_program_id.image_1920:
                 continue
 
-            record.image_1920 = record.training_activity_id.image_1920
-            record.image_1024 = record.training_activity_id.image_1024
-            record.image_512 = record.training_activity_id.image_512
-            record.image_256 = record.training_activity_id.image_256
-            record.image_128 = record.training_activity_id.image_128
+            record.image_1920 = record.training_program_id.image_1920
+            record.image_1024 = record.training_program_id.image_1024
+            record.image_512 = record.training_program_id.image_512
+            record.image_256 = record.training_program_id.image_256
+            record.image_128 = record.training_program_id.image_128
 
     @api.model
     def join_allowed_companies(self):

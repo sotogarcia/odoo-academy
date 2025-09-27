@@ -16,7 +16,7 @@ _logger = getLogger(__name__)
 
 # pylint: disable=locally-disabled, R0903
 class AcademyProfessionalFamily(models.Model):
-    """Professional family is a property of the training activity"""
+    """Professional family is a property of the training program"""
 
     _name = "academy.professional.family"
     _description = "Academy professional family"
@@ -32,7 +32,7 @@ class AcademyProfessionalFamily(models.Model):
         readonly=False,
         index=True,
         default=None,
-        help="Enter new name",
+        help="Official name of the Professional Family",
         size=255,
         translate=True,
     )
@@ -43,7 +43,7 @@ class AcademyProfessionalFamily(models.Model):
         readonly=False,
         index=False,
         default=None,
-        help="Enter new description",
+        help="Detailed description of the Professional Family",
         translate=True,
     )
 

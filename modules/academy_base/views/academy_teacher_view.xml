@@ -302,7 +302,7 @@
     <field name="name">Teachers</field>
     <field name="sequence" eval="20"/>
     <field name="action" ref="action_teacher_act_window"/>
-    <field name="parent_id" ref="academy_base.menu_academy_catalog"/>
+    <field name="parent_id" ref="academy_base.menu_academy_community"/>
     <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
   </record>
 

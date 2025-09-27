@@ -70,10 +70,10 @@ class Publish(http.Controller):
 
         return target
 
-    def _serialize_activity(self, parent, activity_id):
-        activity_obj = request.env["academy.training.activity"]
+    def _serialize_activity(self, parent, program_id):
+        activity_obj = request.env["academy.training.program"]
 
-        activity = activity_obj.browse(activity_id)
+        activity = activity_obj.browse(program_id)
 
         act_et = self.xml_item_id(
             parent, "activity", activity, ID_TRAINING_ACTIVITY_FIELD_MAP
@@ -139,10 +139,10 @@ class Publish(http.Controller):
                 )
 
     @http.route(
-        "/academy_catalog/activity/<activity_id>", type="http", auth="public"
+        "/academy_catalog/activity/<program_id>", type="http", auth="public"
     )
     def activity(self, **kw):
-        activity_id = int(kw["activity_id"])
+        program_id = int(kw["program_id"])
 
         headers = [
             ("Content-Type", "application/xml"),
@@ -151,7 +151,7 @@ class Publish(http.Controller):
 
         root = ET.Element("catalog")
 
-        self._serialize_activity(root, activity_id)
+        self._serialize_activity(root, program_id)
 
         xml = ET.tostring(root, encoding="utf8", method="xml")
 
@@ -159,7 +159,7 @@ class Publish(http.Controller):
 
     @http.route("/academy_catalog/activity/all", type="http", auth="public")
     def activities(self, **kw):
-        activity_obj = request.env["academy.training.activity"]
+        activity_obj = request.env["academy.training.program"]
         activity_set = activity_obj.search([])
 
         headers = [
@@ -208,7 +208,7 @@ class Publish(http.Controller):
         root = ET.Element("catalog")
 
         fmap = {
-            "action_code": "code",
+            "code": "code",
             "name": "name",
             "description": "description",
         }

@@ -13,41 +13,40 @@ _logger = getLogger(__name__)
 
 
 class AcademyTrainingMethodology(models.Model):
-    """ Training methodology is a property of the training action
-    """
+    """Training methodology is a property of the training action"""
 
-    _name = 'academy.training.methodology'
-    _description = u'Academy training methodology'
+    _name = "academy.training.methodology"
+    _description = "Academy training methodology"
 
-    _rec_name = 'name'
-    _order = 'name ASC'
+    _rec_name = "name"
+    _order = "name ASC"
 
     name = fields.Char(
-        string='Name',
+        string="Name",
         required=True,
         readonly=False,
         index=True,
         default=None,
-        help='Enter new name',
+        help="Official name of the Training Methodology",
         size=255,
-        translate=True
+        translate=True,
     )
 
     description = fields.Text(
-        string='Description',
+        string="Description",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='Enter new description',
-        translate=True
+        help="Detailed description of the Training Methodology",
+        translate=True,
     )
 
     active = fields.Boolean(
-        string='Active',
+        string="Active",
         required=False,
         readonly=False,
         index=False,
         default=True,
-        help='Enables/disables the record'
+        help="Disable to archive without deleting.",
     )

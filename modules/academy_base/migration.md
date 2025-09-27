@@ -115,7 +115,7 @@ attrs=["']\{["'](readonly|invisible|required)["']: *(\[[^\]]+\])\}["']
 ```
 
 
-- [x] Error followers con training activity al guardar
+- [x] Error followers con training program al guardar
 - [x] Añadir a estudiante bótón de matrículas.
 - [x] Añadir a estudiante ficha de matrículas.
 - [x] Añadir a estudiante idiomas.
@@ -144,3 +144,44 @@ attrs=["']\{["'](readonly|invisible|required)["']: *(\[[^\]]+\])\}["']
       · Si tiene unidades será de sólo lectura
       · Si tiene unidades se calculará al guardar
 - [ ] Los campos training_module_id y training_unit_ids pasan a ser parent_id y child_ids
+- [ ] Description como HTML
+- [ ] Internat notes a todo
+- [ ] Retirar los contraint de token
+
+
+- [ ] Comprobar widgets one2many_tags y many2many_tags
+- [ ] Añadir internal notes
+- [ ] Copiar Ownership de academy.training.framework 
+- [ ] Encabezado con: nombre, code, parent
+- [ ] list-embed para los one2many y smart buttons
+ El volumen de la unidad D es DATOS
+ El n�mero de serie del volumen es: 4E9E-F963
+
+ Directorio de D:\Proyectos\odoo-academy\modules\academy_base\models
+
+- academy_member_mixin
+- academy_student
+- academy_teacher
+
+- academy_training_framework
+- academy_training_program
+- academy_training_program_line
+- academy_training_module
+
+- academy_training_action
+- academy_training_action_enrolment
+
+- academy_competency_unit
+- academy_educational_attainment
+- academy_application_scope
+- academy_training_methodology
+- academy_training_modality
+
+- academy_knowledge_area
+- academy_professional_area
+- academy_professional_category
+- academy_professional_family
+- academy_professional_field
+- academy_professional_qualification
+- academy_professional_sector
+- academy_qualification_level

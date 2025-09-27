@@ -25,7 +25,7 @@
             <list string="academy_training_action_enrolment_tree" create="1" delete="1" edit="1"
                 decoration-success="is_current">
                 <field name="is_current" column_invisible="1"/>
-                <field name="training_activity_id" class="oe_field_training_activity_id"
+                <field name="training_program_id" class="oe_field_training_program_id"
                     optional="hide"/>
                 <field name="training_action_id" class="oe_field_training_action_id"/>
                 <field name="training_modality_str" class="oe_field_training_modality_str"
@@ -59,7 +59,7 @@
                             invisible="active == True"/>
                     </div>
 
-                    <field name="training_activity_id" invisible="1"/>
+                    <field name="training_program_id" invisible="1"/>
 
                     <div class="w-100" id="academy-academy-training-action-enrolment-title">
                         <field name="active" invisible="1"/>
@@ -78,7 +78,7 @@
                         <field name="training_action_id" class="oe_field_training_action_id"
                             readonly="context.get('default_training_action_id', False)"
                             options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
-                        <field name="action_code" class="oe_field_action_code"
+                        <field name="code" class="oe_field_action_code"
                             placeholder="Enter new code" readonly="1"/>
                         <field name="start" class="oe_field_start" placeholder="Enter new date/time"
                             readonly="1"/>
@@ -112,15 +112,16 @@
 
                     <notebook>
                         <page id="setup" string="Setup" class="oe_page_setup" accesskey="S">
-                            <group id="ownership" col="4" string="Ownership"
-                                groups="record_ownership.record_ownership_proxy">
-                                <field name="owner_id" class="oe_field_owner_id"/>
-                                <field name="subrogate_id" class="oe_field_subrogate_id"/>
-                            </group>
-                            <group id="description" col="2" string="Description">
-                                <field name="description" class="oe_field_description" colspan="2"
-                                    nolabel="1" string="Notes"/>
-                            </group>
+                          <group col="4" string="Ownership"
+                              groups="record_ownership.record_ownership_proxy">
+                              <field name="owner_id" class="oe_field_owner_id" options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
+                              <field name="subrogate_id" class="oe_field_subrogate_id" options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
+                          </group>
+                        </page>
+                        <page string="Internal Notes" class="oe_page_internal_notes" accesskey="I" groups="base.group_user">
+                          <group col="2">
+                            <field name="comment" class="oe_field_comment" nolabel="1" colspan="2" widget="html" />
+                          </group>
                         </page>
                     </notebook>
                 </sheet>
@@ -221,7 +222,7 @@
                 <field name="phone"/>
 
                 <separator/>
-                <field name="training_activity_id"/>
+                <field name="training_program_id"/>
                 <field name="training_action_id"/>
                 <field name="training_modality_ids"/>
 

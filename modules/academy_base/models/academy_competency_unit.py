@@ -7,8 +7,8 @@ all competency unit attributes and behavior.
 
 from odoo import models, fields, api
 from odoo.tools.translate import _
-from odoo.tools import safe_eval
-from odoo.exceptions import UserError
+from ..utils.helpers import sanitize_code
+from odoo.exceptions import ValidationError
 
 from logging import getLogger
 
@@ -17,18 +17,19 @@ _logger = getLogger(__name__)
 
 # pylint: disable=locally-disabled, R0903
 class AcademyCompetencyUnit(models.Model):
-    """Competency unit stores the specific name will be used by a module in
-    a training activity
+    """Competence Standard stores the specific name will be used by a module in
+    a training program
     """
 
     _name = "academy.competency.unit"
     _description = "Academy competency unit"
 
     _rec_name = "name"
-    _order = "sequence ASC, name ASC"
+    _order = "name ASC"
+    _rec_names_search = ["name", "code"]
 
     name = fields.Char(
-        string="Competency name",
+        string="Name",
         required=True,
         readonly=False,
         index=True,
@@ -44,7 +45,7 @@ class AcademyCompetencyUnit(models.Model):
         readonly=False,
         index=False,
         default=None,
-        help="General description and scope of the standard",
+        help="Detailed description of the Professional Competence Standard",
         translate=True,
     )
 
@@ -58,7 +59,7 @@ class AcademyCompetencyUnit(models.Model):
     )
 
     code = fields.Char(
-        string="Unit code",
+        string="Code",
         required=False,
         readonly=False,
         index=False,
@@ -127,3 +128,43 @@ class AcademyCompetencyUnit(models.Model):
         ondelete="cascade",
         auto_join=False,
     )
+
+    # -------------------------- Contraints -----------------------------------
+
+    _sql_constraints = [
+        (
+            "code_unique",
+            "unique(code)",
+            "Module code must be unique",
+        ),
+    ]
+
+    @api.constrains("professional_area_id")
+    def _check_professional_area_id(self):
+        message1 = _("Select a professional family before choosing an area")
+        message2 = _("Area %s does not belong to family %s.")
+
+        for record in self:
+            area = record.professional_area_id
+            if not area:
+                continue
+
+            family = record.professional_family_id
+            if not family:
+                raise ValidationError(message1)
+
+            if area.professional_family_id != family:
+                raise ValidationError(
+                    message2 % (area.display_name, family.display_name)
+                )
+
+    # -- Methods overrides ----------------------------------------------------
+
+    @api.model_create_multi
+    def create(self, value_list):
+        sanitize_code(value_list, "upper")
+        return super().create(value_list)
+
+    def write(self, values):
+        sanitize_code(values, "upper")
+        return super().write(values)
