@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """ AcademyTeacher
 
-This module contains the academy.teacher Odoo model which stores
-all teacher attributes and behavior.
+This module contains the academy.technical.staff Odoo model which stores
+all technical staff members attributes and behavior.
 """
 
 from odoo import models, fields, api
@@ -15,10 +15,10 @@ _logger = getLogger(__name__)
 
 
 class AcademyTeacher(models.Model):
-    """A teacher is a partner who can be enroled on training actions"""
+    """A technical staff is a partner who can be enroled on training actions"""
 
-    _name = "academy.teacher"
-    _description = "Academy teacher"
+    _name = "academy.technical.staff"
+    _description = "Academy technical staff member"
 
     _inherit = [
         "mail.thread",
@@ -41,12 +41,12 @@ class AcademyTeacher(models.Model):
 
     @api.model
     def _get_relevant_category_external_id(self):
-        return "academy_base.res_partner_category_teacher"
+        return "academy_base.res_partner_category_technical_staff"
 
     @api.model
     def _get_relevant_signup_sequence_code(self):
-        return "academy.teacher.signup.sequence"
+        return "academy.technical.staff.signup.sequence"
 
     @api.model
     def _get_relevant_signup_sequence_external_id(self):
-        return "academy_base.ir_sequence_academy_teacher_signup"
+        return "academy_base.ir_sequence_academy_technical_staff_signup"

@@ -159,7 +159,7 @@ attrs=["']\{["'](readonly|invisible|required)["']: *(\[[^\]]+\])\}["']
 
  Directorio de D:\Proyectos\odoo-academy\modules\academy_base\models
 
-- academy_member_mixin
+- academy.support.staff
 - academy_student
 - academy_teacher
 

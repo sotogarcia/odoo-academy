@@ -31,7 +31,7 @@ class AcademyStudent(models.Model):
     _inherit = [
         "mail.thread",
         "mail.activity.mixin",
-        "academy.member.mixin",
+        "academy.support.staff",
     ]
 
     _order = "complete_name ASC, id DESC"
@@ -200,10 +200,6 @@ class AcademyStudent(models.Model):
     @api.model
     def _get_relevant_signup_sequence_external_id(self):
         return "academy_base.ir_sequence_academy_student_signup"
-
-    @api.model
-    def _get_inverse_field_name(self):
-        return "student_id"
 
     # -- Public methods -------------------------------------------------------
 

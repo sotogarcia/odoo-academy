@@ -21,25 +21,14 @@
     <field name="mode">primary</field>
     <field name="priority" eval="16"/>
     <field name="active" eval="True"/>
+    <field name="inherit_id" ref="academy_base.view_academy_support_staff_tree"/>
     <field name="arch" type="xml">
-      <list string="academy_student_tree" create="1" delete="1" edit="1">
-        <field name="ref" class="oe_field_signup_code" string="Sign-up code" readonly="1"/>
-        <field name="signup_date" class="oe_field_signup_date"/>
-        <field name="vat" class="oe_field_vat" optional="show"/>
-        <field name="title" class="oe_field_title" optional="hide"/>
-        <field name="name" class="oe_field_name" optional="show"/>
-        <field name="lastname" class="oe_field_lastname" optional="hide"/>
-        <field name="firstname" class="oe_field_firstname" optional="hide"/>
-        <field name="email" class="oe_field_email" optional="show"/>
-        <field name="call_number" class="oe_field_call_number" optional="show"/>
-        <field name="phone" class="oe_field_phone" optional="hide"/>
-        <field name="mobile" class="oe_field_mobile" optional="hide"/>
-        <field name="zip" class="oe_field_zip" optional="show"/>
-        <field name="city" class="oe_field_city" optional="show"/>
-        <field name="state_id" class="oe_field_state_id" optional="show"/>
-        <field name="country_id" class="oe_field_country_id" optional="hide"/>
+      <xpath expr="//list" position="attributes">
+          <attribute name="string">academy_student_tree</attribute>
+      </xpath>
+      <xpath expr="//list" position="inside">
         <field name="enrolment_str" class="oe_field_enrolment_str text-center" optional="show"/>
-      </list>
+      </xpath>
     </field>
   </record>
 
@@ -52,165 +41,26 @@
     <field name="priority" eval="16"/>
     <field name="active" eval="True"/>
     <field name="inherit_id"/>
+    <field name="inherit_id" ref="academy_base.view_academy_support_staff_form"/>
     <field name="arch" type="xml">
-      <form string="Student" create="1" delete="1" edit="1">
-        <sheet>
-          <field name="id" invisible="1"/>
-          <field name="company_type" invisible="1"/>
-          <field name="is_company" invisible="1"/>
-          <field name="type" invisible="1"/>
-          <field name="form_has_lastname_first" invisible="1"/>
-          <field name="implied_cefrl_ids" invisible="1"/>
-          <field name="vat_required" invisible="1"/>
-          <field name="email_required" invisible="1"/>
+      <xpath expr="//form" position="attributes">
+          <attribute name="string">academy_student_form</attribute>
+      </xpath>
+      <xpath expr="//div[@name='button_box']" position="inside">
+         <button name="view_enrolments" type="object" class="oe_stat_button oe_read_only"
+            icon="fa-id-card-o" help="View student enrolments">
+            <field name="enrolment_str" widget="statinfo" string="Enrolments"/>
+          </button>
+      </xpath>
 
-          <div class="oe_button_box" name="button_box">
-            <button name="view_res_partner" type="object" class="oe_stat_button oe_read_only"
-              icon="fa-user-o" help="Open contact form">
-              <field name="type" widget="statinfo" string="Sheet"/>
-            </button>
-            <button name="view_enrolments" type="object" class="oe_stat_button oe_read_only"
-              icon="fa-id-card-o" help="View student enrolments">
-              <field name="enrolment_str" widget="statinfo" string="Enrolments"/>
-            </button>
-          </div>
-
-          <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger"
-            invisible="(not id) or (not partner_id) or active"/>
-          <field name="image_1920" widget="image" class="oe_avatar"
-            options='{"preview_image": "avatar_128"}'/>
-
-          <div class="oe_title">
-            <field name="creation_mode" widget="radio" options="{'horizontal': true}" invisible="id"/>
-            <div class="mt-3 mb-4">
-              <field name="partner_id" class="oe_field_partner_id"
-                invisible="(creation_mode == 'from_scratch') or id"/>
-              <group col="2">
-                <field
-                  invisible="((creation_mode == 'from_existing') and (not id)) or not form_has_lastname_first"
-                  name="lastname" required="form_has_lastname_first and not firstname"/>
-                <field invisible="((creation_mode == 'from_existing') and (not id))"
-                  name="firstname" required="not lastname"/>
-                <field
-                  invisible="((creation_mode == 'from_existing') and (not id)) or form_has_lastname_first"
-                  name="lastname" required="not form_has_lastname_first and not firstname"/>
-              </group>
-            </div>
-          </div>
-
-          <group class="mt-5">
-            <group>
-              <field name="vat" placeholder="e.g. BE0477472701" readonly="parent_id"
-                required="vat_required"/>
-              <field name="birthday" class="oe_field_birthday"/>
-
-              <span class="o_form_label o_td_label o_address_type" name="address_name">
-                <span>Address</span>
-              </span>
-              <div class="o_address_format mt-4">
-                <field name="street" placeholder="Street..." class="o_address_street"
-                  readonly="type == 'contact' and parent_id"/>
-                <field name="street2" placeholder="Street 2..." class="o_address_street"
-                  readonly="type == 'contact' and parent_id"/>
-                <field name="city" placeholder="City" class="o_address_city"
-                  readonly="type == 'contact' and parent_id"/>
-                <field name="state_id" class="o_address_state" placeholder="State"
-                  options="{'no_open': True, 'no_quick_create': True}"
-                  readonly="type == 'contact' and parent_id"
-                  context="{'country_id': country_id, 'default_country_id': country_id, 'zip': zip}"/>
-                <field name="zip" placeholder="ZIP" class="o_address_zip"
-                  readonly="type == 'contact' and parent_id"/>
-                <div name="partner_address_country" class="d-flex justify-content-between">
-                  <field name="country_id" placeholder="Country" class="o_address_country"
-                    options='{"no_open": True, "no_create": True}'
-                    readonly="type == 'contact' and parent_id"/>
-                </div>
-              </div>
-            </group>
-            <group>
-              <field name="function" placeholder="e.g. Sales Director"/>
-              <field name="phone" widget="phone"/>
-              <field name="mobile" widget="phone"/>
-              <field name="email" widget="email" context="{'gravatar_image': True}"
-                required="user_ids or email_required"/>
-              <field name="website" string="Website" widget="url"
-                placeholder="e.g. https://www.odoo.com"/>
-              <field name="title" options='{"no_open": True}' placeholder="e.g. Mister"/>
-              <field name="lang" invisible="active_lang_count &lt;= 1"/>
-              <field name="category_id" widget="many2many_tags" options="{'color_field': 'color'}"
-                placeholder='e.g. "B2B", "VIP", "Consulting", ...'/>
-            </group>
-          </group>
-
-          <notebook colspan="4" class="mt-4">
-            <page string="Enrolments" class="oe_page_enrolments" accesskey="E" autofocus="autofocus">
-              <field name="enrolment_ids" class="oe_field_current_enrolment_ids"
-                domain="[('is_current', '=', True)]"
-                context="{'list_view_ref': 'academy_base.view_academy_training_action_enrolment_tree_embed'}"
-              />
-            </page>
-            <page string="Details" class="oe_page_Academics" accesskey="D">
-              <group col="12" class="mt-2">
-                <group colspan="4">
-                  <field name="ref" class="oe_field_signup_code" string="Sign-up code" readonly="1"
-                  />
-                </group>
-                <group colspan="4">
-                  <field name="signup_date" class="oe_field_signup_date"/>
-                </group>
-                <group colspan="4">
-                  <field name="company_id" class="oe_field_company_id" string="Restrict to"
-                    options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"/>
-                </group>
-                <group colspan="6">
-                  <field name="attainment_id" class="oe_field_attainment_id" string="Qualification"
-                    options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"/>
-                </group>
-                <group colspan="6">
-                  <field name="cefrl_ids" class="oe_field_cefrl_ids"
-                    options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"
-                    widget="many2many_tags" context="{'m2m_tags_display_name': 'code'}"/>
-                </group>
-              </group>
-            </page>
-            <page string="Contacts &amp; Addresses" name="contact_addresses">
-              <field name="child_ids" mode="kanban" context="{
-                  'default_parent_id': partner_id, 'default_user_id': user_id,
-                  'default_street': street, 'default_street2': street2,
-                  'default_city': city, 'default_state_id': state_id,
-                  'default_zip': zip, 'default_country_id': country_id,
-                  'default_lang': lang, 'default_type': 'other',
-                  'form_view_ref': 'academy_base.view_res_partner_kanban_address_form_embed',
-                  'kanban_view_ref': 'academy_base.view_res_partner_kanban_address_kanban_embed'
-                }"> </field>
-            </page>
-            <page name="sales_purchases" string="Sales &amp; Purchase">
-              <group name="container_row_2">
-                <group string="Sales" name="sale" priority="1">
-                  <field name="user_id" widget="many2one_avatar_user"
-                    domain="[('share', '=', False)]"/>
-                </group>
-                <group string="Purchase" name="purchase" priority="2"> </group>
-                <group name="misc" string="Misc">
-                  <field name="company_registry" invisible="parent_id"/>
-                  <field name="ref" string="Reference"/>
-                  <field name="company_id" groups="base.group_multi_company"
-                    options="{'no_create': True}" readonly="parent_id" force_save="1"/>
-                  <field name="company_id" invisible="1"/>
-                  <!-- need to be able to to compute based on the company even without multi company groups -->
-                  <field name="industry_id" invisible="not is_company" options="{'no_create': True}"
-                  />
-                </group>
-              </group>
-            </page>
-            <page name="internal_notes" string="Internal Notes">
-              <field name="comment" placeholder="Internal notes..."/>
-            </page>
-          </notebook>
-        </sheet>
-
-        <chatter/>
-      </form>
+      <xpath expr="//notebook/page[1]" position="before">
+        <page string="Enrolments" class="oe_page_enrolments" accesskey="E" autofocus="autofocus">
+          <field name="enrolment_ids" class="oe_field_current_enrolment_ids"
+            domain="[('is_current', '=', True)]"
+            context="{'list_view_ref': 'academy_base.view_academy_training_action_enrolment_tree_embed'}"
+          />
+        </page>
+      </xpath>
     </field>
   </record>
 
@@ -221,56 +71,11 @@
     <field name="mode">primary</field>
     <field name="priority" eval="16"/>
     <field name="active" eval="True"/>
+    <field name="inherit_id" ref="academy_base.view_academy_support_staff_kanban"/>
     <field name="arch" type="xml">
-      <kanban sample="1">
-        <field name="avatar_128"/>
-        <field name="is_company"/>
-        <field name="active"/>
-        <field name="mobile"/>
-        <field name="phone"/>
-        <templates>
-          <t t-name="card" class="flex-row">
-            <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
-            <aside class="o_kanban_aside_full">
-              <t t-if="!record.is_company.raw_value">
-                <div class="o_kanban_image_fill position-relative w-100">
-                  <field name="avatar_128" alt="Contact image" class="h-100" widget="image"
-                    options="{'img_class': 'object-fit-cover'}"/>
-                  <field t-if="record.parent_id.raw_value" name="parent_id"
-                    class="position-absolute bottom-0 end-0 w-25 bg-light" widget="image"
-                    options="{'preview_image': 'image_128', 'img_class': 'object-fit-contain'}"/>
-                </div>
-              </t>
-              <t t-else="">
-                <field name="avatar_128" class="w-100" widget="image"
-                  options="{'img_class': 'object-fit-contain w-100 h-100'}"/>
-              </t>
-            </aside>
-            <main class="ps-2 ps-md-0">
-              <field name="display_name"/>
-              <field name="email" class="text-truncate"/>
-              <div class="flex justify-content-start">
-                <t t-if="record.phone.raw_value">
-                  <span class="text-truncate" t-attf-title="record.phone.raw_value">
-                    <t t-esc="record.phone.raw_value"/>
-                  </span>
-                </t>
-                <t t-if="record.phone.raw_value and record.mobile.raw_value">
-                  <span> / </span>
-                </t>
-                <t t-if="record.mobile.raw_value">
-                  <span class="text-truncate" t-attf-title="record.mobile.raw_value">
-                    <t t-esc="record.mobile.raw_value"/>
-                  </span>
-                </t>
-              </div>
-            </main>
-            <footer>
-              <field name="activity_ids" widget="kanban_activity" class="ms-auto mt-auto"/>
-            </footer>
-          </t>
-        </templates>
-      </kanban>
+      <xpath expr="//kanban" position="attributes">
+        <attribute name="string">academy_student_kanban</attribute>
+      </xpath>
     </field>
   </record>
 
@@ -283,36 +88,19 @@
     <field name="priority" eval="16"/>
     <field name="active" eval="True"/>
     <field name="inherit_id"/>
+    <field name="inherit_id" ref="academy_base.view_academy_support_staff_search"/>
     <field name="arch" type="xml">
-      <search string="academy_student_search">
-        <field name="name"
-          filter_domain="['|', '|', '|', '|', ('complete_name', 'ilike', self), ('ref', 'ilike', self), ('email', 'ilike', self), ('vat', 'ilike', self), ('company_registry', 'ilike', self)]"/>
-        <field name="phone"
-          filter_domain="['|', ('phone', 'ilike', self), ('mobile', 'ilike', self)]"/>
-        <field name="email"/>
+      <xpath expr="//search" position="attributes">
+        <attribute name="string">academy_student_search</attribute>
+      </xpath>
 
-        <field name="city"/>
-        <field name="state_id"/>
-        <field name="country_id"/>
-
-        <field name="vat"/>
-        <field name="category_id"/>
-
-        <field name="id" string="Student ID"/>
-
-        <filter name="inactive" string="Archived" domain="[('active', '=', False)]"/>
-
-        <separator/>
+      <xpath expr="//field[@name='id']" position="after">
+        <separator />
         <filter name="enroled" string="Enroled" domain="[('current_enrolment_count', '>', 0)]"/>
         <filter name="not_enrolled" string="Not Enroled"
           domain="[('current_enrolment_count', '=', 0)]"/>
-        <group expand="0" name="group_by" string="Group By">
-          <filter name="salesperson" string="Salesperson" domain="[]"
-            context="{'group_by' : 'user_id'}"/>
-          <filter name="group_company" string="Company" context="{'group_by': 'parent_id'}"/>
-          <filter name="group_country" string="Country" context="{'group_by': 'country_id'}"/>
-        </group>
-      </search>
+      </xpath>
+
     </field>
   </record>
 

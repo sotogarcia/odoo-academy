@@ -12,4 +12,14 @@
     <field name="active" eval="True" />
   </record>
 
+  <record id="res_partner_category_support_staff" model="res.partner.category">
+    <field name="name">Support staff</field>
+    <field name="active" eval="True" />
+  </record>
+
+  <record id="res_partner_category_technical_staff" model="res.partner.category">
+    <field name="name">Technical staff</field>
+    <field name="active" eval="True" />
+  </record>
+
 </odoo>

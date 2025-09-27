@@ -19,8 +19,8 @@ from logging import getLogger
 _logger = getLogger(__name__)
 
 
-class AcademyMemberMixin(models.AbstractModel):
-    _name = "academy.member.mixin"
+class AcademySupportStaff(models.Model):
+    _name = "academy.support.staff"
     _description = (
         "Common fields and methods for all models that represent "
         "people within the academy community."
@@ -357,7 +357,7 @@ class AcademyMemberMixin(models.AbstractModel):
             }
         )
         domain = self._eval_domain(act_wnd.domain)
-        domain = AND([domain, [(inverse_field, "=", self.id)]])
+        domain = AND([domain, [("id", "=", self.partner_id.id)]])
 
         serialized = {
             "type": "ir.actions.act_window",
@@ -703,28 +703,12 @@ class AcademyMemberMixin(models.AbstractModel):
 
     @api.model
     def _get_relevant_category_external_id(self):
-        """e.g.: academy_base.res_partner_category_student"""
-        name = "_get_relevant_category_external_id"
-        message = _(f"Method '{name}' must be implemented before being used.")
-        raise NotImplementedError(message)
+        return "academy_base.res_partner_category_support_staff"
 
     @api.model
     def _get_relevant_signup_sequence_code(self):
-        """e.g: academy.student.signup.sequence"""
-        name = "_get_relevant_signup_sequence_code"
-        message = _(f"Method '{name}' must be implemented before being used.")
-        raise NotImplementedError(message)
+        return "academy.support.staff.signup.sequence"
 
     @api.model
     def _get_relevant_signup_sequence_external_id(self):
-        """e.g.: academy_base.ir_sequence_academy_student_signup"""
-        name = "_get_relevant_signup_sequence_external_id"
-        message = _(f"Method '{name}' must be implemented before being used.")
-        raise NotImplementedError(message)
-
-    @api.model
-    def _get_inverse_field_name(self):
-        """e.g.: student_id"""
-        name = "_get_inverse_field_name"
-        message = _(f"Method '{name}' must be implemented before being used.")
-        raise NotImplementedError(message)
+        return "academy_base.ir_sequence_academy_support_staff_signup"

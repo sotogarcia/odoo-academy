@@ -2,21 +2,21 @@
 
 <odoo noupdate="0">
 
-  <!-- VIEWS: "Teacher"
+  <!-- VIEWS: "Technical staff"
 
-            - Model·········: academy.teacher
+            - Model·········: academy.technical.staff
             - _rec_name·····: name
             - Domain········: []
             - Context·······: {}
             - Parent menu ··: academy_base.menu_academy_monitoring
             - View priority·: 16    Sequence····: 10
-            - Action help···: Here are not teachers
+            - Action help···: Here are not technical staff members
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-  <!-- List view for "academy.teacher" -->
-  <record id="view_academy_teacher_tree" model="ir.ui.view">
-    <field name="name">view.academy.teacher.tree</field>
-    <field name="model">academy.teacher</field>
+  <!-- List view for "academy.technical.staff" -->
+  <record id="view_academy_technical_staff_tree" model="ir.ui.view">
+    <field name="name">view.academy.technical.staff.tree</field>
+    <field name="model">academy.technical.staff</field>
     <field name="type">list</field>
     <field name="mode">primary</field>
     <field name="priority" eval="16"/>
@@ -24,15 +24,15 @@
     <field name="inherit_id" ref="academy_base.view_academy_support_staff_tree"/>
     <field name="arch" type="xml">
       <xpath expr="//list" position="attributes">
-          <attribute name="string">academy_teacher_tree</attribute>
+          <attribute name="string">academy_technical_staff_tree</attribute>
       </xpath>
     </field>
   </record>
 
-  <!-- Form view for "academy.teacher" -->
-  <record id="view_academy_teacher_form" model="ir.ui.view">
-    <field name="name">view.academy.teacher.form</field>
-    <field name="model">academy.teacher</field>
+  <!-- Form view for "academy.technical.staff" -->
+  <record id="view_academy_technical_staff_form" model="ir.ui.view">
+    <field name="name">view.academy.technical.staff.form</field>
+    <field name="model">academy.technical.staff</field>
     <field name="type">form</field>
     <field name="mode">primary</field>
     <field name="priority" eval="16"/>
@@ -40,14 +40,14 @@
     <field name="inherit_id" ref="academy_base.view_academy_support_staff_form"/>
     <field name="arch" type="xml">
       <xpath expr="//form" position="attributes">
-          <attribute name="string">academy_teacher_form</attribute>
+          <attribute name="string">academy_technical_staff_form</attribute>
       </xpath>
     </field>
   </record>
 
-  <record id="view_academy_teacher_kanban" model="ir.ui.view">
-    <field name="name">view.academy.teacher.kanban</field>
-    <field name="model">academy.teacher</field>
+  <record id="view_academy_technical_staff_kanban" model="ir.ui.view">
+    <field name="name">view.academy.technical.staff.kanban</field>
+    <field name="model">academy.technical.staff</field>
     <field name="type">kanban</field>
     <field name="mode">primary</field>
     <field name="priority" eval="16"/>
@@ -55,15 +55,15 @@
     <field name="inherit_id" ref="academy_base.view_academy_support_staff_kanban"/>
     <field name="arch" type="xml">
       <xpath expr="//kanban" position="attributes">
-          <attribute name="string">academy_teacher_kanban</attribute>
+          <attribute name="string">academy_technical_staff_kanban</attribute>
       </xpath>
     </field>
   </record>
 
-  <!-- Search view for "academy.teacher" -->
-  <record id="view_academy_teacher_search" model="ir.ui.view">
-    <field name="name">view.academy.teacher.search</field>
-    <field name="model">academy.teacher</field>
+  <!-- Search view for "academy.technical.staff" -->
+  <record id="view_academy_technical_staff_search" model="ir.ui.view">
+    <field name="name">view.academy.technical.staff.search</field>
+    <field name="model">academy.technical.staff</field>
     <field name="type">search</field>
     <field name="mode">primary</field>
     <field name="priority" eval="16"/>
@@ -71,33 +71,33 @@
     <field name="inherit_id" ref="academy_base.view_academy_support_staff_search"/>
     <field name="arch" type="xml">
       <xpath expr="//search" position="attributes">
-          <attribute name="string">academy_teacher_search</attribute>
+          <attribute name="string">academy_technical_staff_search</attribute>
       </xpath>
     </field>
   </record>
 
   <!-- Main window action for model.name -->
-  <record id="action_teacher_act_window" model="ir.actions.act_window">
+  <record id="action_technical_staff_act_window" model="ir.actions.act_window">
     <field name="type">ir.actions.act_window</field>
-    <field name="name">Teachers</field>
-    <field name="res_model">academy.teacher</field>
+    <field name="name">Technical staff</field>
+    <field name="res_model">academy.technical.staff</field>
     <field name="view_mode">kanban,list,form</field>
 
     <field name="target">current</field>
     <field name="domain">[]</field>
     <field name="context">{}</field>
-    <field name="search_view_id" ref="view_academy_teacher_search"/>
+    <field name="search_view_id" ref="view_academy_technical_staff_search"/>
     <field name="help" type="html">
-      <p class="oe_view_nocontent_create"> Click to add new teachers </p>
-      <p> There are no teachers yet </p>
+      <p class="oe_view_nocontent_create">Click to add new technical staff members</p>
+      <p> There are no technical staff members</p>
     </field>
   </record>
 
   <!-- Main menu for model.name -->
-  <record id="menu_teacher" model="ir.ui.menu">
-    <field name="name">Teachers</field>
-    <field name="sequence" eval="20"/>
-    <field name="action" ref="action_teacher_act_window"/>
+  <record id="menu_technical_staff" model="ir.ui.menu">
+    <field name="name">Technical staff</field>
+    <field name="sequence" eval="25"/>
+    <field name="action" ref="action_technical_staff_act_window"/>
     <field name="parent_id" ref="academy_base.menu_academy_community"/>
     <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
   </record>

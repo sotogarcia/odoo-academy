@@ -9,9 +9,10 @@
 # ---------------------------------------------------------------------------
 # Roles: students and teachers
 # ---------------------------------------------------------------------------
-from . import academy_member_mixin
-
 from . import res_partner
+
+from . import academy_support_staff
+from . import academy_technical_staff
 from . import academy_student
 from . import academy_teacher
 
