@@ -497,10 +497,10 @@ class AcademyTrainingActionEnrolmentWizard(models.TransientModel):
 
         if values:
             ids = self.enrolment_ids.ids
-            _logger.info(_(f"Enrollments({ids}) massive update: {values}"))
+            _logger.info(_(f"Enrolments({ids}) massive update: {values}"))
             self.enrolment_ids.write(values)
         else:
-            _logger.info(_("Enrollments massive update: {}"))
+            _logger.info(_("Enrolments massive update: {}"))
 
     def perform_action(self):
         for record in self:

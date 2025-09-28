@@ -13,7 +13,7 @@ from odoo import models, fields, api
 from odoo.tools.safe_eval import safe_eval
 from odoo.exceptions import ValidationError
 from odoo.osv.expression import AND, TRUE_DOMAIN, FALSE_DOMAIN
-from ..utils.helpers import OPERATOR_MAP, one2many_count
+from ..utils.helpers import OPERATOR_MAP, one2many_count, many2many_count
 
 from ..utils.record_utils import create_domain_for_ids
 from ..utils.record_utils import create_domain_for_interval
@@ -492,19 +492,19 @@ class AcademyTrainingAction(models.Model):
         index=False,
         default=0,
         help="Show number of enrolments",
-        compute="_compute_training_action_enrolment_count",
-        search="_search_training_action_enrolment_count",
+        compute="_compute_enrolment_count",
+        search="_search_enrolment_count",
     )
 
     @api.depends("enrolment_ids")
-    def _compute_training_action_enrolment_count(self):
+    def _compute_enrolment_count(self):
         counts = one2many_count(self, "enrolment_ids")
 
         for record in self:
             record.enrolment_count = counts.get(record.id, 0)
 
     @api.model
-    def _search_training_action_enrolment_count(self, operator, value):
+    def _search_enrolment_count(self, operator, value):
         # Handle boolean-like searches Odoo may pass for required fields
         if value is True:
             return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
@@ -520,10 +520,6 @@ class AcademyTrainingAction(models.Model):
 
         return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
-    @api.onchange("enrolment_ids")
-    def _onchange_training_action_enrolment_ids(self):
-        self._compute_training_action_enrolment_count()
-
     excess = fields.Integer(
         string="Excess",
         required=True,
@@ -535,6 +531,95 @@ class AcademyTrainingAction(models.Model):
             "feature at the same time"
         ),
     )
+
+    resolved_ids = fields.Many2many(
+        string="Resolved actions",
+        required=False,
+        readonly=True,
+        index=True,
+        default=None,
+        help=(
+            "If the action has no children, it points to itself. "
+            "If it has children, it points to its child actions."
+        ),
+        comodel_name="academy.training.action",
+        relation="academy_training_action_resolved_action_rel",
+        column1="parent_action_id",
+        column2="child_action_id",
+        compute="_compute_resolved_ids",
+        store=True,
+    )
+
+    @api.depends("child_ids")
+    def _compute_resolved_ids(self):
+        for record in self:
+            if record.child_ids:
+                record.resolved_ids = record.child_ids
+            else:
+                record.resolved_ids = record
+
+    resolved_enrolment_ids = fields.Many2many(
+        string="Resolved enrolments",
+        required=False,
+        readonly=True,
+        index=True,
+        default=None,
+        help=(
+            "If the action has no children, it returns its own enrolments. If "
+            "it has children, it returns the enrolments of its child actions."
+        ),
+        comodel_name="academy.training.action.enrolment",
+        relation="academy_training_action_resolved_enrolment_rel",
+        column1="training_action_id",
+        column2="enrolment_id",
+        compute="_compute_resolved_enrolment_ids",
+        store=True,
+    )
+
+    @api.depends("enrolment_ids", "child_ids", "child_ids.enrolment_ids")
+    def _compute_resolved_enrolment_ids(self):
+        for record in self:
+            map_path = (
+                "child_ids.enrolment_ids"
+                if record.child_ids
+                else "enrolment_ids"
+            )
+            record.resolved_enrolment_ids = record.mapped(map_path)
+
+    resolved_enrolment_count = fields.Integer(
+        string="Resolved enrolment count",
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        help="Show number of enrolments",
+        compute="_compute_resolved_enrolment_count",
+        search="_search_resolved_enrolment_count",
+    )
+
+    @api.depends("resolved_enrolment_ids")
+    def _compute_resolved_enrolment_count(self):
+        counts = many2many_count(self, "resolved_enrolment_ids")
+
+        for record in self:
+            record.resolved_enrolment_count = counts.get(record.id, 0)
+
+    @api.model
+    def _search_resolved_enrolment_count(self, operator, value):
+        # Handle boolean-like searches Odoo may pass for required fields
+        if value is True:
+            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
+        if value is False:
+            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
+
+        cmp_func = OPERATOR_MAP.get(operator)
+        if not cmp_func:
+            return FALSE_DOMAIN  # unsupported operator
+
+        counts = many2many_count(self.search([]), "resolved_enrolment_ids")
+        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
+
+        return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
     # ------------------------------ CONSTRAINS -------------------------------
 
@@ -880,7 +965,7 @@ class AcademyTrainingAction(models.Model):
 
         return domain
 
-    def show_training_action_enrolments(self):
+    def view_resolved_enrolments(self):
         self.ensure_one()
 
         act_xid = "academy_base.action_training_action_enrolment_act_window"

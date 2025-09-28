@@ -225,7 +225,30 @@ class AcademyTrainingModule(models.Model):
 
         return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
+    resolved_ids = fields.Many2many(
+        string="Deliverable modules",
+        required=False,
+        readonly=True,
+        index=True,
+        default=None,
+        help=(
+            "If the module has no children, it points to itself. "
+            "If it has children, it points to its sub-modules."
+        ),
+        comodel_name="academy.training.module",
+        compute="_compute_resolved_ids",
+    )
+
+    @api.depends("training_unit_ids")
+    def _compute_resolved_ids(self):
+        for record in self:
+            if record.training_unit_ids:
+                record.resolved_ids = record.training_unit_ids
+            else:
+                record.resolved_ids = record
+
     # --- SQL constraints --------------------------------------------------
+
     _sql_constraints = [
         (
             "code_unique",

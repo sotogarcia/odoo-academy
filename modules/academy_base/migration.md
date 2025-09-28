@@ -162,6 +162,18 @@ attrs=["']\{["'](readonly|invisible|required)["']: *(\[[^\]]+\])\}["']
 - [ ] Añadir ficha grupos a acciones
 - [ ] Añadir botón programa a acciones
 - [ ] Añadir botón grupos a acciones
+- [ ] Añadir campo delivery_ids a las acciones.
+
+
+## Solución a la matriculación por grupos
+
+Una matrícula tendrá un campo `training_action_id` que será su grupo y un campo
+`parent_action_id` que será la acción superior. Este segundo campo será igual a 
+`training_action_id.parent_id` en caso de ser un grupo o a `training_action_id`
+en caso de no existir grupos.
+
+El campo enrolment_ids 
+
 
 - academy.support.staff
 - academy_student

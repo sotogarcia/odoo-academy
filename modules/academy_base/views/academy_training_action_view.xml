@@ -44,8 +44,7 @@
 
                 <field name="seating" class="oe_field_seating" optional="hide"/>
                 <field name="excess" class="oe_field_excess" optional="hide"/>
-                <field name="enrolment_count" class="oe_field_training_action_enrolment_count"
-                    optional="show"/>
+                <field name="resolved_enrolment_count" class="oe_field_resolved_enrolment_count" optional="show"/>
 
                 <field name="manager_id" class="oe_field_manager_id" string="Tuttor" optional="show"
                 />
@@ -73,10 +72,10 @@
                       icon="fa-list-ul" help="View training action lines">
                       <field name="action_line_count" widget="statinfo" string="Units" />
                   </button>
-                  <button name="show_training_action_enrolments" type="object"
+                  <button name="view_resolved_enrolments" type="object"
                       class="oe_stat_button oe_read_only" icon="fa-id-card-o"
                       help="View training action enrolments">
-                      <field name="enrolment_count" widget="statinfo" string="Enrollments"/>
+                      <field name="resolved_enrolment_count" widget="statinfo" string="Enrolments"/>
                   </button>
 
                   <widget name="web_ribbon" title="Archived" bg_color="bg-danger"

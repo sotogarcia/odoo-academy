@@ -2202,7 +2202,7 @@ msgstr "Se establecerá fecha de baja para todas las matrículas seleccionadas"
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_student_form
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form
-msgid "Enrollments"
+msgid "Enrolments"
 msgstr "Matrículas"
 
 #. module: academy_base
