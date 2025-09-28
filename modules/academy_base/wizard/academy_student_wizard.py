@@ -22,31 +22,31 @@ from dateutil.relativedelta import relativedelta
 _logger = getLogger(__name__)
 
 HS_ENROLL = (
-    "All selected students who do not have active enrollments in the "
-    "specified training action, and whose enrollments do not overlap with the "
-    "specified date range, will be enrolled in that training action."
+    "All selected students who do not have active enrolments in the "
+    "specified training action, and whose enrolments do not overlap with the "
+    "specified date range, will be enroled in that training action."
 )
 HS_UNENROLL = (
-    "The specified withdrawal date will be assigned to all the enrollments "
+    "The specified withdrawal date will be assigned to all the enrolments "
     "that are active as of today for the selected students in the chosen "
     "training action."
 )
 HS_RE_ENROLL = (
-    "The most recently completed enrollment for each selected student will be "
-    "duplicated, with the specified start and end dates assigned. If no end "
-    "date is established, the enrollment will be of permanent validity. "
-    "Students who already have enrollments overlapping with the specified "
+    "The most recently completed enrolment for each selected student will be "
+    "duplicated, with the specified date_start and end dates assigned. If no end "
+    "date is established, the enrolment will be of permanent validity. "
+    "Students who already have enrolments overlapping with the specified "
     "date range will be excluded from the process."
 )
 HS_SWITCH = (
-    "A new enrollment will be created in the target training action, with a "
+    "A new enrolment will be created in the target training action, with a "
     "validity period defined by the provided dates. If no end date is "
-    "specified, the new enrollments will have permanent validity. The "
-    "specified enrollment date will be assigned to enrollments that are "
+    "specified, the new enrolments will have permanent validity. The "
+    "specified enrolment date will be assigned to enrolments that are "
     "active as of today in the original training action."
 )
 HS_SHOW = (
-    "All enrollments of the selected students for the indicated training "
+    "All enrolments of the selected students for the indicated training "
     "action that overlap with the given date range will be displayed."
 )
 
@@ -249,20 +249,22 @@ class AcademyStudentWizard(models.TransientModel):
         result = None
 
         if target:
-            start = getattr(target, "start", False)
+            date_start = getattr(target, "date_start", False)
 
-            if start:
-                end = getattr(target, "end", False)
+            if date_start:
+                date_stop = getattr(target, "date_stop", False)
 
-                if isinstance(start, datetime):
-                    start = start.date()
-                if isinstance(end, datetime):
-                    end = end.date()
+                if isinstance(date_start, datetime):
+                    date_start = date_start.date()
+                if isinstance(date_stop, datetime):
+                    date_stop = date_stop.date()
 
-                start = fields.Date.to_string(start)
-                end = fields.Date.to_string(end) if end else _("∞")
+                date_start = fields.Date.to_string(date_start)
+                date_stop = (
+                    fields.Date.to_string(date_stop) if date_stop else _("∞")
+                )
 
-                result = "{} … {}".format(start, end)
+                result = "{} … {}".format(date_start, date_stop)
 
         return result
 
@@ -311,14 +313,18 @@ class AcademyStudentWizard(models.TransientModel):
             training_action = None
 
         if training_action:
-            start = training_action.start.date()
-            end = (training_action.end or datetime.max).date()
+            date_start = training_action.date_start.date()
+            date_stop = (training_action.date_stop or datetime.max).date()
 
             if self.date_start:
-                self.date_start = min(end, max(start, self.date_start))
+                self.date_start = min(
+                    date_stop, max(date_start, self.date_start)
+                )
 
             if self.date_stop:
-                self.date_stop = max(start, min(end, self.end))
+                self.date_stop = max(
+                    date_start, min(date_stop, self.date_stop)
+                )
 
     # -------------------------------------------------------------------------
     # Field: joining_interval_str
@@ -394,13 +400,13 @@ class AcademyStudentWizard(models.TransientModel):
             point_in_time = self.compute_point_in_time(
                 self.date_start, self.date_stop or date.max
             )
-            enrolled_set = self.student_ids.fetch_enrolled(
+            enroled_set = self.student_ids.fetch_enrolled(
                 joining_id, point_in_time, False
             )
 
             student_ids = self.student_ids.ids
-            enrolled_ids = enrolled_set.ids
-            ids = [item for item in student_ids if item not in enrolled_ids]
+            enroled_ids = enroled_set.ids
+            ids = [item for item in student_ids if item not in enroled_ids]
 
             self.target_student_ids = [(6, 0, ids)]
         else:
@@ -411,11 +417,11 @@ class AcademyStudentWizard(models.TransientModel):
         current_id = self.current_training_action_id
 
         if current_id:
-            enrolled_set = self.student_ids.fetch_enrolled(
+            enroled_set = self.student_ids.fetch_enrolled(
                 current_id, date.today(), False
             )
 
-            self.target_student_ids = [(6, 0, enrolled_set.ids)]
+            self.target_student_ids = [(6, 0, enroled_set.ids)]
         else:
             self.target_student_ids = [(5, 0, 0)]
 
@@ -432,13 +438,13 @@ class AcademyStudentWizard(models.TransientModel):
             ever_enrolled_set = self.student_ids.fetch_enrolled(
                 joining_id, None, True
             )
-            enrolled_set = self.student_ids.fetch_enrolled(
+            enroled_set = self.student_ids.fetch_enrolled(
                 joining_id, point_in_time, False
             )
 
             ever_ids = ever_enrolled_set.ids
-            enrolled_ids = enrolled_set.ids
-            ids = [item for item in ever_ids if item not in enrolled_ids]
+            enroled_ids = enroled_set.ids
+            ids = [item for item in ever_ids if item not in enroled_ids]
 
             self.target_student_ids = [(6, 0, ids)]
         else:
@@ -458,13 +464,13 @@ class AcademyStudentWizard(models.TransientModel):
             current_set = self.student_ids.fetch_enrolled(
                 current_id, date.today(), False
             )
-            enrolled_set = self.student_ids.fetch_enrolled(
+            enroled_set = self.student_ids.fetch_enrolled(
                 joining_id, point_in_time, False
             )
 
             current_ids = current_set.ids
-            enrolled_ids = enrolled_set.ids
-            ids = [item for item in current_ids if item not in enrolled_ids]
+            enroled_ids = enroled_set.ids
+            ids = [item for item in current_ids if item not in enroled_ids]
 
             self.target_student_ids = [(6, 0, ids)]
         else:
@@ -478,10 +484,10 @@ class AcademyStudentWizard(models.TransientModel):
             point_in_time = self.compute_point_in_time(
                 self.date_start, self.date_stop or date.max
             )
-            enrolled_set = self.student_ids.fetch_enrolled(
+            enroled_set = self.student_ids.fetch_enrolled(
                 current_id, point_in_time, False
             )
-            self.target_student_ids = [(6, 0, enrolled_set.ids)]
+            self.target_student_ids = [(6, 0, enroled_set.ids)]
         else:
             self.target_student_ids = [(5, 0, 0)]
 
@@ -514,7 +520,7 @@ class AcademyStudentWizard(models.TransientModel):
         readonly=False,
         index=False,
         default=lambda self: self.default_date_start(),
-        help="Subscription date will be used for the new enrollments",
+        help="Subscription date will be used for the new enrolments",
     )
 
     def default_date_start(self):
@@ -530,7 +536,7 @@ class AcademyStudentWizard(models.TransientModel):
         readonly=False,
         index=False,
         default=lambda self: self.default_date_stop(),
-        help="Unsubscription date will be used for the new enrollments",
+        help="Unsubscription date will be used for the new enrolments",
     )
 
     def default_date_stop(self):
@@ -707,7 +713,7 @@ class AcademyStudentWizard(models.TransientModel):
             target_set = self.target_student_ids
 
         elif active_model == "academy.student":
-            model_name = _("training action enrollments")
+            model_name = _("training action enrolments")
             action_xid = (
                 "academy_base.action_training_action_enrolment_act_window"
             )

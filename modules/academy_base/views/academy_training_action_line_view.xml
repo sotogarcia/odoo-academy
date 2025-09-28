@@ -2,28 +2,30 @@
 
 <odoo noupdate="0">
 
-  <!-- VIEWS: "Training program line"
+  <!-- VIEWS: "Training action line"
 
-      - Model·········: academy.training.program.line
+      - Model·········: academy.training.action.line
       - _rec_name·····: training_module_id
       - Domain········: []
       - Context·······: {}
       - Parent menu ··: academy_base.menu_academy_catalog
       - View priority·: 16    Sequence····: 10
-      - Action help···: There are no program lines yet
+      - Action help···: There are no action lines yet
   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-  <!-- Tree view for "academy.training.program.line" -->
-  <record id="view_academy_training_program_line_tree" model="ir.ui.view">
-    <field name="name">view.academy.training.program.line.tree</field>
-    <field name="model">academy.training.program.line</field>
+  <!-- Tree view for "academy.training.action.line" -->
+  <record id="view_academy_training_action_line_tree" model="ir.ui.view">
+    <field name="name">view.academy.training.action.line.tree</field>
+    <field name="model">academy.training.action.line</field>
     <field name="type">list</field>
     <field name="mode">primary</field>
     <field name="priority" eval="16"/>
     <field name="active" eval="True"/>
     <field name="arch" type="xml">
-      <list string="academy_training_program_line_tree" create="1" delete="1" edit="1">
+      <list string="academy_training_action_line_tree" create="1" delete="1" edit="1">
+        <field name="is_section" column_invisible="1"/>
         <field name="active" column_invisible="1"/>
+
         <field name="sequence" class="oe_field_sequence" widget="handle"/>
         <field name="code" class="oe_field_code"/>
         <field name="name" class="oe_field_name"/>
@@ -37,16 +39,16 @@
     </field>
   </record>
 
-  <!-- Form view for "academy.training.program.line" -->
-  <record id="view_academy_training_program_line_form" model="ir.ui.view">
-    <field name="name">view.academy.training.program.line.form</field>
-    <field name="model">academy.training.program.line</field>
+  <!-- Form view for "academy.training.action.line" -->
+  <record id="view_academy_training_action_line_form" model="ir.ui.view">
+    <field name="name">view.academy.training.action.line.form</field>
+    <field name="model">academy.training.action.line</field>
     <field name="type">form</field>
     <field name="mode">primary</field>
     <field name="priority" eval="16"/>
     <field name="active" eval="True"/>
     <field name="arch" type="xml">
-      <form string="academy_training_program_line_form" create="1" delete="1" edit="1">
+      <form string="academy_training_action_line_form" create="1" delete="1" edit="1">
         <sheet>
           <div class="oe_button_box" name="button_box"/>
 
@@ -58,6 +60,9 @@
               <field name="name" class="oe_field_name" placeholder="Enter new name"/>
             </h1>
           </div>
+
+          <field name="training_action_id" invisible="1" force_save="1" />
+          <field name="is_section" invisible="1" force_save="1" />
 
           <group col="3" invisible="is_section">
             <group col="2" colspan="2" string="Training">
@@ -99,16 +104,16 @@
     </field>
   </record>
 
-  <!-- Search view for "academy.training.program.line" -->
-  <record id="view_academy_training_program_line_search" model="ir.ui.view">
-    <field name="name">view.academy.training.program.line.search</field>
-    <field name="model">academy.training.program.line</field>
+  <!-- Search view for "academy.training.action.line" -->
+  <record id="view_academy_training_action_line_search" model="ir.ui.view">
+    <field name="name">view.academy.training.action.line.search</field>
+    <field name="model">academy.training.action.line</field>
     <field name="type">search</field>
     <field name="mode">primary</field>
     <field name="priority" eval="16"/>
     <field name="active" eval="True"/>
     <field name="arch" type="xml">
-      <search string="academy_training_program_line_search">
+      <search string="academy_training_action_line_search">
         <field name="name"/>
         <field name="code"/>
         <field name="hours"/>
@@ -134,32 +139,32 @@
   </record>
 
   <!-- Main window action for model.name -->
-  <record id="action_training_program_line_act_window" model="ir.actions.act_window">
+  <record id="action_training_action_line_act_window" model="ir.actions.act_window">
     <field name="type">ir.actions.act_window</field>
-    <field name="name">Training program line</field>
-    <field name="res_model">academy.training.program.line</field>
+    <field name="name">Training action line</field>
+    <field name="res_model">academy.training.action.line</field>
     <field name="view_mode">list,form</field>
     <field name="target">current</field>
     <field name="domain">[]</field>
     <field name="context">{}</field>
-    <field name="search_view_id" ref="view_academy_training_program_line_search"/>
+    <field name="search_view_id" ref="view_academy_training_action_line_search"/>
     <field name="help" type="html">
-      <p class="oe_view_nocontent_create"> Click to add new training program line </p>
-      <p> There are no training program lines yet </p>
+      <p class="oe_view_nocontent_create"> Click to add new training action line </p>
+      <p> There are no training action lines yet </p>
     </field>
   </record>
 
-  <!-- Tree view for "academy.training.program.line" -->
-  <record id="view_academy_training_program_line_editable_tree" model="ir.ui.view">
-    <field name="name">view.academy.training.program.line.tree</field>
-    <field name="model">academy.training.program.line</field>
+  <!-- Tree view for "academy.training.action.line" -->
+  <record id="view_academy_training_action_line_editable_tree" model="ir.ui.view">
+    <field name="name">view.academy.training.action.line.tree</field>
+    <field name="model">academy.training.action.line</field>
     <field name="type">list</field>
     <field name="mode">primary</field>
     <field name="priority" eval="16"/>
     <field name="active" eval="True"/>
     <field name="arch" type="xml">
-      <list string="academy_training_program_line_tree" create="1" delete="1" edit="1"
-        decoration-bf="is_section" decoration-muted="is_section" class="academy-program-lines">
+      <list string="academy_training_action_line_tree" create="1" delete="1" edit="1"
+        decoration-bf="is_section" decoration-muted="is_section" class="academy-action-lines">
         <field name="sequence" class="oe_field_sequence" widget="handle"/>
         <field name="code" class="oe_field_code" invisible="is_section"/>
         <field name="name" class="oe_field_name academy-section-title"/>
@@ -175,5 +180,6 @@
       </list>
     </field>
   </record>
+
 
 </odoo>

@@ -162,7 +162,7 @@ class AcademyTrainingProgramLine(models.Model):
             "program line"
         ),
         comodel_name="academy.competency.unit",
-        relation="academy_training_program_line_competency_unit_rel",
+        # relation="academy_training_program_line_competency_unit_rel",
         column1="program_line_id",
         column2="competency_unit_id",
         domain=[],

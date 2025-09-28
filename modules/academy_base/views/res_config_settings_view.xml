@@ -98,7 +98,8 @@
             <setting string="Training Program Lines" help="View and edit training program lines">
               <div class="content-group mt8">
                 <button name="%(academy_base.action_training_program_line_act_window)d"
-                  string="&#160;Update program lines" type="action" class="oe_link" icon="fa-arrow-right"/>
+                  string="&#160;Update program lines" type="action" class="oe_link"
+                  icon="fa-arrow-right"/>
               </div>
             </setting>
 
@@ -171,8 +172,8 @@
 
             <setting string="Validation" help="Validate partner input data.">
               <group class="content-group mt8">
-                <field name="partner_email_required" class="oe_inline" />
-                <field name="partner_vat_required" class="oe_inline" />
+                <field name="partner_email_required" class="oe_inline"/>
+                <field name="partner_vat_required" class="oe_inline"/>
               </group>
             </setting>
           </block>

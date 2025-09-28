@@ -2,7 +2,7 @@
 
 <odoo noupdate="0">
 
-    <!-- VIEWS: "Knowledge area"
+  <!-- VIEWS: "Knowledge area"
 
             - Model·········: academy.knowledge.area
             - _rec_name·····: name
@@ -13,90 +13,88 @@
             - Action help···: There are not any knowledge are defined
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-    <!-- List view for "academy.knowledge.area" -->
-    <record id="view_academy_knowledge_area_tree" model="ir.ui.view">
-        <field name="name">view.academy.knowledge.area.tree</field>
-        <field name="model">academy.knowledge.area</field>
-        <field name="type">list</field>
-        <field name="mode">primary</field>
-        <field name="priority" eval="16"/>
-        <field name="active" eval="True"/>
-        <field name="arch" type="xml">
-            <list string="academy_knowledge_area_tree" create="1" delete="1" edit="1">
-                <field name="knowle_code"/>
-                <field name="name"/>
-                <field name="description"/>
-            </list>
-        </field>
-    </record>
+  <!-- List view for "academy.knowledge.area" -->
+  <record id="view_academy_knowledge_area_tree" model="ir.ui.view">
+    <field name="name">view.academy.knowledge.area.tree</field>
+    <field name="model">academy.knowledge.area</field>
+    <field name="type">list</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16"/>
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <list string="academy_knowledge_area_tree" create="1" delete="1" edit="1">
+        <field name="knowle_code"/>
+        <field name="name"/>
+        <field name="description"/>
+      </list>
+    </field>
+  </record>
 
-    <!-- Form view for "academy.knowledge.area" -->
-    <record id="view_academy_knowledge_area_form" model="ir.ui.view">
-        <field name="name">view.academy.knowledge.area.form</field>
-        <field name="model">academy.knowledge.area</field>
-        <field name="type">form</field>
-        <field name="mode">primary</field>
-        <field name="priority" eval="16"/>
-        <field name="active" eval="True"/>
-        <field name="arch" type="xml">
-            <form string="academy_knowledge_area_form" create="1" delete="1" edit="1">
-                <sheet>
-                    <div class="oe_button_box" name="button_box"/>
-                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger"
-                        invisible="active == True"/>
+  <!-- Form view for "academy.knowledge.area" -->
+  <record id="view_academy_knowledge_area_form" model="ir.ui.view">
+    <field name="name">view.academy.knowledge.area.form</field>
+    <field name="model">academy.knowledge.area</field>
+    <field name="type">form</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16"/>
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <form string="academy_knowledge_area_form" create="1" delete="1" edit="1">
+        <sheet>
+          <div class="oe_button_box" name="button_box"/>
+          <widget name="web_ribbon" title="Archived" bg_color="bg-danger" invisible="active == True"/>
 
-                    <div class="oe_title">
-                        <field name="active" invisible="1"/>
-                        <label for="name" class="oe_edit_only"/>
-                        <h1>
-                            <field name="name" class="oe_field_name" placeholder="Enter new name"/>
-                        </h1>
-                    </div>
-                    <group col="2">
-                        <field name="knowle_code" class="oe_field_knowle_code"
-                            placeholder="Enter new code"/>
-                        <field name="description" class="oe_field_description"
-                            placeholder="Enter new description"/>
-                    </group>
-                </sheet>
-            </form>
-        </field>
-    </record>
+          <div class="oe_title">
+            <field name="active" invisible="1"/>
+            <label for="name" class="oe_edit_only"/>
+            <h1>
+              <field name="name" class="oe_field_name" placeholder="Enter new name"/>
+            </h1>
+          </div>
+          <group col="2">
+            <field name="knowle_code" class="oe_field_knowle_code" placeholder="Enter new code"/>
+            <field name="description" class="oe_field_description"
+              placeholder="Enter new description"/>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
 
-    <!-- Search view for "academy.knowledge.area" -->
-    <record id="view_academy_knowledge_area_search" model="ir.ui.view">
-        <field name="name">view.academy.knowledge.area.search</field>
-        <field name="model">academy.knowledge.area</field>
-        <field name="type">search</field>
-        <field name="mode">primary</field>
-        <field name="priority" eval="16"/>
-        <field name="active" eval="True"/>
-        <field name="arch" type="xml">
-            <search string="academy_knowledge_area_search">
-                <field name="knowle_code"/>
-                <field name="name"/>
+  <!-- Search view for "academy.knowledge.area" -->
+  <record id="view_academy_knowledge_area_search" model="ir.ui.view">
+    <field name="name">view.academy.knowledge.area.search</field>
+    <field name="model">academy.knowledge.area</field>
+    <field name="type">search</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16"/>
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <search string="academy_knowledge_area_search">
+        <field name="knowle_code"/>
+        <field name="name"/>
 
-                <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
+        <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
 
-            </search>
-        </field>
-    </record>
+      </search>
+    </field>
+  </record>
 
-    <!-- Main window action for model.name -->
-    <record id="action_knowledge_area_act_window" model="ir.actions.act_window">
-        <field name="type">ir.actions.act_window</field>
-        <field name="name">Knowledge areas</field>
-        <field name="res_model">academy.knowledge.area</field>
-        <field name="view_mode">list,form</field>
+  <!-- Main window action for model.name -->
+  <record id="action_knowledge_area_act_window" model="ir.actions.act_window">
+    <field name="type">ir.actions.act_window</field>
+    <field name="name">Knowledge areas</field>
+    <field name="res_model">academy.knowledge.area</field>
+    <field name="view_mode">list,form</field>
 
-        <field name="target">current</field>
-        <field name="domain">[]</field>
-        <field name="context">{}</field>
-        <field name="search_view_id" ref="view_academy_knowledge_area_search"/>
-        <field name="help" type="html">
-            <p class="oe_view_nocontent_create"> Click to add new knowledge areas </p>
-            <p> There are no knowledge areas yet </p>
-        </field>
-    </record>
+    <field name="target">current</field>
+    <field name="domain">[]</field>
+    <field name="context">{}</field>
+    <field name="search_view_id" ref="view_academy_knowledge_area_search"/>
+    <field name="help" type="html">
+      <p class="oe_view_nocontent_create"> Click to add new knowledge areas </p>
+      <p> There are no knowledge areas yet </p>
+    </field>
+  </record>
 
 </odoo>

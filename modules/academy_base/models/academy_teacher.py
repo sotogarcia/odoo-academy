@@ -21,8 +21,6 @@ class AcademyTeacher(models.Model):
     _description = "Academy teacher"
 
     _inherit = [
-        "mail.thread",
-        "mail.activity.mixin",
         "academy.support.staff",
     ]
 
@@ -32,7 +30,7 @@ class AcademyTeacher(models.Model):
     _rec_names_search = [
         "complete_name",
         "email",
-        "ref",
+        "signup_code",
         "vat",
         "company_registry",
     ]

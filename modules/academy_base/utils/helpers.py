@@ -305,6 +305,10 @@ def many2many_count(parent_set, m2m_field_name, domain=None):
     cr = parent_set.env.cr
     parent_ids = tuple(parent_set.ids)
 
+    # Guard: avoid generating 'IN ()' when no parents are provided
+    if not parent_ids:
+        return counts
+
     sql = f"""
         SELECT
             mid_rel.{col_parent} AS parent_id,
@@ -320,7 +324,7 @@ def many2many_count(parent_set, m2m_field_name, domain=None):
         GROUP BY mid_rel.{col_parent}
     """
 
-    # First param: parent_ids array for ANY(%s); then child-domain params
+    # First param: parent_ids for IN %s; then child-domain params
     cr.execute(sql, [parent_ids, *params])
     for parent_id, cnt in cr.fetchall():
         counts[parent_id] = cnt

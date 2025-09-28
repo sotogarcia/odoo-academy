@@ -76,6 +76,7 @@ from . import academy_competency_unit
 # Training delivery (instances / sessions)
 # ---------------------------------------------------------------------------
 from . import academy_training_action
+from . import academy_training_action_line
 from . import academy_training_action_enrolment
 
 # ---------------------------------------------------------------------------

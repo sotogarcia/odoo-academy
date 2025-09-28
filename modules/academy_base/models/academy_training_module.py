@@ -43,9 +43,6 @@ class AcademyTrainingModule(models.Model):
 
     # ---------------------------- ENTITY FIELDS ------------------------------
 
-    # Required by _parent_store for efficient child_of searches
-    parent_path = fields.Char(index=True)
-
     name = fields.Char(
         string="Name",
         required=True,
@@ -102,6 +99,15 @@ class AcademyTrainingModule(models.Model):
         domain=[],
         context={},
         auto_join=False,
+    )
+
+    parent_path = fields.Char(
+        string="Parent path",
+        required=False,
+        readonly=True,
+        index=True,
+        default=False,
+        help="Technical path used to speed up 'child_of' domain lookups.",
     )
 
     code = fields.Char(

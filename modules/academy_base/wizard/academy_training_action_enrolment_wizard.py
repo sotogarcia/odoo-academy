@@ -20,7 +20,7 @@ _logger = getLogger(__name__)
 
 
 class AcademyTrainingActionEnrolmentWizard(models.TransientModel):
-    """Massive actions over enrollments"""
+    """Massive actions over enrolments"""
 
     _name = "academy.training.action.enrolment.wizard"
     _description = "Academy training action enrolment wizard"
@@ -48,9 +48,9 @@ class AcademyTrainingActionEnrolmentWizard(models.TransientModel):
     )
 
     def default_enrolment_ids(self):
-        """Retrieves a set of active student enrollments from the environment,
+        """Retrieves a set of active student enrolments from the environment,
         supporting flexibility in handling different types of records related
-        to student enrollments.
+        to student enrolments.
 
         Raises:
             UserError: If the active record set is neither 'academy.student'
@@ -71,7 +71,7 @@ class AcademyTrainingActionEnrolmentWizard(models.TransientModel):
             elif hasattr(active_set, "enrolment_ids"):
                 active_set = active_set.mapped("enrolment_ids.id")
             else:
-                msg = _("Provided object «{}» has not enrollments")
+                msg = _("Provided object «{}» has not enrolments")
                 raise UserError(msg.format(active_set._name))
 
         return active_set
@@ -86,7 +86,7 @@ class AcademyTrainingActionEnrolmentWizard(models.TransientModel):
         readonly=True,
         index=False,
         default=0,
-        help="Number of enrollments on whom the action will be carried out",
+        help="Number of enrolments on whom the action will be carried out",
         compute="_compute_enrolment_count",
         search="_search_enrolment_count",
     )
@@ -153,7 +153,7 @@ class AcademyTrainingActionEnrolmentWizard(models.TransientModel):
         default=0,
         help=(
             "Number of different students related to the selected "
-            "enrollments"
+            "enrolments"
         ),
         compute="_compute_student_count",
         search="_search_student_count",
@@ -221,7 +221,7 @@ class AcademyTrainingActionEnrolmentWizard(models.TransientModel):
         default=0,
         help=(
             "Number of different training actions related to the selected "
-            "enrollments"
+            "enrolments"
         ),
         compute="_compute_training_action_count",
         search="_search_training_action_count",
@@ -256,18 +256,18 @@ class AcademyTrainingActionEnrolmentWizard(models.TransientModel):
     # -------------------------------------------------------------------------
 
     update_date_start = fields.Boolean(
-        string="Update date start",
+        string="Update date_start",
         required=False,
         readonly=False,
         index=False,
         default=False,
-        help="Check it to update enrollemnt start date",
+        help="Check it to update enrolemnt date_start date",
     )
 
     @api.onchange("update_date_start")
     def _onchange_update_date_start(self):
         if self.update_date_start:
-            start_list = self.enrolment_ids.mapped("start")
+            start_list = self.enrolment_ids.mapped("date_start")
             self.date_start = min(start_list) if start_list else date.today()
         else:
             self.date_start = None
@@ -277,14 +277,14 @@ class AcademyTrainingActionEnrolmentWizard(models.TransientModel):
     # -------------------------------------------------------------------------
 
     date_start = fields.Date(
-        string="Date start",
+        string="Date date_start",
         required=False,
         readonly=False,
         index=False,
         default=None,
         help=(
-            "Enrolment start date will be set for all the selected "
-            "enrollments"
+            "Enrolment date_start date will be set for all the selected "
+            "enrolments"
         ),
     )
 
@@ -298,13 +298,13 @@ class AcademyTrainingActionEnrolmentWizard(models.TransientModel):
         readonly=False,
         index=False,
         default=False,
-        help="Check it to update enrollemnt stop date",
+        help="Check it to update enrolemnt date stop",
     )
 
     @api.onchange("update_date_stop")
     def _onchange_update_date_stop(self):
         if self.update_date_stop:
-            end_list = self.enrolment_ids.mapped("end")
+            end_list = self.enrolment_ids.mapped("date_stop")
             self.date_stop = min(end_list) if end_list else date.today()
         else:
             self.date_stop = None
@@ -314,14 +314,14 @@ class AcademyTrainingActionEnrolmentWizard(models.TransientModel):
     # -------------------------------------------------------------------------
 
     date_stop = fields.Date(
-        string="Date stop",
+        string="Date date_stop",
         required=False,
         readonly=False,
         index=False,
         default=None,
         help=(
-            "Enrolment stop date will be set for all the selected "
-            "enrollments"
+            "Enrolment date stop will be set for all the selected "
+            "enrolments"
         ),
     )
 
@@ -335,7 +335,7 @@ class AcademyTrainingActionEnrolmentWizard(models.TransientModel):
         readonly=False,
         index=False,
         default=False,
-        help="Check it to update enrollemnt training modalities",
+        help="Check it to update enrolemnt training modalities",
     )
 
     @api.onchange("update_modalities")
@@ -405,7 +405,7 @@ class AcademyTrainingActionEnrolmentWizard(models.TransientModel):
         default=None,
         help=(
             "Training modalities will be set for all the selected "
-            "enrollments"
+            "enrolments"
         ),
         comodel_name="academy.training.modality",
         relation="academy_training_action_enrolment_wizard_modality_rel",
@@ -425,7 +425,7 @@ class AcademyTrainingActionEnrolmentWizard(models.TransientModel):
         readonly=False,
         index=False,
         default=False,
-        help="Check it to update enrollemnt material",
+        help="Check it to update enrolemnt material",
     )
 
     @api.onchange("update_material")
@@ -443,7 +443,7 @@ class AcademyTrainingActionEnrolmentWizard(models.TransientModel):
         readonly=False,
         index=True,
         default="digital",
-        help=("Material will be set for all the selected enrollments"),
+        help=("Material will be set for all the selected enrolments"),
         selection=[("printed", "Printed"), ("digital", "Digital")],
     )
 

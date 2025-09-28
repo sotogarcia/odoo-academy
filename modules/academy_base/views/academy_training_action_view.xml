@@ -26,13 +26,13 @@
                 <field name="code" class="oe_field_action_code" optional="show"/>
                 <field name="name" string="Name"/>
 
-                <field name="training_modality_ids" class="oe_field_training_modality_ids"
+                <field name="training_modality_id" class="oe_field_training_modality_id"
                     optional="hide"/>
                 <field name="training_methodology_ids" class="oe_field_training_methodology_ids"
                     optional="hide"/>
 
-                <field name="start" class="oe_field_start"/>
-                <field name="end" class="oe_field_end"/>
+                <field name="date_start" class="oe_field_start"/>
+                <field name="date_stop" class="oe_field_end"/>
 
                 <field name="code" class="oe_field_activity_code" optional="hide"/>
                 <field name="training_program_id" class="oe_field_training_program_id"
@@ -63,102 +63,115 @@
         <field name="active" eval="True"/>
         <field name="arch" type="xml">
             <form string="academy_training_action_form" create="1" delete="1" edit="1">
-                <sheet>
-                    <div class="oe_button_box" name="button_box">
+              <sheet>
+                <div class="oe_button_box" name="button_box">
+                  <button name="view_training_action_groups" type="object" class="oe_stat_button oe_read_only"
+                      icon="fa-list" help="View training action lines groups">
+                      <field name="child_count" widget="statinfo" string="Groups" />
+                  </button>
+                  <button name="view_action_lines" type="object" class="oe_stat_button oe_read_only"
+                      icon="fa-list-ul" help="View training action lines">
+                      <field name="action_line_count" widget="statinfo" string="Units" />
+                  </button>
+                  <button name="show_training_action_enrolments" type="object"
+                      class="oe_stat_button oe_read_only" icon="fa-id-card-o"
+                      help="View training action enrolments">
+                      <field name="enrolment_count" widget="statinfo" string="Enrollments"/>
+                  </button>
 
-                        <button name="show_training_action_enrolments" type="object"
-                            class="oe_stat_button oe_read_only" icon="fa-id-card-o"
-                            help="View training action enrollments">
-                            <field name="enrolment_count" widget="statinfo" string="Enrollments"/>
-                        </button>
+                  <widget name="web_ribbon" title="Archived" bg_color="bg-danger"
+                      invisible="active == True"/>
+                </div>
 
-                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger"
-                            invisible="active == True"/>
-                    </div>
+                <field name="image_1920" widget="image" class="oe_avatar"
+                    options='{"preview_image": "image_128"}'/>
 
-                    <field name="image_1920" widget="image" class="oe_avatar"
-                        options='{"preview_image": "image_128"}'/>
+                <field name="id" invisible="1"/>
+                <field name="active" invisible="1"/>
 
-                    <field name="id" invisible="1"/>
-                    <field name="active" invisible="1"/>
-
-                    <div class="oe_title" id="title">
-                        <label for="name" class="oe_edit_only"/>
-                        <h1>
-                            <field name="name" class="oe_field_action_name"
-                                placeholder="Enter new name"/>
-                        </h1>
-                        <div class="mt-2 mb-3">
-                          <group>
-                            <field name="training_program_id" class="oe_field_training_program_id"
-                            options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"
-                            readonly="context.get('default_training_program_id', False)"/>
-                          </group>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                      <group col="2" id="action">
-                        <group string="Base">
-                          <field name="code" class="oe_field_code"/>
-                          <field name="manager_id" class="oe_field_manager_id" string="Supervisor" />
-                        </group>
-                        <group string="Training">
-                          <field name="training_methodology_ids" class="od_field_training_methodology" widget="many2many_tags" string="Methodology" title="Training methodology"/>
-                          <field name="training_modality_ids" class="od_field_training_modality" widget="many2many_tags" string="Modality" title="Training modality"/>
-                        </group>
-                        <group string="Dates">
-                          <field name="start" class="oe_field_start" />
-                          <field name="end" class="oe_field_end" />
-                        </group>
-                        <group string="Seats">
-                          <field name="seating" class="oe_field_seating" />
-                          <field name="excess" class="oe_field_excess" />
-                        </group>
+                <div class="oe_title" id="title">
+                    <label for="name" class="oe_edit_only"/>
+                    <h1>
+                        <field name="name" class="oe_field_action_name"
+                            placeholder="Enter new name"/>
+                    </h1>
+                    <div class="mt-2 mb-3">
+                      <group>
+                        <field name="training_program_id" class="oe_field_training_program_id"
+                        options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"
+                        readonly="context.get('default_training_program_id', False)"/>
                       </group>
                     </div>
+                </div>
 
-                    <notebook class="mt-3">
-                        <page id="data" string="Data" class="oe_page_data" accesskey="T">
+                <div class="row">
+                  <group col="2" id="action">
+                    <group string="Base">
+                      <field name="code" class="oe_field_code"/>
+                      <field name="manager_id" class="oe_field_manager_id" string="Supervisor" />
+                    </group>
+                    <group string="Training">
+                      <field name="training_methodology_ids" class="od_field_training_methodology" widget="many2many_tags" string="Methodology" title="Training methodology"/>
+                      <field name="training_modality_id" class="od_field_training_modality" string="Modality" title="Training modality" />
+                    </group>
+                    <group string="Dates">
+                      <field name="date_start" class="oe_field_start" />
+                      <field name="date_stop" class="oe_field_end" />
+                    </group>
+                    <group string="Seats">
+                      <field name="seating" class="oe_field_seating" />
+                      <field name="excess" class="oe_field_excess" />
+                    </group>
+                  </group>
+                </div>
 
-                            <group string="Description">
-                                <field name="description" class="oe_field_description" placeholder="Enter new description" colspan="4" nolabel="1" />
-                            </group>
-                            <group string="Action details">
-                              <group><field name="application_scope_id" class="od_field_application_scope"
-                                options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"/></group>
-                              <group><field name="knowledge_area_ids"
-                                options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" class="od_field_knowledge_area" widget="many2many_tags" string="Area" title="Knowledge area"/></group>
-                              <group><field name="professional_category_id"
-                                options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" class="od_field_professional_category" string="Category" title="Professional category"/></group>
-                            </group>
-                            <group string="Activity details">
-                                <group><field name="professional_family_id"
-                                  options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" class="oe_field_professional_family_id" readonly="1"/></group>
-                                <group><field name="professional_area_id"
-                                  options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" class="oe_field_professional_area_id" readonly="1"/></group>
-                                <group><field name="code" class="oe_field_action_code" placeholder="Enter new internal code" readonly="1"/></group>
-                                <group><field name="qualification_level_id"
-                                  options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" class="oe_field_qualification_level_id" readonly="1"/></group>
-                            </group>
+                <notebook class="mt-3">
+                  <page string="Units" class="oe_page_lines" accesskey="L">
+                    <group col="2">
+                      <field name="action_line_ids" class="oe_field_action_line_ids" nolabel="1" colspan="2"
+                        context="{'default_training_action_id': id}" />
+                    </group>
+                  </page>
+                  <page id="data" string="Data" class="oe_page_data" accesskey="T">
 
-                        </page>
-                        <page id="setup" string="Setup" class="oe_page_setup" accesskey="S">
-                            <group col="4" string="Ownership"
-                                groups="record_ownership.record_ownership_proxy">
-                                <field name="owner_id" class="oe_field_owner_id" options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
-                                <field name="subrogate_id" class="oe_field_subrogate_id" options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
-                            </group>
-                        </page>
-                        <page string="Internal Notes" class="oe_page_internal_notes" accesskey="I" groups="base.group_user">
-                          <group col="2">
-                            <field name="comment" class="oe_field_comment" nolabel="1" colspan="2" widget="html" />
-                          </group>
-                        </page>
-                    </notebook>
-                </sheet>
+                    <group string="Description">
+                        <field name="description" class="oe_field_description" colspan="4" nolabel="1" />
+                    </group>
+                    <group string="Action details">
+                      <group><field name="application_scope_id" class="od_field_application_scope"
+                        options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"/></group>
+                      <group><field name="knowledge_area_ids"
+                        options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" class="od_field_knowledge_area" widget="many2many_tags" string="Area" title="Knowledge area"/></group>
+                      <group><field name="professional_category_id"
+                        options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" class="od_field_professional_category" string="Category" title="Professional category"/></group>
+                    </group>
+                    <group string="Activity details">
+                        <group><field name="professional_family_id"
+                          options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" class="oe_field_professional_family_id" readonly="1"/></group>
+                        <group><field name="professional_area_id"
+                          options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" class="oe_field_professional_area_id" readonly="1"/></group>
+                        <group><field name="code" class="oe_field_action_code" placeholder="Enter new internal code" readonly="1"/></group>
+                        <group><field name="qualification_level_id"
+                          options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" class="oe_field_qualification_level_id" readonly="1"/></group>
+                    </group>
 
-                <chatter/>
+                  </page>
+                  <page id="setup" string="Setup" class="oe_page_setup" accesskey="S">
+                      <group col="4" string="Ownership"
+                          groups="record_ownership.record_ownership_proxy">
+                          <field name="owner_id" class="oe_field_owner_id" options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
+                          <field name="subrogate_id" class="oe_field_subrogate_id" options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
+                      </group>
+                  </page>
+                  <page string="Internal Notes" class="oe_page_internal_notes" accesskey="I" groups="base.group_user">
+                    <group col="2">
+                      <field name="comment" class="oe_field_comment" nolabel="1" colspan="2" widget="html" />
+                    </group>
+                  </page>
+                </notebook>
+              </sheet>
+
+              <chatter/>
             </form>
         </field>
     </record>
@@ -172,70 +185,70 @@
         <field name="priority" eval="16"/>
         <field name="active" eval="True"/>
         <field name="arch" type="xml">
-            <kanban create="1" delete="1" edit="1">
-                <field name="image_128"/>
-                <field name="name"/>
-                <field name="seating"/>
-                <field name="end"/>
-                <field name="training_program_id"/>
+          <kanban sample="1">
+            <field name="display_name"/>
+            <field name="image_128"/>
+            <field name="code"/>
+            <field name="enrolment_count" />
+            <field name="action_line_count" />
+            <field name="training_framework_id" />
+            <field name="hours" />
 
-                <templates>
-                    <t t-name="card">
-                        <div
-                            class="oe_kanban_global_click oe_kanban_academy_training_action d-flex flex-column justify-content-end">
-                            <div class="flex-fill align-top">
-                                <div class="o_kanban_image">
-                                    <t t-if="record.image_128.raw_value">
-                                        <field name="image_128" widget="image" class="oe_avatar"
-                                            options='{"preview_image": "image_128"}'/>
-                                    </t>
-                                    <t t-else="">
-                                        <img
-                                            t-att-src="_s + &quot;/academy_base/static/src/img/training-action.png&quot;"
-                                            class="o_kanban_image" alt="Training action photo"/>
-                                    </t>
-                                </div>
-                                <div class="oe_kanban_details">
-                                    <h4>
-                                        <strong class="oe_partner_heading">
-                                            <field name="name"/>
-                                        </strong>
-                                    </h4>
-                                    <ul>
-                                        <li class="o_ellipsis"
-                                            t-attf-title="record.training_program_id.raw_value">
-                                            <field name="training_program_id"/>
-                                        </li>
-                                        <li class="o_ellipsis">
-                                            <strong>Code:&#160;</strong>
-                                            <field name="code"/>
-                                        </li>
-                                        <li class="o_ellipsis"
-                                                ><strong>Lifespan:&#160;</strong><field name="start"
-                                                widget="date"/>&#160;-&#160;<field name="end"
-                                                widget="date"/></li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div name="kanban-box-toolbar"
-                                class="btn-toolbar d-flex w-100 justify-content-end align-self-end mt-3"
-                                role="toolbar" aria-label="Training action commands">
-                                <div class="btn-group" role="group" aria-label="Management">
-                                    <button name="show_training_action_enrolments" type="object"
-                                        groups="academy_base.academy_group_technical"
-                                        class="btn btn-sm btn-light oe_read_only"
-                                        title="View training action enrollments">
-                                        <i class="fa fa-id-card-o d-inline-block mr-1"
-                                            aria-hidden="false"/>
-                                        <field name="enrolment_count"/>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- oe_kanban_global_click -->
-                    </t>
-                </templates>
-            </kanban>
+            <templates>
+              <t t-name="card" class="flex-row">
+                <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                <aside class="o_kanban_aside_full">
+                  <field name="image_128" class="w-100" widget="image"
+                    options="{'img_class': 'w-100 h-auto ps-2 py-2 align-top'}"/>
+                </aside>
+                <main class="ps-2 ps-md-0">
+                  <h2 class="h4 text-truncate">
+                    <field name="display_name"/>
+                  </h2>
+                  <table border="0" cellpadding="0" cellspacing="0"
+                    style="border: 0px none transparent;">
+                    <tbody>
+                      <tr>
+                        <th class="text-nowrap pe-1">Code:</th>
+                        <td class="text-truncate">
+                          <span t-if="record.code.raw_value">
+                            <t t-esc="record.code.raw_value"/>
+                          </span>
+                          <span t-if="!record.code.raw_value">---</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th class="text-nowrap pe-1">Units:</th>
+                        <td class="text-truncate">
+                          <t t-esc="record.action_line_count.raw_value"/>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th class="text-nowrap pe-1">Hours:</th>
+                        <td class="text-truncate">
+                          <field name="hours" class="oe_field_hours" widget="float_time" />
+                        </td>
+                      </tr>
+                      <tr>
+                        <th class="text-nowrap pe-1">Enrolments:</th>
+                        <td class="text-truncate">
+                          <t t-esc="record.enrolment_count.raw_value"/>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td colspan="2" class="text-truncate pt-2" title="Training Framework">
+                          <span t-if="record.training_framework_id.raw_value">
+                            <field name="training_framework_id"/>
+                          </span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </main>
+              </t>
+            </templates>
+          </kanban>
+
         </field>
     </record>
 
@@ -254,7 +267,7 @@
 
                 <field name="training_program_id"/>
 
-                <field name="training_modality_ids"/>
+                <field name="training_modality_id"/>
                 <field name="training_methodology_ids"/>
 
                 <separator/>
@@ -268,9 +281,9 @@
 
                 <separator/>
                 <filter name="has_finalized" string="Finalized"
-                    domain="[('end', '&lt;=', (datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))]"/>
+                    domain="[('date_stop', '&lt;=', (datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))]"/>
                 <filter name="in_progress" string="In progress"
-                    domain="['|', ('end', '=', False), ('end', '&gt;', (datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))]"/>
+                    domain="['|', ('date_stop', '=', False), ('date_stop', '&gt;', (datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))]"/>
 
                 <group expand="0" name="group_by" string="Group By">
                     <filter name="group_by_training_program_id" string="Training program"
@@ -296,7 +309,7 @@
         <field name="view_mode">kanban,list,form</field>
 
         <field name="target">current</field>
-        <field name="domain">[]</field>
+        <field name="domain">[('parent_id', '=', False)]</field>
         <field name="context">{}</field>
         <field name="search_view_id" ref="view_academy_training_action_search"/>
         <field name="help" type="html">
@@ -310,6 +323,38 @@
         <field name="name">Training actions</field>
         <field name="sequence" eval="10"/>
         <field name="action" ref="action_training_action_act_window"/>
+        <field name="parent_id" ref="academy_base.menu_academy_monitoring"/>
+        <field name="groups_id"
+            eval="[(4, ref('academy_base.academy_group_technical')), (4, ref('academy_base.academy_group_teacher'))]"
+        />
+    </record>
+
+
+<!-- View groups
+    ········································································ -->
+
+    <!-- Main window action for model.name -->
+    <record id="action_training_action_group_act_window" model="ir.actions.act_window">
+        <field name="type">ir.actions.act_window</field>
+        <field name="name">Training groups</field>
+        <field name="res_model">academy.training.action</field>
+        <field name="view_mode">kanban,list,form</field>
+
+        <field name="target">current</field>
+        <field name="domain">[("child_ids", "=", False)]</field>
+        <field name="context">{}</field>
+        <field name="search_view_id" ref="view_academy_training_action_search"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">Click to add new training groups</p>
+            <p>There are no training groups yet</p>
+        </field>
+    </record>
+
+    <!-- Main menu for model.name -->
+    <record id="menu_training_action_groups" model="ir.ui.menu">
+        <field name="name">Training groups</field>
+        <field name="sequence" eval="15"/>
+        <field name="action" ref="action_training_action_group_act_window"/>
         <field name="parent_id" ref="academy_base.menu_academy_monitoring"/>
         <field name="groups_id"
             eval="[(4, ref('academy_base.academy_group_technical')), (4, ref('academy_base.academy_group_teacher'))]"

@@ -31,15 +31,15 @@
             <list string="Training actions" create="0" delete="0" edit="0">
                 <field name="code" class="oe_field_action_code"/>
                 <field name="name" class="oe_field_action_name"/>
-                <field name="start" class="oe_field_start"/>
-                <field name="end" class="oe_field_end"/>
+                <field name="date_start" class="oe_field_start"/>
+                <field name="date_stop" class="oe_field_end"/>
             </list>
         </field>
     </record>
 
 
     <record id="view_academy_training_action_enrolment_wizard_wizard" model="ir.ui.view">
-        <field name="name">Massive actions over enrollments</field>
+        <field name="name">Massive actions over enrolments</field>
         <field name="model">academy.training.action.enrolment.wizard</field>
         <field name="type">form</field>
         <field name="mode">primary</field>
@@ -107,7 +107,7 @@
     <record id="action_academy_training_action_enrolment_wizard_wizard_act_window"
         model="ir.actions.act_window">
         <field name="type">ir.actions.act_window</field>
-        <field name="name">Massive actions over enrollments</field>
+        <field name="name">Massive actions over enrolments</field>
         <field name="res_model">academy.training.action.enrolment.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
@@ -120,7 +120,7 @@
 
     <!-- Main menu for model.name -->
     <!--        <record id="menu_academy_training_action_enrolment_wizard_wizard" model="ir.ui.menu" >
-            <field name="name">Massive actions over enrollments</field>
+            <field name="name">Massive actions over enrolments</field>
             <field name="sequence" eval="20" />
             <field name="action" ref="action_academy_training_action_enrolment_wizard_16_act_window" />
             <field name="parent_id" ref="base.menu_custom" />

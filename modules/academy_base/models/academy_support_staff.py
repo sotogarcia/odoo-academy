@@ -26,7 +26,23 @@ class AcademySupportStaff(models.Model):
         "people within the academy community."
     )
 
+    _inherit = [
+        "mail.thread",
+        "mail.activity.mixin",
+    ]
+
     _inherits = {"res.partner": "partner_id"}
+
+    _order = "complete_name ASC, id DESC"
+
+    _rec_name = "complete_name"
+    _rec_names_search = [
+        "complete_name",
+        "email",
+        "signup_code",
+        "vat",
+        "company_registry",
+    ]
 
     partner_id = fields.Many2one(
         string="Partner",
@@ -42,13 +58,24 @@ class AcademySupportStaff(models.Model):
         auto_join=False,
     )
 
+    signup_code = fields.Char(
+        string="Sign-up code",
+        required=True,
+        readonly=False,
+        index=True,
+        default=lambda self: self._next_signup_code(self.env.company.id),
+        help="Unique code assigned when the student signs up at the center.",
+        size=50,
+        translate=False,
+    )
+
     signup_date = fields.Date(
         string="Sign-up date",
         required=True,
         readonly=False,
         index=False,
         default=lambda self: fields.Date.context_today(self),
-        help="Date the contact signed up at the center.",
+        help="Date when the student signed up at the center.",
         tracking=True,
     )
 
@@ -294,7 +321,7 @@ class AcademySupportStaff(models.Model):
             for record in self:
                 vat = (getattr(record, "vat", "") or "").strip()
 
-                country_code, number = self.partner_id._split_vat(vat)
+                country_code, number = self._split_vat(vat)
                 has_known_country = (
                     country_code and country_code.upper() in country_codes
                 )
@@ -343,19 +370,15 @@ class AcademySupportStaff(models.Model):
         action_xid = "base.action_partner_form"
         act_wnd = self.env.ref(action_xid)
 
-        inverse_field = self._get_inverse_field_name()
-        context_default_inverse_field = f"default_{inverse_field}"
-
         context = (self.env.context or {}).copy()
-        context.update(
-            {
-                "uid": self.env.uid,
-                context_default_inverse_field: [(4, self.id, 0)],
-                "active_model": "res.partner",
-                "active_id": self.partner_id.id,
-                "active_ids": [self.partner_id.id],
-            }
-        )
+        # context.update(
+        #     {
+        #         "uid": self.env.uid,
+        #         "active_model": "res.partner",
+        #         "active_id": self.partner_id.id,
+        #         "active_ids": [self.partner_id.id],
+        #     }
+        # )
         domain = self._eval_domain(act_wnd.domain)
         domain = AND([domain, [("id", "=", self.partner_id.id)]])
 
@@ -472,7 +495,33 @@ class AcademySupportStaff(models.Model):
 
         return result
 
+    def unlink(self):
+        """Overridden method 'unlink'"""
+
+        category_xid = self._get_relevant_category_external_id()
+        category = self.env.ref(category_xid, raise_if_not_found=False)
+        if category:
+            category_id = category.id
+            partner_set = self.mapped("partner_id")
+            partner_set.write({"category_id": [(3, category_id)]})
+
+        return super().unlink()
+
     # -- Auxiliary methods ----------------------------------------------------
+
+    def _split_vat(self, vat):
+        """
+        Splits the VAT Number to get the country code in a first place and the
+        code itself in a second place.
+        This has to be done because some countries' code are one character
+        long instead of two (i.e. "T" for Japan)
+        """
+        if len(vat) > 1 and vat[1].isalpha():
+            vat_country, vat_number = vat[:2].lower(), vat[2:].replace(" ", "")
+        else:
+            vat_country, vat_number = vat[:1].lower(), vat[1:].replace(" ", "")
+
+        return vat_country, vat_number
 
     @staticmethod
     def _force_category(values, category, raise_if_not_category=False):
@@ -555,7 +604,7 @@ class AcademySupportStaff(models.Model):
 
         # Split VAT into country code and number; normalize both
         if len(vat) > 2 and vat[:2].isalpha():
-            country_code, number = self.env["res.partner"]._split_vat(vat)
+            country_code, number = self._split_vat(vat)
         else:
             country_code, number = None, vat
         country_code = (country_code or "").strip().upper()
@@ -678,10 +727,10 @@ class AcademySupportStaff(models.Model):
 
     @api.model
     def _ensure_signup_data(self, values):
-        if not values.get("ref"):
+        if not values.get("signup_code"):
             company_id = values.get("company_id") or self.env.company.id
-            values["ref"] = self._next_signup_code(company_id)
-            values["barcode"] = values["ref"]
+            values["signup_code"] = self._next_signup_code(company_id)
+            values["barcode"] = values["signup_code"]
 
         if not values.get("signup_date", False):
             values["signup_date"] = fields.Date.context_today(self)

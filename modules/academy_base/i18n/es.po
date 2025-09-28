@@ -356,8 +356,8 @@ msgstr ""
 #: model:academy.interface.help.string,description:academy_base.academy_interface_student_wizard_action_switch
 msgid ""
 "A new enrolment will be created in the target training action, with a validity period defined by the provided dates. "
-"If no end date is specified, the new enrollments will have permanent validity. The specified enrolment date will be "
-"assigned to enrollments that are active as of today in the original training action."
+"If no end date is specified, the new enrolments will have permanent validity. The specified enrolment date will be "
+"assigned to enrolments that are active as of today in the original training action."
 msgstr ""
 "Se creará una nueva matrícula en la acción formativa de destino, con un intervalo de vigencia delimitado por las fechas "
 "proporcionadas. Si no se especifica una fecha de finalización, las nuevas matrículas tendrán vigencia permanente. La "
@@ -565,11 +565,6 @@ msgid "Action Needed"
 msgstr "Acción necesaria"
 
 #. module: academy_base
-#: model:ir.model.fields,field_description:academy_base.field_academy_training_action__training_action_enrolment_ids
-msgid "Action enrolments"
-msgstr "Matrículas de la acción"
-
-#. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action__action_name
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment__action_name
 msgid "Action name"
@@ -765,7 +760,7 @@ msgstr "Alias de seguridad de contacto"
 #. module: academy_base
 #: model:academy.interface.help.string,description:academy_base.academy_interface_student_wizard_action_show
 msgid ""
-"All enrollments of the selected students for the indicated training action that overlap with the given date range will "
+"All enrolments of the selected students for the indicated training action that overlap with the given date range will "
 "be displayed."
 msgstr ""
 "Se mostrarán todas las matrículas de los alumnos seleccionados para la acción formativa indicada que se solapen con el "
@@ -774,7 +769,7 @@ msgstr ""
 #. module: academy_base
 #: model:academy.interface.help.string,description:academy_base.academy_interface_student_wizard_action_enroll
 msgid ""
-"All selected students who do not have active enrollments in the specified training action, and whose enrollments do not "
+"All selected students who do not have active enrolments in the specified training action, and whose enrolments do not "
 "overlap with the specified date range, will be <enroled> in that training action."
 msgstr ""
 "Todos los estudiantes seleccionados que no tengan matrículas activas en la acción formativa indicada, solapadas con el "
@@ -1141,22 +1136,22 @@ msgstr "Marcar si el contacto es una empresa, de lo contrario es una persona"
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment_wizard__update_material
-msgid "Check it to update enrollemnt material"
+msgid "Check it to update enrolemnt material"
 msgstr "Marcar para actualizar el material de inscripción"
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment_wizard__update_date_start
-msgid "Check it to update enrollemnt start date"
+msgid "Check it to update enrolemnt start date"
 msgstr "Marcar para actualizar la fecha de alta"
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment_wizard__update_date_stop
-msgid "Check it to update enrollemnt stop date"
+msgid "Check it to update enrolemnt stop date"
 msgstr "Marcar para actualizar el material de baja"
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment_wizard__update_modalities
-msgid "Check it to update enrollemnt training modalities"
+msgid "Check it to update enrolemnt training modalities"
 msgstr "Marcar para actualizar las modalidades de formación"
 
 #. module: academy_base
@@ -1750,7 +1745,7 @@ msgstr "Sociología cultural"
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_student__enrolment_str
-msgid "Current enrollments over total number of student enrollments"
+msgid "Current enrolments over total number of student enrolments"
 msgstr "Número de matrículas actuales sobre el total de matrículas del estudiante"
 
 #. module: academy_base
@@ -2196,12 +2191,12 @@ msgstr "La matrícula queda fuera del ámbito de la acción formativa"
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment_wizard__date_start
-msgid "Enrolment start date will be set for all the selected enrollments"
+msgid "Enrolment start date will be set for all the selected enrolments"
 msgstr "Se establecerá fecha de alta para todas las matrículas seleccionadas"
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment_wizard__date_stop
-msgid "Enrolment stop date will be set for all the selected enrollments"
+msgid "Enrolment stop date will be set for all the selected enrolments"
 msgstr "Se establecerá fecha de baja para todas las matrículas seleccionadas"
 
 #. module: academy_base
@@ -2217,7 +2212,7 @@ msgstr "Matrículas"
 #: model:ir.model.fields.selection,name:academy_base.selection__academy_abstract_training_reference__training_ref__academy_training_action_enrolment
 #, python-format
 msgid "Enrolment"
-msgstr "Matrícula en acciones formativas"
+msgstr "Matrícula"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_enrolment_kanban
@@ -2245,6 +2240,7 @@ msgstr "Matriculaciones"
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment_wizard__enrolment_ids
 #: model:ir.ui.menu,name:academy_base.menu_training_action_enrolment
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_student_wizard
+#: model:ir.model.fields,field_description:academy_base.field_academy_training_action__training_action_enrolment_ids
 msgid "Enrolments"
 msgstr "Matrículas"
 
@@ -3526,7 +3522,7 @@ msgstr "Enumera todas las unidades de competencia que utilizan este módulo de c
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_student__current_enrolment_ids
 #: model:ir.model.fields,help:academy_base.field_academy_student__enrolment_ids
-msgid "List all the enrollments, including those that are current, past, and future"
+msgid "List all the enrolments, including those that are current, past, and future"
 msgstr "Enumere todas las inscripciones, incluidas las actuales, pasadas y futuras"
 
 #. module: academy_base
@@ -3541,7 +3537,7 @@ msgstr "Lista de módulos formativos"
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_student__training_action_ids
-msgid "List the training actions for which the student has active enrollments"
+msgid "List the training actions for which the student has active enrolments"
 msgstr "Listar las acciones formativas para las que el estudiante tiene matrículas activas"
 
 #. module: academy_base
@@ -3649,7 +3645,7 @@ msgstr "Marketing y comercio"
 
 #. module: academy_base
 #: model:ir.actions.act_window,name:academy_base.action_academy_training_action_enrolment_wizard_wizard_act_window
-msgid "Massive actions over enrollments"
+msgid "Massive actions over enrolments"
 msgstr "Gestión de matrículas"
 
 #. module: academy_base
@@ -3677,7 +3673,7 @@ msgstr ""
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment_wizard__material
-msgid "Material will be set for all the selected enrollments"
+msgid "Material will be set for all the selected enrolments"
 msgstr "Se establecerá el tipo de material para todas las matrículas seleccionadas"
 
 #. module: academy_base
@@ -4156,17 +4152,17 @@ msgstr "Cantidad de unidades de competencia relacionadas con esta calificación 
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment_wizard__student_count
-msgid "Number of different students related to the selected enrollments"
+msgid "Number of different students related to the selected enrolments"
 msgstr "Número de alumnos diferentes relacionados con las matrículas seleccionadas"
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment_wizard__training_action_count
-msgid "Number of different training actions related to the selected enrollments"
+msgid "Number of different training actions related to the selected enrolments"
 msgstr "Número de acciones formativas diferentes relacionadas con las matrículas seleccionadas"
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment_wizard__enrolment_count
-msgid "Number of enrollments on whom the action will be carried out"
+msgid "Number of enrolments on whom the action will be carried out"
 msgstr "Número de matriculas sobre las que se realizará la acción"
 
 #. module: academy_base
@@ -5035,7 +5031,7 @@ msgstr "Ética prospectiva"
 #. module: academy_base
 #: code:addons/academy_base/wizard/academy_training_action_enrolment_wizard.py:0
 #, python-format
-msgid "Provided object «{}» has not enrollments"
+msgid "Provided object «{}» has not enrolments"
 msgstr "El objeto proporcionado «{}» no tiene inscripciones"
 
 #. module: academy_base
@@ -5238,7 +5234,7 @@ msgstr "Unidad de formación relacionada"
 #: model:ir.actions.server,name:academy_base.ir_cron_remove_temporary_student_enrollments_ir_actions_server
 #: model:ir.cron,cron_name:academy_base.ir_cron_remove_temporary_student_enrollments
 #: model:ir.cron,name:academy_base.ir_cron_remove_temporary_student_enrollments
-msgid "Remove temporary student enrollments"
+msgid "Remove temporary student enrolments"
 msgstr "Eliminar matrículas temporales de estudiantes"
 
 #. module: academy_base
@@ -5674,7 +5670,7 @@ msgstr "Información sobre el nivel educativo de los estudiantes"
 #: code:addons/academy_base/models/academy_training_action_enrolment.py:0
 #: model:ir.model.constraint,message:academy_base.constraint_academy_training_action_enrolment_prevent_overlap
 #, python-format
-msgid "Student enrollments cannot overlap in time for the same training action"
+msgid "Student enrolments cannot overlap in time for the same training action"
 msgstr "Las matriculaciones de estudiantes no pueden solaparse en el tiempo para una misma acción formativa"
 
 #. module: academy_base
@@ -5751,7 +5747,7 @@ msgstr "Delegado"
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_student_wizard__date_start
-msgid "Subscription date will be used for the new enrollments"
+msgid "Subscription date will be used for the new enrolments"
 msgstr "La fecha de suscripción se utilizará para las nuevas matrículas"
 
 #. module: academy_base
@@ -5977,7 +5973,7 @@ msgstr "El módulo no se puede duplicar en la misma actividad formativa"
 msgid ""
 "The most recently completed enrolment for each selected student will be duplicated, with the specified start and end "
 "dates assigned. If no end date is established, the enrolment will be of permanent validity. Students who already have "
-"enrollments overlapping with the specified date range will be excluded from the process."
+"enrolments overlapping with the specified date range will be excluded from the process."
 msgstr ""
 "La matrícula más recientemente finalizada de cada estudiante seleccionado será duplicada, asignándole las fechas de "
 "inicio y finalización especificadas. Si no se establece una fecha de finalización, la matrícula tendrá una vigencia "
@@ -6000,7 +5996,7 @@ msgstr "El conjunto de registros de origen debe corresponder al modelo {}"
 #. module: academy_base
 #: model:academy.interface.help.string,description:academy_base.academy_interface_student_wizard_action_unenroll
 msgid ""
-"The specified withdrawal date will be assigned to all the enrollments that are active as of today for the selected "
+"The specified withdrawal date will be assigned to all the enrolments that are active as of today for the selected "
 "students in the chosen training action."
 msgstr ""
 "La fecha de baja especificada se asignará a todas las matrículas de los alumnos seleccionados, que están activas a "
@@ -6043,7 +6039,7 @@ msgstr "Ya existe una cadena de ayuda de interfaz con ese nombre"
 #. module: academy_base
 #: code:addons/academy_base/models/academy_training_action.py:0
 #, python-format
-msgid "There are enrollments that are outside the range of training action"
+msgid "There are enrolments that are outside the range of training action"
 msgstr "Hay matriculaciones que quedan fuera del ámbito de acción formativa"
 
 #. module: academy_base
@@ -6419,7 +6415,7 @@ msgstr "Modalidades de formación"
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment_wizard__training_modality_ids
-msgid "Training modalities will be set for all the selected enrollments"
+msgid "Training modalities will be set for all the selected enrolments"
 msgstr "Se establecerán las modalidades formativas para todas las matrículas seleccionadas"
 
 #. module: academy_base
@@ -6617,7 +6613,7 @@ msgstr "Contador de mensajes no leídos"
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_student_wizard__date_stop
-msgid "Unsubscription date will be used for the new enrollments"
+msgid "Unsubscription date will be used for the new enrolments"
 msgstr "La fecha de baja se utilizará para las nuevas altas"
 
 #. module: academy_base
@@ -6828,7 +6824,7 @@ msgstr "Ver matrículas de estudiantes"
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_kanban
-msgid "View training action enrollments"
+msgid "View training action enrolments"
 msgstr "Ver matrículas en acciones formativas"
 
 #. module: academy_base
@@ -6878,7 +6874,7 @@ msgstr "Madera, muebles y corcho"
 #. module: academy_base
 #: code:addons/academy_base/models/academy_training_action_enrolment.py:0
 #, python-format
-msgid "You must assign a real student to each of the enrollments."
+msgid "You must assign a real student to each of the enrolments."
 msgstr "Debes asignar un alumno real a cada una de las matrículas."
 
 #. module: academy_base
@@ -7239,7 +7235,7 @@ msgstr "estudiantes"
 #. module: academy_base
 #: code:addons/academy_base/wizard/academy_student_wizard.py:0
 #, python-format
-msgid "training action enrollments"
+msgid "training action enrolments"
 msgstr "inscripciones en acciones formativas"
 
 #. module: academy_base

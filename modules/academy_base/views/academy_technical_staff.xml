@@ -24,7 +24,7 @@
     <field name="inherit_id" ref="academy_base.view_academy_support_staff_tree"/>
     <field name="arch" type="xml">
       <xpath expr="//list" position="attributes">
-          <attribute name="string">academy_technical_staff_tree</attribute>
+        <attribute name="string">academy_technical_staff_tree</attribute>
       </xpath>
     </field>
   </record>
@@ -40,7 +40,7 @@
     <field name="inherit_id" ref="academy_base.view_academy_support_staff_form"/>
     <field name="arch" type="xml">
       <xpath expr="//form" position="attributes">
-          <attribute name="string">academy_technical_staff_form</attribute>
+        <attribute name="string">academy_technical_staff_form</attribute>
       </xpath>
     </field>
   </record>
@@ -55,7 +55,7 @@
     <field name="inherit_id" ref="academy_base.view_academy_support_staff_kanban"/>
     <field name="arch" type="xml">
       <xpath expr="//kanban" position="attributes">
-          <attribute name="string">academy_technical_staff_kanban</attribute>
+        <attribute name="string">academy_technical_staff_kanban</attribute>
       </xpath>
     </field>
   </record>
@@ -71,7 +71,7 @@
     <field name="inherit_id" ref="academy_base.view_academy_support_staff_search"/>
     <field name="arch" type="xml">
       <xpath expr="//search" position="attributes">
-          <attribute name="string">academy_technical_staff_search</attribute>
+        <attribute name="string">academy_technical_staff_search</attribute>
       </xpath>
     </field>
   </record>

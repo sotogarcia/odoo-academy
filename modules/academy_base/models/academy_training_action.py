@@ -35,15 +35,11 @@ class AcademyTrainingAction(models.Model):
     """
 
     MSG_ATA01 = _lt(
-        "There are enrollments that are outside the range of "
-        "training action"
+        "There are enrolments that are outside the range of " "training action"
     )
 
     _name = "academy.training.action"
     _description = "Academy training action"
-
-    _rec_name = "name"
-    _order = "name ASC"
 
     _inherit = [
         "image.mixin",
@@ -51,7 +47,13 @@ class AcademyTrainingAction(models.Model):
         "ownership.mixin",
     ]
 
+    _rec_name = "name"
+    order = "parent_path, name, date_start"
+    _rec_names_search = ["name", "code", "training_program_id"]
+
     _check_company_auto = True
+    _parent_name = "parent_id"
+    _parent_store = True
 
     company_id = fields.Many2one(
         string="Company",
@@ -66,6 +68,86 @@ class AcademyTrainingAction(models.Model):
         ondelete="cascade",
         auto_join=False,
     )
+
+    parent_path = fields.Char(
+        string="Parent path",
+        required=False,
+        readonly=True,
+        index=True,
+        default=False,
+        help="Technical path used to speed up 'child_of' domain lookups.",
+    )
+
+    parent_id = fields.Many2one(
+        string="Parent action",
+        required=False,
+        readonly=False,
+        index=True,
+        default=False,
+        help="If set, this record is a subgroup of another action. "
+        "It will inherit program, company and must fit into "
+        "parent date range.",
+        comodel_name="academy.training.action",
+        ondelete="restrict",
+        auto_join=False,
+        domain=lambda self: [("id", "!=", self.id)],  # guard client-side
+    )
+
+    @api.onchange("parent_id")
+    def _onchange_parent_id(self):
+        """Align obvious fields from parent on selection"""
+        if self.parent_id:
+            self.company_id = self.parent_id.company_id
+            if getattr(self, "training_program_id", False):
+                self.training_program_id = self.parent_id.training_program_id
+
+    child_ids = fields.One2many(
+        string="Subgroups",
+        required=False,
+        readonly=False,
+        index=False,
+        default=False,
+        help="Optional child training actions (subgroups) that share "
+        "the same program and company as the parent.",
+        comodel_name="academy.training.action",
+        inverse_name="parent_id",
+        auto_join=False,
+    )
+
+    child_count = fields.Integer(
+        string="Child count",
+        required=False,
+        readonly=False,
+        index=False,
+        default=0,
+        help=False,
+        compute="_compute_child_countt",
+        search="_search_child_count",
+    )
+
+    @api.depends("child_ids")
+    def _compute_child_countt(self):
+        counts = one2many_count(self, "child_ids")
+
+        for record in self:
+            record.child_count = counts.get(record.id, 0)
+
+    @api.model
+    def _search_child_count(self, operator, value):
+        # Handle boolean-like searches Odoo may pass for required fields
+        if value is True:
+            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
+        if value is False:
+            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
+
+        cmp_func = OPERATOR_MAP.get(operator)
+        if not cmp_func:
+            return FALSE_DOMAIN  # unsupported operator
+
+        counts = one2many_count(self.search([]), "child_ids")
+        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
+
+        return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
     name = fields.Char(
         string="Action name",
@@ -97,6 +179,17 @@ class AcademyTrainingAction(models.Model):
         help="Disable to archive without deleting.",
     )
 
+    code = fields.Char(
+        string="Internal code",
+        required=True,
+        readonly=False,
+        index=False,
+        default=None,
+        help="Enter new internal code",
+        size=30,
+        translate=False,
+    )
+
     comment = fields.Html(
         string="Internal notes",
         required=False,
@@ -114,7 +207,7 @@ class AcademyTrainingAction(models.Model):
     )
 
     # pylint: disable=locally-disabled, w0212
-    start = fields.Datetime(
+    date_start = fields.Datetime(
         string="Start",
         required=True,
         readonly=False,
@@ -131,7 +224,7 @@ class AcademyTrainingAction(models.Model):
         return now.astimezone(utc).replace(tzinfo=None)
 
     # pylint: disable=locally-disabled, w0212
-    end = fields.Datetime(
+    date_stop = fields.Datetime(
         string="End",
         required=False,
         readonly=False,
@@ -204,19 +297,21 @@ class AcademyTrainingAction(models.Model):
         context={},
     )
 
-    training_modality_ids = fields.Many2many(
-        string="Training modalities",
-        required=False,
+    training_modality_id = fields.Many2one(
+        string="Training modality",
+        required=True,
         readonly=False,
-        index=False,
+        index=True,
         default=None,
-        help="Choose training modalities",
+        help=(
+            "Defines how the training action is delivered, "
+            "such as face-to-face, online or blended."
+        ),
         comodel_name="academy.training.modality",
-        relation="academy_training_action_training_modality_rel",
-        column1="training_action_id",
-        column2="training_modality_id",
         domain=[],
         context={},
+        ondelete="cascade",
+        auto_join=False,
     )
 
     training_methodology_ids = fields.Many2many(
@@ -234,6 +329,8 @@ class AcademyTrainingAction(models.Model):
         context={},
     )
 
+    # -- Training program and its attributes ----------------------------------
+
     training_program_id = fields.Many2one(
         string="Training program",
         required=True,
@@ -248,16 +345,117 @@ class AcademyTrainingAction(models.Model):
         auto_join=False,
     )
 
-    code = fields.Char(
-        string="Internal code",
+    @api.onchange("training_program_id")
+    def _onchange_training_program_id(self):
+        self.synchronise_program_lines(add_optional=True)
+
+    program_name = fields.Char(
+        string="Name",
+        related="training_program_id.name",
+    )
+
+    program_code = fields.Char(
+        string="code",
+        related="training_program_id.code",
+    )
+
+    training_framework_id = fields.Many2one(
+        string="Training Framework",
+        related="training_program_id.training_framework_id",
+    )
+
+    hours = fields.Float(
+        string="hours",
+        related="training_program_id.hours",
+    )
+
+    professional_family_id = fields.Many2one(
+        string="Professional Family",
+        related="training_program_id.professional_family_id",
+    )
+
+    professional_area_id = fields.Many2one(
+        string="Professional Area",
+        related="training_program_id.professional_area_id",
+    )
+
+    qualification_level_id = fields.Many2one(
+        string="Qualification Level",
+        related="training_program_id.qualification_level_id",
+    )
+
+    attainment_id = fields.Many2one(
+        string="Educational Attainment",
+        related="training_program_id.attainment_id",
+    )
+
+    general_competence = fields.Text(
+        string="General Competence",
+        related="training_program_id.general_competence",
+    )
+
+    professional_field_id = fields.Many2one(
+        string="Professional Field",
+        related="training_program_id.professional_field_id",
+    )
+
+    professional_sector_ids = fields.Many2many(
+        string="Professional Sectors",
+        related="training_program_id.professional_sector_ids",
+    )
+
+    action_line_ids = fields.One2many(
+        string="Action lines",
         required=True,
         readonly=False,
-        index=False,
+        index=True,
         default=None,
-        help="Enter new internal code",
-        size=30,
-        translate=False,
+        help=(
+            "Programme lines included in this training action "
+            "(syllabus units/modules to be delivered)."
+        ),
+        comodel_name="academy.training.action.line",
+        inverse_name="training_action_id",
+        domain=[],
+        context={},
+        auto_join=False,
+        limit=None,
     )
+
+    action_line_count = fields.Integer(
+        string="Action line count",
+        required=False,
+        readonly=False,
+        index=False,
+        default=0,
+        help=False,
+        compute="_compute_action_line_count",
+        search="_search_training_action_count",
+    )
+
+    @api.depends("action_line_ids")
+    def _compute_action_line_count(self):
+        counts = one2many_count(self, "action_line_ids")
+
+        for record in self:
+            record.action_line_count = counts.get(record.id, 0)
+
+    @api.model
+    def _search_training_action_count(self, operator, value):
+        # Handle boolean-like searches Odoo may pass for required fields
+        if value is True:
+            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
+        if value is False:
+            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
+
+        cmp_func = OPERATOR_MAP.get(operator)
+        if not cmp_func:
+            return FALSE_DOMAIN  # unsupported operator
+
+        counts = one2many_count(self.search([]), "action_line_ids")
+        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
+
+        return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
     seating = fields.Integer(
         string="Seating",
@@ -272,8 +470,8 @@ class AcademyTrainingAction(models.Model):
     def _onchange_seating(self):
         self.excess = max(self.seating, self.excess)
 
-    training_action_enrolment_ids = fields.One2many(
-        string="Action enrolments",
+    enrolment_ids = fields.One2many(
+        string="Enrolments",
         required=False,
         readonly=False,
         index=False,
@@ -298,9 +496,9 @@ class AcademyTrainingAction(models.Model):
         search="_search_training_action_enrolment_count",
     )
 
-    @api.depends("training_action_enrolment_ids")
+    @api.depends("enrolment_ids")
     def _compute_training_action_enrolment_count(self):
-        counts = one2many_count(self, "training_action_enrolment_ids")
+        counts = one2many_count(self, "enrolment_ids")
 
         for record in self:
             record.enrolment_count = counts.get(record.id, 0)
@@ -317,14 +515,12 @@ class AcademyTrainingAction(models.Model):
         if not cmp_func:
             return FALSE_DOMAIN  # unsupported operator
 
-        counts = one2many_count(
-            self.search([]), "training_action_enrolment_ids"
-        )
+        counts = one2many_count(self.search([]), "enrolment_ids")
         matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
 
         return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
-    @api.onchange("training_action_enrolment_ids")
+    @api.onchange("enrolment_ids")
     def _onchange_training_action_enrolment_ids(self):
         self._compute_training_action_enrolment_count()
 
@@ -340,68 +536,98 @@ class AcademyTrainingAction(models.Model):
         ),
     )
 
-    # ------------------------- ACTIVITY RELATED FIELDS -----------------------
-    # _inherits from training program raises an error with multicompany
-
-    name = fields.Char(string="Name", related="training_program_id.name")
-
-    professional_family_id = fields.Many2one(
-        string="Professional family",
-        related="training_program_id.professional_family_id",
-    )
-
-    professional_area_id = fields.Many2one(
-        string="Professional area",
-        related="training_program_id.professional_area_id",
-    )
-
-    qualification_level_id = fields.Many2one(
-        string="Qualification level",
-        related="training_program_id.qualification_level_id",
-    )
-
-    attainment_id = fields.Many2one(
-        string="Educational attainment",
-        related="training_program_id.attainment_id",
-    )
-
-    code = fields.Char(string="Code", related="training_program_id.code")
-
-    general_competence = fields.Text(
-        string="General competence",
-        related="training_program_id.general_competence",
-    )
-
-    professional_field_id = fields.Many2one(
-        string="Professional field",
-        related="training_program_id.professional_field_id",
-    )
-
-    professional_sector_ids = fields.Many2many(
-        string="Professional sectors",
-        related="training_program_id.professional_sector_ids",
-    )
-
     # ------------------------------ CONSTRAINS -------------------------------
 
     _sql_constraints = [
         (
             "unique_action_code",
-            "UNIQUE(code)",
+            'UNIQUE("code")',
             "The given action code already exists",
         ),
         (
             "check_date_order",
-            'CHECK("end" IS NULL OR "start" < "end")',
-            "End date must be greater then start date",
+            'CHECK("date_stop" IS NULL OR "date_start" < "date_stop")',
+            "End date must be greater then date_start date",
         ),
         (
-            "USERS_GREATER_OR_EQUAL_TO_ZERO",
+            "users_greater_or_equal_to_zero",
             "CHECK(seating >= 0)",
             "The number of users must be greater than or equal to zero",
         ),
-        ("unique_token", "UNIQUE(token)", "The token must be unique."),
     ]
+
+    @api.constrains("parent_id")
+    def _check_only_one_level(self):
+        for rec in self:
+            if rec.parent_id and rec.parent_id.parent_id:
+                raise ValidationError(
+                    _("Only one hierarchy level is allowed.")
+                )
+
+    @api.constrains("parent_id")
+    def _check_not_self_parent(self):
+        message = _("A record cannot be its own parent.")
+        for record in self:
+            if record.parent_id and record.parent_id.id == record.id:
+                raise ValidationError(message)
+
+    @api.constrains("parent_id")
+    def _check_no_cycles(self):
+        def _has_cycle(node):
+            seen = set()
+            cur = node.parent_id
+            while cur:
+                if cur.id in seen or cur.id == node.id:
+                    return True
+                seen.add(cur.id)
+                cur = cur.parent_id
+            return False
+
+        for rec in self:
+            if rec.parent_id and _has_cycle(rec):
+                raise ValidationError(_("Hierarchy cycle detected."))
+
+    @api.constrains(
+        "parent_id",
+        "company_id",
+        "training_program_id",
+        "date_start",
+        "date_end",
+    )
+    def _check_parent_coherence(self):
+        """Ensure children keep company/program and fit date window"""
+        for rec in self:
+            parent = rec.parent_id
+            if not parent:
+                continue
+            # Company must match (leverages _check_company_auto, but be explicit)
+            if parent.company_id != rec.company_id:
+                raise ValidationError(
+                    _("Child action company must match its parent.")
+                )
+            # Program must match
+            if (
+                parent.training_program_id
+                and rec.training_program_id
+                and parent.training_program_id != rec.training_program_id
+            ):
+                raise ValidationError(
+                    _("Child action program must match its parent program.")
+                )
+            # Dates must be contained in parent window (if both sides set)
+            if (
+                parent.date_start
+                and parent.date_end
+                and rec.date_start
+                and rec.date_end
+            ):
+                if (
+                    rec.date_start < parent.date_start
+                    or rec.date_end > parent.date_end
+                ):
+                    raise ValidationError(
+                        _("Child action dates must fit within parent dates.")
+                    )
 
     # -------------------------- OVERLOADED METHODS ---------------------------
 
@@ -512,23 +738,81 @@ class AcademyTrainingAction(models.Model):
 
     # --------------------------- PUBLIC METHODS ------------------------------
 
+    def view_training_action_groups(self):
+        self.ensure_one()
+
+        action_xid = "academy_base.action_training_action_group_act_window"
+        act_wnd = self.env.ref(action_xid)
+
+        context = self.env.context.copy()
+        context.update(safe_eval(act_wnd.context))
+        context.update({"default_parent_id": self.id})
+
+        domain = [("parent_id", "=", self.id)]
+
+        serialized = {
+            "type": "ir.actions.act_window",
+            "res_model": act_wnd.res_model,
+            "target": "current",
+            "name": act_wnd.name,
+            "view_mode": act_wnd.view_mode,
+            "domain": domain,
+            "context": context,
+            "search_view_id": act_wnd.search_view_id.id,
+            "help": act_wnd.help,
+        }
+
+        return serialized
+
+    def view_action_lines(self):
+        self.ensure_one()
+
+        action_xid = "academy_base.action_training_action_line_act_window"
+        act_wnd = self.env.ref(action_xid)
+
+        context = self.env.context.copy()
+        context.update(safe_eval(act_wnd.context))
+        context.update({"default_training_action_id": self.id})
+
+        domain = [("training_action_id", "=", self.id)]
+
+        serialized = {
+            "type": "ir.actions.act_window",
+            "res_model": act_wnd.res_model,
+            "target": "current",
+            "name": act_wnd.name,
+            "view_mode": act_wnd.view_mode,
+            "domain": domain,
+            "context": context,
+            "search_view_id": act_wnd.search_view_id.id,
+            "help": act_wnd.help,
+        }
+
+        return serialized
+
     def update_enrolments(self, force=False):
         dtformat = "%Y-%m-%d %H:%M:%S.%f"
 
         for record in self:
-            enrol_set = record.training_action_enrolment_ids
+            enrol_set = record.enrolment_ids
 
-            # Enrolment start must be great or equal than record start
-            target_set = enrol_set.filtered(lambda r: r.start < record.start)
-            target_set.write({"start": record.start.strftime(dtformat)})
+            # Enrolment date_start must be great or equal than record date_start
+            target_set = enrol_set.filtered(
+                lambda r: r.date_start < record.date_start
+            )
+            target_set.write(
+                {"date_start": record.date_start.strftime(dtformat)}
+            )
 
             # Enrolment end must be less or equal than record end
             # NOTE: end date can be null
-            if record.end:
+            if record.date_stop:
                 target_set = enrol_set.filtered(
-                    lambda r: r.end and r.end > record.end
+                    lambda r: r.date_stop and r.date_stop > record.date_stop
                 )
-                target_set.write({"end": record.end.strftime(dtformat)})
+                target_set.write(
+                    {"date_stop": record.date_stop.strftime(dtformat)}
+                )
 
     def session_wizard(self):
         """Launch the Session wizard.
@@ -677,3 +961,114 @@ class AcademyTrainingAction(models.Model):
             training_action_set = enrolment_set.mapped("training_action_id")
 
         return training_action_set
+
+    def _values_from_program_line(self, program_line):
+        """Build write/create values for action line from a programme line.
+
+        Copies only fields that exist in the action-line model, are writable,
+        not related/compute, and skips meta/relational pointers that must be
+        set explicitly.
+        """
+        action_line_model = self.env["academy.training.action.line"]
+        values = {}
+        for name, field in program_line._fields.items():
+            # skip meta and linkage fields
+            if name in {
+                "id",
+                "create_uid",
+                "create_date",
+                "write_uid",
+                "write_date",
+                "training_program_id",
+            }:
+                continue
+            # copy only if target has the field
+            if name not in action_line_model._fields:
+                continue
+            tfield = action_line_model._fields[name]
+            # skip non-writable targets
+            if tfield.readonly or tfield.compute or tfield.related:
+                continue
+
+            value = program_line[name]
+            # normalise M2O to id
+            if tfield.type == "many2one":
+                values[name] = value.id if value else False
+            # avoid pushing x2many blindly
+            elif tfield.type in ("one2many", "many2many"):
+                continue
+            else:
+                values[name] = value
+
+        # always set pointers specific to the action line
+        values["program_line_id"] = program_line.id
+
+        print(values)
+
+        return values
+
+    def synchronise_program_lines(self, add_optional=True):
+        """
+        Upsert action lines from programme lines and remove stale ones.
+
+        Args:
+            add_optional (bool): if True, include optional programme lines.
+                If False, do not create/update optional lines; existing
+                optional lines are preserved unless their source programme
+                line no longer exists.
+        """
+        for action in self:
+            program = action.training_program_id
+            if not program:
+                _logger.warning(
+                    "No training programme related to action %s",
+                    action.display_name,
+                )
+                continue
+
+            # All programme lines (for deletion logic)
+            program_lines_all = program.program_line_ids
+
+            # Only the subset to upsert (respect add_optional flag)
+            program_lines_to_sync = (
+                program_lines_all
+                if add_optional
+                else program_lines_all.filtered(
+                    lambda program_line: not program_line.optional
+                )
+            )
+
+            action_lines = action.action_line_ids
+            # index by their source programme line id
+            action_index = {
+                line.program_line_id.id: line
+                for line in action_lines
+                if line.program_line_id
+            }
+
+            commands = []
+
+            # UPSERT subset (optional included only if add_optional)
+            for program_line in program_lines_to_sync:
+                values = action._values_from_program_line(program_line)
+                existing = action_index.get(program_line.id)
+                if existing:
+                    commands.append((1, existing.id, values))
+                else:
+                    # In onchanges the parent may have no id yet; let ORM set inverse
+                    if action.id:
+                        values["training_action_id"] = action.id
+                    commands.append((0, 0, values))
+
+            # DELETE lines whose source programme line no longer exists
+            # (affects both optional and non-optional)
+            stale_ids = set(action_index.keys()) - set(program_lines_all.ids)
+            for pl_id in stale_ids:
+                commands.append((2, action_index[pl_id].id))
+
+            if commands:
+                if action.id:
+                    action.write({"action_line_ids": commands})
+                else:
+                    # In onchange: assign commands directly (no write)
+                    action.action_line_ids = commands

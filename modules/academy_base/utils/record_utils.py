@@ -178,10 +178,10 @@ def create_domain_for_interval(
     records based on date or datetime fields.
 
     Args:
-        field_start (str): Field name representing the start of the interval.
+        field_start (str): Field name representing the date_start of the interval.
         field_stop (str): Field name representing the end of the interval.
         point_in_time (date/datetime/list/tuple): A single date/datetime or a
-            tuple/list representing a start and end date/datetime for
+            tuple/list representing a date_start and end date/datetime for
             comparison.
         trunc_to_date (bool): If True, truncates datetime to date before
             comparison. Defaults to False.
@@ -193,7 +193,7 @@ def create_domain_for_interval(
 
     Note:
         - The function handles both single dates/datetime and intervals
-        (start and end).
+        (date_start and end).
         - If trunc_to_date is True, datetime values are converted to date by
         truncating the time part, which can be useful for date-only
         comparisons.

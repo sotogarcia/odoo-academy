@@ -48,7 +48,7 @@ class AcademyTrainingFramework(models.Model):
         help=(
             "Extended notes about scope, applicability, exceptions, and "
             "internal criteria for using this framework in programs and "
-            "enrollments."
+            "enrolments."
         ),
         translate=True,
     )
@@ -141,7 +141,7 @@ class AcademyTrainingFramework(models.Model):
         readonly=False,
         index=False,
         default=False,
-        help="Allows enrollment by module (modular delivery permitted)",
+        help="Allows enrolment by module (modular delivery permitted)",
     )
 
     legal_code = fields.Char(

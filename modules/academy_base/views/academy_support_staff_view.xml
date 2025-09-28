@@ -23,7 +23,7 @@
     <field name="active" eval="True"/>
     <field name="arch" type="xml">
       <list string="academy_support_staff_tree" create="1" delete="1" edit="1">
-        <field name="ref" class="oe_field_signup_code" string="Sign-up code" readonly="1"/>
+        <field name="signup_code" class="oe_field_signup_code" string="Sign-up code" readonly="1"/>
         <field name="signup_date" class="oe_field_signup_date"/>
         <field name="vat" class="oe_field_vat" optional="show"/>
         <field name="title" class="oe_field_title" optional="hide"/>
@@ -66,7 +66,7 @@
           <div class="oe_button_box" name="button_box">
             <button name="view_res_partner" type="object" class="oe_stat_button oe_read_only"
               icon="fa-user-o" help="Open contact form">
-              <field name="type" widget="statinfo" string="Sheet"/>
+              <field name="type" widget="statinfo" string="Partner"/>
             </button>
           </div>
 
@@ -141,8 +141,8 @@
             <page string="Details" class="oe_page_Academics" accesskey="D">
               <group col="12" class="mt-2">
                 <group colspan="4">
-                  <field name="ref" class="oe_field_signup_code" string="Sign-up code" readonly="1"
-                  />
+                  <field name="signup_code" class="oe_field_signup_code" string="Sign-up code"
+                    readonly="1"/>
                 </group>
                 <group colspan="4">
                   <field name="signup_date" class="oe_field_signup_date"/>
@@ -182,7 +182,7 @@
                 <group string="Purchase" name="purchase" priority="2"> </group>
                 <group name="misc" string="Misc">
                   <field name="company_registry" invisible="parent_id"/>
-                  <field name="ref" string="Reference"/>
+                  <field name="signup_code"/>
                   <field name="company_id" groups="base.group_multi_company"
                     options="{'no_create': True}" readonly="parent_id" force_save="1"/>
                   <field name="company_id" invisible="1"/>
@@ -275,7 +275,7 @@
     <field name="arch" type="xml">
       <search string="academy_support_staff_search">
         <field name="name"
-          filter_domain="['|', '|', '|', '|', ('complete_name', 'ilike', self), ('ref', 'ilike', self), ('email', 'ilike', self), ('vat', 'ilike', self), ('company_registry', 'ilike', self)]"/>
+          filter_domain="['|', '|', '|', '|', ('complete_name', 'ilike', self), ('signup_code', 'ilike', self), ('email', 'ilike', self), ('vat', 'ilike', self), ('company_registry', 'ilike', self)]"/>
         <field name="phone"
           filter_domain="['|', ('phone', 'ilike', self), ('mobile', 'ilike', self)]"/>
         <field name="email"/>

@@ -24,7 +24,7 @@
     <field name="inherit_id" ref="academy_base.view_academy_support_staff_tree"/>
     <field name="arch" type="xml">
       <xpath expr="//list" position="attributes">
-          <attribute name="string">academy_student_tree</attribute>
+        <attribute name="string">academy_student_tree</attribute>
       </xpath>
       <xpath expr="//list" position="inside">
         <field name="enrolment_str" class="oe_field_enrolment_str text-center" optional="show"/>
@@ -44,13 +44,13 @@
     <field name="inherit_id" ref="academy_base.view_academy_support_staff_form"/>
     <field name="arch" type="xml">
       <xpath expr="//form" position="attributes">
-          <attribute name="string">academy_student_form</attribute>
+        <attribute name="string">academy_student_form</attribute>
       </xpath>
       <xpath expr="//div[@name='button_box']" position="inside">
-         <button name="view_enrolments" type="object" class="oe_stat_button oe_read_only"
-            icon="fa-id-card-o" help="View student enrolments">
-            <field name="enrolment_str" widget="statinfo" string="Enrolments"/>
-          </button>
+        <button name="view_enrolments" type="object" class="oe_stat_button oe_read_only"
+          icon="fa-id-card-o" help="View student enrolments">
+          <field name="enrolment_str" widget="statinfo" string="Enrolments"/>
+        </button>
       </xpath>
 
       <xpath expr="//notebook/page[1]" position="before">
@@ -95,7 +95,7 @@
       </xpath>
 
       <xpath expr="//field[@name='id']" position="after">
-        <separator />
+        <separator/>
         <filter name="enroled" string="Enroled" domain="[('current_enrolment_count', '>', 0)]"/>
         <filter name="not_enrolled" string="Not Enroled"
           domain="[('current_enrolment_count', '=', 0)]"/>

@@ -12,7 +12,7 @@ BEGIN
     -- Checks if there is any training action in 'academy_training_action'
     -- for which the enrolment dates in 'academy_training_action_enrolment'
     -- (represented by 'NEW.register' and 'NEW.deregister') are not within
-    -- the allowed range (defined by 'ata.start' and 'ata.end').
+    -- the allowed range (defined by 'ata.date_start' and 'ata.date_stop').
     IF (TG_OP = 'INSERT') OR
        (TG_OP = 'UPDATE' AND
             (NEW.register IS DISTINCT FROM OLD.register
@@ -24,10 +24,10 @@ BEGIN
             FROM academy_training_action ata
             WHERE ata.id = NEW.training_action_id
             AND (
-                NEW.register::DATE < ata.start::DATE
-                OR NEW.register::DATE > COALESCE(ata.end::DATE, 'infinity'::DATE)
-                OR COALESCE(NEW.deregister::DATE, 'infinity'::DATE) < ata.start::DATE
-                OR COALESCE(NEW.deregister::DATE, 'infinity'::DATE) > COALESCE(ata.end, 'infinity'::DATE)
+                NEW.register::DATE < ata.date_start::DATE
+                OR NEW.register::DATE > COALESCE(ata.date_stop::DATE, 'infinity'::DATE)
+                OR COALESCE(NEW.deregister::DATE, 'infinity'::DATE) < ata.date_start::DATE
+                OR COALESCE(NEW.deregister::DATE, 'infinity'::DATE) > COALESCE(ata.date_stop, 'infinity'::DATE)
             )
         ) THEN
             RAISE EXCEPTION 'Enrolment is outside the range of training action'
@@ -47,21 +47,21 @@ $$ LANGUAGE plpgsql;
 --   This function is designed as a trigger to ensure that when the date range
 --   of a training action in the 'academy_training_action' table is updated,
 --   it does not conflict with the existing enrolment dates in the
---   'academy_training_action_enrolment' table. It checks whether any enrollments
+--   'academy_training_action_enrolment' table. It checks whether any enrolments
 --   fall outside the new date range of the training action. If such a conflict
 --   is found, an exception is raised.
 
 CREATE OR REPLACE FUNCTION check_training_action_dates()
 RETURNS TRIGGER AS $$
 BEGIN
-    -- Checks if there are any enrollments in 'academy_training_action_enrolment'
+    -- Checks if there are any enrolments in 'academy_training_action_enrolment'
     -- associated with the training action being updated (identified by NEW.id) that
-    -- have dates falling outside the updated date range (NEW.start and NEW.end) of
+    -- have dates falling outside the updated date range (NEW.date_start and NEW.date_stop) of
     -- the training action.
     IF (TG_OP = 'INSERT') OR
        (TG_OP = 'UPDATE' AND
-            (NEW."start" IS DISTINCT FROM OLD."start"
-            OR NEW."end" IS DISTINCT FROM OLD."end")
+            (NEW."date_start" IS DISTINCT FROM OLD."date_start"
+            OR NEW."date_stop" IS DISTINCT FROM OLD."date_stop")
         ) THEN
 
         IF EXISTS (
@@ -69,14 +69,14 @@ BEGIN
             FROM academy_training_action_enrolment ate
             WHERE ate.training_action_id = NEW.id
             AND (
-                ate.register::DATE < NEW.start::DATE
-                OR ate.register::DATE > COALESCE(NEW.end::DATE, 'infinity'::DATE)
-                OR COALESCE(ate.deregister::DATE, 'infinity'::DATE) < NEW.start::DATE
-                OR COALESCE(ate.deregister::DATE, 'infinity'::DATE) > COALESCE(NEW.end, 'infinity'::DATE)
+                ate.register::DATE < NEW.date_start::DATE
+                OR ate.register::DATE > COALESCE(NEW.date_stop::DATE, 'infinity'::DATE)
+                OR COALESCE(ate.deregister::DATE, 'infinity'::DATE) < NEW.date_start::DATE
+                OR COALESCE(ate.deregister::DATE, 'infinity'::DATE) > COALESCE(NEW.date_stop, 'infinity'::DATE)
             )
         ) THEN
             RAISE EXCEPTION
-            'There are enrollments that are outside the range of training action'
+            'There are enrolments that are outside the range of training action'
             USING ERRCODE = 'ATA01';
 
         END IF;

@@ -150,14 +150,18 @@ attrs=["']\{["'](readonly|invisible|required)["']: *(\[[^\]]+\])\}["']
 
 
 - [ ] Comprobar widgets one2many_tags y many2many_tags
-- [ ] AÃ±adir internal notes
+- [ ] Añadir internal notes
 - [ ] Copiar Ownership de academy.training.framework 
 - [ ] Encabezado con: nombre, code, parent
 - [ ] list-embed para los one2many y smart buttons
- El volumen de la unidad D es DATOS
- El n£mero de serie del volumen es: 4E9E-F963
-
- Directorio de D:\Proyectos\odoo-academy\modules\academy_base\models
+- [ ] el campo ref se comparte entre alumnos, profesores y staff
+- [ ] Si una acción tiene grupos no se pueden matricular en ella a alumnos, 
+- [ ] si una acción tiene matrículas no se puede dividir en grupos
+- [ ] mostrar líneas del programa o acción en la matrícula
+- [ ] La modalidad en las matrículas debe ser única
+- [ ] Añadir ficha grupos a acciones
+- [ ] Añadir botón programa a acciones
+- [ ] Añadir botón grupos a acciones
 
 - academy.support.staff
 - academy_student
