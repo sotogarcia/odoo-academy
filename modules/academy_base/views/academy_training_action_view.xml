@@ -125,10 +125,16 @@
                 </div>
 
                 <notebook class="mt-3">
+                  <page string="Groups" class="oe_page_groups" accesskey="G">
+                    <group col="2">
+                      <field name="child_ids" class="oe_field_child_ids" nolabel="1" colspan="2"
+                        context="{'default_training_action_id': id}" />
+                    </group>
+                  </page>
                   <page string="Units" class="oe_page_lines" accesskey="L">
                     <group col="2">
                       <field name="action_line_ids" class="oe_field_action_line_ids" nolabel="1" colspan="2"
-                        context="{'default_training_action_id': id}" />
+                        context="{'default_training_action_id': id, 'tree_view_ref': 'academy_base.view_academy_training_action_line_tree_action_embed'}" />
                     </group>
                   </page>
                   <page id="data" string="Data" class="oe_page_data" accesskey="T">
@@ -196,54 +202,71 @@
             <templates>
               <t t-name="card" class="flex-row">
                 <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+
                 <aside class="o_kanban_aside_full">
-                  <field name="image_128" class="w-100" widget="image"
-                    options="{'img_class': 'w-100 h-auto ps-2 py-2 align-top'}"/>
+                  <t t-if="record.image_128.raw_value">
+                    <field name="image_128" class="w-100" widget="image"
+                      options="{'img_class': 'w-100 h-auto p-2 align-top'}"/>
+                  </t>
+                  <t t-if="!record.image_128.raw_value">
+                    <img src="/academy_base/static/src/img/training-action.png" class="w-100 h-auto p-2"
+                      alt="Training action" title="Training action without image" />
+                  </t>
                 </aside>
-                <main class="ps-2 ps-md-0">
-                  <h2 class="h4 text-truncate">
-                    <field name="display_name"/>
-                  </h2>
-                  <table border="0" cellpadding="0" cellspacing="0"
-                    style="border: 0px none transparent;">
-                    <tbody>
-                      <tr>
-                        <th class="text-nowrap pe-1">Code:</th>
-                        <td class="text-truncate">
-                          <span t-if="record.code.raw_value">
-                            <t t-esc="record.code.raw_value"/>
-                          </span>
-                          <span t-if="!record.code.raw_value">---</span>
-                        </td>
-                      </tr>
-                      <tr>
-                        <th class="text-nowrap pe-1">Units:</th>
-                        <td class="text-truncate">
-                          <t t-esc="record.action_line_count.raw_value"/>
-                        </td>
-                      </tr>
-                      <tr>
-                        <th class="text-nowrap pe-1">Hours:</th>
-                        <td class="text-truncate">
-                          <field name="hours" class="oe_field_hours" widget="float_time" />
-                        </td>
-                      </tr>
-                      <tr>
-                        <th class="text-nowrap pe-1">Enrolments:</th>
-                        <td class="text-truncate">
-                          <t t-esc="record.enrolment_count.raw_value"/>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td colspan="2" class="text-truncate pt-2" title="Training Framework">
-                          <span t-if="record.training_framework_id.raw_value">
-                            <field name="training_framework_id"/>
-                          </span>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </main>
+
+                <div class="flex-fill ps-2 ps-md-0">
+                  <main class="d-flex flex-column justify-content-start align-items-start">
+                    <h2 class="h4 text-truncate">
+                        <field name="display_name"/>
+                      </h2>
+                      <table border="0" cellpadding="0" cellspacing="0"
+                        style="border: 0px none transparent;">
+                        <tbody>
+                          <tr>
+                            <th class="pb-1 text-nowrap pe-2">Code:</th>
+                            <td class="pb-1 text-truncate">
+                              <span t-if="record.code.raw_value">
+                                <t t-esc="record.code.raw_value"/>
+                              </span>
+                              <span t-if="!record.code.raw_value">---</span>
+                            </td>
+                          </tr>
+                          <tr>
+                            <th class="pb-1 text-nowrap pe-2">Lifespan:</th>
+                            <td class="pb-1 text-truncate">
+                              <field name="lifespan" class="oe_field_lifespan" />
+                            </td>
+                          </tr>
+                          <tr>
+                            <th class="pb-1 text-nowrap pe-2">Hours:</th>
+                            <td class="pb-1 text-truncate">
+                              <field name="hours" class="oe_field_hours" widget="float_time" />
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </main>
+
+                  <!-- footer: begin -->
+                  <footer class="d-flex justify-content-end align-items-start mt-2">
+                    <button name="view_action_lines" type="object" class="btn my-0 py-0">
+                      <i class="fa fa-lg fa-list me-2" aria-hidden="true" title="View training action lines"></i>
+                      <field name="action_line_count" class="oe_field_action_line_count" />
+                    </button>
+                    <button name="view_training_action_groups" type="object" class="btn my-0 py-0">
+                      <i class="fa fa-lg fa-list-ul me-2" aria-hidden="true" title="View training action groups"></i>
+                      <field name="child_count" class="oe_field_child_count" />
+                    </button>
+                    <button name="view_resolved_enrolments" type="object" class="btn my-0 py-0">
+                      <i class="fa fa-lg fa-id-card-o me-2" aria-hidden="true" title="View training action enrolments"></i>
+                      <field name="resolved_enrolment_count" class="oe_field_resolved_enrolment_count" />
+                    </button>
+
+                    <field name="activity_ids" widget="kanban_activity" class="my-0 py-0"/>
+                  </footer>
+                  <!-- footer: end -->
+
+                </div>
               </t>
             </templates>
           </kanban>

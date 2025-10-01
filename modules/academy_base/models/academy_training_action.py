@@ -7,6 +7,7 @@ all training action attributes and behavior.
 
 
 from odoo.tools.translate import _, _lt
+from odoo.tools.misc import format_date
 
 # pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
@@ -44,6 +45,7 @@ class AcademyTrainingAction(models.Model):
     _inherit = [
         "image.mixin",
         "mail.thread",
+        "mail.activity.mixin",
         "ownership.mixin",
     ]
 
@@ -419,7 +421,6 @@ class AcademyTrainingAction(models.Model):
         domain=[],
         context={},
         auto_join=False,
-        limit=None,
     )
 
     action_line_count = fields.Integer(
@@ -620,6 +621,33 @@ class AcademyTrainingAction(models.Model):
         matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
 
         return [("id", "in", matched)] if matched else FALSE_DOMAIN
+
+    # -- Computed field: lifespan ---------------------------------------------
+
+    lifespan = fields.Char(
+        string="Lifespan",
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help="Start and end dates as a formatted range",
+        size=50,
+        translate=False,
+        compute="_compute_lifespan",
+    )
+
+    @api.depends("date_start", "date_stop")
+    @api.depends_context("uid")
+    def _compute_lifespan(self):
+        for record in self:
+            if record.date_start and record.date_stop:
+                register_str = format_date(self.env, record.date_start)
+                deregister_str = format_date(self.env, record.date_stop)
+                record.lifespan = f"{register_str} ‒ {deregister_str}"
+            elif record.date_start:
+                record.lifespan = format_date(self.env, record.date_start)
+            else:
+                record.lifespan = ""
 
     # ------------------------------ CONSTRAINS -------------------------------
 

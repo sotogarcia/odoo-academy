@@ -30,6 +30,7 @@ class AcademyTrainingProgram(models.Model):
     _inherit = [
         "image.mixin",
         "mail.thread",
+        "mail.activity.mixin",
         "ownership.mixin",
     ]
 
@@ -334,19 +335,31 @@ class AcademyTrainingProgram(models.Model):
         """Observer notify method, will be called by action"""
         self._compute_training_action_count()
 
-    def show_training_actions(self):
+    def view_training_actions(self):
         self.ensure_one()
 
-        return {
-            "model": "ir.actions.act_window",
+        action_xid = "academy_base.action_training_action_act_window"
+        act_wnd = self.env.ref(action_xid)
+
+        context = self.env.context.copy()
+        context.update(safe_eval(act_wnd.context))
+        context.update({"default_training_program_id": self.id})
+
+        domain = [("training_program_id", "=", self.id)]
+
+        serialized = {
             "type": "ir.actions.act_window",
-            "name": _("Training actions"),
-            "res_model": "academy.training.action",
+            "res_model": act_wnd.res_model,
             "target": "current",
-            "view_mode": "kanban,list,form",
-            "domain": [("training_program_id", "=", self.id)],
-            "context": {"default_training_program_id": self.id},
+            "name": act_wnd.name,
+            "view_mode": act_wnd.view_mode,
+            "domain": domain,
+            "context": context,
+            "search_view_id": act_wnd.search_view_id.id,
+            "help": act_wnd.help,
         }
+
+        return serialized
 
     def view_training_program_lines(self):
         self.ensure_one()

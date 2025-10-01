@@ -115,48 +115,72 @@
     <field name="priority" eval="25"/>
     <field name="active" eval="True"/>
     <field name="arch" type="xml">
-      <kanban create="1" delete="1" edit="1">
-        <field name="training_module_id"/>
+      <kanban sample="1">
+        <field name="display_name"/>
         <field name="image_128"/>
-        <field name="name"/>
+        <field name="training_module_id"/>
         <field name="hours"/>
         <field name="owner_id"/>
         <field name="code"/>
 
         <templates>
-          <t t-name="card">
-            <div class="oe_kanban_global_click oe_kanban_academy_training_module">
-              <div class="o_kanban_image">
-                <t t-if="record.image_128.raw_value">
-                  <field name="image_128" widget="image" class="oe_avatar"
-                    options='{"preview_image": "image_128"}'/>
-                </t>
-                <t t-else="">
-                  <img t-att-src="_s + &quot;/academy_base/static/src/img/training-module.png&quot;"
-                    class="o_kanban_image" alt="Training module photo"/>
-                </t>
-              </div>
-              <div class="oe_kanban_details">
-                <strong class="oe_partner_heading">
-                  <field name="name"/>
-                </strong>
-                <ul>
-                  <li>
-                    <strong>Code:&#160;</strong>
-                    <field name="code"/>
-                  </li>
-                  <li>
-                    <strong>Owner:&#160;</strong>
-                    <field name="owner_id"/>
-                  </li>
-                  <li><strong>Lifespan:&#160;</strong><field name="hours" widget="float_time"
-                    />&#160;hours</li>
-                </ul>
-              </div>
+          <t t-name="card" class="flex-row">
+            <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+
+            <aside class="o_kanban_aside_full">
+              <t t-if="record.image_128.raw_value">
+                <field name="image_128" class="w-100" widget="image"
+                  options="{'img_class': 'w-100 h-auto p-2 align-top'}"/>
+              </t>
+              <t t-if="!record.image_128.raw_value">
+                <img src="/academy_base/static/src/img/training-module.png" class="w-100 h-auto p-2"
+                  alt="Training module" title="Training module without image" />
+              </t>
+            </aside>
+
+            <div class="flex-fill ps-2 ps-md-0">
+              <main class="d-flex flex-column justify-content-start align-items-start">
+                <h2 class="h4 text-truncate">
+                  <field name="display_name"/>
+                </h2>
+                <table border="0" cellpadding="0" cellspacing="0" style="border: 0px none transparent;" >
+                  <tbody>
+                    <tr>
+                      <th class="pb-1 text-nowrap pe-2">Code:</th>
+                      <td class="pb-1 text-truncate">
+                        <span t-if="record.code.raw_value">
+                          <t t-esc="record.code.raw_value"/>
+                        </span>
+                        <span t-if="!record.code.raw_value">---</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th class="pb-1 text-nowrap pe-2">Hours:</th>
+                      <td class="pb-1 text-truncate">
+                        <field name="hours" class="oe_field_hours" widget="float_time" />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </main>
+
+              <!-- footer: begin -->
+              <footer class="d-flex justify-content-end align-items-start mt-2">
+                <button name="view_training_units" type="object" class="btn my-0 py-0">
+                  <i class="fa fa-lg fa-list me-2" aria-hidden="true" title="View training units/blocks"></i>
+                  <field name="training_unit_count" class="oe_field_training_unit_count" />
+                </button>
+                <button name="view_training_programs" type="object" class="btn my-0 py-0">
+                  <i class="fa fa-lg fa-list-ul me-2" aria-hidden="true" title="View training programs"></i>
+                  <field name="training_program_count" class="oe_field_training_program_count" />
+                </button>
+              </footer>
+              <!-- footer: end -->
+
             </div>
+
           </t>
         </templates>
-
       </kanban>
     </field>
   </record>
@@ -207,9 +231,9 @@
         </page>
       </xpath>
       <xpath expr="//field[@name='code']" position="after">
-        <field name="hours" class="oe_field_ownhours"
+        <field name="hours" class="oe_field_ownhours" widget="float_time"
           placeholder="Enter number of hours to this module" invisible="training_unit_count != 0"/>
-        <field name="hours" class="oe_field_hours"
+        <field name="hours" class="oe_field_hours" widget="float_time"
           placeholder="Total of hours from all units in module" invisible="training_unit_count == 0"
         />
       </xpath>
@@ -227,11 +251,13 @@
     <field name="active" eval="True"/>
     <field name="inherit_id" ref="academy_base.view_academy_training_module_kanban"/>
     <field name="arch" type="xml">
-      <xpath expr="//ul/li[1]" position="after">
-        <li>
-          <strong>Units:&#160;</strong>
-          <field name="training_unit_count"/>
-        </li>
+      <xpath expr="//tbody/tr[1]" position="after">
+        <tr>
+          <th class="pb-1 text-nowrap pe-2">Units:</th>
+          <td class="pb-1 text-truncate">
+            <field name="training_unit_count" class="oe_field_training_unit_count" />
+          </td>
+        </tr>
       </xpath>
     </field>
   </record>
@@ -327,7 +353,7 @@
           invisible="not training_module_id"/>
       </xpath>
       <xpath expr="//field[@name='code']" position="after">
-        <field name="hours" class="oe_field_ownhours"/>
+        <field name="hours" class="oe_field_ownhours" widget="float_time" />
       </xpath>
     </field>
   </record>
@@ -342,11 +368,12 @@
     <field name="active" eval="True"/>
     <field name="inherit_id" ref="academy_base.view_academy_training_module_kanban"/>
     <field name="arch" type="xml">
-      <xpath expr="//ul/li[1]" position="after">
-        <li>
-          <strong>Module:&#160;</strong>
-          <field name="training_module_id"/>
-        </li>
+      <xpath expr="//tbody/tr[1]" position="before">
+        <tr>
+          <td colspan="2" class="pb-1 text-truncate">
+            <field name="training_module_id" class="oe_field_training_unit_count" />
+          </td>
+        </tr>
       </xpath>
     </field>
   </record>

@@ -134,51 +134,65 @@
         <templates>
           <t t-name="card" class="flex-row">
             <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+
             <aside class="o_kanban_aside_full">
-              <field name="image_128" class="w-100" widget="image"
-                options="{'img_class': 'w-100 h-auto ps-2 py-2 align-top'}"/>
+              <t t-if="record.image_128.raw_value">
+                <field name="image_128" class="w-100" widget="image"
+                  options="{'img_class': 'w-100 h-auto p-2 align-top'}"/>
+              </t>
+              <t t-if="!record.image_128.raw_value">
+                <img src="/academy_base/static/src/img/training-program.png" class="w-100 h-auto p-2"
+                  alt="Training program" title="Training program without image" />
+              </t>
             </aside>
-            <main class="ps-2 ps-md-0">
-              <h2 class="h4">
-                <field name="display_name"/>
-              </h2>
-              <table border="0" cellpadding="0" cellspacing="0"
-                style="border: 0px none transparent;">
-                <tbody>
-                  <tr>
-                    <th>Code:</th>
-                    <td class="text-truncate">
-                      <span t-if="record.code.raw_value">
-                        <t t-esc="record.code.raw_value"/>
-                      </span>
-                      <span t-if="!record.code.raw_value">---</span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Is modular:</th>
-                    <td>
-                      <span t-if="record.is_modular.raw_value">Yes</span>
-                      <span t-if="!record.is_modular.raw_value">No</span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Programs:</th>
-                    <td>
-                      <t t-esc="record.training_program_count.raw_value"/>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Legal code:</th>
-                    <td>
-                      <span t-if="record.legal_code.raw_value">
-                        <t t-esc="record.legal_code.raw_value"/>
-                      </span>
-                      <span t-if="!record.legal_code.raw_value">---</span>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </main>
+
+            <div class="flex-fill ps-2 ps-md-0">
+              <main class="d-flex flex-column justify-content-start align-items-start">
+                <h2 class="h4">
+                  <field name="display_name"/>
+                </h2>
+                <table border="0" cellpadding="0" cellspacing="0"
+                  style="border: 0px none transparent;">
+                  <tbody>
+                    <tr>
+                      <th class="pb-1 text-nowrap pe-2">Code:</th>
+                      <td class="pb-1 text-truncate">
+                        <span t-if="record.code.raw_value">
+                          <t t-esc="record.code.raw_value"/>
+                        </span>
+                        <span t-if="!record.code.raw_value">---</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th class="pb-1 text-nowrap pe-2">Is modular:</th>
+                      <td class="pb-1 text-truncate">
+                        <span t-if="record.is_modular.raw_value">Yes</span>
+                        <span t-if="!record.is_modular.raw_value">No</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th class="pb-1 text-nowrap pe-2">Legal code:</th>
+                      <td class="pb-1 text-truncate">
+                        <span t-if="record.legal_code.raw_value">
+                          <t t-esc="record.legal_code.raw_value"/>
+                        </span>
+                        <span t-if="!record.legal_code.raw_value">---</span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </main>
+
+              <!-- footer: begin -->
+              <footer class="d-flex justify-content-end align-items-start mt-2">
+                <button name="view_training_programs" type="object" class="btn my-0 py-0">
+                  <i class="fa fa-lg fa-list-ul me-2" aria-hidden="true" title="View training programs"></i>
+                  <field name="training_program_count" class="oe_field_program_line_count" />
+                </button>
+              </footer>
+              <!-- footer: end -->
+
+            </div>
           </t>
         </templates>
       </kanban>

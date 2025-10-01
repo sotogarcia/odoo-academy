@@ -33,11 +33,11 @@
           widget="many2many_tags" optional="hide"/>
         <field name="qualification_level_id" class="oe_field_qualification_level_id" optional="hide"/>
         <field name="attainment_id" class="oe_field_attainment_id" optional="hide"/>
-        <field name="program_line_count" class="oe_field_program_line_count" string="Lines"
+        <field name="program_line_count" class="oe_field_program_line_count" string="Units"
           optional="show"/>
         <field name="training_action_count" class="oe_field_training_action_count" string="Actions"
           optional="show"/>
-        <field name="hours" class="oe_field_hours" optional="show"/>
+        <field name="hours" class="oe_field_hours" widget="float_time" optional="show"/>
         <field name="manager_id" class="oe_field_manager_id" optional="hide"/>
       </list>
     </field>
@@ -59,11 +59,11 @@
 
           <div class="oe_button_box" name="button_box">
             <button name="view_training_program_lines" type="object" class="oe_stat_button"
-              icon="fa-th-list">
-              <field name="program_line_count" widget="statinfo" string="Lines"/>
+              icon="fa-list">
+              <field name="program_line_count" widget="statinfo" string="Units"/>
             </button>
-            <button name="show_training_actions" type="object" class="oe_stat_button"
-              icon="fa-th-list">
+            <button name="view_training_actions" type="object" class="oe_stat_button"
+              icon="fa-list-ul">
               <field name="training_action_count" widget="statinfo" string="Actions"/>
             </button>
           </div>
@@ -93,7 +93,7 @@
           <notebook>
             <page string="Units" class="oe_page_lines" accesskey="L">
               <field name="program_line_ids" class="oe_field_program_line_ids" context="{
-                              'list_view_ref': 'academy_base.view_academy_training_program_line_editable_tree',
+                              'list_view_ref': 'academy_base.view_academy_training_program_line_tree_program_embed',
                               'default_training_program_id': id
                             }"/>
             </page>
@@ -117,7 +117,7 @@
                 </group>
                 <group string="Qualification">
                   <field name="attainment_id" class="oe_field_attainment_id" string="Required"/>
-                  <field name="hours" class="oe_field_hours"/>
+                  <field name="hours" class="oe_field_hours" widget="float_time" />
                   <field name="qualification_level_id" class="oe_field_qualification_level_id"
                     string="Granted"/>
                   <field name="general_competence" class="oe_field_general_competence"
@@ -173,54 +173,66 @@
         <templates>
           <t t-name="card" class="flex-row">
             <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+
             <aside class="o_kanban_aside_full">
-              <field name="image_128" class="w-100" widget="image"
-                options="{'img_class': 'w-100 h-auto ps-2 py-2 align-top'}"/>
+              <t t-if="record.image_128.raw_value">
+                <field name="image_128" class="w-100" widget="image"
+                  options="{'img_class': 'w-100 h-auto p-2 align-top'}"/>
+              </t>
+              <t t-if="!record.image_128.raw_value">
+                <img src="/academy_base/static/src/img/training-program.png" class="w-100 h-auto p-2"
+                  alt="Training program" title="Training program without image" />
+              </t>
             </aside>
-            <main class="ps-2 ps-md-0">
-              <h2 class="h4 text-truncate">
-                <field name="display_name"/>
-              </h2>
-              <table border="0" cellpadding="0" cellspacing="0"
-                style="border: 0px none transparent;">
-                <tbody>
-                  <tr>
-                    <th class="text-nowrap pe-1">Code:</th>
-                    <td class="text-truncate">
-                      <span t-if="record.code.raw_value">
-                        <t t-esc="record.code.raw_value"/>
-                      </span>
-                      <span t-if="!record.code.raw_value">---</span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th class="text-nowrap pe-1">Units:</th>
-                    <td class="text-truncate">
-                      <t t-esc="record.program_line_count.raw_value"/>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th class="text-nowrap pe-1">Hours:</th>
-                    <td class="text-truncate">
-                      <field name="hours" class="oe_field_hours" widget="float_time" />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th class="text-nowrap pe-1">Actions:</th>
-                    <td class="text-truncate">
-                      <t t-esc="record.training_action_count.raw_value"/>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td colspan="2" class="text-truncate pt-2" title="Training Framework">
-                      <span t-if="record.training_framework_id.raw_value">
-                        <field name="training_framework_id"/>
-                      </span>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </main>
+
+            <div class="flex-fill ps-2 ps-md-0">
+              <main class="d-flex flex-column justify-content-start align-items-start">
+                <h2 class="h4 text-truncate">
+                  <field name="display_name"/>
+                </h2>
+                <table border="0" cellpadding="0" cellspacing="0" style="border: 0px none transparent;" >
+                  <tbody>
+                    <tr>
+                      <td colspan="2" class="pb-1 text-truncate">
+                        <field name="training_framework_id" class="oe_field_training_framework_id" />
+                      </td>
+                    </tr>
+                    <tr>
+                      <th class="pb-1 text-nowrap pe-2">Code:</th>
+                      <td class="pb-1 text-truncate">
+                        <span t-if="record.code.raw_value">
+                          <t t-esc="record.code.raw_value"/>
+                        </span>
+                        <span t-if="!record.code.raw_value">---</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th class="pb-1 text-nowrap pe-2">Hours:</th>
+                      <td class="pb-1 text-truncate">
+                        <field name="hours" class="oe_field_hours" widget="float_time" />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </main>
+
+              <!-- footer: begin -->
+              <footer class="d-flex justify-content-end align-items-start mt-2">
+                <button name="view_training_program_lines" type="object" class="btn my-0 py-0">
+                  <i class="fa fa-lg fa-list me-2" aria-hidden="true" title="View program units"></i>
+                  <field name="program_line_count" class="oe_field_program_line_count" />
+                </button>
+                <button name="view_training_actions" type="object" class="btn my-0 py-0">
+                  <i class="fa fa-lg fa-list-ul me-2" aria-hidden="true" title="View training actions"></i>
+                  <field name="training_action_count" class="oe_field_training_action_count" />
+                </button>
+
+                <field name="activity_ids" widget="kanban_activity" class="my-0 py-0"/>
+              </footer>
+              <!-- footer: end -->
+
+            </div>
+
           </t>
         </templates>
       </kanban>

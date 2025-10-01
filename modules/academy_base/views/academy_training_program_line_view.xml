@@ -22,17 +22,22 @@
     <field name="priority" eval="16"/>
     <field name="active" eval="True"/>
     <field name="arch" type="xml">
-      <list string="academy_training_program_line_tree" create="1" delete="1" edit="1">
+      <list string="academy_training_program_line_tree" class="academy-training-program-line-tree"
+        create="0" delete="0" edit="1" editable="bottom"
+        decoration-bf="is_section" decoration-muted="is_section" >
+
         <field name="active" column_invisible="1"/>
+        <field name="training_program_id" column_invisible="1" />
+        <field name="is_section" class="oe_field_is_section" column_invisible="True"/>
+
         <field name="sequence" class="oe_field_sequence" widget="handle"/>
-        <field name="code" class="oe_field_code"/>
-        <field name="name" class="oe_field_name"/>
-        <field name="hours" class="oe_field_hours"/>
-        <field name="optional" class="oe_field_optional"/>
-        <field name="training_program_id" class="oe_field_training_program_id"/>
-        <field name="training_module_id" class="oe_field_training_module_id" optional="hide"/>
-        <field name="competency_unit_count" class="oe_field_competency_unit_count" optional="hide"/>
-        <field name="description" class="oe_field_description" optional="hide"/>
+        <field name="code" class="oe_field_code" invisible="is_section"/>
+        <field name="name" class="oe_field_name academy-section-title"/>
+        <field name="hours" class="oe_field_hours" widget="float_time" required="not is_section" invisible="is_section"/>
+        <field name="optional" class="oe_field_optional text-center" invisible="is_section" optional="show" />
+        <field name="training_module_id" class="oe_field_training_module_id" required="not is_section" invisible="is_section" optional="show" />
+        <field name="competency_unit_ids" class="oe_field_competency_unit_ids" widget="many2many_tags" invisible="is_section" optional="show" />
+        <field name="description" class="oe_field_description" invisible="is_section" optional="hide" />
       </list>
     </field>
   </record>
@@ -150,29 +155,37 @@
   </record>
 
   <!-- Tree view for "academy.training.program.line" -->
-  <record id="view_academy_training_program_line_editable_tree" model="ir.ui.view">
+  <record id="view_academy_training_program_line_tree_program_embed" model="ir.ui.view">
     <field name="name">view.academy.training.program.line.tree</field>
     <field name="model">academy.training.program.line</field>
     <field name="type">list</field>
     <field name="mode">primary</field>
-    <field name="priority" eval="16"/>
+    <field name="priority" eval="99"/>
     <field name="active" eval="True"/>
+    <field name="inherit_id" ref="view_academy_training_program_line_tree" />
     <field name="arch" type="xml">
-      <list string="academy_training_program_line_tree" create="1" delete="1" edit="1"
-        decoration-bf="is_section" decoration-muted="is_section" class="academy-program-lines">
-        <field name="sequence" class="oe_field_sequence" widget="handle"/>
-        <field name="code" class="oe_field_code" invisible="is_section"/>
-        <field name="name" class="oe_field_name academy-section-title"/>
-        <field name="training_module_id" class="oe_field_training_module_id"
-          required="not is_section" invisible="is_section" optional="hide"/>
-        <field name="hours" class="oe_field_hours" invisible="is_section"/>
-        <field name="optional" class="oe_field_optional" invisible="is_section"/>
-        <field name="is_section" column_invisible="True"/>
+      <xpath expr="//list" position="attributes">
+          <attribute name="editable"/>
+          <attribute name="create">1</attribute>
+          <attribute name="delete">1</attribute>
+      </xpath>
+
+      <xpath expr="//field[@name='competency_unit_ids']" position="replace">
+          <field name="competency_unit_count" class="oe_field_competency_unit_count text-center"
+            invisible="is_section" optional="hide"/>
+      </xpath>
+
+      <xpath expr="//field[@name='training_module_id']" position="attributes">
+          <attribute name="optional">hide</attribute>
+      </xpath>
+
+      <xpath expr="//field[@name='description']" position="replace">
         <control>
           <create string="Add line"/>
           <create string="Add section" context="{'default_is_section': True}"/>
         </control>
-      </list>
+      </xpath>
+
     </field>
   </record>
 

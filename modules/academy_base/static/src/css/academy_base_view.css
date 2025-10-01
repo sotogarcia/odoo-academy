@@ -20,3 +20,11 @@
 .table_border_less td, .table_border_less th {
     border: none;
 }
+
+
+.academy-training-program-line-tree tr.fw-bold td,
+.academy-training-action-line-tree tr.fw-bold  td {
+    text-transform: uppercase;
+    background-color: #EEE!important;
+    font-weight: bold;
+}

@@ -6,6 +6,7 @@
 
 from odoo import models, fields, api
 from odoo.tools.translate import _
+from odoo.tools.safe_eval import safe_eval
 from ..utils.helpers import sanitize_code
 from odoo.osv.expression import TRUE_DOMAIN, FALSE_DOMAIN
 from ..utils.helpers import OPERATOR_MAP, many2many_count
@@ -109,7 +110,7 @@ class AcademyTrainingProgramLine(models.Model):
     hours = fields.Float(
         string="Hours",
         required=False,
-        readonly=True,
+        readonly=False,
         index=False,
         default=0.0,
         digits=(16, 2),
@@ -258,3 +259,30 @@ class AcademyTrainingProgramLine(models.Model):
     def write(self, values):
         sanitize_code(values, "upper")
         return super().write(values)
+
+    # -- Public methods -------------------------------------------------------
+
+    def view_current_record(self):
+        self.ensure_one()
+
+        action_xid = "academy_base.action_training_program_line_act_window"
+        act_wnd = self.env.ref(action_xid)
+
+        context = self.env.context.copy()
+        context.update(safe_eval(act_wnd.context))
+
+        serialized = {
+            "type": "ir.actions.act_window",
+            "res_model": act_wnd.res_model,
+            "target": "current",
+            "name": self.name,
+            "view_mode": "form",
+            "domain": [],
+            "context": context,
+            "search_view_id": act_wnd.search_view_id.id,
+            "help": act_wnd.help,
+            "res_id": self.id,
+            "views": [(False, "form")],
+        }
+
+        return serialized

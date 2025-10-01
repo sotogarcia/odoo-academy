@@ -247,6 +247,38 @@ class AcademyTrainingModule(models.Model):
             else:
                 record.resolved_ids = record
 
+    training_program_ids = fields.Many2many(
+        string="Training programs",
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help=False,
+        comodel_name="academy.training.program",
+        relation="academy_training_program_line",
+        column1="training_module_id",
+        column2="training_program_id",
+        domain=[],
+        context={},
+    )
+
+    training_program_count = fields.Integer(
+        string="Training program count",
+        required=True,
+        readonly=True,
+        index=False,
+        default=0,
+        help="Number of training programs using this training module",
+        compute="_compute_training_program_count",
+    )
+
+    @api.depends("program_line_ids", "program_line_ids.training_module_id")
+    def _compute_training_program_count(self):
+        counts = many2many_count(self, "training_program_ids")
+
+        for record in self:
+            record.training_program_count = counts.get(record.id, 0)
+
     # --- SQL constraints --------------------------------------------------
 
     _sql_constraints = [
@@ -367,6 +399,31 @@ class AcademyTrainingModule(models.Model):
 
         return serialized
 
+    def view_training_programs(self):
+        self.ensure_one()
+
+        action_xid = "academy_base.action_academy_training_program_act_window"
+        act_wnd = self.env.ref(action_xid)
+
+        context = self.env.context.copy()
+        context.update(safe_eval(act_wnd.context))
+
+        domain = [("id", "in", self.training_program_ids.ids)]
+
+        serialized = {
+            "type": "ir.actions.act_window",
+            "res_model": act_wnd.res_model,
+            "target": "current",
+            "name": act_wnd.name,
+            "view_mode": act_wnd.view_mode,
+            "domain": domain,
+            "context": context,
+            "search_view_id": act_wnd.search_view_id.id,
+            "help": act_wnd.help,
+        }
+
+        return serialized
+
     # -------------------------- AUXILIARY METHODS ----------------------------
 
     def _get_id(self, model_or_id):
@@ -411,7 +468,7 @@ class AcademyTrainingModule(models.Model):
 
         for row in rows:
             training_module_id = row["training_module_id"][0]
-            total_hours = row["hours_sum"] or 0.0
+            total_hours = row.get("hours", 0.0)
 
             module = module_obj.browse(training_module_id)
             module.write({"hours": total_hours})

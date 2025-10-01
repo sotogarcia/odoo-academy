@@ -1,4 +1,4 @@
-# MigraciÃ³n
+# Migración
 
 ## Pasos preliminares
 
@@ -17,7 +17,7 @@
 
 - [x] Definir *assets* en `__manifest__.py` (bundles QWeb/JS/CSS).
 - [ ] Migrar plantillas de email de Jinja a QWeb.
-- [x] Adoptar OWL y mÃ³dulos ES; renombrar a `*.esm.js` cuando aplique.
+- [x] Adoptar OWL y módulos ES; renombrar a `*.esm.js` cuando aplique.
 
 ## Odoo 15 â†’ 16
 
@@ -31,7 +31,7 @@
   - [ ] v17: `invisible="state == 'done'"`.
 - [x] Usar `column_invisible` en listas en lugar de `invisible`.
 - [x] Considerar `search_fetch()` y `fetch()` en lugar de `search_read`.
-- [x] Cambiar firma y adaptar hooks de instalaciÃ³n
+- [x] Cambiar firma y adaptar hooks de instalación
     - `def pre_init_hook(env):`
     - `def post_init_hook(env):`
     - `def uninstall_hook(env):`
@@ -51,7 +51,7 @@
 - [-] Revisar `copy`/`copy_data` en *multi-recordsets*
   (p. ej., `copy_data` devuelve lista).
 - [x] Reemplazar `group_operator` por `aggregator` en definiciones de campos.
-- [x] Vigilar bÃºsquedas en `related` no almacenados: lanzar excepciÃ³n.
+- [x] Vigilar bÃºsquedas en `related` no almacenados: lanzar excepción.
 - [x] Valorar `search_fetch()` si `search()` no se ejecuta siempre.
 - [x] Definir *field path* en `ir.actions.act_window` para URLs mÃ¡s limpias.
 - [x] Retirar `/** @odoo-module **/` en JS si no es necesario.
@@ -65,8 +65,8 @@
 ## Revisiones finales
 - [ ] Comprobar logs y reparar posibles errores
 - [ ] Traducir
-    1. Exportar traducciÃ³n y completar en PoEdit
-    2. Dar la traducciÃ³n a ChatGPT para que busque errores y corregir estos   
+    1. Exportar traducción y completar en PoEdit
+    2. Dar la traducción a ChatGPT para que busque errores y corregir estos   
 - [ ] Revisar lista TODO 
        Â· x2many count fields
 
@@ -116,32 +116,31 @@ attrs=["']\{["'](readonly|invisible|required)["']: *(\[[^\]]+\])\}["']
 
 
 - [x] Error followers con training program al guardar
-- [x] AÃ±adir a estudiante bÃ³tÃ³n de matrÃ­culas.
-- [x] AÃ±adir a estudiante ficha de matrÃ­culas.
+- [x] AÃ±adir a estudiante bótón de matrículas.
+- [x] AÃ±adir a estudiante ficha de matrículas.
 - [x] AÃ±adir a estudiante idiomas.
-- [x] Autoetiquetar como estudiante sÃ³lo al crear.
+- [x] Autoetiquetar como estudiante sólo al crear.
 - [ ] Corregir los Onchange de student
 - [x] Student: Name and surname
-- [ ] Kanban de student
-- [x] Mostrar mÃ³vil o telÃ©fono, el que tenga.
-- [ ] Secuencia para las matrÃ­culas
-- [ ] AÃ±adir token a todo
-- [ ] BotÃ³n ver actividades
-- [ ] Token de alumno y profesor (uuid7)
+- [x] Kanban de student
+- [x] Mostrar móvil o teléfono, el que tenga.
+- [ ] Secuencia para las matrículas
+- [x] Botón ver actividades
+
 - [ ] Errores y warnings del log
 - [ ] "depends": ["dms", "dms_field", "dms_attachment_link"]
-- [ ] Poner internal notes en una ficha separada tanto para student compara training action
-- [ ] En el enrolment los datos del alumno en una ficha y los de la acciÃ³n en otra, el apartado admisiÃ³n arriba de todo
-- [ ] CÃ³mo llevar cuenta de si se imprimiÃ³ el material
-- [ ] Â¿QuÃ© ocurre si, por fuera de student, se elige company?
-- [ ] No mostrar informaciÃ³n de parent_id en student
-- [ ] BotÃ³n actividades en kanban y form
+- [x] Poner internal notes en una ficha separada tanto para student compara training action
+- [ ] En el enrolment los datos del alumno en una ficha y los de la acción en otra, el apartado admisión arriba de todo
+- [ ] Cómo llevar cuenta de si se imprimió el material
+- [ ] ¿Qué ocurre si, por fuera de student, se elige company?
+- [ ] No mostrar información de parent_id en student
+- [ ] Botón actividades en kanban y form
 - [ ] barcode
 
 
 
-- [ ] El campo hours del mÃ³dulo debe desaparecer
-      Â· Si tiene unidades serÃ¡ de sÃ³lo lectura
+- [ ] El campo hours del módulo debe desaparecer
+      Â· Si tiene unidades serÃ¡ de sólo lectura
       Â· Si tiene unidades se calcularÃ¡ al guardar
 - [ ] Los campos training_module_id y training_unit_ids pasan a ser parent_id y child_ids
 - [ ] Description como HTML
