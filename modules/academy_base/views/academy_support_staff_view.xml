@@ -220,6 +220,7 @@
         <templates>
           <t t-name="card" class="flex-row">
             <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+
             <aside class="o_kanban_aside_full">
               <t t-if="!record.is_company.raw_value">
                 <div class="o_kanban_image_fill position-relative w-100">
@@ -235,28 +236,34 @@
                   options="{'img_class': 'object-fit-contain w-100 h-100'}"/>
               </t>
             </aside>
-            <main class="ps-2 ps-md-0">
-              <field name="display_name"/>
-              <field name="email" class="text-truncate"/>
-              <div class="flex justify-content-start">
-                <t t-if="record.phone.raw_value">
-                  <span class="text-truncate" t-attf-title="record.phone.raw_value">
-                    <t t-esc="record.phone.raw_value"/>
-                  </span>
-                </t>
-                <t t-if="record.phone.raw_value and record.mobile.raw_value">
-                  <span> / </span>
-                </t>
-                <t t-if="record.mobile.raw_value">
-                  <span class="text-truncate" t-attf-title="record.mobile.raw_value">
-                    <t t-esc="record.mobile.raw_value"/>
-                  </span>
-                </t>
-              </div>
-            </main>
-            <footer>
-              <field name="activity_ids" widget="kanban_activity" class="ms-auto mt-auto"/>
-            </footer>
+
+            <div class="flex-fill ps-2 ps-md-0">
+              <main class="d-flex flex-column justify-content-start align-items-start">
+                <h2 class="h4 text-truncate">
+                    <field name="display_name"/>
+                </h2>
+                <field name="email" class="text-truncate"/>
+                <div class="flex justify-content-start">
+                  <t t-if="record.phone.raw_value">
+                    <span class="text-truncate" t-attf-title="record.phone.raw_value">
+                      <t t-esc="record.phone.raw_value"/>
+                    </span>
+                  </t>
+                  <t t-if="record.phone.raw_value and record.mobile.raw_value">
+                    <span> / </span>
+                  </t>
+                  <t t-if="record.mobile.raw_value">
+                    <span class="text-truncate" t-attf-title="record.mobile.raw_value">
+                      <t t-esc="record.mobile.raw_value"/>
+                    </span>
+                  </t>
+                </div>
+              </main>
+
+              <footer class="d-flex justify-content-end align-items-start mt-2">
+                <field name="activity_ids" widget="kanban_activity" class="ms-auto mt-auto"/>
+              </footer>
+            </div>
           </t>
         </templates>
       </kanban>

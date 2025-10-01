@@ -19,46 +19,44 @@ _logger = getLogger(__name__)
 
 
 class AcademyTrainingAction(models.Model):
-    """ Button to open session calendar
-    """
+    """Button to open session calendar"""
 
-    _name = 'academy.training.action'
-    _inherit = ['academy.training.action']
+    _name = "academy.training.action"
+    _inherit = ["academy.training.action"]
 
     session_ids = fields.One2many(
-        string='Sessions',
+        string="Sessions",
         required=False,
         readonly=False,
         index=True,
         default=None,
-        help='All sessions for training action',
-        comodel_name='academy.training.session',
-        inverse_name='training_action_id',
+        help="All sessions for training action",
+        comodel_name="academy.training.session",
+        inverse_name="training_action_id",
         domain=[],
         context={},
         auto_join=False,
-        limit=None
     )
 
     session_count = fields.Integer(
-        string='Session count',
+        string="Session count",
         required=False,
         readonly=True,
         index=False,
         default=0,
-        help='Number of sessions on which the calculation has been made',
-        compute='_compute_session_count',
-        search='search_session_count'
+        help="Number of sessions on which the calculation has been made",
+        compute="_compute_session_count",
+        search="search_session_count",
     )
 
-    @api.depends('session_ids')
+    @api.depends("session_ids")
     def _compute_session_count(self):
         for record in self:
             record.session_count = len(record.session_ids)
 
     @api.model
     def search_session_count(self, operator, value):
-        sql = '''
+        sql = """
             SELECT
                 ata."id" AS training_action_id,
                 COUNT ( ats."id" ) :: INTEGER AS session_count
@@ -69,7 +67,7 @@ class AcademyTrainingAction(models.Model):
             GROUP BY
                 ata."id"
             HAVING COUNT ( ats."id" ) :: INTEGER {operator} {value}
-        '''
+        """
 
         # = True, <> True, = False, <> False
         if value in [True, False]:
@@ -82,34 +80,35 @@ class AcademyTrainingAction(models.Model):
         results = self.env.cr.dictfetchall()
 
         if results:
-            record_ids = [item['training_action_id'] for item in results]
-            domain = [('id', 'in', record_ids)]
+            record_ids = [item["training_action_id"] for item in results]
+            domain = [("id", "in", record_ids)]
         else:
             domain = FALSE_DOMAIN
 
         return domain
 
     draft_count = fields.Integer(
-        string='Draft count',
+        string="Draft count",
         required=False,
         readonly=True,
         index=False,
         default=0,
-        help='Number of sessions in draft state',
-        compute='_compute_draft_count',
-        search='search_draft_count'
+        help="Number of sessions in draft state",
+        compute="_compute_draft_count",
+        search="search_draft_count",
     )
 
-    @api.depends('session_ids')
+    @api.depends("session_ids")
     def _compute_draft_count(self):
         for record in self:
             filtered_set = record.session_ids.filtered(
-                lambda x: x.state == 'draft')
+                lambda x: x.state == "draft"
+            )
             record.draft_count = len(filtered_set)
 
     @api.model
     def search_draft_count(self, operator, value):
-        sql = '''
+        sql = """
             SELECT
                 ata."id" AS training_action_id,
                 COUNT ( ats."id" ) :: INTEGER AS session_count
@@ -121,7 +120,7 @@ class AcademyTrainingAction(models.Model):
             GROUP BY
                 ata."id"
             HAVING COUNT ( ats."id" ) :: INTEGER {operator} {value}
-        '''
+        """
 
         # = True, <> True, = False, <> False
         if value in [True, False]:
@@ -134,39 +133,40 @@ class AcademyTrainingAction(models.Model):
         results = self.env.cr.dictfetchall()
 
         if results:
-            record_ids = [item['training_action_id'] for item in results]
-            domain = [('id', 'in', record_ids)]
+            record_ids = [item["training_action_id"] for item in results]
+            domain = [("id", "in", record_ids)]
         else:
             domain = FALSE_DOMAIN
 
         return domain
 
     allow_overlap = fields.Boolean(
-        string='Allow overlap',
+        string="Allow overlap",
         required=False,
         readonly=False,
         index=False,
         default=False,
-        help=('Check to allow sessions for this training action to be '
-              'overlapped')
+        help=(
+            "Check to allow sessions for this training action to be "
+            "overlapped"
+        ),
     )
 
     current_week_hours = fields.Float(
-        string='Current week hours',
+        string="Current week hours",
         required=True,
         readonly=True,
         index=False,
         default=0.0,
         digits=(16, 12),
-        help='Number of training hours in the current week',
-        compute='_compute_current_week_hours'
+        help="Number of training hours in the current week",
+        compute="_compute_current_week_hours",
     )
 
-    @api.depends(
-        'session_ids.date_start', 'session_ids.date_stop')
+    @api.depends("session_ids.date_start", "session_ids.date_stop")
     def _compute_current_week_hours(self):
         # Obtener zona horaria del usuario
-        user_tz = self.env.user.tz or 'UTC'
+        user_tz = self.env.user.tz or "UTC"
         local_tz = timezone(user_tz)
 
         # Establecer el rango de inicio y finalización de la semana actual
@@ -181,8 +181,8 @@ class AcademyTrainingAction(models.Model):
         end_of_week = local_tz.localize(end_of_week)
 
         # Convertir las fechas a UTC
-        start_of_week_utc = start_of_week.astimezone(timezone('UTC'))
-        end_of_week_utc = end_of_week.astimezone(timezone('UTC'))
+        start_of_week_utc = start_of_week.astimezone(timezone("UTC"))
+        end_of_week_utc = end_of_week.astimezone(timezone("UTC"))
 
         start_of_week_utc = start_of_week_utc.replace(tzinfo=None)
         end_of_week_utc = end_of_week_utc.replace(tzinfo=None)
@@ -209,28 +209,30 @@ class AcademyTrainingAction(models.Model):
             record.current_week_hours = total_hours
 
     def view_timesheets(self):
-        action_xid = ('academy_timesheets.'
-                      'action_academy_training_action_timesheet_act_window')
+        action_xid = (
+            "academy_timesheets."
+            "action_academy_training_action_timesheet_act_window"
+        )
         action = self.env.ref(action_xid)
 
         ctx = self.env.context.copy()
         ctx.update(safe_eval(action.context))
 
         if self:
-            domain = [('training_action_id', 'in', self.mapped('id'))]
+            domain = [("training_action_id", "in", self.mapped("id"))]
         else:
             domain = TRUE_DOMAIN
 
         serialized = {
-            'type': 'ir.actions.act_window',
-            'res_model': action.res_model,
-            'target': action.target,
-            'name': action.name,
-            'view_mode': action.view_mode,
-            'domain': domain,
-            'context': ctx,
-            'search_view_id': action.search_view_id.id,
-            'help': action.help
+            "type": "ir.actions.act_window",
+            "res_model": action.res_model,
+            "target": action.target,
+            "name": action.name,
+            "view_mode": action.view_mode,
+            "domain": domain,
+            "context": ctx,
+            "search_view_id": action.search_view_id.id,
+            "help": action.help,
         }
 
         return serialized
@@ -238,33 +240,35 @@ class AcademyTrainingAction(models.Model):
     def view_sessions(self):
         self.ensure_one()
 
-        action_xid = 'academy_timesheets.action_sessions_act_window'
+        action_xid = "academy_timesheets.action_sessions_act_window"
         action = self.env.ref(action_xid)
 
         # Replace calendar view
-        calendar_view_xid = ('academy_timesheets.view_academy_training_'
-                             'session_calendar_no_training')
+        calendar_view_xid = (
+            "academy_timesheets.view_academy_training_"
+            "session_calendar_no_training"
+        )
         views = self._updated_views(action, calendar_view_xid)
 
-        name = _('Sessions for {}').format(self.action_name)
+        name = _("Sessions for {}").format(self.action_name)
 
         ctx = self.env.context.copy()
         ctx.update(safe_eval(action.context))
-        ctx.update({'default_training_action_id': self.id})
+        ctx.update({"default_training_action_id": self.id})
 
-        domain = [('training_action_id', '=', self.id)]
+        domain = [("training_action_id", "=", self.id)]
 
         serialized = {
-            'type': 'ir.actions.act_window',
-            'res_model': 'academy.training.session',
-            'target': 'current',
-            'name': name,
-            'view_mode': action.view_mode,
-            'domain': domain,
-            'context': ctx,
-            'search_view_id': action.search_view_id.id,
-            'help': action.help,
-            'views': views
+            "type": "ir.actions.act_window",
+            "res_model": "academy.training.session",
+            "target": "current",
+            "name": name,
+            "view_mode": action.view_mode,
+            "domain": domain,
+            "context": ctx,
+            "search_view_id": action.search_view_id.id,
+            "help": action.help,
+            "views": views,
         }
 
         return serialized
@@ -276,20 +280,20 @@ class AcademyTrainingAction(models.Model):
         week_start = now - timedelta(days=now.weekday())
         next_week_start = week_start + timedelta(days=7)
 
-        action_ids = self.mapped('id')
+        action_ids = self.mapped("id")
 
         session_domain = [
-            '&',
-            ('training_action_id', 'in', action_ids),
-            '|',
-            '&',
-            ('date_start', '>=', week_start),
-            ('date_start', '<', next_week_start),
-            '&',
-            ('date_stop', '>=', week_start),
-            ('date_stop', '<', next_week_start)
+            "&",
+            ("training_action_id", "in", action_ids),
+            "|",
+            "&",
+            ("date_start", ">=", week_start),
+            ("date_start", "<", next_week_start),
+            "&",
+            ("date_stop", ">=", week_start),
+            ("date_stop", "<", next_week_start),
         ]
-        session_obj = self.env['academy.training.session']
+        session_obj = self.env["academy.training.session"]
         session_set = session_obj.search(session_domain)
 
         target_set = session_set.copy_all()
@@ -309,7 +313,7 @@ class AcademyTrainingAction(models.Model):
         return views
 
     def get_reference(self):
-        """ Required by clone wizard
+        """Required by clone wizard
 
         Returns:
             str: model,id
@@ -317,4 +321,4 @@ class AcademyTrainingAction(models.Model):
 
         self.ensure_one()
 
-        return '{},{}'.format(self._name, self.id)
+        return "{},{}".format(self._name, self.id)

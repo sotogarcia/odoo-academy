@@ -30,6 +30,7 @@ system, enabling reservations and usage tracking of rooms, labs and equipment
 from within training actions.
 
 Key features:
+
 - Facility linking: associate training actions and enrolments with specific rooms,
   labs, equipment and other resources.
 - Reservation integration: synchronize academic schedules with facility

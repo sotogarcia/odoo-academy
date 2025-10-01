@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<odoo nopudate="0">
+<odoo noupdate="0">
 
         <record id="paperformat_iso_216_din_476_serie_a_4_timesheet" model="report.paperformat" >
             <field name="name">ISO 216 / DIN 476 Serie A 4 (Timesheet)</field>

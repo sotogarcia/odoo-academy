@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<odoo nopudate="0">
+<odoo noupdate="0">
 
         <record id="academy_timesheets_training_session_draft" model="mail.message.subtype">
             <field name="name">Schedule session temporarily removed</field>

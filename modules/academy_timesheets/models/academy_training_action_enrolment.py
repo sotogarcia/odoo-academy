@@ -33,7 +33,6 @@ class AcademyTrainingActionEnrolment(models.Model):
         domain=[],
         context={},
         auto_join=False,
-        limit=None,
     )
 
     invitation_count = fields.Integer(
@@ -52,49 +51,6 @@ class AcademyTrainingActionEnrolment(models.Model):
         for record in self:
             record.invitation_count = len(record.invitation_ids)
 
-    exclusion_ids = fields.One2many(
-        string="Exclusions",
-        required=False,
-        readonly=True,
-        index=True,
-        default=None,
-        help="Pendent training session invitations",
-        comodel_name="academy.training.session.affinity",
-        inverse_name="enrolment_id",
-        domain=[("invited", "<>", True)],
-        context={},
-        auto_join=False,
-        limit=None,
-    )
-
-    exclusion_count = fields.Integer(
-        string="Exclusion count",
-        required=False,
-        readonly=True,
-        index=False,
-        default=0,
-        help="Number of pendent invitations",
-        compute="_compute_exclusion_count",
-        store=False,
-    )
-
-    @api.depends("exclusion_ids")
-    def _compute_exclusion_count(self):
-        for record in self:
-            record.exclusion_count = len(record.exclusion_ids)
-
-    @api.model
-    def create(self, values):
-        """Overridden method 'create'"""
-
-        parent = super(AcademyTrainingActionEnrolment, self)
-        result = parent.create(values)
-
-        # NOTE: too slow
-        # result._link_pendent_invitations()
-
-        return result
-
     def write(self, values):
         """Overridden method 'write'"""
 
@@ -104,12 +60,6 @@ class AcademyTrainingActionEnrolment(models.Model):
 
         parent = super(AcademyTrainingActionEnrolment, self)
         result = parent.write(values)
-
-        # two slow
-        # if not major_changes:
-        #    self._unlink_expired_invitations(values)
-
-        # self._link_pendent_invitations()
 
         return result
 
@@ -127,29 +77,6 @@ class AcademyTrainingActionEnrolment(models.Model):
             "res_model": "academy.training.session.invitation",
             "target": "current",
             "name": _("Invitations"),
-            "view_mode": action.view_mode,
-            "domain": domain,
-            "context": ctx,
-            "search_view_id": action.search_view_id.id,
-            "help": action.help,
-        }
-
-        return serialized
-
-    def view_exclusion(self):
-        self.ensure_one()
-
-        action_xid = "academy_timesheets.action_affinity_act_window"
-        action = self.env.ref(action_xid)
-
-        ctx = {"default_enrolment_id": self.id}
-        domain = [("enrolment_id", "=", self.id), ("invited", "<>", True)]
-
-        serialized = {
-            "type": "ir.actions.act_window",
-            "res_model": "academy.training.session.affinity",
-            "target": "current",
-            "name": _("Exclusions"),
             "view_mode": action.view_mode,
             "domain": domain,
             "context": ctx,
@@ -204,27 +131,6 @@ class AcademyTrainingActionEnrolment(models.Model):
         unlink_set.unlink()
 
     def _link_pendent_invitations(self):
-        # for record in self:
-        #     domains = []
-
-        #     training_action_id = record.training_action_id.id
-
-        #     domains.append([('training_action_id', '=', training_action_id)])
-        #     domains.append([('date_stop', '>', record.register)])
-        #     if record.deregister:
-        #         domains.append([("date_start", "<", record.deregister)])
-
-        #     session_domain = AND(domains)
-        #     session_obj = record.env['academy.training.session']
-        #     session_set = session_obj.search(session_domain)
-
-        #     session_set.invite_all()
-        #
-        affinity_obj = self.env["academy.training.session.affinity"]
-        for record in self:
-            domain = [
-                ("enrolment_id", "=", record.id),
-                ("invited", "!=", True),
-            ]
-            affinity_set = affinity_obj.search(domain)
-            affinity_set.toggle_invitation()
+        raise NotImplementedError(
+            "Method_link_pendent_invitations is not implemented yet"
+        )

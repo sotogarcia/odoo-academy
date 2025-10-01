@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<odoo nopudate="0">
+<odoo noupdate="0">
 
         <record id="academy_training_session_teacher_rel_demo" model="academy.training.session.teacher.rel">
             <field name="session_id" ref="academy_timesheets.academy_training_session_1" />

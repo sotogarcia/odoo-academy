@@ -1,6 +1,6 @@
 <?xml version= "1.0" encoding= "UTF-8"?>
 
-<odoo nopudate="0">
+<odoo noupdate="0">
 
         <record id="access_academy_timesheets_model_academy_timesheets_clone_wizard_log_academy_group_consultant" model="ir.model.access">
             <field name="name">access_academy_timesheets_model_academy_timesheets_clone_wizard_log_academy_group_consultant</field>

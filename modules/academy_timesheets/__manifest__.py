@@ -29,6 +29,7 @@ Plan, organize and monitor all academy schedules: training sessions, teachers,
 students and facility usage.
 
 Key features:
+
 - Session scheduling: create and manage training sessions with dates, times,
   facilities and assigned teachers.
 - Timetable generation: build and print schedules for students, teachers,
@@ -110,12 +111,12 @@ training actions and facilities.
     ],
     "assets": {
         "web.assets_backend": [
-            "static/src/js/academy_timesheets_widgets.js",
-            "static/src/js/header_view_buttons.js",
-            "static/src/css/academy_timesheets.css",
-            "static/src/css/academy_timesheets_report.css",
-            "static/src/xml/academy_timesheets_widgets.xml",
-            "static/src/xml/header_view_buttons.xml",
+            "/academy_timesheets/static/src/js/academy_timesheets_widgets.js",
+            "/academy_timesheets/static/src/js/header_view_buttons.js",
+            "/academy_timesheets/static/src/css/academy_timesheets.css",
+            "/academy_timesheets/static/src/css/academy_timesheets_report.css",
+            "/academy_timesheets/static/src/xml/academy_timesheets_widgets.xml",
+            "/academy_timesheets/static/src/xml/header_view_buttons.xml",
         ],
         "web.report_assets_common": [],
         "web.report_assets_pdf": [],

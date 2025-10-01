@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<odoo nopudate="0">
+<odoo noupdate="0">
 
         <!-- Form view for "academy.teacher" -->
         <record id="view_academy_teacher_form" model="ir.ui.view">
@@ -30,12 +30,11 @@
             <field name="active" eval="True" />
             <field name="inherit_id" ref="academy_base.view_academy_teacher_kanban" />
             <field name="arch" type="xml">
-                <xpath expr="//div[@name='kanban-box-toolbar']" position="inside">
+                <xpath expr="//footer" position="inside">
                     <div class="btn-group" role="group" aria-label="Management">
                         <button name="view_sessions" type="object"
                             class="btn btn-sm btn-light oe_read_only" title="Show related sessions">
-                            <i class="fa fa-calendar d-inline-block mr-1" aria-hidden="false"></i>
-                            Scheduled
+                            <i class="fa fa-calendar d-inline-block mr-1" aria-hidden="false" title="Sessions"></i>
                         </button>
                     </div>
                 </xpath>

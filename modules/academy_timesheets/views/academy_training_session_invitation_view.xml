@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<odoo nopudate="0">
+<odoo noupdate="0">
 
         <!-- VIEWS: "Invitation"
 
@@ -25,7 +25,7 @@
                 <list string="academy_training_session_invitation_tree" create="1" delete="1" edit="1">
                     <field name="enrolment_id" class="oe_field_enrolment_id" />
                     <field name="training_action_id" class="oe_field_training_action_id" />
-                    <field name="program_line_id" class="oe_field_program_line_id" />
+                    <field name="action_line_id" class="oe_field_action_line_id" />
                     <field name="date_start" class="oe_field_date_start" />
                     <field name="date_stop" class="oe_field_date_stop" />
                     <field name="present" class="oe_field_present" />
@@ -70,8 +70,8 @@
                         <group col="4" class="oe_read_only" string="Session" >
                             <field name="training_action_id" colspan="4"
                                     class="oe_field_training_action_id" />
-                            <field name="program_line_id" colspan="4"  string="Unit"
-                                    class="oe_field_program_line_id" />
+                            <field name="action_line_id" colspan="4"  string="Unit"
+                                    class="oe_field_action_line_id" />
                             <separator colspan="4" />
                             <field name="primary_teacher_id" class="oe_field_primary_teacher_id" />
                             <field name="primary_facility_id" class="oe_field_primary_facility_id" />
@@ -85,7 +85,7 @@
 
                         <group col="4" string="Student">
                             <field name="enrolment_id" class="oe_field_enrolment_id"
-                                domain="[('invitation_ids', '&lt;&gt;', invitation_ids)]" />
+                                domain="[('invitation_ids', '!=', invitation_ids)]" />
                             <field name="present" class="oe_field_present" />
                             <field name="vat" class="oe_field_vat" />
                             <field name="zip" class="oe_field_zip" />
@@ -107,9 +107,9 @@
             <field name="active" eval="True" />
             <field name="arch" type="xml">
                 <calendar mode="week" date_start="date_start" date_stop="date_stop" date_delay="date_delay"
-                    quick_add="false">
+                    quick_create="0">
                     <field name="training_action_id" class="oe_field_training_action_id" />
-                    <field name="program_line_id" class="oe_field_program_line_id" />
+                    <field name="action_line_id" class="oe_field_action_line_id" />
                     <field name="primary_teacher_id" class="oe_field_primary_teacher_id" />
                 </calendar>
             </field>
@@ -129,7 +129,7 @@
                     <field name="student_id" class="oe_field_student_id" />
 
                     <field name="training_action_id" />
-                    <field name="program_line_id" />
+                    <field name="action_line_id" />
                     <field name="enrolment_id" />
 
                     <separator />

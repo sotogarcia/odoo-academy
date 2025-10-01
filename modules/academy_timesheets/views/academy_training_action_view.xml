@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<odoo nopudate="0">
+<odoo noupdate="0">
 
         <!-- Form view for "academy.training.action" -->
         <record id="view_academy_training_action_form" model="ir.ui.view">
@@ -26,7 +26,7 @@
                 </xpath>
             </field>
         </record>
-
+<!--
         <record id="view_academy_training_action_search" model="ir.ui.view">
             <field name="name">view.academy.training.action.search</field>
             <field name="model">academy.training.action</field>
@@ -40,9 +40,9 @@
                     <field name="allow_overlap" />
                 </xpath>
             </field>
-        </record>
+        </record> -->
 
-        <record id="view_academy_training_action_kanban" model="ir.ui.view">
+<!--         <record id="view_academy_training_action_kanban" model="ir.ui.view">
             <field name="name">view.academy.training.action.kanban</field>
             <field name="model">academy.training.action</field>
             <field name="type">kanban</field>
@@ -60,7 +60,7 @@
                     </button>
                 </xpath>
             </field>
-        </record>
+        </record> -->
 
         <record id="academy_base.action_training_action_act_window" model="ir.actions.act_window">
             <field name="context">{}</field>

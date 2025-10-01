@@ -1,25 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<odoo nopudate="0">
-
-        <template id="academy_timesheets_report_assets_common" name="academy_timesheets_report_assets_common" inherit_id="web.report_assets_common">
-            <xpath expr="." position="inside">
-                <link href="/academy_timesheets/static/src/css/academy_timesheets_report.css" rel="stylesheet" />
-            </xpath>
-        </template>
-
-        <template id="view_academy_timesheets_assets" name="website assets for academy_timesheets" inherit_id="web.assets_backend">
-            <xpath expr="." position="inside">
-                <script type="text/javascript" src="/academy_timesheets/static/src/js/academy_timesheets_widgets.js" />
-                <script type="text/javascript" src="/academy_timesheets/static/src/js/header_view_buttons.js" />
-                <link href="/academy_timesheets/static/src/css/academy_timesheets.css" rel="stylesheet" />
-            </xpath>
-        </template>
+<odoo noupdate="0">
 
         <record id="menu_academy_timesheets_settings" model="ir.ui.menu" >
             <field name="name">Timesheets</field>
-            <field name="sequence" eval="24" />
-            <field name="parent_id" ref="academy_base.menu_academy_settings" />
+            <field name="sequence" eval="50" />
+            <field name="parent_id" ref="academy_base.menu_academy" />
             <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
         </record>
 
@@ -29,13 +15,6 @@
         <record id="ir_rule_restricted_training_session_multi_company" model="ir.rule">
             <field name="name">Restricted Training session: multi-company</field>
             <field name="model_id" ref="academy_timesheets.model_academy_training_session"/>
-            <field name="global" eval="True"/>
-            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
-        </record>
-
-        <record id="ir_rule_academy_training_session_affinity_multi_company" model="ir.rule">
-            <field name="name">Restricted Academy Training Session Affinity: multi-company</field>
-            <field name="model_id" ref="academy_timesheets.model_academy_training_session_affinity"/>
             <field name="global" eval="True"/>
             <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
         </record>

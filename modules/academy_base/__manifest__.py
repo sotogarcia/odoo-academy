@@ -30,6 +30,7 @@ within the Spanish Vocational Training System. It implements common structures,
 data models and behaviors shared across academy modules.
 
 Key features:
+
 - Defines and manages the main reference catalogs aligned with the Spanish
   National Catalogue of Professional Qualifications and Training Offers (LO 3/2022
   and RD 659/2023):
@@ -145,9 +146,9 @@ of reference catalogs and training structures across the platform.
         "wizard/academy_training_action_enrolment_wizard_view.xml",
         "wizard/record_ownership_wizard_view.xml",
     ],
-    # "pre_init_hook": "pre_init_hook",
-    # "post_init_hook": "post_init_hook",
-    # "uninstall_hook": "uninstall_hook",
+    "pre_init_hook": "pre_init_hook",
+    "post_init_hook": "post_init_hook",
+    "uninstall_hook": "uninstall_hook",
     "qweb": [],
     "demo": [
         "demo/academy_student_demo.xml",

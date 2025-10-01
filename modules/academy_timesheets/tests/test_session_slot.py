@@ -40,7 +40,7 @@ class TestAcademyTestsSessionSlot(TransactionCase):
             "active": True,
             "state": "ready",
             "training_action_id": self._training_action.id,
-            "program_line_id": self._competency_unit.id,
+            "action_line_id": self._competency_unit.id,
             "date_start": date_start,
             "date_stop": date_stop,
             "validate": validate,

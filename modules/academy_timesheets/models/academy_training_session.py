@@ -24,7 +24,7 @@ CHECK_TRAINING_TASK = """
         (kind <> \'teach\') OR
         (
             training_action_id IS NOT NULL
-            AND program_line_id IS NOT NULL
+            AND action_line_id IS NOT NULL
             AND task_id IS NULL
         )
     )
@@ -36,7 +36,7 @@ CHECK_NON_TRAINING_TASK = """
         (
             task_id IS NOT NULL
             AND training_action_id IS NULL
-            AND program_line_id IS NULL
+            AND action_line_id IS NULL
         )
     )
 """
@@ -185,7 +185,7 @@ class AcademyTrainingSession(models.Model):
     @api.onchange("training_action_id")
     def _onchange_training_action_id(self):
         for record in self:
-            record.program_line_id = None
+            record.action_line_id = None
             link_ids = record.training_action_id.facility_link_ids
             if link_ids:
                 o2m_ops = [(5, 0, 0)]
@@ -199,14 +199,14 @@ class AcademyTrainingSession(models.Model):
 
                 record.reservation_ids = o2m_ops
 
-    program_line_id = fields.Many2one(
+    action_line_id = fields.Many2one(
         string="Competency unit",
         required=False,
         readonly=False,
         index=True,
         default=None,
         help="Related competency unit",
-        comodel_name="academy.competency.unit",
+        comodel_name="academy.training.program.line",
         domain=[],
         context={},
         ondelete="cascade",
@@ -214,10 +214,10 @@ class AcademyTrainingSession(models.Model):
         tracking=True,
     )
 
-    @api.onchange("program_line_id")
-    def _onchange_program_line_id(self):
+    @api.onchange("action_line_id")
+    def _onchange_action_line_id(self):
         for record in self:
-            unit = record.program_line_id
+            unit = record.action_line_id
             action = record.training_action_id
 
             if unit and action:
@@ -269,7 +269,6 @@ class AcademyTrainingSession(models.Model):
         domain=[],
         context={},
         auto_join=False,
-        limit=None,
         tracking=True,
         copy=False,
     )
@@ -301,7 +300,6 @@ class AcademyTrainingSession(models.Model):
         column2="teacher_id",
         domain=[],
         context={},
-        limit=None,
         copy=False,
     )
 
@@ -360,7 +358,6 @@ class AcademyTrainingSession(models.Model):
         domain=[],
         context={"default_state": "requested"},
         auto_join=False,
-        limit=None,
         tracking=True,
         copy=False,
     )
@@ -462,7 +459,6 @@ class AcademyTrainingSession(models.Model):
         domain=[],
         context={},
         auto_join=False,
-        limit=None,
         tracking=True,
         copy=False,
     )
@@ -605,77 +601,6 @@ class AcademyTrainingSession(models.Model):
         help="If checked, the event date range will be checked before saving",
     )
 
-    exclusion_ids = fields.One2many(
-        string="Exclusions",
-        required=False,
-        readonly=True,
-        index=True,
-        default=None,
-        help="List with students who have not been invited",
-        comodel_name="academy.training.session.affinity",
-        inverse_name="session_id",
-        domain=[("invited", "<>", True)],
-        context={},
-        auto_join=False,
-        limit=None,
-    )
-
-    exclusion_count = fields.Integer(
-        string="Exclusion count",
-        required=False,
-        readonly=True,
-        index=False,
-        default=0,
-        help="Number of students have not been invited to the session",
-        compute="_compute_exclusion_count",
-        search="_search_exclusion_count",
-        store=False,
-    )
-
-    @api.depends("exclusion_ids")
-    def _compute_exclusion_count(self):
-        for record in self:
-            record.exclusion_count = len(record.exclusion_ids)
-
-    @api.model
-    def _search_exclusion_count(self, operator, value):
-        sql = """
-            SELECT
-                ats."id" AS session_id,
-                SUM(
-                    (tsa."id" IS NOT NULL AND tsa.invited IS NOT TRUE)::INTEGER
-                )::INTEGER AS exclusion_count
-            FROM
-                academy_training_session AS ats
-            LEFT JOIN academy_training_session_affinity AS tsa
-                    ON tsa.session_id = ats."id"
-            WHERE
-                    ats.active AND ats.training_action_id IS NOT NULL
-            GROUP BY ats."id"
-            HAVING SUM(
-                (tsa."id" IS NOT NULL AND tsa.invited IS NOT TRUE)::INTEGER
-            )::INTEGER {operator} {value}
-        """
-
-        domain = FALSE_DOMAIN
-
-        if value is True:
-            operator = ">" if operator == "=" else "="
-            value = 0
-        elif value is False:  # Field is mandatory
-            operator = "=" if operator == "=" else ">"
-            value = 0
-
-        sql = sql.format(operator=operator, value=value)
-        self.env.cr.execute(sql)
-        results = self.env.cr.dictfetchall()
-
-        if results:
-            session_ids = [item["session_id"] for item in results]
-            domain = [("id", "in", session_ids)]
-
-        return domain
-
     lang = fields.Char(
         string="Language",
         required=True,
@@ -743,7 +668,7 @@ class AcademyTrainingSession(models.Model):
             "state",
             "training_action_id",
             "task_id",
-            "program_line_id",
+            "action_line_id",
             "primary_teacher_id",
             "primary_facility_id",
             "teacher_assignment_ids",
@@ -1111,7 +1036,7 @@ class AcademyTrainingSession(models.Model):
             "validate": session.validate,
             "task_id": session.task_id.id,
             "training_action_id": session.training_action_id.id,
-            "program_line_id": session.program_line_id.id,
+            "action_line_id": session.action_line_id.id,
             "teacher_assignment_ids": [(5, 0, 0)],
             "reservation_ids": [(5, 0, 0)],
             "invitation_ids": [(5, 0, 0)],
@@ -1186,8 +1111,8 @@ class AcademyTrainingSession(models.Model):
                 name = "{} ({} - {})".format(date_base, time_start, time_stop)
 
             elif self.env.context.get("default_training_action_id", False):
-                if record.program_line_id:
-                    name = record.program_line_id.competency_name
+                if record.action_line_id:
+                    name = record.action_line_id.competency_name
                 else:
                     name = _("New session")
             else:
@@ -1261,32 +1186,6 @@ class AcademyTrainingSession(models.Model):
             "target": "current",
             "name": _("Invitations"),
             "view_mode": ",".join(view_modes),
-            "domain": domain,
-            "context": ctx,
-            "search_view_id": action.search_view_id.id,
-            "help": action.help,
-        }
-
-        return serialized
-
-    def view_exclusion(self):
-        self.ensure_one()
-
-        action_xid = "academy_timesheets.action_affinity_act_window"
-        action = self.env.ref(action_xid)
-
-        ctx = self.env.context.copy()
-        ctx.update(safe_eval(action.context))
-        ctx.update({"default_session_id": self.id})
-
-        domain = [("session_id", "=", self.id), ("invited", "<>", True)]
-
-        serialized = {
-            "type": "ir.actions.act_window",
-            "res_model": "academy.training.session.affinity",
-            "target": "current",
-            "name": _("Exclusions"),
-            "view_mode": action.view_mode,
             "domain": domain,
             "context": ctx,
             "search_view_id": action.search_view_id.id,
@@ -1372,7 +1271,7 @@ class AcademyTrainingSession(models.Model):
                 "&",
                 "&",
                 ("training_action_id", "=", record.training_action_id.id),
-                ("program_line_ids", "=", record.program_line_id.id),
+                ("action_line_ids", "=", record.action_line_id.id),
                 ("register", "<=", date_start),
                 "|",
                 ("deregister", "=", False),
@@ -1409,42 +1308,43 @@ class AcademyTrainingSession(models.Model):
 
             record.write({"invitation_ids": invitation_ops})
 
-    @api.model
-    def create(self, values):
+    @api.model_create_multi
+    def create(self, values_list):
         tracking_disable_ctx = self.env.context.copy()
         tracking_disable_ctx.update({"tracking_disable": True})
 
-        self._update_task_name(values)
+        result = self.browse()
 
-        self_ctx = self.with_context(tracking_disable_ctx)
-        with self.env.cr.savepoint():
-            self_ctx._adjust_existing_facility_reservations(values)
+        for values in values_list:
+            self._update_task_name(values)
 
-        if "kind" in values:
-            if values.get("kind", None) == "teach":
-                values["task_id"] = None
-            else:
-                values["training_action_id"] = None
-                values["program_line_id"] = None
+            self_ctx = self.with_context(tracking_disable_ctx)
+            with self.env.cr.savepoint():
+                self_ctx._adjust_existing_facility_reservations(values)
 
-        _super = super(AcademyTrainingSession, self)
-        result = _super.create(values)
+            if "kind" in values:
+                if values.get("kind", None) == "teach":
+                    values["task_id"] = None
+                else:
+                    values["training_action_id"] = None
+                    values["action_line_id"] = None
 
-        if "invitation_ids" not in values:
-            result.invite_all()
+            _super = super(AcademyTrainingSession, self)
+            result |= _super.create(values)
 
-        if "reservation_ids" in values:
-            reservation_values = {
-                "date_start": result.date_start,
-                "date_stop": result.date_stop,
-                "name": result.training_action_id.action_name,
-                "description": result.program_line_id.name,
-            }
+            if "invitation_ids" not in values:
+                result.invite_all()
 
-            result_ctx = result.with_context(tracking_disable_ctx)
-            result_ctx.reservation_ids.write(reservation_values)
+            if "reservation_ids" in values:
+                reservation_values = {
+                    "date_start": result.date_start,
+                    "date_stop": result.date_stop,
+                    "name": result.training_action_id.action_name,
+                    "description": result.action_line_id.name,
+                }
 
-        # result._update_session_followers()
+                result_ctx = result.with_context(tracking_disable_ctx)
+                result_ctx.reservation_ids.write(reservation_values)
 
         return result
 
@@ -1461,15 +1361,15 @@ class AcademyTrainingSession(models.Model):
                 values["task_id"] = None
             else:
                 values["training_action_id"] = None
-                values["program_line_id"] = None
+                values["action_line_id"] = None
 
-        if "program_line_id" in values and "invitation_ids" not in values:
+        if "action_line_id" in values and "invitation_ids" not in values:
             values["invitation_ids"] = None
 
         _super = super(AcademyTrainingSession, self)
         result = _super.write(values)
 
-        if "program_line_id" in values and "invitation_ids" not in values:
+        if "action_line_id" in values and "invitation_ids" not in values:
             self.invite_all()
 
         if self.reservation_ids:

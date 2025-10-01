@@ -120,54 +120,17 @@ class FacilityReservation(models.Model):
             **kwargs
         )
 
-    # def _write(self, values):
-    #     """ Overridden method 'write' to catch trigger exceptions
-    #     """
-
-    #     parent = super(FacilityReservation, self)
-
-    #     try:
-    #         result = parent._write(values)
-    #     except PsqlException as ex:
-    #         if str(ex.pgcode) == 'P0001':
-    #             values = process_psql_exception(ex)
-    #             error = values.get('error', False)
-    #             if error:
-    #                 raise ValidationError(error)
-    #         else:
-    #             raise
-
-    #     return result
-
-    # @api.model
-    # def _create(self, values):
-    #     """ Overridden method 'create'
-    #     """
-
-    #     parent = super(FacilityReservation, self)
-    #     try:
-    #         result = parent._create(values)
-    #     except PsqlException as ex:
-    #         if str(ex.pgcode) == 'P0001':
-    #             values = process_psql_exception(ex)
-    #             error = values.get('error', False)
-    #             if error:
-    #                 raise ValidationError(error)
-    #         else:
-    #             raise
-
-    #     return result
-
     def detach_from_training(self):
         self.write({"session_id": None})
 
-    @api.model
-    def create(self, values):
+    @api.model_create_multi
+    def create(self, value_list):
         """Overridden method 'create'"""
-        self._keep_in_sync_training_action(values)
+        for values in value_list:
+            self._keep_in_sync_training_action(values)
 
         parent = super(FacilityReservation, self)
-        result = parent.create(values)
+        result = parent.create(value_list)
 
         return result
 

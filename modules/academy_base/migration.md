@@ -169,6 +169,7 @@ attrs=["']\{["'](readonly|invisible|required)["']: *(\[[^\]]+\])\}["']
 - [ ] Añadir botón programa a acciones
 - [ ] Añadir botón grupos a acciones
 - [ ] Añadir campo delivery_ids a las acciones.
+- [ ] revisar los hooks
 
 
 ## Solución a la matriculación por grupos

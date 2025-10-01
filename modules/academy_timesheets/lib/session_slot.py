@@ -33,7 +33,7 @@ class SessionChain:
 
     @property
     def competencies(self):
-        return self._training_action.program_line_ids
+        return self._training_action.action_line_ids
 
     @property
     def sessions(self):
@@ -221,14 +221,14 @@ class SessionSlot:
         return value / 3600.0
 
     def _next_available(self, cu_time):
-        program_line_id, untaught = None, None
+        action_line_id, untaught = None, None
 
         for k, v in cu_time.items():
             if v > 0:
-                program_line_id, untaught = k, v
+                action_line_id, untaught = k, v
                 break
 
-        return program_line_id, untaught
+        return action_line_id, untaught
 
     @staticmethod
     def _piece_repr(td, cuid=None):
@@ -304,7 +304,7 @@ class SessionPiece:
             self._session = session
 
         if not competency and self._session:
-            self._competency_unit = self._session.program_line_id
+            self._competency_unit = self._session.action_line_id
         else:
             if isinstance(competency, int):
                 competency_obj = self._env["academy.competency.unit"]
@@ -354,7 +354,7 @@ class SessionPiece:
             {
                 "date_start": self._date_start,
                 "date_stop": self._date_stop,
-                "program_line_id": self._competency_unit.id,
+                "action_line_id": self._competency_unit.id,
             }
         )
 
@@ -370,7 +370,7 @@ class SessionPiece:
 
         if bool(self._session):
             cu_changed = (
-                self._session.program_line_id.id != self._competency_unit.id
+                self._session.action_line_id.id != self._competency_unit.id
             )
             date_start_changed = self._session.date_start != self.date_start
             date_stop_changed = self._session.date_start != self.date_start

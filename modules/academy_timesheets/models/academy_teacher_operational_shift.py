@@ -145,7 +145,6 @@ class AcademyTeacherOperationalShift(models.Model):
         column2="session_id",
         domain=[],
         context={},
-        limit=None,
         compute="_compute_session_ids",
     )
 
@@ -266,8 +265,8 @@ class AcademyTeacherOperationalShift(models.Model):
             (
                 EXTRACT(EPOCH FROM AGE(date_stop, date_start)) / 3600
             )::FLOAT AS date_delay,
-            teach.res_users_id AS create_uid,
-            teach.res_users_id AS write_uid
+            1::INTEGER AS create_uid,
+            1::INTEGER AS write_uid
         FROM teacher_shifts AS ts
         INNER JOIN academy_teacher AS teach  ON teach."id" = ts.teacher_id
     """

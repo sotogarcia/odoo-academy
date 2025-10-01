@@ -33,7 +33,6 @@ class AcademyStudent(models.Model):
         column2="session_id",
         domain=[],
         context={},
-        limit=None,
     )
 
     session_count = fields.Integer(
@@ -67,7 +66,6 @@ class AcademyStudent(models.Model):
         column2="session_id",
         domain=[],
         context={},
-        limit=None,
     )
 
     invitation_ids = fields.One2many(
@@ -82,7 +80,6 @@ class AcademyStudent(models.Model):
         domain=[],
         context={},
         auto_join=False,
-        limit=None,
     )
 
     invitation_count = fields.Integer(
@@ -105,21 +102,6 @@ class AcademyStudent(models.Model):
     @api.model
     def _search_invitation_count(self, operator, value):
         return TRUE_DOMAIN
-
-    exclusion_ids = fields.One2many(
-        string="Excluded from",
-        required=False,
-        readonly=True,
-        index=True,
-        default=None,
-        help="List of sessions to which student has not been invited",
-        comodel_name="academy.training.session.affinity",
-        inverse_name="student_id",
-        domain=[("invited", "<>", True)],
-        context={},
-        auto_join=False,
-        limit=None,
-    )
 
     def _compute_view_mapping(self):
         view_names = [

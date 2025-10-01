@@ -99,12 +99,12 @@ class AcademyTrainingSessionTeacherRel(models.Model):
         ),
     ]
 
-    @api.model
-    def create(self, values):
+    @api.model_create_multi
+    def create(self, value_list):
         """Overridden method 'create'"""
 
         parent = super(AcademyTrainingSessionTeacherRel, self)
-        result = parent.create(values)
+        result = parent.create(value_list)
 
         result._update_session_followers()
 
@@ -121,7 +121,7 @@ class AcademyTrainingSessionTeacherRel(models.Model):
         return result
 
     def _update_session_followers(self):
-        path = "teacher_id.res_users_id.partner_id.id"
+        path = "teacher_id.partner_id.id"
 
         for record in self:
             session = record.session_id

@@ -25,7 +25,7 @@ class AcademyTimesheetStudentReport(models.AbstractModel):
     def _read_record_values(self, session):
         training_action = session.training_action_id.action_name
 
-        competency_unit = session.program_line_id.competency_name
+        competency_unit = session.action_line_id.competency_name
         competency_unit = truncate_name(competency_unit, 64, 160)
 
         facility = session.primary_facility_id.name

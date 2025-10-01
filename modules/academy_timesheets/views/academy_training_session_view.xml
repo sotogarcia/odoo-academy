@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<odoo nopudate="0">
+<odoo noupdate="0">
 
         <!-- VIEWS: "Sessions"
 
@@ -28,7 +28,7 @@
                     <field name="task_id" column_invisible="1" />
 
                     <field name="task_name" class="oe_field_task_name" />
-                    <field name="program_line_id" class="oe_field_program_line_id" />
+                    <field name="action_line_id" class="oe_field_action_line_id" />
                     <field name="primary_teacher_id" class="oe_field_primary_teacher_id" />
                     <field name="primary_facility_id" class="oe_field_primary_facility_id" />
                     <field name="date_start" class="oe_field_date_start" />
@@ -64,10 +64,6 @@
                                 icon="fa-building-o" help="Show related facility reservations">
                                 <field name="reservation_count" widget="statinfo" string="Facilities" />
                             </button>
-                            <button name="view_exclusion" type="object" class="oe_stat_button oe_read_only"
-                                icon="fa-ban" help="Show exclusions">
-                                <field name="exclusion_count" widget="statinfo" string="Exclusions" />
-                            </button>
                             <button name="view_invitation" type="object" class="oe_stat_button oe_read_only"
                                 icon="fa-users" help="Show related invitations">
                                 <field name="invitation_count" widget="statinfo" string="Invitations" />
@@ -101,8 +97,7 @@
 
                         <group col="4">
                             <field name="kind" class="oe_field_kind"
-                                readonly="context.get('default_training_action_id', 0) or context.get('default_task_id', 0)"
-                                readonly="create_date &lt;&gt; False" />
+                                readonly="context.get('default_training_action_id', 0) or context.get('default_task_id', 0) or (create_date != False)" />
                             <field name="validate" class="oe_field_validate" colspan="2" />
                             <field name="primary_teacher_id" class="oe_field_primary_teacher_id"
                                 options="{'no_quick_create': True, 'no_create': True}" />
@@ -110,18 +105,18 @@
                                 options="{'no_quick_create': True, 'no_create': True}" />
                         </group>
 
-                        <group col="6" string="Training" invisible="kind &lt;&gt; 'teach'">
+                        <group col="6" string="Training" invisible="kind != 'teach'">
                             <field name="training_action_id" colspan="4" class="oe_field_training_action_id"
                                 options="{'no_quick_create': True, 'no_create': True}"
                                 readonly="context.get('default_training_action_id', 0)"
                                 required="kind == 'teach'" />
-                            <field name="program_line_id" colspan="4" class="oe_field_program_line_id"
+                            <field name="action_line_id" colspan="4" class="oe_field_action_line_id"
                                 options="{'no_quick_create': True, 'no_create': True}" string="Unit"
                                 domain="[('training_program_id', '=', training_program_id)]"
                                 required="kind == 'teach'" />
                         </group>
 
-                        <group col="2" string="Task" invisible="kind &lt;&gt; 'task'">
+                        <group col="2" string="Task" invisible="kind != 'task'">
                             <field name="task_id" class="oe_field_task_id"
                                 options="{'no_quick_create': True, 'no_create': True}"
                                 required="kind == 'task'" />
@@ -202,7 +197,7 @@
                     <field name="date_stop" />
                     <field name="date_delay" />
                     <field name="invitation_count" />
-                    <field name="program_line_id" />
+                    <field name="action_line_id" />
                     <field name="primary_teacher_id" />
                     <field name="teacher_count" />
                     <field name="primary_facility_id" />
@@ -210,7 +205,7 @@
                     <field name="state" class="oe_field_state" />
 
                     <templates>
-                        <t t-name="kanban-box">
+                        <t t-name="card" class="flex-row">
                             <div class="oe_kanban_global_click">
                                 <div class="oe_kanban_details d-flex flex-column justify-content-between h-100">
                                     <div class="d-flex justify-content-between">
@@ -221,27 +216,27 @@
                                     </div>
 
                                     <div class="text-truncate">
-                                        <field name="program_line_id" class="oe_field_program_line_id" />
+                                        <field name="action_line_id" class="oe_field_action_line_id" />
                                     </div>
 
                                     <table class="table table-sm table-borderless">
                                         <tbody>
                                             <tr>
-                                                <th><i class="fa fa-street-view"></i></th>
+                                                <th><i class="fa fa-street-view" title="Teachers"></i></th>
                                                 <td class="w-100">
                                                     <span class="font-italic"><field name="primary_teacher_id" /></span>
                                                     <span class="ml-2 text-monospace">(<field name="teacher_count" class="oe_field_teacher_count" />)</span>
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <th><i class="fa fa-graduation-cap"></i></th>
+                                                <th><i class="fa fa-graduation-cap" title="Reservations"></i></th>
                                                 <td class="w-100">
                                                     <span class="font-italic"><field name="primary_facility_id" /></span>
                                                     <span class="ml-2 text-monospace">(<field name="reservation_count" class="oe_field_reservation_count" />)</span>
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <th><i class="fa fa-clock-o"></i></th>
+                                                <th><i class="fa fa-clock-o" title="Lifespan"></i></th>
                                                 <td class="w-100" style="font-size: smaller;">
                                                     <field name="date_start" class="oe_field_date_start" /> -
                                                     (<field name="date_delay" class="oe_field_date_delay" widget="float_time" /> hours)
@@ -268,15 +263,15 @@
             <field name="active" eval="True" />
             <field name="arch" type="xml">
                 <calendar mode="week" date_start="date_start" date_stop="date_stop" date_delay="date_delay"
-                          quick_add="false" color="task_name" form_view_id="training_session_calendar">
+                      quick_create="1" color="task_name" form_view_id="view_academy_training_session_form">
                     <field name="company_id" invisible="1" />
                     <field name="training_action_id" invisible="1" />
                     <field name="task_id" invisible="1" />
 
-                    <field name="task_name" class="oe_field_task_name" filters="1" />
-                    <field name="program_line_id" class="oe_field_program_line_id text-truncate" />
-                    <field name="primary_facility_id" class="oe_field_primary_facility_id" />
-                    <field name="primary_teacher_id" class="oe_field_primary_teacher_id" />
+                  <field name="task_name" class="oe_field_task_name" filters="1"/>
+                  <field name="action_line_id" class="oe_field_action_line_id text-truncate"/>
+                  <field name="primary_facility_id" class="oe_field_primary_facility_id"/>
+                  <field name="primary_teacher_id" class="oe_field_primary_teacher_id"/>
                 </calendar>
             </field>
         </record>
@@ -291,10 +286,10 @@
             <field name="inherit_id" ref="academy_timesheets.view_academy_training_session_calendar" />
             <field name="arch" type="xml">
                 <xpath expr="//calendar" position="attributes">
-                    <attribute name="color">program_line_id</attribute>
+                    <attribute name="color">action_line_id</attribute>
                 </xpath>
                 <xpath expr="//field[@name='task_name']" position="replace" />
-                <xpath expr="//field[@name='program_line_id']" position="replace" />
+                <xpath expr="//field[@name='action_line_id']" position="replace" />
 
                 <xpath expr="//field[@name='primary_teacher_id']" position="attributes">
                     <attribute name="filters">1</attribute>
@@ -346,7 +341,7 @@
             <field name="arch" type="xml">
                 <search string="academy_training_session_search">
                     <field name="task_name" />
-                    <field name="program_line_id" />
+                    <field name="action_line_id" />
                     <field name="invitation_count" />
 
                     <separator />
@@ -368,10 +363,6 @@
                     <separator />
                     <filter string="Training" name="kind_teach" domain="[('kind', '=', 'teach')]" />
                     <filter string="Task" name="kind_task" domain="[('kind', '=', 'task')]" />
-
-                    <separator />
-                    <filter string="With exclusions" name="with_exclusions" domain="[('exclusion_count', '>', 0)]" />
-                    <filter string="Without exclusions" name="without_exclusions" domain="[('exclusion_count', '=', 0)]" />
 
                     <separator />
                     <filter string="Current week" name="current_week" domain="[
@@ -461,7 +452,7 @@
             <field name="active" eval="True" />
             <field name="inherit_id" ref="academy_timesheets.view_academy_training_session_tree" />
             <field name="arch" type="xml">
-               <xpath expr="//tree" position="attributes">
+               <xpath expr="//list" position="attributes">
                     <attribute name="create">0</attribute>
                     <attribute name="edit">0</attribute>
                     <attribute name="delete">0</attribute>
@@ -522,7 +513,7 @@
             <field name="inherit_id" ref="academy_timesheets.view_academy_training_session_calendar_no_primary_instructor" />
             <field name="arch" type="xml">
                 <xpath expr="//calendar" position="attributes">
-                    <attribute name="quick_add">0</attribute>
+                    <attribute name="quick_create">0</attribute>
                 </xpath>
             </field>
         </record>

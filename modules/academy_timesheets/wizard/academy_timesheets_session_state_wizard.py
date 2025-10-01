@@ -34,7 +34,6 @@ class AcademyTimesheetSessionStateWizard(models.TransientModel):
         column2="session_id",
         domain=[],
         context={},
-        limit=None,
     )
 
     state = fields.Selection(

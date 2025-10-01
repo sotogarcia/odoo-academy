@@ -218,34 +218,34 @@
                   <main class="d-flex flex-column justify-content-start align-items-start">
                     <h2 class="h4 text-truncate">
                         <field name="display_name"/>
-                      </h2>
-                      <table border="0" cellpadding="0" cellspacing="0"
-                        style="border: 0px none transparent;">
-                        <tbody>
-                          <tr>
-                            <th class="pb-1 text-nowrap pe-2">Code:</th>
-                            <td class="pb-1 text-truncate">
-                              <span t-if="record.code.raw_value">
-                                <t t-esc="record.code.raw_value"/>
-                              </span>
-                              <span t-if="!record.code.raw_value">---</span>
-                            </td>
-                          </tr>
-                          <tr>
-                            <th class="pb-1 text-nowrap pe-2">Lifespan:</th>
-                            <td class="pb-1 text-truncate">
-                              <field name="lifespan" class="oe_field_lifespan" />
-                            </td>
-                          </tr>
-                          <tr>
-                            <th class="pb-1 text-nowrap pe-2">Hours:</th>
-                            <td class="pb-1 text-truncate">
-                              <field name="hours" class="oe_field_hours" widget="float_time" />
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </main>
+                    </h2>
+                    <table border="0" cellpadding="0" cellspacing="0"
+                      style="border: 0px none transparent;">
+                      <tbody>
+                        <tr>
+                          <th class="pb-1 text-nowrap pe-2">Code:</th>
+                          <td class="pb-1 text-truncate">
+                            <span t-if="record.code.raw_value">
+                              <t t-esc="record.code.raw_value"/>
+                            </span>
+                            <span t-if="!record.code.raw_value">---</span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th class="pb-1 text-nowrap pe-2">Lifespan:</th>
+                          <td class="pb-1 text-truncate">
+                            <field name="lifespan" class="oe_field_lifespan" />
+                          </td>
+                        </tr>
+                        <tr>
+                          <th class="pb-1 text-nowrap pe-2">Hours:</th>
+                          <td class="pb-1 text-truncate">
+                            <field name="hours" class="oe_field_hours" widget="float_time" />
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </main>
 
                   <!-- footer: begin -->
                   <footer class="d-flex justify-content-end align-items-start mt-2">

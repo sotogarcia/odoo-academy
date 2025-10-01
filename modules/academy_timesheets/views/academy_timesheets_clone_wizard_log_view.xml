@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<odoo nopudate="0">
+<odoo noupdate="0">
 
         <!-- VIEWS: "Clone wizard log"
 
@@ -110,7 +110,7 @@
 
                     <filter string="No debug"
                         name="no_debug"
-                        domain="[('level', '&lt;&gt;', 10)]"
+                        domain="[('level', '!=', 10)]"
                         context="{}"
                         help="Do not show logs with debugging messages" />
 
@@ -142,7 +142,7 @@
             <field name="name">Clone wizard log</field>
             <field name="sequence" eval="10" />
             <field name="action" ref="action_clone_wizard_log_act_window" />
-            <field name="parent_id" ref="academy_base.menu_academy_settings_helper" />
+            <field name="parent_id" ref="academy_timesheets.menu_academy_timesheets_settings" />
             <field name="groups_id" eval="[(4, ref('academy_base.academy_group_manager'))]"/>
         </record>
 

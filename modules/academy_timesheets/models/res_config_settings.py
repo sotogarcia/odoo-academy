@@ -37,7 +37,7 @@ class ResConfigSettings(models.TransientModel):
         readonly=False,
         index=False,
         default=None,
-        help=_(
+        help=(
             "If set to TRUE the report will be downloaded instead of "
             "displayed in the browser."
         ),

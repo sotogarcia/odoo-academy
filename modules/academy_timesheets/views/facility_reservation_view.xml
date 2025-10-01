@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<odoo nopudate="0">
+<odoo noupdate="0">
 
         <!-- VIEWS: "Sessions"
 
@@ -40,7 +40,7 @@
             <field name="inherit_id" ref="facility_management.view_facility_reservation_tree" />
             <field name="active" eval="True" />
             <field name="arch" type="xml">
-                <xpath expr="//tree" position="attributes">
+                <xpath expr="//list" position="attributes">
                     <attribute name="editable">bottom</attribute>
                 </xpath>
 
@@ -121,16 +121,16 @@
                     <field name="session_id" class="oe_field_session_id" invisible="1" />
                 </xpath>
                 <xpath expr="//field[@name='training_action_id']" position="attributes">
-                    <attribute name="attrs">{'readonly': [('session_id', '&lt;&gt;', False)]}</attribute>
+                    <attribute name="readonly">[('session_id', '!=', False)]</attribute>
                 </xpath>
                 <xpath expr="//field[@name='date_start']" position="attributes">
-                    <attribute name="attrs">{'readonly': [('session_id', '&lt;&gt;', False)]}</attribute>
+                    <attribute name="readonly">[('session_id', '!=', False)]</attribute>
                 </xpath>
                 <xpath expr="//field[@name='date_stop']" position="attributes">
-                    <attribute name="attrs">{'readonly': [('session_id', '&lt;&gt;', False)]}</attribute>
+                    <attribute name="readonly">[('session_id', '!=', False)]</attribute>
                 </xpath>
                 <xpath expr="//field[@name='date_delay']" position="attributes">
-                    <attribute name="attrs">{'readonly': [('session_id', '&lt;&gt;', False)]}</attribute>
+                    <attribute name="readonly">[('session_id', '!=', False)]</attribute>
                 </xpath>
                 <xpath expr="//button[@name='unbind']" position="after">
                     <button name="detach_from_training"
@@ -166,7 +166,7 @@
                     <separator />
                     <filter string="With training session"
                         name="with_training_session"
-                        domain="[('session_id', '&lt;&gt;', False)]"
+                        domain="[('session_id', '!=', False)]"
                         context="{}"
                         help="With a related training session" />
 

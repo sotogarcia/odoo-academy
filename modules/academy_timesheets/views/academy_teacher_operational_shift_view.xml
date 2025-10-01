@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<odoo nopudate="0">
+<odoo noupdate="0">
 
         <!-- VIEWS: "Teacher operational shift"
 
@@ -108,7 +108,7 @@
             <field name="active" eval="True" />
             <field name="arch" type="xml">
                 <calendar mode="week" date_start="date_start" date_stop="date_stop" date_delay="date_delay"
-                          quick_add="false" color="company_id">
+                          quick_create="0" color="company_id">
                     <field name="teacher_id" class="oe_field_teacher_id" filters="1" />
                     <field name="company_id" class="oe_field_company_id" filters="1" />
                     <field name="session_count" class="oe_field_session_count" />

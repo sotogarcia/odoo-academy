@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<odoo nopudate="0">
+<odoo noupdate="0">
 
         <record id="academy_training_action_demo_test_1" model="academy.training.action">
             <field name="action_name">Training action test</field>

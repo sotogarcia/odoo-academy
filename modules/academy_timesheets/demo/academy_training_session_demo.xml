@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<odoo nopudate="0">
+<odoo noupdate="0">
 
         <record id="academy_training_session_1" model="academy.training.session">
             <field name="active" eval="True" />
             <field name="training_action_id" ref="academy_base.academy_training_action_demo_1" />
-            <field name="program_line_id" ref="academy_base.academy_competency_unit_libre" />
+            <field name="action_line_id" ref="academy_base.academy_competency_unit_libre" />
             <!-- <field name="invitation_ids" eval="[(4, ref('academy_base.academy_demo_student_1'), 0)]" /> -->
             <!--  academy_training_action_enrolment_demo_1 -->
             <field name="date_start" eval="(DateTime.today()+ timedelta(days=1)).strftime('%Y-%m-%d 16:00:00')" />
@@ -22,7 +22,7 @@
         <record id="academy_training_session_test_1" model="academy.training.session">
             <field name="active" eval="True" />
             <field name="training_action_id" ref="academy_timesheets.academy_training_action_demo_test_1" />
-            <field name="program_line_id" ref="academy_base.academy_competency_unit_libre" />
+            <field name="action_line_id" ref="academy_base.academy_competency_unit_libre" />
             <!-- <field name="invitation_ids" eval="[(4, ref('academy_base.academy_demo_student_1'), 0)]" /> -->
             <!--  academy_training_action_enrolment_demo_1 -->
             <field name="date_start" eval="(DateTime.today()+ timedelta(days=1)).strftime('%Y-%m-%d 16:00:00')" />

@@ -26,7 +26,7 @@ class AcademyTimesheetPrimrayInstructorReport(models.AbstractModel):
     _description = "Academy timesheet teacher report"
 
     def _read_record_values(self, session):
-        competency_unit = session.program_line_id.competency_name
+        competency_unit = session.action_line_id.competency_name
         competency_unit = truncate_name(competency_unit, 64, 75)
 
         training_action = session.training_action_id.action_name

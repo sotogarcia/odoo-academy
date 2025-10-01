@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<odoo nopudate="0">
+<odoo noupdate="0">
 
         <record id="academy_session_notification_email" model="ir.ui.view">
             <field name="name">academy_session_notification_email</field>
@@ -9,10 +9,10 @@
             <field name="mode">primary</field>
             <field name="priority" eval="16" />
             <field name="active" eval="True" />
-            <field name="inherit_id" ref="mail.message_notification_email" />
+            <field name="inherit_id" ref="mail.mail_notification_layout"/>
             <field name="key">mail.message_notification_email</field>
             <field name="arch" type="xml">
-                <xpath expr="//div[@t-raw='message.body']" position="before">
+                <xpath expr="//div[@t-out='message.body']" position="inside">
 
 <p style="width: 600px; margin: 5px 0px; text-align: justify;">
     Hello.

@@ -13,7 +13,7 @@ from odoo.osv.expression import TRUE_DOMAIN, FALSE_DOMAIN
 from odoo.osv.expression import OR
 from odoo.addons.academy_base.utils.helpers import OPERATOR_MAP
 from odoo.addons.academy_base.utils.helpers import many2many_count
-from odoo.addons.academy_base.utils.sql_helpers import create_index
+
 
 from logging import getLogger
 
@@ -70,7 +70,9 @@ class AcademyTrainingAction(models.Model):
         ondelete="restrict",
         auto_join=False,
         compute="_compute_primary_facility_id",
+        search="_search_primary_facility_id",
         compute_sudo=True,
+        store=True,
     )
 
     @api.depends(
@@ -134,21 +136,8 @@ class AcademyTrainingAction(models.Model):
 
         return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
-    def init(self):
-        """
-        Ensure a supporting composite index exists for the
-        primary-facility compute (ORDER BY training_action_id, sequence, id).
-        """
-        # Composite index fields, in the same order used by the query
-        fields = ["training_action_id", "sequence", "id"]
-
-        # Use a short, deterministic name to stay under PostgreSQL's 63-char limit
-        index_name = f"{self._table}__primary_facility_idx"
-
-        create_index(
-            self.env,
-            self._table,
-            fields=fields,
-            unique=False,
-            name=index_name,
-        )
+    primary_complex_id = fields.Many2one(
+        string="Primary complex",
+        related="primary_facility_id.complex_id",
+        store=True,
+    )

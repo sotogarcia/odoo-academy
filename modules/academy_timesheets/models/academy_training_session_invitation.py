@@ -69,21 +69,21 @@ class AcademyTrainingInvitation(models.Model):
 
     date_start = fields.Datetime(
         string="Beginning",
-        readonly="True",
+        readonly=True,
         help="Date/time of session start",
         related="session_id.date_start",
     )
 
     date_stop = fields.Datetime(
         string="Ending",
-        readonly="True",
+        readonly=True,
         help="Date/time of session end",
         related="session_id.date_stop",
     )
 
     date_delay = fields.Float(
         string="Duration",
-        readonly="True",
+        readonly=True,
         help="Time length of the training session",
         related="session_id.date_delay",
     )
@@ -92,28 +92,22 @@ class AcademyTrainingInvitation(models.Model):
         string="Manager", readonly=True, related="session_id.manager_id"
     )
 
-    # exclusion_ids = fields.One2many(
-    #     string="Exclusions",
-    #     help="List with students who have not been invited",
-    #     related="session_id.exclusion_ids",
-    # )
-
     training_action_id = fields.Many2one(
         string="Training action",
         help="Related training action",
         related="session_id.training_action_id",
     )
 
-    program_line_id = fields.Many2one(
+    action_line_id = fields.Many2one(
         string="Competency unit",
-        readonly="True",
+        readonly=True,
         help="Related competency unit",
-        related="session_id.program_line_id",
+        related="session_id.action_line_id",
     )
 
     primary_teacher_id = fields.Many2one(
         string="Primary instructor",
-        readonly="True",
+        readonly=True,
         help="Teacher with primary responsibility",
         related="session_id.primary_teacher_id",
     )
@@ -151,18 +145,16 @@ class AcademyTrainingInvitation(models.Model):
         store=True,
     )
 
-    vat = fields.Char(
-        string="Tax ID", readonly="True", related="student_id.vat"
-    )
+    vat = fields.Char(string="Tax ID", readonly=True, related="student_id.vat")
 
-    zip = fields.Char(string="Zip", readonly="True", related="student_id.zip")
+    zip = fields.Char(string="Zip", readonly=True, related="student_id.zip")
 
     mobile = fields.Char(
-        string="Mobile", readonly="True", related="student_id.mobile"
+        string="Mobile", readonly=True, related="student_id.mobile"
     )
 
     email = fields.Char(
-        string="Email", readonly="True", related="student_id.email"
+        string="Email", readonly=True, related="student_id.email"
     )
 
     image_1920 = fields.Image(string="Image", related="student_id.image_1920")
@@ -225,7 +217,7 @@ class AcademyTrainingInvitation(models.Model):
 
     @staticmethod
     def _enrolment_domain(case):
-        """Check if affinity ovelaps with its own session date range
+        """Check if enrolment ovelaps with its own session date range
 
         First I computed the domain for those outside, then I computed negating
         it the overlap domain. To do this, I applied the Laws of Morgan.

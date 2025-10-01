@@ -28,11 +28,10 @@ class AcademyCompetencyUnit(models.Model):
         default=None,
         help="All sessions for competency unit",
         comodel_name="academy.training.session",
-        inverse_name="program_line_id",
+        inverse_name="action_line_id",
         domain=[],
         context={},
         auto_join=False,
-        limit=None,
     )
 
     session_count = fields.Integer(
@@ -55,12 +54,12 @@ class AcademyCompetencyUnit(models.Model):
     def search_session_count(self, operator, value):
         sql = """
             SELECT
-                acu."id" AS program_line_id,
+                acu."id" AS action_line_id,
                 COUNT ( ats."id" ) :: INTEGER AS session_count
             FROM
                 academy_competency_unit AS acu
             LEFT JOIN academy_training_session AS ats
-                ON ats.program_line_id = acu."id" AND ats.active
+                ON ats.action_line_id = acu."id" AND ats.active
             GROUP BY
                 acu."id"
             HAVING COUNT ( ats."id" ) :: INTEGER {operator} {value}
@@ -77,7 +76,7 @@ class AcademyCompetencyUnit(models.Model):
         results = self.env.cr.dictfetchall()
 
         if results:
-            record_ids = [item["program_line_id"] for item in results]
+            record_ids = [item["action_line_id"] for item in results]
             domain = [("id", "in", record_ids)]
         else:
             domain = FALSE_DOMAIN
@@ -107,12 +106,12 @@ class AcademyCompetencyUnit(models.Model):
     def search_draft_count(self, operator, value):
         sql = """
             SELECT
-                acu."id" AS program_line_id,
+                acu."id" AS action_line_id,
                 COUNT ( ats."id" ) :: INTEGER AS session_count
             FROM
                 academy_competency_unit AS acu
             LEFT JOIN academy_training_session AS ats
-                ON ats.program_line_id = acu."id"
+                ON ats.action_line_id = acu."id"
                 AND ats.active AND ats."state" = 'draft'
             GROUP BY
                 acu."id"
@@ -130,7 +129,7 @@ class AcademyCompetencyUnit(models.Model):
         results = self.env.cr.dictfetchall()
 
         if results:
-            record_ids = [item["program_line_id"] for item in results]
+            record_ids = [item["action_line_id"] for item in results]
             domain = [("id", "in", record_ids)]
         else:
             domain = FALSE_DOMAIN
@@ -148,7 +147,7 @@ class AcademyCompetencyUnit(models.Model):
         ctx.update(safe_eval(action.context))
 
         if self:
-            domain = [("program_line_id", "in", self.mapped("id"))]
+            domain = [("action_line_id", "in", self.mapped("id"))]
         else:
             domain = TRUE_DOMAIN
 

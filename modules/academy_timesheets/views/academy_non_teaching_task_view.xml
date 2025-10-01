@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<odoo nopudate="0">
+<odoo noupdate="0">
 
         <record id="view_academy_non_teaching_task_xml_tree" model="ir.ui.view">
             <field name="name">Academy non teaching task tree view</field>
