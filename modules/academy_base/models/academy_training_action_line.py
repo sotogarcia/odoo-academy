@@ -64,17 +64,17 @@ class AcademyTrainingActionLine(models.Model):
         store=True,
     )
 
-    # competency_unit_ids = fields.Many2many(
-    #     string="Competence Standards (ECP)",
-    #     required=False,
-    #     readonly=False,
-    #     index=True,
-    #     default=None,
-    #     help=("Professional Competence Standards (ECP) linked to unit"),
-    #     comodel_name="academy.competency.unit",
-    #     relation="academy_training_action_line_competency_unit_rel",
-    #     column1="action_line_id",
-    #     column2="competency_unit_id",
-    #     domain=[],
-    #     context={},
-    # )
+    competency_unit_ids = fields.Many2many(
+        string="Competence Standards (ECP)",
+        required=False,
+        readonly=False,
+        index=True,
+        default=None,
+        help=("Professional Competence Standards (ECP) linked to unit"),
+        comodel_name="academy.competency.unit",
+        relation="academy_training_action_line_competency_unit_rel",
+        column1="action_line_id",
+        column2="competency_unit_id",
+        domain=[],
+        context={},
+    )

@@ -255,7 +255,7 @@ class AcademyTrainingModule(models.Model):
         default=None,
         help=False,
         comodel_name="academy.training.program",
-        relation="academy_training_program_line",
+        relation="academy_training_module_training_program_rel",
         column1="training_module_id",
         column2="training_program_id",
         domain=[],

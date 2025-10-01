@@ -46,8 +46,7 @@ from . import academy_professional_family
 from . import academy_application_scope
 from . import academy_professional_category
 from . import academy_knowledge_area
-
-# from . import academy_competency_unit
+from . import academy_competency_unit
 from . import academy_professional_qualification
 
 # ---------------------------------------------------------------------------
