@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
-
+<odoo nopudate="0">
 
         <record id="facility_test_1" model="facility.facility">
             <field name="name">Facility test 01</field>
@@ -88,5 +86,4 @@
             <field name="owner_id" ref="base.user_admin" />
         </record>
 
-    </data>
-</openerp>
+</odoo>

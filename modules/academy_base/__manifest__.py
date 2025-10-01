@@ -1,10 +1,57 @@
 # -*- coding: utf-8 -*-
+###############################################################################
+#
+#    Odoo, Open Source Management Solution
+#
+#    Copyright (c) All rights reserved:
+#        (c) Jorge Soto Garcia, 2025
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU Affero General Public License as
+#    published by the Free Software Foundation, either version 3 of the
+#    License, or (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#    GNU Affero General Public License for more details.
+#
+#    You should have received a copy of the GNU Affero General Public License
+#    along with this program.  If not, see http://www.gnu.org/licenses
+#
+###############################################################################
 {
     "name": "Academy Base",
     "summary": """
         Common information and behavior used by the academy modules""",
     "description": """
-        Common information and behavior used by the academy modules
+The Academy Base module provides the foundation for managing training offers
+within the Spanish Vocational Training System. It implements common structures,
+data models and behaviors shared across academy modules.
+
+Key features:
+- Defines and manages the main reference catalogs aligned with the Spanish
+  National Catalogue of Professional Qualifications and Training Offers (LO 3/2022
+  and RD 659/2023):
+  • Application scopes
+  • Training methodologies and modalities
+  • Knowledge areas
+  • Professional families, fields, sectors and categories
+  • Competency units (ECP) and training modules
+  • Qualification levels and educational attainment
+  • Professional qualifications
+  • Training frameworks (Grades A, B, C, D, E)
+
+- Supports core training entities:
+  • Training programs and program lines
+  • Training actions and action lines
+  • Enrolments, students, teachers, technical and support staff
+
+- Provides demo data, initial sequences, groups, wizards and security rules.
+
+This module is required as a dependency for any specialized academy modules
+(e.g. quality surveys, planning, certifications), ensuring consistency in the use
+of reference catalogs and training structures across the platform.
     """,
     "author": "Jorge Soto Garcia",
     "website": "https://github.com/sotogarcia",

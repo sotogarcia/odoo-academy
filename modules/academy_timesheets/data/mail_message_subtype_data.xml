@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo nopudate="0">
 
         <record id="academy_timesheets_training_session_draft" model="mail.message.subtype">
             <field name="name">Schedule session temporarily removed</field>
@@ -19,5 +18,4 @@
             <field name="description">The schedule session has been changed</field>
         </record>
 
-    </data>
-</openerp>
+</odoo>

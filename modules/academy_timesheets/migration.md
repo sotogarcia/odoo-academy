@@ -17,7 +17,7 @@
 
 - [x] Definir *assets* en `__manifest__.py` (bundles QWeb/JS/CSS).
 - [ ] Migrar plantillas de email de Jinja a QWeb.
-- [x] Adoptar OWL y módulos ES; renombrar a `*.esm.js` cuando aplique.
+- [ ] Adoptar OWL y módulos ES; renombrar a `*.esm.js` cuando aplique.
 
 ## Odoo 15 â†’ 16
 
@@ -27,9 +27,9 @@
 ## Odoo 16 â†’ 17
 
 - [x] Reemplazar `attrs`/`states` por expresiones directas en atributos.
-  - [ ] v16: `attrs="{'invisible': [('state','=','done')]}"`.
+  - [ ] v16: `invisible="state == 'done'"`.
   - [ ] v17: `invisible="state == 'done'"`.
-- [x] Usar `column_invisible` en listas en lugar de `invisible`.
+- [ ] Usar `column_invisible` en listas en lugar de `invisible`.
 - [x] Considerar `search_fetch()` y `fetch()` en lugar de `search_read`.
 - [x] Cambiar firma y adaptar hooks de instalación
     - `def pre_init_hook(env):`
@@ -42,19 +42,19 @@
 - [x] Reemplazar `user_has_groups` por `self.env.user.has_group()`/`has_groups()`.
 - [x] Unificar acceso: usar `check_access()` en lugar de `check_access_*`.
 - [x] Reemplazar `_name_search` por `_search_display_name`.
-- [x] Importar `Registry` de `odoo.modules.registry`; usar `Registry(db_name)`.
+- [ ] Importar `Registry` de `odoo.modules.registry`; usar `Registry(db_name)`.
 - [x] Considerar `self.env._('...')` en lugar de `_('...')`.
-- [x] Limpiar vistas: autoaÃ±adir campos invisibles en dominios/atributos.
+- [ ] Limpiar vistas: autoaÃ±adir campos invisibles en dominios/atributos.
 - [x] Simplificar *chatter*: `<div class="oe_chatter">â€¦</div>` â†’ `<chatter />`.
 - [x] Reemplazar `_filter_access_rule*` por `_filter_access()`.
-- [x Reemplazar `_check_recursion()` por `_has_cycle()`.
+- [x] Reemplazar `_check_recursion()` por `_has_cycle()`.
 - [-] Revisar `copy`/`copy_data` en *multi-recordsets*
   (p. ej., `copy_data` devuelve lista).
-- [x] Reemplazar `group_operator` por `aggregator` en definiciones de campos.
-- [x] Vigilar bÃºsquedas en `related` no almacenados: lanzar excepción.
+- [x] Reemplazar `aggregator` por `aggregator` en definiciones de campos.
+- [ ] Vigilar bÃºsquedas en `related` no almacenados: lanzar excepción.
 - [x] Valorar `search_fetch()` si `search()` no se ejecuta siempre.
-- [x] Definir *field path* en `ir.actions.act_window` para URLs mÃ¡s limpias.
-- [x] Retirar `/** @odoo-module **/` en JS si no es necesario.
+- [ ] Definir *field path* en `ir.actions.act_window` para URLs mÃ¡s limpias.
+- [ ] Retirar `/** @odoo-module **/` en JS si no es necesario.
 - [x] En tours JS, sustituir `extra_trigger` por un paso independiente.
 
 ## Otros
@@ -76,17 +76,10 @@
 ## Expresiones regulares
 
 ```
-<field name="type">tree</field>
+<field name="type">list</field>
 --
 <field name="type">list</
 ```
-
-```
-<(/)?tree
---
-<\1list
-```
-
 
 ```
 attrs=["']\{["'](readonly|invisible|required)["']: *(\[[^\]]+\])\}["']
@@ -122,21 +115,21 @@ attrs=["']\{["'](readonly|invisible|required)["']: *(\[[^\]]+\])\}["']
 ```
 
 
-- [x] Error followers con training program al guardar
-- [x] AÃ±adir a estudiante bótón de matrículas.
-- [x] AÃ±adir a estudiante ficha de matrículas.
-- [x] AÃ±adir a estudiante idiomas.
-- [x] Autoetiquetar como estudiante sólo al crear.
+- [ ] Error followers con training program al guardar
+- [ ] AÃ±adir a estudiante bótón de matrículas.
+- [ ] AÃ±adir a estudiante ficha de matrículas.
+- [ ] AÃ±adir a estudiante idiomas.
+- [ ] Autoetiquetar como estudiante sólo al crear.
 - [ ] Corregir los Onchange de student
-- [x] Student: Name and surname
-- [x] Kanban de student
-- [x] Mostrar móvil o teléfono, el que tenga.
+- [ ] Student: Name and surname
+- [ ] Kanban de student
+- [ ] Mostrar móvil o teléfono, el que tenga.
 - [ ] Secuencia para las matrículas
-- [x] Botón ver actividades
+- [ ] Botón ver actividades
 
 - [ ] Errores y warnings del log
 - [ ] "depends": ["dms", "dms_field", "dms_attachment_link"]
-- [x] Poner internal notes en una ficha separada tanto para student compara training action
+- [ ] Poner internal notes en una ficha separada tanto para student compara training action
 - [ ] En el enrolment los datos del alumno en una ficha y los de la acción en otra, el apartado admisión arriba de todo
 - [ ] Cómo llevar cuenta de si se imprimió el material
 - [ ] ¿Qué ocurre si, por fuera de student, se elige company?

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo nopudate="0">
 
         <!-- VIEWS: "Clone wizard log"
 
@@ -18,16 +17,16 @@
         <record id="view_academy_timesheets_clone_wizard_log_tree" model="ir.ui.view">
             <field name="name">view.academy.timesheets.clone.wizard.log.tree</field>
             <field name="model">academy.timesheets.clone.wizard.log</field>
-            <field name="type">tree</field>
+            <field name="type">list</field>
             <field name="mode">primary</field>
             <field name="priority" eval="16" />
             <field name="active" eval="True" />
             <field name="arch" type="xml">
-                <tree string="academy_timesheets_clone_wizard_log_tree" create="1" delete="1" edit="1"
+                <list string="academy_timesheets_clone_wizard_log_tree" create="1" delete="1" edit="1"
                     decoration-muted="level &lt; 10" decoration-success="level == 10"
                     decoration-info="level == 20" decoration-warning="level == 30"
                     decoration-danger="level &gt;= 40">
-                    <field name="level" class="oe_field_level" invisible="1" />
+                    <field name="level" class="oe_field_level" column_invisible="1" />
                     <field name="kind" class="oe_field_kind" />
                     <field name="create_date" class="oe_field_create_date" />
                     <field name="from_date" class="oe_field_from_date" />
@@ -37,7 +36,7 @@
                     <field name="target_ref" class="oe_field_target_ref" />
                     <field name="session_id" class="oe_field_session_id" />
                     <field name="wizard_code" class="oe_field_wiazard_id" />
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -147,5 +146,4 @@
             <field name="groups_id" eval="[(4, ref('academy_base.academy_group_manager'))]"/>
         </record>
 
-    </data>
-</openerp>
+</odoo>

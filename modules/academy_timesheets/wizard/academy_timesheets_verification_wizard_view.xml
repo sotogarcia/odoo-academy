@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo nopudate="0">
 
         <record id="view_academy_timesheets_verification_wizard" model="ir.ui.view">
             <field name="name">Timesheet verification</field>
@@ -59,5 +58,4 @@
             <field name="groups_id" eval="[(4, ref('academy_base.academy_group_manager'))]"/>
         </record>
 
-    </data>
-</openerp>
+</odoo>

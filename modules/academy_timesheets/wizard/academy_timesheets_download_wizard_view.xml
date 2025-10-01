@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo nopudate="0">
 
         <record id="view_academy_timesheets_download_wizard" model="ir.ui.view">
             <field name="name">Academy timesheets download wizard</field>
@@ -30,7 +29,7 @@
                         <separator colspan="4" />
                         <field name="week" class="oe_field_week" />
                         <field name="week_date" class="oe_field_week_date"
-                            attrs="{'readonly': [('week', '&lt;&gt;', 'other')]}"/>
+                            readonly="week &lt;&gt; 'other'"/>
                         <field name="mime" class="oe_field_mime" />
                         <field name="download" class="oe_field_download" />
                         <separator colspan="4" />
@@ -82,5 +81,4 @@
             <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
         </record>
 
-    </data>
-</openerp>
+</odoo>

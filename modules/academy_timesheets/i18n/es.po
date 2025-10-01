@@ -287,8 +287,8 @@ msgid ""
 "<p style=\"margin: 0.5em 0;\">I'm reaching out to you to provide you with "
 "information regarding the training session directed towards the group "
 "<strong>${ object.training_action_id.action_name }</strong>, part of the "
-"<strong>${ object.training_activity_id.name }</strong> course, which will "
-"focus on the subject <strong>${ object.competency_unit_id.competency_name }"
+"<strong>${ object.training_program_id.name }</strong> course, which will "
+"focus on the subject <strong>${ object.program_line_id.competency_name }"
 "</strong>.</p>\n"
 "% endif\n"
 "\n"
@@ -475,8 +475,8 @@ msgstr ""
 "<p style=\"margin: 0.5em 0;\">Me pongo en contacto contigo para hacerte "
 "llegar la información relativa a la sesión formativa dirigida al grupo "
 "<strong>${ object.training_action_id.action_name }</strong>, enmarcada "
-"dentro del curso  <strong>${ object.training_activity_id.name }</strong> y "
-"que se centrará en el tema  <strong>${ object.competency_unit_id."
+"dentro del curso  <strong>${ object.training_program_id.name }</strong> y "
+"que se centrará en el tema  <strong>${ object.program_line_id."
 "competency_name }</strong>.</p>\n"
 "% endif\n"
 "\n"
@@ -1573,9 +1573,9 @@ msgid "Company"
 msgstr "Compañía"
 
 #. module: academy_timesheets
-#: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session__competency_unit_id
-#: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_affinity__competency_unit_id
-#: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_invitation__competency_unit_id
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session__program_line_id
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_affinity__program_line_id
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_invitation__program_line_id
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_tests_display_question_as_html
 msgid "Competency unit"
 msgstr "Unidad de competencia"
@@ -3041,9 +3041,9 @@ msgid "Record for which sessions were being copied"
 msgstr "Registrar para qué sesiones se estaban copiando"
 
 #. module: academy_timesheets
-#: model:ir.model.fields,help:academy_timesheets.field_academy_training_session__competency_unit_id
-#: model:ir.model.fields,help:academy_timesheets.field_academy_training_session_affinity__competency_unit_id
-#: model:ir.model.fields,help:academy_timesheets.field_academy_training_session_invitation__competency_unit_id
+#: model:ir.model.fields,help:academy_timesheets.field_academy_training_session__program_line_id
+#: model:ir.model.fields,help:academy_timesheets.field_academy_training_session_affinity__program_line_id
+#: model:ir.model.fields,help:academy_timesheets.field_academy_training_session_invitation__program_line_id
 msgid "Related competency unit"
 msgstr "Unidad de competencia relacionada"
 
@@ -3903,12 +3903,12 @@ msgid "Training actions"
 msgstr "Acciones formativas"
 
 #. module: academy_timesheets
-#: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session__training_activity_id
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session__training_program_id
 msgid "Training activity"
 msgstr "Actividad formativa"
 
 #. module: academy_timesheets
-#: model:ir.model.fields,help:academy_timesheets.field_academy_training_session__training_activity_id
+#: model:ir.model.fields,help:academy_timesheets.field_academy_training_session__training_program_id
 msgid "Training activity will be imparted in this action"
 msgstr "Actividad formativa que será impartida en la acción de formación"
 

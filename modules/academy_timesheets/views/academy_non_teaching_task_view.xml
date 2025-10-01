@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo nopudate="0">
 
         <record id="view_academy_non_teaching_task_xml_tree" model="ir.ui.view">
             <field name="name">Academy non teaching task tree view</field>
             <field name="model">academy.non.teaching.task</field>
-            <field name="type">tree</field>
+            <field name="type">list</field>
             <field name="mode">primary</field>
             <field name="priority" eval="16" />
             <field name="active" eval="True" />
             <field name="arch" type="xml">
-                <tree string="academy_non_teaching_task_tree" create="1" delete="1" edit="1" editable="bottom">
+                <list string="academy_non_teaching_task_tree" create="1" delete="1" edit="1" editable="bottom">
                     <field name="name" class="oe_field_name" />
                     <field name="company_id" class="oe_field_company_id" optional="hide" />
                     <field name="description" class="oe_field_description" optional="show" />
                     <field name="active" class="oe_field_active" widget="boolean_toggle" />
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -54,5 +53,4 @@
             <field name="search_view_id" ref="view_academy_non_teaching_task_xml_search" />
         </record>
 
-    </data>
-</openerp>
+</odoo>

@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo nopudate="0">
 
         <record id="view_academy_training_session_teacher_rel_tree" model="ir.ui.view">
             <field name="name">Teachers conducting the training session</field>
             <field name="model">academy.training.session.teacher.rel</field>
-            <field name="type">tree</field>
+            <field name="type">list</field>
             <field name="mode">primary</field>
             <field name="priority" eval="32" />
             <field name="active" eval="True" />
             <field name="arch" type="xml">
-                <tree string="view_academy_training_session_teacher_rel_tree" create="1" delete="1" edit="1" editable="bottom">
-                    <field name="date_start" invisible="1" />
-                    <field name="date_stop" invisible="1" />
-                    <field name="session_id" invisible="1" />
+                <list string="view_academy_training_session_teacher_rel_tree" create="1" delete="1" edit="1" editable="bottom">
+                    <field name="date_start" column_invisible="1" />
+                    <field name="date_stop" column_invisible="1" />
+                    <field name="session_id" column_invisible="1" />
                     <field name="sequence" class="oe_field_sequence oe_edit_only" widget="handle" />
                     <field name="teacher_id" class="oe_field_teacher_id" />
                     <field name="email" class="oe_field_email" readonly="1" widget="email" />
                     <field name="phone" class="oe_field_phone" readonly="1" widget="phone" />
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -48,7 +47,6 @@
             </field>
         </record>
 
-    </data>
-</openerp>
+</odoo>
 
 

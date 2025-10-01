@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo nopudate="0">
 
         <!-- REPORT: "Training action weekly timetable"
 
@@ -160,5 +159,4 @@
             <field name="binding_model_id" ref="academy_base.model_academy_training_action" />
         </record>
 
-    </data>
-</openerp>
+</odoo>

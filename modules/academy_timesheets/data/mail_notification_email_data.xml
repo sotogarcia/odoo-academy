@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo nopudate="0">
 
         <record id="academy_session_notification_email" model="ir.ui.view">
             <field name="name">academy_session_notification_email</field>
@@ -40,5 +39,4 @@
             </field>
         </record>
 
-    </data>
-</openerp>
+</odoo>

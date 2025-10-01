@@ -18,38 +18,37 @@ _logger = getLogger(__name__)
 
 
 class FacilityReservation(models.Model):
-    """
-    """
+    """ """
 
-    _name = 'facility.reservation'
-    _inherit = ['facility.reservation']
+    _name = "facility.reservation"
+    _inherit = ["facility.reservation"]
 
     session_id = fields.Many2one(
-        string='Session',
+        string="Session",
         required=False,
         readonly=False,
         index=True,
         default=None,
-        help='Session to which this facility reservation is related',
-        comodel_name='academy.training.session',
+        help="Session to which this facility reservation is related",
+        comodel_name="academy.training.session",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
     has_training_session = fields.Boolean(
-        string='Has training session',
+        string="Has training session",
         required=False,
         readonly=True,
         index=False,
         default=False,
-        help='Check it when the reservation has a related training session',
-        compute='_compute_has_training_session',
-        search='_search_has_training_session'
+        help="Check it when the reservation has a related training session",
+        compute="_compute_has_training_session",
+        search="_search_has_training_session",
     )
 
-    @api.depends('session_id')
+    @api.depends("session_id")
     def _compute_has_training_session(self):
         for record in self:
             record.has_training_session = bool(record.session_id)
@@ -62,46 +61,64 @@ class FacilityReservation(models.Model):
             operator = NEGATIVE_TERM_OPERATORS(operator)
             value = not value
 
-        return [('session_id', operator, value)]
+        return [("session_id", operator, value)]
 
     sequence = fields.Integer(
-        string='Sequence',
+        string="Sequence",
         required=True,
         readonly=False,
         index=True,
         default=0,
-        help='Order of importance of the teacher in the training session'
+        help="Order of importance of the teacher in the training session",
     )
 
     _sql_constraints = [
         (
-            'UNIQUE_FACILITY_BY_SESSION',
-            'UNIQUE(facility_id, session_id)',
-            _(u'The facility had already been assigned to the session')
+            "UNIQUE_FACILITY_BY_SESSION",
+            "UNIQUE(facility_id, session_id)",
+            "The facility had already been assigned to the session",
         ),
         (
-            'positive_interval',  # Overwrite original
-            'CHECK(session_id IS NOT NULL OR (date_start < date_stop))',
-            _('Reservation cannot finish before it starts')
+            "positive_interval",  # Overwrite original
+            "CHECK(session_id IS NOT NULL OR (date_start < date_stop))",
+            "Reservation cannot finish before it starts",
         ),
     ]
 
-    def _notify_record_by_email(self, message, recipients_data, msg_vals=False,
-                                model_description=False, mail_auto_delete=True,
-                                check_existing=False, force_send=True,
-                                send_after_commit=True, **kwargs):
-
+    def _notify_record_by_email(
+        self,
+        message,
+        recipients_data,
+        msg_vals=False,
+        model_description=False,
+        mail_auto_delete=True,
+        check_existing=False,
+        force_send=True,
+        send_after_commit=True,
+        **kwargs
+    ):
         # Try to prevent reservations linked to ``draft`` sessions from
         # notifying users by email
-        if self and len(self) == 1 \
-                and self.session_id and self.session_id.state == 'draft':
+        if (
+            self
+            and len(self) == 1
+            and self.session_id
+            and self.session_id.state == "draft"
+        ):
             return True
 
         parent = super(FacilityReservation, self)
         return parent._notify_record_by_email(
-            message, recipients_data, msg_vals, model_description,
-            mail_auto_delete, check_existing, force_send, send_after_commit,
-            **kwargs)
+            message,
+            recipients_data,
+            msg_vals,
+            model_description,
+            mail_auto_delete,
+            check_existing,
+            force_send,
+            send_after_commit,
+            **kwargs
+        )
 
     # def _write(self, values):
     #     """ Overridden method 'write' to catch trigger exceptions
@@ -142,12 +159,11 @@ class FacilityReservation(models.Model):
     #     return result
 
     def detach_from_training(self):
-        self.write({'session_id': None})
+        self.write({"session_id": None})
 
     @api.model
     def create(self, values):
-        """ Overridden method 'create'
-        """
+        """Overridden method 'create'"""
         self._keep_in_sync_training_action(values)
 
         parent = super(FacilityReservation, self)
@@ -156,8 +172,7 @@ class FacilityReservation(models.Model):
         return result
 
     def write(self, values):
-        """ Overridden method 'write'
-        """
+        """Overridden method 'write'"""
 
         self._keep_in_sync_training_action(values)
 
@@ -185,13 +200,13 @@ class FacilityReservation(models.Model):
                 False.
         """
 
-        if 'session_id' in values:
-            session_id = values.get('session_id', False)
+        if "session_id" in values:
+            session_id = values.get("session_id", False)
 
             if session_id:
-                model_obj = self.env['academy.training.session']
+                model_obj = self.env["academy.training.session"]
                 model_set = model_obj.browse(session_id)
-                values['training_action_id'] = model_set.training_action_id.id
+                values["training_action_id"] = model_set.training_action_id.id
 
             elif not keep_on_remove:
-                values['training_action_id'] = None
+                values["training_action_id"] = None

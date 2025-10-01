@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo nopudate="0">
 
         <record id="academy_training_session_1_reservation_a" model="facility.reservation">
             <field name="active" eval="True" />
@@ -162,6 +161,5 @@
             <field name="training_action_id" ref="academy_timesheets.academy_training_action_demo_test_1" />
         </record>
 
-    </data>
-</openerp>
+</odoo>
 

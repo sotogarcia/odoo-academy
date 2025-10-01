@@ -21,56 +21,38 @@
 #
 ###############################################################################
 {
-    'name': 'Bridge Academy-Human Resources',
-    'summary': 'Integration of teachers with HR Management',
-    'version': '13.0.1.0.0',
-
-    'description': """
+    "name": "Bridge Academy-Human Resources",
+    "summary": "Integration of teachers with HR Management",
+    "version": "13.0.1.0.0",
+    "description": """
 This Odoo module offers a robust solution for educational institutions and
 training centers using Odoo to manage their human resources and academic staff
 efficiently. By binding the academy.teacher model with the hr.employee model,
 this module ensures a seamless and automated synchronization of data between
 academic staff and HR management.
     """,
-
-    'author': 'Jorge Soto Garcia',
-    'maintainer': 'Jorge Soto Garcia',
-    'contributors': [' <sotogarcia@gmail.com>'],
-
-    'website': 'http://www.gitlab.com/sotogarcia',
-
-    'license': 'AGPL-3',
-    'category': 'Academy',
-
-    'depends': [
-        'base',
-        'academy_base',
-        'hr'
-    ],
-    'external_dependencies': {
-        'python': [
-        ],
+    "author": "Jorge Soto Garcia",
+    "maintainer": "Jorge Soto Garcia",
+    "contributors": [" <sotogarcia@gmail.com>"],
+    "website": "https://www.github.com/sotogarcia",
+    "license": "AGPL-3",
+    "category": "Academy",
+    "depends": ["base", "academy_base", "hr"],
+    "external_dependencies": {
+        "python": [],
     },
-    'data': [
-        'data/hr_department_data.xml',
-        'data/hr_job_data.xml',
-        'data/hr_employee_category_data.xml',
-
-        'views/academy_teacher_view.xml'
+    "data": [
+        "data/hr_department_data.xml",
+        "data/hr_job_data.xml",
+        "data/hr_employee_category_data.xml",
+        "views/academy_teacher_view.xml",
     ],
-    'demo': [
-    ],
-    'js': [
-    ],
-    'css': [
-    ],
-    'qweb': [
-    ],
-    'images': [
-    ],
-    'test': [
-    ],
-
-    'installable': True,
-    'auto_install': True
+    "demo": [],
+    "js": [],
+    "css": [],
+    "qweb": [],
+    "images": [],
+    "test": [],
+    "installable": True,
+    "auto_install": True,
 }

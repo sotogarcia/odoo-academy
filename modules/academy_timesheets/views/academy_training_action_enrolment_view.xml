@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo nopudate="0">
 
         <!-- Form view for "academy.training.action.enrolment" -->
         <record id="view_academy_training_action_enrolment_form" model="ir.ui.view">
@@ -28,5 +27,4 @@
             </field>
         </record>
 
-    </data>
-</openerp>
+</odoo>

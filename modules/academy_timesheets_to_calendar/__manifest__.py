@@ -21,52 +21,31 @@
 #
 ###############################################################################
 {
-    'name': 'Academy Timesheets to Calendar',
-    'summary': 'Allow to convert timesheet sessions to calendar events',
-    'description': 'Allow to convert timesheet sessions to calendar events',
-
-    'category': 'Academy',
-    'version': '13.0.1.0.0',
-    'license': 'AGPL-3',
-
-    'author': 'Jorge Soto Garcia',
-    'maintainer': 'Jorge Soto Garcia',
-    'contributors': ['Jorge Soto Garcia <sotogarcia@gmail.com>'],
-
-    'website': 'http://www.gitlab.com/sotogarcia',
-
-    'depends': [
-        'base',
-        'calendar',
-        'academy_timesheets'
-    ],
-    'external_dependencies': {
-        'python': [
-        ],
+    "name": "Academy Timesheets to Calendar",
+    "summary": "Allow to convert timesheet sessions to calendar events",
+    "description": "Allow to convert timesheet sessions to calendar events",
+    "category": "Academy",
+    "version": "13.0.1.0.0",
+    "license": "AGPL-3",
+    "author": "Jorge Soto Garcia",
+    "maintainer": "Jorge Soto Garcia",
+    "contributors": ["Jorge Soto Garcia <sotogarcia@gmail.com>"],
+    "website": "https://www.github.com/sotogarcia",
+    "depends": ["base", "calendar", "academy_timesheets"],
+    "external_dependencies": {
+        "python": [],
     },
-    'data': [
-        'data/calendar_event_type_data.xml',
-
-        'views/academy_timesheets_to_calendar.xml',
-        'views/academy_training_session_view.xml',
-        'views/calendar_event_view.xml'
+    "data": [
+        "data/calendar_event_type_data.xml",
+        "views/academy_timesheets_to_calendar.xml",
+        "views/academy_training_session_view.xml",
+        "views/calendar_event_view.xml",
     ],
-    'demo': [
-    ],
-    'js': [
-        'static/src/js/header_view_buttons.js'
-    ],
-
-    'css': [
-    ],
-
-    'qweb': [
-        'static/src/xml/header_view_buttons.xml'
-    ],
-    'images': [
-    ],
-    'test': [
-    ],
-
-    'installable': True
+    "demo": [],
+    "js": ["static/src/js/header_view_buttons.js"],
+    "css": [],
+    "qweb": ["static/src/xml/header_view_buttons.xml"],
+    "images": [],
+    "test": [],
+    "installable": True,
 }

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo nopudate="0">
 
         <record id="mail_template_group_schedule" model="mail.template">
             <field name="name">Group schedule</field>
@@ -389,7 +388,7 @@
 <p style="margin: 0.5em 0;">Hello,</p>
 
 % if object.kind == 'teach'
-<p style="margin: 0.5em 0;">I'm reaching out to you to provide you with information regarding the training session directed towards the group <strong>${ object.training_action_id.action_name }</strong>, part of the <strong>${ object.training_activity_id.name }</strong> course, which will focus on the subject <strong>${ object.competency_unit_id.competency_name }</strong>.</p>
+<p style="margin: 0.5em 0;">I'm reaching out to you to provide you with information regarding the training session directed towards the group <strong>${ object.training_action_id.action_name }</strong>, part of the <strong>${ object.training_program_id.name }</strong> course, which will focus on the subject <strong>${ object.program_line_id.competency_name }</strong>.</p>
 % endif
 
 % if object.kind == 'task'
@@ -504,5 +503,4 @@
         ]]></field>
         </record>
 
-    </data>
-</openerp>
+</odoo>

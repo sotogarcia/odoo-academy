@@ -7,14 +7,13 @@ from odoo.tools.translate import _
 
 
 class SessionChain:
-
     def __init__(self, environment, training_action):
         self._env = environment
         self._slots = []
         self._index = 0
 
         if isinstance(training_action, int):
-            training_action_obj = self.env['academy.training.action']
+            training_action_obj = self.env["academy.training.action"]
             training_action = training_action_obj.browse(training_action)
 
         self._training_action = training_action
@@ -24,17 +23,17 @@ class SessionChain:
     def _compute_time(self):
         self._cu_time = {}
         for unit in self.competencies:
-            self._cu_time[unit.id] = (unit.hours - unit.schedule)
+            self._cu_time[unit.id] = unit.hours - unit.schedule
 
     def _load_sessions(self):
         training_action_id = self._training_action.id
-        session_domain = [('training_action_id', '=', training_action_id)]
-        session_obj = self._env['academy.training.session']
+        session_domain = [("training_action_id", "=", training_action_id)]
+        session_obj = self._env["academy.training.session"]
         self._session_set = session_obj.search(session_domain)
 
     @property
     def competencies(self):
-        return self._training_action.competency_unit_ids
+        return self._training_action.program_line_ids
 
     @property
     def sessions(self):
@@ -60,9 +59,7 @@ class SessionChain:
 
 
 class SessionSlot:
-
     def __init__(self, environment, date_start, date_stop):
-
         self._env = environment
         self._index = 0
 
@@ -70,9 +67,9 @@ class SessionSlot:
         self._date_stop = date_stop
 
         if date_stop <= date_start:
-            msg = _('Slot cannot end ({}) before starting ({})')
-            date_start = self._date_start.strftime('%x %X')
-            date_stop = self._date_stop.strftime('%x %X')
+            msg = _("Slot cannot end ({}) before starting ({})")
+            date_start = self._date_start.strftime("%x %X")
+            date_stop = self._date_stop.strftime("%x %X")
             raise ValidationError(msg.format(date_start, date_stop))
 
         self._pieces = []
@@ -118,14 +115,12 @@ class SessionSlot:
         env = self._env
 
         for available in self.available:
-
             free_start, free_stop = available[0], available[1]
             start = free_start
             while start < free_stop:
-
                 unit_id, untaught = self._next_available(cu_time)
                 if not (unit_id and untaught):
-                    msg = _('There are not enough competency units')
+                    msg = _("There are not enough competency units")
                     raise UserError(msg)
 
                 delay = self._float_interval(start, free_stop)
@@ -139,7 +134,6 @@ class SessionSlot:
                 start = stop
 
     def move(self, date_start):
-
         try:
             offset = date_start - self._date_start
             self._date_start = date_start
@@ -149,13 +143,15 @@ class SessionSlot:
                 piece.move(offset)
 
         except Exception as ex:
-            msg = _('It is not possible to move the sessions between {} and '
-                    '{}, to place them starting from {}. System says: «{}»')
+            msg = _(
+                "It is not possible to move the sessions between {} and "
+                "{}, to place them starting from {}. System says: «{}»"
+            )
             msg.format(
-                self._date_start.strftime('%c'),
-                self._date_stop.strftime('%c'),
-                date_start.strftime('%c'),
-                ex
+                self._date_start.strftime("%c"),
+                self._date_stop.strftime("%c"),
+                date_start.strftime("%c"),
+                ex,
             )
             raise UserError(msg)
 
@@ -177,7 +173,6 @@ class SessionSlot:
             top = pair[1]
 
         else:
-
             if self._date_start < self._pieces[0].date_start:
                 pair = (self._date_start, self._pieces[0].date_start)
                 pairs.append(pair)
@@ -203,14 +198,14 @@ class SessionSlot:
 
     @staticmethod
     def _date_addition(dt, hours):
-        """  Sum the given time, in hours, to the given datetime value.
+        """Sum the given time, in hours, to the given datetime value.
 
         Args:
             dt (datetime): base date/time value or date value instead
             hours (float): time offset given in hours
         """
 
-        if type(dt) is date: # noqa: E721
+        if type(dt) is date:  # noqa: E721
             dt = datetime.combine(dt, time.min)
 
         return dt + timedelta(hours=hours)
@@ -226,27 +221,26 @@ class SessionSlot:
         return value / 3600.0
 
     def _next_available(self, cu_time):
-        competency_unit_id, untaught = None, None
+        program_line_id, untaught = None, None
 
         for k, v in cu_time.items():
             if v > 0:
-                competency_unit_id, untaught = k, v
+                program_line_id, untaught = k, v
                 break
 
-        return competency_unit_id, untaught
+        return program_line_id, untaught
 
     @staticmethod
     def _piece_repr(td, cuid=None):
         minutes, seconds = divmod(td.seconds + td.days * 86400, 60)
         hours, minutes = divmod(minutes, 60)
 
-        tp = '{hs:d}:{ms:02d}:{ss:02d}' if seconds else '{hs:d}:{ms:02d}'
+        tp = "{hs:d}:{ms:02d}:{ss:02d}" if seconds else "{hs:d}:{ms:02d}"
         tm = tp.format(hs=hours, ms=minutes, ss=seconds)
 
-        return '{} ({})'.format(tm, cuid or '#')
+        return "{} ({})".format(tm, cuid or "#")
 
     def __repr__(self):
-
         if self._pieces:
             items = []
             top = self._date_start
@@ -267,11 +261,11 @@ class SessionSlot:
                 item = self._piece_repr(td, None)
                 items.append(item)
 
-            items = ', '.join(items)
+            items = ", ".join(items)
         else:
-            items = _('Empty')
+            items = _("Empty")
 
-        return 'SessionSlot({}: {})'.format(self._date_start, items)
+        return "SessionSlot({}: {})".format(self._date_start, items)
 
     def __iter__(self):
         self._index = 0
@@ -286,23 +280,22 @@ class SessionSlot:
 
 
 class SessionPiece:
-
-    def __init__(self, env, date_start, date_stop, session=None,
-                 competency=None):
-
+    def __init__(
+        self, env, date_start, date_stop, session=None, competency=None
+    ):
         self._date_start = date_start
         self._date_stop = date_stop
 
         if date_stop <= date_start:
-            msg = _('Piece cannot end ({}) before starting ({})')
-            date_start = self._date_start.strftime('%x %X')
-            date_stop = self._date_stop.strftime('%x %X')
+            msg = _("Piece cannot end ({}) before starting ({})")
+            date_start = self._date_start.strftime("%x %X")
+            date_stop = self._date_stop.strftime("%x %X")
             raise ValidationError(msg.format(date_start, date_stop))
 
         self._env = env
 
         if isinstance(session, int):
-            session_obj = self._env['academy.training.session']
+            session_obj = self._env["academy.training.session"]
             if session > 0:
                 self._session = session_obj.browse(session)
             else:
@@ -311,10 +304,10 @@ class SessionPiece:
             self._session = session
 
         if not competency and self._session:
-            self._competency_unit = self._session.competency_unit_id
+            self._competency_unit = self._session.program_line_id
         else:
             if isinstance(competency, int):
-                competency_obj = self._env['academy.competency.unit']
+                competency_obj = self._env["academy.competency.unit"]
                 self._competency_unit = competency_obj.browse(competency)
             else:
                 self._competency_unit = competency
@@ -322,7 +315,7 @@ class SessionPiece:
         try:
             self._competency_unit.ensure_one()
         except Exception as ex:
-            msg = _('Piece must have a valid competency unit. ({})')
+            msg = _("Piece must have a valid competency unit. ({})")
             raise ValidationError(msg.format(ex))
 
     @property
@@ -350,32 +343,35 @@ class SessionPiece:
         self._date_stop = self._date_stop + offset
 
         if self._date_stop <= self._date_start:
-            msg = _('Piece cannot end ({}) before starting ({})')
-            date_start = self._date_start.strftime('%x %X')
-            date_stop = self._date_stop.strftime('%x %X')
+            msg = _("Piece cannot end ({}) before starting ({})")
+            date_start = self._date_start.strftime("%x %X")
+            date_stop = self._date_stop.strftime("%x %X")
             raise ValidationError(msg.format(date_start, date_stop))
 
     def save(self, values=None):
         values = values or {}
-        values.update({
-            'date_start': self._date_start,
-            'date_stop': self._date_stop,
-            'competency_unit_id': self._competency_unit.id
-        })
+        values.update(
+            {
+                "date_start": self._date_start,
+                "date_stop": self._date_stop,
+                "program_line_id": self._competency_unit.id,
+            }
+        )
 
         if self._session:
             if self._needs_update():
                 self._session.write(values)
         else:
-            session_obj = self._env['academy.training.session']
+            session_obj = self._env["academy.training.session"]
             self._session = session_obj.create(values)
 
     def _needs_update(self):
         result = False
 
         if bool(self._session):
-            cu_changed = \
-                self._session.competency_unit_id.id != self._competency_unit.id
+            cu_changed = (
+                self._session.program_line_id.id != self._competency_unit.id
+            )
             date_start_changed = self._session.date_start != self.date_start
             date_stop_changed = self._session.date_start != self.date_start
 
@@ -387,9 +383,9 @@ class SessionPiece:
         minutes, seconds = divmod(delay.seconds + delay.days * 86400, 60)
         hours, minutes = divmod(minutes, 60)
 
-        tp = '{hs:d}:{ms:02d}:{ss:02d}' if seconds else '{hs:d}:{ms:02d}'
+        tp = "{hs:d}:{ms:02d}:{ss:02d}" if seconds else "{hs:d}:{ms:02d}"
         tm = tp.format(hs=hours, ms=minutes, ss=seconds)
 
         cuid = self._competency_unit.id
 
-        return 'SessionPiece({}: {} ({}))'.format(self._date_start, tm, cuid)
+        return "SessionPiece({}: {} ({}))".format(self._date_start, tm, cuid)

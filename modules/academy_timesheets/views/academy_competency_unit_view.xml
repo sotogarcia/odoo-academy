@@ -1,22 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
-
-<!--         <record id="view_academy_competency_unit_tree" model="ir.ui.view">
-            <field name="name">view.academy.competency.unit.form</field>
-            <field name="model">academy.competency.unit</field>
-            <field name="type">form</field>
-            <field name="mode">extension</field>
-            <field name="priority" eval="16" />
-            <field name="active" eval="True" />
-            <field name="inherit_id" ref="academy_base.view_academy_competency_unit_tree" />
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='hours']" position="attributes">
-                    <attribute name="invisible">1</attribute>
-                </xpath>
-            </field>
-        </record> -->
+<odoo nopudate="0">
 
         <record id="view_academy_competency_unit_search" model="ir.ui.view">
             <field name="name">view.academy.competency.unit.form</field>
@@ -48,5 +32,4 @@
             </field>
         </record>
 
-    </data>
-</openerp>
+</odoo>

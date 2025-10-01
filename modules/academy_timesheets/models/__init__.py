@@ -9,7 +9,8 @@ from . import academy_non_teaching_task
 
 from . import academy_training_session_invitation
 from . import academy_training_session
-from . import academy_training_session_affinity
+
+# from . import academy_training_session_affinity
 
 from . import academy_competency_unit
 

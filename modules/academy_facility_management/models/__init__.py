@@ -5,7 +5,7 @@
 ###############################################################################
 
 from . import academy_training_action
-from . import academy_competency_unit
+from . import academy_training_action_line
 from . import academy_training_action_facility_link
 from . import facility_reservation
 from . import facility_reservation_scheduler

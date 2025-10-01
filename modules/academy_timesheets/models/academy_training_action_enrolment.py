@@ -17,77 +17,75 @@ _logger = getLogger(__name__)
 
 
 class AcademyTrainingActionEnrolment(models.Model):
-    """ Automatriculate students
-    """
+    """Automatriculate students"""
 
-    _inherit = ['academy.training.action.enrolment']
+    _inherit = ["academy.training.action.enrolment"]
 
     invitation_ids = fields.One2many(
-        string='Invitation',
+        string="Invitation",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='List of current invitations for the enrolment',
-        comodel_name='academy.training.session.invitation',
-        inverse_name='enrolment_id',
+        help="List of current invitations for the enrolment",
+        comodel_name="academy.training.session.invitation",
+        inverse_name="enrolment_id",
         domain=[],
         context={},
         auto_join=False,
-        limit=None
+        limit=None,
     )
 
     invitation_count = fields.Integer(
-        string='Invitation count',
+        string="Invitation count",
         required=False,
         readonly=True,
         index=False,
         default=0,
-        help='Number of students have been invited to the enrolment',
-        compute='_compute_invitation_count',
-        store=False
+        help="Number of students have been invited to the enrolment",
+        compute="_compute_invitation_count",
+        store=False,
     )
 
-    @api.depends('invitation_ids')
+    @api.depends("invitation_ids")
     def _compute_invitation_count(self):
         for record in self:
             record.invitation_count = len(record.invitation_ids)
 
     exclusion_ids = fields.One2many(
-        string='Exclusions',
+        string="Exclusions",
         required=False,
         readonly=True,
         index=True,
         default=None,
-        help='Pendent training session invitations',
-        comodel_name='academy.training.session.affinity',
-        inverse_name='enrolment_id',
+        help="Pendent training session invitations",
+        comodel_name="academy.training.session.affinity",
+        inverse_name="enrolment_id",
         domain=[("invited", "<>", True)],
         context={},
         auto_join=False,
-        limit=None
+        limit=None,
     )
 
     exclusion_count = fields.Integer(
-        string='Exclusion count',
+        string="Exclusion count",
         required=False,
         readonly=True,
         index=False,
         default=0,
-        help='Number of pendent invitations',
-        compute='_compute_exclusion_count',
-        store=False
+        help="Number of pendent invitations",
+        compute="_compute_exclusion_count",
+        store=False,
     )
 
-    @api.depends('exclusion_ids')
+    @api.depends("exclusion_ids")
     def _compute_exclusion_count(self):
         for record in self:
             record.exclusion_count = len(record.exclusion_ids)
 
     @api.model
     def create(self, values):
-        """ Overridden method 'create'
-        """
+        """Overridden method 'create'"""
 
         parent = super(AcademyTrainingActionEnrolment, self)
         result = parent.create(values)
@@ -98,12 +96,11 @@ class AcademyTrainingActionEnrolment(models.Model):
         return result
 
     def write(self, values):
-        """ Overridden method 'write'
-        """
+        """Overridden method 'write'"""
 
         major_changes = self._will_be_drastically_changed(values)
         if major_changes:
-            values['invitation_ids'] = [(5, None, None)]
+            values["invitation_ids"] = [(5, None, None)]
 
         parent = super(AcademyTrainingActionEnrolment, self)
         result = parent.write(values)
@@ -119,22 +116,22 @@ class AcademyTrainingActionEnrolment(models.Model):
     def view_invitation(self):
         self.ensure_one()
 
-        action_xid = 'academy_timesheets.action_invitation_act_window'
+        action_xid = "academy_timesheets.action_invitation_act_window"
         action = self.env.ref(action_xid)
 
-        ctx = {'default_enrolment_id': self.id}
-        domain = [('enrolment_id', '=', self.id)]
+        ctx = {"default_enrolment_id": self.id}
+        domain = [("enrolment_id", "=", self.id)]
 
         serialized = {
-            'type': 'ir.actions.act_window',
-            'res_model': 'academy.training.session.invitation',
-            'target': 'current',
-            'name': _('Invitations'),
-            'view_mode': action.view_mode,
-            'domain': domain,
-            'context': ctx,
-            'search_view_id': action.search_view_id.id,
-            'help': action.help
+            "type": "ir.actions.act_window",
+            "res_model": "academy.training.session.invitation",
+            "target": "current",
+            "name": _("Invitations"),
+            "view_mode": action.view_mode,
+            "domain": domain,
+            "context": ctx,
+            "search_view_id": action.search_view_id.id,
+            "help": action.help,
         }
 
         return serialized
@@ -142,32 +139,29 @@ class AcademyTrainingActionEnrolment(models.Model):
     def view_exclusion(self):
         self.ensure_one()
 
-        action_xid = 'academy_timesheets.action_affinity_act_window'
+        action_xid = "academy_timesheets.action_affinity_act_window"
         action = self.env.ref(action_xid)
 
-        ctx = {'default_enrolment_id': self.id}
-        domain = [
-            ('enrolment_id', '=', self.id),
-            ("invited", "<>", True)
-        ]
+        ctx = {"default_enrolment_id": self.id}
+        domain = [("enrolment_id", "=", self.id), ("invited", "<>", True)]
 
         serialized = {
-            'type': 'ir.actions.act_window',
-            'res_model': 'academy.training.session.affinity',
-            'target': 'current',
-            'name': _('Exclusions'),
-            'view_mode': action.view_mode,
-            'domain': domain,
-            'context': ctx,
-            'search_view_id': action.search_view_id.id,
-            'help': action.help
+            "type": "ir.actions.act_window",
+            "res_model": "academy.training.session.affinity",
+            "target": "current",
+            "name": _("Exclusions"),
+            "view_mode": action.view_mode,
+            "domain": domain,
+            "context": ctx,
+            "search_view_id": action.search_view_id.id,
+            "help": action.help,
         }
 
         return serialized
 
     @staticmethod
     def _will_be_drastically_changed(values):
-        """ If the student or the training action are changed, it means that
+        """If the student or the training action are changed, it means that
         the enrolment was wrong and that it is being replaced by a new one.
 
         Args:
@@ -177,34 +171,35 @@ class AcademyTrainingActionEnrolment(models.Model):
             bool: True if student or training action are in values
         """
 
-        return 'student_id' in values or 'training_action_id' in values
+        return "student_id" in values or "training_action_id" in values
 
     @staticmethod
     def _pick_up_dates(values):
-
-        register = values.get('register', False)
+        register = values.get("register", False)
         if register:
             register = fields.Datetime.from_string(register)
 
-        deregister = values.get('deregister', False)
+        deregister = values.get("deregister", False)
         if deregister:
             deregister = fields.Datetime.from_string(deregister)
 
         return register, deregister
 
     def _unlink_expired_invitations(self, values):
-        unlink_set = self.env['academy.training.session.invitation']
+        unlink_set = self.env["academy.training.session.invitation"]
 
-        invitation_set = self.mapped('invitation_ids')
+        invitation_set = self.mapped("invitation_ids")
         register, deregister = self._pick_up_dates(values)
 
         if register:
             unlink_set += invitation_set.filtered(
-                lambda x: x.date_stop <= register)
+                lambda x: x.date_stop <= register
+            )
 
         if deregister:
             unlink_set += invitation_set.filtered(
-                lambda x: x.date_start >= deregister)
+                lambda x: x.date_start >= deregister
+            )
 
         unlink_set.unlink()
 
@@ -225,11 +220,11 @@ class AcademyTrainingActionEnrolment(models.Model):
 
         #     session_set.invite_all()
         #
-        affinity_obj = self.env['academy.training.session.affinity']
+        affinity_obj = self.env["academy.training.session.affinity"]
         for record in self:
             domain = [
-                ('enrolment_id', '=', record.id),
-                ('invited', '!=', True)
+                ("enrolment_id", "=", record.id),
+                ("invited", "!=", True),
             ]
             affinity_set = affinity_obj.search(domain)
             affinity_set.toggle_invitation()

@@ -21,31 +21,18 @@
 #
 ###############################################################################
 {
-    'name': 'Academy Driving Licenses',
-    'summary': 'Connect students with driving licenses',
-    'version': '1.0',
-
-    'description': 'Connect students with driving licenses',
-
-    'author': 'Jorge Soto Garcia',
-    'maintainer': 'Jorge Soto Garcia',
-    'contributors': ['Jorge Soto Garcia <sotogarcia@gmail.com>'],
-
-    'website': 'http://www.gitlab.com/sotogarcia',
-
-    'license': 'AGPL-3',
-    'category': 'Academy',
-
-    'depends': [
-        'base',
-        'academy_base',
-        'driving_licence'
-    ],
-
-    'data': [
-        'views/academy_student_view.xml'
-    ],
-
-    'installable': True,
-    'auto_install': True
+    "name": "Academy Driving Licenses",
+    "summary": "Connect students with driving licenses",
+    "version": "1.0",
+    "description": "Connect students with driving licenses",
+    "author": "Jorge Soto Garcia",
+    "maintainer": "Jorge Soto Garcia",
+    "contributors": ["Jorge Soto Garcia <sotogarcia@gmail.com>"],
+    "website": "https://www.github.com/sotogarcia",
+    "license": "AGPL-3",
+    "category": "Academy",
+    "depends": ["base", "academy_base", "driving_licence"],
+    "data": ["views/academy_student_view.xml"],
+    "installable": True,
+    "auto_install": True,
 }

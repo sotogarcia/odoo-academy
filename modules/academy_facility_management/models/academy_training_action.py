@@ -18,98 +18,98 @@ _logger = getLogger(__name__)
 
 
 class AcademyTrainingAction(models.Model):
-    """
-    """
+    """ """
 
-    _name = 'academy.training.action'
+    _name = "academy.training.action"
 
-    _inherit = ['academy.training.action']
+    _inherit = ["academy.training.action"]
 
     facility_link_ids = fields.One2many(
-        string='Facility links',
+        string="Facility links",
         required=False,
         readonly=False,
         index=True,
         default=None,
-        help='Required educational facilities in relevance order',
-        comodel_name='academy.training.action.facility.link',
-        inverse_name='training_action_id',
-        domain=[('competency_unit_id', '=', False)],
+        help="Required educational facilities in relevance order",
+        comodel_name="academy.training.action.facility.link",
+        inverse_name="training_action_id",
+        domain=[("action_line_id", "=", False)],
         context={},
         auto_join=False,
-        limit=None
+        limit=None,
     )
 
     facility_ids = fields.Many2manyView(
-        string='Facilities',
+        string="Facilities",
         required=False,
         readonly=True,
         index=True,
         default=None,
-        help='Required educational facilities',
-        comodel_name='facility.facility',
-        relation='academy_training_action_facility_link',
-        column1='training_action_id',
-        column2='facility_id',
+        help="Required educational facilities",
+        comodel_name="facility.facility",
+        relation="academy_training_action_facility_link",
+        column1="training_action_id",
+        column2="facility_id",
         domain=[],
         context={},
-        limit=None
+        limit=None,
     )
 
     primary_facility_id = fields.Many2one(
-        string='Primary facility',
+        string="Primary facility",
         required=False,
         readonly=True,
         index=False,
         default=None,
-        help='Main educational facility',
-        comodel_name='facility.facility',
+        help="Main educational facility",
+        comodel_name="facility.facility",
         domain=[],
         context={},
-        ondelete='restrict',
+        ondelete="restrict",
         auto_join=False,
-        compute='_compute_fields_dependent_on_facility_link_ids',
-        search='_search_primary_facility_id',
-        compute_sudo=True  # See this module comments and the top of the file
+        compute="_compute_fields_dependent_on_facility_link_ids",
+        search="_search_primary_facility_id",
+        compute_sudo=True,  # See this module comments and the top of the file
     )
 
     @api.model
     def _search_primary_facility_id(self, operator, value):
-        if value is True and operator == '=':
-            result = self._search_primary([0], 'facility_id', denial=True)
-        elif value is True and operator in ('!=', '<>'):
-            result = self._search_primary([0], 'facility_id', denial=False)
-        elif value is False and operator == '=':
-            result = self._search_primary([0], 'facility_id', denial=False)
-        elif value is False and operator in ('!=', '<>'):
-            result = self._search_primary([0], 'facility_id', denial=True)
+        if value is True and operator == "=":
+            result = self._search_primary([0], "facility_id", denial=True)
+        elif value is True and operator in ("!=", "<>"):
+            result = self._search_primary([0], "facility_id", denial=False)
+        elif value is False and operator == "=":
+            result = self._search_primary([0], "facility_id", denial=False)
+        elif value is False and operator in ("!=", "<>"):
+            result = self._search_primary([0], "facility_id", denial=True)
         else:
-            complex_obj = self.env['facility.complex']
+            complex_obj = self.env["facility.complex"]
             complex_set = complex_obj.name_search(
-                name=value, operator=operator, limit=None)
-            result = self._search_primary(complex_set, 'facility_id')
+                name=value, operator=operator, limit=None
+            )
+            result = self._search_primary(complex_set, "facility_id")
 
         return result
 
     primary_complex_id = fields.Many2one(
-        string='Primary complex',
+        string="Primary complex",
         required=False,
         readonly=True,
         index=False,
         default=None,
-        help='Main educational complex',
-        comodel_name='facility.complex',
+        help="Main educational complex",
+        comodel_name="facility.complex",
         domain=[],
         context={},
-        ondelete='restrict',
+        ondelete="restrict",
         auto_join=False,
-        compute='_compute_fields_dependent_on_facility_link_ids',
-        search='_search_primary_complex_id',
+        compute="_compute_fields_dependent_on_facility_link_ids",
+        search="_search_primary_complex_id",
         store=True,
-        compute_sudo=True  # See this module comments and the top of the file
+        compute_sudo=True,  # See this module comments and the top of the file
     )
 
-    @api.depends('facility_link_ids')
+    @api.depends("facility_link_ids")
     def _compute_fields_dependent_on_facility_link_ids(self):
         for record in self:
             link_set = record.facility_link_ids.sorted(lambda r: r.sequence)
@@ -124,24 +124,25 @@ class AcademyTrainingAction(models.Model):
 
     @api.model
     def _search_primary_complex_id(self, operator, value):
-        if value is True and operator == '=':
-            result = self._search_primary([0], 'complex_id', denial=True)
-        elif value is True and operator in ('!=', '<>'):
-            result = self._search_primary([0], 'complex_id', denial=False)
-        elif value is False and operator == '=':
-            result = self._search_primary([0], 'complex_id', denial=False)
-        elif value is False and operator in ('!=', '<>'):
-            result = self._search_primary([0], 'complex_id', denial=True)
+        if value is True and operator == "=":
+            result = self._search_primary([0], "complex_id", denial=True)
+        elif value is True and operator in ("!=", "<>"):
+            result = self._search_primary([0], "complex_id", denial=False)
+        elif value is False and operator == "=":
+            result = self._search_primary([0], "complex_id", denial=False)
+        elif value is False and operator in ("!=", "<>"):
+            result = self._search_primary([0], "complex_id", denial=True)
         else:
-            complex_obj = self.env['facility.complex']
+            complex_obj = self.env["facility.complex"]
             complex_set = complex_obj.name_search(
-                name=value, operator=operator, limit=None)
-            result = self._search_primary(complex_set, 'complex_id')
+                name=value, operator=operator, limit=None
+            )
+            result = self._search_primary(complex_set, "complex_id")
 
         return result
 
     def _search_primary(self, target_set, target_field, denial=False):
-        """ Search for training actions where primary complex ID or primary
+        """Search for training actions where primary complex ID or primary
         facility ID matches with any of the given set of IDs.
 
         To find training actions with no complex or with no facility you can
@@ -162,7 +163,7 @@ class AcademyTrainingAction(models.Model):
             expected values.
         """
 
-        sql = '''
+        sql = """
             SELECT DISTINCT ON
                 ( ata."id" ) ata."id" AS training_action_id,
                 COALESCE ( ff."id", 0 ) :: INTEGER AS facility_id,
@@ -178,40 +179,42 @@ class AcademyTrainingAction(models.Model):
                 ata."id",
                 link."sequence" ASC NULLS LAST,
                 facility_id DESC NULLS LAST;
-        '''
+        """
 
         domain = FALSE_DOMAIN
-        op = 'NOT IN' if denial else 'IN'
+        op = "NOT IN" if denial else "IN"
 
         if target_set:
             target_ids = [item[0] for item in target_set]
-            target_ids = ', '.join([str(item) for item in target_ids])
+            target_ids = ", ".join([str(item) for item in target_ids])
             sql = sql.format(target=target_field, op=op, ids=target_ids)
 
             self.env.cr.execute(sql)
             rows = self.env.cr.dictfetchall()
             if rows:
-                ids = [row['training_action_id'] for row in (rows or [])]
-                domain = [('id', 'in', ids)]
+                ids = [row["training_action_id"] for row in (rows or [])]
+                domain = [("id", "in", ids)]
 
         return domain
 
     facility_count = fields.Integer(
-        string='Facility count',
+        string="Facility count",
         required=True,
         readonly=True,
         index=False,
         default=0,
-        help=('Number of educational facilities will be required to teach the '
-              'training action'),
-        compute='_compute_fields_dependent_on_facility_link_ids',
-        search='_search_facility_count',
-        compute_sudo=True  # See this module comments and the top of the file
+        help=(
+            "Number of educational facilities will be required to teach the "
+            "training action"
+        ),
+        compute="_compute_fields_dependent_on_facility_link_ids",
+        search="_search_facility_count",
+        compute_sudo=True,  # See this module comments and the top of the file
     )
 
     @api.model
     def _search_facility_count(self, operator, value):
-        sql = '''
+        sql = """
             SELECT
                 ata."id"
             FROM
@@ -220,13 +223,13 @@ class AcademyTrainingAction(models.Model):
                 ON link.training_action_id = ata."id"
             GROUP BY ata."id"
             HAVING COUNT(link.training_action_id) {operator} {value}
-        '''
+        """
 
         if value is True:
-            domain = TRUE_DOMAIN if operator == '=' else FALSE_DOMAIN
+            domain = TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
 
         elif value is False:
-            domain = TRUE_DOMAIN if operator == '!=' else FALSE_DOMAIN
+            domain = TRUE_DOMAIN if operator == "!=" else FALSE_DOMAIN
 
         else:
             domain = FALSE_DOMAIN
@@ -235,7 +238,7 @@ class AcademyTrainingAction(models.Model):
             self.env.cr.execute(sql)
             rows = self.env.cr.dictfetchall()
             if rows:
-                action_ids = [row['id'] for row in (rows or [])]
-                domain = [('id', 'in', action_ids)]
+                action_ids = [row["id"] for row in (rows or [])]
+                domain = [("id", "in", action_ids)]
 
         return domain

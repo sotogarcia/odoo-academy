@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo nopudate="0">
 
         <!-- VIEWS: "Invitation"
 
@@ -18,16 +17,16 @@
         <record id="view_academy_training_session_affinity_tree" model="ir.ui.view">
             <field name="name">view.academy.training.session.affinity.tree</field>
             <field name="model">academy.training.session.affinity</field>
-            <field name="type">tree</field>
+            <field name="type">list</field>
             <field name="mode">primary</field>
             <field name="priority" eval="16" />
             <field name="active" eval="True" />
             <field name="arch" type="xml">
-                <tree string="academy_training_session_affinity_tree"  create="0" delete="0" edit="1">
+                <list string="academy_training_session_affinity_tree"  create="0" delete="0" edit="1">
                     <field name="student_id" class="oe_field_student_id"
-                        invisible="context.get('default_student_id', False)" />
+                        column_invisible="context.get('default_student_id', False)" />
                     <field name="training_action_id" class="oe_field_training_action_id" />
-                    <field name="competency_unit_id" class="oe_field_competency_unit_id" />
+                    <field name="program_line_id" class="oe_field_program_line_id" />
                     <field name="date_start" class="oe_field_date_start" />
                     <field name="date_stop" class="oe_field_date_stop" />
                     <button name="toggle_invitation"
@@ -35,7 +34,7 @@
                             type="object"
                             icon="fa-thumbs-o-up"
                             help="Click it to invite this student" />
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -66,8 +65,8 @@
                         <group col="4" class="oe_read_only" string="Session" >
                             <field name="training_action_id" colspan="4"
                                     class="oe_field_training_action_id" />
-                            <field name="competency_unit_id" colspan="4"  string="Unit"
-                                    class="oe_field_competency_unit_id" />
+                            <field name="program_line_id" colspan="4"  string="Unit"
+                                    class="oe_field_program_line_id" />
                             <separator colspan="4" />
                             <field name="primary_teacher_id" class="oe_field_primary_teacher_id" />
                             <field name="primary_facility_id" class="oe_field_primary_facility_id" />
@@ -104,7 +103,7 @@
                 <calendar mode="week" date_start="date_start" date_stop="date_stop" date_delay="date_delay"
                     quick_add="false">
                     <field name="training_action_id" class="oe_field_training_action_id" />
-                    <field name="competency_unit_id" class="oe_field_competency_unit_id" />
+                    <field name="program_line_id" class="oe_field_program_line_id" />
                     <field name="primary_teacher_id" class="oe_field_primary_teacher_id" />
                 </calendar>
             </field>
@@ -153,5 +152,4 @@
             <field name="parent_id" ref="academy_timesheets.menu_academy_timesheets_settings" />
         </record> -->
 
-    </data>
-</openerp>
+</odoo>

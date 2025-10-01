@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo nopudate="0">
 
         <record id="view_academy_timesheets_send_by_mail_wizard" model="ir.ui.view">
             <field name="name">Send schedule</field>
@@ -95,5 +94,4 @@
             <field name="groups_id" eval="[(4, ref('base.group_user'))]"/>
         </record> -->
 
-    </data>
-</openerp>
+</odoo>

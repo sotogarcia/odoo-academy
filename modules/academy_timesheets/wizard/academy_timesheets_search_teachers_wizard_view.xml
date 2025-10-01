@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo nopudate="0">
 
         <record id="view_academy_timesheets_search_teachers_wizard_form" model="ir.ui.view">
             <field name="name">Search available teachers</field>
@@ -29,11 +28,11 @@
                         <field name="full_day" class="oe_field_full_day" />
 
                         <field name="time_start" class="oe_field_time_start" widget="float_time"
-                            attrs="{'invisible': [('full_day', '=', True)]}" />
+                            invisible="full_day == True" />
                         <field name="time_stop" class="oe_field_time_stop" widget="float_time"
-                            attrs="{'invisible': [('full_day', '=', True)]}" />
+                            invisible="full_day == True" />
                         <field name="date_delay" class="oe_field_date_delay" widget="float_time"
-                            attrs="{'invisible': [('full_day', '=', True)]}" />
+                            invisible="full_day == True" />
                     </group>
 
                     <footer />
@@ -60,5 +59,4 @@
             <field name="groups_id" eval="[(4, ref('facility_management.facility_group_applicant'))]"/>
         </record> -->
 
-    </data>
-</openerp>
+</odoo>

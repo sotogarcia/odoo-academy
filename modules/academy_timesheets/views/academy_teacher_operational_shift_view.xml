@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo nopudate="0">
 
         <!-- VIEWS: "Teacher operational shift"
 
@@ -18,18 +17,18 @@
         <record id="view_academy_teacher_operational_shift_tree" model="ir.ui.view">
             <field name="name">view.academy.teacher.operational.shift.tree</field>
             <field name="model">academy.teacher.operational.shift</field>
-            <field name="type">tree</field>
+            <field name="type">list</field>
             <field name="mode">primary</field>
             <field name="priority" eval="16" />
             <field name="active" eval="True" />
             <field name="arch" type="xml">
-                <tree string="academy_teacher_operational_shift_tree" create="1" delete="1" edit="1">
+                <list string="academy_teacher_operational_shift_tree" create="1" delete="1" edit="1">
                     <field name="teacher_id" class="oe_field_teacher_id" />
                     <field name="company_id" class="oe_field_company_id" optional="show" />
                     <field name="date_start" class="oe_field_date_start" />
                     <field name="date_stop" class="oe_field_date_stop" />
                     <field name="session_count" class="oe_field_session_count" optional="show" />
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -144,5 +143,4 @@
             <field name="parent_id" ref="academy_base.menu_academy_advanced" />
         </record> -->
 
-    </data>
-</openerp>
+</odoo>

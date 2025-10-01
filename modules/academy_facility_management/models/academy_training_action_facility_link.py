@@ -14,77 +14,75 @@ _logger = getLogger(__name__)
 
 
 class AcademyTrainingActionFacilityLink(models.Model):
-    """
-    """
+    """ """
 
-    _name = 'academy.training.action.facility.link'
-    _description = u'Academy training action facility link'
+    _name = "academy.training.action.facility.link"
+    _description = "Academy training action facility link"
 
-    _inherits = {'facility.facility': 'facility_id'}
+    _inherits = {"facility.facility": "facility_id"}
 
     training_action_id = fields.Many2one(
-        string='Training action',
+        string="Training action",
         required=True,
         readonly=False,
         index=True,
         default=None,
-        help='Related training action',
-        comodel_name='academy.training.action',
+        help="Related training action",
+        comodel_name="academy.training.action",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
-    competency_unit_id = fields.Many2one(
-        string='Competency unit',
+    action_line_id = fields.Many2one(
+        string="Program unit",
         required=False,
         readonly=False,
         index=True,
         default=None,
-        help='Related training action',
-        comodel_name='academy.competency.unit',
+        help="Related training action",
+        comodel_name="academy.training.action.line",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
     facility_id = fields.Many2one(
-        string='Facility',
+        string="Facility",
         required=True,
         readonly=False,
         index=True,
         default=None,
-        help='Related educational facility',
-        comodel_name='facility.facility',
+        help="Related educational facility",
+        comodel_name="facility.facility",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
     sequence = fields.Integer(
-        string='Sequence',
+        string="Sequence",
         required=True,
         readonly=False,
         index=True,
         default=0,
-        help='Educational facility priority order'
+        help="Educational facility priority order",
     )
 
     _sql_constraints = [
         (
-            'unique_training_action_facility',
-            'UNIQUE(training_action_id, facility_id)',
-            _(u'Facility already has been set to this training action')
+            "unique_training_action_facility",
+            "UNIQUE(training_action_id, facility_id)",
+            "Facility already has been set to this training action",
         )
     ]
 
     @staticmethod
     def _real_id(record_set, single=False):
-        """ Return a list with no NewId's of a single no NewId
-        """
+        """Return a list with no NewId's of a single no NewId"""
 
         result = []
 

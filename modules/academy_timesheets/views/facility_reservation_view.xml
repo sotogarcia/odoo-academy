@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo nopudate="0">
 
         <!-- VIEWS: "Sessions"
 
@@ -18,7 +17,7 @@
         <record id="view_facility_reservation_tree" model="ir.ui.view">
             <field name="name">view.facility.reservation.tree</field>
             <field name="model">facility.reservation</field>
-            <field name="type">tree</field>
+            <field name="type">list</field>
             <field name="mode">extension</field>
             <field name="priority" eval="24" />
             <field name="active" eval="True" />
@@ -35,7 +34,7 @@
         <record id="view_facility_reservation_embed_in_session_tree" model="ir.ui.view">
             <field name="name">view.facility.reservation.tree</field>
             <field name="model">facility.reservation</field>
-            <field name="type">tree</field>
+            <field name="type">list</field>
             <field name="mode">primary</field>
             <field name="priority" eval="32" />
             <field name="inherit_id" ref="facility_management.view_facility_reservation_tree" />
@@ -142,7 +141,7 @@
                             class="btn btn-danger"
                             confirm="Do you confirm that you wish to unlink the reservation from the training session?"
                             help="Unlink the reservation from the training session"
-                            attrs="{'invisible': [('session_id', '=', False)]}" />
+                            invisible="session_id == False" />
                 </xpath>
                 <xpath expr="//button[@name='unbind']" position="attributes">
                     <attribute name="string">No scheduler</attribute>
@@ -181,6 +180,4 @@
             </field>
         </record>
 
-
-    </data>
-</openerp>
+</odoo>

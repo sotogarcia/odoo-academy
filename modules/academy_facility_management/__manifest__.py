@@ -4,7 +4,7 @@
 #    Odoo, Open Source Management Solution
 #
 #    Copyright (c) All rights reserved:
-#        (c) 2015
+#        (c) Jorge Soto Garcia, 2025
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -21,48 +21,51 @@
 #
 ###############################################################################
 {
-    'name': 'Academy facility management',
-    'summary': 'Academy facility management Module Project',
-    'version': '1.0',
+    "name": "Academy facility management",
+    "summary": "Academy facility management Module Project",
+    "version": "18.0.1.0.0",
+    "description": """
+Bridge module connecting the academic framework with the facility management
+system, enabling reservations and usage tracking of rooms, labs and equipment
+from within training actions.
 
-    'description': """
-Academy facility management Module Project.
-==============================================
+Key features:
+- Facility linking: associate training actions and enrolments with specific rooms,
+  labs, equipment and other resources.
+- Reservation integration: synchronize academic schedules with facility
+  reservations to avoid conflicts and double-bookings.
+- Scheduler support: view and manage reservations through timeline and
+  calendar interfaces.
+- Batch operations: reserve or release facilities for multiple actions via wizard.
+- Data consistency: ensures that academic activities (programs, actions,
+  enrolments) are aligned with facility availability and capacity.
+- Security rules: access control for facility usage within the academy context.
 
-
+This module does not add standalone features but acts as a connector, ensuring
+that the academic workflows in `academy_base` are fully integrated with the
+facility catalog and reservation engine provided by `facility_management`.
     """,
-
-    'author': 'Jorge Soto Garcia',
-    'maintainer': 'Jorge Soto Garcia',
-    'contributors': ['Jorge Soto Garcia <sotogarcia@gmail.com>'],
-
-    'website': 'http://www.gitlab.com/sotogarcia',
-
-    'license': 'AGPL-3',
-    'category': 'Academy',
-
-    'depends': [
-        'base',
-        'academy_base',
-        'facility_management',
-        'base_field_m2m_view'
+    "author": "Jorge Soto Garcia",
+    "maintainer": "Jorge Soto Garcia",
+    "contributors": ["Jorge Soto Garcia <sotogarcia@gmail.com>"],
+    "website": "https://www.github.com/sotogarcia",
+    "license": "AGPL-3",
+    "category": "Academy",
+    "depends": [
+        "base",
+        "academy_base",
+        "facility_management",
+        "base_field_m2m_view",
     ],
-
-    'data': [
-        'security/academy_training_action_facility_link.xml',
-        'security/facility_reservation.xml',
-
-        'views/academy_training_action_facility_link_view.xml',
-        'views/academy_competency_unit_view.xml',
-        'views/academy_training_action_view.xml',
-        'views/academy_training_action_enrolment_view.xml',
-
-        'views/facility_reservation_scheduler_view.xml',
-        'views/facility_reservation_view.xml',
-
-        'wizard/facility_reservation_massive_actions_wizard_view.xml'
+    "data": [
+        "security/academy_training_action_facility_link.xml",
+        "security/facility_reservation.xml",
+        "views/academy_training_action_facility_link_view.xml",
+        "views/academy_training_action_view.xml",
+        "views/academy_training_action_enrolment_view.xml",
+        "views/facility_reservation_scheduler_view.xml",
+        "views/facility_reservation_view.xml",
     ],
-
-    'installable': True,
-    'auto_install': True
+    "installable": True,
+    "auto_install": True,
 }

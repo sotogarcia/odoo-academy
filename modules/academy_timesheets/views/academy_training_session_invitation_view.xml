@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo nopudate="0">
 
         <!-- VIEWS: "Invitation"
 
@@ -18,19 +17,19 @@
         <record id="view_academy_training_session_invitation_tree" model="ir.ui.view">
             <field name="name">view.academy.training.session.invitation.tree</field>
             <field name="model">academy.training.session.invitation</field>
-            <field name="type">tree</field>
+            <field name="type">list</field>
             <field name="mode">primary</field>
             <field name="priority" eval="16" />
             <field name="active" eval="True" />
             <field name="arch" type="xml">
-                <tree string="academy_training_session_invitation_tree" create="1" delete="1" edit="1">
+                <list string="academy_training_session_invitation_tree" create="1" delete="1" edit="1">
                     <field name="enrolment_id" class="oe_field_enrolment_id" />
                     <field name="training_action_id" class="oe_field_training_action_id" />
-                    <field name="competency_unit_id" class="oe_field_competency_unit_id" />
+                    <field name="program_line_id" class="oe_field_program_line_id" />
                     <field name="date_start" class="oe_field_date_start" />
                     <field name="date_stop" class="oe_field_date_stop" />
                     <field name="present" class="oe_field_present" />
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -47,7 +46,7 @@
                     <sheet>
                         <div class="oe_button_box" name="button_box" />
 
-                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger" invisible="active == True"/>
 
                         <div class="oe_title">
                             <field name="id" class="oe_field_id" invisible="1" />
@@ -71,8 +70,8 @@
                         <group col="4" class="oe_read_only" string="Session" >
                             <field name="training_action_id" colspan="4"
                                     class="oe_field_training_action_id" />
-                            <field name="competency_unit_id" colspan="4"  string="Unit"
-                                    class="oe_field_competency_unit_id" />
+                            <field name="program_line_id" colspan="4"  string="Unit"
+                                    class="oe_field_program_line_id" />
                             <separator colspan="4" />
                             <field name="primary_teacher_id" class="oe_field_primary_teacher_id" />
                             <field name="primary_facility_id" class="oe_field_primary_facility_id" />
@@ -110,7 +109,7 @@
                 <calendar mode="week" date_start="date_start" date_stop="date_stop" date_delay="date_delay"
                     quick_add="false">
                     <field name="training_action_id" class="oe_field_training_action_id" />
-                    <field name="competency_unit_id" class="oe_field_competency_unit_id" />
+                    <field name="program_line_id" class="oe_field_program_line_id" />
                     <field name="primary_teacher_id" class="oe_field_primary_teacher_id" />
                 </calendar>
             </field>
@@ -130,7 +129,7 @@
                     <field name="student_id" class="oe_field_student_id" />
 
                     <field name="training_action_id" />
-                    <field name="competency_unit_id" />
+                    <field name="program_line_id" />
                     <field name="enrolment_id" />
 
                     <separator />
@@ -203,5 +202,4 @@
             <field name="parent_id" ref="academy_timesheets.menu_academy_timesheets_settings" />
         </record>
 
-    </data>
-</openerp>
+</odoo>

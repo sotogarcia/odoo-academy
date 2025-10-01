@@ -33,7 +33,7 @@
             <field name="active" eval="True" />
             <field name="inherit_id" ref="academy_base.view_academy_training_action_search" />
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='student_ids']" position="after">
+                <xpath expr="//field[last()]" position="after">
                     <field name="primary_complex_id" />
                 </xpath>
                 <xpath expr="//group[@name='group_by']/*[last()]" position="after">
