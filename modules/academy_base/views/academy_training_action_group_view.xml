@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo noupdate="0">
+
+  <!-- VIEWS: "Training group"
+
+      - Model·········: academy.training.action.group
+      - _rec_name·····: name
+      - Domain········: []
+      - Context·······: {}
+      - Parent menu ··: academy_base.menu_academy_monitoring
+      - View priority·: 16    Sequence····: 10
+      - Action help···: There are not training groups in catalog
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+  <!-- Tree view for "academy.training.action.group" -->
+  <record id="view_academy_training_action_group_tree" model="ir.ui.view">
+      <field name="name">view.academy.training.action.group.tree</field>
+      <field name="model">academy.training.action.group</field>
+      <field name="type">list</field>
+      <field name="mode">primary</field>
+      <field name="priority" eval="16" />
+      <field name="active" eval="True" />
+      <field name="arch" type="xml">
+          <list string="academy_training_action_group_tree" create="1" delete="1" edit="1">
+              <field name="name" />
+              <!-- ··· -->
+          </list>
+      </field>
+  </record>
+
+  <!-- Form view for "academy.training.action.group" -->
+  <record id="view_academy_training_action_group_form" model="ir.ui.view">
+      <field name="name">view.academy.training.action.group.form</field>
+      <field name="model">academy.training.action.group</field>
+      <field name="type">form</field>
+      <field name="mode">primary</field>
+      <field name="priority" eval="16" />
+      <field name="active" eval="True" />
+      <field name="arch" type="xml">
+          <form string="academy_training_action_group_form" create="1" delete="1" edit="1">
+              <sheet>
+                  <div class="oe_title">
+                      <label for="name" class="oe_edit_only" />
+                      <h1>
+                          <field name="name" class="oe_field_name"
+                              placeholder="Name" />
+                      </h1>
+                  </div>
+                  <!-- ··· -->
+              </sheet>
+          </form>
+      </field>
+  </record>
+
+  <!-- Search view for "academy.training.action.group" -->
+  <record id="view_academy_training_action_group_search" model="ir.ui.view">
+      <field name="name">view.academy.training.action.group.search</field>
+      <field name="model">academy.training.action.group</field>
+      <field name="type">search</field>
+      <field name="mode">primary</field>
+      <field name="priority" eval="16" />
+      <field name="active" eval="True" />
+      <field name="arch" type="xml">
+          <search string="academy_training_action_group_search">
+              <field name="name" />
+              <!-- ··· -->
+          </search>
+      </field>
+  </record>
+
+  <!-- Main window action for model.name -->
+  <record id="action_training_action_group_act_window" model="ir.actions.act_window">
+      <field name="type">ir.actions.act_window</field>
+      <field name="name">Training group</field>
+      <field name="res_model">academy.training.action.group</field>
+      <field name="view_mode">tree,form</field>
+      <field name="target">current</field>
+      <field name="domain">[]</field>
+      <field name="context">{}</field>
+      <field name="search_view_id" ref="view_academy_training_action_group_search" />
+      <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+              Click to add new training group
+          </p><p>
+              There are not training groups in catalog
+          </p>
+      </field>
+  </record>
+
+  <!-- Main menu for model.name -->
+ <!--  <record id="menu_training_group" model="ir.ui.menu" >
+      <field name="name">Training group</field>
+      <field name="sequence" eval="10" />
+      <field name="action" ref="action_training_group_act_window" />
+      <field name="parent_id" ref="academy_base.menu_academy_monitoring" />
+  </record> -->
+
+</odoo>

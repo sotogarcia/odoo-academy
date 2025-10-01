@@ -47,6 +47,7 @@ from . import academy_application_scope
 from . import academy_professional_category
 from . import academy_knowledge_area
 
+# from . import academy_competency_unit
 from . import academy_professional_qualification
 
 # ---------------------------------------------------------------------------
@@ -70,13 +71,13 @@ from . import academy_training_framework
 from . import academy_training_module
 from . import academy_training_program
 from . import academy_training_program_line
-from . import academy_competency_unit
 
 # ---------------------------------------------------------------------------
 # Training delivery (instances / sessions)
 # ---------------------------------------------------------------------------
 from . import academy_training_action
 from . import academy_training_action_line
+from . import academy_training_action_group
 from . import academy_training_action_enrolment
 
 # ---------------------------------------------------------------------------

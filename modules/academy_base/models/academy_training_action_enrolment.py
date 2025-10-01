@@ -256,6 +256,20 @@ class AcademyTrainingActionEnrolment(models.Model):
         related="training_action_id.image_128",
     )
 
+    training_group_id = fields.Many2one(
+        string='Training_group',
+        required=True,
+        readonly=False,
+        index=True,
+        default=None,
+        help=False,
+        comodel_name='academy.training.action.group',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False
+    )
+
     # -- Computed field: finalized --------------------------------------------
 
     finalized = fields.Boolean(

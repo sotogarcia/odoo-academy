@@ -26,8 +26,8 @@ class AcademyTrainingActionLine(models.Model):
     _inherit = ["academy.training.program.line"]
 
     _rec_name = "name"
-    _order = "sequence ASC, id DESC"
-    _rec_names_search = ["name", "code", "training_module_id"]
+    _order = "sequence ASC"
+    _rec_names_search = ["name", "code"]
 
     program_line_id = fields.Many2one(
         string="Program line",
@@ -43,16 +43,6 @@ class AcademyTrainingActionLine(models.Model):
         auto_join=False,
     )
 
-    training_program_id = fields.Many2one(
-        string="Training program",
-        required=False,
-        readonly=True,
-        index=True,
-        help="Training program of the original program line (read-only).",
-        store=True,
-        related="program_line_id.training_program_id",
-    )
-
     training_action_id = fields.Many2one(
         string="Training action",
         required=True,
@@ -66,3 +56,25 @@ class AcademyTrainingActionLine(models.Model):
         ondelete="cascade",
         auto_join=False,
     )
+
+    training_program_id = fields.Many2one(
+        string="Training program",
+        help="Training program of the original program line (read-only).",
+        related="training_action_id.training_program_id",
+        store=True,
+    )
+
+    # competency_unit_ids = fields.Many2many(
+    #     string="Competence Standards (ECP)",
+    #     required=False,
+    #     readonly=False,
+    #     index=True,
+    #     default=None,
+    #     help=("Professional Competence Standards (ECP) linked to unit"),
+    #     comodel_name="academy.competency.unit",
+    #     relation="academy_training_action_line_competency_unit_rel",
+    #     column1="action_line_id",
+    #     column2="competency_unit_id",
+    #     domain=[],
+    #     context={},
+    # )

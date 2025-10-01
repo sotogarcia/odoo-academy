@@ -14,7 +14,7 @@ from odoo import models, fields, api
 from odoo.tools.safe_eval import safe_eval
 from odoo.exceptions import ValidationError
 from odoo.osv.expression import AND, TRUE_DOMAIN, FALSE_DOMAIN
-from ..utils.helpers import OPERATOR_MAP, one2many_count, many2many_count
+from ..utils.helpers import OPERATOR_MAP, one2many_count
 
 from ..utils.record_utils import create_domain_for_ids
 from ..utils.record_utils import create_domain_for_interval
@@ -50,12 +50,10 @@ class AcademyTrainingAction(models.Model):
     ]
 
     _rec_name = "name"
-    order = "parent_path, name, date_start"
+    order = "name, date_start"
     _rec_names_search = ["name", "code", "training_program_id"]
 
     _check_company_auto = True
-    _parent_name = "parent_id"
-    _parent_store = True
 
     company_id = fields.Many2one(
         string="Company",
@@ -70,86 +68,6 @@ class AcademyTrainingAction(models.Model):
         ondelete="cascade",
         auto_join=False,
     )
-
-    parent_path = fields.Char(
-        string="Parent path",
-        required=False,
-        readonly=True,
-        index=True,
-        default=False,
-        help="Technical path used to speed up 'child_of' domain lookups.",
-    )
-
-    parent_id = fields.Many2one(
-        string="Parent action",
-        required=False,
-        readonly=False,
-        index=True,
-        default=False,
-        help="If set, this record is a subgroup of another action. "
-        "It will inherit program, company and must fit into "
-        "parent date range.",
-        comodel_name="academy.training.action",
-        ondelete="restrict",
-        auto_join=False,
-        domain=lambda self: [("id", "!=", self.id)],  # guard client-side
-    )
-
-    @api.onchange("parent_id")
-    def _onchange_parent_id(self):
-        """Align obvious fields from parent on selection"""
-        if self.parent_id:
-            self.company_id = self.parent_id.company_id
-            if getattr(self, "training_program_id", False):
-                self.training_program_id = self.parent_id.training_program_id
-
-    child_ids = fields.One2many(
-        string="Subgroups",
-        required=False,
-        readonly=False,
-        index=False,
-        default=False,
-        help="Optional child training actions (subgroups) that share "
-        "the same program and company as the parent.",
-        comodel_name="academy.training.action",
-        inverse_name="parent_id",
-        auto_join=False,
-    )
-
-    child_count = fields.Integer(
-        string="Child count",
-        required=False,
-        readonly=False,
-        index=False,
-        default=0,
-        help=False,
-        compute="_compute_child_countt",
-        search="_search_child_count",
-    )
-
-    @api.depends("child_ids")
-    def _compute_child_countt(self):
-        counts = one2many_count(self, "child_ids")
-
-        for record in self:
-            record.child_count = counts.get(record.id, 0)
-
-    @api.model
-    def _search_child_count(self, operator, value):
-        # Handle boolean-like searches Odoo may pass for required fields
-        if value is True:
-            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
-        if value is False:
-            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
-
-        cmp_func = OPERATOR_MAP.get(operator)
-        if not cmp_func:
-            return FALSE_DOMAIN  # unsupported operator
-
-        counts = one2many_count(self.search([]), "child_ids")
-        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
-
-        return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
     name = fields.Char(
         string="Action name",
@@ -231,16 +149,65 @@ class AcademyTrainingAction(models.Model):
         required=False,
         readonly=False,
         index=False,
-        default=lambda self: self.default_end(),
+        default=lambda self: self.default_date_stop(),
         help="Stop date of an event, without time for full day events",
     )
 
-    def default_end(self):
+    def default_date_stop(self):
         now = fields.Datetime.now()
         now = fields.Datetime.context_timestamp(self, now)
         now = now.replace(hour=23, minute=59, second=59)
 
         return now.astimezone(utc).replace(tzinfo=None)
+
+    training_group_ids = fields.One2many(
+        string="Training groups",
+        required=True,
+        readonly=False,
+        index=True,
+        default=None,
+        help=False,
+        comodel_name="academy.training.action.group",
+        inverse_name="training_action_id",
+        domain=[],
+        context={},
+        auto_join=False,
+    )
+
+    training_group_count = fields.Integer(
+        string="Training group count",
+        required=False,
+        readonly=False,
+        index=False,
+        default=0,
+        help=False,
+        compute="_compute_training_group_count",
+        search="_search_training_group_count",
+    )
+
+    @api.depends("training_group_ids")
+    def _compute_training_group_count(self):
+        counts = one2many_count(self, "training_group_ids")
+
+        for record in self:
+            record.training_group_count = counts.get(record.id, 0)
+
+    @api.model
+    def _search_training_group_count(self, operator, value):
+        # Handle boolean-like searches Odoo may pass for required fields
+        if value is True:
+            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
+        if value is False:
+            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
+
+        cmp_func = OPERATOR_MAP.get(operator)
+        if not cmp_func:
+            return FALSE_DOMAIN  # unsupported operator
+
+        counts = one2many_count(self.search([]), "training_group_ids")
+        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
+
+        return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
     application_scope_id = fields.Many2one(
         string="Application scope",
@@ -467,6 +434,18 @@ class AcademyTrainingAction(models.Model):
         help="Maximum number of signups allowed",
     )
 
+    excess = fields.Integer(
+        string="Excess",
+        required=True,
+        readonly=False,
+        index=False,
+        default=0,
+        help=(
+            "Maximum number of students who can be invited to use this "
+            "feature at the same time"
+        ),
+    )
+
     @api.onchange("seating")
     def _onchange_seating(self):
         self.excess = max(self.seating, self.excess)
@@ -521,107 +500,6 @@ class AcademyTrainingAction(models.Model):
 
         return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
-    excess = fields.Integer(
-        string="Excess",
-        required=True,
-        readonly=False,
-        index=False,
-        default=0,
-        help=(
-            "Maximum number of students who can be invited to use this "
-            "feature at the same time"
-        ),
-    )
-
-    resolved_ids = fields.Many2many(
-        string="Resolved actions",
-        required=False,
-        readonly=True,
-        index=True,
-        default=None,
-        help=(
-            "If the action has no children, it points to itself. "
-            "If it has children, it points to its child actions."
-        ),
-        comodel_name="academy.training.action",
-        relation="academy_training_action_resolved_action_rel",
-        column1="parent_action_id",
-        column2="child_action_id",
-        compute="_compute_resolved_ids",
-        store=True,
-    )
-
-    @api.depends("child_ids")
-    def _compute_resolved_ids(self):
-        for record in self:
-            if record.child_ids:
-                record.resolved_ids = record.child_ids
-            else:
-                record.resolved_ids = record
-
-    resolved_enrolment_ids = fields.Many2many(
-        string="Resolved enrolments",
-        required=False,
-        readonly=True,
-        index=True,
-        default=None,
-        help=(
-            "If the action has no children, it returns its own enrolments. If "
-            "it has children, it returns the enrolments of its child actions."
-        ),
-        comodel_name="academy.training.action.enrolment",
-        relation="academy_training_action_resolved_enrolment_rel",
-        column1="training_action_id",
-        column2="enrolment_id",
-        compute="_compute_resolved_enrolment_ids",
-        store=True,
-    )
-
-    @api.depends("enrolment_ids", "child_ids", "child_ids.enrolment_ids")
-    def _compute_resolved_enrolment_ids(self):
-        for record in self:
-            map_path = (
-                "child_ids.enrolment_ids"
-                if record.child_ids
-                else "enrolment_ids"
-            )
-            record.resolved_enrolment_ids = record.mapped(map_path)
-
-    resolved_enrolment_count = fields.Integer(
-        string="Resolved enrolment count",
-        required=False,
-        readonly=True,
-        index=False,
-        default=0,
-        help="Show number of enrolments",
-        compute="_compute_resolved_enrolment_count",
-        search="_search_resolved_enrolment_count",
-    )
-
-    @api.depends("resolved_enrolment_ids")
-    def _compute_resolved_enrolment_count(self):
-        counts = many2many_count(self, "resolved_enrolment_ids")
-
-        for record in self:
-            record.resolved_enrolment_count = counts.get(record.id, 0)
-
-    @api.model
-    def _search_resolved_enrolment_count(self, operator, value):
-        # Handle boolean-like searches Odoo may pass for required fields
-        if value is True:
-            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
-        if value is False:
-            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
-
-        cmp_func = OPERATOR_MAP.get(operator)
-        if not cmp_func:
-            return FALSE_DOMAIN  # unsupported operator
-
-        counts = many2many_count(self.search([]), "resolved_enrolment_ids")
-        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
-
-        return [("id", "in", matched)] if matched else FALSE_DOMAIN
-
     # -- Computed field: lifespan ---------------------------------------------
 
     lifespan = fields.Char(
@@ -669,78 +547,49 @@ class AcademyTrainingAction(models.Model):
         ),
     ]
 
-    @api.constrains("parent_id")
-    def _check_only_one_level(self):
-        for rec in self:
-            if rec.parent_id and rec.parent_id.parent_id:
-                raise ValidationError(
-                    _("Only one hierarchy level is allowed.")
-                )
+    @api.constrains("date_start", "date_stop", "training_group_ids")
+    def _constrains_groups_inside_action(self):
+        group_obj = self.env["academy.training.action.group"]
 
-    @api.constrains("parent_id")
-    def _check_not_self_parent(self):
-        message = _("A record cannot be its own parent.")
-        for record in self:
-            if record.parent_id and record.parent_id.id == record.id:
-                raise ValidationError(message)
+        error_start = _("Group starts before action start.")
+        error_stop = _("Group ends after action stop.")
 
-    @api.constrains("parent_id")
-    def _check_no_cycles(self):
-        def _has_cycle(node):
-            seen = set()
-            cur = node.parent_id
-            while cur:
-                if cur.id in seen or cur.id == node.id:
-                    return True
-                seen.add(cur.id)
-                cur = cur.parent_id
-            return False
+        infinity = fields.Datetime.to_datetime("9999-12-31 23:59:59")
 
-        for rec in self:
-            if rec.parent_id and _has_cycle(rec):
-                raise ValidationError(_("Hierarchy cycle detected."))
+        for action in self:
+            domain = [
+                ("training_action_id", "=", action.id),
+                ("date_start", "!=", False),
+            ]
 
-    @api.constrains(
-        "parent_id",
-        "company_id",
-        "training_program_id",
-        "date_start",
-        "date_end",
-    )
-    def _check_parent_coherence(self):
-        """Ensure children keep company/program and fit date window"""
-        for rec in self:
-            parent = rec.parent_id
-            if not parent:
-                continue
-            # Company must match (leverages _check_company_auto, but be explicit)
-            if parent.company_id != rec.company_id:
-                raise ValidationError(
-                    _("Child action company must match its parent.")
-                )
-            # Program must match
-            if (
-                parent.training_program_id
-                and rec.training_program_id
-                and parent.training_program_id != rec.training_program_id
-            ):
-                raise ValidationError(
-                    _("Child action program must match its parent program.")
-                )
-            # Dates must be contained in parent window (if both sides set)
-            if (
-                parent.date_start
-                and parent.date_end
-                and rec.date_start
-                and rec.date_end
-            ):
-                if (
-                    rec.date_start < parent.date_start
-                    or rec.date_end > parent.date_end
-                ):
-                    raise ValidationError(
-                        _("Child action dates must fit within parent dates.")
-                    )
+            action_start = action.date_start
+            action_stop = action.date_stop or infinity
+
+            for group in group_obj.search(domain):
+                group_start = group.date_start
+                group_stop = group.date_stop or infinity
+
+                if action_start and group_start < action_start:
+                    raise ValidationError(error_start)
+                if group_stop > action_stop:
+                    raise ValidationError(error_stop)
+
+    @api.constrains("seating", "excess", "training_group_ids")
+    def _constrains_group_capacity(self):
+        error_seating = _("Sum of groups 'Seating' exceeds action 'Seating'.")
+        error_excess = _("Sum of groups 'Excess' exceeds action 'Excess'.")
+
+        for action in self:
+            groups = action.training_group_ids
+
+            seat_sum = sum(groups.mapped("seating")) if groups else 0
+            excess_sum = sum(groups.mapped("excess")) if groups else 0
+
+            if seat_sum > action.seating:
+                raise ValidationError(error_seating)
+
+            if excess_sum > action.excess:
+                raise ValidationError(error_excess)
 
     # -------------------------- OVERLOADED METHODS ---------------------------
 
@@ -854,14 +703,14 @@ class AcademyTrainingAction(models.Model):
     def view_training_action_groups(self):
         self.ensure_one()
 
-        action_xid = "academy_base.action_training_action_group_act_window"
+        action_xid = "academy_base.action_training_group_act_window"
         act_wnd = self.env.ref(action_xid)
 
         context = self.env.context.copy()
         context.update(safe_eval(act_wnd.context))
-        context.update({"default_parent_id": self.id})
+        context.update({"default_training_action_id": self.id})
 
-        domain = [("parent_id", "=", self.id)]
+        domain = [("training_action_id", "=", self.id)]
 
         serialized = {
             "type": "ir.actions.act_window",
@@ -993,7 +842,7 @@ class AcademyTrainingAction(models.Model):
 
         return domain
 
-    def view_resolved_enrolments(self):
+    def view_enrolments(self):
         self.ensure_one()
 
         act_xid = "academy_base.action_training_action_enrolment_act_window"

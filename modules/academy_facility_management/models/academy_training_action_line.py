@@ -33,7 +33,6 @@ class AcademyCompetencyUnit(models.Model):
         domain=[],
         context={},
         auto_join=False,
-        limit=None,
     )
 
     facility_ids = fields.Many2manyView(
@@ -49,7 +48,6 @@ class AcademyCompetencyUnit(models.Model):
         column2="facility_id",
         domain=[],
         context={},
-        limit=None,
     )
 
     facility_count = fields.Integer(

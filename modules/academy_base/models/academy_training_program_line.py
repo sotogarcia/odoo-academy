@@ -29,8 +29,8 @@ class AcademyTrainingProgramLine(models.Model):
     ]
 
     _rec_name = "name"
-    _order = "sequence ASC, id DESC"
-    _rec_names_search = ["name", "code", "training_module_id"]
+    _order = "sequence ASC"
+    _rec_names_search = ["name", "code"]
 
     name = fields.Char(
         string="Name",
@@ -152,59 +152,56 @@ class AcademyTrainingProgramLine(models.Model):
         else:
             self.hours = 0.0
 
-    competency_unit_ids = fields.Many2many(
-        string="Competence Standards (ECP)",
-        required=False,
-        readonly=False,
-        index=True,
-        default=None,
-        help=(
-            "Professional Competence Standards (ECP) linked to this "
-            "program line"
-        ),
-        comodel_name="academy.competency.unit",
-        # relation="academy_training_program_line_competency_unit_rel",
-        column1="program_line_id",
-        column2="competency_unit_id",
-        domain=[],
-        context={},
-    )
+    # competency_unit_ids = fields.Many2many(
+    #     string="Competence Standards (ECP)",
+    #     required=False,
+    #     readonly=False,
+    #     index=True,
+    #     default=None,
+    #     help=("Professional Competence Standards (ECP) linked to unit"),
+    #     comodel_name="academy.competency.unit",
+    #     relation="academy_training_program_line_competency_unit_rel",
+    #     column1="program_line_id",
+    #     column2="competency_unit_id",
+    #     domain=[],
+    #     context={},
+    # )
 
     # -- Computed field: competency_unit_count --------------------------------
 
-    competency_unit_count = fields.Integer(
-        string="Competence Standard count",
-        required=True,
-        readonly=True,
-        index=False,
-        default=0,
-        help=False,
-        compute="_compute_competency_unit_count",
-        search="_search_competency_unit_count",
-    )
+    # competency_unit_count = fields.Integer(
+    #     string="Competence Standard count",
+    #     required=True,
+    #     readonly=True,
+    #     index=False,
+    #     default=0,
+    #     help=False,
+    #     compute="_compute_competency_unit_count",
+    #     search="_search_competency_unit_count",
+    # )
 
-    @api.depends("competency_unit_ids")
-    def _compute_competency_unit_count(self):
-        counts = many2many_count(self, "competency_unit_ids")
+    # @api.depends("competency_unit_ids")
+    # def _compute_competency_unit_count(self):
+    #     counts = many2many_count(self, "competency_unit_ids")
 
-        for record in self:
-            record.competency_unit_count = counts.get(record.id, 0)
+    #     for record in self:
+    #         record.competency_unit_count = counts.get(record.id, 0)
 
-    @api.model
-    def _search_competency_unit_count(self, operator, value):
-        if value is True:
-            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
-        if value is False:
-            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
+    # @api.model
+    # def _search_competency_unit_count(self, operator, value):
+    #     if value is True:
+    #         return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
+    #     if value is False:
+    #         return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
 
-        cmp_func = OPERATOR_MAP.get(operator)
-        if not cmp_func:
-            return FALSE_DOMAIN  # unsupported operator
+    #     cmp_func = OPERATOR_MAP.get(operator)
+    #     if not cmp_func:
+    #         return FALSE_DOMAIN  # unsupported operator
 
-        counts = many2many_count(self.search([]), "competency_unit_ids")
-        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
+    #     counts = many2many_count(self.search([]), "competency_unit_ids")
+    #     matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
 
-        return [("id", "in", matched)] if matched else FALSE_DOMAIN
+    #     return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
     is_section = fields.Boolean(
         string="Is section",
@@ -233,20 +230,20 @@ class AcademyTrainingProgramLine(models.Model):
             "CHECK(hours >= 0)",
             "Hours must be a non-negative number",
         ),
-        (
-            "unique_module_by_program",
-            "UNIQUE(training_program_id, training_module_id)",
-            "The module cannot be duplicated in the same training program",
-        ),
-        (
-            "section_xor_training",
-            """CHECK(
-                COALESCE(is_section, FALSE)
-                <>
-                (training_module_id IS NOT NULL)
-            )""",
-            "Line must be either a section (no training) or a training item.",
-        ),
+        # (
+        #     "unique_module_by_program",
+        #     "UNIQUE(training_program_id, training_module_id)",
+        #     "The module cannot be duplicated in the same training program",
+        # ),
+        # (
+        #     "section_xor_training",
+        #     """CHECK(
+        #         COALESCE(is_section, FALSE)
+        #         <>
+        #         (training_module_id IS NOT NULL)
+        #     )""",
+        #     "Line must be either a section (no training) or a training item.",
+        # ),
     ]
 
     # -- Methods overrides ----------------------------------------------------

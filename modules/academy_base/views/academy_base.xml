@@ -2,49 +2,49 @@
 
 <odoo noupdate="0">
 
-    <record id="menu_academy" model="ir.ui.menu">
-        <field name="name">Academy</field>
-        <field name="sequence" eval="10"/>
-        <field name="web_icon">academy_base,static/description/icon.png</field>
-    </record>
+  <record id="menu_academy" model="ir.ui.menu">
+    <field name="name">Academy</field>
+    <field name="sequence" eval="10"/>
+    <field name="web_icon">academy_base,static/description/icon.png</field>
+  </record>
 
-    <record id="menu_academy_monitoring" model="ir.ui.menu">
-        <field name="name">Monitoring</field>
-        <field name="sequence" eval="10"/>
-        <field name="parent_id" ref="menu_academy"/>
-        <field name="groups_id" eval="[(4, ref('academy_base.academy_group_consultant'))]"/>
-    </record>
+  <record id="menu_academy_monitoring" model="ir.ui.menu">
+    <field name="name">Monitoring</field>
+    <field name="sequence" eval="10"/>
+    <field name="parent_id" ref="menu_academy"/>
+    <field name="groups_id" eval="[(4, ref('academy_base.academy_group_consultant'))]"/>
+  </record>
 
-    <record id="menu_academy_community" model="ir.ui.menu">
-        <field name="name">Community</field>
-        <field name="sequence" eval="20"/>
-        <field name="parent_id" ref="menu_academy"/>
-        <field name="groups_id" eval="[(4, ref('academy_base.academy_group_consultant'))]"/>
-    </record>
+  <record id="menu_academy_community" model="ir.ui.menu">
+    <field name="name">Community</field>
+    <field name="sequence" eval="20"/>
+    <field name="parent_id" ref="menu_academy"/>
+    <field name="groups_id" eval="[(4, ref('academy_base.academy_group_consultant'))]"/>
+  </record>
 
-    <record id="menu_academy_catalog" model="ir.ui.menu">
-        <field name="name">Catalog</field>
-        <field name="sequence" eval="25"/>
-        <field name="parent_id" ref="menu_academy"/>
-        <field name="groups_id" eval="[(4, ref('academy_base.academy_group_consultant'))]"/>
-    </record>
+  <record id="menu_academy_catalog" model="ir.ui.menu">
+    <field name="name">Catalog</field>
+    <field name="sequence" eval="25"/>
+    <field name="parent_id" ref="menu_academy"/>
+    <field name="groups_id" eval="[(4, ref('academy_base.academy_group_consultant'))]"/>
+  </record>
 
-    <record id="menu_academy_tools" model="ir.ui.menu">
-        <field name="name">Tools</field>
-        <field name="sequence" eval="45"/>
-        <field name="parent_id" ref="menu_academy"/>
-        <field name="groups_id"
-            eval="[(4, ref('academy_base.academy_group_technical')), (4, ref('academy_base.academy_group_teacher'))]"
-        />
-    </record>
+  <record id="menu_academy_tools" model="ir.ui.menu">
+    <field name="name">Tools</field>
+    <field name="sequence" eval="45"/>
+    <field name="parent_id" ref="menu_academy"/>
+    <field name="groups_id"
+      eval="[(4, ref('academy_base.academy_group_technical')), (4, ref('academy_base.academy_group_teacher'))]"
+    />
+  </record>
 
-    <record id="menu_academy_advanced" model="ir.ui.menu">
-        <field name="name">Advanced</field>
-        <field name="sequence" eval="50"/>
-        <field name="parent_id" ref="menu_academy"/>
-        <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
-    </record>
-<!--
+  <record id="menu_academy_advanced" model="ir.ui.menu">
+    <field name="name">Advanced</field>
+    <field name="sequence" eval="50"/>
+    <field name="parent_id" ref="menu_academy"/>
+    <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
+  </record>
+  <!--
     <record id="menu_academy_settings" model="ir.ui.menu">
         <field name="name">Academy</field>
         <field name="sequence" eval="90"/>
@@ -61,11 +61,11 @@
         <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
     </record>
  -->
-    <record id="menu_academy_advanced_quick_edit" model="ir.ui.menu">
-        <field name="name">Quick edit</field>
-        <field name="sequence" eval="60"/>
-        <field name="parent_id" ref="academy_base.menu_academy_advanced"/>
-        <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
-    </record>
+  <record id="menu_academy_advanced_quick_edit" model="ir.ui.menu">
+    <field name="name">Quick edit</field>
+    <field name="sequence" eval="60"/>
+    <field name="parent_id" ref="academy_base.menu_academy_advanced"/>
+    <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
+  </record>
 
 </odoo>
