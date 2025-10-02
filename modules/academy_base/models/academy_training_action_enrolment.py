@@ -6,11 +6,9 @@ stores all training action enrolment attributes and behavior.
 """
 
 
-# pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
 from odoo.tools.translate import _, _lt
 from odoo.exceptions import UserError
-from odoo.osv.expression import AND, TRUE_DOMAIN, FALSE_DOMAIN
 from odoo.osv.expression import TERM_OPERATORS_NEGATION
 from odoo.exceptions import ValidationError
 
@@ -19,21 +17,18 @@ from ..utils.record_utils import create_domain_for_interval
 from ..utils.record_utils import ARCHIVED_DOMAIN, INCLUDE_ARCHIVED_DOMAIN
 from odoo.addons.academy_base.utils.sql_helpers import create_index
 from ..utils.record_utils import ensure_recordset
+from odoo.osv.expression import AND
 
 from logging import getLogger
 from datetime import date, datetime, timedelta
 from psycopg2 import DatabaseError as PsqlError
 from odoo.tools.misc import format_date
 
-# pylint: disable=locally-disabled, C0103
 _logger = getLogger(__name__)
 
 
-# pylint: disable=locally-disabled, R0903
 class AcademyTrainingActionEnrolment(models.Model):
     """Enrolment allows the student to be linked to a training action"""
-
-    MSG_ATE01 = _lt("Enrolment is outside the range of training action")
 
     _name = "academy.training.action.enrolment"
     _description = "Academy training action enrolment"
@@ -51,18 +46,16 @@ class AcademyTrainingActionEnrolment(models.Model):
 
     _check_company_auto = True
 
-    company_id = fields.Many2one(
-        string="Company", related="training_action_id.company_id", store=True
-    )
+    # Entity fields
+    # -------------------------------------------------------------------------
 
-    # pylint: disable=locally-disabled, W0212
     enrolment_code = fields.Char(
         string="Enrolment code",
         required=True,
         readonly=True,
         index=True,
         default=lambda self: self._next_enrolment_code(self.env.company.id),
-        help="Unique code automatically assigned to this enrolment.",
+        help="Unique code automatically assigned to this enrolment",
         size=30,
         translate=False,
         tracking=True,
@@ -74,7 +67,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         readonly=False,
         index=False,
         default=lambda self: fields.Date.context_today(self),
-        help="Date when the student enroled in the training action.",
+        help="Administrative date when the enrolment was recorded",
         tracking=True,
     )
 
@@ -94,24 +87,20 @@ class AcademyTrainingActionEnrolment(models.Model):
         readonly=False,
         index=False,
         default=None,
-        help=(
-            "Private notes for staff only. Not shown to students, "
-            "not exported, and excluded from printed reports."
-        ),
+        help="Private staff-only notes; not shown to students or exported",
         sanitize=True,
         sanitize_attributes=False,
         strip_style=True,
         translate=False,
     )
 
-    # pylint: disable=locally-disabled, W0108
     register = fields.Date(
         string="Registration",
         required=True,
         readonly=False,
         index=True,
         default=lambda self: fields.Date.context_today(self),
-        help="Date in which student has been enroled",
+        help="Date the enrolment becomes effective",
         tracking=True,
     )
 
@@ -121,8 +110,65 @@ class AcademyTrainingActionEnrolment(models.Model):
         readonly=False,
         index=True,
         default=None,
-        help="Date in which student has been unsubscribed",
+        help="Date the enrolment ends (leave empty if still ongoing)",
         tracking=True,
+    )
+
+    student_id = fields.Many2one(
+        string="Student",
+        required=True,
+        readonly=False,
+        index=True,
+        default=None,
+        help="Student to enrol",
+        comodel_name="academy.student",
+        domain=[],
+        context={},
+        ondelete="cascade",
+        auto_join=False,
+    )
+
+    training_action_id = fields.Many2one(
+        string="Training action",
+        required=True,
+        readonly=False,
+        index=True,
+        default=None,
+        help="Training action in which the student is enrolled",
+        comodel_name="academy.training.action",
+        domain=[],
+        context={},
+        ondelete="cascade",
+        auto_join=False,
+    )
+
+    action_line_ids = fields.Many2many(
+        string='Action lines',
+        required=False,
+        readonly=False,
+        index=True,
+        default=None,
+        help="Action lines linked to this enrolment",
+        comodel_name='academy.training.action.line',
+        relation='academy_training_action_enrolment_action_line_rel',
+        column1='enrolment_id',
+        column2='action_line_id',
+        domain=[],
+        context={}
+    )
+
+    training_group_id = fields.Many2one(
+        string='Training group',
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help="Group where the student attends this action",
+        comodel_name='academy.training.action.group',
+        domain=[],
+        context={},
+        ondelete='cascade',
+        auto_join=False
     )
 
     training_modality_id = fields.Many2one(
@@ -131,7 +177,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         readonly=False,
         index=True,
         default=None,
-        help=False,
+        help="Learning modality for this enrolment",
         comodel_name="academy.training.modality",
         domain=[],
         context={},
@@ -145,68 +191,70 @@ class AcademyTrainingActionEnrolment(models.Model):
         readonly=False,
         index=True,
         default="digital",
-        help="Choose educational material format",
-        selection=[("printed", "Printed"), ("digital", "Digital")],
+        help="Choose the format of the learning material",
+        selection=[
+            ("printed", "Printed"),
+            ("digital", "Digital"),
+        ],
     )
 
-    # -- Student information --------------------------------------------------
+    # Student information
+    # -------------------------------------------------------------------------
 
-    student_id = fields.Many2one(
-        string="Student",
-        required=True,
-        readonly=False,
-        index=False,
-        default=None,
-        help="Choose enroled student",
-        comodel_name="academy.student",
-        domain=[],
-        context={},
-        ondelete="cascade",
-        auto_join=False,
-    )
-
-    # It is necessary to keep the difference with the name of the activity
     student_name = fields.Char(
         string="Student name",
         readonly=True,
-        help="Show the name of the related student",
+        help="Name of the related student",
         related="student_id.name",
     )
 
-    vat = fields.Char(string="Vat", related="student_id.vat")
-
-    email = fields.Char(string="Email", related="student_id.email")
-
-    phone = fields.Char(string="Phone", related="student_id.phone")
-
-    mobile = fields.Char(string="Mobile", related="student_id.mobile")
-
-    zip = fields.Char(string="Zip", related="student_id.zip")
-
-    # -- Training action information ------------------------------------------
-
-    training_action_id = fields.Many2one(
-        string="Training action",
-        required=True,
-        readonly=False,
-        index=False,
-        default=None,
-        help="Choose training action in which the student will be enroled",
-        comodel_name="academy.training.action",
-        domain=[],
-        context={},
-        ondelete="cascade",
-        auto_join=False,
+    vat = fields.Char(
+        string="Vat",
+        related="student_id.vat",
+        help="Student’s VAT number"
     )
 
-    # It is necessary to keep the difference with the name of the activity
+    email = fields.Char(
+        string="Email",
+        related="student_id.email",
+        help="Student’s email address"
+    )
+
+    phone = fields.Char(
+        string="Phone",
+        related="student_id.phone",
+        help="Student’s phone number"
+    )
+
+    mobile = fields.Char(
+        string="Mobile",
+        related="student_id.mobile",
+        help="Student’s mobile number"
+    )
+
+    zip = fields.Char(
+        string="Zip",
+        related="student_id.zip",
+        help="Student’s ZIP/postal code"
+    )
+
+    # Training action information
+    # -------------------------------------------------------------------------
+
+    company_id = fields.Many2one(
+        string="Company",
+        related="training_action_id.company_id",
+        help="Company of the related training action",
+        store=True,
+    )
+
     action_name = fields.Char(
         string="Training action name",
         required=False,
         readonly=True,
         index=False,
         default=None,
-        help="Show the name of the related training action",
+        help="Name of the related training action",
         size=255,
         translate=True,
         related="training_action_id.name",
@@ -214,75 +262,50 @@ class AcademyTrainingActionEnrolment(models.Model):
 
     action_code = fields.Char(
         string="Internal code",
-        help="Enter new internal code",
+        help="Internal code of the training action",
         related="training_action_id.code",
     )
 
     date_start = fields.Datetime(
         string="Start",
-        help="Start date of an event, without time for full day events",
+        help="Start date/time of the training action",
         related="training_action_id.date_start",
     )
 
     date_stop = fields.Datetime(
         string="End",
-        help="Stop date of an event, without time for full day events",
+        help="End date/time of the training action",
         related="training_action_id.date_stop",
     )
 
     training_program_id = fields.Many2one(
         string="Training program",
-        help="Training program will be imparted in this action",
+        help="Training program delivered in this action",
         related="training_action_id.training_program_id",
     )
 
     image_1024 = fields.Image(
         string="Image 1024",
+        help="Training action image (1024 px)",
         related="training_action_id.image_1024",
     )
 
     image_512 = fields.Image(
         string="Image 512",
+        help="Training action image (512 px)",
         related="training_action_id.image_512",
     )
 
     image_256 = fields.Image(
         string="Image 256",
+        help="Training action image (256 px)",
         related="training_action_id.image_256",
     )
 
     image_128 = fields.Image(
         string="Image 128",
+        help="Training action image (128 px)",
         related="training_action_id.image_128",
-    )
-
-    training_group_id = fields.Many2one(
-        string='Training group',
-        required=False,
-        readonly=False,
-        index=False,
-        default=None,
-        help=False,
-        comodel_name='academy.training.action.group',
-        domain=[],
-        context={},
-        ondelete='cascade',
-        auto_join=False
-    )
-
-    action_line_ids = fields.Many2many(
-        string='Action lines',
-        required=False,
-        readonly=False,
-        index=True,
-        default=None,
-        help=False,
-        comodel_name='academy.training.action.line',
-        relation='academy_training_action_enrolment_action_line_rel',
-        column1='enrolment_id',
-        column2='action_line_id',
-        domain=[],
-        context={}
     )
 
     # -- Computed field: finalized --------------------------------------------
@@ -293,7 +316,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         readonly=True,
         index=False,
         default=False,
-        help="True if period is completed",
+        help="Set to true when the enrolment has ended",
         compute="_compute_finalized",
         search="_search_finalized",
     )
@@ -338,7 +361,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         readonly=True,
         index=False,
         default=10,
-        help="Display color based on dependency and status",
+        help="Color index used in views based on enrolment dates",
         store=False,
         compute=lambda self: self._compute_color(),
     )
@@ -365,7 +388,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         readonly=True,
         index=True,
         default=False,
-        help="Indicates if the enrolment is currently active",
+        help="True when today is within the enrolment dates and it is active",
         compute="_compute_is_current",
         search="_search_is_current",
     )
@@ -420,7 +443,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         readonly=True,
         index=False,
         default=None,
-        help="Registration and deregistration dates as a formatted range",
+        help="Formatted range of register and deregister dates",
         size=50,
         translate=False,
         compute="_compute_lifespan",
@@ -449,19 +472,19 @@ class AcademyTrainingActionEnrolment(models.Model):
         ),
         (
             "prevent_overlap",
-            """EXCLUDE USING gist (
-                training_action_id WITH =,
-                student_id WITH =,
-                tsrange(
-                    register,
-                    COALESCE(deregister, 'infinity'::date),
-                    '[]'
+            """
+            EXCLUDE USING gist (
+                training_action_id gist_int4_ops WITH =,
+                student_id gist_int4_ops WITH =,
+                (
+                    daterange(
+                        register,
+                        COALESCE(deregister, 'infinity'::date)
+                    )
                 ) WITH &&
-            )""",
-            (
-                "Student enrolments cannot overlap in time for the same "
-                "training action"
-            ),
+            ) DEFERRABLE INITIALLY IMMEDIATE
+            """,
+            "Student enrolments cannot overlap for the same action",
         ),
     ]
 
@@ -515,6 +538,9 @@ class AcademyTrainingActionEnrolment(models.Model):
             else:
                 record.display_name = _("New enrolment")
 
+    # Overridden methods
+    # -------------------------------------------------------------------------
+
     def init(self):
         """
         Ensures the custom index exists in the database.
@@ -554,7 +580,8 @@ class AcademyTrainingActionEnrolment(models.Model):
             result = parent._create(values)
         except PsqlError as ex:
             if "ATE01" in str(ex.pgcode):
-                raise ValidationError(self.MSG_ATE01)
+                error = _("Enrolment is outside the range of training action")
+                raise ValidationError(error)
             else:
                 raise
 
@@ -584,7 +611,8 @@ class AcademyTrainingActionEnrolment(models.Model):
             result = parent._write(values)
         except PsqlError as ex:
             if "ATE01" in str(ex.pgcode):
-                raise ValidationError(self.MSG_ATE01)
+                error = _("Enrolment is outside the range of training action")
+                raise ValidationError(error)
             else:
                 raise
 
@@ -635,7 +663,8 @@ class AcademyTrainingActionEnrolment(models.Model):
 
         return parent.copy(default)
 
-    # -- Public methods -------------------------------------------------------
+    # Public methods
+    # -------------------------------------------------------------------------
 
     def go_to_student(self):
         student_set = self.mapped("student_id")
@@ -740,7 +769,8 @@ class AcademyTrainingActionEnrolment(models.Model):
 
         return enrolment_set
 
-    # -- Auxiliary methods ----------------------------------------------------
+    # Auxiliary methods
+    # -------------------------------------------------------------------------
 
     def _check_that_the_student_is_not_the_template(self, values):
         """When registrations are duplicated, the temporary student is

@@ -82,7 +82,7 @@
     <field name="name">Teachers</field>
     <field name="res_model">academy.teacher</field>
     <field name="view_mode">kanban,list,form</field>
-
+    <field name="path">academy-teacher</field>
     <field name="target">current</field>
     <field name="domain">[]</field>
     <field name="context">{}</field>

@@ -21,10 +21,7 @@ _logger = getLogger(__name__)
 
 class AcademySupportStaff(models.Model):
     _name = "academy.support.staff"
-    _description = (
-        "Common fields and methods for all models that represent "
-        "people within the academy community."
-    )
+    _description = "Academy support staff member"
 
     _inherit = [
         "mail.thread",

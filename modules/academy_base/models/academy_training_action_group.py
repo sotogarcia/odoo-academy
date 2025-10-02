@@ -41,16 +41,8 @@ class AcademyTrainingActionGroup(models.Model):
 
     company_id = fields.Many2one(
         string="Company",
-        required=True,
-        readonly=True,
-        index=True,
-        default=lambda self: self.env.company,
-        help="The company this record belongs to",
-        comodel_name="res.company",
-        domain=[],
-        context={},
-        ondelete="cascade",
-        auto_join=False,
+        related="training_action_id.company_id",
+        store=True,
     )
 
     name = fields.Char(

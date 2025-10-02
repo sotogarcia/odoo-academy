@@ -47,7 +47,7 @@ class RedirectTo(Controller):
 
         view_modes = self._tree_to_list(action.view_mode)
         assert view_type in view_modes, _(
-            "Invalid view type for action «%s»" % action.name
+            'Invalid view type for action "%s"' % action.name
         )
 
         action_id = action.id

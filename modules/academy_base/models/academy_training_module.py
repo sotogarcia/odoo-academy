@@ -317,8 +317,10 @@ class AcademyTrainingModule(models.Model):
 
     @api.constrains("training_module_id")
     def _check_no_cycles(self):
-        if not self._check_recursion():
-            raise ValidationError(_("Cyclic hierarchy is not allowed."))
+        message = _("Cyclic hierarchy is not allowed.")
+        for record in self:
+            if record._has_cycle(field_name="training_module_id"):
+                raise ValidationError(message)
 
     # -- Methods overrides ----------------------------------------------------
 

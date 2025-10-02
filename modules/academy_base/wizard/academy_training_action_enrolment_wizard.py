@@ -71,7 +71,7 @@ class AcademyTrainingActionEnrolmentWizard(models.TransientModel):
             elif hasattr(active_set, "enrolment_ids"):
                 active_set = active_set.mapped("enrolment_ids.id")
             else:
-                msg = _("Provided object «{}» has not enrolments")
+                msg = _('Provided object "{}" has not enrolments')
                 raise UserError(msg.format(active_set._name))
 
         return active_set

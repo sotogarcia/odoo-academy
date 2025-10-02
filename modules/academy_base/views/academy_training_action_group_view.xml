@@ -71,21 +71,22 @@
 
   <!-- Main window action for model.name -->
   <record id="action_training_action_group_act_window" model="ir.actions.act_window">
-      <field name="type">ir.actions.act_window</field>
-      <field name="name">Training group</field>
-      <field name="res_model">academy.training.action.group</field>
-      <field name="view_mode">tree,form</field>
-      <field name="target">current</field>
-      <field name="domain">[]</field>
-      <field name="context">{}</field>
-      <field name="search_view_id" ref="view_academy_training_action_group_search" />
-      <field name="help" type="html">
-          <p class="oe_view_nocontent_create">
-              Click to add new training group
-          </p><p>
-              There are not training groups in catalog
-          </p>
-      </field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="name">Training group</field>
+    <field name="res_model">academy.training.action.group</field>
+    <field name="view_mode">tree,form</field>
+    <field name="path">academy-training-group</field>
+    <field name="target">current</field>
+    <field name="domain">[]</field>
+    <field name="context">{}</field>
+    <field name="search_view_id" ref="view_academy_training_action_group_search" />
+    <field name="help" type="html">
+        <p class="oe_view_nocontent_create">
+            Click to add new training group
+        </p><p>
+            There are not training groups in catalog
+        </p>
+    </field>
   </record>
 
   <!-- Main menu for model.name -->

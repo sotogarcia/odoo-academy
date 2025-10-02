@@ -176,7 +176,7 @@ class AcademyTrainingSession(models.Model):
     def compute_task_name(self):
         for record in self:
             if record.training_action_id:
-                record.task_name = record.training_action_id.action_name
+                record.task_name = record.training_action_id.name
             elif record.task_id:
                 record.task_name = record.task_id.name
             else:
@@ -645,7 +645,7 @@ class AcademyTrainingSession(models.Model):
         (
             "unique_training_action_id",
             """EXCLUDE USING gist (
-                training_action_id WITH =,
+                training_action_id gist_int4_ops WITH =,
                 tsrange ( date_start, date_stop ) WITH &&
             ) WHERE (validate AND allow_overlap IS NOT TRUE);
             -- Requires btree_gist""",
@@ -777,217 +777,217 @@ class AcademyTrainingSession(models.Model):
 
         return result
 
-    def _notify_get_reply_to(
-        self, default=None, records=None, company=None, doc_names=None
-    ):
-        """
-        Overwrite the reply-to address in email notifications.
+    # def _notify_get_reply_to(
+    #     self, default=None, records=None, company=None, doc_names=None
+    # ):
+    #     """
+    #     Overwrite the reply-to address in email notifications.
 
-        For each Academy Training Session record, the reply-to address is set
-        to the email of the user responsible for the session (manager_id).
+    #     For each Academy Training Session record, the reply-to address is set
+    #     to the email of the user responsible for the session (manager_id).
 
-        Args:
-            default (str, optional): Default reply-to address.
-            records (recordset, optional): The set of records for which the
-                                           reply-to address should be computed.
-            company (res.company, optional): The company in context.
-            doc_names (dict, optional): Dictionary with document names.
+    #     Args:
+    #         default (str, optional): Default reply-to address.
+    #         records (recordset, optional): The set of records for which the
+    #                                        reply-to address should be computed.
+    #         company (res.company, optional): The company in context.
+    #         doc_names (dict, optional): Dictionary with document names.
 
-        Returns:
-            dict: A mapping of record IDs to their reply-to addresses.
-        """
+    #     Returns:
+    #         dict: A mapping of record IDs to their reply-to addresses.
+    #     """
 
-        parent = super(AcademyTrainingSession, self)
-        result = parent._notify_get_reply_to(
-            default, records, company, doc_names
-        )
+    #     parent = super(AcademyTrainingSession, self)
+    #     result = parent._notify_get_reply_to(
+    #         default, records, company, doc_names
+    #     )
 
-        records = records or self
-        if not result or not isinstance(result, dict) or not records:
-            return result
+    #     records = records or self
+    #     if not result or not isinstance(result, dict) or not records:
+    #         return result
 
-        partner_path = "manager_id.partner_id"
-        for record in records:
-            if record.id not in result:
-                continue
+    #     partner_path = "manager_id.partner_id"
+    #     for record in records:
+    #         if record.id not in result:
+    #             continue
 
-            partner = record.mapped(partner_path)
-            if not partner or not partner.email_normalized:
-                continue
+    #         partner = record.mapped(partner_path)
+    #         if not partner or not partner.email_normalized:
+    #             continue
 
-            email = partner.email_normalized
-            if partner.name:
-                email = "{} <{}>".format(partner.name, email)
+    #         email = partner.email_normalized
+    #         if partner.name:
+    #             email = "{} <{}>".format(partner.name, email)
 
-            result[record.id] = email
+    #         result[record.id] = email
 
-        return result
+    #     return result
 
-    @api.model
-    def _notify_prepare_template_context(
-        self, message, msg_vals, model_description=False, mail_auto_delete=True
-    ):
-        """
-        Adjust the date and time values in tracking values of notifications
-        to reflect the timezone of the session where the event is taking place.
+    # @api.model
+    # def _notify_prepare_template_context(
+    #     self, message, msg_vals, model_description=False, mail_auto_delete=True
+    # ):
+    #     """
+    #     Adjust the date and time values in tracking values of notifications
+    #     to reflect the timezone of the session where the event is taking place.
 
-        This method customizes the context used for notification templates.
-        When a tracked field of type 'date' or 'datetime' changes, it modifies
-        the displayed value to show it in the session's timezone, ensuring
-        that email recipients see the correct localized time of the session.
+    #     This method customizes the context used for notification templates.
+    #     When a tracked field of type 'date' or 'datetime' changes, it modifies
+    #     the displayed value to show it in the session's timezone, ensuring
+    #     that email recipients see the correct localized time of the session.
 
-        Args:
-            message (Model): Mail message record containing tracking values
-            msg_vals (dict): Dictionary with the values for message creation
-            model_description (str, optional): Optional model description for
-                                               notifications
-            mail_auto_delete (bool, optional): Flag indicating whether to
-                                               auto-delete the mail
+    #     Args:
+    #         message (Model): Mail message record containing tracking values
+    #         msg_vals (dict): Dictionary with the values for message creation
+    #         model_description (str, optional): Optional model description for
+    #                                            notifications
+    #         mail_auto_delete (bool, optional): Flag indicating whether to
+    #                                            auto-delete the mail
 
-        Returns:
-            dic: Updated template context with localized date and time values
-        """
+    #     Returns:
+    #         dic: Updated template context with localized date and time values
+    #     """
 
-        parent = super(AcademyTrainingSession, self)
-        result = parent._notify_prepare_template_context(
-            message, msg_vals, model_description, mail_auto_delete
-        )
+    #     parent = super(AcademyTrainingSession, self)
+    #     result = parent._notify_prepare_template_context(
+    #         message, msg_vals, model_description, mail_auto_delete
+    #     )
 
-        track_values = (result or {}).get("tracking_values", False)
-        if not track_values:
-            return result
+    #     track_values = (result or {}).get("tracking_values", False)
+    #     if not track_values:
+    #         return result
 
-        track_set = message.mapped("tracking_value_ids").filtered(
-            lambda r: r.field_type in ("date", "datetime")
-        )
-        if not track_set:
-            return result
+    #     track_set = message.mapped("tracking_value_ids").filtered(
+    #         lambda r: r.field_type in ("date", "datetime")
+    #     )
+    #     if not track_set:
+    #         return result
 
-        session_tz = self._get_session_timezone(message)
-        for idx, values in enumerate(track_values):
-            caption = values[0]
+    #     session_tz = self._get_session_timezone(message)
+    #     for idx, values in enumerate(track_values):
+    #         caption = values[0]
 
-            track = track_set.filtered(lambda r: r.field_desc == caption)
-            if not track:
-                continue
+    #         track = track_set.filtered(lambda r: r.field_desc == caption)
+    #         if not track:
+    #             continue
 
-            track = track[0]
-            old_value = self.localized_dt(track.old_value_datetime, session_tz)
-            new_value = self.localized_dt(
-                track.new_value_datetime, session_tz, show_tz=True
-            )
+    #         track = track[0]
+    #         old_value = self.localized_dt(track.old_value_datetime, session_tz)
+    #         new_value = self.localized_dt(
+    #             track.new_value_datetime, session_tz, show_tz=True
+    #         )
 
-            result["tracking_values"][idx] = (caption, old_value, new_value)
+    #         result["tracking_values"][idx] = (caption, old_value, new_value)
 
-        return result
+    #     return result
 
-    def _notify_record_by_email(
-        self,
-        message,
-        recipients_data,
-        msg_vals=False,
-        model_description=False,
-        mail_auto_delete=True,
-        check_existing=False,
-        force_send=True,
-        send_after_commit=True,
-        **kwargs
-    ):
-        """
-        Override to set a custom email layout for notifications.
+    # def _notify_record_by_email(
+    #     self,
+    #     message,
+    #     recipients_data,
+    #     msg_vals=False,
+    #     model_description=False,
+    #     mail_auto_delete=True,
+    #     check_existing=False,
+    #     force_send=True,
+    #     send_after_commit=True,
+    #     **kwargs
+    # ):
+    #     """
+    #     Override to set a custom email layout for notifications.
 
-        It also prevents emails from being sent notifying changes when there is
-        no record of the values that have been altered.
+    #     It also prevents emails from being sent notifying changes when there is
+    #     no record of the values that have been altered.
 
-        This method modifies the email layout for notifications related
-        to Academy Training Sessions. It sets the layout to
-        'academy_timesheets.academy_session_notification_email'.
-        """
+    #     This method modifies the email layout for notifications related
+    #     to Academy Training Sessions. It sets the layout to
+    #     'academy_timesheets.academy_session_notification_email'.
+    #     """
 
-        # Allow to skipe email notifications using context
-        if self.env.context.get("skip_email_notification", False):
-            return True
+    #     # Allow to skipe email notifications using context
+    #     if self.env.context.get("skip_email_notification", False):
+    #         return True
 
-        # Prevents empty notifations will be sent by email
-        if not msg_vals or not message.tracking_value_ids:
-            return True
+    #     # Prevents empty notifations will be sent by email
+    #     if not msg_vals or not message.tracking_value_ids:
+    #         return True
 
-        # Changes email template will be used send notifications
-        msg_vals[
-            "email_layout_xmlid"
-        ] = "academy_timesheets.academy_session_notification_email"
+    #     # Changes email template will be used send notifications
+    #     msg_vals[
+    #         "email_layout_xmlid"
+    #     ] = "academy_timesheets.academy_session_notification_email"
 
-        parent = super(AcademyTrainingSession, self)
-        return parent._notify_record_by_email(
-            message,
-            recipients_data,
-            msg_vals,
-            model_description,
-            mail_auto_delete,
-            check_existing,
-            force_send,
-            send_after_commit,
-            **kwargs
-        )
+    #     parent = super(AcademyTrainingSession, self)
+    #     return parent._notify_record_by_email(
+    #         message,
+    #         recipients_data,
+    #         msg_vals,
+    #         model_description,
+    #         mail_auto_delete,
+    #         check_existing,
+    #         force_send,
+    #         send_after_commit,
+    #         **kwargs
+    #     )
 
-    def _notify_compute_recipients(self, message, msg_vals=None):
-        """
-        Override to include training session teachers as recipients.
+    # def _notify_compute_recipients(self, message, msg_vals=None):
+    #     """
+    #     Override to include training session teachers as recipients.
 
-        This method ensures that all teachers related to the
-        Academy Training Session are included in the recipients list,
-        without duplicating if they are already followers.
+    #     This method ensures that all teachers related to the
+    #     Academy Training Session are included in the recipients list,
+    #     without duplicating if they are already followers.
 
-        Args:
-            message (mail.message): The message being sent.
-            msg_vals (dict, optional): Additional message values.
+    #     Args:
+    #         message (mail.message): The message being sent.
+    #         msg_vals (dict, optional): Additional message values.
 
-        Returns:
-            dict: Computed recipient data with partners and channels.
-        """
+    #     Returns:
+    #         dict: Computed recipient data with partners and channels.
+    #     """
 
-        parent = super(AcademyTrainingSession, self)
-        result = parent._notify_compute_recipients(message, msg_vals)
+    #     parent = super(AcademyTrainingSession, self)
+    #     result = parent._notify_compute_recipients(message, msg_vals)
 
-        draft_subtype_id = (
-            "academy_timesheets." "academy_timesheets_training_session_draft"
-        )
-        changed_subtype_id = (
-            "academy_timesheets." "academy_timesheets_training_session_changed"
-        )
-        subtype_set = self.env.ref(draft_subtype_id) + self.env.ref(
-            changed_subtype_id
-        )
+    #     draft_subtype_id = (
+    #         "academy_timesheets." "academy_timesheets_training_session_draft"
+    #     )
+    #     changed_subtype_id = (
+    #         "academy_timesheets." "academy_timesheets_training_session_changed"
+    #     )
+    #     subtype_set = self.env.ref(draft_subtype_id) + self.env.ref(
+    #         changed_subtype_id
+    #     )
 
-        if message.subtype_id in subtype_set:
-            if result and "partners" in result:
-                follower_partner_ids = [
-                    item["id"] for item in result["partners"]
-                ]
-            else:
-                follower_partner_ids = []
+    #     if message.subtype_id in subtype_set:
+    #         if result and "partners" in result:
+    #             follower_partner_ids = [
+    #                 item["id"] for item in result["partners"]
+    #             ]
+    #         else:
+    #             follower_partner_ids = []
 
-            for record in self:
-                teacher_users = record.mapped("teacher_ids.res_users_id")
+    #         for record in self:
+    #             teacher_users = record.mapped("teacher_ids.res_users_id")
 
-                for user in teacher_users:
-                    partner = user.partner_id
+    #             for user in teacher_users:
+    #                 partner = user.partner_id
 
-                    if partner.id in follower_partner_ids:
-                        continue
+    #                 if partner.id in follower_partner_ids:
+    #                     continue
 
-                    result["partners"].append(
-                        {
-                            "id": partner.id,
-                            "active": True,
-                            "share": False,
-                            "groups": user.groups_id.ids,
-                            "notif": "email",
-                            "type": "user",
-                        }
-                    )
+    #                 result["partners"].append(
+    #                     {
+    #                         "id": partner.id,
+    #                         "active": True,
+    #                         "share": False,
+    #                         "groups": user.groups_id.ids,
+    #                         "notif": "email",
+    #                         "type": "user",
+    #                     }
+    #                 )
 
-        return result
+    #     return result
 
     @staticmethod
     def _time_interval(start, stop):
@@ -1117,7 +1117,7 @@ class AcademyTrainingSession(models.Model):
                     name = _("New session")
             else:
                 if record.training_action_id:
-                    name = record.training_action_id.action_name
+                    name = record.training_action_id.name
                 elif record.task_id:
                     name = record.task_id.name
                 else:
@@ -1339,7 +1339,7 @@ class AcademyTrainingSession(models.Model):
                 reservation_values = {
                     "date_start": result.date_start,
                     "date_stop": result.date_stop,
-                    "name": result.training_action_id.action_name,
+                    "name": result.training_action_id.name,
                     "description": result.action_line_id.name,
                 }
 
@@ -1516,7 +1516,7 @@ class AcademyTrainingSession(models.Model):
         if action_id:
             action_obj = self.env["academy.training.action"]
             action_set = action_obj.browse(action_id)
-            values["task_name"] = action_set.action_name
+            values["task_name"] = action_set.name
 
         task_id = self.env.context.get("default_task_id", False)
         task_id = values.get("task_id", task_id)

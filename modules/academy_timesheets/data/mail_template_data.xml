@@ -4,7 +4,7 @@
 
   <record id="mail_template_group_schedule" model="mail.template">
     <field name="name">Group schedule</field>
-    <field name="subject">${object.action_name}</field>
+    <field name="subject">${object.name}</field>
     <field name="email_from">"${(object.company_id.name or user.company_id.name or user.name)}" &lt;${(object.company_id.email or user.company_id.email or user.email)}&gt;</field>
     <field name="email_to"/>
     <field name="reply_to">${user.name} &lt;${user.email}&gt;</field>
@@ -51,7 +51,7 @@
                     <p style="margin: 0.5em 0;">Hello,</p>
                     <p style="margin: 0.5em 0;">
                       I'm attaching, in PDF format, the class schedule corresponding to the group
-                      «<b><t t-out="object.action_name"/></b>».
+                      "<b><t t-out="object.name"/></b>".
                     </p>
                     <p style="margin: 0.5em 0;">
                       It is possible that to view the document you need to install a suitable viewer,
@@ -421,7 +421,7 @@
                       <p style="margin: 0.5em 0;">
                         I'm reaching out to you to provide you with information regarding the training session
                         directed towards the group
-                        <strong><t t-out="object.training_action_id.action_name"/></strong>,
+                        <strong><t t-out="object.training_action_id.name"/></strong>,
                         part of the <strong><t t-out="object.training_program_id.name"/></strong> course,
                         which will focus on the subject
                         <strong><t t-out="object.action_line_id.competency_name"/></strong>.

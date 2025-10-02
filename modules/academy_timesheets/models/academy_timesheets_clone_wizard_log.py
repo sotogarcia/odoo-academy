@@ -178,7 +178,7 @@ class AcademyTimesheetsCloneWizardLog(models.Model):
         teacher_obj = self.env["academy.teacher"]
 
         if isinstance(target, type(action_obj)):
-            name = target.action_name
+            name = target.name
         elif isinstance(target, type(teacher_obj)):
             name = target.name
         else:
@@ -192,7 +192,7 @@ class AcademyTimesheetsCloneWizardLog(models.Model):
         target_ref = self._get_target_reference(target)
         model, _id = target_ref.split(",")
 
-        msg = _("Change target to «{}». Model: {}, ID: {}")
+        msg = _('Change target to "{}". Model: {}, ID: {}')
         msg = msg.format(name, model, _id)
 
         sequence = sequence + 10
@@ -236,7 +236,7 @@ class AcademyTimesheetsCloneWizardLog(models.Model):
     def found(self, sequence, wizard, target, from_date, session):
         name = self._get_target_name(target)
 
-        msg = _("Previous session at {} was found, at {}, for «{}»")
+        msg = _('Previous session at {} was found, at {}, for "{}"')
         msg = msg.format(
             session.date_start.strftime("%X"), from_date.strftime("%x"), name
         )
@@ -260,7 +260,7 @@ class AcademyTimesheetsCloneWizardLog(models.Model):
     def delete(self, sequence, wizard, target, from_date):
         name = self._get_target_name(target)
 
-        msg = _("Previously found session, for «{}», with date {} was removed")
+        msg = _('Previously found session, for "{}", with date {} was removed')
         msg = msg.format(name, from_date.strftime("%x"))
 
         sequence = sequence + 10
@@ -283,7 +283,7 @@ class AcademyTimesheetsCloneWizardLog(models.Model):
         name = self._get_target_name(target)
 
         msg = _(
-            "Previously found session at {}, for «{}», with date {} could"
+            'Previously found session at {}, for "{}", with date {} could'
             " not be removed. System says: {}"
         )
         msg = msg.format(
@@ -314,7 +314,7 @@ class AcademyTimesheetsCloneWizardLog(models.Model):
     def clone(self, sequence, wizard, target, from_date, to_date, session):
         name = self._get_target_name(target)
 
-        msg = _("Session at {}, for «{}», with date {} was cloned to {}")
+        msg = _('Session at {}, for "{}", with date {} was cloned to {}')
         msg = msg.format(
             session.date_start.strftime("%X"),
             name,
@@ -344,7 +344,7 @@ class AcademyTimesheetsCloneWizardLog(models.Model):
         name = self._get_target_name(target)
 
         msg = _(
-            "Session at {}, for «{}», with date {} could not be cloned "
+            'Session at {}, for "{}", with date {} could not be cloned '
             "to {}. System says: {}"
         )
         msg = msg.format(

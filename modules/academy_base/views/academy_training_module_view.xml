@@ -269,7 +269,7 @@
     <field name="name">Training modules</field>
     <field name="res_model">academy.training.module</field>
     <field name="view_mode">kanban,list,form</field>
-
+    <field name="path">academy-training-module</field>
     <field name="target">current</field>
     <field name="domain">[('training_module_id', '=', False)]</field>
     <field name="context">{}</field>

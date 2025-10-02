@@ -4,7 +4,7 @@
 
         <record id="academy_training_session_teacher_rel_demo" model="academy.training.session.teacher.rel">
             <field name="session_id" ref="academy_timesheets.academy_training_session_1" />
-            <field name="teacher_id" ref="academy_base.academy_teacher_teacher_demo" />
+            <field name="teacher_id" ref="academy_base.academy_res_partner_demo_teacher_1" />
         </record>
 
 </odoo>

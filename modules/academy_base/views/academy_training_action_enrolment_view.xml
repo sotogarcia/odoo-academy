@@ -261,7 +261,7 @@
     <field name="name">Enrolments</field>
     <field name="res_model">academy.training.action.enrolment</field>
     <field name="view_mode">list,pivot,kanban,form</field>
-
+    <field name="path">academy-action-enrolment</field>
     <field name="target">current</field>
     <field name="domain">[]</field>
     <field name="context">{'search_default_is_current': 1}</field>
@@ -335,14 +335,13 @@
     <field name="priority" eval="99"/>
     <field name="active" eval="True"/>
     <field name="arch" type="xml">
-      <list string="Current enrolments" create="true" delete="true" edit="true" editable="top">
-        <field name="enrolment_code" class="oe_field_enrolment_code oe_edit_only"/>
-        <field name="student_id" column_invisible="1"/>
-        <field name="training_action_id" class="oe_field_training_action_id"/>
-        <field name="register" class="oe_field_register" widget="date" string="Enrol"/>
-        <field name="deregister" class="oe_field_deregister" widget="date" string="Unenrol"/>
-        <field name="training_modality_id" class="oe_field_training_modality_id"
-          widget="many2many_tags"/>
+      <list string="Enrolments" create="1" delete="1" edit="1">
+        <field name="enrolment_code" class="oe_field_enrolment_code" />
+        <field name="training_action_id" class="oe_field_training_action_id"
+          domain="['|', ('date_stop', '=', False), ('date_stop', '>=', context_today().strftime('%%Y-%%m-%%d'))]"/>
+        <field name="training_modality_id" class="oe_field_training_modality_id" optional="show"/>
+        <field name="register" class="oe_field_register"/>
+        <field name="deregister" class="oe_field_deregister"/>
       </list>
     </field>
   </record>

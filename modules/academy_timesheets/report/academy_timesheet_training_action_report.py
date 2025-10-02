@@ -69,7 +69,7 @@ class AcademyTimesheetTrainingActionReport(models.AbstractModel):
 
             values[action.id] = {
                 "id": action.id,
-                "name": action.action_name,
+                "name": action.name,
                 "weeks": {},
             }
 

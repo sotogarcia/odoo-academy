@@ -92,7 +92,7 @@ class AcademyTrainingSessionTeacherRel(models.Model):
         (
             "unique_teacher_id",
             """EXCLUDE USING gist (
-                teacher_id WITH =,
+                teacher_id gist_int4_ops WITH =,
                 tsrange ( date_start, date_stop ) WITH &&
             ) WHERE (validate); -- Requires btree_gist""",
             "This teacher is occupied by another training action",

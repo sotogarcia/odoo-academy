@@ -224,7 +224,7 @@ class AcademyStudent(models.Model):
         domain = AND([domain, [("student_id", "=", self.id)]])
 
         action_values = {
-            "name": _("Enrolments for «{}»").format(self.name),
+            "name": _('Enrolments for "{}"').format(self.name),
             "type": action.type,
             "help": action.help,
             "domain": domain,

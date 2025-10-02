@@ -216,7 +216,7 @@
 
                 <div class="flex-fill ps-2 ps-md-0">
                   <main class="d-flex flex-column justify-content-start align-items-start">
-                    <h2 class="h4 text-truncate">
+                    <h2 class="h4">
                         <field name="display_name"/>
                     </h2>
                     <table border="0" cellpadding="0" cellspacing="0"
@@ -325,19 +325,19 @@
 
     <!-- Main window action for model.name -->
     <record id="action_training_action_act_window" model="ir.actions.act_window">
-        <field name="type">ir.actions.act_window</field>
-        <field name="name">Training actions</field>
-        <field name="res_model">academy.training.action</field>
-        <field name="view_mode">kanban,list,form</field>
-
-        <field name="target">current</field>
-        <field name="domain">[]</field>
-        <field name="context">{}</field>
-        <field name="search_view_id" ref="view_academy_training_action_search"/>
-        <field name="help" type="html">
-            <p class="oe_view_nocontent_create"> Click to add new training actions </p>
-            <p> There are no training actions yet </p>
-        </field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="name">Training actions</field>
+      <field name="res_model">academy.training.action</field>
+      <field name="view_mode">kanban,list,form</field>
+      <field name="path">academy-training-action</field>
+      <field name="target">current</field>
+      <field name="domain">[]</field>
+      <field name="context">{}</field>
+      <field name="search_view_id" ref="view_academy_training_action_search"/>
+      <field name="help" type="html">
+          <p class="oe_view_nocontent_create"> Click to add new training actions </p>
+          <p> There are no training actions yet </p>
+      </field>
     </record>
 
     <!-- Main menu for model.name -->

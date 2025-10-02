@@ -231,7 +231,7 @@ def get_by_ref(env, xmlid, raise_if_not_found=False):
     if isinstance(xmlid, (tuple, list)) and len(xmlid) == 2:
         xmlid = ".".join(xmlid)
     elif not isinstance(str):
-        msg = _("Invalid external identifier «{}» for help string")
+        msg = _('Invalid external identifier "{}" for help string')
         raise UserError(msg.format(xmlid))
 
     imd_obj = env["ir.model.data"]

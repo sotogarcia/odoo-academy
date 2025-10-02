@@ -145,7 +145,7 @@ class SessionSlot:
         except Exception as ex:
             msg = _(
                 "It is not possible to move the sessions between {} and "
-                "{}, to place them starting from {}. System says: «{}»"
+                '{}, to place them starting from {}. System says: "{}"'
             )
             msg.format(
                 self._date_start.strftime("%c"),

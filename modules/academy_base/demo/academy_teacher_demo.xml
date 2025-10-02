@@ -2,13 +2,15 @@
 
 <odoo noupdate="0">
 
-    <record id="academy_teacher_teacher_demo" model="academy.teacher">
-        <field name="partner_id" ref="academy_base.academy_res_partner_demo_teacher"/>
-    </record>
-
-    <record id="academy_teacher_admin_demo" model="academy.teacher">
-        <field name="signup">TEACH-ADM-01</field>
-        <field name="partner_id" ref="base.partner_admin"/>
+    <record id="academy_res_partner_demo_teacher_1" model="academy.teacher">
+      <field name="name">Vasili Arjípov</field>
+      <field name="vat">FICTVA1984000123</field>
+      <field name="email">vasili.arjipov@yandex.ru</field>
+      <field name="city">Orekhovo-Zuyevo</field>
+      <field name="zip">142647</field>
+      <field name="country_id" ref="base.ru"/>
+      <field name="street">Derevnya Zvorkovo, 105</field>
+      <field name="street2">Orekhovo-Zuyevskiy Urban District, Moscow Region</field>
     </record>
 
 </odoo>

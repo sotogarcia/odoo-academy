@@ -239,6 +239,7 @@
     <field name="name">Training frameworks</field>
     <field name="res_model">academy.training.framework</field>
     <field name="view_mode">kanban,list,form</field>
+    <field name="path">academy-training-framework</field>
     <field name="target">current</field>
     <field name="domain">[]</field>
     <field name="context">{}</field>

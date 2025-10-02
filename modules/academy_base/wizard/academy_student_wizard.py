@@ -102,7 +102,7 @@ class AcademyStudentWizard(models.TransientModel):
             elif hasattr(active_set, "student_ids"):
                 active_set = active_set.mapped("student_ids.id")
             else:
-                msg = _("Provided object «{}» has not students")
+                msg = _('Provided object "{}" has not students')
                 raise UserError(msg.format(active_set._name))
 
         return active_set

@@ -57,8 +57,7 @@
         <page string="Enrolments" class="oe_page_enrolments" accesskey="E" autofocus="autofocus">
           <field name="enrolment_ids" class="oe_field_current_enrolment_ids"
             domain="[('is_current', '=', True)]"
-            context="{'list_view_ref': 'academy_base.view_academy_training_action_enrolment_tree_embed'}"
-          />
+            context="{'list_view_ref': 'academy_base.view_academy_training_action_enrolment_tree_embed'}" />
         </page>
       </xpath>
     </field>
@@ -110,7 +109,7 @@
     <field name="name">Students</field>
     <field name="res_model">academy.student</field>
     <field name="view_mode">kanban,list,form</field>
-
+    <field name="path">academy-student</field>
     <field name="target">current</field>
     <field name="domain"
       eval="[('id', '&lt;&gt;', ref('academy_base.academy_student_default_template'))]"/>

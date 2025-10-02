@@ -8,7 +8,6 @@
         <field name="city">Naraío</field>
         <field name="zip">15576</field>
         <field name="country_id" ref="base.es"/>
-        <!-- <field name="company_name">YourCompany</field> -->
         <field name="street">Wolf Rock Place, unnumbered</field>
     </record>
 
@@ -18,7 +17,6 @@
         <field name="city">Naraío</field>
         <field name="zip">15576</field>
         <field name="country_id" ref="base.es"/>
-        <!-- <field name="company_name">YourCompany</field> -->
         <field name="street">Pear Tree Lane, 1</field>
     </record>
 
@@ -28,7 +26,6 @@
         <field name="city">Naraío</field>
         <field name="zip">15576</field>
         <field name="country_id" ref="base.es"/>
-        <!-- <field name="company_name">YourCompany</field> -->
         <field name="street">Campolabrado Village, 2</field>
     </record>
 
@@ -38,7 +35,6 @@
         <field name="city">Naraío</field>
         <field name="zip">15576</field>
         <field name="country_id" ref="base.es"/>
-        <!-- <field name="company_name">YourCompany</field> -->
         <field name="street">Peak Place, 19</field>
     </record>
 
@@ -48,7 +44,6 @@
         <field name="city">Naraío</field>
         <field name="zip">15576</field>
         <field name="country_id" ref="base.es"/>
-        <!-- <field name="company_name">YourCompany</field> -->
         <field name="street">Fontela Village, 4</field>
     </record>
 
@@ -57,7 +52,6 @@
         <field name="email">my@academy.com</field>
         <field name="city">Naraío</field>
         <field name="zip">15576</field>
-        <!-- <field name="country_id" ref="base.es"/> -->
         <field name="street">Castle Place, 3</field>
     </record>
 

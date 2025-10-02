@@ -34,19 +34,21 @@ Key features:
 - Defines and manages the main reference catalogs aligned with the Spanish
   National Catalogue of Professional Qualifications and Training Offers (LO 3/2022
   and RD 659/2023):
-  • Application scopes
-  • Training methodologies and modalities
-  • Knowledge areas
-  • Professional families, fields, sectors and categories
-  • Competency units (ECP) and training modules
-  • Qualification levels and educational attainment
-  • Professional qualifications
-  • Training frameworks (Grades A, B, C, D, E)
+
+  - Application scopes
+  - Training methodologies and modalities
+  - Knowledge areas
+  - Professional families, fields, sectors and categories
+  - Competency units (ECP) and training modules
+  - Qualification levels and educational attainment
+  - Professional qualifications
+  - Training frameworks (Grades A, B, C, D, E)
 
 - Supports core training entities:
-  • Training programs and program lines
-  • Training actions and action lines
-  • Enrolments, students, teachers, technical and support staff
+
+  - Training programs and program lines
+  - Training actions and action lines
+  - Enrolments, students, teachers, technical and support staff
 
 - Provides demo data, initial sequences, groups, wizards and security rules.
 
@@ -68,7 +70,6 @@ of reference catalogs and training structures across the platform.
     ],
     "data": [
         "data/res_partner_category_data.xml",
-        # "data/academy_teacher_data.xml",
         "data/mail_message_subtype_data.xml",
         "data/res_groups_data.xml",
         "data/ir_sequence_data.xml",
@@ -155,7 +156,7 @@ of reference catalogs and training structures across the platform.
         "demo/res_company_demo.xml",
         "demo/res_users.xml",
         "demo/academy_student_demo.xml",
-        # "demo/academy_teacher_demo.xml",
+        "demo/academy_teacher_demo.xml",
         "demo/academy_professional_area.xml",
         "demo/academy_professional_category.xml",
         "demo/academy_professional_qualification.xml",

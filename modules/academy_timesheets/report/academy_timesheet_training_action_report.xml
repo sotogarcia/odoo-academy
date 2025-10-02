@@ -26,7 +26,7 @@
 
                     <section class="academy-post-test-test posted-test-body col-12">
                         <header>
-                            <h4 class="academy-timesheet-action-name mb-3"><t t-esc="o.action_name" /></h4>
+                            <h4 class="academy-timesheet-action-name mb-3"><t t-esc="o.name" /></h4>
                         </header>
 
                         <t t-foreach="values['weeks']" t-as="week">
@@ -151,9 +151,9 @@
             <field name="model">academy.training.action</field>
             <field name="report_type">qweb-pdf</field>
             <field name="report_name">academy_timesheets.view_academy_timesheet_training_action_qweb</field>
-            <field name="print_report_name">(object.action_name)</field>
+            <field name="print_report_name">(object.name)</field>
             <field name="attachment_use" eval="False" />
-            <field name="attachment">(object.action_name+'.pdf')</field>
+            <field name="attachment">(object.name+'.pdf')</field>
             <field name="paperformat_id" ref="academy_timesheets.paperformat_iso_216_din_476_serie_a_4_timesheet" />
             <field name="help">Weekly timetable for training actions</field>
             <field name="binding_model_id" ref="academy_base.model_academy_training_action" />

@@ -41,16 +41,18 @@ Key features:
 - Non-teaching tasks: register and schedule meetings, support duties and other
   tasks beyond teaching hours.
 - Wizards & automation:
-  • Clone sessions or full timetables across periods.
-  • Verification tools for timetable consistency.
-  • Search and allocate available teachers automatically.
-  • Send schedules by email and download/export in multiple formats.
+
+  - Clone sessions or full timetables across periods.
+  - Verification tools for timetable consistency.
+  - Search and allocate available teachers automatically.
+  - Send schedules by email and download/export in multiple formats.
 - Reports: generate structured timetables per student, teacher, training action or
   primary instructor, with customizable layouts.
 - Integration:
-  • Extends academy_base and facility_management to ensure consistency
+
+  - Extends academy_base and facility_management to ensure consistency
     between sessions, enrolments and reservations.
-  • Links with record ownership for access control and audit trails.
+  - Links with record ownership for access control and audit trails.
 - UI/UX: custom widgets, header buttons, calendar/list/kanban views, and CSS
   styles for printed and digital reports.
 

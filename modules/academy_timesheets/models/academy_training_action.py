@@ -250,7 +250,7 @@ class AcademyTrainingAction(models.Model):
         )
         views = self._updated_views(action, calendar_view_xid)
 
-        name = _("Sessions for {}").format(self.action_name)
+        name = _("Sessions for {}").format(self.name)
 
         ctx = self.env.context.copy()
         ctx.update(safe_eval(action.context))
