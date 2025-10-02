@@ -284,6 +284,23 @@ class AcademyTrainingActionGroup(models.Model):
             else:
                 record.lifespan = ""
 
+    training_modality_id = fields.Many2one(
+        string="Training modality",
+        required=True,
+        readonly=False,
+        index=True,
+        default=None,
+        help=(
+            "Defines how the training action is delivered, "
+            "such as face-to-face, online or blended."
+        ),
+        comodel_name="academy.training.modality",
+        domain=[],
+        context={},
+        ondelete="cascade",
+        auto_join=False,
+    )
+
     # -- Constraints ----------------------------------------------------------
 
     _sql_constraints = [

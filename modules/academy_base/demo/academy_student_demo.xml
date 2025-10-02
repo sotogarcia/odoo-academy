@@ -2,7 +2,7 @@
 
 <odoo noupdate="0">
 
-    <record id="academy_demo_student_1" model="academy.student">
+    <record id="academy_res_partner_demo_student_1" model="academy.student">
         <field name="name">Neil Perry</field>
         <field name="email">student</field>
         <!-- <field name="supplier" eval="False"/> -->
@@ -15,7 +15,7 @@
         <field name="street">60 Battery St</field>
     </record>
 
-    <record id="academy_demo_student_2" model="academy.student">
+    <record id="academy_res_partner_demo_student_2" model="academy.student">
         <field name="name">Todd Anderson</field>
         <field name="email">student</field>
         <!-- <field name="supplier" eval="False"/> -->
@@ -28,7 +28,7 @@
         <field name="street">70 Essex Way</field>
     </record>
 
-    <record id="academy_demo_student_3" model="academy.student">
+    <record id="academy_res_partner_demo_student_3" model="academy.student">
         <field name="name">Knox Overstreet</field>
         <field name="email">student</field>
         <!-- <field name="supplier" eval="False"/> -->
@@ -42,7 +42,7 @@
     </record>
 
 
-    <record id="academy_demo_student_4" model="academy.student">
+    <record id="academy_res_partner_demo_student_4" model="academy.student">
         <field name="name">Charles Dalton</field>
         <field name="email">student</field>
         <!-- <field name="supplier" eval="False"/> -->
@@ -55,7 +55,7 @@
         <field name="street">870 Williston Rd</field>
     </record>
 
-    <record id="academy_demo_student_5" model="academy.student">
+    <record id="academy_res_partner_demo_student_5" model="academy.student">
         <field name="name">Stephen Meeks</field>
         <field name="email">student</field>
         <!-- <field name="supplier" eval="False"/> -->

@@ -257,10 +257,10 @@ class AcademyTrainingActionEnrolment(models.Model):
     )
 
     training_group_id = fields.Many2one(
-        string='Training_group',
-        required=True,
+        string='Training group',
+        required=False,
         readonly=False,
-        index=True,
+        index=False,
         default=None,
         help=False,
         comodel_name='academy.training.action.group',
@@ -268,6 +268,21 @@ class AcademyTrainingActionEnrolment(models.Model):
         context={},
         ondelete='cascade',
         auto_join=False
+    )
+
+    action_line_ids = fields.Many2many(
+        string='Action lines',
+        required=False,
+        readonly=False,
+        index=True,
+        default=None,
+        help=False,
+        comodel_name='academy.training.action.line',
+        relation='academy_training_action_enrolment_action_line_rel',
+        column1='enrolment_id',
+        column2='action_line_id',
+        domain=[],
+        context={}
     )
 
     # -- Computed field: finalized --------------------------------------------

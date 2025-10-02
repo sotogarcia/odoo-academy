@@ -5,7 +5,7 @@
 ###############################################################################
 
 from odoo import models, fields, api
-from odoo.tools import safe_eval
+from odoo.tools.safe_eval import safe_eval
 from odoo.tools.translate import _
 from odoo.osv.expression import AND, TRUE_DOMAIN, FALSE_DOMAIN
 from odoo.exceptions import UserError, MissingError
@@ -1177,8 +1177,8 @@ class AcademyTrainingSession(models.Model):
         domain = [("session_id", "=", self.id)]
 
         view_modes = action.view_mode.split(",")
-        view_modes = [mode for mode in view_modes if mode != "tree"]
-        view_modes.insert(0, "tree")
+        view_modes = [mode for mode in view_modes if mode != "list"]
+        view_modes.insert(0, "list")
 
         serialized = {
             "type": "ir.actions.act_window",

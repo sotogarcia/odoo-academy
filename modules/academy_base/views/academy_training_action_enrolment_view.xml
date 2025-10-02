@@ -274,7 +274,7 @@
 
   <!-- Main menu for model.name -->
   <record id="menu_training_action_enrolment" model="ir.ui.menu">
-    <field name="name">Enrolments</field>
+    <field name="name">Training enrolments</field>
     <field name="sequence" eval="20"/>
     <field name="action" ref="action_training_action_enrolment_act_window"/>
     <field name="parent_id" ref="academy_base.menu_academy_monitoring"/>

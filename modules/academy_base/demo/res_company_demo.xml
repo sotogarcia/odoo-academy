@@ -6,7 +6,7 @@
         <field name="name">My Academy</field>
         <field name="partner_id" ref="res_company_my_academy_partner"/>
         <field name="currency_id" ref="base.EUR"/>
-        <field name="favicon" model="res.company" eval="obj()._get_default_favicon(original=True)"/>
+        <!-- <field name="favicon" model="res.company" eval="obj()._get_default_favicon(original=True)"/> -->
     </record>
 
 </odoo>

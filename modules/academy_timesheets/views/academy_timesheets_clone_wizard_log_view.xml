@@ -123,7 +123,7 @@
             <field name="type">ir.actions.act_window</field>
             <field name="name">Clone wizard log</field>
             <field name="res_model">academy.timesheets.clone.wizard.log</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
             <field name="target">current</field>
             <field name="domain">[]</field>
             <field name="context">{}</field>

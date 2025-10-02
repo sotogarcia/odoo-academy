@@ -418,7 +418,7 @@
             <field name="type">ir.actions.act_window</field>
             <field name="name">Sessions</field>
             <field name="res_model">academy.training.session</field>
-            <field name="view_mode">calendar,kanban,tree,pivot,form</field>
+            <field name="view_mode">calendar,kanban,list,pivot,form</field>
             <field name="target">current</field>
             <field name="domain">[]</field>
             <field name="context">{}</field>
@@ -434,10 +434,10 @@
 
         <!-- Main menu for model.name -->
         <record id="menu_sessions" model="ir.ui.menu" >
-            <field name="name">Sessions</field>
-            <field name="sequence" eval="10" />
+            <field name="name">Training sessions</field>
+            <field name="sequence" eval="15" />
             <field name="action" ref="action_sessions_act_window" />
-            <field name="parent_id" ref="academy_base.menu_academy_advanced" />
+            <field name="parent_id" ref="academy_base.menu_academy_monitoring" />
             <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
         </record>
 

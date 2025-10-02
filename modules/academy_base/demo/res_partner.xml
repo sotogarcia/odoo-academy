@@ -2,44 +2,54 @@
 
 <odoo noupdate="0">
 
-    <record id="academy_demo_consultant" model="res.partner">
+    <record id="academy_res_partner_demo_consultant" model="res.partner">
         <field name="name">Demo Consultant</field>
-        <field name="email">consultant</field>
+        <field name="email">consultant@example.com</field>
         <field name="city">Naraío</field>
         <field name="zip">15576</field>
         <field name="country_id" ref="base.es"/>
-        <field name="company_name">YourCompany</field>
-        <field name="street">Place of Chao, 5</field>
+        <!-- <field name="company_name">YourCompany</field> -->
+        <field name="street">Wolf Rock Place, unnumbered</field>
     </record>
 
-    <record id="academy_demo_teacher" model="res.partner">
+    <record id="academy_res_partner_demo_student" model="res.partner">
+        <field name="name">Demo student</field>
+        <field name="email">student@example.com</field>
+        <field name="city">Naraío</field>
+        <field name="zip">15576</field>
+        <field name="country_id" ref="base.es"/>
+        <!-- <field name="company_name">YourCompany</field> -->
+        <field name="street">Pear Tree Lane, 1</field>
+    </record>
+
+    <record id="academy_res_partner_demo_teacher" model="res.partner">
         <field name="name">Demo Teacher</field>
-        <field name="email">teacher</field>
+        <field name="email">teacher@example.com</field>
         <field name="city">Naraío</field>
         <field name="zip">15576</field>
         <field name="country_id" ref="base.es"/>
-        <field name="company_name">YourCompany</field>
-        <field name="street">Birch Forest, 4</field>
+        <!-- <field name="company_name">YourCompany</field> -->
+        <field name="street">Campolabrado Village, 2</field>
     </record>
 
-    <record id="academy_demo_technical" model="res.partner">
+    <record id="academy_res_partner_demo_technical" model="res.partner">
         <field name="name">Demo Technical</field>
-        <field name="email">technical</field>
+        <field name="email">technical@example.com</field>
         <field name="city">Naraío</field>
         <field name="zip">15576</field>
         <field name="country_id" ref="base.es"/>
-        <field name="company_name">YourCompany</field>
-        <field name="street">Dark Rock, 1</field>
+        <!-- <field name="company_name">YourCompany</field> -->
+        <field name="street">Peak Place, 19</field>
     </record>
 
-    <record id="academy_demo_manager" model="res.partner">
+    <record id="academy_res_partner_demo_manager" model="res.partner">
         <field name="name">Demo Manager</field>
-        <field name="email">manager</field>
+        <field name="email">manager@example.com</field>
         <field name="city">Naraío</field>
         <field name="zip">15576</field>
         <field name="country_id" ref="base.es"/>
-        <field name="company_name">YourCompany</field>
-        <field name="street">Peartree, 6</field>
+        <!-- <field name="company_name">YourCompany</field> -->
+        <field name="street">Fontela Village, 4</field>
     </record>
 
     <record id="res_company_my_academy_partner" model="res.partner">
@@ -47,8 +57,8 @@
         <field name="email">my@academy.com</field>
         <field name="city">Naraío</field>
         <field name="zip">15576</field>
-        <field name="country_id" ref="base.es"/>
-        <field name="street">Campolabrado, 1</field>
+        <!-- <field name="country_id" ref="base.es"/> -->
+        <field name="street">Castle Place, 3</field>
     </record>
 
 </odoo>

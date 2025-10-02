@@ -4,40 +4,32 @@
 
     <record id="academy_training_action_demo_1" model="academy.training.action">
         <field name="name">Free software in the office</field>
-        <field name="description">Introduces the basic features of the more used office
-            appliances</field>
+        <field name="description">Introduces the basic features of the more used office appliances</field>
         <field name="active">True</field>
-        <field name="date_start"
-            eval="(DateTime.today() - relativedelta(months=3)).strftime('%Y-%m-%d 21:00:00')"/>
-        <field name="date_stop"
-            eval="(DateTime.today() + relativedelta(months=3)).strftime('%Y-%m-%d 21:00:00')"/>
+        <field name="date_start" eval="(DateTime.today() - relativedelta(months=3)).strftime('%Y-%m-%d 21:00:00')"/>
+        <field name="date_stop" eval="(DateTime.today() + relativedelta(months=3)).strftime('%Y-%m-%d 21:00:00')"/>
         <field name="application_scope_id" ref="academy_base.academy_application_scope_public"/>
-        <field name="professional_category_id"
-            ref="academy_base.academy_professional_category_administrative"/>
-        <!-- <field name="training_action_category_id"></field> -->
+        <field name="professional_category_id" ref="academy_base.academy_professional_category_administrative"/>
         <field name="training_program_id" ref="academy_base.academy_training_program_ADGD0308"/>
         <field name="code">AGE2020</field>
         <field name="seating">5</field>
         <field name="excess">6</field>
+        <field name="training_modality_id" ref="academy_training_modality_classroom" />
     </record>
 
     <record id="academy_training_action_demo_2" model="academy.training.action">
         <field name="name">Microsoft Office XP</field>
-        <field name="description">Introduces the basic features of the more used Microsoft
-            appliances</field>
+        <field name="description">Introduces the basic features of the more used Microsoft appliances</field>
         <field name="active">True</field>
-        <field name="date_start"
-            eval="(DateTime.today() - relativedelta(months=3)).strftime('%Y-%m-%d 21:00:00')"/>
-        <field name="date_stop"
-            eval="(DateTime.today() + relativedelta(months=6)).strftime('%Y-%m-%d 21:00:00')"/>
+        <field name="date_start" eval="(DateTime.today() - relativedelta(months=3)).strftime('%Y-%m-%d 21:00:00')"/>
+        <field name="date_stop" eval="(DateTime.today() + relativedelta(months=6)).strftime('%Y-%m-%d 21:00:00')"/>
         <field name="application_scope_id" ref="academy_base.academy_application_scope_public"/>
-        <field name="professional_category_id"
-            ref="academy_base.academy_professional_category_administrative"/>
-        <!-- <field name="training_action_category_id"></field> -->
+        <field name="professional_category_id" ref="academy_base.academy_professional_category_administrative"/>
         <field name="training_program_id" ref="academy_base.academy_training_program_ms"/>
         <field name="code">AGE2002</field>
         <field name="seating">15</field>
         <field name="excess">20</field>
+        <field name="training_modality_id" ref="academy_training_modality_classroom" />
         <field name="company_id" ref="academy_base.res_company_my_academy"/>
     </record>
 
