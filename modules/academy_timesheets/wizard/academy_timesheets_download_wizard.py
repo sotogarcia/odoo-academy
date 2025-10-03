@@ -15,85 +15,84 @@ _logger = getLogger(__name__)
 
 
 class AcademyTimesheetsDownload(models.TransientModel):
-    """ Download timesheets
-    """
+    """Download timesheets"""
 
-    _name = 'academy.timesheets.download.wizard'
-    _description = u'Academy timesheets download'
+    _name = "academy.timesheets.download.wizard"
+    _description = "Academy timesheets download"
 
-    _rec_name = 'id'
-    _order = 'id DESC'
+    _rec_name = "id"
+    _order = "id DESC"
 
     mime = fields.Selection(
-        string='Format',
+        string="Format",
         required=True,
         readonly=False,
         index=False,
-        default='pdf',
-        help='Document file format',
-        selection=[('pdf', 'PDF document'), ('html', 'Webpage')]
+        default="pdf",
+        help="Document file format",
+        selection=[("pdf", "PDF document"), ("html", "Webpage")],
     )
 
     week = fields.Selection(
-        string='Week',
+        string="Week",
         required=True,
         readonly=False,
         index=False,
-        default='next',
-        help='week corresponding to the schedule',
+        default="next",
+        help="week corresponding to the schedule",
         selection=[
-            ('last', 'Previous week'),
-            ('current', 'Current week'),
-            ('next', 'Next week'),
-            ('other', 'Choose date')
-        ]
+            ("last", "Previous week"),
+            ("current", "Current week"),
+            ("next", "Next week"),
+            ("other", "Choose date"),
+        ],
     )
 
     week_date = fields.Date(
-        string='Week date',
+        string="Week date",
         required=False,
         readonly=False,
         index=False,
         default=lambda self: fields.Date.context_today(self),
-        help='Date in the target week'
+        help="Date in the target week",
     )
 
     download = fields.Boolean(
-        string='Download',
+        string="Download",
         required=False,
         readonly=False,
         index=False,
         default=False,
-        help='Check it to force download timesheet document'
+        help="Check it to force download timesheet document",
     )
 
     target_ref = fields.Reference(
-        string='Target',
+        string="Target",
         required=True,
         readonly=False,
         index=False,
         default=lambda self: self.default_target_ref(),
-        help='Choose target elemento to download timesheet',
+        help="Choose target elemento to download timesheet",
         selection=[
-            ('academy.training.action', 'Training action'),
-            ('academy.teacher', 'Teacher'),
-            ('academy.student', 'Student')
-        ]
+            ("academy.training.action", "Training action"),
+            ("academy.teacher", "Teacher"),
+            ("academy.student", "Student"),
+        ],
     )
 
     url = fields.Char(
-        string='URL',
+        string="URL",
         required=False,
         readonly=True,
         index=False,
         default=None,
-        help='URL can be used to download document',
+        help="URL can be used to download document",
         size=2048,
         translate=False,
-        compute='compute_url'
+        compute="compute_url",
     )
 
-    @api.depends('target_ref', 'download', 'mime', 'week', 'week_date')
+    @api.depends("target_ref", "download", "mime", "week", "week_date")
     def compute_url(self):
         for record in self:
             if not record.target_ref:
@@ -110,52 +109,53 @@ class AcademyTimesheetsDownload(models.TransientModel):
     def default_target_ref(self):
         result = None
 
-        active_model = self.env.context.get('active_model', False)
+        active_model = self.env.context.get("active_model", False)
         if active_model:
-            active_id = self.env.context.get('active_id', False)
+            active_id = self.env.context.get("active_id", False)
             if active_id:
                 result = self.env[active_model].browse(active_id)
 
         return result
 
     def _get_base_url(self):
-        config = self.env['ir.config_parameter']
-        return config.get_param('web.base.url')
+        config = self.env["ir.config_parameter"]
+        return config.get_param("web.base.url")
 
     def _compute_relative_url(self):
-        action_obj = self.env['academy.training.action']
-        teacher_obj = self.env['academy.teacher']
-        student_obj = self.env['academy.student']
+        action_obj = self.env["academy.training.action"]
+        teacher_obj = self.env["academy.teacher"]
+        student_obj = self.env["academy.student"]
 
         if isinstance(self.target_ref, type(action_obj)):
-            url = '/academy-timesheets/training/{target_id}/schedule'
+            url = "/academy-timesheets/training/{target_id}/schedule"
         elif isinstance(self.target_ref, type(teacher_obj)):
-            url = '/academy-timesheets/teacher/{target_id}/schedule'
+            url = "/academy-timesheets/teacher/{target_id}/schedule"
         elif isinstance(self.target_ref, type(student_obj)):
-            url = '/academy-timesheets/student/{target_id}/schedule'
+            url = "/academy-timesheets/student/{target_id}/schedule"
         else:
-            raise UserError(_('Invalid target item'))
+            raise UserError(_("Invalid target item"))
 
         return url.format(target_id=self.target_ref.id)
 
     def _compute_query_string(self):
-        pattern = '?week={week}&format={mime}&download={download}'
+        pattern = "?week={week}&format={mime}&download={download}"
 
-        if self.week == 'other':
-            week = self.week_date.strftime('%Y-%m-%d')
+        if self.week == "other":
+            week = self.week_date.strftime("%Y-%m-%d")
         else:
             week = self.week
 
         return pattern.format(
-            week=week, mime=self.mime, download=self.download)
+            week=week, mime=self.mime, download=self.download
+        )
 
     def perform_action(self):
         self.ensure_one()
 
         return {
-            'name': _('Scheduler document'),
-            'res_model': 'ir.actions.act_url',
-            'type': 'ir.actions.act_url',
-            'target': 'self',
-            'url': self.url
+            "name": self.env._("Scheduler document"),
+            "res_model": "ir.actions.act_url",
+            "type": "ir.actions.act_url",
+            "target": "self",
+            "url": self.url,
         }

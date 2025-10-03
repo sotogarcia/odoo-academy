@@ -61,7 +61,7 @@
                                                 <td style="width: 58%">
                                                     <strong class="d-block text-truncate text-uppercase"><t t-esc="session['task_name']" /></strong>
                                                     <t t-if="session['training_action']">
-                                                        <span class="d-block text-truncate"><t t-esc="session['competency_unit']" /></span>
+                                                        <span class="d-block text-truncate"><t t-esc="session['action_line']" /></span>
                                                     </t>
                                                     <t t-else="">
                                                         <span class="d-block text-truncate">Non-teaching task</span>

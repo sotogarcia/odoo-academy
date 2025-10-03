@@ -15,10 +15,10 @@ from logging import getLogger
 _logger = getLogger(__name__)
 
 
-class AcademyCompetencyUnit(models.Model):
+class AcademyTrainingActionLine(models.Model):
     """Append fields to set teachers"""
 
-    _inherit = ["academy.competency.unit"]
+    _inherit = ["academy.training.action.line"]
 
     session_ids = fields.One2many(
         string="Sessions",
@@ -26,7 +26,7 @@ class AcademyCompetencyUnit(models.Model):
         readonly=False,
         index=False,
         default=None,
-        help="All sessions for competency unit",
+        help="All sessions for program unit",
         comodel_name="academy.training.session",
         inverse_name="action_line_id",
         domain=[],
@@ -57,7 +57,7 @@ class AcademyCompetencyUnit(models.Model):
                 acu."id" AS action_line_id,
                 COUNT ( ats."id" ) :: INTEGER AS session_count
             FROM
-                academy_competency_unit AS acu
+                academy_training_action_line AS acu
             LEFT JOIN academy_training_session AS ats
                 ON ats.action_line_id = acu."id" AND ats.active
             GROUP BY
@@ -109,7 +109,7 @@ class AcademyCompetencyUnit(models.Model):
                 acu."id" AS action_line_id,
                 COUNT ( ats."id" ) :: INTEGER AS session_count
             FROM
-                academy_competency_unit AS acu
+                academy_training_action_line AS acu
             LEFT JOIN academy_training_session AS ats
                 ON ats.action_line_id = acu."id"
                 AND ats.active AND ats."state" = 'draft'
@@ -139,7 +139,7 @@ class AcademyCompetencyUnit(models.Model):
     def view_timesheets(self):
         action_xid = (
             "academy_timesheets."
-            "action_academy_competency_unit_timesheet_act_window"
+            "action_academy_training_action_line_timesheet_act_window"
         )
         action = self.env.ref(action_xid)
 

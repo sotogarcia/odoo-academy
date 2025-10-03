@@ -24,8 +24,8 @@ class TestAcademyTestsSessionSlot(TransactionCase):
         action_xid = "academy_base.academy_training_action_demo_2"
         self._training_action = self.env.ref(action_xid)
 
-        competency_xid = "academy_base.academy_competency_unit_office"
-        self._competency_unit = self.env.ref(competency_xid)
+        competency_xid = "academy_base.academy_training_action_line_office"
+        self._action_line = self.env.ref(competency_xid)
 
         self.date_base = datetime(year=2001, month=1, day=1)
 
@@ -40,7 +40,7 @@ class TestAcademyTestsSessionSlot(TransactionCase):
             "active": True,
             "state": "ready",
             "training_action_id": self._training_action.id,
-            "action_line_id": self._competency_unit.id,
+            "action_line_id": self._action_line.id,
             "date_start": date_start,
             "date_stop": date_stop,
             "validate": validate,

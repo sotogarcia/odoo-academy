@@ -67,7 +67,7 @@ class SessionSlot:
         self._date_stop = date_stop
 
         if date_stop <= date_start:
-            msg = _("Slot cannot end ({}) before starting ({})")
+            msg = self.env._("Slot cannot end ({}) before starting ({})")
             date_start = self._date_start.strftime("%x %X")
             date_stop = self._date_stop.strftime("%x %X")
             raise ValidationError(msg.format(date_start, date_stop))
@@ -120,14 +120,16 @@ class SessionSlot:
             while start < free_stop:
                 unit_id, untaught = self._next_available(cu_time)
                 if not (unit_id and untaught):
-                    msg = _("There are not enough competency units")
+                    msg = self.env._(
+                        "There are not enough program lines units"
+                    )
                     raise UserError(msg)
 
                 delay = self._float_interval(start, free_stop)
                 delay = min(delay, untaught)
                 stop = self._date_addition(start, delay)
 
-                piece = SessionPiece(env, start, stop, competency=unit_id)
+                piece = SessionPiece(env, start, stop, action_line=unit_id)
                 self._pieces.append(piece)
 
                 cu_time[unit_id] -= delay
@@ -251,7 +253,7 @@ class SessionSlot:
                     items.append(item)
 
                 td = piece.date_stop - piece.date_start
-                item = self._piece_repr(td, piece.competency.id)
+                item = self._piece_repr(td, piece.action_line.id)
                 items.append(item)
 
                 top = piece._date_stop
@@ -263,7 +265,7 @@ class SessionSlot:
 
             items = ", ".join(items)
         else:
-            items = _("Empty")
+            items = self.env._("Empty")
 
         return "SessionSlot({}: {})".format(self._date_start, items)
 
@@ -281,13 +283,13 @@ class SessionSlot:
 
 class SessionPiece:
     def __init__(
-        self, env, date_start, date_stop, session=None, competency=None
+        self, env, date_start, date_stop, session=None, action_line=None
     ):
         self._date_start = date_start
         self._date_stop = date_stop
 
         if date_stop <= date_start:
-            msg = _("Piece cannot end ({}) before starting ({})")
+            msg = self.env._("Piece cannot end ({}) before starting ({})")
             date_start = self._date_start.strftime("%x %X")
             date_stop = self._date_stop.strftime("%x %X")
             raise ValidationError(msg.format(date_start, date_stop))
@@ -303,19 +305,19 @@ class SessionPiece:
         else:
             self._session = session
 
-        if not competency and self._session:
-            self._competency_unit = self._session.action_line_id
+        if not action_line and self._session:
+            self._action_line = self._session.action_line_id
         else:
-            if isinstance(competency, int):
-                competency_obj = self._env["academy.competency.unit"]
-                self._competency_unit = competency_obj.browse(competency)
+            if isinstance(action_line, int):
+                action_line_obj = self._env["academy.training.action.line"]
+                self._action_line = action_line_obj.browse(action_line)
             else:
-                self._competency_unit = competency
+                self._action_line = action_line
 
         try:
-            self._competency_unit.ensure_one()
+            self._action_line.ensure_one()
         except Exception as ex:
-            msg = _("Piece must have a valid competency unit. ({})")
+            msg = self.env._("Piece must have a valid action_line unit. ({})")
             raise ValidationError(msg.format(ex))
 
     @property
@@ -335,15 +337,15 @@ class SessionPiece:
         return self._session
 
     @property
-    def competency(self):
-        return self._competency_unit
+    def action_line(self):
+        return self._action_line
 
     def move(self, offset):
         self._date_start = self._date_start + offset
         self._date_stop = self._date_stop + offset
 
         if self._date_stop <= self._date_start:
-            msg = _("Piece cannot end ({}) before starting ({})")
+            msg = self.env._("Piece cannot end ({}) before starting ({})")
             date_start = self._date_start.strftime("%x %X")
             date_stop = self._date_stop.strftime("%x %X")
             raise ValidationError(msg.format(date_start, date_stop))
@@ -354,7 +356,7 @@ class SessionPiece:
             {
                 "date_start": self._date_start,
                 "date_stop": self._date_stop,
-                "action_line_id": self._competency_unit.id,
+                "action_line_id": self._action_line.id,
             }
         )
 
@@ -370,7 +372,7 @@ class SessionPiece:
 
         if bool(self._session):
             cu_changed = (
-                self._session.action_line_id.id != self._competency_unit.id
+                self._session.action_line_id.id != self._action_line.id
             )
             date_start_changed = self._session.date_start != self.date_start
             date_stop_changed = self._session.date_start != self.date_start
@@ -386,6 +388,6 @@ class SessionPiece:
         tp = "{hs:d}:{ms:02d}:{ss:02d}" if seconds else "{hs:d}:{ms:02d}"
         tm = tp.format(hs=hours, ms=minutes, ss=seconds)
 
-        cuid = self._competency_unit.id
+        cuid = self._action_line.id
 
         return "SessionPiece({}: {} ({}))".format(self._date_start, tm, cuid)

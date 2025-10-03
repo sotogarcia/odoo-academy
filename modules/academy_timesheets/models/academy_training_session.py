@@ -19,28 +19,6 @@ from logging import getLogger
 
 _logger = getLogger(__name__)
 
-CHECK_TRAINING_TASK = """
-    CHECK(
-        (kind <> \'teach\') OR
-        (
-            training_action_id IS NOT NULL
-            AND action_line_id IS NOT NULL
-            AND task_id IS NULL
-        )
-    )
-"""
-
-CHECK_NON_TRAINING_TASK = """
-    CHECK(
-        (kind <> \'task\') OR
-        (
-            task_id IS NOT NULL
-            AND training_action_id IS NULL
-            AND action_line_id IS NULL
-        )
-    )
-"""
-
 
 class AcademyTrainingSession(models.Model):
     """Temporarily delimited phase or act in which part of a training action
@@ -115,29 +93,10 @@ class AcademyTrainingSession(models.Model):
 
     company_id = fields.Many2one(
         string="Company",
-        required=True,
-        readonly=True,
-        index=True,
-        default=lambda self: self.env.company,
         help="The company this record belongs to",
-        comodel_name="res.company",
-        domain=[],
-        context={},
-        ondelete="cascade",
-        auto_join=False,
-        compute="_compute_company_id",
+        related="training_action_id.company_id",
         store=True,
     )
-
-    @api.depends("training_action_id", "task_id")
-    def _compute_company_id(self):
-        for record in self:
-            if record.training_action_id:
-                record.company_id = record.training_action_id.company_id
-            elif record.task_id:
-                record.company_id = record.task_id.company_id
-            else:
-                record.company_id = None
 
     task_id = fields.Many2one(
         string="Non-teaching task",
@@ -155,7 +114,7 @@ class AcademyTrainingSession(models.Model):
     )
 
     training_program_id = fields.Many2one(
-        string="Training activity",
+        string="Training program",
         related="training_action_id.training_program_id",
     )
 
@@ -180,7 +139,7 @@ class AcademyTrainingSession(models.Model):
             elif record.task_id:
                 record.task_name = record.task_id.name
             else:
-                record.task_name = _("New session")
+                record.task_name = self.env._("New session")
 
     @api.onchange("training_action_id")
     def _onchange_training_action_id(self):
@@ -205,8 +164,8 @@ class AcademyTrainingSession(models.Model):
         readonly=False,
         index=True,
         default=None,
-        help="Related competency unit",
-        comodel_name="academy.training.program.line",
+        help="Related program unit",
+        comodel_name="academy.training.action.line",
         domain=[],
         context={},
         ondelete="cascade",
@@ -214,55 +173,55 @@ class AcademyTrainingSession(models.Model):
         tracking=True,
     )
 
-    @api.onchange("action_line_id")
-    def _onchange_action_line_id(self):
-        for record in self:
-            unit = record.action_line_id
-            action = record.training_action_id
+    # @api.onchange("action_line_id")
+    # def _onchange_action_line_id(self):
+    #     for record in self:
+    #         unit = record.action_line_id
+    #         action = record.training_action_id
 
-            if unit and action:
-                facility_set = unit.facility_assignment_ids.filtered(
-                    lambda x: x.training_action_id.id == action.id
-                )
+    #         if unit and action:
+    #             facility_set = unit.facility_assignment_ids.filtered(
+    #                 lambda x: x.training_action_id.id == action.id
+    #             )
 
-                if facility_set:
-                    record.reservation_ids = None
+    #             if facility_set:
+    #                 record.reservation_ids = None
 
-                    o2m_ops = [(5, 0, 0)]
-                    for assign in facility_set:
-                        values = {
-                            "facility_id": assign.facility_id.id,
-                            "sequence": assign.sequence,
-                        }
-                        o2m_op = (0, None, values)
-                        o2m_ops.append(o2m_op)
+    #                 o2m_ops = [(5, 0, 0)]
+    #                 for assign in facility_set:
+    #                     values = {
+    #                         "facility_id": assign.facility_id.id,
+    #                         "sequence": assign.sequence,
+    #                     }
+    #                     o2m_op = (0, None, values)
+    #                     o2m_ops.append(o2m_op)
 
-                    record.reservation_ids = o2m_ops
+    #                 record.reservation_ids = o2m_ops
 
-                teacher_set = unit.teacher_assignment_ids.filtered(
-                    lambda x: x.training_action_id.id == action.id
-                )
+    #             teacher_set = unit.teacher_assignment_ids.filtered(
+    #                 lambda x: x.training_action_id.id == action.id
+    #             )
 
-                if teacher_set:
-                    record.teacher_assignment_ids = None
+    #             if teacher_set:
+    #                 record.teacher_assignment_ids = None
 
-                    o2m_ops = [(5, 0, 0)]
-                    for assign in teacher_set:
-                        values = {
-                            "teacher_id": assign.teacher_id.id,
-                            "sequence": assign.sequence,
-                        }
-                        o2m_op = (0, None, values)
-                        o2m_ops.append(o2m_op)
+    #                 o2m_ops = [(5, 0, 0)]
+    #                 for assign in teacher_set:
+    #                     values = {
+    #                         "teacher_id": assign.teacher_id.id,
+    #                         "sequence": assign.sequence,
+    #                     }
+    #                     o2m_op = (0, None, values)
+    #                     o2m_ops.append(o2m_op)
 
-                    record.teacher_assignment_ids = o2m_ops
+    #                 record.teacher_assignment_ids = o2m_ops
 
     teacher_assignment_ids = fields.One2many(
         string="Teacher assignments",
         required=True,
         readonly=False,
         index=True,
-        default=lambda self: self.default_teacher_assignment_ids(),
+        default=None,  # lambda self: self.default_teacher_assignment_ids(),
         help=False,
         comodel_name="academy.training.session.teacher.rel",
         inverse_name="session_id",
@@ -273,19 +232,19 @@ class AcademyTrainingSession(models.Model):
         copy=False,
     )
 
-    def default_teacher_assignment_ids(self):
-        result = None
+    # def default_teacher_assignment_ids(self):
+    #     result = None
 
-        teacher_id = self.env.context.get("default_primary_teacher_id", None)
-        if teacher_id and isinstance(teacher_id, int) and teacher_id > 0:
-            teacher_obj = self.env["academy.teacher"]
-            teacher_set = teacher_obj.browse(teacher_id)
+    #     teacher_id = self.env.context.get("default_primary_teacher_id", None)
+    #     if teacher_id and isinstance(teacher_id, int) and teacher_id > 0:
+    #         teacher_obj = self.env["academy.teacher"]
+    #         teacher_set = teacher_obj.browse(teacher_id)
 
-            if teacher_set:
-                values = {"teacher_id": teacher_set.id, "sequence": 1}
-                result = [(0, 0, values)]
+    #         if teacher_set:
+    #             values = {"teacher_id": teacher_set.id, "sequence": 1}
+    #             result = [(0, 0, values)]
 
-        return result
+    #     return result
 
     teacher_ids = fields.Many2manyView(
         string="Teachers",
@@ -634,12 +593,30 @@ class AcademyTrainingSession(models.Model):
     _sql_constraints = [
         (
             "check_training_task",
-            CHECK_TRAINING_TASK,
-            "Teaching sessions must be linked to a competency unit",
+            """
+            CHECK(
+                (kind <> \'teach\') OR
+                (
+                    training_action_id IS NOT NULL
+                    AND action_line_id IS NOT NULL
+                    AND task_id IS NULL
+                )
+            )
+            """,
+            "Teaching sessions must be linked to a program unit",
         ),
         (
             "check_non_training_task",
-            CHECK_NON_TRAINING_TASK,
+            """
+                CHECK(
+                    (kind <> \'task\') OR
+                    (
+                        task_id IS NOT NULL
+                        AND training_action_id IS NULL
+                        AND action_line_id IS NULL
+                    )
+                )
+            """,
             "Non-teaching sessions must be linked to a task",
         ),
         (
@@ -732,7 +709,7 @@ class AcademyTrainingSession(models.Model):
             return session.get_tz() if session else False
 
         except Exception:
-            msg = _("Session with id #{} not found")
+            msg = self.env._("Session with id #{} not found")
             _logger.error(msg.format(message.res_id))
             return None
 
@@ -1099,41 +1076,48 @@ class AcademyTrainingSession(models.Model):
 
         return values
 
-    def name_get(self):
-        result = []
-
+    @api.depends(
+        "date_start",
+        "date_stop",
+        "training_action_id",
+        "training_action_id.name",
+        "task_id",
+        "task_id.name",
+    )
+    @api.depends_context(
+        "lang", "name_get_session_interval", "default_training_action_id"
+    )
+    def _compute_display_name(self):
         for record in self:
             if self.env.context.get("name_get_session_interval", False):
-                date_base = record.date_start.strftime("%d-%m-%Y")
-                time_start = record.date_start.strftime("%H:%M")
-                time_stop = record.date_stop.strftime("%H:%M")
-
-                name = "{} ({} - {})".format(date_base, time_start, time_stop)
+                if record.date_start and record.date_stop:
+                    dt_start = fields.Datetime.context_timestamp(
+                        record, record.date_start
+                    )
+                    dt_stop = fields.Datetime.context_timestamp(
+                        record, record.date_stop
+                    )
+                    date_base = dt_start.strftime("%d-%m-%Y")
+                    time_start = dt_start.strftime("%H:%M")
+                    time_stop = dt_stop.strftime("%H:%M")
+                    name = f"{date_base} ({time_start} - {time_stop})"
+                else:
+                    name = self.env._("New session")
 
             elif self.env.context.get("default_training_action_id", False):
                 if record.action_line_id:
-                    name = record.action_line_id.competency_name
+                    name = record.action_line_id.name
                 else:
-                    name = _("New session")
+                    name = self.env._("New session")
             else:
                 if record.training_action_id:
                     name = record.training_action_id.name
                 elif record.task_id:
                     name = record.task_id.name
                 else:
-                    name = _("New session")
+                    name = self.env._("New session")
 
-            result.append((record.id, name))
-
-        return result
-
-    # @api.model
-    # def _where_calc(self, domain, active_test=True):
-    #     if not any(item[0] == 'state' for item in domain):
-    #         domain = [('state', '=', 'ready')] + domain
-
-    #     _super = super(AcademyTrainingSession, self)
-    #     return _super._where_calc(domain, active_test)
+            record.display_name = name
 
     def view_timesheets(self):
         action_xid = (
@@ -1184,7 +1168,7 @@ class AcademyTrainingSession(models.Model):
             "type": "ir.actions.act_window",
             "res_model": "academy.training.session.invitation",
             "target": "current",
-            "name": _("Invitations"),
+            "name": self.env._("Invitations"),
             "view_mode": ",".join(view_modes),
             "domain": domain,
             "context": ctx,
@@ -1219,7 +1203,7 @@ class AcademyTrainingSession(models.Model):
             "type": "ir.actions.act_window",
             "res_model": "facility.reservation",
             "target": "current",
-            "name": _("Reservations"),
+            "name": self.env._("Reservations"),
             "view_mode": ",".join(view_modes),
             "domain": domain,
             "context": ctx,
@@ -1246,7 +1230,7 @@ class AcademyTrainingSession(models.Model):
             "type": "ir.actions.act_window",
             "res_model": action.res_model,
             "target": "current",
-            "name": _("Teachers"),
+            "name": self.env._("Teachers"),
             "view_mode": action.view_mode,
             "domain": domain,
             "context": ctx,
@@ -1587,7 +1571,7 @@ class AcademyTrainingSession(models.Model):
         teacher = teacher_obj.search(domain, limit=1)
 
         if not teacher:
-            msg = _("You currently do not have teaching activity.")
+            msg = self.env._("You currently do not have teaching activity.")
             raise UserError(msg)
 
         act_window = teacher.view_sessions(definitive=False)
@@ -1603,11 +1587,11 @@ class AcademyTrainingSession(models.Model):
         teacher = teacher_obj.search(domain, limit=1)
 
         if not teacher:
-            msg = _("You currently do not have teaching activity.")
+            msg = self.env._("You currently do not have teaching activity.")
             raise UserError(msg)
 
         return {
-            "name": _("My schedule"),
+            "name": self.env._("My schedule"),
             "type": "ir.actions.act_url",
             "url": "/academy-timesheets/teacher/schedule",
             "target": "blank",

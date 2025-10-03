@@ -28,8 +28,8 @@ class AcademyTimesheetTrainingActionReport(models.AbstractModel):
     _description = "Academy timesheet training action report"
 
     def _read_record_values(self, session):
-        competency_unit = session.action_line_id.competency_name
-        competency_unit = truncate_name(competency_unit, 64, 160)
+        action_line_id = session.action_line_id.name
+        action_line_id = truncate_name(action_line_id, 64, 160)
 
         facility = session.primary_facility_id.name
         teacher = session.primary_teacher_id.name
@@ -39,7 +39,7 @@ class AcademyTimesheetTrainingActionReport(models.AbstractModel):
             "id": session.id,
             "date": self.date_str(session.date_start),
             "interval": self.time_str(session),
-            "competency_unit": competency_unit,
+            "action_line_id": action_line_id,
             "facility": facility,
             "teacher": teacher,
         }

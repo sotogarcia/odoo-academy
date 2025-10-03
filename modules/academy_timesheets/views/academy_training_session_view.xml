@@ -49,8 +49,16 @@
             <field name="active" eval="True" />
             <field name="arch" type="xml">
                 <form string="academy_training_session_form" create="1" delete="1" edit="1">
+                    <field name="id" invisible="1" />
+                    <field name="active" invisible="1"/>
+                    <field name="company_id" invisible="1" />
+                    <field name="training_action_id" invisible="1" />
+                    <field name="task_id" invisible="1" />
+                    <field name="training_program_id" invisible="1" />
+                    <field name="create_date" invisible="1" />
+
                     <header>
-                        <field name="state" widget="statusbar" clickable="1"
+                        <field name="state" widget="statusbar" options="{'clickable': 1}"
                             groups="academy_base.academy_group_technical" />
                     </header>
 
@@ -73,15 +81,7 @@
                         <widget name="web_ribbon" title="Archived" bg_color="bg-danger"
                             invisible="active == True"/>
 
-                        <div class="oe_title">
-                            <field name="id" invisible="1" />
-                            <field name="active" invisible="1"/>
-                            <field name="company_id" invisible="1" />
-                            <field name="training_action_id" invisible="1" />
-                            <field name="task_id" invisible="1" />
-                            <field name="training_program_id" invisible="1" />
-                            <field name="create_date" invisible="1" />
-
+                        <div class="oe_title" id="title">
                             <label for="task_name" class="oe_edit_only" />
                             <h1>
                                 <field name="task_name" readonly="1"
@@ -89,40 +89,50 @@
                             </h1>
                         </div>
 
-                        <group col="6">
+                        <group col="2" string="Training/Task">
+                          <field name="kind" class="oe_field_kind"
+                            readonly="context.get('default_training_action_id', 0) or context.get('default_task_id', 0) or (create_date != False)" />
+                          <field name="task_id" class="oe_field_task_id"
+                            options="{'no_quick_create': True, 'no_create': True}"
+                            required="kind == 'task'" invisible="kind != 'task'" />
+                          <field name="training_action_id" class="oe_field_training_action_id"
+                            options="{'no_quick_create': True, 'no_create': True}"
+                            readonly="context.get('default_training_action_id', 0)"
+                            required="kind == 'teach'" invisible="kind != 'teach'" />
+                          <field name="action_line_id" class="oe_field_action_line_id"
+                            options="{'no_quick_create': True, 'no_create': True}" string="Unit"
+                            domain="[('training_program_id', '=', training_program_id)]"
+                            required="kind == 'teach'" invisible="kind != 'teach'" />
+                        </group>
+
+                        <group col="2" string="Interval">
+                          <group>
                             <field name="date_start" class="oe_field_date_start" colspan="2" />
                             <field name="date_stop" class="oe_field_date_stop" colspan="2" />
-                            <field name="date_delay" class="oe_field_date_delay" widget="float_time" colspan="2" />
-                        </group>
-
-                        <group col="4">
-                            <field name="kind" class="oe_field_kind"
-                                readonly="context.get('default_training_action_id', 0) or context.get('default_task_id', 0) or (create_date != False)" />
+                          </group>
+                          <group>
                             <field name="validate" class="oe_field_validate" colspan="2" />
-                            <field name="primary_teacher_id" class="oe_field_primary_teacher_id"
-                                options="{'no_quick_create': True, 'no_create': True}" />
-                            <field name="primary_facility_id" class="oe_field_primary_facility_id"
-                                options="{'no_quick_create': True, 'no_create': True}" />
+                            <field name="date_delay" class="oe_field_date_delay" widget="float_time" colspan="2" />
+                          </group>
                         </group>
 
-                        <group col="6" string="Training" invisible="kind != 'teach'">
-                            <field name="training_action_id" colspan="4" class="oe_field_training_action_id"
-                                options="{'no_quick_create': True, 'no_create': True}"
-                                readonly="context.get('default_training_action_id', 0)"
-                                required="kind == 'teach'" />
-                            <field name="action_line_id" colspan="4" class="oe_field_action_line_id"
-                                options="{'no_quick_create': True, 'no_create': True}" string="Unit"
-                                domain="[('training_program_id', '=', training_program_id)]"
-                                required="kind == 'teach'" />
-                        </group>
-
-                        <group col="2" string="Task" invisible="kind != 'task'">
-                            <field name="task_id" class="oe_field_task_id"
-                                options="{'no_quick_create': True, 'no_create': True}"
-                                required="kind == 'task'" />
+                        <group col="2" string="Details">
+                            <group><field name="primary_teacher_id" class="oe_field_primary_teacher_id"
+                                options="{'no_quick_create': True, 'no_create': True}" /></group>
+                            <group><field name="primary_facility_id" class="oe_field_primary_facility_id"
+                                options="{'no_quick_create': True, 'no_create': True}" /></group>
                         </group>
 
                         <notebook>
+                            <page string="Facilities" class="oe_page_facilities" accesskey="F">
+                                <field name="reservation_ids" class="oe_field_reservation_ids"
+                                    nolabel="1" context="{
+                                        'default_session_id': id,
+                                        'default_date_start': date_start,
+                                        'default_date_stop': date_stop,
+                                        'tree_view_ref': 'academy_timesheets.view_facility_reservation_embed_in_session_tree'
+                                    }" options="{'no_open': True}" />
+                            </page>
                             <page string="Teachers" class="oe_page_teachers" accesskey="T">
                                 <field name="teacher_assignment_ids" class="oe_field_teacher_assignment_ids"
                                     nolabel="1" context="{
@@ -146,23 +156,15 @@
                                             help="Send session by email" />
                                 </div>
                             </page>
-                            <page string="Facilities" class="oe_page_facilities" accesskey="F">
-                                <field name="reservation_ids" class="oe_field_reservation_ids"
-                                    nolabel="1" context="{
-                                        'default_session_id': id,
-                                        'default_date_start': date_start,
-                                        'default_date_stop': date_stop,
-                                        'tree_view_ref': 'academy_timesheets.view_facility_reservation_embed_in_session_tree'
-                                    }" options="{'no_open': True}" />
-                            </page>
-                            <page string="Notes" class="oe_page_notes" accesskey="N">
+                            <page string="Description" class="oe_page_notes" accesskey="D">
                                 <field name="description" class="oe_field_description" colspan="4" nolabel="1" />
                             </page>
                             <page string="Setup" class="oe_page_setup" accesskey="S">
-                                <group col="4">
-                                    <field name="owner_id" class="oe_field_owner_id" />
-                                    <field name="subrogate_id" class="oe_field_delegate_id" />
-                                </group>
+                              <group col="4" string="Ownership"
+                                  groups="record_ownership.record_ownership_proxy">
+                                  <field name="owner_id" class="oe_field_owner_id" options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
+                                  <field name="subrogate_id" class="oe_field_subrogate_id" options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
+                              </group>
                             </page>
                         </notebook>
 

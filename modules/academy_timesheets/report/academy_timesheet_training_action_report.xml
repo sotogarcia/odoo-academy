@@ -60,7 +60,7 @@
                                                     <t t-esc="session['interval']" />
                                                 </td>
                                                 <td style="width: 55%">
-                                                    <t t-esc="session['competency_unit']" />
+                                                    <t t-esc="session['action_line']" />
                                                 </td>
                                                 <td style="width: 18%">
                                                     <t t-if="session['facility']">

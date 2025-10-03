@@ -117,15 +117,11 @@ class AcademyTimesheetsVerificationWizard(models.TransientModel):
         help="Number of training sessions in draft state",
     )
 
-    def name_get(self):
-        result = []
-
+    @api.depends_context("lang")
+    def _compute_display_name(self):
         for record in self:
-            name = _("Schedule verification")
-
-            result.append((record.id, name))
-
-        return result
+            record.display_name = record.name
+            record.display_name = self.env._("Schedule verification")
 
     def default_training_action_ids(self):
         action_set = self.env["academy.training.action"]
@@ -199,7 +195,7 @@ class AcademyTimesheetsVerificationWizard(models.TransientModel):
         action_xid = "academy_base.action_training_action_act_window"
         act_wnd = self.env.ref(action_xid)
 
-        name = _("Actions without sessions")
+        name = self.env._("Actions without sessions")
 
         session_set = self._search_sessions()
         action_ids = self._real_id(self.training_action_ids)
@@ -229,7 +225,7 @@ class AcademyTimesheetsVerificationWizard(models.TransientModel):
         action_xid = "academy_timesheets.action_sessions_act_window"
         act_wnd = self.env.ref(action_xid)
 
-        name = _("Actions without sessions")
+        name = self.env._("Actions without sessions")
 
         session_set = self._search_sessions()
         without_facility = session_set.filtered(
@@ -260,7 +256,7 @@ class AcademyTimesheetsVerificationWizard(models.TransientModel):
         action_xid = "academy_timesheets.action_sessions_act_window"
         act_wnd = self.env.ref(action_xid)
 
-        name = _("Actions without sessions")
+        name = self.env._("Actions without sessions")
 
         session_set = self._search_sessions()
         without_teacher = session_set.filtered(
@@ -291,7 +287,7 @@ class AcademyTimesheetsVerificationWizard(models.TransientModel):
         action_xid = "academy_timesheets.action_sessions_act_window"
         act_wnd = self.env.ref(action_xid)
 
-        name = _("Actions without sessions")
+        name = self.env._("Actions without sessions")
 
         session_set = self._search_sessions()
         in_draft_state = session_set.filtered(lambda x: x.state == "draft")

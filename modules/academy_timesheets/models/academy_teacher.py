@@ -122,7 +122,7 @@ class AcademyTeacher(models.Model):
         action_xid = "academy_timesheets.action_sessions_act_window"
         action = self.env.ref(action_xid)
 
-        name = _("Sessions taught by {}").format(self.name)
+        name = self.env._("Sessions taught by {}").format(self.name)
 
         ctx = self.env.context.copy()
         ctx.update(safe_eval(action.context))
@@ -172,7 +172,7 @@ class AcademyTeacher(models.Model):
         )
         act_wnd = self.env.ref(action_xid)
 
-        name = _("Shifts")
+        name = self.env._("Shifts")
 
         context = self.env.context.copy()
         context.update(safe_eval(act_wnd.context))

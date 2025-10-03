@@ -89,7 +89,7 @@ training actions and facilities.
         "views/academy_training_session_view.xml",
         "views/academy_training_session_invitation_view.xml",
         "views/academy_non_teaching_task_view.xml",
-        "views/academy_competency_unit_view.xml",
+        "views/academy_training_action_line_view.xml",
         "views/academy_teacher_view.xml",
         "views/academy_training_action_view.xml",
         "views/academy_student_view.xml",
@@ -113,15 +113,18 @@ training actions and facilities.
     ],
     "assets": {
         "web.assets_backend": [
-            "/academy_timesheets/static/src/js/academy_timesheets_widgets.js",
-            "/academy_timesheets/static/src/js/header_view_buttons.js",
             "/academy_timesheets/static/src/css/academy_timesheets.css",
-            "/academy_timesheets/static/src/css/academy_timesheets_report.css",
-            "/academy_timesheets/static/src/xml/academy_timesheets_widgets.xml",
-            "/academy_timesheets/static/src/xml/header_view_buttons.xml",
+            "/academy_timesheets/static/src/js/academy_timesheets_ready_draft_field.esm.js",
+            "/academy_timesheets/static/src/xml/academy_timesheets_ready_draft_field.xml",
+            # "/academy_timesheets/static/src/js/header_view_buttons.js",
+            # "/academy_timesheets/static/src/xml/header_view_buttons.xml",
         ],
-        "web.report_assets_common": [],
-        "web.report_assets_pdf": [],
+        "web.report_assets_common": [
+            "/academy_timesheets/static/src/css/academy_timesheets_report.css",
+        ],
+        "web.report_assets_pdf": [
+            "/academy_timesheets/static/src/css/academy_timesheets_report.css",
+        ],
     },
     "demo": [
         "demo/facility_facility_demo.xml",

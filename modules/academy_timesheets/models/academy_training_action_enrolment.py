@@ -76,7 +76,7 @@ class AcademyTrainingActionEnrolment(models.Model):
             "type": "ir.actions.act_window",
             "res_model": "academy.training.session.invitation",
             "target": "current",
-            "name": _("Invitations"),
+            "name": self.env._("Invitations"),
             "view_mode": action.view_mode,
             "domain": domain,
             "context": ctx,

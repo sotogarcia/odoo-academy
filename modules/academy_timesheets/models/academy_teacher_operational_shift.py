@@ -271,20 +271,16 @@ class AcademyTeacherOperationalShift(models.Model):
         INNER JOIN academy_teacher AS teach  ON teach."id" = ts.teacher_id
     """
 
-    def name_get(self):
-        """Compute display_name field value."""
-
-        result = []
-
+    @api.depends("teacher_id", "company_id")
+    @api.depends_context("lang")
+    def _compute_display_name(self):
         for record in self:
             if isinstance(record.id, models.NewId):
-                text = _("New operational shift")
+                text = self.env._("New operational shift")
             else:
                 text = f"{record.teacher_id.name} - {record.company_id.name}"
 
-            result.append((record.id, text))
-
-        return result
+            record.display_name = text
 
     def view_sessions(self):
         self.ensure_one()
@@ -292,7 +288,7 @@ class AcademyTeacherOperationalShift(models.Model):
         action_xid = "academy_timesheets.action_sessions_act_window"
         act_wnd = self.env.ref(action_xid)
 
-        name = _("Sessions involved")
+        name = self.env._("Sessions involved")
 
         context = self.env.context.copy()
         context.update(safe_eval(act_wnd.context))

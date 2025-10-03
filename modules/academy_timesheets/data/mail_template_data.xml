@@ -424,7 +424,7 @@
                         <strong><t t-out="object.training_action_id.name"/></strong>,
                         part of the <strong><t t-out="object.training_program_id.name"/></strong> course,
                         which will focus on the subject
-                        <strong><t t-out="object.action_line_id.competency_name"/></strong>.
+                        <strong><t t-out="object.action_line_id.name"/></strong>.
                       </p>
                     </t>
 

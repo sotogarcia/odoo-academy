@@ -99,9 +99,9 @@ class AcademyTrainingInvitation(models.Model):
     )
 
     action_line_id = fields.Many2one(
-        string="Competency unit",
+        string="Training action line",
         readonly=True,
-        help="Related competency unit",
+        help="Related training action line",
         related="session_id.action_line_id",
     )
 
@@ -197,23 +197,28 @@ class AcademyTrainingInvitation(models.Model):
         ),
     ]
 
-    def name_get(self):
-        result = []
-
+    @api.depends(
+        "session_id",
+        "session_id.display_name",
+        "student_id",
+        "student_id.name",
+    )
+    @api.depends_context("lang")
+    def _compute_display_name(self):
         default_student_id = self.env.context.get("default_student_id", False)
 
         for record in self:
-            session = record.session_id.display_name or _("New session")
+            session = record.session_id.display_name or self.env._(
+                "New session"
+            )
 
             if default_student_id:
                 name = session
             else:
-                student = record.student_id.name or _("New student")
+                student = record.student_id.name or self.env._("New student")
                 name = "%s - %s" % (session, student)
 
-            result.append((record.id, name))
-
-        return result
+            record.display_name = name
 
     @staticmethod
     def _enrolment_domain(case):

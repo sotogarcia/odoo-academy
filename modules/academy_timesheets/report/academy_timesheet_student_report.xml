@@ -61,7 +61,7 @@
                                                 </td>
                                                 <td style="width: 55%">
                                                     <strong class="d-block text-truncate"><t t-esc="session['training_action']" /></strong>
-                                                    <span class="d-block"><t t-esc="session['competency_unit']" /></span>
+                                                    <span class="d-block"><t t-esc="session['action_line']" /></span>
                                                 </td>
                                                 <td style="width: 18%">
                                                     <t t-if="session['facility']">

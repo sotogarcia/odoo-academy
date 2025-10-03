@@ -125,7 +125,7 @@ class AcademyStudent(models.Model):
         action_xid = "academy_timesheets.action_invitation_act_window"
         action = self.env.ref(action_xid)
 
-        name = _("Invitation list of {}").format(self.name)
+        name = self.env._("Invitation list of {}").format(self.name)
 
         ctx = self.env.context.copy()
         ctx.update(safe_eval(action.context))

@@ -26,8 +26,8 @@ class AcademyTimesheetPrimrayInstructorReport(models.AbstractModel):
     _description = "Academy timesheet teacher report"
 
     def _read_record_values(self, session):
-        competency_unit = session.action_line_id.competency_name
-        competency_unit = truncate_name(competency_unit, 64, 75)
+        action_line_id = session.action_line_id.name
+        action_line_id = truncate_name(action_line_id, 64, 75)
 
         training_action = session.training_action_id.name
         facility = session.primary_facility_id.name
@@ -38,7 +38,7 @@ class AcademyTimesheetPrimrayInstructorReport(models.AbstractModel):
             "interval": self.time_str(session),
             "training_action": training_action,
             "task_name": session.task_name,
-            "competency_unit": competency_unit,
+            "action_line_id": action_line_id,
             "facility": facility,
         }
 

@@ -239,7 +239,7 @@
 
             <div class="flex-fill ps-2 ps-md-0">
               <main class="d-flex flex-column justify-content-start align-items-start">
-                <h2 class="h4 text-truncate">
+                <h2 class="h4">
                     <field name="display_name"/>
                 </h2>
                 <field name="email" class="text-truncate"/>
