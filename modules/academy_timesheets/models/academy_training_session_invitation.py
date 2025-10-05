@@ -33,13 +33,13 @@ class AcademyTrainingInvitation(models.Model):
         translate=True,
     )
 
-    active = fields.Boolean(
-        string="Active",
+    excluded = fields.Boolean(
+        string="Excluded",
         required=False,
         readonly=False,
-        index=False,
-        default=True,
-        help="Enables/disables the record",
+        index=True,
+        default=False,
+        help="Enable when the student is NOT expected to attend this session.",
     )
 
     state = fields.Selection(

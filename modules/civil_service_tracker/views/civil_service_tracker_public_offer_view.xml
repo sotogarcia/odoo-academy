@@ -94,7 +94,7 @@
                                         context="{'default_public_offer_id': id}" attrs="{'readonly': [('id', '=', False)]}" />
                                 </group>
                             </page>
-                            <page string="Setup" class="oe_page_setup" accesskey="S">
+                            <page string="Setup" class="oe_page_setup" accesskey="S" id="setup">
                                <group col="4">
                                     <field name="short_name" class="oe_field_short_name" />
                                 </group>

@@ -6,7 +6,7 @@
 
 from odoo import models, fields, api
 from odoo.tools.translate import _
-from odoo.tools import safe_eval
+from odoo.tools.safe_eval import safe_eval
 from odoo.osv.expression import TRUE_DOMAIN
 
 from logging import getLogger

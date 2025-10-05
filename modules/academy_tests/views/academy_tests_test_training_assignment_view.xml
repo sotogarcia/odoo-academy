@@ -104,7 +104,7 @@
                         </group>
 
                         <notebook>
-                            <page string="Setup" class="oe_page_setup" accesskey="S">
+                            <page string="Setup" class="oe_page_setup" accesskey="S" id="setup">
                                 <group col="4" class="w-100 mt-4" string="Realization">
                                     <field name="correction_scale_id" class="oe_field_correction_scale_id" />
                                     <field name="time_by" class="oe_field_time_by" />

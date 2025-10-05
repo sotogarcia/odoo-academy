@@ -238,7 +238,7 @@
                                 </group>
                             </page>
 
-                            <page string="Setup" class="oe_page_setup" accesskey="S">
+                            <page string="Setup" class="oe_page_setup" accesskey="S" id="setup">
                                 <group col="4">
                                     <field name="short_name" class="oe_field_short_name" />
                                     <field name="ready_date" class="oe_field_ready_date" widget="date" />
@@ -249,14 +249,14 @@
                                 <group col="4" string="Publish" class="w-100">
                                     <field name="token" class="oe_field_token" />
                                 </group>
-                                <group col="4" string="Ownership" groups="record_ownership.record_ownership_proxy">
+                                <group col="4" string="Ownership" id="ownership" groups="record_ownership.record_ownership_proxy">
                                     <field name="owner_id" class="oe_field_owner_id"
                                         options="{'no_quick_create': True, 'no_create': True, 'no_open': False}" />
                                     <field name="subrogate_id" class="oe_field_subrogate_id"
                                         options="{'no_quick_create': True, 'no_create': True, 'no_open': False}" />
                                 </group>
                             </page>
-                            
+
                             <page id="page-attachments" string="Attachments" class="oe_page_attachments" accesskey="A">
                                 <field name="attachment_ids" class="oe_field_attachment_ids oe_edit_only" widget="one2many"
                                         options="{'no_quick_create': True, 'no_create': False, 'no_open': False}"
@@ -264,7 +264,7 @@
                                 <field name="aggregated_attachment_ids" class="oe_field_attachment_ids oe_read_only" widget="one2many"
                                     context="{'tree_view_ref': 'civil_service_tracker.view_ir_attachment_tree'}" />
                             </page>
-                                
+
                         </notebook>
 
                     </sheet>

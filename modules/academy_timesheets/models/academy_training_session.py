@@ -4,12 +4,14 @@
 #    __openerp__.py file at the root folder of this module.                   #
 ###############################################################################
 
+from re import search
 from odoo import models, fields, api
 from odoo.tools.safe_eval import safe_eval
 from odoo.tools.translate import _
 from odoo.osv.expression import AND, TRUE_DOMAIN, FALSE_DOMAIN
 from odoo.exceptions import UserError, MissingError
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT
+from odoo.addons.academy_base.utils.helpers import OPERATOR_MAP, one2many_count
 
 from datetime import timedelta, datetime, date, time
 import pytz
@@ -32,8 +34,17 @@ class AcademyTrainingSession(models.Model):
 
     _rec_name = "id"
     _order = "date_start ASC"
+    _rec_names_search = [
+        "task_id",
+        "training_action_id",
+        "training_group_id",
+        "action_line_id",
+    ]
 
     _check_company_auto = True
+
+    # Entity fields
+    # -------------------------------------------------------------------------
 
     description = fields.Text(
         string="Description",
@@ -76,27 +87,33 @@ class AcademyTrainingSession(models.Model):
         selection=[("teach", "Teaching task"), ("task", "Non-teaching task")],
     )
 
-    training_action_id = fields.Many2one(
-        string="Training action",
-        required=False,
+    date_start = fields.Datetime(
+        string="Beginning",
+        required=True,
         readonly=False,
         index=True,
-        default=None,
-        help="Related training action",
-        comodel_name="academy.training.action",
-        domain=[],
-        context={},
-        ondelete="cascade",
-        auto_join=False,
+        default=lambda self: self.now_o_clock(round_up=True),
+        help="Date/time of session start",
         tracking=True,
     )
 
-    company_id = fields.Many2one(
-        string="Company",
-        help="The company this record belongs to",
-        related="training_action_id.company_id",
-        store=True,
+    @api.onchange("date_start")
+    def _onchange_date_start(self):
+        self._compute_duration()
+
+    date_stop = fields.Datetime(
+        string="Ending",
+        required=True,
+        readonly=False,
+        index=True,
+        default=lambda self: self.now_o_clock(offset_hours=1, round_up=True),
+        help="Date/time of session end",
+        tracking=True,
     )
+
+    @api.onchange("date_stop")
+    def _onchange_date_stop(self):
+        self._compute_duration()
 
     task_id = fields.Many2one(
         string="Non-teaching task",
@@ -113,50 +130,40 @@ class AcademyTrainingSession(models.Model):
         tracking=True,
     )
 
-    training_program_id = fields.Many2one(
-        string="Training program",
-        related="training_action_id.training_program_id",
-    )
-
-    task_name = fields.Char(
-        string="Training / Task",
-        required=True,
-        readonly=True,
+    training_action_id = fields.Many2one(
+        string="Training action",
+        required=False,
+        readonly=False,
         index=True,
         default=None,
-        help=False,
-        size=1024,
-        translate=True,
-        compute="compute_task_name",
-        store=True,
+        help="Related training action",
+        comodel_name="academy.training.action",
+        domain=[],
+        context={},
+        ondelete="cascade",
+        auto_join=False,
+        tracking=True,
     )
-
-    @api.depends("training_action_id", "task_id")
-    def compute_task_name(self):
-        for record in self:
-            if record.training_action_id:
-                record.task_name = record.training_action_id.name
-            elif record.task_id:
-                record.task_name = record.task_id.name
-            else:
-                record.task_name = self.env._("New session")
 
     @api.onchange("training_action_id")
     def _onchange_training_action_id(self):
         for record in self:
+            record.training_group_id = None
             record.action_line_id = None
-            link_ids = record.training_action_id.facility_link_ids
-            if link_ids:
-                o2m_ops = [(5, 0, 0)]
-                for link in link_ids:
-                    values = {
-                        "facility_id": link.facility_id.id,
-                        "sequence": link.sequence,
-                    }
-                    o2m_op = (0, None, values)
-                    o2m_ops.append(o2m_op)
 
-                record.reservation_ids = o2m_ops
+    training_group_id = fields.Many2one(
+        string="Training group",
+        required=False,
+        readonly=False,
+        index=True,
+        default=None,
+        help=False,
+        comodel_name="academy.training.action.group",
+        domain=[],
+        context={},
+        ondelete="cascade",
+        auto_join=False,
+    )
 
     action_line_id = fields.Many2one(
         string="Competency unit",
@@ -173,48 +180,21 @@ class AcademyTrainingSession(models.Model):
         tracking=True,
     )
 
-    # @api.onchange("action_line_id")
-    # def _onchange_action_line_id(self):
-    #     for record in self:
-    #         unit = record.action_line_id
-    #         action = record.training_action_id
-
-    #         if unit and action:
-    #             facility_set = unit.facility_assignment_ids.filtered(
-    #                 lambda x: x.training_action_id.id == action.id
-    #             )
-
-    #             if facility_set:
-    #                 record.reservation_ids = None
-
-    #                 o2m_ops = [(5, 0, 0)]
-    #                 for assign in facility_set:
-    #                     values = {
-    #                         "facility_id": assign.facility_id.id,
-    #                         "sequence": assign.sequence,
-    #                     }
-    #                     o2m_op = (0, None, values)
-    #                     o2m_ops.append(o2m_op)
-
-    #                 record.reservation_ids = o2m_ops
-
-    #             teacher_set = unit.teacher_assignment_ids.filtered(
-    #                 lambda x: x.training_action_id.id == action.id
-    #             )
-
-    #             if teacher_set:
-    #                 record.teacher_assignment_ids = None
-
-    #                 o2m_ops = [(5, 0, 0)]
-    #                 for assign in teacher_set:
-    #                     values = {
-    #                         "teacher_id": assign.teacher_id.id,
-    #                         "sequence": assign.sequence,
-    #                     }
-    #                     o2m_op = (0, None, values)
-    #                     o2m_ops.append(o2m_op)
-
-    #                 record.teacher_assignment_ids = o2m_ops
+    reservation_ids = fields.One2many(
+        string="Reservations",
+        required=False,
+        readonly=False,
+        index=True,
+        default=None,
+        help="Related facility reservations",
+        comodel_name="facility.reservation",
+        inverse_name="session_id",
+        domain=[],
+        context={"default_state": "requested"},
+        auto_join=False,
+        tracking=True,
+        copy=False,
+    )
 
     teacher_assignment_ids = fields.One2many(
         string="Teacher assignments",
@@ -232,19 +212,184 @@ class AcademyTrainingSession(models.Model):
         copy=False,
     )
 
-    # def default_teacher_assignment_ids(self):
-    #     result = None
+    invitation_ids = fields.One2many(
+        string="Invitation",
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help="List of attendees for the session",
+        comodel_name="academy.training.session.invitation",
+        inverse_name="session_id",
+        domain=[],
+        context={},
+        auto_join=False,
+        tracking=True,
+        copy=False,
+    )
 
-    #     teacher_id = self.env.context.get("default_primary_teacher_id", None)
-    #     if teacher_id and isinstance(teacher_id, int) and teacher_id > 0:
-    #         teacher_obj = self.env["academy.teacher"]
-    #         teacher_set = teacher_obj.browse(teacher_id)
+    # Training action information
+    # -------------------------------------------------------------------------
 
-    #         if teacher_set:
-    #             values = {"teacher_id": teacher_set.id, "sequence": 1}
-    #             result = [(0, 0, values)]
+    company_id = fields.Many2one(
+        string="Company",
+        help="The company this record belongs to",
+        related="training_action_id.company_id",
+        store=True,
+    )
 
-    #     return result
+    training_program_id = fields.Many2one(
+        string="Training program",
+        related="training_action_id.training_program_id",
+    )
+
+    groupwise_schedule = fields.Boolean(
+        string="Schedule by group",
+        readonly=True,
+        help="Enable to schedule sessions separately for each group",
+        related="training_action_id.groupwise_schedule",
+        store=True,
+    )
+
+    task_name = fields.Char(
+        string="Training / Task",
+        required=True,
+        readonly=True,
+        index=True,
+        default=None,
+        help=False,
+        size=1024,
+        translate=True,
+        compute="_compute_task_name",
+        store=True,
+    )
+
+    @api.depends("task_id", "training_action_id", "training_group_id")
+    def _compute_task_name(self):
+        for record in self:
+            if record.task_id and record.task_id.name:
+                record.task_name = record.task_id.name
+            if record.training_group_id and record.training_group_id.name:
+                record.task_name = record.training_group_id.name
+            elif record.training_action_id and record.training_action_id.name:
+                record.task_name = record.training_action_id.name
+            else:
+                record.task_name = self.env._("New session")
+
+    # Facility reservation information
+    # -------------------------------------------------------------------------
+
+    facility_ids = fields.Many2manyView(
+        string="Facility",
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help=False,
+        comodel_name="facility.facility",
+        relation="facility_reservation",
+        column1="session_id",
+        column2="facility_id",
+        domain=[],
+        context={},
+    )
+
+    reservation_count = fields.Integer(
+        string="Reservation count",
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        help="Total number of facility reservations required for this session",
+        compute="_compute_reservation_count",
+        search="_search_reservation_count",
+    )
+
+    @api.depends("reservation_ids")
+    def _compute_reservation_count(self):
+        counts = one2many_count(self, "reservation_ids")
+
+        for record in self:
+            record.reservation_count = counts.get(record.id, 0)
+
+    @api.model
+    def _search_reservation_count(self, operator, value):
+        # Handle boolean-like searches Odoo may pass for required fields
+        if value is True:
+            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
+        if value is False:
+            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
+
+        cmp_func = OPERATOR_MAP.get(operator)
+        if not cmp_func:
+            return FALSE_DOMAIN  # unsupported operator
+
+        counts = one2many_count(self.search([]), "reservation_ids")
+        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
+
+        return [("id", "in", matched)] if matched else FALSE_DOMAIN
+
+    primary_facility_id = fields.Many2one(
+        string="Primary facility",
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help="Main facility where the training session will take place",
+        comodel_name="facility.facility",
+        domain=[],
+        context={},
+        ondelete="cascade",
+        auto_join=False,
+        compute="_compute_primary_facility_id",
+        store=True,
+        tracking=True,
+    )
+
+    @api.depends(
+        "reservation_ids",
+        "reservation_ids.sequence",
+        "reservation_ids.facility_id",
+        "reservation_ids.active",
+        "reservation_ids.facility_id.active",
+    )
+    def _compute_primary_facility_id(self):
+        """Assign the first reservation per session by sequence, then id."""
+        for record in self:
+            record.primary_facility_id = False
+
+        reservation_obj = self.env["facility.reservation"]
+        reservations = reservation_obj.search(
+            [
+                ("session_id", "in", self.ids),
+                ("active", "=", True),
+                ("facility_id.active", "=", True),
+            ],
+            order="session_id, sequence NULLS LAST, id",
+        )
+
+        # Take the first reservation per session (already stably ordered)
+        first_by_session = {}
+        for reservation in reservations:
+            session_id = reservation.session_id.id
+            if session_id not in first_by_session:
+                first_by_session[session_id] = reservation
+
+        for session in self:
+            reservation = first_by_session.get(session.id)
+            if reservation and reservation.facility_id:
+                session.primary_facility_id = reservation.facility_id
+            else:
+                session.primary_facility_id = False
+
+    primary_complex_id = fields.Many2one(
+        string="Primary complex",
+        related="primary_facility_id.complex_id",
+        store=True,
+    )
+
+    # Teacher information
+    # -------------------------------------------------------------------------
 
     teacher_ids = fields.Many2manyView(
         string="Teachers",
@@ -294,133 +439,70 @@ class AcademyTrainingSession(models.Model):
         tracking=True,
     )
 
-    @api.depends("teacher_assignment_ids")
+    @api.depends(
+        "teacher_assignment_ids",
+        "teacher_assignment_ids.sequence",
+        "teacher_assignment_ids.teacher_id",
+        "teacher_assignment_ids.teacher_id.active",
+    )
     def _compute_primary_teacher_id(self):
         for record in self:
-            assign_set = record.teacher_assignment_ids
-            if not assign_set:
-                record.primary_teacher_id = None
+            record.primary_teacher_id = False
+
+        assignment_obj = self.env["academy.training.session.teacher.rel"]
+        assignments = assignment_obj.search(
+            [
+                ("session_id", "in", self.ids),
+                ("teacher_id.active", "=", True),
+            ],
+            order="session_id, sequence NULLS LAST, id",
+        )
+
+        # Take the first reservation per session (already stably ordered)
+        first_by_session = {}
+        for assignment in assignments:
+            session_id = assignment.session_id.id
+            if session_id not in first_by_session:
+                first_by_session[session_id] = assignment
+
+        for session in self:
+            assignment = first_by_session.get(session.id)
+            if assignment and assignment.teacher_id:
+                session.primary_teacher_id = assignment.teacher_id
             else:
-                sequence = min(assign_set.mapped("sequence"))
-                assign = assign_set.filtered(lambda x: x.sequence == sequence)
-                record.primary_teacher_id = assign[0].teacher_id
+                session.primary_teacher_id = False
 
-    reservation_ids = fields.One2many(
-        string="Reservations",
-        required=False,
-        readonly=False,
-        index=True,
-        default=None,
-        help="Related facility reservations",
-        comodel_name="facility.reservation",
-        inverse_name="session_id",
-        domain=[],
-        context={"default_state": "requested"},
-        auto_join=False,
-        tracking=True,
-        copy=False,
-    )
+    # Invitation information
+    # -------------------------------------------------------------------------
 
-    primary_reservation_id = fields.Many2one(
-        string="Primary reservation",
-        required=False,
-        readonly=False,
-        index=True,
-        default=None,
-        help="Primary facility reservation",
-        comodel_name="facility.reservation",
-        domain=[],
-        context={},
-        ondelete="cascade",
-        auto_join=False,
-        compute="_compute_primary_reservation_id",
-    )
-
-    @api.depends("reservation_ids")
-    def _compute_primary_reservation_id(self):
-        for record in self:
-            reservation_set = record.reservation_ids
-            if not reservation_set:
-                record.primary_reservation_id = None
-            else:
-                sequence = min(reservation_set.mapped("sequence"))
-                reservation = reservation_set.filtered(
-                    lambda x: x.sequence == sequence
-                )
-                record.primary_reservation_id = reservation[0]
-
-    primary_facility_id = fields.Many2one(
-        string="Primary facility",
+    invitation_str = fields.Char(
+        string="Invitation summary",
         required=False,
         readonly=True,
         index=False,
         default=None,
-        help="Main facility where the training session will take place",
-        comodel_name="facility.facility",
-        domain=[],
-        context={},
-        ondelete="cascade",
-        auto_join=False,
-        compute="_compute_primary_facility_id",
-        store=True,
-        tracking=True,
+        help="Included / total invitations for this session.",
+        compute="_compute_invitation_str",
+        store=False,
     )
 
-    @api.depends("reservation_ids")
-    def _compute_primary_facility_id(self):
+    @api.depends("invitation_ids", "invitation_ids.excluded")
+    def _compute_invitation_str(self):
+        counts = one2many_count(self, "invitation_ids")
+
+        counts = one2many_count(self, "invitation_ids")
+        included_counts = one2many_count(
+            self, "invitation_ids", [("excluded", "!=", True)]
+        )
+
         for record in self:
-            reservation_set = record.reservation_ids
-            if not reservation_set:
-                record.primary_facility_id = None
-            else:
-                sequence = min(reservation_set.mapped("sequence"))
-                reservation = reservation_set.filtered(
-                    lambda x: x.sequence == sequence
-                )
-                record.primary_facility_id = reservation[0].facility_id
+            if not record.id:
+                record.invitation_str = "0 / 0"
+                continue
 
-    primary_complex_id = fields.Many2one(
-        string="Primary complex",
-        related="primary_facility_id.complex_id",
-        store=True,
-    )
-
-    reservation_count = fields.Integer(
-        string="Reservation count",
-        required=False,
-        readonly=True,
-        index=False,
-        default=0,
-        help="Total number of facility reservations required for this session",
-        compute="_compute_reservation_count",
-        search="_search_reservation_count",
-    )
-
-    @api.depends("reservation_ids")
-    def _compute_reservation_count(self):
-        for record in self:
-            record.reservation_count = len(record.reservation_ids)
-
-    @api.model
-    def _search_reservation_count(self, operator, value):
-        raise UserError(_("No implemented yet"))
-        return TRUE_DOMAIN
-
-    invitation_ids = fields.One2many(
-        string="Invitation",
-        required=False,
-        readonly=False,
-        index=False,
-        default=None,
-        help="List of attendees for the session",
-        comodel_name="academy.training.session.invitation",
-        inverse_name="session_id",
-        domain=[],
-        context={},
-        auto_join=False,
-        tracking=True,
-        copy=False,
-    )
+            total = counts.get(record.id, 0)
+            included = included_counts.get(record.id, 0)
+            record.invitation_str = f"{included} / {total}"
 
     invitation_count = fields.Integer(
         string="Invitation count",
@@ -436,40 +518,57 @@ class AcademyTrainingSession(models.Model):
 
     @api.depends("invitation_ids")
     def _compute_invitation_count(self):
+        counts = one2many_count(self, "invitation_ids")
+
         for record in self:
-            record.invitation_count = len(record.invitation_ids)
+            record.invitation_count = counts.get(record.id, 0)
 
     @api.model
     def _search_invitation_count(self, operator, value):
-        return TRUE_DOMAIN
+        # Handle boolean-like searches Odoo may pass for required fields
+        if value is True:
+            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
+        if value is False:
+            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
 
-    date_start = fields.Datetime(
-        string="Beginning",
-        required=True,
-        readonly=False,
+        cmp_func = OPERATOR_MAP.get(operator)
+        if not cmp_func:
+            return FALSE_DOMAIN  # unsupported operator
+
+        counts = one2many_count(self.search([]), "invitation_ids")
+        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
+
+        return [("id", "in", matched)] if matched else FALSE_DOMAIN
+
+    enrolment_ids = fields.Many2manyView(
+        string="Enrolments",
+        required=False,
+        readonly=True,
         index=True,
-        default=lambda self: self.now_o_clock(round_up=True),
-        help="Date/time of session start",
-        tracking=True,
+        default=None,
+        help="Enrolments linked to this session via invitations.",
+        comodel_name="academy.training.action.enrolment",
+        relation="academy_training_session_invitation",
+        column1="session_id",
+        column2="enrolment_id",
+        domain=[],
+        context={},
     )
 
-    @api.onchange("date_start")
-    def _onchange_beginning(self):
-        self._compute_duration()
-
-    date_stop = fields.Datetime(
-        string="Ending",
-        required=True,
-        readonly=False,
+    student_ids = fields.Many2manyView(
+        string="Students",
+        required=False,
+        readonly=True,
         index=True,
-        default=lambda self: self.now_o_clock(offset_hours=1, round_up=True),
-        help="Date/time of session end",
-        tracking=True,
+        default=None,
+        help="Students linked to this session via invitations.",
+        comodel_name="academy.student",
+        relation="academy_training_session_invitation",
+        column1="session_id",
+        column2="student_id",
+        domain=[],
+        context={},
     )
-
-    @api.onchange("date_stop")
-    def _onchange_ending(self):
-        self._compute_duration()
 
     @staticmethod
     def now_o_clock(offset_hours=0, round_up=False):
@@ -627,6 +726,23 @@ class AcademyTrainingSession(models.Model):
             ) WHERE (validate AND allow_overlap IS NOT TRUE);
             -- Requires btree_gist""",
             "This event overlaps with another of the same training action",
+        ),
+        (
+            "no_mixed_action_group_null",
+            "EXCLUDE USING gist ("
+            "  training_action_id WITH =, "
+            "  (training_group_id IS NULL) WITH <>"
+            ") DEFERRABLE INITIALLY IMMEDIATE",
+            "Mixed sessions with and without group not allowed.",
+        ),
+        (
+            "group_required_if_groupwise",
+            "CHECK ("
+            "  (groupwise_schedule IS TRUE AND training_group_id IS NOT NULL) "
+            "  OR "
+            "  (groupwise_schedule IS NOT TRUE AND training_group_id IS NULL)"
+            ")",
+            "Groupwise / non-groupwise scheduling requirement not met",
         ),
         (
             "positive_interval",
@@ -1276,16 +1392,12 @@ class AcademyTrainingSession(models.Model):
                 invitation = invitation_obj.search(domain, limit=1)
 
                 if invitation:
-                    o2m_op = (1, invitation.id, {"active": enrol.active})
+                    o2m_op = (1, invitation.id)
                 else:
                     o2m_op = (
                         0,
                         0,
-                        {
-                            "session_id": record.id,
-                            "enrolment_id": enrol.id,
-                            "active": enrol.active,
-                        },
+                        {"session_id": record.id, "enrolment_id": enrol.id},
                     )
 
                 invitation_ops.append(o2m_op)

@@ -8,7 +8,7 @@ from odoo import models, fields, api
 from odoo.tools.translate import _
 from odoo.exceptions import ValidationError, UserError
 from odoo.osv.expression import AND
-from odoo.tools import safe_eval
+from odoo.tools.safe_eval import safe_eval
 
 from datetime import timedelta, datetime
 from logging import getLogger

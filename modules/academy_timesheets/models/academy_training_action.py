@@ -6,7 +6,7 @@
 
 from odoo import models, fields, api
 from odoo.tools.translate import _
-from odoo.tools import safe_eval
+from odoo.tools.safe_eval import safe_eval
 from odoo.osv.expression import FALSE_DOMAIN, TRUE_DOMAIN
 from odoo.osv.expression import TERM_OPERATORS_NEGATION
 
@@ -150,6 +150,15 @@ class AcademyTrainingAction(models.Model):
             "Check to allow sessions for this training action to be "
             "overlapped"
         ),
+    )
+
+    groupwise_schedule = fields.Boolean(
+        string="Schedule by group",
+        required=False,
+        readonly=False,
+        index=False,
+        default=False,
+        help="Enable to schedule sessions separately for each group",
     )
 
     current_week_hours = fields.Float(

@@ -28,6 +28,7 @@
                     <field name="action_line_id" class="oe_field_action_line_id" />
                     <field name="date_start" class="oe_field_date_start" />
                     <field name="date_stop" class="oe_field_date_stop" />
+                    <field name="excluded" class="oe_field_excluded" />
                     <field name="present" class="oe_field_present" />
                 </list>
             </field>
@@ -46,11 +47,8 @@
                     <sheet>
                         <div class="oe_button_box" name="button_box" />
 
-                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger" invisible="active == True"/>
-
                         <div class="oe_title">
                             <field name="id" class="oe_field_id" invisible="1" />
-                            <field name="active" invisible="1"/>
                             <field name="date_start" invisible="1" />
                             <field name="date_stop" invisible="1" />
                             <field name="invitation_ids" invisible="1" />
@@ -87,6 +85,7 @@
                             <field name="enrolment_id" class="oe_field_enrolment_id"
                                 domain="[('invitation_ids', '!=', invitation_ids)]" />
                             <field name="present" class="oe_field_present" />
+                            <field name="excluded" class="oe_field_excluded" />
                             <field name="vat" class="oe_field_vat" />
                             <field name="zip" class="oe_field_zip" />
                             <field name="mobile" class="oe_field_mobile" widget="phone" />
@@ -140,8 +139,6 @@
                     <field name="date_start" />
                     <field name="date_stop" />
                     <field name="date_delay" />
-
-                    <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
 
                     <separator />
                     <filter string="Current week" name="current_week" domain="[

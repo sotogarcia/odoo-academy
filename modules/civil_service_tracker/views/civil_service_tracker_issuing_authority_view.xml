@@ -121,7 +121,7 @@
                                     options="{'no_quick_create': True, 'no_create': False, 'no_open': False}" />
                             </group>
                         </page>
-                        <page string="Setup" class="oe_page_setup" accesskey="S">
+                        <page string="Setup" class="oe_page_setup" accesskey="S" id="setup">
                             <group col="2" string="Description">
                                 <field name="description" class="oe_field_description" />
                             </group>

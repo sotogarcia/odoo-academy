@@ -158,7 +158,7 @@ class AcademyStudent(models.Model):
     # -- Computed field: enrolment_str ----------------------------------------
 
     enrolment_str = fields.Char(
-        string="Enrolment str",
+        string="Enrolment summary",
         required=False,
         readonly=True,
         index=False,

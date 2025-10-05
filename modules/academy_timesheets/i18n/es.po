@@ -229,7 +229,7 @@ msgstr "Todas las sesiones para el estudiante"
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_action__allow_overlap
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session__allow_overlap
 msgid "Allow overlap"
-msgstr "Permitir superposición"
+msgstr "Permitir solape"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_timesheets_send_by_mail_wizard__full_weeks

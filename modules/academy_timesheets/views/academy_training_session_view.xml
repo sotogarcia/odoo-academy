@@ -33,7 +33,7 @@
                     <field name="primary_facility_id" class="oe_field_primary_facility_id" />
                     <field name="date_start" class="oe_field_date_start" />
                     <field name="date_delay" class="oe_field_date_delay" widget="float_time" />
-                    <field name="invitation_count" class="oe_field_invitation_count" />
+                    <field name="invitation_str" class="oe_field_invitation_str" />
                     <field name="state" class="oe_field_state" />
                 </list>
             </field>
@@ -56,6 +56,7 @@
                     <field name="task_id" invisible="1" />
                     <field name="training_program_id" invisible="1" />
                     <field name="create_date" invisible="1" />
+                    <field name="groupwise_schedule" invisible="1" force_save="1" />
 
                     <header>
                         <field name="state" widget="statusbar" options="{'clickable': 1}"
@@ -74,7 +75,7 @@
                             </button>
                             <button name="view_invitation" type="object" class="oe_stat_button oe_read_only"
                                 icon="fa-users" help="Show related invitations">
-                                <field name="invitation_count" widget="statinfo" string="Invitations" />
+                                <field name="invitation_str" widget="statinfo" string="Invitations" />
                             </button>
                         </div>
 
@@ -99,6 +100,10 @@
                             options="{'no_quick_create': True, 'no_create': True}"
                             readonly="context.get('default_training_action_id', 0)"
                             required="kind == 'teach'" invisible="kind != 'teach'" />
+                          <field name="training_group_id" class="oe_field_training_group_id"
+                            options="{'no_quick_create': True, 'no_create': True}"
+                            readonly="context.get('default_training_group_id', 0)"
+                            required="groupwise_schedule" invisible="not groupwise_schedule" />
                           <field name="action_line_id" class="oe_field_action_line_id"
                             options="{'no_quick_create': True, 'no_create': True}" string="Unit"
                             domain="[('training_program_id', '=', training_program_id)]"
@@ -159,8 +164,8 @@
                             <page string="Description" class="oe_page_notes" accesskey="D">
                                 <field name="description" class="oe_field_description" colspan="4" nolabel="1" />
                             </page>
-                            <page string="Setup" class="oe_page_setup" accesskey="S">
-                              <group col="4" string="Ownership"
+                            <page string="Setup" class="oe_page_setup" accesskey="S" id="setup">
+                              <group col="4" string="Ownership" id="ownership"
                                   groups="record_ownership.record_ownership_proxy">
                                   <field name="owner_id" class="oe_field_owner_id" options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
                                   <field name="subrogate_id" class="oe_field_subrogate_id" options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
