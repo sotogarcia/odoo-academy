@@ -78,3 +78,110 @@ class AcademyTrainingActionLine(models.Model):
         domain=[],
         context={},
     )
+
+    _sql_constraints = [
+        (
+            "code_unique",
+            "UNIQUE(code, training_action_id)",
+            "Program line must be unique by training action",
+        ),
+        (
+            "non_negative_hours",
+            "CHECK(hours >= 0)",
+            "Hours must be a non-negative number",
+        ),
+    ]
+
+    def _read_program_line(self, program_lines, defaults=None):
+        """
+        Extracts writable field values from given program lines,
+        returning only those compatible with the current model.
+
+        Args:
+            program_lines (recordset):
+                Source records whose data will be copied.
+            defaults (dict | None):
+                Default values to override during copy.
+
+        Returns:
+            list[dict]: A list of dictionaries containing filtered field values
+                        suitable for write() or create() on the current model.
+        """
+        defaults = dict(defaults or {})
+        target_fields = self._fields
+
+        # returns one dict per record, already handling Command objects
+        source_values = program_lines.copy_data(defaults)
+
+        # Keep only keys that exist in the current model
+        return [
+            {k: v for k, v in values.items() if k in target_fields}
+            for values in source_values
+        ]
+
+    def update_from_program_line(self):
+        """
+        Update the current action lines using data from their related
+        program lines.
+
+        For each record, field values are copied from its linked
+        `program_line_id` through `_read_program_line()`. The result
+        is then written back to the current record, keeping both
+        models consistent.
+
+        Returns:
+            bool: True if at least one record was updated or if no
+                  update was needed; False otherwise.
+        """
+        result = True
+
+        for record in self:
+            program_line = record.program_line_id
+            if not program_line:
+                continue
+
+            values = self._read_program_line(program_line)[0]
+            values.update(
+                {
+                    "training_action_id": record.training_action_id.id,
+                    "program_line_id": program_line.id,
+                    "comment": None,
+                }
+            )
+
+            result = result or record.write(values)
+
+        return result
+
+    @api.model
+    def create_from_program_line(self, training_action, program_lines):
+        """
+        Create new training action lines based on the given program lines.
+
+        Args:
+            training_action (record):
+                The training action that will own the created lines.
+            program_lines (recordset):
+                Program lines whose data will be copied into action lines.
+
+        Returns:
+            recordset: Newly created action line records, or an empty
+                       recordset if nothing was created.
+        """
+        training_action.ensure_one()
+
+        value_list = []
+        for program_line in program_lines:
+            # _read_program_line expects a recordset, even if single
+            values = self._read_program_line(program_line)[0]
+            values.update(
+                {
+                    "training_action_id": training_action.id,
+                    "program_line_id": program_line.id,
+                    "comment": None,
+                }
+            )
+            value_list.append(values)
+
+        # Bulk create for efficiency; return empty recordset if none
+        return self.create(value_list) if value_list else self.browse()

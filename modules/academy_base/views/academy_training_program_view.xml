@@ -180,49 +180,44 @@
                   options="{'img_class': 'w-100 h-auto p-2 align-top'}"/>
               </t>
               <t t-if="!record.image_128.raw_value">
-                <img src="/academy_base/static/src/img/training-program.png" class="w-100 h-auto p-2"
+                <img src="/academy_base/static/src/img/training-program-128.png" class="w-100 h-auto p-2"
                   alt="Training program" title="Training program without image" />
               </t>
             </aside>
 
-            <div class="flex-fill ps-2 ps-md-0">
+            <div class="flex-fill d-flex flex-column justify-content-between overflow-hidden w-100 ps-2 ps-md-0">
               <main class="d-flex flex-column justify-content-start align-items-start">
                 <h2 class="h4">
                   <field name="display_name"/>
                 </h2>
-                <table border="0" cellpadding="0" cellspacing="0" style="border: 0px none transparent;" >
-                  <tbody>
-                    <tr>
-                      <td colspan="2" class="pb-1 text-truncate">
-                        <field name="training_framework_id" class="oe_field_training_framework_id" />
-                      </td>
-                    </tr>
-                    <tr>
-                      <th class="pb-1 text-nowrap pe-2">Code:</th>
-                      <td class="pb-1 text-truncate">
-                        <span t-if="record.code.raw_value">
+
+                <ul class="list-unstyled w-100 small">
+                  <li class="d-flex flex-row justify-content-start lh-lg text-truncate" title="Training framework">
+                   <field name="training_framework_id" class="oe_field_training_framework_id" />
+                  </li>
+
+                  <li class="d-flex flex-row justify-content-start lh-lg text-truncate" title="Training program code">
+                    <span t-if="record.code.raw_value">
                           <t t-esc="record.code.raw_value"/>
                         </span>
                         <span t-if="!record.code.raw_value">---</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th class="pb-1 text-nowrap pe-2">Hours:</th>
-                      <td class="pb-1 text-truncate">
-                        <field name="hours" class="oe_field_hours" widget="float_time" />
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                  </li>
+
+                  <li class="d-flex flex-row justify-content-start lh-lg text-truncate" title="Teaching hours">
+                    <strong class="pe-2">Hours:</strong>
+                    <field name="hours" class="oe_field_hours" widget="float_time" />
+                  </li>
+                </ul>
+
               </main>
 
               <!-- footer: begin -->
               <footer class="d-flex justify-content-end align-items-start mt-2">
-                <button name="view_training_program_lines" type="object" class="btn my-0 py-0">
+                <button name="view_training_program_lines" type="object" class="btn my-0 py-0" string="Program lines">
                   <i class="fa fa-lg fa-list me-2" aria-hidden="true" title="View program units"></i>
                   <field name="program_line_count" class="oe_field_program_line_count" />
                 </button>
-                <button name="view_training_actions" type="object" class="btn my-0 py-0">
+                <button name="view_training_actions" type="object" class="btn my-0 py-0" string="Training actions">
                   <i class="fa fa-lg fa-list-ul me-2" aria-hidden="true" title="View training actions"></i>
                   <field name="training_action_count" class="oe_field_training_action_count" />
                 </button>
@@ -235,6 +230,7 @@
 
           </t>
         </templates>
+
       </kanban>
 
     </field>
@@ -250,8 +246,8 @@
     <field name="active" eval="True"/>
     <field name="arch" type="xml">
       <search string="academy_training_program_search">
-        <field name="code"/>
         <field name="name"/>
+        <field name="code"/>
         <field name="training_framework_id"/>
         <field name="professional_family_id"/>
         <field name="professional_area_id"/>

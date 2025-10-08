@@ -86,26 +86,6 @@
   </record>
 
 
-  <!-- Search view for "academy.training.module" -->
-  <record id="view_academy_training_module_search" model="ir.ui.view">
-    <field name="name">view.academy.training.module.search</field>
-    <field name="model">academy.training.module</field>
-    <field name="type">search</field>
-    <field name="mode">primary</field>
-    <field name="priority" eval="25"/>
-    <field name="active" eval="True"/>
-    <field name="arch" type="xml">
-      <search string="academy_training_module_search">
-        <field name="name"/>
-        <field name="code"/>
-
-        <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
-
-      </search>
-    </field>
-  </record>
-
-
   <!-- Kanban view for "academy.training.module" -->
   <record id="view_academy_training_module_kanban" model="ir.ui.view">
     <field name="name">view.academy.training.module.kanban</field>
@@ -133,44 +113,37 @@
                   options="{'img_class': 'w-100 h-auto p-2 align-top'}"/>
               </t>
               <t t-if="!record.image_128.raw_value">
-                <img src="/academy_base/static/src/img/training-module.png" class="w-100 h-auto p-2"
+                <img id="training-module-no-image" src="/academy_base/static/src/img/training-module-128.png" class="w-100 h-auto p-2"
                   alt="Training module" title="Training module without image" />
               </t>
             </aside>
 
-            <div class="flex-fill ps-2 ps-md-0">
+            <div class="flex-fill d-flex flex-column justify-content-between overflow-hidden w-100 ps-2 ps-md-0">
               <main class="d-flex flex-column justify-content-start align-items-start">
                 <h2 class="h4">
                   <field name="display_name"/>
                 </h2>
-                <table border="0" cellpadding="0" cellspacing="0" style="border: 0px none transparent;" >
-                  <tbody>
-                    <tr>
-                      <th class="pb-1 text-nowrap pe-2">Code:</th>
-                      <td class="pb-1 text-truncate">
+
+                <ul class="list-unstyled w-100 small">
+                  <li class="d-flex flex-row justify-content-start lh-lg text-truncate" title="Training module code">
                         <span t-if="record.code.raw_value">
                           <t t-esc="record.code.raw_value"/>
                         </span>
                         <span t-if="!record.code.raw_value">---</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th class="pb-1 text-nowrap pe-2">Hours:</th>
-                      <td class="pb-1 text-truncate">
-                        <field name="hours" class="oe_field_hours" widget="float_time" />
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                  </li>
+
+                  <li class="d-flex flex-row justify-content-start lh-lg text-truncate" title="Teaching hours">
+                    <strong class="pe-2">Hours:</strong>
+                    <field name="hours" class="oe_field_hours" widget="float_time" />
+                  </li>
+
+                </ul>
+
               </main>
 
               <!-- footer: begin -->
               <footer class="d-flex justify-content-end align-items-start mt-2">
-                <button name="view_training_units" type="object" class="btn my-0 py-0">
-                  <i class="fa fa-lg fa-list me-2" aria-hidden="true" title="View training units/blocks"></i>
-                  <field name="training_unit_count" class="oe_field_training_unit_count" />
-                </button>
-                <button name="view_training_programs" type="object" class="btn my-0 py-0">
+                <button name="view_training_programs" type="object" class="btn my-0 py-0" string="Training programs">
                   <i class="fa fa-lg fa-list-ul me-2" aria-hidden="true" title="View training programs"></i>
                   <field name="training_program_count" class="oe_field_training_program_count" />
                 </button>
@@ -185,6 +158,24 @@
     </field>
   </record>
 
+  <!-- Search view for "academy.training.module" -->
+  <record id="view_academy_training_module_search" model="ir.ui.view">
+    <field name="name">view.academy.training.module.search</field>
+    <field name="model">academy.training.module</field>
+    <field name="type">search</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="25"/>
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <search string="academy_training_module_search">
+        <field name="name"/>
+        <field name="code"/>
+
+        <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
+
+      </search>
+    </field>
+  </record>
 
 
   <!-- MODULES AS MAIN MODULES
@@ -251,17 +242,20 @@
     <field name="active" eval="True"/>
     <field name="inherit_id" ref="academy_base.view_academy_training_module_kanban"/>
     <field name="arch" type="xml">
-      <xpath expr="//tbody/tr[1]" position="after">
-        <tr>
-          <th class="pb-1 text-nowrap pe-2">Units:</th>
-          <td class="pb-1 text-truncate">
-            <field name="training_unit_count" class="oe_field_training_unit_count" />
-          </td>
-        </tr>
+      <xpath expr="//main/ul/li[1]" position="after">
+        <li class="d-flex flex-row justify-content-start lh-lg text-truncate" title="Teaching hours">
+          <strong class="pe-2">Units:</strong>
+          <field name="training_unit_count" class="oe_field_training_unit_count" />
+        </li>
+      </xpath>
+      <xpath expr="//footer/button[1]" position="before">
+        <button name="view_training_units" type="object" class="btn my-0 py-0" string="Training units/blocks">
+          <i class="fa fa-lg fa-list me-2" aria-hidden="true" title="View training units/blocks"></i>
+          <field name="training_unit_count" class="oe_field_training_unit_count" />
+        </button>
       </xpath>
     </field>
   </record>
-
 
   <!-- Main window action for model.name -->
   <record id="action_training_module_act_window" model="ir.actions.act_window">
@@ -280,14 +274,12 @@
     </field>
   </record>
 
-
   <record id="action_training_module_act_window_kanban" model="ir.actions.act_window.view">
     <field name="sequence" eval="1"/>
     <field name="view_mode">kanban</field>
     <field name="view_id" ref="academy_base.view_academy_training_module_module_kanban"/>
     <field name="act_window_id" ref="action_training_module_act_window"/>
   </record>
-
 
   <record id="action_training_module_act_window_form" model="ir.actions.act_window.view">
     <field name="sequence" eval="2"/>
@@ -296,14 +288,12 @@
     <field name="act_window_id" ref="action_training_module_act_window"/>
   </record>
 
-
   <record id="action_training_module_act_window_tree" model="ir.actions.act_window.view">
     <field name="sequence" eval="3"/>
     <field name="view_mode">list</field>
     <field name="view_id" ref="academy_base.view_academy_training_module_module_tree"/>
     <field name="act_window_id" ref="action_training_module_act_window"/>
   </record>
-
 
   <!-- Main menu for model.name -->
   <record id="menu_training_module" model="ir.ui.menu">
@@ -358,7 +348,6 @@
     </field>
   </record>
 
-
   <record id="view_academy_training_module_unit_kanban" model="ir.ui.view">
     <field name="name">view.academy.training.module.unit.kanban</field>
     <field name="model">academy.training.module</field>
@@ -368,16 +357,15 @@
     <field name="active" eval="True"/>
     <field name="inherit_id" ref="academy_base.view_academy_training_module_kanban"/>
     <field name="arch" type="xml">
-      <xpath expr="//tbody/tr[1]" position="before">
-        <tr>
-          <td colspan="2" class="pb-1 text-truncate">
-            <field name="training_module_id" class="oe_field_training_unit_count" />
-          </td>
-        </tr>
+      <xpath expr="//main/ul/li[1]" position="attributes">
+        <attribute name="title">Training unit/block code</attribute>
+      </xpath>
+      <xpath expr="//img[@id='training-module-no-image']" position="replace">
+        <img id="training-unit-no-image" src="/academy_base/static/src/img/training-unit-128.png" class="w-100 h-auto p-2"
+          alt="Training module" title="Training unit without image" />
       </xpath>
     </field>
   </record>
-
 
   <!-- Main window action for model.name -->
   <record id="action_training_module_units_act_window" model="ir.actions.act_window">
@@ -385,7 +373,7 @@
     <field name="name">Training units</field>
     <field name="res_model">academy.training.module</field>
     <field name="view_mode">kanban,list,form</field>
-
+    <field name="path">academy-training-unit</field>
     <field name="target">current</field>
     <field name="domain">[('training_module_id', '!=', False)]</field>
     <field name="context">{}</field>
@@ -396,31 +384,28 @@
     </field>
   </record>
 
-
   <record id="action_training_module_units_act_window_kanban" model="ir.actions.act_window.view">
     <field name="sequence" eval="1"/>
     <field name="view_mode">kanban</field>
-    <field name="view_id" ref="view_academy_training_module_unit_kanban"/>
-    <field name="act_window_id" ref="action_training_module_units_act_window"/>
+    <field name="view_id" ref="academy_base.view_academy_training_module_unit_kanban"/>
+    <field name="act_window_id" ref="academy_base.action_training_module_units_act_window"/>
   </record>
-
 
   <record id="action_training_module_units_act_window_form" model="ir.actions.act_window.view">
     <field name="sequence" eval="2"/>
     <field name="view_mode">form</field>
-    <field name="view_id" ref="view_academy_training_module_unit_form"/>
-    <field name="act_window_id" ref="action_training_module_units_act_window"/>
+    <field name="view_id" ref="academy_base.view_academy_training_module_unit_form"/>
+    <field name="act_window_id" ref="academy_base.action_training_module_units_act_window"/>
   </record>
-
 
   <record id="action_training_module_units_act_window_tree" model="ir.actions.act_window.view">
     <field name="sequence" eval="3"/>
     <field name="view_mode">list</field>
-    <field name="view_id" ref="view_academy_training_module_unit_tree"/>
-    <field name="act_window_id" ref="action_training_module_units_act_window"/>
+    <field name="view_id" ref="academy_base.view_academy_training_module_unit_tree"/>
+    <field name="act_window_id" ref="academy_base.action_training_module_units_act_window"/>
   </record>
 
-  <record id="view_academy_training_module_embed_units_tree" model="ir.ui.view">
+<!--<record id="view_academy_training_module_embed_units_tree" model="ir.ui.view">
     <field name="name">view.academy.training.module.embed_unitstree</field>
     <field name="model">academy.training.module</field>
     <field name="type">list</field>
@@ -436,6 +421,6 @@
         <field name="hours" class="oe_field_own_hours" widget="float_time"/>
       </xpath>
     </field>
-  </record>
+  </record> -->
 
 </odoo>

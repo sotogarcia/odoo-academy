@@ -371,7 +371,13 @@ class AcademyTrainingModule(models.Model):
             "context": context,
             "search_view_id": act_wnd.search_view_id.id,
             "help": act_wnd.help,
+            "path": act_wnd.path,
         }
+
+        if act_wnd.view_ids:
+            serialized["views"] = [
+                (v.view_id.id, v.view_mode) for v in act_wnd.view_ids
+            ]
 
         return serialized
 

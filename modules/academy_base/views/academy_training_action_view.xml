@@ -209,55 +209,47 @@
                       options="{'img_class': 'w-100 h-auto p-2 align-top'}"/>
                   </t>
                   <t t-if="!record.image_128.raw_value">
-                    <img src="/academy_base/static/src/img/training-action.png" class="w-100 h-auto p-2"
+                    <img src="/academy_base/static/src/img/training-action-128.png" class="w-100 h-auto p-2"
                       alt="Training action" title="Training action without image" />
                   </t>
                 </aside>
 
-                <div class="flex-fill ps-2 ps-md-0">
+                <div class="flex-fill d-flex flex-column justify-content-between overflow-hidden w-100 ps-2 ps-md-0">
                   <main class="d-flex flex-column justify-content-start align-items-start">
                     <h2 class="h4">
                         <field name="display_name"/>
                     </h2>
-                    <table border="0" cellpadding="0" cellspacing="0"
-                      style="border: 0px none transparent;">
-                      <tbody>
-                        <tr>
-                          <th class="pb-1 text-nowrap pe-2">Code:</th>
-                          <td class="pb-1 text-truncate">
-                            <span t-if="record.code.raw_value">
-                              <t t-esc="record.code.raw_value"/>
-                            </span>
-                            <span t-if="!record.code.raw_value">---</span>
-                          </td>
-                        </tr>
-                        <tr>
-                          <th class="pb-1 text-nowrap pe-2">Lifespan:</th>
-                          <td class="pb-1 text-truncate">
-                            <field name="lifespan" class="oe_field_lifespan" />
-                          </td>
-                        </tr>
-                        <tr>
-                          <th class="pb-1 text-nowrap pe-2">Hours:</th>
-                          <td class="pb-1 text-truncate">
-                            <field name="hours" class="oe_field_hours" widget="float_time" />
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
+
+                    <ul class="list-unstyled w-100 small">
+                      <li class="d-flex flex-row justify-content-start lh-lg text-truncate" title="Training action code">
+                       <span t-if="record.code.raw_value">
+                          <t t-esc="record.code.raw_value"/>
+                        </span>
+                        <span t-if="!record.code.raw_value">---</span>
+                      </li>
+
+                      <li class="d-flex flex-row justify-content-start lh-lg text-truncate" title="Date range">
+                          <field name="lifespan" class="oe_field_lifespan" />
+                      </li>
+
+                      <li class="d-flex flex-row justify-content-start lh-lg text-truncate" title="Teaching hours">
+                        <strong class="pe-2">Hours:</strong>
+                        <field name="hours" class="oe_field_hours" widget="float_time" />
+                      </li>
+                    </ul>
                   </main>
 
                   <!-- footer: begin -->
                   <footer class="d-flex justify-content-end align-items-start mt-2">
-                    <button name="view_action_lines" type="object" class="btn my-0 py-0">
+                    <button name="view_action_lines" type="object" class="btn my-0 py-0" string="Program lines">
                       <i class="fa fa-lg fa-list me-2" aria-hidden="true" title="View training action lines"></i>
                       <field name="action_line_count" class="oe_field_action_line_count" />
                     </button>
-                    <button name="view_training_action_groups" type="object" class="btn my-0 py-0">
+                    <button name="view_training_action_groups" type="object" class="btn my-0 py-0" string="Training groups">
                       <i class="fa fa-lg fa-list-ul me-2" aria-hidden="true" title="View training action groups"></i>
                       <field name="training_group_count" class="oe_field_action_group_count" />
                     </button>
-                    <button name="view_enrolments" type="object" class="btn my-0 py-0">
+                    <button name="view_enrolments" type="object" class="btn my-0 py-0" string="Student enrolments">
                       <i class="fa fa-lg fa-id-card-o me-2" aria-hidden="true" title="View training action enrolments"></i>
                       <field name="enrolment_count" class="oe_field_enrolment_count" />
                     </button>

@@ -158,6 +158,8 @@
                     <group expand="0" name="group_by" string="Group By">
                         <filter name="group_by_training_action_id" string="Training action"
                             domain="[]" context="{'group_by': 'training_action_id'}" />
+                        <filter name="group_by_training_student_id" string="Invited student"
+                            domain="[]" context="{'group_by': 'student_id'}" />
                         <filter name="group_by_primary_teacher_id" string="Primary instructor"
                             domain="[]" context="{'group_by': 'primary_teacher_id'}" />
                         <filter name="group_by_primary_facility_id" string="Primary instructor"
@@ -177,7 +179,7 @@
             <field name="type">ir.actions.act_window</field>
             <field name="name">Invitation</field>
             <field name="res_model">academy.training.session.invitation</field>
-            <field name="view_mode">calendar,list,form</field>
+            <field name="view_mode">list,calendar,form</field>
             <field name="target">current</field>
             <field name="domain">[]</field>
             <field name="context">{}</field>

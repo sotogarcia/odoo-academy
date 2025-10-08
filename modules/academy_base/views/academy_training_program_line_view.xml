@@ -23,8 +23,7 @@
     <field name="active" eval="True"/>
     <field name="arch" type="xml">
       <list string="academy_training_program_line_tree" class="academy-training-program-line-tree"
-        create="0" delete="0" edit="1" editable="bottom"
-        decoration-bf="is_section" decoration-muted="is_section" >
+        create="1" delete="1" edit="1" decoration-bf="is_section" decoration-muted="is_section" >
 
         <field name="active" column_invisible="1"/>
         <field name="training_program_id" column_invisible="1" />

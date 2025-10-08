@@ -95,13 +95,4 @@
     </field>
   </record>
 
-  <!-- Main menu for model.name -->
-  <record id="menu_training_methodology" model="ir.ui.menu">
-    <field name="name">Training methodologies</field>
-    <field name="sequence" eval="45"/>
-    <field name="action" ref="action_training_methodology_act_window"/>
-    <field name="parent_id" ref="menu_academy_advanced"/>
-    <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
-  </record>
-
 </odoo>

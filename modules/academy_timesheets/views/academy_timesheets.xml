@@ -5,7 +5,7 @@
         <record id="menu_academy_timesheets_settings" model="ir.ui.menu" >
             <field name="name">Timesheets</field>
             <field name="sequence" eval="50" />
-            <field name="parent_id" ref="academy_base.menu_academy" />
+            <field name="parent_id" ref="academy_base.menu_academy_advanced" />
             <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
         </record>
 

@@ -71,8 +71,8 @@
     <field name="active" eval="True"/>
     <field name="arch" type="xml">
       <search string="academy_knowledge_area_search">
-        <field name="knowle_code"/>
         <field name="name"/>
+        <field name="knowle_code"/>
 
         <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
 

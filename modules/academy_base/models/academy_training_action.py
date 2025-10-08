@@ -24,9 +24,20 @@ from logging import getLogger
 from pytz import utc
 from uuid import uuid4
 from psycopg2 import Error as PsqlError
+from enum import IntFlag, auto
 
 # pylint: disable=locally-disabled, C0103
 _logger = getLogger(__name__)
+
+
+class SyncMode(IntFlag):
+    NONE = 0
+    CREATE = auto()
+    READ = auto()  # will be ignored
+    UPDATE = auto()
+    DELETE = auto()
+    UPSERT = UPDATE | CREATE
+    ALL = UPDATE | CREATE | DELETE
 
 
 # pylint: disable=locally-disabled, R0903
@@ -703,7 +714,7 @@ class AcademyTrainingAction(models.Model):
     def view_training_action_groups(self):
         self.ensure_one()
 
-        action_xid = "academy_base.action_training_group_act_window"
+        action_xid = "academy_base.action_training_action_group_act_window"
         act_wnd = self.env.ref(action_xid)
 
         context = self.env.context.copy()
@@ -924,113 +935,74 @@ class AcademyTrainingAction(models.Model):
 
         return training_action_set
 
-    def _values_from_program_line(self, program_line):
-        """Build write/create values for action line from a programme line.
-
-        Copies only fields that exist in the action-line model, are writable,
-        not related/compute, and skips meta/relational pointers that must be
-        set explicitly.
+    def _synchronize_from_program(self, mode, add_optional=True):
         """
-        action_line_model = self.env["academy.training.action.line"]
-        values = {}
-        for name, field in program_line._fields.items():
-            # skip meta and linkage fields
-            if name in {
-                "id",
-                "create_uid",
-                "create_date",
-                "write_uid",
-                "write_date",
-                "training_program_id",
-            }:
-                continue
-            # copy only if target has the field
-            if name not in action_line_model._fields:
-                continue
-            tfield = action_line_model._fields[name]
-            # skip non-writable targets
-            if tfield.readonly or tfield.compute or tfield.related:
-                continue
+        Synchronize this training action's lines with their program lines.
 
-            value = program_line[name]
-            # normalise M2O to id
-            if tfield.type == "many2one":
-                values[name] = value.id if value else False
-            # avoid pushing x2many blindly
-            elif tfield.type in ("one2many", "many2many"):
-                continue
-            else:
-                values[name] = value
-
-        # always set pointers specific to the action line
-        values["program_line_id"] = program_line.id
-
-        print(values)
-
-        return values
-
-    def synchronise_program_lines(self, add_optional=True):
-        """
-        Upsert action lines from programme lines and remove stale ones.
+        The `mode` bitfield controls which operations are performed:
+        - UPDATE: update existing action lines from their program line.
+        - CREATE: create missing action lines from program lines.
+        - DELETE: delete action lines whose program line is not present.
 
         Args:
-            add_optional (bool): if True, include optional programme lines.
-                If False, do not create/update optional lines; existing
-                optional lines are preserved unless their source programme
-                line no longer exists.
+            mode (SyncMode | int): Bitfield of SyncMode flags.
+            add_optional (bool): If False, skip creating optional program lines.
         """
-        for action in self:
-            program = action.training_program_id
-            if not program:
-                _logger.warning(
-                    "No training programme related to action %s",
-                    action.display_name,
-                )
-                continue
+        self.ensure_one()
 
-            # All programme lines (for deletion logic)
-            program_lines_all = program.program_line_ids
+        mode = SyncMode(mode) & SyncMode.ALL
+        training_action = self
+        action_line_obj = self.env["academy.training.action.line"]
 
-            # Only the subset to upsert (respect add_optional flag)
-            program_lines_to_sync = (
-                program_lines_all
-                if add_optional
-                else program_lines_all.filtered(
-                    lambda program_line: not program_line.optional
+        program_lines = training_action.training_program_id.program_line_ids
+        program_line_ids = set(program_lines.ids)
+
+        to_update = action_line_obj.browse()
+        to_delete = action_line_obj.browse()
+
+        for action_line in self.action_line_ids:
+            program_line = action_line.program_line_id
+            if not program_line:
+                to_delete |= action_line
+            elif program_line.id not in program_line_ids:
+                to_delete |= action_line
+                program_lines -= program_line
+            else:
+                to_update |= action_line
+                program_lines -= program_line
+
+        if to_update and (mode & SyncMode.UPDATE):
+            to_update.update_from_program_line()
+
+        if to_delete and (mode & SyncMode.DELETE):
+            to_delete.unlink()
+
+        if program_lines and (mode & SyncMode.CREATE):
+            if not add_optional:
+                program_lines = program_lines.filtered(
+                    lambda r: not r.optional
                 )
+
+            action_line_obj.create_from_program_line(
+                training_action, program_lines
             )
 
-            action_lines = action.action_line_ids
-            # index by their source programme line id
-            action_index = {
-                line.program_line_id.id: line
-                for line in action_lines
-                if line.program_line_id
-            }
+    def synchronize_from_program(
+        self, mode: SyncMode, add_optional: bool = True
+    ):
+        """
+        Synchronize each training action with its program lines.
 
-            commands = []
+        Iterates over the current recordset and delegates to
+        `_synchronize_from_program` for each record.
 
-            # UPSERT subset (optional included only if add_optional)
-            for program_line in program_lines_to_sync:
-                values = action._values_from_program_line(program_line)
-                existing = action_index.get(program_line.id)
-                if existing:
-                    commands.append((1, existing.id, values))
-                else:
-                    # In onchanges the parent may have no id yet; let ORM set inverse
-                    if action.id:
-                        values["training_action_id"] = action.id
-                    commands.append((0, 0, values))
+        Note: the READ flag is ignored.
 
-            # DELETE lines whose source programme line no longer exists
-            # (affects both optional and non-optional)
-            stale_ids = set(action_index.keys()) - set(program_lines_all.ids)
-            for pl_id in stale_ids:
-                commands.append((2, action_index[pl_id].id))
+        Args:
+            mode (SyncMode): Bitfield flags controlling UPDATE/CREATE/DELETE.
+            add_optional (bool): If False, skip creating optional lines.
+        """
+        mode = SyncMode(mode) & SyncMode.ALL
 
-            if commands:
-                if action.id:
-                    action.write({"action_line_ids": commands})
-                else:
-                    # In onchange: assign commands directly (no write)
-                    action.action_line_ids = commands
+        for record in self:
+            record._synchronize_from_program(mode, add_optional)
