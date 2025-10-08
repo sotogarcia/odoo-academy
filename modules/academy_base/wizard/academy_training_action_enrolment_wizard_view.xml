@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo noupdate="0">
+
+    <record id="view_academy_student_enrolment_wizard_tree" model="ir.ui.view">
+        <field name="name">Students embed in wizard</field>
+        <field name="model">academy.student</field>
+        <field name="type">list</field>
+        <field name="mode">primary</field>
+        <field name="priority" eval="99"/>
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <list string="Students" create="0" delete="0" edit="0">
+                <field name="vat" class="oe_field_vat"/>
+                <field name="name" class="oe_field_name"/>
+                <field name="phone" class="oe_field_phone"/>
+                <field name="mobile" class="oe_field_mobile"/>
+                <field name="email" class="oe_field_email"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_academy_training_action_enrolment_wizard_tree" model="ir.ui.view">
+        <field name="name">Training actions embed in wizard</field>
+        <field name="model">academy.training.action</field>
+        <field name="type">list</field>
+        <field name="mode">primary</field>
+        <field name="priority" eval="99"/>
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <list string="Training actions" create="0" delete="0" edit="0">
+                <field name="code" class="oe_field_action_code"/>
+                <field name="name" class="oe_field_action_name"/>
+                <field name="date_start" class="oe_field_start"/>
+                <field name="date_stop" class="oe_field_end"/>
+            </list>
+        </field>
+    </record>
+
+
+    <record id="view_academy_training_action_enrolment_wizard_wizard" model="ir.ui.view">
+        <field name="name">Massive actions over enrolments</field>
+        <field name="model">academy.training.action.enrolment.wizard</field>
+        <field name="type">form</field>
+        <field name="mode">primary</field>
+        <field name="priority" eval="16"/>
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <form string="Facility reporting wizard" create="1" delete="1" edit="1">
+
+                <field name="enrolment_ids" invisible="1"/>
+                <field name="available_training_modality_ids" invisible="1" />
+
+                <header>
+                    <button name="perform_action" string="Execute" type="object" default_focus="0"
+                        icon="fa-play" confirm="Are you sure you want to do this?"
+                        help="Perform the chosen action on the set of records"/>
+                    <field name="state" widget="statusbar" options="{'clickable': 1}" />
+                </header>
+
+                <group col="4" invisible="[(state != 'main')]">
+
+                    <field name="update_date_start" class="oe_field_update_date_start"
+                        string="Enrolment date"/>
+                    <field name="date_start" class="oe_field_date_start" string="New value"
+                        readonly="not update_date_start"
+                        required="update_date_start"/>
+
+                    <field name="update_date_stop" class="oe_field_update_date_stop"
+                        string="Termination date"/>
+                    <field name="date_stop" class="oe_field_date_stop" string="New value"
+                        readonly="not update_date_stop"/>
+
+                    <field name="update_modalities" class="oe_field_update_modalities"
+                        string="Modalities"/>
+                    <field name="training_modality_ids" class="oe_field_training_modality_ids"
+                        domain="[('id', 'in', available_training_modality_ids)]"
+                        string="New value" widget="many2many_tags"
+                        readonly="not update_modalities"/>
+
+                    <field name="update_material" class="oe_field_update_material" string="Material"/>
+                    <field name="material" class="oe_field_material" string="New value"
+                        readonly="not update_material"/>
+
+                </group>
+
+                <group col="2" invisible="[(state != 'students')]">
+                    <field name="student_ids" class="oe_field_student_ids w-100" nolabel="1"
+                        colspan="2"
+                        context="{'list_view_ref': 'academy_base.view_academy_student_enrolment_wizard_tree'}"/>
+                    <field name="student_count" class="oe_field_student_count" string="Item count"/>
+                </group>
+
+                <group col="2" invisible="[(state != 'training')]">
+                    <field name="training_action_ids" class="oe_field_training_action_ids w-100"
+                        nolabel="1" colspan="2"
+                        context="{'list_view_ref': 'academy_base.view_academy_training_action_enrolment_wizard_tree'}"/>
+                    <field name="training_action_count" class="oe_field_training_action_count"
+                        string="Item count"/>
+                </group>
+
+                <footer/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_academy_training_action_enrolment_wizard_wizard_act_window"
+        model="ir.actions.act_window">
+        <field name="type">ir.actions.act_window</field>
+        <field name="name">Massive actions over enrolments</field>
+        <field name="res_model">academy.training.action.enrolment.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="binding_model_id" ref="academy_base.model_academy_training_action_enrolment"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
+    </record>
+
+    <!-- Main menu for model.name -->
+    <!--        <record id="menu_academy_training_action_enrolment_wizard_wizard" model="ir.ui.menu" >
+            <field name="name">Massive actions over enrolments</field>
+            <field name="sequence" eval="20" />
+            <field name="action" ref="action_academy_training_action_enrolment_wizard_16_act_window" />
+            <field name="parent_id" ref="base.menu_custom" />
+            <field name="groups_id" eval="[(4, ref('base.group_user'))]"/>
+        </record> -->
+
+</odoo>

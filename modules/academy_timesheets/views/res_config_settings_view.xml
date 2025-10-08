@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo noupdate="0">
+
+  <record id="res_config_settings_view_form" model="ir.ui.view">
+    <field name="name">res.config.settings.view.form.inherit.academy.timesheets</field>
+    <field name="model">res.config.settings</field>
+    <field name="priority" eval="20" />
+    <field name="inherit_id" ref="base.res_config_settings_view_form" />
+    <field name="arch" type="xml">
+      <xpath expr="//form" position="inside">
+        <app string="Timesheets" name="academy_timesheets" groups="base.group_system">
+
+
+          <!-- Settings block: begin -->
+          <block title="Publish" name="academy_timesheets_publish">
+
+            <setting string="Teacher timesheet" help="Set how the schedule will be served, by default, to teachers.">
+              <div class="content-group mt8">
+                <field name="teacher_report_type" />
+                <field name="teacher_report_download" />
+              </div>
+            </setting>
+
+            <setting string="Show next week schedule" help="Display the schedule for the following week.">
+              <div class="content-group mt8">
+                <field name="schedule_for_next_week_from"
+                  options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
+                <field name="schedule_for_next_week_from_time" widget="float_time" />
+              </div>
+            </setting>
+
+          </block>
+          <!-- Settings block: end -->
+
+
+          <!-- Settings block: begin -->
+          <block title="Teacher schedule" name="academy_timesheets_teacher_schedule">
+
+            <setting string="Facilitate" help="Help to fill out the teacher's schedule.">
+              <div class="content-group mt8">
+                <field name="help_to_fill" />
+                <field name="wait_to_fill" widget="float_time" />
+              </div>
+            </setting>
+
+            <setting string="Non-teaching tasks" help="Add, edit or remove non-teaching tasks.">
+              <div class="content-group mt8">
+                <button
+                    name="%(academy_timesheets.action_non_teaching_tasks_act_window)d"
+                    string="&#160;Update non-teaching tasks"
+                    type="action"
+                    class="oe_link"
+                    icon="fa-arrow-right"
+                />
+              </div>
+            </setting>
+
+          </block>
+          <!-- Settings block: end -->
+
+
+          <!-- Settings block: begin -->
+          <block title="Operation shifts" name="academy_timesheets_operation_shifts">
+
+            <setting string="Keep operational shifts" help="Duration for which shift-related information will be retained in the database. This does not impact training sessions..">
+              <div class="content-group mt8">
+                <field name="teacher_shift_lookback_days" />
+              </div>
+            </setting>
+
+            <setting string="Teacher operational shifts" help="View the operational shifts of academy teachers ensuring effective time.">
+              <div class="content-group mt8">
+                <button
+                  name="%(academy_timesheets.action_teacher_operational_shift_act_window)d"
+                  string="&#160;View shifts"
+                  type="action"
+                  class="oe_link"
+                  icon="fa-arrow-right"
+                />
+              </div>
+            </setting>
+
+          </block>
+          <!-- Settings block: end -->
+
+        </app>
+
+      </xpath>
+    </field>
+  </record>
+
+</odoo>

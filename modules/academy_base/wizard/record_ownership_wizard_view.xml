@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo noupdate="0">
+
+    <record id="academy_training_program_change_owner_act_window" model="ir.actions.act_window">
+        <field name="type">ir.actions.act_window</field>
+        <field name="name">Change owner</field>
+        <field name="res_model">record.ownership.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="binding_model_id" ref="academy_base.model_academy_training_program"/>
+        <field name="binding_view_types">list</field>
+        <field name="groups_id" eval="[(4, ref('record_ownership.record_ownership_manager'))]"/>
+    </record>
+
+    <record id="academy_training_action_change_owner_act_window" model="ir.actions.act_window">
+        <field name="type">ir.actions.act_window</field>
+        <field name="name">Change owner</field>
+        <field name="res_model">record.ownership.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="binding_model_id" ref="academy_base.model_academy_training_action"/>
+        <field name="binding_view_types">list</field>
+        <field name="groups_id" eval="[(4, ref('record_ownership.record_ownership_manager'))]"/>
+    </record>
+
+    <record id="academy_competency_unit_change_owner_act_window" model="ir.actions.act_window">
+        <field name="type">ir.actions.act_window</field>
+        <field name="name">Change owner</field>
+        <field name="res_model">record.ownership.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="binding_model_id" ref="academy_base.model_academy_competency_unit"/>
+        <field name="binding_view_types">list</field>
+        <field name="groups_id" eval="[(4, ref('record_ownership.record_ownership_manager'))]"/>
+    </record>
+
+    <record id="academy_training_module_change_owner_act_window" model="ir.actions.act_window">
+        <field name="type">ir.actions.act_window</field>
+        <field name="name">Change owner</field>
+        <field name="res_model">record.ownership.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="binding_model_id" ref="academy_base.model_academy_training_module"/>
+        <field name="binding_view_types">list</field>
+        <field name="groups_id" eval="[(4, ref('record_ownership.record_ownership_manager'))]"/>
+    </record>
+
+</odoo>

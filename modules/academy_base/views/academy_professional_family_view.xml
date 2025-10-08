@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo noupdate="0">
+
+  <!-- VIEWS: "Professional Family"
+
+            - Model·········: academy.professional.family
+            - _rec_name·····: name
+            - Domain········: []
+            - Context·······: {}
+            - Parent menu ··: academy_base.menu_academy_settings_helper
+            - View priority·: 16    Sequence····: 10
+            - Action help···: There are not professional families in catalog
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+  <!-- List view for "academy.professional.family" -->
+  <record id="view_academy_professional_family_tree" model="ir.ui.view">
+    <field name="name">view.academy.professional.family.tree</field>
+    <field name="model">academy.professional.family</field>
+    <field name="type">list</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16"/>
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <list string="academy_professional_family_tree" create="1" delete="1" edit="1">
+        <field name="name"/>
+        <field name="description"/>
+        <field name="professional_area_count" string="Areas"/>
+      </list>
+    </field>
+  </record>
+
+  <!-- Form view for "academy.professional.family" -->
+  <record id="view_academy_professional_family_form" model="ir.ui.view">
+    <field name="name">view.academy.professional.family.form</field>
+    <field name="model">academy.professional.family</field>
+    <field name="type">form</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16"/>
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <form string="academy_professional_family_form" create="1" delete="1" edit="1">
+        <sheet>
+          <div class="oe_button_box" name="button_box"/>
+          <widget name="web_ribbon" title="Archived" bg_color="bg-danger" invisible="active == True"/>
+
+          <field name="image_1920" widget="image" class="oe_avatar"
+            options='{"preview_image": "image_128"}'/>
+
+          <div class="oe_title">
+            <field name="active" invisible="1"/>
+            <label for="name" class="oe_edit_only"/>
+            <h1>
+              <field name="name" class="oe_field_name" placeholder="Enter new name"/>
+            </h1>
+          </div>
+          <notebook>
+            <page string="Description" class="oe_page_description" accesskey="D">
+              <field name="description" class="oe_field_description"
+                placeholder="Enter new description"/>
+            </page>
+            <page string="Areas" class="oe_page_areas" accesskey="A">
+              <field name="professional_area_ids" class="oe_field_professional_area_ids">
+                <list string="Areas" create="1" delete="1" edit="1" editable="top">
+                  <field name="name" class="oe_field_name" placeholder="Enter new name"/>
+                </list>
+              </field>
+            </page>
+          </notebook>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <!-- Search view for "academy.professional.family" -->
+  <record id="view_academy_professional_family_search" model="ir.ui.view">
+    <field name="name">view.academy.professional.family.search</field>
+    <field name="model">academy.professional.family</field>
+    <field name="type">search</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16"/>
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <search string="academy_professional_family_search">
+
+        <field name="name"/>
+        <field name="professional_area_ids"/>
+        <field name="professional_qualification_ids"/>
+
+        <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
+
+      </search>
+    </field>
+  </record>
+
+  <!-- Main window action for model.name -->
+  <record id="action_professional_family_act_window" model="ir.actions.act_window">
+    <field name="type">ir.actions.act_window</field>
+    <field name="name">Professional families</field>
+    <field name="res_model">academy.professional.family</field>
+    <field name="view_mode">list,form</field>
+
+    <field name="target">current</field>
+    <field name="domain">[]</field>
+    <field name="context">{}</field>
+    <field name="search_view_id" ref="view_academy_professional_family_search"/>
+    <field name="help" type="html">
+      <p class="oe_view_nocontent_create"> Click to add new professional families </p>
+      <p> There are no professional families yet </p>
+    </field>
+  </record>
+
+</odoo>

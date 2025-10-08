@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo noupdate="0">
+
+  <record id="framework_techno_rural" model="academy.training.framework">
+    <field name="name">Digital Training Program in Rural Areas</field>
+    <field name="description">
+      A specialized program aimed at fostering digital skills in rural
+      communities. It provides training in the use of information and
+      communication technologies, online services, and digital tools
+      to support local businesses, enhance employability, and reduce
+      the digital divide in remote areas.
+    </field>
+    <field name="active" eval="True"/>
+    <field name="code">TECHNO-RURAL</field>
+    <field name="issuing_authority_id" ref="academy_base.partner_mefp"/>
+    <field name="is_modular" eval="False"/>
+    <field name="legal_code">RD 939/1997</field>
+    <field name="image_1920" type="base64"
+      file="academy_base/static/src/img/demo_training_framework.png"/>
+  </record>
+
+
+</odoo>

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo noupdate="0">
+
+  <!-- VIEWS: "student"
+
+            - Model·········: academy.student
+            - _rec_name·····: name
+            - Domain········: []
+            - Context·······: {}
+            - Parent menu ··: academy_base.menu_academy_monitoring
+            - View priority·: 16    Sequence····: 10
+            - Action help···: Here are not students
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+  <!-- List view for "academy.student" -->
+  <record id="view_academy_student_tree" model="ir.ui.view">
+    <field name="name">view.academy.student.tree</field>
+    <field name="model">academy.student</field>
+    <field name="type">list</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16"/>
+    <field name="active" eval="True"/>
+    <field name="inherit_id" ref="academy_base.view_academy_support_staff_tree"/>
+    <field name="arch" type="xml">
+      <xpath expr="//list" position="attributes">
+        <attribute name="string">academy_student_tree</attribute>
+      </xpath>
+      <xpath expr="//list" position="inside">
+        <field name="enrolment_str" class="oe_field_enrolment_str text-center" optional="show"/>
+      </xpath>
+    </field>
+  </record>
+
+  <!-- Form view for "academy.student" -->
+  <record id="view_academy_student_form" model="ir.ui.view">
+    <field name="name">view.academy.student.form</field>
+    <field name="model">academy.student</field>
+    <field name="type">form</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16"/>
+    <field name="active" eval="True"/>
+    <field name="inherit_id"/>
+    <field name="inherit_id" ref="academy_base.view_academy_support_staff_form"/>
+    <field name="arch" type="xml">
+      <xpath expr="//form" position="attributes">
+        <attribute name="string">academy_student_form</attribute>
+      </xpath>
+      <xpath expr="//div[@name='button_box']" position="inside">
+        <button name="view_enrolments" type="object" class="oe_stat_button oe_read_only"
+          icon="fa-id-card-o" help="View student enrolments">
+          <field name="enrolment_str" widget="statinfo" string="Enrolments"/>
+        </button>
+      </xpath>
+
+      <xpath expr="//notebook/page[1]" position="before">
+        <page string="Enrolments" class="oe_page_enrolments" accesskey="E" autofocus="autofocus">
+          <field name="enrolment_ids" class="oe_field_current_enrolment_ids"
+            domain="[('is_current', '=', True)]"
+            context="{'list_view_ref': 'academy_base.view_academy_training_action_enrolment_tree_embed'}" />
+        </page>
+      </xpath>
+    </field>
+  </record>
+
+  <record id="view_academy_student_kanban" model="ir.ui.view">
+    <field name="name">view.academy.student.kanban</field>
+    <field name="model">academy.student</field>
+    <field name="type">kanban</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16"/>
+    <field name="active" eval="True"/>
+    <field name="inherit_id" ref="academy_base.view_academy_support_staff_kanban"/>
+    <field name="arch" type="xml">
+      <xpath expr="//kanban" position="attributes">
+        <attribute name="string">academy_student_kanban</attribute>
+      </xpath>
+    </field>
+  </record>
+
+  <!-- Search view for "academy.student" -->
+  <record id="view_academy_student_search" model="ir.ui.view">
+    <field name="name">view.academy.student.search</field>
+    <field name="model">academy.student</field>
+    <field name="type">search</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16"/>
+    <field name="active" eval="True"/>
+    <field name="inherit_id"/>
+    <field name="inherit_id" ref="academy_base.view_academy_support_staff_search"/>
+    <field name="arch" type="xml">
+      <xpath expr="//search" position="attributes">
+        <attribute name="string">academy_student_search</attribute>
+      </xpath>
+
+      <xpath expr="//field[@name='id']" position="after">
+        <separator/>
+        <filter name="enroled" string="Enroled" domain="[('current_enrolment_count', '>', 0)]"/>
+        <filter name="not_enrolled" string="Not Enroled"
+          domain="[('current_enrolment_count', '=', 0)]"/>
+      </xpath>
+
+    </field>
+  </record>
+
+  <!-- Main window action for model.name -->
+  <record id="action_student_act_window" model="ir.actions.act_window">
+    <field name="type">ir.actions.act_window</field>
+    <field name="name">Students</field>
+    <field name="res_model">academy.student</field>
+    <field name="view_mode">kanban,list,form</field>
+    <field name="path">academy-student</field>
+    <field name="target">current</field>
+    <field name="domain"
+      eval="[('id', '&lt;&gt;', ref('academy_base.academy_student_default_template'))]"/>
+    <field name="context">{}</field>
+    <field name="search_view_id" ref="view_academy_student_search"/>
+    <field name="help" type="html">
+      <p class="oe_view_nocontent_create"> Click to add new students </p>
+      <p> There are no students yet </p>
+    </field>
+  </record>
+
+  <!-- Main menu for model.name -->
+  <record id="menu_student" model="ir.ui.menu">
+    <field name="name">Students</field>
+    <field name="sequence" eval="15"/>
+    <field name="action" ref="action_student_act_window"/>
+    <field name="parent_id" ref="academy_base.menu_academy_community"/>
+    <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
+  </record>
+
+</odoo>

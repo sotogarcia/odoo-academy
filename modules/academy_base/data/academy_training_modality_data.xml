@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo noupdate="1">
+
+    <record id="academy_training_modality_distance" model="academy.training.modality">
+        <field name="name">Distance learning</field>
+        <field name="description">Training through various technologies, in order to promote
+            learning without limitations of location, occupation or age</field>
+    </record>
+
+    <record id="academy_training_modality_blended" model="academy.training.modality">
+        <field name="name">Mixed</field>
+        <field name="description">Combine the different modes of delivery for the needs of the
+            participants</field>
+    </record>
+
+    <record id="academy_training_modality_online" model="academy.training.modality">
+        <field name="name">Online</field>
+        <field name="description">Training through the online platform that allows maximum
+            flexibility, accessibility to the reach of the participants</field>
+    </record>
+
+    <record id="academy_training_modality_classroom" model="academy.training.modality">
+        <field name="name">Classroom teaching</field>
+        <field name="description">Training given in the room, direct and personal communication
+            between the participants and the trainer</field>
+    </record>
+
+</odoo>

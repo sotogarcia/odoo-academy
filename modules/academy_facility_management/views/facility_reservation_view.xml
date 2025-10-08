@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<openerp>
+    <data noupdate="0">
+
+        <record id="view_facility_reservation_tree" model="ir.ui.view">
+            <field name="name">view.facility.reservation.tree</field>
+            <field name="model">facility.reservation</field>
+            <field name="type">list</field>
+            <field name="mode">extension</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="facility_management.view_facility_reservation_tree" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='has_scheduler']" position="after">
+                    <field name="has_training_action" class="oe_field_has_training_action" string="Training" optional="hide" />
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_facility_reservation_form" model="ir.ui.view">
+            <field name="name">view.facility.reservation.form</field>
+            <field name="model">facility.reservation</field>
+            <field name="type">form</field>
+            <field name="mode">extension</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="facility_management.view_facility_reservation_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='facility_id']" position="after">
+                    <field name="training_action_id" colspan="4" class="oe_field_training_action_id" />
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_facility_reservation_search" model="ir.ui.view">
+            <field name="name">view.facility.reservation.search</field>
+            <field name="model">facility.reservation</field>
+            <field name="type">search</field>
+            <field name="mode">extension</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="facility_management.view_facility_reservation_search" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='complex_id']" position="after">
+                    <separator />
+                    <field name="training_action_id" />
+                    <separator />
+                    <filter string="With training action"
+                        name="with_training_action"
+                        domain="[('training_action_id', '&lt;&gt;', False)]"
+                        context="{}"
+                        help="With a related training action" />
+
+                    <filter string="Without training action"
+                        name="without_training_action"
+                        domain="[('training_action_id', '=', False)]"
+                        context="{}"
+                        help="Without a related training action" />
+
+                    <filter string="Group by training action"
+                        name="group_by_training_action"
+                        domain="[]"
+                        context="{'group_by': 'training_action_id'}"
+                        help="Group by related training action" />
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>

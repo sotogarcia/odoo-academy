@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo noupdate="0">
+
+  <!-- VIEWS: "Competence Standard"
+
+            - Model·········: academy.competency.unit
+            - _rec_name·····: name
+            - Domain········: []
+            - Context·······: {}
+            - Parent menu ··: academy_base.menu_academy_catalog
+            - View priority·: 16    Sequence····: 10
+            - Action help···: There are not competency units in catalog
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+  <!-- List view for "academy.competency.unit" -->
+  <record id="view_academy_competency_unit_tree" model="ir.ui.view">
+    <field name="name">view.academy.competency.unit.tree</field>
+    <field name="model">academy.competency.unit</field>
+    <field name="type">list</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16"/>
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <list string="academy_competency_unit_tree" create="1" delete="1" edit="1">
+        <field name="code" string="Code" class="oe_field_competency_code"/>
+        <field name="name" string="Name" class="oe_field_competency_name w-100"/>
+      </list>
+    </field>
+  </record>
+
+  <!-- Form view for "academy.competency.unit" -->
+  <record id="view_academy_competency_unit_form" model="ir.ui.view">
+    <field name="name">view.academy.competency.unit.form</field>
+    <field name="model">academy.competency.unit</field>
+    <field name="type">form</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16"/>
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <form string="academy_competency_unit_form">
+        <sheet>
+          <field name="id" invisible="1"/>
+          <field name="active" invisible="1"/>
+
+          <div class="oe_button_box" name="button_box"/>
+          <widget name="web_ribbon" title="Archived" bg_color="bg-danger" invisible="active"/>
+
+          <div class="oe_title">
+            <label for="name" class="oe_edit_only"/>
+            <h1>
+              <field name="name" class="oe_field_competency_name"/>
+            </h1>
+          </div>
+
+          <group col="2">
+            <field name="code" class="oe_field_competency_code" placeholder="Enter new code"
+              string="Code"/>
+            <field name="description" class="oe_field_description"/>
+          </group>
+        </sheet>
+
+        <chatter/>
+      </form>
+    </field>
+  </record>
+
+  <!-- Search view for "academy.competency.unit" -->
+  <record id="view_academy_competency_unit_search" model="ir.ui.view">
+    <field name="name">view.academy.competency.unit.search</field>
+    <field name="model">academy.competency.unit</field>
+    <field name="type">search</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16"/>
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <search string="academy_competency_unit_search">
+        <field name="name" string="Name"/>
+        <field name="code"/>
+
+        <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
+
+      </search>
+    </field>
+  </record>
+
+  <!-- Main window action for model.name -->
+  <record id="action_competency_unit_act_window" model="ir.actions.act_window">
+    <field name="type">ir.actions.act_window</field>
+    <field name="name">Competence Standards</field>
+    <field name="res_model">academy.competency.unit</field>
+    <field name="view_mode">list,form</field>
+      <field name="path">academy-competency-standard</field>
+    <field name="target">current</field>
+    <field name="domain">[]</field>
+    <field name="context">{}</field>
+    <field name="search_view_id" ref="view_academy_competency_unit_search"/>
+    <field name="help" type="html">
+      <p class="oe_view_nocontent_create"> Click to add new competency units </p>
+      <p> There are no competency units yet </p>
+    </field>
+  </record>
+
+  <!-- Main menu for model.name -->
+  <record id="menu_competency_unit" model="ir.ui.menu">
+    <field name="name">Competence Standard</field>
+    <field name="sequence" eval="20"/>
+    <field name="action" ref="action_competency_unit_act_window"/>
+    <field name="parent_id" ref="academy_base.menu_academy_catalog"/>
+    <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
+  </record>
+
+</odoo>

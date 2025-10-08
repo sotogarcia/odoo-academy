@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo noupdate="0">
+
+        <record id="academy_session_notification_email" model="ir.ui.view">
+            <field name="name">academy_session_notification_email</field>
+            <field name="model" />
+            <field name="type">qweb</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="mail.mail_notification_layout"/>
+            <field name="key">mail.message_notification_email</field>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@t-out='message.body']" position="inside">
+
+<p style="width: 600px; margin: 5px 0px; text-align: justify;">
+    Hello.
+</p>
+
+<p style="width: 600px; margin: 5px 0px; text-align: justify;">
+  I would like to inform you that there have been changes made to one of the
+  sessions that was scheduled on the timetable. Please review the updated
+  information at your earliest convenience and let us know if you have any
+  questions or concerns.
+</p>
+
+<p style="width: 600px; margin: 5px 0px; text-align: justify;">
+  The details of these changes are reflected below.
+</p>
+                </xpath>
+
+                <xpath expr="//ul" position="after">
+<p style="width: 600px; margin: 5px 0px; text-align: justify;">
+  Thank you for your understanding and flexibility.
+</p>
+                </xpath>
+
+            </field>
+        </record>
+
+</odoo>

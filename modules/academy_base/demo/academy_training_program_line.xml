@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo noupdate="0">
+
+    <record id="academy_training_program_line_office" model="academy.training.program.line">
+        <field name="name">Manage Microsoft Office software and files in computer support</field>
+        <field name="description">The latest versions of the Microsoft Office appliances for PC</field>
+        <field name="active">True</field>
+        <field name="sequence">2</field>
+        <field name="training_module_id" ref="academy_base.academy_training_module_ms2010"/>
+        <field name="training_program_id" ref="academy_base.academy_training_program_ms"/>
+    </record>
+
+    <record id="academy_training_program_line_libre" model="academy.training.program.line">
+        <field name="name">Manage LibreOffice software and files in computer support</field>
+        <field name="description">The latest versions of the LibreOffice appliances for PC</field>
+        <field name="active">True</field>
+        <field name="sequence">1</field>
+        <field name="training_module_id" ref="academy_base.academy_training_module_lb5"/>
+        <field name="training_program_id" ref="academy_base.academy_training_program_ADGD0308"/>
+    </record>
+
+    <record id="academy_training_program_line_mswin" model="academy.training.program.line">
+        <field name="name">Manage the latest Microsoft operating system</field>
+        <field name="description">The latest version of the Microsoft operating system for PC</field>
+        <field name="active">True</field>
+        <field name="sequence">1</field>
+        <field name="training_module_id" ref="academy_base.academy_training_module_win10"/>
+        <field name="training_program_id" ref="academy_base.academy_training_program_ms"/>
+    </record>
+
+    <record id="academy_training_program_line_odoo" model="academy.training.program.line">
+        <field name="name">Learn Odoo ERP for Absolute Beginners</field>
+        <field name="description">Gain comprehensive understanding of Odoo ERP system. Initiate your Odoo ERP with the basic functionalities.</field>
+        <field name="active">True</field>
+        <field name="sequence">2</field>
+        <field name="training_module_id" ref="academy_base.academy_training_module_odoo"/>
+        <field name="training_program_id" ref="academy_base.academy_training_program_ADGD0308"/>
+    </record>
+
+</odoo>

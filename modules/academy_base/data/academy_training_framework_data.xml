@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo noupdate="0">
+
+  <!-- Degree A  -->
+  <record id="framework_degree_a" model="academy.training.framework">
+    <field name="name">Degree A</field>
+    <field name="description">Micro-credentials within the Spanish VET system.</field>
+    <field name="active" eval="True"/>
+    <field name="code">DEG_A</field>
+    <field name="issuing_authority_id" ref="academy_base.partner_mefp"/>
+    <field name="is_modular" eval="False"/>
+    <field name="legal_code">LO 3/2022; RD 659/2023</field>
+    <field name="image_1920" type="base64"
+      file="academy_base/static/src/img/training_framework_grade_a.png" />
+  </record>
+
+  <!-- Degree B  -->
+  <record id="framework_degree_b" model="academy.training.framework">
+    <field name="name">Degree B</field>
+    <field name="description">Certificates of competence (partial accreditation).</field>
+    <field name="active" eval="True"/>
+    <field name="code">DEG_B</field>
+    <field name="issuing_authority_id" ref="academy_base.partner_mefp"/>
+    <field name="is_modular" eval="False"/>
+    <field name="legal_code">LO 3/2022; RD 659/2023</field>
+    <field name="image_1920" type="base64"
+      file="academy_base/static/src/img/training_framework_grade_b.png" />
+  </record>
+
+  <!-- Degree C  -->
+  <record id="framework_degree_c" model="academy.training.framework">
+    <field name="name">Degree C</field>
+    <field name="description">Professional certificates (INCUAL/SEPE-based), VET Degree C.</field>
+    <field name="active" eval="True"/>
+    <field name="code">DEG_C</field>
+    <field name="issuing_authority_id" ref="academy_base.partner_mefp"/>
+    <field name="is_modular" eval="True"/>
+    <field name="legal_code">LO 3/2022; RD 659/2023</field>
+    <field name="image_1920" type="base64"
+      file="academy_base/static/src/img/training_framework_grade_c.png" />
+  </record>
+
+  <!-- Degree D  -->
+  <record id="framework_degree_d" model="academy.training.framework">
+    <field name="name">Degree D</field>
+    <field name="description">Upper-secondary VET cycles (Grado Medio / Superior structure).</field>
+    <field name="active" eval="True"/>
+    <field name="code">DEG_D</field>
+    <field name="issuing_authority_id" ref="academy_base.partner_mefp"/>
+    <field name="is_modular" eval="True"/>
+    <field name="legal_code">LO 3/2022; RD 659/2023</field>
+    <field name="image_1920" type="base64"
+      file="academy_base/static/src/img/training_framework_grade_d.png" />
+  </record>
+
+  <!-- Degree E  -->
+  <record id="framework_degree_e" model="academy.training.framework">
+    <field name="name">Degree E</field>
+    <field name="description">University-level or specialization offer linked to VET
+      pathways.</field>
+    <field name="active" eval="True"/>
+    <field name="code">DEG_E</field>
+    <field name="issuing_authority_id" ref="academy_base.partner_mefp"/>
+    <field name="is_modular" eval="True"/>
+    <field name="legal_code">LO 3/2022; RD 659/2023</field>
+    <field name="image_1920" type="base64"
+      file="academy_base/static/src/img/training_framework_grade_e.png" />
+  </record>
+
+  <!-- Degree F  -->
+  <record id="framework_degree_f" model="academy.training.framework">
+    <field name="name">Degree F</field>
+    <field name="description">Post-VET specialization courses (Cursos de especialización).</field>
+    <field name="active" eval="True"/>
+    <field name="code">DEG_F</field>
+    <field name="issuing_authority_id" ref="academy_base.partner_mefp"/>
+    <field name="is_modular" eval="False"/>
+    <field name="legal_code">LO 3/2022; RD 659/2023</field>
+    <field name="image_1920" type="base64"
+      file="academy_base/static/src/img/training_framework_grade_f.png" />
+  </record>
+
+  <!-- SEPE Programs (Specialties Catalogue)  -->
+  <record id="framework_sepe_programs" model="academy.training.framework">
+    <field name="name">SEPE – Programs</field>
+    <field name="description">Formación del Catálogo de especialidades formativas (SEPE).</field>
+    <field name="active" eval="True"/>
+    <field name="code">SEPE_PROG</field>
+    <field name="issuing_authority_id" ref="academy_base.partner_sepe"/>
+    <field name="is_modular" eval="True"/>
+    <field name="legal_code">Orden TMS/283/2019</field>
+    <field name="image_1920" type="base64"
+      file="academy_base/static/src/img/training_framework_sepe.png" />
+  </record>
+
+</odoo>

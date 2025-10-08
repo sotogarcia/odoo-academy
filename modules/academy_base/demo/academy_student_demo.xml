@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo noupdate="0">
+
+    <record id="academy_res_partner_demo_student_1" model="academy.student">
+        <field name="name">Neil Perry</field>
+        <field name="vat">ES05442287G</field>
+        <field name="email">neil.perry@gmail.com</field>
+        <field name="city">Burlington</field>
+        <field name="zip">05401</field>
+        <field name="country_id" ref="base.es"/>
+        <field name="street">60 Battery St</field>
+    </record>
+
+    <record id="academy_res_partner_demo_student_2" model="academy.student">
+        <field name="name">Todd Anderson</field>
+        <field name="vat">ES62956020Y</field>
+        <field name="email">todd.anderson@hotmail.com</field>
+        <field name="city">Essex Junction</field>
+        <field name="zip">05452</field>
+        <field name="country_id" ref="base.es"/>
+        <field name="street">70 Essex Way</field>
+    </record>
+
+    <record id="academy_res_partner_demo_student_3" model="academy.student">
+        <field name="name">Knox Overstreet</field>
+        <field name="vat">ES17508097Z</field>
+        <field name="email">knox.overstreet@mundo-r.com</field>
+        <field name="city">Rutland</field>
+        <field name="zip">05701</field>
+        <field name="country_id" ref="base.es"/>
+        <field name="street">5 Best Western Pl</field>
+    </record>
+
+
+    <record id="academy_res_partner_demo_student_4" model="academy.student">
+        <field name="name">Charles Dalton</field>
+        <field name="vat">ES68352654N</field>
+        <field name="email">charles.dalton@gmx.es</field>
+        <field name="city">South Burlington</field>
+        <field name="zip">05403</field>
+        <field name="country_id" ref="base.es"/>
+        <field name="street">870 Williston Rd</field>
+    </record>
+
+    <record id="academy_res_partner_demo_student_5" model="academy.student">
+        <field name="name">Stephen Meeks</field>
+        <field name="vat">ES69627939Q</field>
+        <field name="email">stephen.meeks@yahoo.es</field>
+        <field name="city">Brattleboro</field>
+        <field name="zip">05301</field>
+        <field name="country_id" ref="base.es"/>
+        <field name="street">822 Ames Hill Rd</field>
+    </record>
+
+</odoo>

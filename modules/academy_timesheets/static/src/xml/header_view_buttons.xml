@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates id="academy_timesheets_header_view_buttons" xml:space="preserve">
+
+    <t t-name="ListView.buttons.search_available_teacher">
+        <button type="button" class="btn btn-info" id="D73FB1B7653A45DA8A72F768C7436A78">
+            Available
+        </button>
+    </t>
+
+    <t t-name="KanbanView.buttons.search_available_teacher">
+        <button type="button" class="btn btn-info" id="D73FB1B7653A45DA8A72F768C7436A78">
+            Available
+        </button>
+    </t>
+
+    <t t-name="CalendarView.buttons.search_available_teacher">
+        <t t-jquery="div.o_calendar_buttons > div:last" t-operation="after">
+            <div class="btn-group ml-2">
+                <button type="button" class="btn btn-info" id="D73FB1B7653A45DA8A72F768C7436A78">
+                    Available
+                </button>
+            </div>
+        </t>
+    </t>
+
+
+    <t t-name="FormView.buttons.search_available_teacher">
+        <button type="button" class="btn btn-info ml-1" id="D73FB1B7653A45DA8A72F768C7436A78">
+            <i class="fa fa-user mr-2" aria-hidden="false" title="Teachers"></i>Teachers
+        </button>
+    </t>
+
+    <t t-name="FormView.buttons.search_available_facility">
+        <button type="button" class="btn btn-info ml-1" id="1761B26600AA42ACBA75199632F4DCE0">
+            <i class="fa fa-building-o mr-2" aria-hidden="false" title="Facilities"></i>Facilities
+        </button>
+    </t>
+
+</templates>

@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo noupdate="0">
+
+  <!-- VIEWS: "Training action enrolment"
+
+            - Model·········: academy.training.action.enrolment
+            - _rec_name·····: name
+            - Domain········: []
+            - Context·······: {}
+            - Parent menu ··: academy_base.menu_academy_monitoring
+            - View priority·: 16    Sequence····: 10
+            - Action help···: There are not enrolments
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+  <!-- List view for "academy.training.action.enrolment" -->
+  <record id="view_academy_training_action_enrolment_tree" model="ir.ui.view">
+    <field name="name">view.academy.training.action.enrolment.tree</field>
+    <field name="model">academy.training.action.enrolment</field>
+    <field name="type">list</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16"/>
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <list string="academy_training_action_enrolment_tree" create="1" delete="1" edit="1"
+        decoration-success="is_current">
+        <field name="is_current" column_invisible="1"/>
+        <field name="enrolment_code" class="oe_field_enrolment_code" />
+        <field name="training_program_id" class="oe_field_training_program_id" optional="hide"/>
+        <field name="training_action_id" class="oe_field_training_action_id"/>
+        <field name="student_id" class="oe_field_student_id"/>
+        <field name="training_modality_id" class="oe_field_training_modality_id" optional="show"/>
+        <field name="register" class="oe_field_register"/>
+        <field name="deregister" class="oe_field_deregister"/>
+        <field name="vat" class="oe_field_vat" optional="hide"/>
+        <field name="email" class="oe_field_email" optional="show"/>
+        <field name="phone" class="oe_field_phone" optional="show"/>
+        <field name="mobile" class="oe_field_mobile" optional="show"/>
+        <field name="zip" class="oe_field_zip" optional="hide"/>
+        <field name="manager_id" class="oe_field_manager_id" optional="hide"/>
+      </list>
+    </field>
+  </record>
+
+  <!-- Form view for "academy.training.action.enrolment" -->
+  <record id="view_academy_training_action_enrolment_form" model="ir.ui.view">
+    <field name="name">view.academy.training.action.enrolment.form</field>
+    <field name="model">academy.training.action.enrolment</field>
+    <field name="type">form</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16"/>
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <form string="academy_training_action_enrolment_form" create="1" delete="1" edit="1">
+        <sheet>
+          <div class="oe_button_box" name="button_box">
+            <widget name="web_ribbon" title="Archived" bg_color="bg-danger"
+              invisible="active == True"/>
+          </div>
+
+          <field name="training_program_id" invisible="1"/>
+
+          <div class="w-100" id="academy-academy-training-action-enrolment-title">
+            <field name="active" invisible="1"/>
+            <field name="id" invisible="1"/>
+
+            <label for="display_name" class="oe_edit_only"/>
+            <h1>
+              <field name="display_name" class="oe_field_display_name" string="Name"/>
+            </h1>
+          </div>
+
+          <group col="2">
+            <group string="Training action">
+              <field name="training_action_id" class="oe_field_training_action_id"
+                readonly="context.get('default_training_action_id', False) or id" string="Action"
+                options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
+            </group>
+            <group string="Student">
+              <field name="student_id" class="oe_field_student_id"
+                readonly="context.get('default_student_id', False) or id"
+                options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
+            </group>
+
+            <group col="2" string="Dates">
+              <field name="register" class="oe_field_register"/>
+              <field name="deregister" class="oe_field_deregister"/>
+            </group>
+
+            <group col="2" string="Options">
+              <field name="training_modality_id" class="oe_field_training_modality_id"/>
+              <field name="material" class="oe_field_material" string="Materials"/>
+            </group>
+          </group>
+
+          <notebook>
+            <page string="Details" class="oe_page_details" accesskey="D">
+              <group col="2">
+                <group col="2">
+                    <field name="enrolment_code" class="oe_field_enrolment_code" />
+                </group>
+                <group col="2">
+                    <field name="enrolment_date" class="oe_field_enrolment_date" />
+                </group>
+
+                <group col="2" string="Training action">
+                  <field name="action_code" class="oe_field_action_code" readonly="1"/>
+                  <field name="date_start" class="oe_field_start" readonly="1"/>
+                  <field name="date_stop" class="oe_field_end" readonly="1"/>
+                </group>
+
+                <group col="2" string="Student">
+                  <field name="zip" class="oe_field_zip" readonly="1"/>
+                  <field name="phone" class="oe_field_phone" readonly="1"/>
+                  <field name="email" class="oe_field_email" readonly="1"/>
+                </group>
+
+              </group>
+            </page>
+            <page id="setup" string="Setup" class="oe_page_setup" accesskey="S">
+              <group col="4" string="Ownership" id="ownership" groups="record_ownership.record_ownership_proxy">
+                <field name="owner_id" class="oe_field_owner_id"
+                  options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
+                <field name="subrogate_id" class="oe_field_subrogate_id"
+                  options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
+              </group>
+            </page>
+            <page string="Internal Notes" class="oe_page_internal_notes" accesskey="I"
+              groups="base.group_user">
+              <group col="2">
+                <field name="comment" class="oe_field_comment" nolabel="1" colspan="2" widget="html"
+                />
+              </group>
+            </page>
+          </notebook>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+
+  <record id="view_academy_training_action_enrolment_kanban" model="ir.ui.view">
+    <field name="name">view.academy.training.action.enrolment.kanban</field>
+    <field name="model">academy.training.action.enrolment</field>
+    <field name="type">kanban</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16"/>
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <kanban create="1" delete="1" edit="1">
+        <field name="image_128"/>
+        <field name="display_name"/>
+        <field name="register"/>
+        <field name="deregister"/>
+        <field name="training_action_id"/>
+        <field name="student_id"/>
+        <field name="color"/>
+        <templates>
+          <t t-name="card" class="flex-row">
+            <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+            <aside class="o_kanban_aside_full">
+              <field name="image_128" class="w-100" widget="image"
+                options="{'img_class': 'object-fit-contain w-100 h-100'}"/>
+            </aside>
+            <main class="ps-2 ps-md-0">
+              <h2 class="h4">
+                <field name="display_name" class="text-nowrap text-truncate"/>
+              </h2>
+              <ul class="list-unstyled">
+                <li class="text-nowrap text-truncate">
+                  <field name="training_action_id" class="oe_field_training_action_id"/>
+                </li>
+                <li class="text-nowrap text-truncate">
+                  <field name="student_id" class="oe_field_student_id"/>
+                </li>
+                <li class="text-nowrap text-truncate">
+                  <field name="lifespan" class="oe_field_lifespan"/>
+                </li>
+              </ul>
+            </main>
+            <footer>
+              <field name="activity_ids" widget="kanban_activity" class="ms-auto mt-auto"/>
+            </footer>
+          </t>
+        </templates>
+
+      </kanban>
+    </field>
+  </record>
+
+  <record id="view_academy_training_action_enrolment_pivot_primary_16" model="ir.ui.view">
+    <field name="name">academy.training.action.enrolment.pivot.primary.16</field>
+    <field name="model">academy.training.action.enrolment</field>
+    <field name="type">pivot</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16"/>
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <pivot string="Enrolments">
+        <field name="student_id" type="row"/>
+        <field name="training_action_id" type="col"/>
+      </pivot>
+    </field>
+  </record>
+
+
+  <!-- Search view for "academy.training.action.enrolment" -->
+  <record id="view_academy_training_action_enrolment_search" model="ir.ui.view">
+    <field name="name">view.academy.training.action.enrolment.search</field>
+    <field name="model">academy.training.action.enrolment</field>
+    <field name="type">search</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16"/>
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <search string="academy_training_action_enrolment_search">
+
+        <field name="student_id"/>
+        <field name="vat"/>
+        <field name="email"/>
+        <field name="phone"/>
+
+        <separator/>
+        <field name="training_program_id"/>
+        <field name="training_action_id"/>
+        <field name="training_modality_id"/>
+
+        <separator/>
+
+        <field name="register"/>
+        <field name="deregister"/>
+
+        <separator/>
+        <field name="manager_id"/>
+
+        <separator/>
+
+        <filter name="has_finalized" string="Have finished"
+          domain="[('deregister', '&lt;', (context_today().strftime('%Y-%m-%d')) )]"/>
+        <filter name="is_current" string="In progress" domain="[('is_current', '=', True)]"/>
+        <filter name="has_not_started" string="Not yet started"
+          domain="[('register', '&gt;', (context_today().strftime('%Y-%m-%d')) )]"/>
+
+        <separator/>
+
+        <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
+
+        <group expand="0" name="group_by" string="Group By">
+          <filter name="group_by_training_action_id" string="Training action" domain="[]"
+            context="{'group_by' : 'training_action_id'}"/>
+          <filter name="group_by_student_id" string="Student" domain="[]"
+            context="{'group_by' : 'student_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <!-- Main window action for model.name -->
+  <record id="action_training_action_enrolment_act_window" model="ir.actions.act_window">
+    <field name="type">ir.actions.act_window</field>
+    <field name="name">Enrolments</field>
+    <field name="res_model">academy.training.action.enrolment</field>
+    <field name="view_mode">list,pivot,kanban,form</field>
+    <field name="path">academy-action-enrolment</field>
+    <field name="target">current</field>
+    <field name="domain">[]</field>
+    <field name="context">{'search_default_is_current': 1}</field>
+    <field name="search_view_id" ref="view_academy_training_action_enrolment_search"/>
+    <field name="help" type="html">
+      <p class="oe_view_nocontent_create"> Click to add new enrolments </p>
+      <p> There are no enrolments yet </p>
+    </field>
+  </record>
+
+  <!-- Main menu for model.name -->
+  <record id="menu_training_action_enrolment" model="ir.ui.menu">
+    <field name="name">Training enrolments</field>
+    <field name="sequence" eval="20"/>
+    <field name="action" ref="action_training_action_enrolment_act_window"/>
+    <field name="parent_id" ref="academy_base.menu_academy_monitoring"/>
+    <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
+  </record>
+
+  <!-- View student enrolments inside another model
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+  <record id="view_academy_training_action_enrolment_embed_tree" model="ir.ui.view">
+    <field name="name">view.academy.training.action.enrolment.embed.tree</field>
+    <field name="model">academy.training.action.enrolment</field>
+    <field name="type">list</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="24"/>
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <list string="view_academy_training_action_enrolment_embed_tree" create="1" delete="1"
+        edit="1">
+        <field name="training_action_id" class="oe_field_training_action_id"/>
+        <field name="register" class="oe_field_register"/>
+        <field name="deregister" class="oe_field_deregister"/>
+      </list>
+    </field>
+  </record>
+
+
+  <!-- Edit student enrolments in separate view
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+  <record id="view_academy_training_action_enrolment_edit_by_user_tree" model="ir.ui.view">
+    <field name="name">view.academy.training.action.enrolment.embed.tree</field>
+    <field name="model">academy.training.action.enrolment</field>
+    <field name="type">list</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="32"/>
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <list string="view_academy_training_action_enrolment_edit_by_user_tree" create="1" delete="1"
+        edit="1" editable="top">
+        <field name="training_action_id" class="oe_field_training_action_id"/>
+        <field name="register" class="oe_field_register"/>
+        <field name="deregister" class="oe_field_deregister"/>
+      </list>
+    </field>
+  </record>
+
+  <!-- =======================================================================
+     EMBED – ACADEMY: ENROLMENTS
+     Usage: this list view is embedded inside `academy.student` and
+     `academy.teacher` forms.
+     Purpose: manage student/teacher enrolments directly from their form
+     (quick register/unregister and modalities).
+     ====================================================================== -->
+
+  <record id="view_academy_training_action_enrolment_tree_embed" model="ir.ui.view">
+    <field name="name">view.academy.training.action.enrolment.tree.embed</field>
+    <field name="model">academy.training.action.enrolment</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="99"/>
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <list string="Enrolments" create="1" delete="1" edit="1">
+        <field name="enrolment_code" class="oe_field_enrolment_code" />
+        <field name="training_action_id" class="oe_field_training_action_id"
+          domain="['|', ('date_stop', '=', False), ('date_stop', '>=', context_today().strftime('%%Y-%%m-%%d'))]"/>
+        <field name="training_modality_id" class="oe_field_training_modality_id" optional="show"/>
+        <field name="register" class="oe_field_register"/>
+        <field name="deregister" class="oe_field_deregister"/>
+      </list>
+    </field>
+  </record>
+
+
+</odoo>

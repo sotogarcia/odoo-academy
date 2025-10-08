@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo noupdate="0">
+
+        <record id="view_academy_timesheet_session_state_wizard_wizard" model="ir.ui.view">
+            <field name="name">Academy timesheets session state wizard</field>
+            <field name="model">academy.timesheet.session.state.wizard</field>
+            <field name="type">form</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <form string="Facility reporting wizard" create="1" delete="1" edit="1">
+
+                    <header>
+                        <button name="perform_action"
+                                string="Change"
+                                type="object"
+                                default_focus="1"
+                                icon="fa-pencil-square-o"
+                                class="btn btn-primary float-right"
+                                help="Set the new state for the chosen sessions" />
+                    </header>
+
+                    <field name="session_ids" class="oe_field_session_ids" invisible="1" />
+
+                    <group col="4">
+                        <field name="state" class="oe_field_state" />
+                        <field name="force_all" class="oe_field_force_all" />
+                        <field name="session_count" class="oe_field_session_count" string="Total" />
+                        <field name="target_count" class="oe_field_target_count" string="Change their state" />
+                    </group>
+
+                    <group col="4" string="Flags">
+                        <field name="mail_create_nosubscribe" class="oe_field_mail_create_nosubscribe" />
+                        <field name="skip_email_notification" class="oe_field_skip_email_notification" />
+                        <field name="invite_those_enrolled" class="oe_field_invite_those_enrolled" string="Full attendance" />
+                    </group>
+
+                    <footer />
+
+                </form>
+            </field>
+        </record>
+
+        <record id="action_academy_timesheet_session_state_wizard_wizard_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">State wizard</field>
+            <field name="res_model">academy.timesheet.session.state.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="binding_model_id" ref="academy_timesheets.model_academy_training_session" />
+            <field name="binding_view_types">list</field>
+            <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
+        </record>
+
+</odoo>

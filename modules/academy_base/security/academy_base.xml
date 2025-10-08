@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo noupdate="0">
+
+    <!-- Multicompany
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <record id="ir_rule_restricted_training_action_multi_company" model="ir.rule">
+        <field name="name">Restricted Training Action: multi-company</field>
+        <field name="model_id" ref="academy_base.model_academy_training_action"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="ir_rule_restricted_training_action_enrolment_multi_company" model="ir.rule">
+        <field name="name">Restricted Training Action Enrolment: multi-company</field>
+        <field name="model_id" ref="academy_base.model_academy_training_action_enrolment"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+</odoo>

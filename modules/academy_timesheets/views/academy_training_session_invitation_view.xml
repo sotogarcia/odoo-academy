@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo noupdate="0">
+
+        <!-- VIEWS: "Invitation"
+
+            - Model·········: Invitation
+            - _rec_name·····: name
+            - Domain········: []
+            - Context·······: {}
+            - Parent menu ··: academy_timesheets.menu_academy_timesheets
+            - View priority·: 16    Sequence····: 10
+            - Action help···: There are no invitation yet
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+        <!-- Tree view for "academy.training.session.invitation" -->
+        <record id="view_academy_training_session_invitation_tree" model="ir.ui.view">
+            <field name="name">view.academy.training.session.invitation.tree</field>
+            <field name="model">academy.training.session.invitation</field>
+            <field name="type">list</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <list string="academy_training_session_invitation_tree" create="1" delete="1" edit="1">
+                    <field name="enrolment_id" class="oe_field_enrolment_id" />
+                    <field name="training_action_id" class="oe_field_training_action_id" />
+                    <field name="action_line_id" class="oe_field_action_line_id" />
+                    <field name="date_start" class="oe_field_date_start" />
+                    <field name="date_stop" class="oe_field_date_stop" />
+                    <field name="excluded" class="oe_field_excluded" />
+                    <field name="present" class="oe_field_present" />
+                </list>
+            </field>
+        </record>
+
+        <!-- Form view for "academy.training.session.invitation" -->
+        <record id="view_academy_training_session_invitation_form" model="ir.ui.view">
+            <field name="name">view.academy.training.session.invitation.form</field>
+            <field name="model">academy.training.session.invitation</field>
+            <field name="type">form</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <form string="academy_training_session_invitation_form" create="1" delete="1" edit="1">
+                    <sheet>
+                        <div class="oe_button_box" name="button_box" />
+
+                        <div class="oe_title">
+                            <field name="id" class="oe_field_id" invisible="1" />
+                            <field name="date_start" invisible="1" />
+                            <field name="date_stop" invisible="1" />
+                            <field name="invitation_ids" invisible="1" />
+
+                            <label for="display_name" class="oe_edit_only" />
+                            <h1>
+                                <field name="display_name" class="oe_field_display_name"
+                                    readonly="1" />
+                            </h1>
+                        </div>
+
+                        <group col="2" class="oe_edit_only" string="Session" >
+                            <field name="session_id" class="oe_field_session_id"
+                                readonly="context.get('default_session_id', False)" />
+                        </group>
+
+                        <group col="4" class="oe_read_only" string="Session" >
+                            <field name="training_action_id" colspan="4"
+                                    class="oe_field_training_action_id" />
+                            <field name="action_line_id" colspan="4"  string="Unit"
+                                    class="oe_field_action_line_id" />
+                            <separator colspan="4" />
+                            <field name="primary_teacher_id" class="oe_field_primary_teacher_id" />
+                            <field name="primary_facility_id" class="oe_field_primary_facility_id" />
+                        </group>
+
+                        <group col="6" string="Interval" >
+                            <field name="date_start" class="oe_field_date_start" />
+                            <field name="date_stop" class="oe_field_date_stop" />
+                            <field name="date_delay" class="oe_field_date_delay" widget="float_time" />
+                        </group>
+
+                        <group col="4" string="Student">
+                            <field name="enrolment_id" class="oe_field_enrolment_id"
+                                domain="[('invitation_ids', '!=', invitation_ids)]" />
+                            <field name="present" class="oe_field_present" />
+                            <field name="excluded" class="oe_field_excluded" />
+                            <field name="vat" class="oe_field_vat" />
+                            <field name="zip" class="oe_field_zip" />
+                            <field name="mobile" class="oe_field_mobile" widget="phone" />
+                            <field name="email" class="oe_field_email" widget="email" />
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Form view for "academy.training.session.invitation" -->
+        <record id="view_academy_training_session_invitation_calendar" model="ir.ui.view">
+            <field name="name">view.academy.training.session.invitation.calendar</field>
+            <field name="model">academy.training.session.invitation</field>
+            <field name="type">calendar</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <calendar mode="week" date_start="date_start" date_stop="date_stop" date_delay="date_delay"
+                    quick_create="0">
+                    <field name="training_action_id" class="oe_field_training_action_id" />
+                    <field name="action_line_id" class="oe_field_action_line_id" />
+                    <field name="primary_teacher_id" class="oe_field_primary_teacher_id" />
+                </calendar>
+            </field>
+        </record>
+
+        <!-- Search view for "academy.training.session.invitation" -->
+        <record id="view_academy_training_session_invitation_search" model="ir.ui.view">
+            <field name="name">view.academy.training.session.invitation.search</field>
+            <field name="model">academy.training.session.invitation</field>
+            <field name="type">search</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <search string="academy_training_session_invitation_search">
+                    <field name="session_id" class="oe_field_session_id" />
+                    <field name="student_id" class="oe_field_student_id" />
+
+                    <field name="training_action_id" />
+                    <field name="action_line_id" />
+                    <field name="enrolment_id" />
+
+                    <separator />
+                    <field name="primary_teacher_id" />
+                    <field name="primary_facility_id" />
+
+                    <separator />
+                    <field name="date_start" />
+                    <field name="date_stop" />
+                    <field name="date_delay" />
+
+                    <separator />
+                    <filter string="Current week" name="current_week" domain="[
+                        ('date_start', '&lt;=', ((context_today() + relativedelta(weeks=0, weekday=-1)).strftime('%Y-%m-%d'))),
+                        ('date_stop', '&gt;=', ((context_today() - relativedelta(weeks=1, weekday=0)).strftime('%Y-%m-%d')))
+                    ]" />
+
+                    <filter string="Current month" name="current_month" domain="[
+                        ('date_start', '&lt;', (context_today()+relativedelta(months=1)).strftime('%Y-%m-01')),
+                        ('date_stop','&gt;=', context_today().strftime('%Y-%m-01'))
+                    ]"/>
+
+                    <separator />
+                    <filter string="Draft" name="state_draft" domain="[('state', '=', 'draft')]" />
+                    <filter string="Ready" name="state_ready" domain="[('state', '=', 'ready')]" />
+
+                    <group expand="0" name="group_by" string="Group By">
+                        <filter name="group_by_training_action_id" string="Training action"
+                            domain="[]" context="{'group_by': 'training_action_id'}" />
+                        <filter name="group_by_training_student_id" string="Invited student"
+                            domain="[]" context="{'group_by': 'student_id'}" />
+                        <filter name="group_by_primary_teacher_id" string="Primary instructor"
+                            domain="[]" context="{'group_by': 'primary_teacher_id'}" />
+                        <filter name="group_by_primary_facility_id" string="Primary instructor"
+                            domain="[]" context="{'group_by': 'primary_facility_id'}" />
+                        <filter name="group_by_date_start" string="Beginning"
+                            domain="[]" context="{'group_by': 'date_start'}" />
+                        <filter name="group_by_date_stop" string="Ending"
+                            domain="[]" context="{'group_by': 'date_stop'}" />
+                    </group>
+
+                </search>
+            </field>
+        </record>
+
+        <!-- Main window action for model.name -->
+        <record id="action_invitation_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Invitation</field>
+            <field name="res_model">academy.training.session.invitation</field>
+            <field name="view_mode">list,calendar,form</field>
+            <field name="target">current</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="search_view_id" ref="view_academy_training_session_invitation_search" />
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to add new invitation
+                </p><p>
+                    There are no invitation yet
+                </p>
+            </field>
+        </record>
+
+        <!-- Main menu for model.name -->
+        <record id="menu_invitation" model="ir.ui.menu" >
+            <field name="name">Invitation</field>
+            <field name="sequence" eval="10" />
+            <field name="action" ref="action_invitation_act_window" />
+            <field name="parent_id" ref="academy_timesheets.menu_academy_timesheets_settings" />
+        </record>
+
+</odoo>

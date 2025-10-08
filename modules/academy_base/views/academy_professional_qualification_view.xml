@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo noupdate="0">
+
+  <!-- VIEWS: "Professional Qualification"
+
+            - Model·········: academy.professional.qualification
+            - _rec_name·····: name
+            - Domain········: []
+            - Context·······: {}
+            - Parent menu ··: academy_base.menu_academy_settings_helper
+            - View priority·: 16    Sequence····: 10
+            - Action help···: There are not professional qualifications in catalog
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+  <!-- List view for "academy.professional.qualification" -->
+  <record id="view_academy_professional_qualification_tree" model="ir.ui.view">
+    <field name="name">view.academy.professional.qualification.tree</field>
+    <field name="model">academy.professional.qualification</field>
+    <field name="type">list</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16"/>
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <list string="academy_professional_qualification_tree" create="1" delete="1" edit="1">
+        <field name="qualification_code"/>
+        <field name="name"/>
+        <field name="qualification_level_id"/>
+      </list>
+    </field>
+  </record>
+
+  <!-- Form view for "academy.professional.qualification" -->
+  <record id="view_academy_professional_qualification_form" model="ir.ui.view">
+    <field name="name">view.academy.professional.qualification.form</field>
+    <field name="model">academy.professional.qualification</field>
+    <field name="type">form</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16"/>
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <form string="academy_professional_qualification_form" create="1" delete="1" edit="1">
+        <sheet>
+          <div class="oe_button_box" name="button_box"/>
+          <widget name="web_ribbon" title="Archived" bg_color="bg-danger" invisible="active == True"/>
+
+          <field name="image_1920" widget="image" class="oe_avatar"
+            options='{"preview_image": "image_128"}'/>
+
+          <div class="oe_title">
+            <field name="active" invisible="1"/>
+            <label for="name" class="oe_edit_only"/>
+            <h1>
+              <field name="name" class="oe_field_name" placeholder="Enter new name"/>
+            </h1>
+          </div>
+          <group col="2">
+            <field name="professional_family_id" class="oe_field_professional_family_id"/>
+            <field name="professional_area_id" class="oe_field_professional_area_id"/>
+            <field name="qualification_code" class="oe_field_qualification_code"/>
+            <field name="qualification_level_id" class="oe_field_qualification_level_id"/>
+          </group>
+          <notebook>
+            <page string="Description" class="oe_page_description" accesskey="D">
+              <field name="description" class="oe_field_description"
+                placeholder="Enter new description"/>
+            </page>
+          </notebook>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <!-- Kanban view for "academy.professional.qualification" -->
+  <record id="view_academy_professional_qualification_kanban" model="ir.ui.view">
+    <field name="name">view.academy.professional.qualification.kanban</field>
+    <field name="model">academy.professional.qualification</field>
+    <field name="type">kanban</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16"/>
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <kanban create="1" delete="1" edit="1">
+        <field name="image_128"/>
+        <field name="name"/>
+        <field name="qualification_code"/>
+        <field name="qualification_level_id"/>
+
+        <templates>
+          <t t-name="card">
+            <div class="oe_kanban_global_click oe_kanban_academy_training_module">
+              <div class="o_kanban_image">
+                <t t-if="record.image_128.raw_value">
+                  <field name="image_128" widget="image" class="oe_avatar"
+                    options='{"preview_image": "image_128"}'/>
+                </t>
+                <t t-else="">
+                  <img
+                    t-att-src="_s + &quot;/academy_base/static/src/img/professional-qualification.png&quot;"
+                    class="o_kanban_image" alt="Professional qualification photo"/>
+                </t>
+              </div>
+              <div class="oe_kanban_details">
+                <strong class="oe_partner_heading">
+                  <field name="name"/>
+                </strong>
+                <ul>
+                  <li class="o_ellipsis">
+                    <strong>Level:&#160;</strong>
+                    <field name="qualification_level_id"/>
+                  </li>
+                  <li class="o_ellipsis">
+                    <strong>Units:&#160;</strong>
+                    <field name="qualification_code"/>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </t>
+        </templates>
+      </kanban>
+    </field>
+  </record>
+
+  <!-- Search view for "academy.professional.qualification" -->
+  <record id="view_academy_professional_qualification_search" model="ir.ui.view">
+    <field name="name">view.academy.professional.qualification.search</field>
+    <field name="model">academy.professional.qualification</field>
+    <field name="type">search</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16"/>
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <search string="academy_professional_qualification_search">
+        <field name="name"/>
+        <field name="professional_family_id"/>
+        <field name="professional_area_id"/>
+        <field name="qualification_code"/>
+        <field name="qualification_level_id"/>
+
+        <filter string="By family" name="qualification_grouped_by_family" domain="[]"
+          context="{'group_by': 'professional_family_id'}" help="Group by professional family"/>
+
+        <filter string="By area" name="qualification_grouped_by_area" domain="[]"
+          context="{'group_by': 'professional_area_id'}" help="Group by professional area"/>
+
+        <filter string="By level" name="qualification_grouped_by_level" domain="[]"
+          context="{'group_by': 'qualification_level_id'}" help="Group by qualification level"/>
+
+        <separator/>
+
+        <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
+
+
+      </search>
+    </field>
+  </record>
+
+  <!-- Main window action for model.name -->
+  <record id="action_professional_qualification_act_window" model="ir.actions.act_window">
+    <field name="type">ir.actions.act_window</field>
+    <field name="name">Professional qualifications</field>
+    <field name="res_model">academy.professional.qualification</field>
+    <field name="view_mode">kanban,list,form</field>
+
+    <field name="target">current</field>
+    <field name="domain">[]</field>
+    <field name="context">{}</field>
+    <field name="search_view_id" ref="view_academy_professional_qualification_search"/>
+    <field name="help" type="html">
+      <p class="oe_view_nocontent_create"> Click to add new professional qualifications </p>
+      <p> There are no training professional qualifications yet </p>
+    </field>
+  </record>
+
+</odoo>

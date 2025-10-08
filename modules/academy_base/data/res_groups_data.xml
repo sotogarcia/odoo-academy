@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo noupdate="1">
+
+    <!-- Category: all the other module groups are child of this
+        ============================================================ -->
+    <record id="module_category_academy" model="ir.module.category">
+        <field name="name">Academy</field>
+        <field name="sequence" eval="10"/>
+        <field name="visible" eval="True"/>
+        <field name="description">Academy category</field>
+    </record>
+
+
+
+    <!-- User who only can read data -->
+    <record id="academy_group_consultant" model="res.groups">
+        <field name="name">Consultant</field>
+        <field name="comment">Users who can only read base catalog and assigned training
+            actions</field>
+        <field name="category_id" ref="module_category_academy"/>
+        <field name="implied_ids"
+            eval="[(4, ref('base.group_user')), (4, ref('record_ownership.record_ownership_consultant'))]"
+        />
+    </record>
+
+    <record id="academy_group_teacher" model="res.groups">
+        <field name="name">Teacher</field>
+        <field name="comment">Users who can read base catalog, manage assigned training actions and
+            create/edit their own resources</field>
+        <field name="category_id" ref="module_category_academy"/>
+        <field name="implied_ids" eval="[(4, ref('academy_group_consultant'))]"/>
+    </record>
+
+    <record id="academy_group_technical" model="res.groups">
+        <field name="name">Technical</field>
+        <field name="comment">Users who can read and manage full catalog, create/edit training
+            actions and assign to them teachers or consultants</field>
+        <field name="category_id" ref="module_category_academy"/>
+        <field name="implied_ids"
+            eval="[(4, ref('academy_group_teacher')), (4, ref('base.group_partner_manager'))]"/>
+    </record>
+
+    <record id="academy_group_manager" model="res.groups">
+        <field name="name">Manager</field>
+        <field name="comment">Users who can create/edit information in all models</field>
+        <field name="category_id" ref="module_category_academy"/>
+        <field name="implied_ids" eval="[(4, ref('academy_group_technical'))]"/>
+        <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+    </record>
+
+</odoo>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo noupdate="0">
+
+    <record id="view_academy_student_wizard" model="ir.ui.view">
+        <field name="name">Massive actions over students</field>
+        <field name="model">academy.student.wizard</field>
+        <field name="type">form</field>
+        <field name="mode">primary</field>
+        <field name="priority" eval="16"/>
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <form string="Facility reporting wizard" create="1" delete="1" edit="1">
+                <field name="student_ids" invisible="1"/>
+                <field name="target_student_ids" invisible="1"/>
+
+                <header>
+                    <button name="perform_action" string="Execute" type="object" default_focus="0"
+                        icon="fa-play" confirm="Are you sure you want to do this?"
+                        help="Perform the chosen action on the set of records"/>
+                </header>
+
+                <group col="4">
+                    <field name="action" class="oe_field_action"/>
+                    <separator colspan="2"/>
+                    <field name="student_count" class="oe_field_student_count"/>
+                    <field name="target_student_count" class="oe_field_target_student_count"/>
+                </group>
+
+                <group col="4" string="Enrolments">
+                    <field name="current_training_action_id"
+                        class="oe_field_current_training_action_id" string="Enroled in"
+                        readonly="['|', ('action', '=', False), ('action', 'in', ('enrol', 're_enroll'))]"
+                        required="[('action', '&lt;&gt;', False), ('action', 'in', ('unenroll', 'show', 'switch'))]"
+                        options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"
+                        domain="[('id', '&lt;&gt;', joining_training_action_id)]"/>
+                    <field name="joining_training_action_id"
+                        class="oe_field_joining_training_action_id" string="Joining"
+                        readonly="['|', ('action', '=', False), ('action', 'in', ('unenroll', 'show'))]"
+                        required="[('action', '&lt;&gt;', False), ('action', 'not in', ('unenroll', 'show'))]"
+                        options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"
+                        domain="[('id', '&lt;&gt;', current_training_action_id)]"/>
+                    <field name="current_interval_str" class="oe_field_current_interval_str"
+                        invisible="current_training_action_id == False"/>
+                    <field name="joining_interval_str" class="oe_field_joining_interval_str"
+                        invisible="joining_training_action_id == False"/>
+                    <separator colspan="4"
+                        invisible="['&amp;', ('current_training_action_id', '=', False), ('joining_training_action_id', '=', False)]"/>
+                    <field name="date_start" class="oe_field_date_start"
+                        readonly="['|', ('action', '=', False), ('action', 'in', ('unenroll'))]"
+                        required="[('action', '&lt;&gt;', False), ('action', 'not in', ('unenroll'))]"/>
+                    <field name="date_stop" class="oe_field_date_stop"
+                        readonly="action == False"
+                        required="[('action', 'in', ('unenroll'))]"/>
+                </group>
+
+                <group col="4" string="Description">
+                    <field name="description" role="alert"
+                        class="oe_field_description alert alert-info text-justify w-100" colspan="4"
+                        nolabel="1"/>
+                </group>
+
+                <footer/>
+
+            </form>
+        </field>
+    </record>
+
+    <record id="action_academy_student_wizard_act_window" model="ir.actions.act_window">
+        <field name="type">ir.actions.act_window</field>
+        <field name="name">Batch management</field>
+        <field name="res_model">academy.student.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="binding_model_id" ref="academy_base.model_academy_student"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
+    </record>
+
+
+    <record id="action_academy_training_action_enrolment_wizard_act_window"
+        model="ir.actions.act_window">
+        <field name="type">ir.actions.act_window</field>
+        <field name="name">Student batch management</field>
+        <field name="res_model">academy.student.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="binding_model_id" ref="academy_base.model_academy_training_action_enrolment"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
+    </record>
+
+    <!-- Main menu for model.name -->
+    <!-- <record id="menu_academy_student_wizard" model="ir.ui.menu" >
+            <field name="name">Massive actions over students</field>
+            <field name="sequence" eval="20" />
+            <field name="action" ref="action_academy_student_16_act_window" />
+            <field name="parent_id" ref="base.menu_custom" />
+            <field name="groups_id" eval="[(4, ref('base.group_user'))]"/>
+        </record> -->
+
+</odoo>

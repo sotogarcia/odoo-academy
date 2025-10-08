@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+  <t t-name="academy_timesheets.ReadyDraftField">
+    <div class="o_selection o_field_ready_draft dropdown">
+      <button type="button"
+              class="btn btn-secondary dropdown-toggle d-flex align-items-center"
+              t-att-aria-label="ariaLabel"
+              data-bs-toggle="dropdown"
+              t-att-disabled="props.readonly ? true : undefined">
+        <span class="o_status me-2" t-att-class="currentState.cssClass"/>
+        <span t-esc="currentState.label"/>
+      </button>
+
+      <div class="dropdown-menu">
+        <t t-foreach="otherStates" t-as="st">
+          <a class="dropdown-item"
+             href="#"
+             t-on-click.prevent="() => onSelect(st.name)"
+             t-att-title="st.label"
+             t-att-data-value="st.name">
+            <span class="o_status me-2" t-att-class="st.cssClass"/>
+            <t t-esc="st.label"/>
+          </a>
+        </t>
+      </div>
+    </div>
+  </t>
+</templates>

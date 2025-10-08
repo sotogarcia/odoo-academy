@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo noupdate="0">
+
+        <!-- VIEWS: "Teacher operational shift"
+
+            - Model·········: academy.teacher.operational.shift
+            - _rec_name·····: id
+            - Domain········: []
+            - Context·······: {}
+            - Parent menu ··: academy_base.menu_academy_advanced
+            - View priority·: 16    Sequence····: 10
+            - Action help···: There are no operational shifts
+        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+        <!-- Tree view for "academy.teacher.operational.shift" -->
+        <record id="view_academy_teacher_operational_shift_tree" model="ir.ui.view">
+            <field name="name">view.academy.teacher.operational.shift.tree</field>
+            <field name="model">academy.teacher.operational.shift</field>
+            <field name="type">list</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <list string="academy_teacher_operational_shift_tree" create="1" delete="1" edit="1">
+                    <field name="teacher_id" class="oe_field_teacher_id" />
+                    <field name="company_id" class="oe_field_company_id" optional="show" />
+                    <field name="date_start" class="oe_field_date_start" />
+                    <field name="date_stop" class="oe_field_date_stop" />
+                    <field name="session_count" class="oe_field_session_count" optional="show" />
+                </list>
+            </field>
+        </record>
+
+        <!-- Form view for "academy.teacher.operational.shift" -->
+        <record id="view_academy_teacher_operational_shift_form" model="ir.ui.view">
+            <field name="name">view.academy.teacher.operational.shift.form</field>
+            <field name="model">academy.teacher.operational.shift</field>
+            <field name="type">form</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <form string="academy_teacher_operational_shift_form" create="1" delete="1" edit="1">
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="view_sessions" type="object" class="oe_stat_button oe_read_only"
+                                icon="fa-calendar" help="View all the sessions involved in this shift">
+                                <field name="session_count" widget="statinfo" />
+                            </button>
+                        </div>
+
+                        <div class="oe_title">
+                            <label for="display_name" class="oe_edit_only" />
+                            <h1>
+                                <field name="display_name" class="oe_field_display_name" />
+                            </h1>
+                        </div>
+                        <group col="4">
+                            <field name="teacher_id" class="oe_field_teacher_id" colspan="4" />
+                            <field name="company_id" class="oe_field_company_id" colspan="4" />
+                            <field name="date_start" class="oe_field_date_start" />
+                            <field name="date_stop" class="oe_field_date_stop" />
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search view for "academy.teacher.operational.shift" -->
+        <record id="view_academy_teacher_operational_shift_search" model="ir.ui.view">
+            <field name="name">view.academy.teacher.operational.shift.search</field>
+            <field name="model">academy.teacher.operational.shift</field>
+            <field name="type">search</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <search string="academy_teacher_operational_shift_search">
+                    <field name="teacher_id" class="oe_field_teacher_id" />
+                    <field name="company_id" class="oe_field_company_id" optional="show" />
+                    <field name="date_start" class="oe_field_date_start" />
+                    <field name="date_stop" class="oe_field_date_stop" />
+                    <field name="session_count" class="oe_field_session_count" optional="show" />
+
+                    <filter string="By teacher"
+                        name="group_by_teacher"
+                        domain="[]"
+                        context="{'group_by': 'teacher_id'}"
+                        help="Group by teacher" />
+
+                    <filter string="By company"
+                        name="group_by_company"
+                        domain="[]"
+                        context="{'group_by': 'company_id'}"
+                        help="Group by company" />
+
+                </search>
+            </field>
+        </record>
+
+        <record id="view_academy_teacher_operational_shift_calendar" model="ir.ui.view">
+            <field name="name">view.academy.teacher.operational.shift.calendar</field>
+            <field name="model">academy.teacher.operational.shift</field>
+            <field name="type">calendar</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <calendar mode="week" date_start="date_start" date_stop="date_stop" date_delay="date_delay"
+                          quick_create="0" color="company_id">
+                    <field name="teacher_id" class="oe_field_teacher_id" filters="1" />
+                    <field name="company_id" class="oe_field_company_id" filters="1" />
+                    <field name="session_count" class="oe_field_session_count" />
+                </calendar>
+            </field>
+        </record>
+
+        <!-- Main window action for model.name -->
+        <record id="action_teacher_operational_shift_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Teacher operational shift</field>
+            <field name="res_model">academy.teacher.operational.shift</field>
+            <field name="view_mode">calendar,tree,form</field>
+            <field name="target">current</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="search_view_id" ref="view_academy_teacher_operational_shift_search" />
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to add new teacher operational shift
+                </p><p>
+                    There are no operational shifts
+                </p>
+            </field>
+        </record>
+
+        <!-- Main menu for model.name -->
+       <!--  <record id="menu_teacher_operational_shift" model="ir.ui.menu" >
+            <field name="name">Teacher shifts</field>
+            <field name="sequence" eval="10" />
+            <field name="action" ref="action_teacher_operational_shift_act_window" />
+            <field name="parent_id" ref="academy_base.menu_academy_advanced" />
+        </record> -->
+
+</odoo>

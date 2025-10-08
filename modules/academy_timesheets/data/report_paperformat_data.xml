@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo noupdate="0">
+
+        <record id="paperformat_iso_216_din_476_serie_a_4_timesheet" model="report.paperformat" >
+            <field name="name">ISO 216 / DIN 476 Serie A 4 (Timesheet)</field>
+            <field name="format">A4</field>
+            <field name="orientation">Portrait</field>
+            <field name="default" eval="False" />
+            <field name="dpi" eval="96" />
+            <field name="margin_top" eval="17" />
+            <field name="margin_right" eval="17" />
+            <field name="margin_bottom" eval="15" />
+            <field name="margin_left" eval="17" />
+            <field name="header_line" eval="False" />
+            <field name="header_spacing" eval="0" />
+        </record>
+
+        <record id="paperformat_iso_216_din_476_serie_a_4_timesheet_no_margin" model="report.paperformat">
+            <field name="name">ISO 216 / DIN 476 Serie A 4 (Timesheet) (no margins)</field>
+            <field name="default" eval="False" />
+            <field name="format">A4</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">0</field>
+            <field name="margin_bottom">0</field>
+            <field name="margin_left">0</field>
+            <field name="margin_right">0</field>
+            <field name="header_line" eval="False" />
+            <field name="header_spacing">0</field>
+        </record>
+
+</odoo>

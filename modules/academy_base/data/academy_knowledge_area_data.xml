@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo noupdate="1">
+
+    <record id="academy_knowledge_area_01" model="academy.knowledge.area">
+        <field name="name">Algebra</field>
+        <field name="knowle_code">5</field>
+    </record>
+
+    <record id="academy_knowledge_area_02" model="academy.knowledge.area">
+        <field name="name">Regional Geographic Analysis</field>
+        <field name="knowle_code">10</field>
+    </record>
+
+    <record id="academy_knowledge_area_03" model="academy.knowledge.area">
+        <field name="name">Mathematical Analysis</field>
+        <field name="knowle_code">15</field>
+    </record>
+
+    <record id="academy_knowledge_area_04" model="academy.knowledge.area">
+        <field name="name">Pathological Anatomy</field>
+        <field name="knowle_code">20</field>
+    </record>
+
+    <record id="academy_knowledge_area_05" model="academy.knowledge.area">
+        <field name="name">Anatomy and Pathological Anatomy Compared</field>
+        <field name="knowle_code">25</field>
+    </record>
+
+    <record id="academy_knowledge_area_06" model="academy.knowledge.area">
+        <field name="name">Anatomy and Human Embryology</field>
+        <field name="knowle_code">27</field>
+    </record>
+
+    <record id="academy_knowledge_area_07" model="academy.knowledge.area">
+        <field name="name">Physical Anthropology</field>
+        <field name="knowle_code">28</field>
+    </record>
+
+    <record id="academy_knowledge_area_08" model="academy.knowledge.area">
+        <field name="name">Social Anthropology</field>
+        <field name="knowle_code">30</field>
+    </record>
+
+    <record id="academy_knowledge_area_09" model="academy.knowledge.area">
+        <field name="name">Archaeology</field>
+        <field name="knowle_code">33</field>
+    </record>
+
+    <record id="academy_knowledge_area_10" model="academy.knowledge.area">
+        <field name="name">Histology</field>
+        <field name="knowle_code">443</field>
+    </record>
+
+    <record id="academy_knowledge_area_11" model="academy.knowledge.area">
+        <field name="name">Old History</field>
+        <field name="knowle_code">445</field>
+    </record>
+
+    <record id="academy_knowledge_area_12" model="academy.knowledge.area">
+        <field name="name">Contemporary History</field>
+        <field name="knowle_code">450</field>
+    </record>
+
+    <record id="academy_knowledge_area_13" model="academy.knowledge.area">
+        <field name="name">History of America</field>
+        <field name="knowle_code">455</field>
+    </record>
+
+    <record id="academy_knowledge_area_14" model="academy.knowledge.area">
+        <field name="name">History of Science</field>
+        <field name="knowle_code">460</field>
+    </record>
+
+    <record id="academy_knowledge_area_15" model="academy.knowledge.area">
+        <field name="name">History of Art</field>
+        <field name="knowle_code">465</field>
+    </record>
+
+    <record id="academy_knowledge_area_16" model="academy.knowledge.area">
+        <field name="name">History of Law and Institutions</field>
+        <field name="knowle_code">470</field>
+    </record>
+
+    <record id="academy_knowledge_area_17" model="academy.knowledge.area">
+        <field name="name">History of Thought and Social Movements</field>
+        <field name="knowle_code">475</field>
+    </record>
+
+    <record id="academy_knowledge_area_18" model="academy.knowledge.area">
+        <field name="name">History and Economic Institutions</field>
+        <field name="knowle_code">480</field>
+    </record>
+
+    <record id="academy_knowledge_area_19" model="academy.knowledge.area">
+        <field name="name">Medieval History</field>
+        <field name="knowle_code">485</field>
+    </record>
+
+    <record id="academy_knowledge_area_20" model="academy.knowledge.area">
+        <field name="name">Modern History</field>
+        <field name="knowle_code">490</field>
+    </record>
+
+    <record id="academy_knowledge_area_21" model="academy.knowledge.area">
+        <field name="name">Aerospace Engineering</field>
+        <field name="knowle_code">495</field>
+    </record>
+
+    <record id="academy_knowledge_area_22" model="academy.knowledge.area">
+        <field name="name">Agroforestry Engineering</field>
+        <field name="knowle_code">500</field>
+    </record>
+
+    <record id="academy_knowledge_area_23" model="academy.knowledge.area">
+        <field name="name">Cartographic, Geodetic and Photogrammetric Engineering</field>
+        <field name="knowle_code">505</field>
+    </record>
+
+    <record id="academy_knowledge_area_24" model="academy.knowledge.area">
+        <field name="name">Construction Engineering</field>
+        <field name="knowle_code">510</field>
+    </record>
+
+    <record id="academy_knowledge_area_25" model="academy.knowledge.area">
+        <field name="name">Engineering of Manufacturing Processes</field>
+        <field name="knowle_code">515</field>
+    </record>
+
+    <record id="academy_knowledge_area_26" model="academy.knowledge.area">
+        <field name="name">Systems Engineering and Automation</field>
+        <field name="knowle_code">520</field>
+    </record>
+
+    <record id="academy_knowledge_area_27" model="academy.knowledge.area">
+        <field name="name">Ground Engineering</field>
+        <field name="knowle_code">525</field>
+    </record>
+
+    <record id="academy_knowledge_area_28" model="academy.knowledge.area">
+        <field name="name">Engineering and Transportation Infrastructure</field>
+        <field name="knowle_code">530</field>
+    </record>
+
+    <record id="academy_knowledge_area_29" model="academy.knowledge.area">
+        <field name="name">Electric Engineering</field>
+        <field name="knowle_code">535</field>
+    </record>
+
+    <record id="academy_knowledge_area_30" model="academy.knowledge.area">
+        <field name="name">Hydraulic Engineer</field>
+        <field name="knowle_code">540</field>
+    </record>
+
+    <record id="academy_knowledge_area_31" model="academy.knowledge.area">
+        <field name="name">Mechanical Engineering</field>
+        <field name="knowle_code">545</field>
+    </record>
+
+    <record id="academy_knowledge_area_32" model="academy.knowledge.area">
+        <field name="name">Nuclear Engineering</field>
+        <field name="knowle_code">550</field>
+    </record>
+
+    <record id="academy_knowledge_area_33" model="academy.knowledge.area">
+        <field name="name">Chemical Engineering</field>
+        <field name="knowle_code">555</field>
+    </record>
+
+    <record id="academy_knowledge_area_34" model="academy.knowledge.area">
+        <field name="name">Telematics Engineering</field>
+        <field name="knowle_code">560</field>
+    </record>
+
+    <record id="academy_knowledge_area_35" model="academy.knowledge.area">
+        <field name="name">Textile and Paper Engineering</field>
+        <field name="knowle_code">565</field>
+    </record>
+
+    <record id="academy_knowledge_area_36" model="academy.knowledge.area">
+        <field name="name">Immunology</field>
+        <field name="knowle_code">566</field>
+    </record>
+
+    <record id="academy_knowledge_area_37" model="academy.knowledge.area">
+        <field name="name">Spanish Language</field>
+        <field name="knowle_code">567</field>
+    </record>
+
+    <record id="academy_knowledge_area_38" model="academy.knowledge.area">
+        <field name="name">Languages and Computer Systems</field>
+        <field name="knowle_code">570</field>
+    </record>
+
+    <record id="academy_knowledge_area_39" model="academy.knowledge.area">
+        <field name="name">General Linguistics</field>
+        <field name="knowle_code">575</field>
+    </record>
+
+    <record id="academy_knowledge_area_40" model="academy.knowledge.area">
+        <field name="name">Indo-European Linguistics</field>
+        <field name="knowle_code">580</field>
+    </record>
+
+</odoo>

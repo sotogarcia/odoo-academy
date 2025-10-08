@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo noupdate="0">
+
+        <!-- Form view for "academy.student" -->
+        <record id="view_academy_student_form" model="ir.ui.view">
+            <field name="name">view.academy.student.form</field>
+            <field name="model">academy.student</field>
+            <field name="type">form</field>
+            <field name="mode">extension</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="inherit_id" ref="academy_base.view_academy_student_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//div[@name='button_box']" position="inside">
+                    <button name="view_invitation" type="object" class="oe_stat_button oe_read_only"
+                        icon="fa-calendar" help="Show invitation list">
+                        <field name="invitation_count" widget="statinfo" string="Scheduled" />
+                    </button>
+                </xpath>
+            </field>
+        </record>
+
+</odoo>

@@ -1,0 +1,30 @@
+.oe_kanban_academy_training_action h4 {
+    margin-top: 0px!important;
+}
+
+.oe_kanban_academy_training_action li {
+    line-height: 1.5em;
+}
+
+.oe_kanban_academy_training_action .row {
+    clear: both;
+    margin-top: 1em;
+}
+
+.o_ellipsis {
+    white-space: nowrap!important;
+    overflow: hidden!important;
+    text-overflow: ellipsis!important;
+}
+
+.table_border_less td, .table_border_less th {
+    border: none;
+}
+
+
+.academy-training-program-line-tree tr.fw-bold td,
+.academy-training-action-line-tree tr.fw-bold  td {
+    text-transform: uppercase;
+    background-color: #EEE!important;
+    font-weight: bold;
+}

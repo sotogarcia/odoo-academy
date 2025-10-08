@@ -1,0 +1,18 @@
+/* Highlight section rows in the one2many list */
+.o_form_view .o_field_one2many[name="program_line_ids"] .o_list_view.academy-program-lines
+  tbody tr.text-muted.fw-bold {
+  background-color: rgba(204,204,204,1);
+}
+
+/* Make the section title look like a separator/header */
+.o_form_view .o_field_one2many[name="program_line_ids"] .o_list_view.academy-program-lines
+  tbody tr.text-muted.fw-bold td .academy-section-title {
+  text-transform: uppercase;
+  letter-spacing: .02em;
+}
+
+/* Optional: reduce opacity of non-title cells on section rows */
+.o_form_view .o_field_one2many[name="program_line_ids"] .o_list_view.academy-program-lines
+  tbody tr.text-muted.fw-bold td:not(:first-child) {
+  opacity: .75;
+}

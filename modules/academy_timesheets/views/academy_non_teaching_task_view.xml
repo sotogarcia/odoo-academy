@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo noupdate="0">
+
+        <record id="view_academy_non_teaching_task_xml_tree" model="ir.ui.view">
+            <field name="name">Academy non teaching task tree view</field>
+            <field name="model">academy.non.teaching.task</field>
+            <field name="type">list</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <list string="academy_non_teaching_task_tree" create="1" delete="1" edit="1" editable="bottom">
+                    <field name="name" class="oe_field_name" />
+                    <field name="company_id" class="oe_field_company_id" optional="hide" />
+                    <field name="description" class="oe_field_description" optional="show" />
+                    <field name="active" class="oe_field_active" widget="boolean_toggle" />
+                </list>
+            </field>
+        </record>
+
+        <record id="view_academy_non_teaching_task_xml_search" model="ir.ui.view">
+            <field name="name">Academy non teaching task tree view</field>
+            <field name="model">academy.non.teaching.task</field>
+            <field name="type">search</field>
+            <field name="mode">primary</field>
+            <field name="priority" eval="16" />
+            <field name="active" eval="True" />
+            <field name="arch" type="xml">
+                <search string="academy_non_teaching_task_search">
+                    <field name="name" />
+                    <field name="company_id" />
+
+                    <filter string="By company"
+                        name="group_by_company"
+                        domain="[]"
+                        context="{'group_by': 'company_id'}"
+                        help="Use this filter to view data organized by each company registered in the system" />
+
+                    <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_non_teaching_tasks_act_window" model="ir.actions.act_window">
+            <field name="type">ir.actions.act_window</field>
+            <field name="name">Non teaching tasks</field>
+            <field name="res_model">academy.non.teaching.task</field>
+            <field name="view_mode">list</field>
+            <field name="target">current</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="search_view_id" ref="view_academy_non_teaching_task_xml_search" />
+        </record>
+
+</odoo>
