@@ -5,12 +5,16 @@
 ###############################################################################
 
 from odoo import models, fields, api, _
-from logging import getLogger
 from odoo.exceptions import ValidationError
-from ..utils.helpers import OPERATOR_MAP, one2many_count
-from ..utils.helpers import sanitize_code
 from odoo.osv.expression import TRUE_DOMAIN, FALSE_DOMAIN
 from odoo.tools.safe_eval import safe_eval
+from ..utils.helpers import OPERATOR_MAP, one2many_count
+from ..utils.helpers import sanitize_code, default_code
+
+from logging import getLogger
+
+
+CODE_SEQUENCE = "academy.training.framework.sequence"
 
 _logger = getLogger(__name__)
 
@@ -27,7 +31,7 @@ class AcademyTrainingFramework(models.Model):
 
     _order = "name ASC"
     _rec_name = "name"
-    _rec_names_search = ["name", "code", "issuing_authority", "legal_code"]
+    _rec_names_search = ["name", "code", "legal_code"]
 
     name = fields.Char(
         string="Name",
@@ -64,10 +68,10 @@ class AcademyTrainingFramework(models.Model):
 
     code = fields.Char(
         string="Framework Code",
-        required=False,
+        required=True,
         readonly=False,
         index=True,
-        default=None,
+        default=lambda self: default_code(self.env, CODE_SEQUENCE),
         help="Short, unique-ish code used in URLs/filters",
         translate=False,
     )

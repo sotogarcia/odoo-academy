@@ -12,17 +12,21 @@ from odoo.exceptions import UserError
 from odoo.osv.expression import TERM_OPERATORS_NEGATION
 from odoo.exceptions import ValidationError
 
+from odoo.addons.academy_base.utils.sql_helpers import create_index
+from odoo.tools.misc import format_date
+from odoo.osv.expression import AND
 from ..utils.record_utils import create_domain_for_ids
 from ..utils.record_utils import create_domain_for_interval
 from ..utils.record_utils import ARCHIVED_DOMAIN, INCLUDE_ARCHIVED_DOMAIN
-from odoo.addons.academy_base.utils.sql_helpers import create_index
 from ..utils.record_utils import ensure_recordset
-from odoo.osv.expression import AND
+from ..utils.helpers import sanitize_code, default_code
 
 from logging import getLogger
-from datetime import date, datetime, timedelta
 from psycopg2 import DatabaseError as PsqlError
-from odoo.tools.misc import format_date
+from datetime import datetime, date, time, timedelta
+from pytz import utc, timezone
+
+CODE_SEQUENCE="academy.training.action.enrolment.sequence"
 
 _logger = getLogger(__name__)
 
@@ -33,9 +37,9 @@ class AcademyTrainingActionEnrolment(models.Model):
     _name = "academy.training.action.enrolment"
     _description = "Academy training action enrolment"
 
-    _rec_name = "enrolment_code"
-    _order = "training_action_id, student_id, enrolment_code ASC"
-    _rec_names_search = ["enrolment_code", "training_action_id", "student_id"]
+    _rec_name = "code"
+    _order = "training_action_id, student_id, code ASC"
+    _rec_names_search = ["code", "training_action_id", "student_id"]
 
     _inherit = [
         "mail.thread",
@@ -49,24 +53,24 @@ class AcademyTrainingActionEnrolment(models.Model):
     # Entity fields
     # -------------------------------------------------------------------------
 
-    enrolment_code = fields.Char(
+    code = fields.Char(
         string="Enrolment code",
         required=True,
         readonly=True,
         index=True,
-        default=lambda self: self._next_enrolment_code(self.env.company.id),
+        default=lambda self: default_code(self.env, CODE_SEQUENCE),
         help="Unique code automatically assigned to this enrolment",
         size=30,
         translate=False,
         tracking=True,
     )
 
-    enrolment_date = fields.Date(
+    enrolment_date = fields.Datetime(
         string="Enrolment date",
         required=True,
         readonly=False,
         index=False,
-        default=lambda self: fields.Date.context_today(self),
+        default=lambda self: fields.Datetime.now(),
         help="Administrative date when the enrolment was recorded",
         tracking=True,
     )
@@ -94,17 +98,17 @@ class AcademyTrainingActionEnrolment(models.Model):
         translate=False,
     )
 
-    register = fields.Date(
+    register = fields.Datetime(
         string="Registration",
         required=True,
         readonly=False,
         index=True,
-        default=lambda self: fields.Date.context_today(self),
+        default=lambda self: fields.Datetime.now(),
         help="Date the enrolment becomes effective",
         tracking=True,
     )
 
-    deregister = fields.Date(
+    deregister = fields.Datetime(
         string="Deregistration",
         required=False,
         readonly=False,
@@ -113,6 +117,54 @@ class AcademyTrainingActionEnrolment(models.Model):
         help="Date the enrolment ends (leave empty if still ongoing)",
         tracking=True,
     )
+
+    available_until = fields.Datetime(
+        string="Available at",
+        required=False,
+        readonly=True,
+        index=True,
+        default=None,
+        help="00:00 the day after, or infinity for open enrolments.",
+        compute="_compute_available_until",
+        store=True,
+    )
+
+    @api.depends("deregister")
+    def _compute_available_until(self):
+        one_day = timedelta(days=1)
+        infinity = datetime.max
+
+        for record in self:
+            if record.deregister:
+                deregister = datetime.combine(record.deregister, time.min)
+
+                local = record.get_timezone()
+                try:
+                    deregister = local.localize(deregister)
+                    deregister = deregister.astimezone(utc)
+                    deregister = deregister + one_day
+                except OverflowError:
+                    deregister = infinity
+
+                deregister = deregister.replace(tzinfo=None)
+            else:
+                deregister = infinity
+
+            group_date_stop = record.training_group_id.date_stop or infinity
+            action_date_stop = record.training_action_id.date_stop or infinity
+
+            record.available_until = min(
+                deregister, group_date_stop, action_date_stop
+            )
+
+    def get_timezone(self):
+        self.ensure_one()
+
+        company = self.company_id or self.training_action_id.company_id
+        if company and company.partner_id and company.partner_id.tz:
+            return timezone(company.partner_id.tz)
+
+        return timezone('utc')
 
     student_id = fields.Many2one(
         string="Student",
@@ -142,6 +194,14 @@ class AcademyTrainingActionEnrolment(models.Model):
         auto_join=False,
     )
 
+    @api.onchange('training_action_id')
+    def _onchange_training_action_id(self):
+        self.training_group_id = None
+        if not self.training_action_id:
+            self.action_line_ids = None
+        else:
+            self.action_line_ids = self.training_action_id.action_line_ids
+
     action_line_ids = fields.Many2many(
         string='Action lines',
         required=False,
@@ -170,6 +230,16 @@ class AcademyTrainingActionEnrolment(models.Model):
         ondelete='cascade',
         auto_join=False
     )
+
+    @api.onchange('training_group_id')
+    def _onchange_training_group_id(self):
+        if not self.training_group_id:
+            self.deregister = None
+            self.training_modality_id = None
+        else:
+            self.deregister = self.training_group_id.date_stop
+            self.training_modality_id = \
+                self.training_group_id.training_modality_id
 
     training_modality_id = fields.Many2one(
         string="Training modality",
@@ -267,13 +337,13 @@ class AcademyTrainingActionEnrolment(models.Model):
     )
 
     date_start = fields.Datetime(
-        string="Start",
+        string="Start of action",
         help="Start date/time of the training action",
         related="training_action_id.date_start",
     )
 
     date_stop = fields.Datetime(
-        string="End",
+        string="End of action",
         help="End date/time of the training action",
         related="training_action_id.date_stop",
     )
@@ -323,13 +393,13 @@ class AcademyTrainingActionEnrolment(models.Model):
 
     @api.depends("register", "deregister")
     def _compute_finalized(self):
-        now = fields.Date.today()
+        now = fields.Datetime.now()
         for record in self:
             record.finalized = record.deregister and record.deregister < now
 
     def _search_finalized(self, operator, value):
         pattern = _('Unsupported domain leaf ("finalized", "{}", "{}")')
-        now = fields.Date.to_string(fields.Date.today())
+        now = fields.Datetime.to_string(fields.Datetime.now())
 
         if operator == "!=":
             operator == "<>"
@@ -370,8 +440,8 @@ class AcademyTrainingActionEnrolment(models.Model):
         today = date.today()
 
         for record in self:
-            register = record.register
-            deregister = record.deregister or date.max
+            register = record.register.date()
+            deregister = (record.deregister or date.max).date()
 
             if register <= today and deregister >= today:
                 record.color = 10
@@ -395,19 +465,19 @@ class AcademyTrainingActionEnrolment(models.Model):
 
     @api.depends("active", "register", "deregister")
     def _compute_is_current(self):
-        today = fields.Date.today()
+        now = fields.Datetime.now()
         for record in self:
             record.is_current = (
                 record.active
-                and record.register <= today
-                and (not record.deregister or record.deregister >= today)
+                and record.register <= now
+                and (not record.deregister or record.deregister >= now)
             )
 
     @api.model
     def _search_is_current(self, operator, value):
         value = bool(value)  # Converts None to False to prevent errors
 
-        today = fields.Date.today()
+        now = fields.Datetime.now()
 
         # Toggle operator for negation if `value` is True
         if value is True:
@@ -419,17 +489,17 @@ class AcademyTrainingActionEnrolment(models.Model):
                 "|",
                 "|",
                 ("active", "!=", True),
-                ("register", ">", today),
-                ("deregister", "<", today),
+                ("register", ">", now),
+                ("deregister", "<", now),
             ]
         else:
             domain = [
                 "&",
                 "&",
                 ("active", "=", True),
-                ("register", "<=", today),
+                ("register", "<=", now),
                 "|",
-                ("deregister", ">=", today),
+                ("deregister", ">=", now),
                 ("deregister", "=", False),
             ]
 
@@ -477,9 +547,12 @@ class AcademyTrainingActionEnrolment(models.Model):
                 training_action_id gist_int4_ops WITH =,
                 student_id gist_int4_ops WITH =,
                 (
-                    daterange(
+                    tsrange(
                         register,
-                        COALESCE(deregister, 'infinity'::date)
+                        COALESCE(
+                            deregister,
+                            'infinity'::timestamp without time zone
+                        )
                     )
                 ) WITH &&
             ) DEFERRABLE INITIALLY IMMEDIATE
@@ -622,6 +695,8 @@ class AcademyTrainingActionEnrolment(models.Model):
     def create(self, value_list):
         """Overridden method 'create'"""
 
+        sanitize_code(value_list, "upper")
+
         self._perform_a_full_enrollment(value_list)
 
         parent = super(AcademyTrainingActionEnrolment, self)
@@ -631,6 +706,9 @@ class AcademyTrainingActionEnrolment(models.Model):
 
     def write(self, values):
         """Overridden method 'write'"""
+
+        sanitize_code(values, "upper")
+
         self._check_that_the_student_is_not_the_template(values)
 
         parent = super(AcademyTrainingActionEnrolment, self)
@@ -833,58 +911,17 @@ class AcademyTrainingActionEnrolment(models.Model):
 
     @api.model
     def _ensure_enrolment_date(self, vals_list):
-        today = fields.Date.context_today(self)
+        now = fields.Datetime.now()
         for values in vals_list:
             if not values.get("enrolment_date"):
-                values["enrolment_date"] = today
-
-    @api.model
-    def _next_enrolment_code(self, company_id):
-        """Return next sign-up code using company-specific sequence,
-        falling back to a known default XMLID."""
-        sequence_obj = self.env["ir.sequence"].with_company(company_id)
-
-        enrolment_code = "academy.action.enrolment.sequence"
-        sequence_domain = [
-            ("code", "=", enrolment_code),
-            ("company_id", "=", company_id),
-        ]
-        sequence = sequence_obj.search(sequence_domain, limit=1)
-        if sequence:
-            return sequence.with_company(company_id).next_by_id()
-
-        # 2) Explicit fallback to the known default sequence XMLID
-        sequence_xid = "academy_base.ir_sequence_academy_action_enrolment"
-        fallback = self.env.ref(sequence_xid, raise_if_not_found=False)
-        if fallback:
-            return fallback.with_company(company_id).next_by_id()
-
-        # 3) Last resort: let Odoo try any global sequence with that code
-        code = sequence_obj.next_by_code(enrolment_code)
-        if code:
-            _logger.warning(
-                "Using global sequence by code for company_id=%s", company_id
-            )
-            return code
-
-        raise UserError(
-            _(
-                "Missing sequence for partner sign-up. "
-                "Create a company-specific sequence with code %(code)s "
-                "or define the fallback %(xid)s."
-            )
-            % {
-                "code": enrolment_code,
-                "xid": sequence_xid,
-            }
-        )
+                values["enrolment_date"] = now
 
     @api.model
     def _ensure_enrolment_data(self, values):
-        if not values.get("enrolment_code"):
+        if not values.get("code"):
             company_id = values.get("company_id") or self.env.company.id
-            values["enrolment_code"] = self._next_signup_code(company_id)
-            values["barcode"] = values["enrolment_code"]
+            values["code"] = self._next_signup_code(company_id)
+            values["barcode"] = values["code"]
 
         if not values.get("enrolment_date", False):
-            values["enrolment_date"] = fields.Date.context_today(self)
+            self._ensure_enrolment_date([values])

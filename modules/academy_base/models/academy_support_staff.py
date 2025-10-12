@@ -13,6 +13,9 @@ from odoo.osv.expression import AND
 
 from ..utils.res_config import get_config_param
 from ..utils.helpers import is_debug_mode
+from pytz import timezone, utc
+from datetime import datetime, time
+
 
 from logging import getLogger
 
@@ -66,12 +69,12 @@ class AcademySupportStaff(models.Model):
         translate=False,
     )
 
-    signup_date = fields.Date(
+    signup_date = fields.Datetime(
         string="Sign-up date",
         required=True,
         readonly=False,
         index=False,
-        default=lambda self: fields.Date.context_today(self),
+        default=lambda self: fields.Datetime.now(),
         help="Date when the student signed up at the center.",
         tracking=True,
     )

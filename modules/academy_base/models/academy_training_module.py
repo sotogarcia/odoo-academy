@@ -11,10 +11,11 @@ from odoo.tools.safe_eval import safe_eval
 from odoo.exceptions import ValidationError
 from odoo.osv.expression import TRUE_DOMAIN, FALSE_DOMAIN
 from ..utils.helpers import OPERATOR_MAP, one2many_count, many2many_count
-from ..utils.helpers import sanitize_code
+from ..utils.helpers import sanitize_code, default_code
 
 from logging import getLogger
-from uuid import uuid4
+
+CODE_SEQUENCE = "academy.training.module.sequence"
 
 _logger = getLogger(__name__)
 
@@ -112,10 +113,10 @@ class AcademyTrainingModule(models.Model):
 
     code = fields.Char(
         string="Code",
-        required=False,
+        required=True,
         readonly=False,
         index=False,
-        default=None,
+        default=lambda self: default_code(self.env, CODE_SEQUENCE),
         help="Enter code for training module",
         size=30,
         translate=False,

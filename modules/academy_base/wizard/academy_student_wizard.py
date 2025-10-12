@@ -514,7 +514,7 @@ class AcademyStudentWizard(models.TransientModel):
     # Field: date_start
     # -------------------------------------------------------------------------
 
-    date_start = fields.Date(
+    date_start = fields.Datetime(
         string="Enrolment date",
         required=False,
         readonly=False,
@@ -524,13 +524,13 @@ class AcademyStudentWizard(models.TransientModel):
     )
 
     def default_date_start(self):
-        return date.today()
+        return fields.Datetime.now()
 
     # -------------------------------------------------------------------------
     # Field: date_stop
     # -------------------------------------------------------------------------
 
-    date_stop = fields.Date(
+    date_stop = fields.Datetime(
         string="Drop date",
         required=False,
         readonly=False,
@@ -540,7 +540,7 @@ class AcademyStudentWizard(models.TransientModel):
     )
 
     def default_date_stop(self):
-        return date.today().replace(day=1) + relativedelta(months=1)
+        return fields.Datetime.now().replace(day=1) + relativedelta(months=1)
 
     # -------------------------------------------------------------------------
     # Field: description

@@ -24,7 +24,7 @@
     <field name="arch" type="xml">
       <list string="academy_support_staff_tree" create="1" delete="1" edit="1">
         <field name="signup_code" class="oe_field_signup_code" string="Sign-up code" readonly="1"/>
-        <field name="signup_date" class="oe_field_signup_date"/>
+        <field name="signup_date" class="oe_field_signup_date" widget="date" />
         <field name="vat" class="oe_field_vat" optional="show"/>
         <field name="title" class="oe_field_title" optional="hide"/>
         <field name="name" class="oe_field_name" optional="show"/>
@@ -145,11 +145,10 @@
                     readonly="1"/>
                 </group>
                 <group colspan="4">
-                  <field name="signup_date" class="oe_field_signup_date"/>
+                  <field name="signup_date" class="oe_field_signup_date" />
                 </group>
                 <group colspan="4">
-                  <field name="company_id" class="oe_field_company_id" string="Restrict to"
-                    options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"/>
+                  <field name="create_date" class="oe_field_create_date" string="Created at" />
                 </group>
                 <group colspan="6">
                   <field name="attainment_id" class="oe_field_attainment_id" string="Qualification"
@@ -182,7 +181,7 @@
                 <group string="Purchase" name="purchase" priority="2"> </group>
                 <group name="misc" string="Misc">
                   <field name="company_registry" invisible="parent_id"/>
-                  <field name="signup_code"/>
+                  <field name="ref"/>
                   <field name="company_id" groups="base.group_multi_company"
                     options="{'no_create': True}" readonly="parent_id" force_save="1"/>
                   <field name="company_id" invisible="1"/>

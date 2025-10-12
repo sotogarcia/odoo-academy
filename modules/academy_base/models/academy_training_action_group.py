@@ -7,14 +7,18 @@
 from odoo import models, fields, api
 from odoo.tools.translate import _
 from odoo.tools.misc import format_date
-from ..utils.helpers import OPERATOR_MAP, one2many_count, many2many_count
-from odoo.osv.expression import AND, TRUE_DOMAIN, FALSE_DOMAIN
+from odoo.osv.expression import TRUE_DOMAIN, FALSE_DOMAIN
 from odoo.exceptions import ValidationError
 
-from logging import getLogger
-from pytz import utc
-from datetime import datetime
+from ..utils.helpers import OPERATOR_MAP, one2many_count
+from ..utils.datetime_utils import local_midnight_as_utc
+from ..utils.helpers import sanitize_code, default_code
 
+from logging import getLogger
+from datetime import datetime
+from uuid import uuid4
+
+CODE_SEQUENCE = "academy.training.action.group.sequence"
 
 _logger = getLogger(__name__)
 
@@ -80,7 +84,7 @@ class AcademyTrainingActionGroup(models.Model):
         required=True,
         readonly=False,
         index=False,
-        default=None,
+        default=lambda self: default_code(self.env, CODE_SEQUENCE),
         help="Enter new internal code",
         size=30,
         translate=False,
@@ -102,7 +106,6 @@ class AcademyTrainingActionGroup(models.Model):
         translate=False,
     )
 
-    # pylint: disable=locally-disabled, w0212
     date_start = fields.Datetime(
         string="Start date",
         required=True,
@@ -113,28 +116,46 @@ class AcademyTrainingActionGroup(models.Model):
     )
 
     def default_start(self):
-        now = fields.Datetime.now()
-        now = fields.Datetime.context_timestamp(self, now)
-        now = now.replace(hour=0, minute=0, second=0)
+        today = fields.Date.context_today(self)
+        tz_name = self.env.user.tz or self.env.company.partner_id.tz or "UTC"
 
-        return now.astimezone(utc).replace(tzinfo=None)
+        return local_midnight_as_utc(
+            value=today,
+            from_tz=tz_name,
+            remove_tz=True,
+        )
 
-    # pylint: disable=locally-disabled, w0212
     date_stop = fields.Datetime(
         string="End date",
         required=False,
         readonly=False,
         index=False,
-        default=lambda self: self.default_date_stop(),
+        default=None,
         help="Stop date of an event, without time for full day events",
     )
 
-    def default_date_stop(self):
-        now = fields.Datetime.now()
-        now = fields.Datetime.context_timestamp(self, now)
-        now = now.replace(hour=23, minute=59, second=59)
+    available_until = fields.Datetime(
+        string="Available at",
+        required=False,
+        readonly=True,
+        index=True,
+        default=datetime.max,
+        help="00:00 the day after, or infinity for open enrolments.",
+        compute="_compute_available_until",
+        store=True,
+    )
 
-        return now.astimezone(utc).replace(tzinfo=None)
+    @api.depends("date_stop")
+    def _compute_available_until(self):
+        infinity = datetime.max
+
+        for record in self:
+            if record.date_stop:
+                record.available_until = record.date_stop
+            else:
+                record.available_until = infinity
+
+    # -- Field+onchange: training_action_id -----------------------------------
 
     training_action_id = fields.Many2one(
         string="Training action",
@@ -149,6 +170,21 @@ class AcademyTrainingActionGroup(models.Model):
         ondelete="cascade",
         auto_join=False,
     )
+
+    @api.onchange("training_action_id")
+    def _onchange_training_action_id(self):
+        action = self.training_action_id
+
+        self.active = action.active if action else True
+        self.date_start = action.date_start if action else self.default_start
+        self.date_stop = action.date_stop if action else None
+        self.training_modality_id = (
+            action.training_modality_id if action else None
+        )
+
+        self.name = self._get_first_available_name()
+        self.seating = self._get_available_capacity("seating", 20)
+        self.excess = self._get_available_capacity("excess", 25)
 
     training_program_id = fields.Many2one(
         string="Training program",
@@ -177,7 +213,7 @@ class AcademyTrainingActionGroup(models.Model):
         required=True,
         readonly=False,
         index=False,
-        default=20,
+        default=lambda self: self._get_available_capacity("seating", 20),
         help="Maximum number of signups allowed",
     )
 
@@ -190,7 +226,7 @@ class AcademyTrainingActionGroup(models.Model):
         required=True,
         readonly=False,
         index=False,
-        default=0,
+        default=lambda self: self._get_available_capacity("excess", 25),
         help=(
             "Maximum number of students who can be invited to use this "
             "feature at the same time"
@@ -362,3 +398,73 @@ class AcademyTrainingActionGroup(models.Model):
 
             if excess_sum > action.excess:
                 raise ValidationError(error_excess)
+
+    # -- Auxiliary methods ----------------------------------------------------
+
+    def _get_first_available_name(self):
+        self.ensure_one()
+
+        if not self.training_action_id or not self.training_action_id.name:
+            return _("New training group")
+
+        action_name = self.training_action_id.name
+        other_groups = self.training_action_id.training_group_ids
+
+        if not other_groups:
+            return f"{action_name} ‒ A"
+
+        used_names = other_groups.mapped("name")
+        for name in [f"{action_name} ‒ {chr(i)}" for i in range(65, 91)]:
+            if name not in used_names:
+                return name
+
+        return f"{action_name} ‒ {uuid4()}"
+
+    def _get_available_capacity(self, field="seating", default=20):
+        result = default
+
+        training_action = self.training_action_id or self._get_m2o_default(
+            "academy.training.action", "training_action_id"
+        )
+
+        if training_action:
+            max_value = getattr(training_action, field, 0)
+            max_value = max_value if isinstance(max_value, int) else 0
+
+            print(field, max_value)
+
+            if max_value == 0:
+                result = 0
+            else:
+                training_groups = training_action.training_group_ids
+                training_groups = training_groups.filtered(lambda r: r != self)
+                values = training_groups.mapped(field)
+                print(field, values)
+                total_used = sum([v for v in values if isinstance(v, int)])
+                result = max_value - total_used
+
+        return result
+
+    def _get_m2o_default(self, model, field):
+        model_obj = self.env[model]
+
+        record_id = self.env.context.get(f"default_{field}", False)
+        if record_id:
+            return model_obj.browse(record_id)
+
+        return model_obj.browse()
+
+    @api.model_create_multi
+    def create(self, value_list):
+        """Overridden method 'create'"""
+
+        sanitize_code(value_list, "upper")
+
+        return super().create(value_list)
+
+    def write(self, values):
+        """Overridden method 'write'"""
+
+        sanitize_code(values, "upper")
+
+        return super().write(values)

@@ -131,11 +131,10 @@ attrs=["']\{["'](readonly|invisible|required)["']: *(\[[^\]]+\])\}["']
 - [x] Student: Name and surname
 - [x] Kanban de student
 - [x] Mostrar móvil o teléfono, el que tenga.
-- [ ] Secuencia para las matrículas
+- [x] Secuencia para las matrículas
 - [x] Botón ver actividades
 
-- [ ] Errores y warnings del log
-- [ ] "depends": ["dms", "dms_field", "dms_attachment_link"]
+- [x] Errores y warnings del log
 - [x] Poner internal notes en una ficha separada tanto para student compara training action
 - [ ] En el enrolment los datos del alumno en una ficha y los de la acción en otra, el apartado admisión arriba de todo
 - [ ] Cómo llevar cuenta de si se imprimió el material
@@ -143,7 +142,16 @@ attrs=["']\{["'](readonly|invisible|required)["']: *(\[[^\]]+\])\}["']
 - [ ] No mostrar información de parent_id en student
 - [ ] Botón actividades en kanban y form
 - [ ] barcode
+- [ ] Corregir `activity`, cambiándolo por `program`
+- [ ] No se puede sustituir el programa de una acción formativa creada
+- [ ] No se puede sustituir la acción formativa en un grupo ya creado
+- [ ] Quitar instalaciones de training action y poner facility.reservation
 
+1 [ ] Buscar todos los wizard para revisar
+2 [ ] Revisar el modelo y vista de enrolment
+3 [ ] Revisar el modelo y vista de training session
+4 [ ] Revisar las vistas embebidas
+5 [ ] Nombres en los act_window retornados desde python
 
 
 - [ ] El campo hours del módulo debe desaparecer
@@ -171,6 +179,7 @@ attrs=["']\{["'](readonly|invisible|required)["']: *(\[[^\]]+\])\}["']
 - [ ] Añadir campo delivery_ids a las acciones.
 - [ ] revisar los hooks
 
+- [ ] "depends": ["dms", "dms_field", "dms_attachment_link"]
 
 ## Solución a la matriculación por grupos
 

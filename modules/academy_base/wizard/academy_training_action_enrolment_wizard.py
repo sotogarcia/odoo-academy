@@ -276,7 +276,7 @@ class AcademyTrainingActionEnrolmentWizard(models.TransientModel):
     # Field: date_start
     # -------------------------------------------------------------------------
 
-    date_start = fields.Date(
+    date_start = fields.Datetime(
         string="Date date_start",
         required=False,
         readonly=False,
@@ -313,7 +313,7 @@ class AcademyTrainingActionEnrolmentWizard(models.TransientModel):
     # Field: date_stop
     # -------------------------------------------------------------------------
 
-    date_stop = fields.Date(
+    date_stop = fields.Datetime(
         string="Date date_stop",
         required=False,
         readonly=False,

@@ -5,11 +5,12 @@
 ###############################################################################
 
 from odoo import models, fields, api
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
+from odoo.osv.expression import FALSE_DOMAIN
 from ..utils.sql_helpers import create_index
 
 
-from logging import getLogger
+from logging import exception, getLogger
 
 _logger = getLogger(__name__)
 
@@ -47,6 +48,45 @@ class ResPartner(models.Model):
     """
 
     _inherit = "res.partner"
+
+    has_active_users = fields.Boolean(
+        string="Has active users",
+        required=False,
+        readonly=True,
+        index=False,
+        default=False,
+        help="True if this partner has any active linked users.",
+        compute="_compute_has_active_users",
+        search="_search_has_active_users",
+    )
+
+    def _compute_has_active_users(self):
+        for record in self:
+            record.has_active_users = bool(record.user_ids)
+
+    @api.model
+    def _search_has_active_users(self, operator, value):
+        if operator == "<>":
+            operator = "!="
+
+        if operator not in ("=", "!="):
+            message = f"Invalid operator {operator} for boolean value"
+            raise ValidationError(message)
+
+        value = bool(value)
+
+        if operator == "=" and value is True:
+            domain = [("user_ids", "!=", False)]
+        elif operator == "=" and value is False:
+            domain = [("user_ids", "=", False)]
+        elif operator == "!=" and value is True:
+            domain = [("user_ids", "=", False)]
+        elif operator == "!=" and value is False:
+            domain = [("user_ids", "!=", False)]
+        else:
+            domain = FALSE_DOMAIN
+
+        return domain
 
     student_id = fields.One2many(
         string="Student",

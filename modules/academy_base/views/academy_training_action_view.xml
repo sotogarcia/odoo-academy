@@ -106,16 +106,16 @@
                 <div class="row">
                   <group col="2" id="action">
                     <group string="Base">
-                      <field name="code" class="oe_field_code"/>
-                      <field name="manager_id" class="oe_field_manager_id" string="Supervisor" />
+                      <field name="code" class="oe_field_code" />
+                      <field name="company_id" class="oe_field_company_id" />
                     </group>
                     <group string="Training">
                       <field name="training_methodology_ids" class="od_field_training_methodology" widget="many2many_tags" string="Methodology" title="Training methodology"/>
                       <field name="training_modality_id" class="od_field_training_modality" string="Modality" title="Training modality" />
                     </group>
                     <group string="Dates">
-                      <field name="date_start" widget="date" class="oe_field_start" />
-                      <field name="date_stop" widget="date" class="oe_field_end" />
+                      <field name="date_start" class="oe_field_start" />
+                      <field name="date_stop" class="oe_field_end" />
                     </group>
                     <group string="Seats">
                       <field name="seating" class="oe_field_seating" />
@@ -155,7 +155,7 @@
                           options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" class="oe_field_professional_family_id" readonly="1"/></group>
                         <group><field name="professional_area_id"
                           options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" class="oe_field_professional_area_id" readonly="1"/></group>
-                        <group><field name="code" class="oe_field_action_code" placeholder="Enter new internal code" readonly="1"/></group>
+                        <group><field name="program_code" class="oe_field_program_code" readonly="1"/></group>
                         <group><field name="qualification_level_id"
                           options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" class="oe_field_qualification_level_id" readonly="1"/></group>
                     </group>
@@ -359,7 +359,7 @@
         <field name="arch" type="xml">
             <list string="Quick edit" create="0" delete="0" edit="1" editable="bottom">
                 <field name="name" class="oe_field_action_name"/>
-                <field name="code" class="oe_field_action_code"/>
+                <field name="code" class="oe_field_action_code" />
                 <field name="owner_id" class="oe_field_owner_id"/>
                 <field name="subrogate_id" class="oe_field_subrogate_id"/>
                 <field name="active" class="oe_field_active" widget="boolean_toggle"/>

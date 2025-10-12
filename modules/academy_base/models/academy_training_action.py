@@ -19,14 +19,18 @@ from ..utils.helpers import OPERATOR_MAP, one2many_count
 from ..utils.record_utils import create_domain_for_ids
 from ..utils.record_utils import create_domain_for_interval
 from ..utils.record_utils import ARCHIVED_DOMAIN, INCLUDE_ARCHIVED_DOMAIN
+from ..utils.datetime_utils import local_midnight_as_utc
+from ..utils.helpers import sanitize_code, default_code
 
 from logging import getLogger
 from pytz import utc
 from uuid import uuid4
 from psycopg2 import Error as PsqlError
 from enum import IntFlag, auto
+from datetime import datetime, date, time, timedelta
 
-# pylint: disable=locally-disabled, C0103
+CODE_SEQUENCE = "academy.training.action.sequence"
+
 _logger = getLogger(__name__)
 
 
@@ -115,7 +119,7 @@ class AcademyTrainingAction(models.Model):
         required=True,
         readonly=False,
         index=False,
-        default=None,
+        default=lambda self: default_code(self.env, CODE_SEQUENCE),
         help="Enter new internal code",
         size=30,
         translate=False,
@@ -137,9 +141,8 @@ class AcademyTrainingAction(models.Model):
         translate=False,
     )
 
-    # pylint: disable=locally-disabled, w0212
     date_start = fields.Datetime(
-        string="Start",
+        string="Start date",
         required=True,
         readonly=False,
         index=False,
@@ -148,28 +151,44 @@ class AcademyTrainingAction(models.Model):
     )
 
     def default_start(self):
-        now = fields.Datetime.now()
-        now = fields.Datetime.context_timestamp(self, now)
-        now = now.replace(hour=0, minute=0, second=0)
+        today = fields.Date.context_today(self)
+        tz_name = self.env.user.tz or self.env.company.partner_id.tz or "UTC"
 
-        return now.astimezone(utc).replace(tzinfo=None)
+        return local_midnight_as_utc(
+            value=today,
+            from_tz=tz_name,
+            remove_tz=True,
+        )
 
-    # pylint: disable=locally-disabled, w0212
     date_stop = fields.Datetime(
-        string="End",
+        string="End date",
         required=False,
         readonly=False,
         index=False,
-        default=lambda self: self.default_date_stop(),
+        default=None,
         help="Stop date of an event, without time for full day events",
     )
 
-    def default_date_stop(self):
-        now = fields.Datetime.now()
-        now = fields.Datetime.context_timestamp(self, now)
-        now = now.replace(hour=23, minute=59, second=59)
+    available_until = fields.Datetime(
+        string="Available at",
+        required=False,
+        readonly=True,
+        index=True,
+        default=None,
+        help="00:00 the day after, or infinity for open enrolments.",
+        compute="_compute_available_until",
+        store=True,
+    )
 
-        return now.astimezone(utc).replace(tzinfo=None)
+    @api.depends("date_stop")
+    def _compute_available_until(self):
+        infinity = datetime.max
+
+        for record in self:
+            if record.date_stop:
+                record.available_until = record.date_stop
+            else:
+                record.available_until = infinity
 
     training_group_ids = fields.One2many(
         string="Training groups",
@@ -324,10 +343,6 @@ class AcademyTrainingAction(models.Model):
         ondelete="cascade",
         auto_join=False,
     )
-
-    @api.onchange("training_program_id")
-    def _onchange_training_program_id(self):
-        self.synchronise_program_lines(add_optional=True)
 
     program_name = fields.Char(
         string="Name",
@@ -691,9 +706,13 @@ class AcademyTrainingAction(models.Model):
     @api.model_create_multi
     def create(self, value_list):
         """Overridden method 'create'"""
+        sanitize_code(value_list, "upper")
 
         parent = super(AcademyTrainingAction, self)
         result = parent.create(value_list)
+
+        to_sync = result.filtered(lambda r: not r.action_line_ids)
+        to_sync.synchronize_from_program(mode=SyncMode.ALL, add_optional=True)
 
         result.update_enrolments()
 
@@ -701,6 +720,7 @@ class AcademyTrainingAction(models.Model):
 
     def write(self, values):
         """Overridden method 'write'"""
+        sanitize_code(values, "upper")
 
         parent = super(AcademyTrainingAction, self)
         result = parent.write(values)
@@ -988,7 +1008,7 @@ class AcademyTrainingAction(models.Model):
             )
 
     def synchronize_from_program(
-        self, mode: SyncMode, add_optional: bool = True
+        self, mode: SyncMode = SyncMode.ALL, add_optional: bool = True
     ):
         """
         Synchronize each training action with its program lines.

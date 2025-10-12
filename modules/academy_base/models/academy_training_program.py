@@ -9,14 +9,16 @@ all training program attributes and behavior.
 # pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
 from odoo.osv.expression import TRUE_DOMAIN, FALSE_DOMAIN
+from odoo.exceptions import UserError
 from ..utils.helpers import OPERATOR_MAP, one2many_count
-from ..utils.helpers import sanitize_code
+from ..utils.helpers import sanitize_code, default_code
 from odoo.tools.safe_eval import safe_eval
 from odoo.tools.translate import _
 
 from logging import getLogger
 from uuid import uuid4
 
+CODE_SEQUENCE = "academy.training.program.sequence"
 
 _logger = getLogger(__name__)
 
@@ -86,10 +88,10 @@ class AcademyTrainingProgram(models.Model):
 
     code = fields.Char(
         string="Code",
-        required=False,
+        required=True,
         readonly=False,
         index=True,
-        default=None,
+        default=lambda self: default_code(self.env, CODE_SEQUENCE),
         help="Public code or short identifier for the program",
         size=30,
         translate=False,

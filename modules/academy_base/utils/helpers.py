@@ -14,7 +14,13 @@ except ImportError:  # older Odoo (e.g. 13)
 from odoo.tools.translate import _lt
 from odoo.tools.safe_eval import safe_eval
 from operator import eq, ne, lt, le, gt, ge
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, UserError
+
+from uuid import uuid4
+from logging import getLogger
+
+
+_logger = getLogger(__name__)
 
 
 INVALID_DOMAIN = _lt("Given domain expression %r is not a valid ORM domain")
@@ -335,6 +341,14 @@ def many2many_count(parent_set, m2m_field_name, domain=None):
 def is_debug_mode(env):
     debug_val = str(env.context.get("debug", False) or "").lower()
     return debug_val in ("1", "true", "assets", "tests", "debug")
+
+
+def default_code(env, sequence_code):
+    sequence_obj = env["ir.sequence"]
+
+    value = str(sequence_obj.next_by_code(sequence_code) or uuid4().hex)
+
+    return value.upper()
 
 
 def sanitize_code(value_list, convert_case=None):

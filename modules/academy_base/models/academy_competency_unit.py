@@ -60,7 +60,7 @@ class AcademyCompetencyUnit(models.Model):
 
     code = fields.Char(
         string="Code",
-        required=False,
+        required=True,
         readonly=False,
         index=False,
         default=None,

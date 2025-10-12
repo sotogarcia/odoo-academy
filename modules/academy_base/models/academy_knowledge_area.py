@@ -53,7 +53,7 @@ class AcademyKnowledgeArea(models.Model):
 
     knowle_code = fields.Char(
         string="Code",
-        required=False,
+        required=True,
         readonly=False,
         index=False,
         default=None,

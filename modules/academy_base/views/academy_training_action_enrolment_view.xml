@@ -25,13 +25,13 @@
       <list string="academy_training_action_enrolment_tree" create="1" delete="1" edit="1"
         decoration-success="is_current">
         <field name="is_current" column_invisible="1"/>
-        <field name="enrolment_code" class="oe_field_enrolment_code" />
+        <field name="code" class="oe_field_enrolment_code" />
         <field name="training_program_id" class="oe_field_training_program_id" optional="hide"/>
         <field name="training_action_id" class="oe_field_training_action_id"/>
         <field name="student_id" class="oe_field_student_id"/>
         <field name="training_modality_id" class="oe_field_training_modality_id" optional="show"/>
-        <field name="register" class="oe_field_register"/>
-        <field name="deregister" class="oe_field_deregister"/>
+        <field name="register" class="oe_field_register" widget="date" />
+        <field name="deregister" class="oe_field_deregister" widget="date" />
         <field name="vat" class="oe_field_vat" optional="hide"/>
         <field name="email" class="oe_field_email" optional="show"/>
         <field name="phone" class="oe_field_phone" optional="show"/>
@@ -83,8 +83,8 @@
             </group>
 
             <group col="2" string="Dates">
-              <field name="register" class="oe_field_register"/>
-              <field name="deregister" class="oe_field_deregister"/>
+              <field name="register" class="oe_field_register"  />
+              <field name="deregister" class="oe_field_deregister"  />
             </group>
 
             <group col="2" string="Options">
@@ -97,10 +97,10 @@
             <page string="Details" class="oe_page_details" accesskey="D">
               <group col="2">
                 <group col="2">
-                    <field name="enrolment_code" class="oe_field_enrolment_code" />
+                    <field name="code" class="oe_field_enrolment_code" />
                 </group>
                 <group col="2">
-                    <field name="enrolment_date" class="oe_field_enrolment_date" />
+                    <field name="enrolment_date" class="oe_field_enrolment_date" widget="date" />
                 </group>
 
                 <group col="2" string="Training action">
@@ -294,8 +294,8 @@
       <list string="view_academy_training_action_enrolment_embed_tree" create="1" delete="1"
         edit="1">
         <field name="training_action_id" class="oe_field_training_action_id"/>
-        <field name="register" class="oe_field_register"/>
-        <field name="deregister" class="oe_field_deregister"/>
+        <field name="register" class="oe_field_register" widget="date" />
+        <field name="deregister" class="oe_field_deregister" widget="date" />
       </list>
     </field>
   </record>
@@ -314,8 +314,8 @@
       <list string="view_academy_training_action_enrolment_edit_by_user_tree" create="1" delete="1"
         edit="1" editable="top">
         <field name="training_action_id" class="oe_field_training_action_id"/>
-        <field name="register" class="oe_field_register"/>
-        <field name="deregister" class="oe_field_deregister"/>
+        <field name="register" class="oe_field_register" />
+        <field name="deregister" class="oe_field_deregister" />
       </list>
     </field>
   </record>
@@ -336,12 +336,12 @@
     <field name="active" eval="True"/>
     <field name="arch" type="xml">
       <list string="Enrolments" create="1" delete="1" edit="1">
-        <field name="enrolment_code" class="oe_field_enrolment_code" />
+        <field name="code" class="oe_field_enrolment_code" />
         <field name="training_action_id" class="oe_field_training_action_id"
           domain="['|', ('date_stop', '=', False), ('date_stop', '>=', context_today().strftime('%%Y-%%m-%%d'))]"/>
         <field name="training_modality_id" class="oe_field_training_modality_id" optional="show"/>
-        <field name="register" class="oe_field_register"/>
-        <field name="deregister" class="oe_field_deregister"/>
+        <field name="register" class="oe_field_register" />
+        <field name="deregister" class="oe_field_deregister" />
       </list>
     </field>
   </record>
