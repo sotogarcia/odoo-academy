@@ -2,8 +2,8 @@
 
 <odoo noupdate="0">
 
-  <record id="academy_training_action_demo_1_default" model="academy.training.action.group">
-    <field name="training_action_id" ref="academy_training_action_demo_1" />
+  <record id="academy_training_action_demo_1_default" model="academy.training.action">
+    <field name="parent_id" ref="academy_training_action_demo_1" />
     <field name="name">Free software in the office</field>
     <field name="description">Introduces the basic features of the more used office appliances</field>
     <field name="active">True</field>
@@ -16,8 +16,8 @@
     <field name="training_modality_id" ref="academy_training_modality_classroom" />
   </record>
 
-  <record id="academy_training_action_demo_2_default" model="academy.training.action.group">
-    <field name="training_action_id" ref="academy_training_action_demo_2" />
+  <record id="academy_training_action_demo_2_default" model="academy.training.action">
+    <field name="parent_id" ref="academy_training_action_demo_2" />
     <field name="name">Microsoft Office XP</field>
     <field name="description">Introduces the basic features of the more used Microsoft appliances</field>
     <field name="active">True</field>

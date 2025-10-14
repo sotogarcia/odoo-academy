@@ -202,6 +202,28 @@ class AcademyTrainingActionEnrolment(models.Model):
         else:
             self.action_line_ids = self.training_action_id.action_line_ids
 
+    parent_action_id = fields.Many2one(
+        string="Parent action",
+        required=True,
+        readonly=True,
+        index=True,
+        default=None,
+        help="Direct parent of the linked action; or the action itself.",
+        comodel_name="academy.training.action",
+        domain=[],
+        context={},
+        ondelete="cascade",
+        auto_join=False,
+        compute="_compute_parent_action_id",
+        store=True,
+    )
+
+    @api.depends("training_action_id", "training_action_id.parent_id")
+    def _compute_parent_action_id(self):
+        for rec in self:
+            action = rec.training_action_id
+            rec.parent_action_id = action.parent_id or action or False
+
     action_line_ids = fields.Many2many(
         string='Action lines',
         required=False,
@@ -224,8 +246,8 @@ class AcademyTrainingActionEnrolment(models.Model):
         index=False,
         default=None,
         help="Group where the student attends this action",
-        comodel_name='academy.training.action.group',
-        domain=[],
+        comodel_name='academy.training.action',
+        domain=[('parent_id', '!=', False)],
         context={},
         ondelete='cascade',
         auto_join=False

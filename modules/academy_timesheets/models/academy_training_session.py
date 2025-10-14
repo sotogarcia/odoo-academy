@@ -36,9 +36,7 @@ class AcademyTrainingSession(models.Model):
     _order = "date_start ASC"
     _rec_names_search = [
         "task_id",
-        "training_action_id",
-        "training_group_id",
-        "action_line_id",
+        "training_action_id" "action_line_id",
     ]
 
     _check_company_auto = True
@@ -145,25 +143,25 @@ class AcademyTrainingSession(models.Model):
         tracking=True,
     )
 
-    @api.onchange("training_action_id")
-    def _onchange_training_action_id(self):
-        for record in self:
-            record.training_group_id = None
-            record.action_line_id = None
+    # @api.onchange("training_action_id")
+    # def _onchange_training_action_id(self):
+    #     for record in self:
+    #         record.training_group_id = None
+    #         record.action_line_id = None
 
-    training_group_id = fields.Many2one(
-        string="Training group",
-        required=False,
-        readonly=False,
-        index=True,
-        default=None,
-        help=False,
-        comodel_name="academy.training.action.group",
-        domain=[],
-        context={},
-        ondelete="cascade",
-        auto_join=False,
-    )
+    # training_group_id = fields.Many2one(
+    #     string="Training group",
+    #     required=False,
+    #     readonly=False,
+    #     index=True,
+    #     default=None,
+    #     help=False,
+    #     comodel_name="academy.training.action.group",
+    #     domain=[],
+    #     context={},
+    #     ondelete="cascade",
+    #     auto_join=False,
+    # )
 
     action_line_id = fields.Many2one(
         string="Competency unit",
@@ -264,13 +262,11 @@ class AcademyTrainingSession(models.Model):
         store=True,
     )
 
-    @api.depends("task_id", "training_action_id", "training_group_id")
+    @api.depends("task_id", "training_action_id")
     def _compute_task_name(self):
         for record in self:
             if record.task_id and record.task_id.name:
                 record.task_name = record.task_id.name
-            if record.training_group_id and record.training_group_id.name:
-                record.task_name = record.training_group_id.name
             elif record.training_action_id and record.training_action_id.name:
                 record.task_name = record.training_action_id.name
             else:
@@ -734,15 +730,6 @@ class AcademyTrainingSession(models.Model):
             "  (training_group_id IS NULL) WITH <>"
             ") DEFERRABLE INITIALLY IMMEDIATE",
             "Mixed sessions with and without group not allowed.",
-        ),
-        (
-            "group_required_if_groupwise",
-            "CHECK ("
-            "  (groupwise_schedule IS TRUE AND training_group_id IS NOT NULL) "
-            "  OR "
-            "  (groupwise_schedule IS NOT TRUE AND training_group_id IS NULL)"
-            ")",
-            "Groupwise / non-groupwise scheduling requirement not met",
         ),
         (
             "positive_interval",

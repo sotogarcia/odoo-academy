@@ -15,6 +15,7 @@ from odoo.tools.safe_eval import safe_eval
 from odoo.exceptions import ValidationError
 from odoo.osv.expression import AND, TRUE_DOMAIN, FALSE_DOMAIN
 from ..utils.helpers import OPERATOR_MAP, one2many_count
+from ..utils.sql_helpers import create_index
 
 from ..utils.record_utils import create_domain_for_ids
 from ..utils.record_utils import create_domain_for_interval
@@ -30,6 +31,7 @@ from enum import IntFlag, auto
 from datetime import datetime, date, time, timedelta
 
 CODE_SEQUENCE = "academy.training.action.sequence"
+_INFINITY = fields.Datetime.to_datetime("9999-12-31 23:59:59")
 
 _logger = getLogger(__name__)
 
@@ -69,6 +71,7 @@ class AcademyTrainingAction(models.Model):
     _rec_names_search = ["name", "code", "training_program_id"]
 
     _check_company_auto = True
+    _parent_store = True
 
     company_id = fields.Many2one(
         string="Company",
@@ -190,19 +193,36 @@ class AcademyTrainingAction(models.Model):
             else:
                 record.available_until = infinity
 
-    training_group_ids = fields.One2many(
-        string="Training groups",
-        required=True,
+    parent_id = fields.Many2one(
+        string="Training action",
+        required=False,
         readonly=False,
         index=True,
         default=None,
-        help=False,
-        comodel_name="academy.training.action.group",
-        inverse_name="training_action_id",
+        help="Parent training action used to group this record.",
+        comodel_name="academy.training.action",
+        domain=[],
+        context={},
+        ondelete="cascade",
+        auto_join=False,
+    )
+
+    child_ids = fields.One2many(
+        string="Training groups",
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help="Children training actions belonging to this record.",
+        comodel_name="academy.training.action",
+        inverse_name="parent_id",
         domain=[],
         context={},
         auto_join=False,
+        copy=False,
     )
+
+    # -- Computed field: training_group_count ---------------------------------
 
     training_group_count = fields.Integer(
         string="Training group count",
@@ -213,11 +233,13 @@ class AcademyTrainingAction(models.Model):
         help=False,
         compute="_compute_training_group_count",
         search="_search_training_group_count",
+        store=True,
+        copy=False,
     )
 
-    @api.depends("training_group_ids")
+    @api.depends("child_ids")
     def _compute_training_group_count(self):
-        counts = one2many_count(self, "training_group_ids")
+        counts = one2many_count(self, "child_ids")
 
         for record in self:
             record.training_group_count = counts.get(record.id, 0)
@@ -234,10 +256,20 @@ class AcademyTrainingAction(models.Model):
         if not cmp_func:
             return FALSE_DOMAIN  # unsupported operator
 
-        counts = one2many_count(self.search([]), "training_group_ids")
+        counts = one2many_count(self.search([]), "child_ids")
         matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
 
         return [("id", "in", matched)] if matched else FALSE_DOMAIN
+
+    parent_path = fields.Char(
+        string="Parent path",
+        required=False,
+        readonly=True,
+        index=True,
+        default=None,
+        help="Path used for efficient ancestors/descendants queries.",
+        translate=False,
+    )
 
     application_scope_id = fields.Many2one(
         string="Application scope",
@@ -491,6 +523,8 @@ class AcademyTrainingAction(models.Model):
         copy=False,
     )
 
+    # -- Computed field: enrolment_count --------------------------------------
+
     enrolment_count = fields.Integer(
         string="Enrolment count",
         required=False,
@@ -500,6 +534,8 @@ class AcademyTrainingAction(models.Model):
         help="Show number of enrolments",
         compute="_compute_enrolment_count",
         search="_search_enrolment_count",
+        store=True,
+        copy=False,
     )
 
     @api.depends("enrolment_ids")
@@ -509,7 +545,6 @@ class AcademyTrainingAction(models.Model):
         for record in self:
             record.enrolment_count = counts.get(record.id, 0)
 
-    @api.model
     def _search_enrolment_count(self, operator, value):
         # Handle boolean-like searches Odoo may pass for required fields
         if value is True:
@@ -522,6 +557,59 @@ class AcademyTrainingAction(models.Model):
             return FALSE_DOMAIN  # unsupported operator
 
         counts = one2many_count(self.search([]), "enrolment_ids")
+        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
+
+        return [("id", "in", matched)] if matched else FALSE_DOMAIN
+
+    rollup_enrolment_ids = fields.One2many(
+        string="Enrolments (rollup)",
+        required=False,
+        readonly=True,
+        index=True,
+        default=None,
+        help="All enrolments from this action and its direct groups.",
+        comodel_name="academy.training.action.enrolment",
+        inverse_name="parent_action_id",
+        domain=[],
+        context={},
+        auto_join=False,
+        copy=False,
+    )
+
+    # -- Computed field: enrolment_count --------------------------------------
+
+    rollup_enrolment_count = fields.Integer(
+        string="Enrolment (rollup) count",
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        help="Show number of enrolments",
+        compute="_compute_rollup_enrolment_count",
+        search="_search_rollup_enrolment_count",
+        store=True,
+        copy=False,
+    )
+
+    @api.depends("rollup_enrolment_ids")
+    def _compute_rollup_enrolment_count(self):
+        counts = one2many_count(self, "rollup_enrolment_ids")
+
+        for record in self:
+            record.rollup_enrolment_count = counts.get(record.id, 0)
+
+    def _search_rollup_enrolment_count(self, operator, value):
+        # Handle boolean-like searches Odoo may pass for required fields
+        if value is True:
+            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
+        if value is False:
+            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
+
+        cmp_func = OPERATOR_MAP.get(operator)
+        if not cmp_func:
+            return FALSE_DOMAIN  # unsupported operator
+
+        counts = one2many_count(self.search([]), "rollup_enrolment_ids")
         matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
 
         return [("id", "in", matched)] if matched else FALSE_DOMAIN
@@ -557,11 +645,6 @@ class AcademyTrainingAction(models.Model):
 
     _sql_constraints = [
         (
-            "unique_action_code",
-            'UNIQUE("code")',
-            "The given action code already exists",
-        ),
-        (
             "check_date_order",
             'CHECK("date_stop" IS NULL OR "date_start" < "date_stop")',
             "End date must be greater then date_start date",
@@ -571,137 +654,203 @@ class AcademyTrainingAction(models.Model):
             "CHECK(seating >= 0)",
             "The number of users must be greater than or equal to zero",
         ),
+        (
+            "prevent_enrolment_group_mix",
+            "CHECK (COALESCE(training_group_count, 0) = 0 "
+            "OR COALESCE(enrolment_count, 0) = 0)",
+            "An action with groups cannot have direct enrolments, and an action "
+            "with direct enrolments cannot have groups.",
+        ),
     ]
 
-    @api.constrains("date_start", "date_stop", "training_group_ids")
-    def _constrains_groups_inside_action(self):
-        group_obj = self.env["academy.training.action.group"]
+    @api.constrains("parent_id")
+    def _check_no_cycle(self):
+        """Prevent recursive hierarchies."""
+        if self._has_cycle("parent_id"):
+            raise ValidationError(
+                self.env._("You cannot create a recursive hierarchy.")
+            )
 
-        error_start = _("Group starts before action start.")
-        error_stop = _("Group ends after action stop.")
+    @api.constrains("date_start", "date_stop")
+    def _constrains_groups_inside_action_parent(self):
+        """Parent-level constraint.
 
-        infinity = fields.Datetime.to_datetime("9999-12-31 23:59:59")
+        Evaluates on parent actions (not groups). Ensures every child group's
+        date window lies within the parent's [date_start, date_stop]. Triggered
+        when the parent's date_start/date_stop change.
+        """
+        for parent in self:
+            start, stop = self._parent_window(parent)
 
-        for action in self:
-            domain = [
-                ("training_action_id", "=", action.id),
-                ("date_start", "!=", False),
-            ]
+            # No window => nothing to validate
+            if not (start or parent.date_stop):
+                continue
 
-            action_start = action.date_start
-            action_stop = action.date_stop or infinity
+            # Fetch only children that could violate
+            kids = parent.child_ids.filtered(lambda g: g.date_start)
+            for g in kids:
+                g_start = g.date_start
+                g_stop = g.date_stop or _INFINITY
 
-            for group in group_obj.search(domain):
-                group_start = group.date_start
-                group_stop = group.date_stop or infinity
+                if start and g_start < start:
+                    raise ValidationError(
+                        self.env._("Group starts before action start.")
+                    )
+                if g_stop > stop:
+                    raise ValidationError(
+                        self.env._("Group ends after action stop.")
+                    )
 
-                if action_start and group_start < action_start:
-                    raise ValidationError(error_start)
-                if group_stop > action_stop:
-                    raise ValidationError(error_stop)
+    @api.constrains("seating", "excess")
+    def _constrains_group_capacity_parent(self):
+        """Parent-level constraint.
 
-    @api.constrains("seating", "excess", "training_group_ids")
-    def _constrains_group_capacity(self):
-        error_seating = _("Sum of groups 'Seating' exceeds action 'Seating'.")
-        error_excess = _("Sum of groups 'Excess' exceeds action 'Excess'.")
+        Evaluates on parent actions (not groups). Ensures the sum of children's
+        seating/excess does not exceed the parent's seating/excess. Triggered
+        when the parent's seating/excess change.
+        """
+        Child = self.env["academy.training.action"]
+        for parent in self:
+            if not parent.child_ids:
+                continue
 
-        for action in self:
-            groups = action.training_group_ids
+            # Aggregate with read_group (efficient on large sets)
+            data = Child.read_group(
+                domain=[("parent_id", "=", parent.id)],
+                fields=["seating:sum", "excess:sum"],
+                groupby=[],
+            )[0]
+            seat_sum = data.get("seating_sum") or 0
+            exc_sum = data.get("excess_sum") or 0
 
-            seat_sum = sum(groups.mapped("seating")) if groups else 0
-            excess_sum = sum(groups.mapped("excess")) if groups else 0
+            if parent.seating is not None and seat_sum > parent.seating:
+                raise ValidationError(
+                    self.env._(
+                        "Sum of groups 'Seating' exceeds action 'Seating'."
+                    )
+                )
+            if parent.excess is not None and exc_sum > parent.excess:
+                raise ValidationError(
+                    self.env._(
+                        "Sum of groups 'Excess' exceeds action 'Excess'."
+                    )
+                )
 
-            if seat_sum > action.seating:
-                raise ValidationError(error_seating)
+    @api.constrains("date_start", "date_stop", "parent_id")
+    def _constrains_within_parent_child(self):
+        """Child-level constraint.
 
-            if excess_sum > action.excess:
-                raise ValidationError(error_excess)
+        Evaluates on groups (children). Ensures this group's date window fits
+        within its parent's [date_start, date_stop]. Triggered when this
+        record's date_start/date_stop/parent_id change.
+        """
+        for group in self:
+            parent = group.parent_id
+            if not parent:
+                continue
+
+            p_start, p_stop = self._parent_window(parent)
+            if group.date_start and p_start and group.date_start < p_start:
+                raise ValidationError(
+                    self.env._("Group starts before action start.")
+                )
+            g_stop = group.date_stop or _INFINITY
+            if g_stop > p_stop:
+                raise ValidationError(
+                    self.env._("Group ends after action stop.")
+                )
+
+    @api.constrains("seating", "excess", "parent_id")
+    def _constrains_capacity_child(self):
+        """Child-level constraint.
+
+        Evaluates on groups (children). After this group's change, ensures the
+        aggregated seating/excess under the same parent does not exceed the
+        parent's limits. Triggered when this record's seating/excess/parent_id
+        change.
+        """
+        Child = self.env["academy.training.action"]
+        for group in self:
+            parent = group.parent_id
+            if not parent:
+                continue
+
+            data = Child.read_group(
+                domain=[("parent_id", "=", parent.id)],
+                fields=["seating:sum", "excess:sum"],
+                groupby=[],
+            )[0]
+            seat_sum = data.get("seating_sum") or 0
+            exc_sum = data.get("excess_sum") or 0
+
+            if parent.seating is not None and seat_sum > parent.seating:
+                raise ValidationError(
+                    self.env._(
+                        "Sum of groups 'Seating' exceeds action 'Seating'."
+                    )
+                )
+            if parent.excess is not None and exc_sum > parent.excess:
+                raise ValidationError(
+                    self.env._(
+                        "Sum of groups 'Excess' exceeds action 'Excess'."
+                    )
+                )
 
     # -------------------------- OVERLOADED METHODS ---------------------------
 
-    @api.returns("self", lambda value: value.id)
-    def copy(self, defaults=None):
-        """Prevents new record of the inherited (_inherits) model will be
-        created
-        """
+    def _auto_init(self):
+        result = super()._auto_init()
 
-        action_obj = self.env[self._name]
-        action_set = action_obj.search([], order="id DESC", limit=1)
+        table = self._table
+        lang = (
+            self.env.company.partner_id.lang or self.env.user.lang or "en_US"
+        )
+        localized_name = f"LOWER(name->>'{lang}')"
 
-        defaults = dict(defaults or {})
-        # default.update({
-        #     'training_program_id': self.training_program_id.id
-        # })
-        #
-        if "code" not in defaults:
-            defaults["code"] = uuid4().hex.upper()
+        code_fields = ["company_id", "LOWER(code)", "COALESCE(parent_id, 0)"]
+        create_index(
+            env=self.env,
+            table_name=table,
+            fields=code_fields,
+            unique=True,
+            name=f"{table}_code_uniq",
+            method="btree",
+        )
 
-        if "name" not in defaults:
-            defaults["name"] = "{} - {}".format(self.name, action_set.id + 1)
-
-        rec = super(AcademyTrainingAction, self).copy(defaults)
-        return rec
-
-    @api.model
-    def _create(self, values):
-        """Overridden low-level method '_create' to handle custom PostgreSQL
-        exceptions.
-
-        This method handles custom PostgreSQL exceptions, specifically catching
-        the exception with code 'ATE01', triggered by a database trigger that
-        validates enrolment dates in training actions.
-
-        Args:
-            values (dict): The values to create a new record.
-
-        Returns:
-            Record: The newly created record.
-
-        Raises:
-            ValidationError: If a PostgreSQL error with code 'ATE01' is raised.
-        """
-
-        parent = super(AcademyTrainingAction, self)
-
-        try:
-            result = parent._create(values)
-        except PsqlError as ex:
-            if "ATA01" in str(ex.pgcode):
-                raise ValidationError(self.MSG_ATA01)
-            else:
-                raise
+        name_fields = ["company_id", localized_name, "COALESCE(parent_id, 0)"]
+        create_index(
+            env=self.env,
+            table_name=table,
+            fields=name_fields,
+            unique=True,
+            name=f"{table}_name_uniq",
+            method="btree",
+        )
 
         return result
 
-    def _write(self, values):
-        """Overridden low-level method '_write' to handle custom PostgreSQL
-        exceptions.
+    # @api.returns("self", lambda value: value.id)
+    # def copy(self, defaults=None):
+    #     """Prevents new record of the inherited (_inherits) model will be
+    #     created
+    #     """
 
-        This method handles custom PostgreSQL exceptions, specifically catching
-        the exception with code 'ATE01', triggered by a database trigger that
-        validates enrolment dates in training actions.
+    #     action_obj = self.env[self._name]
+    #     action_set = action_obj.search([], order="id DESC", limit=1)
 
-        Args:
-            values (dict): The values to update the record.
+    #     defaults = dict(defaults or {})
+    #     # default.update({
+    #     #     'training_program_id': self.training_program_id.id
+    #     # })
+    #     #
+    #     if "code" not in defaults:
+    #         defaults["code"] = uuid4().hex.upper()
 
-        Returns:
-            Boolean: True if the write operation was successful.
+    #     if "name" not in defaults:
+    #         defaults["name"] = "{} - {}".format(self.name, action_set.id + 1)
 
-        Raises:
-            ValidationError: If a PostgreSQL error with code 'ATE01' is raised.
-        """
-
-        parent = super(AcademyTrainingAction, self)
-
-        try:
-            result = parent._write(values)
-        except PsqlError as ex:
-            if "ATA01" in str(ex.pgcode):
-                raise ValidationError(self.MSG_ATA01)
-            else:
-                raise
-
-        return result
+    #     rec = super(AcademyTrainingAction, self).copy(defaults)
+    #     return rec
 
     @api.model_create_multi
     def create(self, value_list):
@@ -739,9 +888,9 @@ class AcademyTrainingAction(models.Model):
 
         context = self.env.context.copy()
         context.update(safe_eval(act_wnd.context))
-        context.update({"default_training_action_id": self.id})
+        context.update({"default_parent_id": self.id})
 
-        domain = [("training_action_id", "=", self.id)]
+        domain = [("parent_id", "=", self.id)]
 
         serialized = {
             "type": "ir.actions.act_window",
@@ -807,49 +956,49 @@ class AcademyTrainingAction(models.Model):
                     {"date_stop": record.date_stop.strftime(dtformat)}
                 )
 
-    def session_wizard(self):
-        """Launch the Session wizard.
-        This wizard has a related window action, this method reads the action,
-        updates context using current evironment and sets the wizard training
-        action to this action.
-        """
+    # def session_wizard(self):
+    #     """Launch the Session wizard.
+    #     This wizard has a related window action, this method reads the action,
+    #     updates context using current evironment and sets the wizard training
+    #     action to this action.
+    #     """
 
-        module = "academy_base"
-        name = "action_academy_training_session_wizard_act_window"
-        act_xid = "{}.{}".format(module, name)
+    #     module = "academy_base"
+    #     name = "action_academy_training_session_wizard_act_window"
+    #     act_xid = "{}.{}".format(module, name)
 
-        self.ensure_one()
+    #     self.ensure_one()
 
-        # STEP 1: Initialize variables
-        action = self.env.ref(act_xid)
-        actx = safe_eval(action.context)
+    #     # STEP 1: Initialize variables
+    #     action = self.env.ref(act_xid)
+    #     actx = safe_eval(action.context)
 
-        # STEP 2 Update context:
-        ctx = dict()
-        ctx.update(self.env.context)  # dictionary from environment
-        ctx.update(actx)  # add action context
+    #     # STEP 2 Update context:
+    #     ctx = dict()
+    #     ctx.update(self.env.context)  # dictionary from environment
+    #     ctx.update(actx)  # add action context
 
-        # STEP 3: Set training action for wizard. This action will be send in
-        # context as a default value. If this recordset have not records,
-        # any training action will be set
-        if self.id:
-            ctx.update(dict(default_training_action_id=self.id))
+    #     # STEP 3: Set training action for wizard. This action will be send in
+    #     # context as a default value. If this recordset have not records,
+    #     # any training action will be set
+    #     if self.id:
+    #         ctx.update(dict(default_training_action_id=self.id))
 
-        # STEP 4: Map training action and add computed context
-        action_map = {
-            "type": action.type,
-            "name": action.name,
-            "res_model": action.res_model,
-            "view_mode": action.view_mode,
-            "target": action.target,
-            "domain": action.domain,
-            "context": ctx,
-            "search_view_id": action.search_view_id,
-            "help": action.help,
-        }
+    #     # STEP 4: Map training action and add computed context
+    #     action_map = {
+    #         "type": action.type,
+    #         "name": action.name,
+    #         "res_model": action.res_model,
+    #         "view_mode": action.view_mode,
+    #         "target": action.target,
+    #         "domain": action.domain,
+    #         "context": ctx,
+    #         "search_view_id": action.search_view_id,
+    #         "help": action.help,
+    #     }
 
-        # STEP 5: Return the action
-        return action_map
+    #     # STEP 5: Return the action
+    #     return action_map
 
     @staticmethod
     def _eval_domain(domain):

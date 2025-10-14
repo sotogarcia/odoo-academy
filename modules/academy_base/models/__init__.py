@@ -76,7 +76,8 @@ from . import academy_training_program_line
 # ---------------------------------------------------------------------------
 from . import academy_training_action
 from . import academy_training_action_line
-from . import academy_training_action_group
+
+# from . import academy_training_action_group
 from . import academy_training_action_enrolment
 
 # ---------------------------------------------------------------------------

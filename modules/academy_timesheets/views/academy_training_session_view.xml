@@ -100,10 +100,6 @@
                             options="{'no_quick_create': True, 'no_create': True}"
                             readonly="context.get('default_training_action_id', 0)"
                             required="kind == 'teach'" invisible="kind != 'teach'" />
-                          <field name="training_group_id" class="oe_field_training_group_id"
-                            options="{'no_quick_create': True, 'no_create': True}"
-                            readonly="context.get('default_training_group_id', 0)"
-                            required="groupwise_schedule" invisible="not groupwise_schedule" />
                           <field name="action_line_id" class="oe_field_action_line_id"
                             options="{'no_quick_create': True, 'no_create': True}" string="Unit"
                             domain="[('training_program_id', '=', training_program_id)]"

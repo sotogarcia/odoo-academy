@@ -127,8 +127,8 @@
                 <notebook class="mt-3">
                   <page string="Groups" class="oe_page_groups" accesskey="G">
                     <group col="2">
-                      <field name="training_group_ids" class="oe_field_training_group_ids" nolabel="1" colspan="2"
-                        context="{'default_training_action_id': id}" />
+                      <field name="child_ids" class="oe_field_child_ids" nolabel="1" colspan="2"
+                        context="{'default_parent_id': id}" />
                     </group>
                   </page>
                   <page string="Units" class="oe_page_lines" accesskey="L">
