@@ -30,8 +30,11 @@ from psycopg2 import Error as PsqlError
 from enum import IntFlag, auto
 from datetime import datetime, date, time, timedelta
 
-CODE_SEQUENCE = "academy.training.action.sequence"
+TA_CODE_SEQUENCE = "academy.training.action.sequence"
+TAG_CODE_SEQUENCE = "academy.training.action.group.sequence"
 _INFINITY = fields.Datetime.to_datetime("9999-12-31 23:59:59")
+_PARENT_EXCLUDE = {"parent_id", "name"}
+
 
 _logger = getLogger(__name__)
 
@@ -76,7 +79,7 @@ class AcademyTrainingAction(models.Model):
         required=True,
         readonly=True,
         index=True,
-        default=lambda self: self.env.company,
+        default=None,
         help="The company this record belongs to",
         comodel_name="res.company",
         domain=[],
@@ -136,7 +139,7 @@ class AcademyTrainingAction(models.Model):
         required=False,
         readonly=False,
         index=False,
-        default=0,
+        default=None,
         help=False,
         compute="_compute_training_group_count",
         store=True,
@@ -188,7 +191,7 @@ class AcademyTrainingAction(models.Model):
         required=True,
         readonly=False,
         index=False,
-        default=0,
+        default=10,
         help="Enrollment priority for new students",
     )
 
@@ -197,7 +200,7 @@ class AcademyTrainingAction(models.Model):
         required=True,
         readonly=False,
         index=False,
-        default=lambda self: default_code(self.env, CODE_SEQUENCE),
+        default=None,
         help="Enter new internal code",
         size=30,
         translate=False,
@@ -309,7 +312,7 @@ class AcademyTrainingAction(models.Model):
         required=True,
         readonly=False,
         index=False,
-        default=lambda self: self.default_start(),
+        default=None,
         help="Start date of an event, without time for full day events",
         copy=True,
     )
@@ -470,7 +473,7 @@ class AcademyTrainingAction(models.Model):
         domain=[],
         context={},
         auto_join=False,
-        copy=True,
+        copy=False,
     )
 
     action_line_count = fields.Integer(
@@ -478,7 +481,7 @@ class AcademyTrainingAction(models.Model):
         required=False,
         readonly=False,
         index=False,
-        default=0,
+        default=None,
         help=False,
         compute="_compute_action_line_count",
         store=True,
@@ -500,7 +503,7 @@ class AcademyTrainingAction(models.Model):
         required=True,
         readonly=False,
         index=False,
-        default=20,
+        default=None,
         help="Maximum number of signups allowed",
         copy=True,
     )
@@ -515,7 +518,7 @@ class AcademyTrainingAction(models.Model):
         required=True,
         readonly=False,
         index=False,
-        default=0,
+        default=None,
         help="Upper bound of seats that may be admitted (>= Seating).",
         copy=True,
     )
@@ -547,7 +550,7 @@ class AcademyTrainingAction(models.Model):
         required=False,
         readonly=True,
         index=False,
-        default=0,
+        default=None,
         help="Show number of enrolments",
         compute="_compute_enrolment_count",
         store=True,
@@ -581,7 +584,7 @@ class AcademyTrainingAction(models.Model):
         required=False,
         readonly=True,
         index=False,
-        default=0,
+        default=None,
         help="Show number of enrolments",
         compute="_compute_rollup_enrolment_count",
         store=True,
@@ -754,6 +757,91 @@ class AcademyTrainingAction(models.Model):
 
     # -------------------------- OVERLOADED METHODS ---------------------------
 
+    def _get_default_parent_training_action(self, values=None):
+        action_obj = self.env["academy.training.action"]
+
+        parent_id = (values or {}).get("parent_id")
+        if not parent_id:
+            parent_id = self.env.context.get("default_parent_id")
+
+        if parent_id:
+            return action_obj.with_context(active_test=False).browse(parent_id)
+
+        return action_obj.browse()
+
+    def first_available_group_name(self):
+        self.ensure_one()
+
+        parent = self.parent_id or self
+
+        action_name = parent.name or self.env._("New training action")
+        other_groups = parent.child_ids.filtered(lambda r: r != self)
+
+        if not other_groups:
+            return f"{action_name} ‒ A"
+
+        used_names = set(other_groups.mapped("name"))
+        for name in [f"{action_name} ‒ {chr(i)}" for i in range(65, 91)]:
+            if name not in used_names:
+                return name
+
+        return f"{action_name} ‒ {uuid4().hex[:6].upper()}"
+
+    def available_capacity(self):
+        self.ensure_one()
+
+        parent = self.parent_id or self
+
+        other_groups = parent.child_ids.filtered(lambda r: r != self)
+
+        seating = sum((v or 0) for v in other_groups.mapped("seating"))
+        excess = sum((v or 0) for v in other_groups.mapped("excess"))
+
+        return (parent.seating or 0) - seating, (parent.excess or 0) - excess
+
+    @api.model
+    def default_get(self, fields_list):
+        defaults = super().default_get(fields_list)
+
+        parent_action = self._get_default_parent_training_action(defaults)
+        parent_action = parent_action.exists()
+        if parent_action:
+            parent_action._patch_defaults_on_child(defaults, fields_list)
+        else:
+            self._patch_defaults_on_parent(defaults)
+
+        return defaults
+
+    @api.model
+    def _patch_defaults_on_parent(self, defaults):
+        defaults.setdefault("company_id", self.env.company)
+        defaults.setdefault("code", default_code(self.env, TA_CODE_SEQUENCE))
+        defaults.setdefault("date_start", self.default_start())
+        defaults.setdefault("seating", 20)
+        defaults.setdefault("excess", 20)
+
+    def _patch_defaults_on_child(self, defaults, fields_list):
+        self.ensure_one()
+
+        defaults.setdefault("code", default_code(self.env, TAG_CODE_SEQUENCE))
+
+        if "name" not in defaults:
+            group_name = self.first_available_group_name()
+            defaults["name"] = group_name
+
+        seating, excess = self.available_capacity()
+        if "seating" not in defaults:
+            defaults["seating"] = seating
+        if "excess" not in defaults or defaults.get("excess", 0) < seating:
+            defaults["excess"] = max(seating, excess)
+
+        parent_values = self.copy_data(default=None)[0]
+        for key, value in parent_values.items():
+            if key in _PARENT_EXCLUDE:
+                continue
+            if key in fields_list:
+                defaults.setdefault(key, value)
+
     def _auto_init(self):
         result = super()._auto_init()
 
@@ -848,17 +936,15 @@ class AcademyTrainingAction(models.Model):
         if not parent_data:
             return
 
-        EXCLUDE = {"parent_id", "name"}
-
-        for vals in value_list:
-            pid = vals.get("parent_id")
+        for values in value_list:
+            pid = values.get("parent_id")
             if not pid:
                 continue
             pvals = parent_data.get(pid, {})
             for key, val in pvals.items():
-                if key in EXCLUDE:
+                if key in _PARENT_EXCLUDE:
                     continue
-                vals.setdefault(key, val)
+                values.setdefault(key, val)
 
     def _parent_window(self, action):
         """Return (start, stop_or_infinity) for the given action."""
