@@ -33,7 +33,7 @@ from datetime import datetime, date, time, timedelta
 TA_CODE_SEQUENCE = "academy.training.action.sequence"
 TAG_CODE_SEQUENCE = "academy.training.action.group.sequence"
 _INFINITY = fields.Datetime.to_datetime("9999-12-31 23:59:59")
-_PARENT_EXCLUDE = {"parent_id", "name"}
+_PARENT_EXCLUDE = {"parent_id", "name", "child_ids"}
 
 
 _logger = getLogger(__name__)
@@ -131,7 +131,7 @@ class AcademyTrainingAction(models.Model):
         domain=[],
         context={},
         auto_join=False,
-        copy=False,
+        copy=True,
     )
 
     training_group_count = fields.Integer(
@@ -142,7 +142,7 @@ class AcademyTrainingAction(models.Model):
         default=None,
         help=False,
         compute="_compute_training_group_count",
-        store=True,
+        search="_search_training_group_count",
         copy=False,
     )
 
@@ -152,6 +152,23 @@ class AcademyTrainingAction(models.Model):
 
         for record in self:
             record.training_group_count = counts.get(record.id, 0)
+
+    @api.model
+    def _search_training_group_count(self, operator, value):
+        # Handle boolean-like searches Odoo may pass for required fields
+        if value is True:
+            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
+        if value is False:
+            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
+
+        cmp_func = OPERATOR_MAP.get(operator)
+        if not cmp_func:
+            return FALSE_DOMAIN  # unsupported operator
+
+        counts = one2many_count(self.search([]), "child_ids")
+        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
+
+        return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
     # -- Entity fields
     # -------------------------------------------------------------------------
@@ -317,16 +334,6 @@ class AcademyTrainingAction(models.Model):
         copy=True,
     )
 
-    def default_start(self):
-        today = fields.Date.context_today(self)
-        tz_name = self.env.user.tz or self.env.company.partner_id.tz or "UTC"
-
-        return local_midnight_as_utc(
-            value=today,
-            from_tz=tz_name,
-            remove_tz=True,
-        )
-
     date_stop = fields.Datetime(
         string="End date",
         required=False,
@@ -345,7 +352,7 @@ class AcademyTrainingAction(models.Model):
         default=None,
         help="00:00 the day after, or infinity for open enrolments.",
         compute="_compute_available_until",
-        store=True,
+        search="_search_available_until",
         copy=False,
     )
 
@@ -356,6 +363,50 @@ class AcademyTrainingAction(models.Model):
                 record.available_until = record.date_stop
             else:
                 record.available_until = _INFINITY
+
+    @api.model
+    def _search_available_until(self, op, val):
+        """
+        Map filters on the computed 'available_until' to the real 'date_stop'.
+
+        Semantics:
+          - available_until is 'date_stop' if set; otherwise it's INFINITY.
+          - So:
+            >= X or > X -> date_stop >= X (or open)  -> date_stop False OR >= X
+            <= X or < X -> date_stop <= X (not open) -> date_stop set AND <= X
+            =  X        -> if X == INFINITY -> open; else exact date_stop == X
+            != X        -> complement of '=':
+                            if X == INFINITY -> date_stop is set (not open)
+                            else open OR date_stop != X
+        """
+        # Normalize incoming value to a datetime when applicable
+        dt = val
+        if isinstance(dt, str):
+            try:
+                dt = fields.Datetime.to_datetime(dt)
+            except Exception:
+                dt = val  # leave as-is for non-datetime ops
+
+        if op in (">=", ">"):
+            return ["|", ("date_stop", "=", False), ("date_stop", op, dt)]
+
+        if op in ("<=", "<"):
+            return ["&", ("date_stop", "!=", False), ("date_stop", op, dt)]
+
+        if op == "=":
+            if dt == _INFINITY:
+                return [("date_stop", "=", False)]
+            return ["&", ("date_stop", "!=", False), ("date_stop", "=", dt)]
+
+        if op == "!=":
+            if dt == _INFINITY:
+                return [("date_stop", "!=", False)]
+            return ["|", ("date_stop", "=", False), ("date_stop", "!=", dt)]
+
+        if op in ("=", "!=") and val in (False, None):
+            return FALSE_DOMAIN if op == "=" else TRUE_DOMAIN
+
+        return TRUE_DOMAIN
 
     lifespan = fields.Char(
         string="Lifespan",
@@ -484,7 +535,7 @@ class AcademyTrainingAction(models.Model):
         default=None,
         help=False,
         compute="_compute_action_line_count",
-        store=True,
+        search="_search_action_line_count",
         copy=False,
     )
 
@@ -494,6 +545,23 @@ class AcademyTrainingAction(models.Model):
 
         for record in self:
             record.action_line_count = counts.get(record.id, 0)
+
+    @api.model
+    def _search_action_line_count(self, operator, value):
+        # Handle boolean-like searches Odoo may pass for required fields
+        if value is True:
+            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
+        if value is False:
+            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
+
+        cmp_func = OPERATOR_MAP.get(operator)
+        if not cmp_func:
+            return FALSE_DOMAIN  # unsupported operator
+
+        counts = one2many_count(self.search([]), "action_line_ids")
+        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
+
+        return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
     # -- Capacity: fields and logic
     # -------------------------------------------------------------------------
@@ -553,7 +621,7 @@ class AcademyTrainingAction(models.Model):
         default=None,
         help="Show number of enrolments",
         compute="_compute_enrolment_count",
-        store=True,
+        search="_search_enrolment_count",
         copy=False,
     )
 
@@ -563,6 +631,23 @@ class AcademyTrainingAction(models.Model):
 
         for record in self:
             record.enrolment_count = counts.get(record.id, 0)
+
+    @api.model
+    def _search_enrolment_count(self, operator, value):
+        # Handle boolean-like searches Odoo may pass for required fields
+        if value is True:
+            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
+        if value is False:
+            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
+
+        cmp_func = OPERATOR_MAP.get(operator)
+        if not cmp_func:
+            return FALSE_DOMAIN  # unsupported operator
+
+        counts = one2many_count(self.search([]), "enrolment_ids")
+        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
+
+        return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
     rollup_enrolment_ids = fields.One2many(
         string="Enrolments (rollup)",
@@ -587,7 +672,7 @@ class AcademyTrainingAction(models.Model):
         default=None,
         help="Show number of enrolments",
         compute="_compute_rollup_enrolment_count",
-        store=True,
+        search="_search_rollup_enrolment_count",
         copy=False,
     )
 
@@ -597,6 +682,23 @@ class AcademyTrainingAction(models.Model):
 
         for record in self:
             record.rollup_enrolment_count = counts.get(record.id, 0)
+
+    @api.model
+    def _search_rollup_enrolment_count(self, operator, value):
+        # Handle boolean-like searches Odoo may pass for required fields
+        if value is True:
+            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
+        if value is False:
+            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
+
+        cmp_func = OPERATOR_MAP.get(operator)
+        if not cmp_func:
+            return FALSE_DOMAIN  # unsupported operator
+
+        counts = one2many_count(self.search([]), "rollup_enrolment_ids")
+        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
+
+        return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
     # ------------------------------ CONSTRAINS -------------------------------
 
@@ -755,7 +857,77 @@ class AcademyTrainingAction(models.Model):
                     )
                 )
 
-    # -------------------------- OVERLOADED METHODS ---------------------------
+    # -- Defaults
+    # -------------------------------------------------------------------------
+
+    @api.onchange("parent_id")
+    def _onchange_group_defaults(self):
+        """Suggest name and capacity when adding a group inline.
+        Runs on 'new' records and sees in-memory siblings."""
+        for record in self:
+            if not record.parent_id:
+                continue
+
+            if not self.env.context.get("default_name"):
+                record.name = record.first_available_group_name()
+
+            seating, excess = record.available_capacity()
+            if not self.env.context.get("default_seating"):
+                record.seating = max(0, seating)
+            if not self.env.context.get("default_excess"):
+                record.excess = max(record.seating, excess)
+
+            exclude = list(_PARENT_EXCLUDE)
+            exclude.extend(["name", "seating", "excess"])
+            parent_values = record.parent_id.copy_data(default=None)[0]
+            for key, value in parent_values.items():
+                if key in exclude:
+                    continue
+                setattr(record, key, value)
+
+    @api.model
+    def default_get(self, fields_list):
+        defaults = super().default_get(fields_list)
+
+        parent_action = self._get_default_parent_training_action(defaults)
+        parent_action = parent_action.exists()
+        if parent_action:
+            parent_action._patch_defaults_on_child(defaults, fields_list)
+        else:
+            self._patch_defaults_on_parent(defaults)
+
+        return defaults
+
+    @api.model
+    def _patch_defaults_on_parent(self, defaults):
+        defaults.setdefault("company_id", self.env.company.id)
+        defaults.setdefault("code", default_code(self.env, TA_CODE_SEQUENCE))
+        defaults.setdefault("date_start", self.default_start())
+        defaults.setdefault("seating", 20)
+        defaults.setdefault("excess", 20)
+
+    def _patch_defaults_on_child(self, defaults, fields_list):
+        self.ensure_one()
+
+        defaults.setdefault("code", default_code(self.env, TAG_CODE_SEQUENCE))
+
+        if "name" not in defaults:
+            group_name = self.first_available_group_name()
+            defaults["name"] = group_name
+
+        seating, excess = self.available_capacity()
+        if "seating" not in defaults:
+            defaults["seating"] = seating
+        if "excess" not in defaults or defaults.get("excess", 0) < seating:
+            defaults["excess"] = max(seating, excess)
+
+        parent_values = self.copy_data(default=None)[0]
+        fields_list = fields_list or parent_values.keys()
+        for key, value in parent_values.items():
+            if key in _PARENT_EXCLUDE:
+                continue
+            if key in fields_list:
+                defaults.setdefault(key, value)
 
     def _get_default_parent_training_action(self, values=None):
         action_obj = self.env["academy.training.action"]
@@ -799,48 +971,18 @@ class AcademyTrainingAction(models.Model):
 
         return (parent.seating or 0) - seating, (parent.excess or 0) - excess
 
-    @api.model
-    def default_get(self, fields_list):
-        defaults = super().default_get(fields_list)
+    def default_start(self):
+        today = fields.Date.context_today(self)
+        tz_name = self.env.user.tz or self.env.company.partner_id.tz or "UTC"
 
-        parent_action = self._get_default_parent_training_action(defaults)
-        parent_action = parent_action.exists()
-        if parent_action:
-            parent_action._patch_defaults_on_child(defaults, fields_list)
-        else:
-            self._patch_defaults_on_parent(defaults)
+        return local_midnight_as_utc(
+            value=today,
+            from_tz=tz_name,
+            remove_tz=True,
+        )
 
-        return defaults
-
-    @api.model
-    def _patch_defaults_on_parent(self, defaults):
-        defaults.setdefault("company_id", self.env.company)
-        defaults.setdefault("code", default_code(self.env, TA_CODE_SEQUENCE))
-        defaults.setdefault("date_start", self.default_start())
-        defaults.setdefault("seating", 20)
-        defaults.setdefault("excess", 20)
-
-    def _patch_defaults_on_child(self, defaults, fields_list):
-        self.ensure_one()
-
-        defaults.setdefault("code", default_code(self.env, TAG_CODE_SEQUENCE))
-
-        if "name" not in defaults:
-            group_name = self.first_available_group_name()
-            defaults["name"] = group_name
-
-        seating, excess = self.available_capacity()
-        if "seating" not in defaults:
-            defaults["seating"] = seating
-        if "excess" not in defaults or defaults.get("excess", 0) < seating:
-            defaults["excess"] = max(seating, excess)
-
-        parent_values = self.copy_data(default=None)[0]
-        for key, value in parent_values.items():
-            if key in _PARENT_EXCLUDE:
-                continue
-            if key in fields_list:
-                defaults.setdefault(key, value)
+    # -- overloaded methods
+    # -------------------------------------------------------------------------
 
     def _auto_init(self):
         result = super()._auto_init()
