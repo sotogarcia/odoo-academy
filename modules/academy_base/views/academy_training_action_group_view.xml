@@ -26,6 +26,12 @@
       <xpath expr="//list" position="attributes">
         <attribute name="string">academy_training_action_group_tree</attribute>
       </xpath>
+      <xpath expr="//field[@name='training_program_id']" position="before">
+        <field name="parent_id" class="oe_field_parent_id" optional="show" />
+      </xpath>
+      <xpath expr="//field[@name='training_program_id']" position="attributes">
+          <attribute name="optional">hide</attribute>
+      </xpath>
     </field>
   </record>
 
@@ -42,6 +48,10 @@
       <xpath expr="//form" position="attributes">
         <attribute name="string">academy_training_action_group_form</attribute>
       </xpath>
+      <xpath expr="//field[@name='training_program_id']" position="attributes">
+          <attribute name="invisible">1</attribute>
+      </xpath>
+      <xpath expr="//page[@name='groups']" position="replace" />
     </field>
   </record>
 
@@ -105,5 +115,30 @@
       <field name="action" ref="action_training_action_group_act_window" />
       <field name="parent_id" ref="academy_base.menu_academy_monitoring" />
   </record> -->
+
+  <record id="view_academy_training_action_group_editable_tree" model="ir.ui.view">
+    <field name="name">view.academy.training.action.editable.tree</field>
+    <field name="model">academy.training.action</field>
+    <field name="type">list</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="99" />
+    <field name="active" eval="True" />
+    <field name="inherit_id" />
+    <field name="arch" type="xml">
+      <list string="academy_training_action_group_editable_tree" create="1" delete="1" edit="1">
+        <field name="parent_id" class="oe_field_parent_id" column_invisible="1" force_save="1" />
+        <field name="training_program_id" class="oe_field_training_program_id" column_invisible="1" force_save="1" />
+        <field name="training_modality_id" class="oe_field_training_modality_id" column_invisible="1" force_save="1" />
+        <field name="sequence" widget="handle" />
+        <field name="code" class="oe_field_code" />
+        <field name="name" class="oe_field_name" />
+        <field name="date_start" class="oe_field_date_start" />
+        <field name="date_stop" class="oe_field_date_stop" />
+        <field name="seating" class="oe_field_seating" />
+        <field name="excess" class="oe_field_excess" />
+        <field name="training_modality_id" class="oe_field_training_modality_id" />
+      </list>
+    </field>
+  </record>
 
 </odoo>

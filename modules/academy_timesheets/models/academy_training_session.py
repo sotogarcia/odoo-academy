@@ -723,14 +723,14 @@ class AcademyTrainingSession(models.Model):
             -- Requires btree_gist""",
             "This event overlaps with another of the same training action",
         ),
-        (
-            "no_mixed_action_group_null",
-            "EXCLUDE USING gist ("
-            "  training_action_id WITH =, "
-            "  (training_group_id IS NULL) WITH <>"
-            ") DEFERRABLE INITIALLY IMMEDIATE",
-            "Mixed sessions with and without group not allowed.",
-        ),
+        # (
+        #     "no_mixed_action_group_null",
+        #     "EXCLUDE USING gist ("
+        #     "  training_action_id WITH =, "
+        #     "  (training_group_id IS NULL) WITH <>"
+        #     ") DEFERRABLE INITIALLY IMMEDIATE",
+        #     "Mixed sessions with and without group not allowed.",
+        # ),
         (
             "positive_interval",
             "CHECK(date_start < date_stop)",

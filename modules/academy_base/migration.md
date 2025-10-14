@@ -140,18 +140,20 @@ attrs=["']\{["'](readonly|invisible|required)["']: *(\[[^\]]+\])\}["']
 - [ ] Cómo llevar cuenta de si se imprimió el material
 - [ ] ¿Qué ocurre si, por fuera de student, se elige company?
 - [ ] No mostrar información de parent_id en student
-- [ ] Botón actividades en kanban y form
+- [x] Botón actividades en kanban y form
 - [ ] barcode
 - [ ] Corregir `activity`, cambiándolo por `program`
 - [ ] No se puede sustituir el programa de una acción formativa creada
 - [ ] No se puede sustituir la acción formativa en un grupo ya creado
 - [ ] Quitar instalaciones de training action y poner facility.reservation
 
+0 [ ] 
 1 [ ] Buscar todos los wizard para revisar
 2 [ ] Revisar el modelo y vista de enrolment
 3 [ ] Revisar el modelo y vista de training session
 4 [ ] Revisar las vistas embebidas
 5 [ ] Nombres en los act_window retornados desde python
+6 [ ] Comprobar que se puede realizar un copy
 
 
 - [ ] El campo hours del módulo debe desaparecer
@@ -159,7 +161,7 @@ attrs=["']\{["'](readonly|invisible|required)["']: *(\[[^\]]+\])\}["']
       Â· Si tiene unidades se calcularÃ¡ al guardar
 - [ ] Los campos training_module_id y training_unit_ids pasan a ser parent_id y child_ids
 - [ ] Description como HTML
-- [ ] Internat notes a todo
+- [ ] InternaL notes a todo
 - [ ] Retirar los contraint de token
 
 

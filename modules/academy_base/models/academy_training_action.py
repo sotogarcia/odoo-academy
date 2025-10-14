@@ -52,10 +52,6 @@ class AcademyTrainingAction(models.Model):
     training program
     """
 
-    MSG_ATA01 = _lt(
-        "There are enrolments that are outside the range of " "training action"
-    )
-
     _name = "academy.training.action"
     _description = "Academy training action"
 
@@ -70,8 +66,10 @@ class AcademyTrainingAction(models.Model):
     order = "name, date_start"
     _rec_names_search = ["name", "code", "training_program_id"]
 
+    # -- Company dependency: Fields and logic
+    # -------------------------------------------------------------------------
+
     _check_company_auto = True
-    _parent_store = True
 
     company_id = fields.Many2one(
         string="Company",
@@ -86,6 +84,74 @@ class AcademyTrainingAction(models.Model):
         ondelete="cascade",
         auto_join=False,
     )
+
+    # -- Hierarchy: Fields and logic
+    # -------------------------------------------------------------------------
+
+    _parent_store = True
+
+    parent_id = fields.Many2one(
+        string="Training action",
+        required=False,
+        readonly=False,
+        index=True,
+        default=None,
+        help="Parent training action used to group this record.",
+        comodel_name="academy.training.action",
+        domain=[],
+        context={},
+        ondelete="cascade",
+        auto_join=False,
+        copy=True,
+    )
+
+    parent_path = fields.Char(
+        string="Parent path",
+        required=False,
+        readonly=True,
+        index=True,
+        default=None,
+        help="Path used for efficient ancestors/descendants queries.",
+        translate=False,
+        copy=False,
+    )
+
+    child_ids = fields.One2many(
+        string="Training groups",
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help="Children training actions belonging to this record.",
+        comodel_name="academy.training.action",
+        inverse_name="parent_id",
+        domain=[],
+        context={},
+        auto_join=False,
+        copy=False,
+    )
+
+    training_group_count = fields.Integer(
+        string="Training group count",
+        required=False,
+        readonly=False,
+        index=False,
+        default=0,
+        help=False,
+        compute="_compute_training_group_count",
+        store=True,
+        copy=False,
+    )
+
+    @api.depends("child_ids")
+    def _compute_training_group_count(self):
+        counts = one2many_count(self, "child_ids")
+
+        for record in self:
+            record.training_group_count = counts.get(record.id, 0)
+
+    # -- Entity fields
+    # -------------------------------------------------------------------------
 
     name = fields.Char(
         string="Action name",
@@ -117,6 +183,15 @@ class AcademyTrainingAction(models.Model):
         help="Disable to archive without deleting.",
     )
 
+    sequence = fields.Integer(
+        string="Sequence",
+        required=True,
+        readonly=False,
+        index=False,
+        default=0,
+        help="Enrollment priority for new students",
+    )
+
     code = fields.Char(
         string="Internal code",
         required=True,
@@ -126,6 +201,7 @@ class AcademyTrainingAction(models.Model):
         help="Enter new internal code",
         size=30,
         translate=False,
+        copy=False,
     )
 
     comment = fields.Html(
@@ -142,7 +218,91 @@ class AcademyTrainingAction(models.Model):
         sanitize_attributes=False,
         strip_style=True,
         translate=False,
+        copy=False,
     )
+
+    application_scope_id = fields.Many2one(
+        string="Application scope",
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help=False,
+        comodel_name="academy.application.scope",
+        domain=[],
+        context={},
+        ondelete="cascade",
+        auto_join=False,
+        copy=True,
+    )
+
+    professional_category_id = fields.Many2one(
+        string="Professional category",
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help="Choose related professional category",
+        comodel_name="academy.professional.category",
+        domain=[],
+        context={},
+        ondelete="cascade",
+        auto_join=False,
+        copy=True,
+    )
+
+    knowledge_area_ids = fields.Many2many(
+        string="Knowledge areas",
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help="Choose related knowledge areas",
+        comodel_name="academy.knowledge.area",
+        relation="academy_training_action_knowledge_area_rel",
+        column1="training_action_id",
+        column2="knowledge_area_id",
+        domain=[],
+        context={},
+        copy=True,
+    )
+
+    training_modality_id = fields.Many2one(
+        string="Training modality",
+        required=True,
+        readonly=False,
+        index=True,
+        default=None,
+        help=(
+            "Defines how the training action is delivered, "
+            "such as face-to-face, online or blended."
+        ),
+        comodel_name="academy.training.modality",
+        domain=[],
+        context={},
+        ondelete="cascade",
+        auto_join=False,
+        copy=True,
+    )
+
+    training_methodology_ids = fields.Many2many(
+        string="Training methodology",
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help="Choose training methodologies",
+        comodel_name="academy.training.methodology",
+        relation="academy_training_action_training_methodology_rel",
+        column1="training_action_id",
+        column2="training_methodology_id",
+        domain=[],
+        context={},
+        copy=True,
+    )
+
+    # -- Time interval fields and logic
+    # -------------------------------------------------------------------------
 
     date_start = fields.Datetime(
         string="Start date",
@@ -151,6 +311,7 @@ class AcademyTrainingAction(models.Model):
         index=False,
         default=lambda self: self.default_start(),
         help="Start date of an event, without time for full day events",
+        copy=True,
     )
 
     def default_start(self):
@@ -170,6 +331,7 @@ class AcademyTrainingAction(models.Model):
         index=False,
         default=None,
         help="Stop date of an event, without time for full day events",
+        copy=True,
     )
 
     available_until = fields.Datetime(
@@ -181,186 +343,44 @@ class AcademyTrainingAction(models.Model):
         help="00:00 the day after, or infinity for open enrolments.",
         compute="_compute_available_until",
         store=True,
+        copy=False,
     )
 
     @api.depends("date_stop")
     def _compute_available_until(self):
-        infinity = datetime.max
-
         for record in self:
             if record.date_stop:
                 record.available_until = record.date_stop
             else:
-                record.available_until = infinity
+                record.available_until = _INFINITY
 
-    parent_id = fields.Many2one(
-        string="Training action",
-        required=False,
-        readonly=False,
-        index=True,
-        default=None,
-        help="Parent training action used to group this record.",
-        comodel_name="academy.training.action",
-        domain=[],
-        context={},
-        ondelete="cascade",
-        auto_join=False,
-    )
-
-    child_ids = fields.One2many(
-        string="Training groups",
-        required=False,
-        readonly=False,
-        index=False,
-        default=None,
-        help="Children training actions belonging to this record.",
-        comodel_name="academy.training.action",
-        inverse_name="parent_id",
-        domain=[],
-        context={},
-        auto_join=False,
-        copy=False,
-    )
-
-    # -- Computed field: training_group_count ---------------------------------
-
-    training_group_count = fields.Integer(
-        string="Training group count",
-        required=False,
-        readonly=False,
-        index=False,
-        default=0,
-        help=False,
-        compute="_compute_training_group_count",
-        search="_search_training_group_count",
-        store=True,
-        copy=False,
-    )
-
-    @api.depends("child_ids")
-    def _compute_training_group_count(self):
-        counts = one2many_count(self, "child_ids")
-
-        for record in self:
-            record.training_group_count = counts.get(record.id, 0)
-
-    @api.model
-    def _search_training_group_count(self, operator, value):
-        # Handle boolean-like searches Odoo may pass for required fields
-        if value is True:
-            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
-        if value is False:
-            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
-
-        cmp_func = OPERATOR_MAP.get(operator)
-        if not cmp_func:
-            return FALSE_DOMAIN  # unsupported operator
-
-        counts = one2many_count(self.search([]), "child_ids")
-        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
-
-        return [("id", "in", matched)] if matched else FALSE_DOMAIN
-
-    parent_path = fields.Char(
-        string="Parent path",
+    lifespan = fields.Char(
+        string="Lifespan",
         required=False,
         readonly=True,
-        index=True,
+        index=False,
         default=None,
-        help="Path used for efficient ancestors/descendants queries.",
+        help="Start and end dates as a formatted range",
+        size=50,
         translate=False,
+        compute="_compute_lifespan",
     )
 
-    application_scope_id = fields.Many2one(
-        string="Application scope",
-        required=False,
-        readonly=False,
-        index=False,
-        default=None,
-        help=False,
-        comodel_name="academy.application.scope",
-        domain=[],
-        context={},
-        ondelete="cascade",
-        auto_join=False,
-    )
+    @api.depends("date_start", "date_stop")
+    @api.depends_context("uid")
+    def _compute_lifespan(self):
+        for record in self:
+            if record.date_start and record.date_stop:
+                register_str = format_date(self.env, record.date_start)
+                deregister_str = format_date(self.env, record.date_stop)
+                record.lifespan = f"{register_str} ‒ {deregister_str}"
+            elif record.date_start:
+                record.lifespan = format_date(self.env, record.date_start)
+            else:
+                record.lifespan = ""
 
-    professional_category_id = fields.Many2one(
-        string="Professional category",
-        required=False,
-        readonly=False,
-        index=False,
-        default=None,
-        help="Choose related professional category",
-        comodel_name="academy.professional.category",
-        domain=[],
-        context={},
-        ondelete="cascade",
-        auto_join=False,
-    )
-
-    training_action_category_id = fields.Many2one(
-        string="Training action category",
-        required=False,
-        readonly=False,
-        index=False,
-        default=None,
-        help="Choose related training action",
-        comodel_name="academy.training.action",
-        domain=[],
-        context={},
-        ondelete="cascade",
-        auto_join=False,
-    )
-
-    knowledge_area_ids = fields.Many2many(
-        string="Knowledge areas",
-        required=False,
-        readonly=False,
-        index=False,
-        default=None,
-        help="Choose related knowledge areas",
-        comodel_name="academy.knowledge.area",
-        relation="academy_training_action_knowledge_area_rel",
-        column1="training_action_id",
-        column2="knowledge_area_id",
-        domain=[],
-        context={},
-    )
-
-    training_modality_id = fields.Many2one(
-        string="Training modality",
-        required=True,
-        readonly=False,
-        index=True,
-        default=None,
-        help=(
-            "Defines how the training action is delivered, "
-            "such as face-to-face, online or blended."
-        ),
-        comodel_name="academy.training.modality",
-        domain=[],
-        context={},
-        ondelete="cascade",
-        auto_join=False,
-    )
-
-    training_methodology_ids = fields.Many2many(
-        string="Training methodology",
-        required=False,
-        readonly=False,
-        index=False,
-        default=None,
-        help="Choose training methodologies",
-        comodel_name="academy.training.methodology",
-        relation="academy_training_action_training_methodology_rel",
-        column1="training_action_id",
-        column2="training_methodology_id",
-        domain=[],
-        context={},
-    )
-
-    # -- Training program and its attributes ----------------------------------
+    # -- Training program and its attributes
+    # -------------------------------------------------------------------------
 
     training_program_id = fields.Many2one(
         string="Training program",
@@ -374,6 +394,7 @@ class AcademyTrainingAction(models.Model):
         context={},
         ondelete="cascade",
         auto_join=False,
+        copy=True,
     )
 
     program_name = fields.Char(
@@ -431,6 +452,9 @@ class AcademyTrainingAction(models.Model):
         related="training_program_id.professional_sector_ids",
     )
 
+    # -- Training program snapshop: fields and logic
+    # -------------------------------------------------------------------------
+
     action_line_ids = fields.One2many(
         string="Action lines",
         required=True,
@@ -446,6 +470,7 @@ class AcademyTrainingAction(models.Model):
         domain=[],
         context={},
         auto_join=False,
+        copy=True,
     )
 
     action_line_count = fields.Integer(
@@ -456,7 +481,8 @@ class AcademyTrainingAction(models.Model):
         default=0,
         help=False,
         compute="_compute_action_line_count",
-        search="_search_training_action_count",
+        store=True,
+        copy=False,
     )
 
     @api.depends("action_line_ids")
@@ -466,22 +492,8 @@ class AcademyTrainingAction(models.Model):
         for record in self:
             record.action_line_count = counts.get(record.id, 0)
 
-    @api.model
-    def _search_training_action_count(self, operator, value):
-        # Handle boolean-like searches Odoo may pass for required fields
-        if value is True:
-            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
-        if value is False:
-            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
-
-        cmp_func = OPERATOR_MAP.get(operator)
-        if not cmp_func:
-            return FALSE_DOMAIN  # unsupported operator
-
-        counts = one2many_count(self.search([]), "action_line_ids")
-        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
-
-        return [("id", "in", matched)] if matched else FALSE_DOMAIN
+    # -- Capacity: fields and logic
+    # -------------------------------------------------------------------------
 
     seating = fields.Integer(
         string="Seating",
@@ -490,7 +502,13 @@ class AcademyTrainingAction(models.Model):
         index=False,
         default=20,
         help="Maximum number of signups allowed",
+        copy=True,
     )
+
+    @api.onchange("seating")
+    def _onchange_seating(self):
+        for record in self:
+            record.excess = max(record.seating or 0, record.excess or 0)
 
     excess = fields.Integer(
         string="Excess",
@@ -498,15 +516,16 @@ class AcademyTrainingAction(models.Model):
         readonly=False,
         index=False,
         default=0,
-        help=(
-            "Maximum number of students who can be invited to use this "
-            "feature at the same time"
-        ),
+        help="Upper bound of seats that may be admitted (>= Seating).",
+        copy=True,
     )
 
-    @api.onchange("seating")
-    def _onchange_seating(self):
-        self.excess = max(self.seating, self.excess)
+    @api.onchange("excess")
+    def _onchange_excess(self):
+        for record in self:
+            record.seating = min(record.seating or 0, record.excess or 0)
+
+    # -------------------------------------------------------------------------
 
     enrolment_ids = fields.One2many(
         string="Enrolments",
@@ -523,8 +542,6 @@ class AcademyTrainingAction(models.Model):
         copy=False,
     )
 
-    # -- Computed field: enrolment_count --------------------------------------
-
     enrolment_count = fields.Integer(
         string="Enrolment count",
         required=False,
@@ -533,7 +550,6 @@ class AcademyTrainingAction(models.Model):
         default=0,
         help="Show number of enrolments",
         compute="_compute_enrolment_count",
-        search="_search_enrolment_count",
         store=True,
         copy=False,
     )
@@ -544,22 +560,6 @@ class AcademyTrainingAction(models.Model):
 
         for record in self:
             record.enrolment_count = counts.get(record.id, 0)
-
-    def _search_enrolment_count(self, operator, value):
-        # Handle boolean-like searches Odoo may pass for required fields
-        if value is True:
-            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
-        if value is False:
-            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
-
-        cmp_func = OPERATOR_MAP.get(operator)
-        if not cmp_func:
-            return FALSE_DOMAIN  # unsupported operator
-
-        counts = one2many_count(self.search([]), "enrolment_ids")
-        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
-
-        return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
     rollup_enrolment_ids = fields.One2many(
         string="Enrolments (rollup)",
@@ -576,8 +576,6 @@ class AcademyTrainingAction(models.Model):
         copy=False,
     )
 
-    # -- Computed field: enrolment_count --------------------------------------
-
     rollup_enrolment_count = fields.Integer(
         string="Enrolment (rollup) count",
         required=False,
@@ -586,7 +584,6 @@ class AcademyTrainingAction(models.Model):
         default=0,
         help="Show number of enrolments",
         compute="_compute_rollup_enrolment_count",
-        search="_search_rollup_enrolment_count",
         store=True,
         copy=False,
     )
@@ -597,49 +594,6 @@ class AcademyTrainingAction(models.Model):
 
         for record in self:
             record.rollup_enrolment_count = counts.get(record.id, 0)
-
-    def _search_rollup_enrolment_count(self, operator, value):
-        # Handle boolean-like searches Odoo may pass for required fields
-        if value is True:
-            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
-        if value is False:
-            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
-
-        cmp_func = OPERATOR_MAP.get(operator)
-        if not cmp_func:
-            return FALSE_DOMAIN  # unsupported operator
-
-        counts = one2many_count(self.search([]), "rollup_enrolment_ids")
-        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
-
-        return [("id", "in", matched)] if matched else FALSE_DOMAIN
-
-    # -- Computed field: lifespan ---------------------------------------------
-
-    lifespan = fields.Char(
-        string="Lifespan",
-        required=False,
-        readonly=True,
-        index=False,
-        default=None,
-        help="Start and end dates as a formatted range",
-        size=50,
-        translate=False,
-        compute="_compute_lifespan",
-    )
-
-    @api.depends("date_start", "date_stop")
-    @api.depends_context("uid")
-    def _compute_lifespan(self):
-        for record in self:
-            if record.date_start and record.date_stop:
-                register_str = format_date(self.env, record.date_start)
-                deregister_str = format_date(self.env, record.date_stop)
-                record.lifespan = f"{register_str} ‒ {deregister_str}"
-            elif record.date_start:
-                record.lifespan = format_date(self.env, record.date_start)
-            else:
-                record.lifespan = ""
 
     # ------------------------------ CONSTRAINS -------------------------------
 
@@ -696,6 +650,8 @@ class AcademyTrainingAction(models.Model):
                     raise ValidationError(
                         self.env._("Group starts before action start.")
                     )
+
+                print(g_stop, stop)
                 if g_stop > stop:
                     raise ValidationError(
                         self.env._("Group ends after action stop.")
@@ -802,11 +758,6 @@ class AcademyTrainingAction(models.Model):
         result = super()._auto_init()
 
         table = self._table
-        lang = (
-            self.env.company.partner_id.lang or self.env.user.lang or "en_US"
-        )
-        localized_name = f"LOWER(name->>'{lang}')"
-
         code_fields = ["company_id", "LOWER(code)", "COALESCE(parent_id, 0)"]
         create_index(
             env=self.env,
@@ -814,16 +765,6 @@ class AcademyTrainingAction(models.Model):
             fields=code_fields,
             unique=True,
             name=f"{table}_code_uniq",
-            method="btree",
-        )
-
-        name_fields = ["company_id", localized_name, "COALESCE(parent_id, 0)"]
-        create_index(
-            env=self.env,
-            table_name=table,
-            fields=name_fields,
-            unique=True,
-            name=f"{table}_name_uniq",
             method="btree",
         )
 
@@ -854,29 +795,76 @@ class AcademyTrainingAction(models.Model):
 
     @api.model_create_multi
     def create(self, value_list):
-        """Overridden method 'create'"""
+        """Create records: inherit from parent, sanitize code, sync, enrols."""
+
+        self._fill_from_parent(value_list)
+
         sanitize_code(value_list, "upper")
 
-        parent = super(AcademyTrainingAction, self)
-        result = parent.create(value_list)
+        records = super().create(value_list)
 
-        to_sync = result.filtered(lambda r: not r.action_line_ids)
-        to_sync.synchronize_from_program(mode=SyncMode.ALL, add_optional=True)
+        to_sync = records.filtered(lambda r: not r.action_line_ids)
+        if to_sync:
+            to_sync.synchronize_from_program(
+                mode=SyncMode.ALL, add_optional=True
+            )
 
-        result.update_enrolments()
+        records.update_enrolments()
 
-        return result
+        return records
 
     def write(self, values):
         """Overridden method 'write'"""
         sanitize_code(values, "upper")
 
-        parent = super(AcademyTrainingAction, self)
-        result = parent.write(values)
+        result = super().write(values)
 
         self.update_enrolments()
 
         return result
+
+    def _batch_read_parent_data(self, value_list):
+        """Return {parent_id: copy_data(parent)} for all parents in vals."""
+        parent_ids = {
+            vals.get("parent_id")
+            for vals in value_list
+            if vals.get("parent_id")
+        }
+
+        if not parent_ids:
+            return {}
+
+        parents = self.with_context(active_test=False).browse(list(parent_ids))
+        copied = parents.copy_data(default=None)
+
+        return {rec.id: data for rec, data in zip(parents, copied)}
+
+    def _fill_from_parent(self, value_list):
+        """Inherit parent's values (incl. O2M/M2M with copy=True)."""
+        if not value_list:
+            return
+
+        parent_data = self._batch_read_parent_data(value_list)
+        if not parent_data:
+            return
+
+        EXCLUDE = {"parent_id", "name"}
+
+        for vals in value_list:
+            pid = vals.get("parent_id")
+            if not pid:
+                continue
+            pvals = parent_data.get(pid, {})
+            for key, val in pvals.items():
+                if key in EXCLUDE:
+                    continue
+                vals.setdefault(key, val)
+
+    def _parent_window(self, action):
+        """Return (start, stop_or_infinity) for the given action."""
+        start = action.date_start
+        stop = action.date_stop or _INFINITY
+        return start, stop
 
     # --------------------------- PUBLIC METHODS ------------------------------
 
@@ -933,27 +921,22 @@ class AcademyTrainingAction(models.Model):
         return serialized
 
     def update_enrolments(self, force=False):
-        dtformat = "%Y-%m-%d %H:%M:%S.%f"
-
         for record in self:
             enrol_set = record.enrolment_ids
-
-            # Enrolment date_start must be great or equal than record date_start
-            target_set = enrol_set.filtered(
+            target = enrol_set.filtered(
                 lambda r: r.date_start < record.date_start
             )
-            target_set.write(
-                {"date_start": record.date_start.strftime(dtformat)}
+
+            target.write(
+                {"date_start": fields.Datetime.to_string(record.date_start)}
             )
 
-            # Enrolment end must be less or equal than record end
-            # NOTE: end date can be null
             if record.date_stop:
-                target_set = enrol_set.filtered(
+                target = enrol_set.filtered(
                     lambda r: r.date_stop and r.date_stop > record.date_stop
                 )
-                target_set.write(
-                    {"date_stop": record.date_stop.strftime(dtformat)}
+                target.write(
+                    {"date_stop": fields.Datetime.to_string(record.date_stop)}
                 )
 
     # def session_wizard(self):
@@ -1016,13 +999,13 @@ class AcademyTrainingAction(models.Model):
             domain = []
         elif not isinstance(domain, (list, tuple)):
             try:
-                domain = eval(domain)
+                domain = safe_eval(domain)
             except Exception:
                 domain = []
 
         return domain
 
-    def view_enrolments(self):
+    def view_rollup_enrolments(self):
         self.ensure_one()
 
         act_xid = "academy_base.action_training_action_enrolment_act_window"
@@ -1033,7 +1016,7 @@ class AcademyTrainingAction(models.Model):
         ctx.update({"default_training_action_id": self.id})
 
         domain = self._eval_domain(action.domain)
-        domain = AND([domain, [("training_action_id", "=", self.id)]])
+        domain = AND([domain, [("parent_action_id", "=", self.id)]])
 
         action_values = {
             "name": "{} {}".format(_("Enroled in"), self.name),
