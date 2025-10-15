@@ -4,6 +4,7 @@
 #    __openerp__.py file at the root folder of this module.                   #
 ###############################################################################
 
+from typing import Required
 from odoo import models, fields, api
 from odoo.tools.translate import _
 from odoo.osv.expression import TRUE_DOMAIN, FALSE_DOMAIN
@@ -50,6 +51,7 @@ class AcademyTrainingActionLine(models.Model):
         string="Training program",
         help="Training program of the original program line (read-only).",
         related="training_action_id.training_program_id",
+        required=False,
         store=True,
     )
 
@@ -145,7 +147,7 @@ class AcademyTrainingActionLine(models.Model):
 
             domain = [("training_action_id", "=", record.id)]
             assigns = assignment_obj.search(
-                domain, order="sequence NULLS LAST, id"
+                domain, order="sequence NULLS LAST"
             )
 
             if not assigns:
@@ -171,7 +173,7 @@ class AcademyTrainingActionLine(models.Model):
 
                 # normalize 1..n
                 ordered = assignment_obj.search(
-                    domain, order="sequence NULLS LAST, id"
+                    domain, order="sequence NULLS LAST"
                 )
                 for i, a in enumerate(ordered, start=1):
                     if a.sequence != i:
@@ -282,7 +284,7 @@ class AcademyTrainingActionLine(models.Model):
         """
         training_action.ensure_one()
 
-        value_list = []
+        values_list = []
         for program_line in program_lines:
             # _read_program_line expects a recordset, even if single
             values = self._read_program_line(program_line)[0]
@@ -293,10 +295,10 @@ class AcademyTrainingActionLine(models.Model):
                     "comment": None,
                 }
             )
-            value_list.append(values)
+            values_list.append(values)
 
         # Bulk create for efficiency; return empty recordset if none
-        return self.create(value_list) if value_list else self.browse()
+        return self.create(values_list) if values_list else self.browse()
 
     def view_teacher_assignments(self):
         self.ensure_one()

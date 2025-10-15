@@ -66,7 +66,7 @@ class AcademyTrainingAction(models.Model):
     ]
 
     _rec_name = "name"
-    order = "name, date_start"
+    order = "parent_id, sequence, name, date_start"
     _rec_names_search = ["name", "code", "training_program_id"]
 
     # -- Company dependency: Fields and logic
@@ -727,6 +727,7 @@ class AcademyTrainingAction(models.Model):
         domain=[],
         context={},
         auto_join=False,
+        copy=False,
     )
 
     primary_teacher_id = fields.Many2one(
@@ -744,6 +745,7 @@ class AcademyTrainingAction(models.Model):
         compute="_compute_primary_teacher_id",
         inverse="_inverse_primary_teacher_id",
         store=True,
+        copy=False,
     )
 
     @api.depends(
@@ -774,7 +776,7 @@ class AcademyTrainingAction(models.Model):
 
             domain = [("action_line_id", "=", record.id)]
             assigns = assignment_obj.search(
-                domain, order="sequence NULLS LAST, id"
+                domain, order="sequence NULLS LAST"
             )
 
             if not assigns:
@@ -800,7 +802,7 @@ class AcademyTrainingAction(models.Model):
 
                 # normalize 1..n
                 ordered = assignment_obj.search(
-                    domain, order="sequence NULLS LAST, id"
+                    domain, order="sequence NULLS LAST"
                 )
                 for i, a in enumerate(ordered, start=1):
                     if a.sequence != i:
@@ -840,6 +842,41 @@ class AcademyTrainingAction(models.Model):
         matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
 
         return [("id", "in", matched)] if matched else FALSE_DOMAIN
+
+    # -- Auxiliary fields and logic
+    # 1 => Red
+    # 2 => Orange
+    # 3 => Yellow
+    # 4 => Light blue
+    # 5 => Dark purple
+    # 6 => Salmon pink
+    # 7 => Medium blue
+    # 8 => Dark blue
+    # 9 => Fushia
+    # 10 => Green
+    # 11 => Purple
+    # -------------------------------------------------------------------------
+
+    color = fields.Integer(
+        string="Color",
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        help=False,
+        compute="_compute_color",
+    )
+
+    @api.depends("child_ids", "date_stop")
+    def _compute_color(self):
+        now = fields.Datetime.now()
+        for record in self:
+            if record.date_stop and record.date_stop < now:
+                record.color = 2  # Orange
+            elif record.child_ids:
+                record.color = 10  # Green
+            else:
+                record.color = 4  # Light blue
 
     # ------------------------------ CONSTRAINS -------------------------------
 
@@ -1001,31 +1038,6 @@ class AcademyTrainingAction(models.Model):
     # -- Defaults
     # -------------------------------------------------------------------------
 
-    @api.onchange("parent_id")
-    def _onchange_group_defaults(self):
-        """Suggest name and capacity when adding a group inline.
-        Runs on 'new' records and sees in-memory siblings."""
-        for record in self:
-            if not record.parent_id:
-                continue
-
-            # Do not override if the user already typed a value
-            if not record.name:
-                record.name = record.first_available_group_name()
-
-            seating, excess = record.available_capacity()
-            if not record.seating:
-                record.seating = max(0, seating)
-            if not record.excess or record.excess < record.seating:
-                record.excess = max(record.seating, excess)
-
-            exclude = list(_PARENT_EXCLUDE) + ["name", "seating", "excess"]
-            parent_values = record.parent_id.copy_data(default=None)[0]
-            for key, value in parent_values.items():
-                if key in exclude:
-                    continue
-                setattr(record, key, value)
-
     @api.model
     def default_get(self, fields_list):
         defaults = super().default_get(fields_list)
@@ -1062,7 +1074,7 @@ class AcademyTrainingAction(models.Model):
         if "excess" not in defaults or defaults.get("excess", 0) < seating:
             defaults["excess"] = max(seating, excess)
 
-        parent_values = self.copy_data(default=None)[0]
+        parent_values = self.copy_data(default=None)[0] or {}
         fields_list = fields_list or parent_values.keys()
         for key, value in parent_values.items():
             if key in _PARENT_EXCLUDE:
@@ -1143,38 +1155,15 @@ class AcademyTrainingAction(models.Model):
 
         return result
 
-    # @api.returns("self", lambda value: value.id)
-    # def copy(self, defaults=None):
-    #     """Prevents new record of the inherited (_inherits) model will be
-    #     created
-    #     """
-
-    #     action_obj = self.env[self._name]
-    #     action_set = action_obj.search([], order="id DESC", limit=1)
-
-    #     defaults = dict(defaults or {})
-    #     # default.update({
-    #     #     'training_program_id': self.training_program_id.id
-    #     # })
-    #     #
-    #     if "code" not in defaults:
-    #         defaults["code"] = uuid4().hex.upper()
-
-    #     if "name" not in defaults:
-    #         defaults["name"] = "{} - {}".format(self.name, action_set.id + 1)
-
-    #     rec = super(AcademyTrainingAction, self).copy(defaults)
-    #     return rec
-
     @api.model_create_multi
-    def create(self, value_list):
+    def create(self, values_list):
         """Create records: inherit from parent, sanitize code, sync, enrols."""
 
-        self._fill_from_parent(value_list)
+        self._fill_from_parent(values_list)
 
-        sanitize_code(value_list, "upper")
+        sanitize_code(values_list, "upper")
 
-        records = super().create(value_list)
+        records = super().create(values_list)
 
         to_sync = records.filtered(lambda r: not r.action_line_ids)
         if to_sync:
@@ -1196,11 +1185,11 @@ class AcademyTrainingAction(models.Model):
 
         return result
 
-    def _batch_read_parent_data(self, value_list):
+    def _batch_read_parent_data(self, values_list):
         """Return {parent_id: copy_data(parent)} for all parents in vals."""
         parent_ids = {
             vals.get("parent_id")
-            for vals in value_list
+            for vals in values_list
             if vals.get("parent_id")
         }
 
@@ -1212,16 +1201,16 @@ class AcademyTrainingAction(models.Model):
 
         return {rec.id: data for rec, data in zip(parents, copied)}
 
-    def _fill_from_parent(self, value_list):
+    def _fill_from_parent(self, values_list):
         """Inherit parent's values (incl. O2M/M2M with copy=True)."""
-        if not value_list:
+        if not values_list:
             return
 
-        parent_data = self._batch_read_parent_data(value_list)
+        parent_data = self._batch_read_parent_data(values_list)
         if not parent_data:
             return
 
-        for values in value_list:
+        for values in values_list:
             pid = values.get("parent_id")
             if not pid:
                 continue
@@ -1276,6 +1265,7 @@ class AcademyTrainingAction(models.Model):
         context.update({"default_parent_id": self.id})
 
         domain = [("parent_id", "=", self.id)]
+        views = [(v.view_id.id, v.view_mode) for v in act_wnd.view_ids]
 
         serialized = {
             "type": "ir.actions.act_window",
@@ -1285,6 +1275,7 @@ class AcademyTrainingAction(models.Model):
             "view_mode": act_wnd.view_mode,
             "domain": domain,
             "context": context,
+            "views": views,
             "search_view_id": act_wnd.search_view_id.id,
             "help": act_wnd.help,
         }
@@ -1402,15 +1393,56 @@ class AcademyTrainingAction(models.Model):
 
         return domain
 
+    def view_enrolments(self):
+        self.ensure_one()
+
+        act_xid = "academy_base.action_training_action_enrolment_act_window"
+        action = self.env.ref(act_xid)
+
+        parent_action_id = self.parent_id.id if self.parent_id else self.id
+
+        ctx = self.env.context.copy()
+        ctx.update(safe_eval(action.context))
+        ctx.update(
+            {
+                "default_training_action_id": self.id,
+                "default_parent_action_id": parent_action_id,
+            }
+        )
+
+        domain = self._eval_domain(action.domain)
+        domain = AND([domain, [("training_action_id", "=", self.id)]])
+
+        action_values = {
+            "name": "{} {}".format(_("Enroled in"), self.name),
+            "type": action.type,
+            "help": action.help,
+            "domain": domain,
+            "context": ctx,
+            "res_model": action.res_model,
+            "target": action.target,
+            "view_mode": action.view_mode,
+            "search_view_id": action.search_view_id.id,
+        }
+
+        return action_values
+
     def view_rollup_enrolments(self):
         self.ensure_one()
 
         act_xid = "academy_base.action_training_action_enrolment_act_window"
         action = self.env.ref(act_xid)
 
+        parent_action_id = self.parent_id.id if self.parent_id else self.id
+
         ctx = self.env.context.copy()
         ctx.update(safe_eval(action.context))
-        ctx.update({"default_training_action_id": self.id})
+        ctx.update(
+            {
+                "default_training_action_id": self.id,
+                "default_parent_action_id": parent_action_id,
+            }
+        )
 
         domain = self._eval_domain(action.domain)
         domain = AND([domain, [("parent_action_id", "=", self.id)]])

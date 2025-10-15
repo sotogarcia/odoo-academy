@@ -69,7 +69,7 @@
                       <field name="teacher_assignment_count" widget="statinfo" string="Teachers" />
                   </button>
                   <button name="view_training_action_groups" type="object" class="oe_stat_button oe_read_only"
-                      icon="fa-list" help="View training action lines groups">
+                      icon="fa-list" help="View training action lines groups" invisible="parent_id">
                       <field name="training_group_count" widget="statinfo" string="Groups" />
                   </button>
                   <button name="view_action_lines" type="object" class="oe_stat_button oe_read_only"
@@ -148,7 +148,7 @@
                           'default_parent_id': id,
                           'default_training_program_id': training_program_id,
                           'default_training_modality_id': training_modality_id,
-                          'list_view_ref': 'academy_base.view_academy_training_action_group_editable_tree'
+                          'list_view_ref': 'academy_base.view_academy_training_action_group_embed_tree'
                         }" />
                     </group>
                   </page>
@@ -203,7 +203,7 @@
         <field name="priority" eval="16"/>
         <field name="active" eval="True"/>
         <field name="arch" type="xml">
-          <kanban sample="1">
+          <kanban sample="1" default_order="name, date_start" highlight_color="color">
             <field name="display_name"/>
             <field name="image_128"/>
             <field name="code"/>
@@ -212,6 +212,7 @@
             <field name="training_framework_id" />
             <field name="parent_id" />
             <field name="hours" />
+            <field name="sequence" invisible="1" />
 
             <templates>
               <t t-name="card" class="flex-row">
@@ -223,8 +224,14 @@
                       options="{'img_class': 'w-100 h-auto p-2 align-top'}"/>
                   </t>
                   <t t-if="!record.image_128.raw_value">
-                    <img src="/academy_base/static/src/img/training-action-128.png" class="w-100 h-auto p-2"
-                      alt="Training action" title="Training action without image" />
+                    <t t-if="record.parent_id.raw_value">
+                      <img src="/academy_base/static/src/img/training-group-128.png" class="w-100 h-auto p-2"
+                        alt="Training action" title="Training action without image" />
+                    </t>
+                    <t t-if="!record.parent_id.raw_value">
+                      <img src="/academy_base/static/src/img/training-action-128.png" class="w-100 h-auto p-2"
+                        alt="Training action" title="Training action without image" />
+                    </t>
                   </t>
                 </aside>
 

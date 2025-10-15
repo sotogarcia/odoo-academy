@@ -89,7 +89,7 @@
 
             <group col="2" string="Options">
               <field name="training_modality_id" class="oe_field_training_modality_id"/>
-              <field name="material" class="oe_field_material" string="Materials"/>
+              <field name="material_status" class="oe_field_material_status" string="Materials"/>
             </group>
           </group>
 

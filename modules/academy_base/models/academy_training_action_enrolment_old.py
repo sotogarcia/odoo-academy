@@ -1,30 +1,32 @@
 # -*- coding: utf-8 -*-
-###############################################################################
-#    License, author and contributors information in:                         #
-#    __openerp__.py file at the root folder of this module.                   #
-###############################################################################
+""" AcademyTrainingActionEnrolment
+
+This module contains the academy.training.action.enrolment Odoo model which
+stores all training action enrolment attributes and behavior.
+"""
+
 
 from odoo import models, fields, api
-from odoo.tools.misc import format_date
-from odoo.exceptions import UserError, ValidationError
-from odoo.osv.expression import TERM_OPERATORS_NEGATION, AND
-from ..utils.helpers import sanitize_code, default_code
-from ..utils.sql_helpers import create_index
-from ..utils.record_utils import (
-    ARCHIVED_DOMAIN,
-    INCLUDE_ARCHIVED_DOMAIN,
-    ensure_recordset,
-    create_domain_for_ids,
-    create_domain_for_interval,
-)
+from odoo.tools.translate import _, _lt
+from odoo.exceptions import UserError
+from odoo.osv.expression import TERM_OPERATORS_NEGATION
+from odoo.exceptions import ValidationError
 
-from datetime import datetime, date, time, timedelta
-from pytz import timezone, utc
+from odoo.addons.academy_base.utils.sql_helpers import create_index
+from odoo.tools.misc import format_date
+from odoo.osv.expression import AND
+from ..utils.record_utils import create_domain_for_ids
+from ..utils.record_utils import create_domain_for_interval
+from ..utils.record_utils import ARCHIVED_DOMAIN, INCLUDE_ARCHIVED_DOMAIN
+from ..utils.record_utils import ensure_recordset
+from ..utils.helpers import sanitize_code, default_code
 
 from logging import getLogger
+from psycopg2 import DatabaseError as PsqlError
+from datetime import datetime, date, time, timedelta
+from pytz import utc, timezone
 
-
-_CODE_SEQUENCE = "academy.training.action.enrolment.sequence"
+CODE_SEQUENCE="academy.training.action.enrolment.sequence"
 
 _logger = getLogger(__name__)
 
@@ -56,7 +58,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         required=True,
         readonly=True,
         index=True,
-        default=lambda self: default_code(self.env, _CODE_SEQUENCE),
+        default=lambda self: default_code(self.env, CODE_SEQUENCE),
         help="Unique code automatically assigned to this enrolment",
         size=30,
         translate=False,
@@ -98,7 +100,7 @@ class AcademyTrainingActionEnrolment(models.Model):
 
     parent_action_id = fields.Many2one(
         string="Parent action",
-        required=True,
+        required=False,
         readonly=True,
         index=True,
         default=None,
@@ -107,22 +109,22 @@ class AcademyTrainingActionEnrolment(models.Model):
         domain=[],
         context={},
         ondelete="cascade",
-        auto_join=False,
+        auto_join=False
     )
 
     action_line_ids = fields.Many2many(
-        string="Action lines",
+        string='Action lines',
         required=False,
         readonly=False,
         index=True,
         default=None,
         help="Action lines linked to this enrolment",
-        comodel_name="academy.training.action.line",
-        relation="academy_training_action_enrolment_action_line_rel",
-        column1="enrolment_id",
-        column2="action_line_id",
+        comodel_name='academy.training.action.line',
+        relation='academy_training_action_enrolment_action_line_rel',
+        column1='enrolment_id',
+        column2='action_line_id',
         domain=[],
-        context={},
+        context={}
     )
 
     training_modality_id = fields.Many2one(
@@ -139,18 +141,31 @@ class AcademyTrainingActionEnrolment(models.Model):
         auto_join=False,
     )
 
-    material_status = fields.Selection(
+    material = fields.Selection(
         string="Material",
+        required=False,
+        readonly=False,
+        index=True,
+        default="digital",
+        help="Choose the format of the learning material",
+        selection=[
+            ("printed", "Printed"),
+            ("digital", "Digital"),
+        ],
+    )
+
+    material_status = fields.Selection(
+        string='Material',
         required=True,
         readonly=False,
         index=True,
-        default="na",
+        default='na',
         help="Current status of material delivery.",
         selection=[
-            ("pending", "Pending Delivery"),
-            ("delivered", "Material Delivered"),
-            ("na", "Not Applicable / Digital"),
-        ],
+            ('pending', 'Pending Delivery'),
+            ('delivered', 'Material Delivered'),
+            ('na', 'Not Applicable / Digital'),
+        ]
     )
 
     # Student information
@@ -178,31 +193,33 @@ class AcademyTrainingActionEnrolment(models.Model):
     )
 
     vat = fields.Char(
-        string="Vat", related="student_id.vat", help="Student’s VAT number"
+        string="Vat",
+        related="student_id.vat",
+        help="Student’s VAT number"
     )
 
     email = fields.Char(
         string="Email",
         related="student_id.email",
-        help="Student’s email address",
+        help="Student’s email address"
     )
 
     phone = fields.Char(
         string="Phone",
         related="student_id.phone",
-        help="Student’s phone number",
+        help="Student’s phone number"
     )
 
     mobile = fields.Char(
         string="Mobile",
         related="student_id.mobile",
-        help="Student’s mobile number",
+        help="Student’s mobile number"
     )
 
     zip = fields.Char(
         string="Zip",
         related="student_id.zip",
-        help="Student’s ZIP/postal code",
+        help="Student’s ZIP/postal code"
     )
 
     # Training action information
@@ -221,6 +238,14 @@ class AcademyTrainingActionEnrolment(models.Model):
         ondelete="cascade",
         auto_join=False,
     )
+
+    @api.onchange('training_action_id')
+    def _onchange_training_action_id(self):
+        self.training_group_id = None
+        if not self.training_action_id:
+            self.action_line_ids = None
+        else:
+            self.action_line_ids = self.training_action_id.action_line_ids
 
     company_id = fields.Many2one(
         string="Company",
@@ -327,12 +352,10 @@ class AcademyTrainingActionEnrolment(models.Model):
     def _compute_finalized(self):
         now = fields.Datetime.now()
         for record in self:
-            record.finalized = record.deregister and (record.deregister < now)
+            record.finalized = record.deregister and record.deregister < now
 
     def _search_finalized(self, operator, value):
-        pattern = self.env._(
-            'Unsupported domain leaf ("finalized", "{}", "{}")'
-        )
+        pattern = _('Unsupported domain leaf ("finalized", "{}", "{}")')
         now = fields.Datetime.to_string(fields.Datetime.now())
 
         if operator == "!=":
@@ -368,41 +391,69 @@ class AcademyTrainingActionEnrolment(models.Model):
         store=True,
     )
 
-    @api.depends(
-        "deregister", "training_action_id", "training_action_id.date_stop"
-    )
+    @api.depends("deregister")
     def _compute_available_until(self):
+        one_day = timedelta(days=1)
         infinity = datetime.max
 
         for record in self:
-            deregister = record.deregister or infinity
-            action_date_stop = record.training_action_id.date_stop or infinity
-            record.available_until = min(deregister, action_date_stop)
+            if record.deregister:
+                deregister = datetime.combine(record.deregister, time.min)
 
-    lifespan = fields.Char(
-        string="Lifespan",
-        required=False,
+                local = record.get_timezone()
+                try:
+                    deregister = local.localize(deregister)
+                    deregister = deregister.astimezone(utc)
+                    deregister = deregister + one_day
+                except OverflowError:
+                    deregister = infinity
+
+                deregister = deregister.replace(tzinfo=None)
+            else:
+                deregister = infinity
+
+            group_date_stop = record.training_group_id.date_stop or infinity
+            action_date_stop = record.training_action_id.date_stop or infinity
+
+            record.available_until = min(
+                deregister, group_date_stop, action_date_stop
+            )
+
+    def get_timezone(self):
+        self.ensure_one()
+
+        company = self.company_id or self.training_action_id.company_id
+        if company and company.partner_id and company.partner_id.tz:
+            return timezone(company.partner_id.tz)
+
+        return timezone('utc')
+
+    color = fields.Integer(
+        string="Color Index",
+        required=True,
         readonly=True,
         index=False,
-        default=None,
-        help="Formatted range of register and deregister dates",
-        size=50,
-        translate=False,
-        compute="_compute_lifespan",
+        default=10,
+        help="Color index used in views based on enrolment dates",
+        store=False,
+        compute="_compute_color",
     )
 
-    @api.depends("register", "deregister")
-    @api.depends_context("uid")
-    def _compute_lifespan(self):
+    def _compute_color(self):
+        today = date.today()
+
         for record in self:
-            if record.register and record.deregister:
-                register_str = format_date(self.env, record.register)
-                deregister_str = format_date(self.env, record.deregister)
-                record.lifespan = f"{register_str} ‒ {deregister_str}"
-            elif record.register:
-                record.lifespan = format_date(self.env, record.register)
+            register = record.register.date()
+            deregister = (record.deregister or date.max).date()
+
+            if register <= today and deregister >= today:
+                record.color = 10
+            elif register >= today:
+                record.color = 4
             else:
-                record.lifespan = ""
+                record.color = 3
+
+    # -- Computed field: is_current -------------------------------------------
 
     is_current = fields.Boolean(
         string="Is current",
@@ -457,36 +508,34 @@ class AcademyTrainingActionEnrolment(models.Model):
 
         return domain
 
-    # -- Business fields and logic
-    # -------------------------------------------
+    # -- Computed field: lifespan ---------------------------------------------
 
-    color = fields.Integer(
-        string="Color Index",
-        required=True,
+    lifespan = fields.Char(
+        string="Lifespan",
+        required=False,
         readonly=True,
         index=False,
-        default=10,
-        help="Color index used in views based on enrolment dates",
-        store=False,
-        compute="_compute_color",
+        default=None,
+        help="Formatted range of register and deregister dates",
+        size=50,
+        translate=False,
+        compute="_compute_lifespan",
     )
 
-    def _compute_color(self):
-        infinity = datetime.max
-        now = fields.Datetime.now()
+    @api.depends("register", "deregister")
+    @api.depends_context("uid")
+    def _compute_lifespan(self):
         for record in self:
-            register = record.register
-            deregister = record.deregister or infinity
-
-            if register < now and deregister >= now:
-                record.color = 10
-            elif register >= now:
-                record.color = 4
+            if record.register and record.deregister:
+                register_str = format_date(self.env, record.register)
+                deregister_str = format_date(self.env, record.deregister)
+                record.lifespan = f"{register_str} ‒ {deregister_str}"
+            elif record.register:
+                record.lifespan = format_date(self.env, record.register)
             else:
-                record.color = 3
+                record.lifespan = ""
 
-    # -- Contraints
-    # -------------------------------------------------------------------------
+    # -- Contraints -----------------------------------------------------------
 
     _sql_constraints = [
         (
@@ -520,9 +569,7 @@ class AcademyTrainingActionEnrolment(models.Model):
     )
     def _check_unique_enrolment(self):
         """ """
-        message = self.env._(
-            "Student is already enroled in the training action"
-        )
+        message = _("Student is already enroled in the training action")
         enrolment_obj = self.env["academy.training.action.enrolment"]
 
         for record in self:
@@ -547,8 +594,7 @@ class AcademyTrainingActionEnrolment(models.Model):
             if enrolment_obj.search(AND(domains)):
                 ValidationError(message)
 
-    # Overridden methods
-    # -------------------------------------------------------------------------
+    # -- Methods overrides ----------------------------------------------------
 
     @api.depends(
         "training_action_id",
@@ -566,7 +612,10 @@ class AcademyTrainingActionEnrolment(models.Model):
                 record.display_name = f"{training} - {student}"
 
             else:
-                record.display_name = self.env._("New enrolment")
+                record.display_name = _("New enrolment")
+
+    # Overridden methods
+    # -------------------------------------------------------------------------
 
     def init(self):
         """
@@ -579,8 +628,71 @@ class AcademyTrainingActionEnrolment(models.Model):
             self._table,
             fields,
             unique=False,
-            name=f"{self._table}__{'search_active_by_dates_index'}",
+            name=f'{self._table}__{'search_active_by_dates_index'}',
         )
+
+    @api.model
+    def _create(self, values):
+        """Overridden low-level method '_create' to handle custom PostgreSQL
+        exceptions.
+
+        This method handles custom PostgreSQL exceptions, specifically catching
+        the exception with code 'ATE01', triggered by a database trigger that
+        validates enrolment dates in training actions.
+
+        Args:
+            values (dict): The values to create a new record.
+
+        Returns:
+            Record: The newly created record.
+
+        Raises:
+            ValidationError: If a PostgreSQL error with code 'ATE01' is raised.
+        """
+
+        parent = super(AcademyTrainingActionEnrolment, self)
+
+        try:
+            result = parent._create(values)
+        except PsqlError as ex:
+            if "ATE01" in str(ex.pgcode):
+                error = _("Enrolment is outside the range of training action")
+                raise ValidationError(error)
+            else:
+                raise
+
+        return result
+
+    def _write(self, values):
+        """Overridden low-level method '_write' to handle custom PostgreSQL
+        exceptions.
+
+        This method handles custom PostgreSQL exceptions, specifically catching
+        the exception with code 'ATE01', triggered by a database trigger that
+        validates enrolment dates in training actions.
+
+        Args:
+            values (dict): The values to update the record.
+
+        Returns:
+            Boolean: True if the write operation was successful.
+
+        Raises:
+            ValidationError: If a PostgreSQL error with code 'ATE01' is raised.
+        """
+
+        parent = super(AcademyTrainingActionEnrolment, self)
+
+        try:
+            result = parent._write(values)
+        except PsqlError as ex:
+            if "ATE01" in str(ex.pgcode):
+                error = _("Enrolment is outside the range of training action")
+                raise ValidationError(error)
+            else:
+                raise
+
+        return result
 
     @api.model_create_multi
     def create(self, values_list):
@@ -590,7 +702,8 @@ class AcademyTrainingActionEnrolment(models.Model):
 
         self._perform_a_full_enrollment(values_list)
 
-        result = super().create(values_list)
+        parent = super(AcademyTrainingActionEnrolment, self)
+        result = parent.create(values_list)
 
         return result
 
@@ -600,9 +713,9 @@ class AcademyTrainingActionEnrolment(models.Model):
         sanitize_code(values, "upper")
 
         self._check_that_the_student_is_not_the_template(values)
-        self._perform_a_full_enrollment(values)
 
-        result = super().write(values)
+        parent = super(AcademyTrainingActionEnrolment, self)
+        result = parent.write(values)
 
         return result
 
@@ -631,41 +744,6 @@ class AcademyTrainingActionEnrolment(models.Model):
 
         return parent.copy(default)
 
-    # def _patch_parent_action(self, values_or_list):
-    #     """Fill `parent_action_id` based on `training_action_id.parent_id`"""
-
-    #     if not values_or_list:
-    #         return
-
-    #     # Normalize to list of dicts
-    #     if isinstance(values_or_list, dict):
-    #         values_or_list = [values_or_list]
-    #     elif not isinstance(values_or_list, (list, tuple)):
-    #         return
-
-    #     action_ids = set()
-    #     for values in values_or_list:
-    #         action_id = values.get("training_action_id")
-    #         if action_id:
-    #             action_ids.add(action_id)
-    #     if not action_ids:
-    #         return
-
-    #     action_obj = self.env["academy.training.action"]
-    #     action_set = action_obj.browse(action_ids)
-    #     if not action_set:
-    #         return
-
-    #     action_parent_map = {}
-    #     for action in action_set:
-    #         parent_id = action.parent_id.id if action.parent_id else None
-    #         action_parent_map[action.id] = parent_id
-
-    #     for values in values_or_list:
-    #         action_id = values.get("training_action_id")
-    #         if action_id in action_parent_map:
-    #             values["parent_action_id"] = action_parent_map[action_id]
-
     # Public methods
     # -------------------------------------------------------------------------
 
@@ -673,7 +751,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         student_set = self.mapped("student_id")
 
         if not student_set:
-            msg = self.env._("There is no students")
+            msg = _("There is no students")
             raise UserError(msg)
         else:
             view_act = {
@@ -697,7 +775,7 @@ class AcademyTrainingActionEnrolment(models.Model):
             else:
                 view_act.update(
                     {
-                        "name": self.env._("Students"),
+                        "name": _("Students"),
                         "view_mode": "list",
                         "res_id": None,
                         "view_type": "form",
@@ -711,7 +789,7 @@ class AcademyTrainingActionEnrolment(models.Model):
             origin_set = self
 
         action_set = ensure_recordset(
-            self.env, action_set, "academy.training.action"
+            self.env, action_set, 'academy.training.action'
         )
         origin_set = ensure_recordset(self.env, origin_set, self._name)
 
@@ -772,18 +850,6 @@ class AcademyTrainingActionEnrolment(models.Model):
 
         return enrolment_set
 
-    # -- Auxiliary methods
-    # -------------------------------------------------------------------------
-
-    def get_timezone(self):
-        self.ensure_one()
-
-        company = self.company_id or self.training_action_id.company_id
-        if company and company.partner_id and company.partner_id.tz:
-            return timezone(company.partner_id.tz)
-
-        return timezone("utc")
-
     # Auxiliary methods
     # -------------------------------------------------------------------------
 
@@ -793,9 +859,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         them tries to be modified without establishing a real student for it.
         """
 
-        msg = self.env._(
-            "You must assign a real student to each of the enrolments."
-        )
+        msg = _("You must assign a real student to each of the enrolments.")
 
         temp_student_xid = "academy_base.academy_student_default_template"
         temp_student = self.env.ref(temp_student_xid)
@@ -832,6 +896,8 @@ class AcademyTrainingActionEnrolment(models.Model):
 
         _logger.info("Temporary student enrolments will be removed {}")
         enrolment_set.unlink()
+
+    # -------------------------------------------------------------------------
 
     @api.model
     def _perform_a_full_enrollment(self, values_list):

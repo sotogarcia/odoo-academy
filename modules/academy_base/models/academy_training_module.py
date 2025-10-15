@@ -326,10 +326,10 @@ class AcademyTrainingModule(models.Model):
     # -- Methods overrides ----------------------------------------------------
 
     @api.model_create_multi
-    def create(self, value_list):
-        sanitize_code(value_list, "upper")
+    def create(self, values_list):
+        sanitize_code(values_list, "upper")
 
-        result = super().create(value_list)
+        result = super().create(values_list)
         after_parents = result.mapped("training_module_id")
 
         self._update_parent_hours(parents=after_parents)

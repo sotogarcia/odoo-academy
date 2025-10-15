@@ -25,6 +25,7 @@
     <field name="arch" type="xml">
       <xpath expr="//list" position="attributes">
           <attribute name="string">academy_training_action_line_tree</attribute>
+          <attribute name="decoration-it">not program_line_id</attribute>
       </xpath>
       <xpath expr="//field[@name='training_program_id']" position="replace">
         <field name="training_action_id" column_invisible="1" />
@@ -120,11 +121,12 @@
     <field name="inherit_id" />
     <field name="arch" type="xml">
       <list string="academy_training_action_line_tree_action_embed" class="academy-training-program-line-tree"
-        create="1" delete="1" edit="1" decoration-bf="is_section" decoration-muted="is_section" >
+        create="1" delete="1" edit="1" decoration-bf="is_section" decoration-it="not program_line_id" decoration-muted="is_section" >
 
         <field name="active" column_invisible="1"/>
         <field name="training_program_id" column_invisible="1" />
-        <field name="is_section" class="oe_field_is_section" column_invisible="True"/>
+        <field name="program_line_id" column_invisible="1" />
+        <field name="is_section" column_invisible="True"/>
 
         <field name="sequence" class="oe_field_sequence" widget="handle" />
         <field name="code" class="oe_field_code" invisible="is_section" optional="show" />

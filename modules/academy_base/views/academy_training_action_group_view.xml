@@ -32,6 +32,9 @@
       <xpath expr="//field[@name='training_program_id']" position="attributes">
           <attribute name="optional">hide</attribute>
       </xpath>
+      <xpath expr="//field[@name='rollup_enrolment_count']" position="replace">
+        <field name="enrolment_count" class="oe_field_enrolment_count" optional="show"/>
+      </xpath>
     </field>
   </record>
 
@@ -52,6 +55,14 @@
           <attribute name="invisible">1</attribute>
       </xpath>
       <xpath expr="//page[@name='groups']" position="replace" />
+      <xpath expr="//button[@name='view_training_action_groups']" position="replace" />
+      <xpath expr="//button[@name='view_rollup_enrolments']" position="replace">
+        <button name="view_enrolments" type="object"
+            class="oe_stat_button oe_read_only" icon="fa-id-card-o"
+            help="View training group enrolments">
+            <field name="enrolment_count" widget="statinfo" string="Enrolments"/>
+        </button>
+      </xpath>
     </field>
   </record>
 
@@ -68,6 +79,21 @@
     <field name="arch" type="xml">
       <xpath expr="//kanban" position="attributes">
         <attribute name="string">academy_training_action_group_kanban</attribute>
+        <attribute name="records_draggable">1</attribute>
+        <attribute name="groups_draggable">1</attribute>
+        <attribute name="default_order">parent_id, sequence, name, date_start</attribute>
+        <attribute name="default_group_by" />
+        <attribute name="group_create">0</attribute>
+      </xpath>
+      <xpath expr="//button[@name='view_training_action_groups']" position="replace" />
+      <xpath expr="//field[@name='rollup_enrolment_count']" position="replace">
+        <field name="enrolment_count" />
+      </xpath>
+      <xpath expr="//button[@name='view_rollup_enrolments']" position="after">
+        <button name="view_enrolments" type="object" class="btn my-0 py-0" string="Student enrolments">
+          <i class="fa fa-lg fa-id-card-o me-2" aria-hidden="true" title="View training group enrolments"></i>
+          <field name="enrolment_count" class="oe_field_enrolment_count" />
+        </button>
       </xpath>
     </field>
   </record>
@@ -85,6 +111,15 @@
       <xpath expr="//search" position="attributes">
         <attribute name="string">academy_training_action_group_search</attribute>
       </xpath>
+
+      <xpath expr="//filter[@name='with_enrolments']" position="replace">
+        <filter name="with_enrolments" string="With enrolments"
+          domain="[('enrolment_count', '>', 0)]"/>
+      </xpath>
+      <xpath expr="//filter[@name='without_enrolments']" position="replace">
+        <filter name="without_enrolments" string="Without enrolments"
+          domain="[('enrolment_count', '=', 0)]"/>
+      </xpath>
     </field>
   </record>
 
@@ -96,8 +131,12 @@
     <field name="view_mode">kanban,list,form</field>
     <field name="path">academy-training-group</field>
     <field name="target">current</field>
-    <field name="domain">[("parent_id", "!=", False)]</field>
-    <field name="context">{}</field>
+    <field name="domain">[("child_ids", "=", False)]</field>
+    <field name="context">{'default_sequence': 10}</field>
+    <field name="view_ids" eval="[(5, 0, 0),
+        (0, 0, {'view_mode': 'kanban', 'view_id': ref('academy_base.view_academy_training_action_group_kanban')}),
+        (0, 0, {'view_mode': 'list', 'view_id': ref('academy_base.view_academy_training_action_group_tree')}),
+        (0, 0, {'view_mode': 'form', 'view_id': ref('academy_base.view_academy_training_action_group_form')})]"/>
     <field name="search_view_id" ref="view_academy_training_action_group_search" />
     <field name="help" type="html">
         <p class="oe_view_nocontent_create">
@@ -109,14 +148,14 @@
   </record>
 
   <!-- Main menu for model.name -->
- <!--  <record id="menu_training_group" model="ir.ui.menu" >
-      <field name="name">Training group</field>
+  <record id="menu_training_group" model="ir.ui.menu" >
+      <field name="name">Training groups</field>
       <field name="sequence" eval="10" />
       <field name="action" ref="action_training_action_group_act_window" />
       <field name="parent_id" ref="academy_base.menu_academy_monitoring" />
-  </record> -->
+  </record>
 
-  <record id="view_academy_training_action_group_editable_tree" model="ir.ui.view">
+  <record id="view_academy_training_action_group_embed_tree" model="ir.ui.view">
     <field name="name">view.academy.training.action.editable.tree</field>
     <field name="model">academy.training.action</field>
     <field name="type">list</field>
@@ -125,7 +164,7 @@
     <field name="active" eval="True" />
     <field name="inherit_id" />
     <field name="arch" type="xml">
-      <list string="academy_training_action_group_editable_tree" create="1" delete="1" edit="1">
+      <list string="academy_training_action_group_editable_tree" create="0" delete="0" edit="0">
         <field name="parent_id" class="oe_field_parent_id" column_invisible="1" force_save="1" />
         <field name="training_program_id" class="oe_field_training_program_id" column_invisible="1" force_save="1" />
         <field name="training_modality_id" class="oe_field_training_modality_id" column_invisible="1" force_save="1" />

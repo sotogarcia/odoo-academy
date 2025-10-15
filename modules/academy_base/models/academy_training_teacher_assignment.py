@@ -149,7 +149,7 @@ class AcademyTrainingActionAssignment(models.Model):
             (field_name, "in", targets.ids),
             ("teacher_id.active", "=", True),
         ]
-        order = f"{field_name}, sequence NULLS LAST, id"
+        order = f"{field_name}, sequence NULLS LAST"
         assignment_set = assignment_obj.search(domain, order=order)
 
         result = {ass.id: teacher_obj.browse() for ass in assignment_set}
@@ -159,90 +159,40 @@ class AcademyTrainingActionAssignment(models.Model):
 
         return result
 
-    # @api.model
-    # def _ensure_records(self, targets, model_name, raise_on_error=False):
-    #     if not targets:
-    #         return self.env[model_name].browse()
+    @api.model_create_multi
+    def create(self, values_list):
+        """Overridden method 'create' to populate training_action_id from action_line_id."""
+        self._complete_training_action_from_lines(values_list)
 
-    #     if isinstance(targets, models.Model):
-    #         if targets._name == model_name:
-    #             return targets
+        return super().create(values_list)
 
-    #         if raise_on_error:
-    #             message = self.env._(
-    #                 "Expected model %(exp)s, got %(got)s"
-    #             ) % {"exp": model_name, "got": targets._name}
-    #             raise ValidationError(message)
+    def _complete_training_action_from_lines(self, values_list):
+        # 1. Collect action_line_ids where training_action_id is missing
+        missing_action_line_ids = set()
+        for values in values_list:
+            action_id = values.get("training_action_id")
+            line_id = values.get("action_line_id", False)
+            if not action_id and line_id:
+                missing_action_line_ids.add(values["action_line_id"])
 
-    #         return self.env[model_name].browse()
+        if missing_action_line_ids:
+            # 2. Fetch parent training_action_id in a single query
+            line_obj = self.env["academy.training.action.line"]
+            line_set = line_obj.search(
+                [("id", "in", list(missing_action_line_ids))]
+            )
 
-    #     if isinstance(targets, int):
-    #         return self.env[model_name].browse(targets)
+            # 3. Map line ID to parent action ID
+            line_to_action_map = {
+                line.id: line.training_action_id.id for line in line_set
+            }
 
-    #     if isinstance(targets, (list, tuple, set)):
-    #         if all(isinstance(x, int) for x in targets):
-    #             return self.env[model_name].browse(list(targets))
-    #         if raise_on_error:
-    #             message = self.env._("IDs list must contain integers only")
-    #             raise ValidationError(message)
+            # 4. Update values_list with the fetched training_action_id
+            for values in values_list:
+                line_id = values.get("action_line_id", False)
+                if values.get("training_action_id") or not line_id:
+                    continue
 
-    #         return self.env[model_name].browse()
-
-    #     if raise_on_error:
-    #         message = self.env._(
-    #             "Unsupported targets type: %(typ)s"
-    #         ) % {"typ": type(targets).__name__}
-    #         raise ValidationError(message)
-
-    #     return self.env[model_name].browse()
-
-    # def init(self):
-    #     """Ensure a supporting composite index exists for queries that
-    #     order by (training_action_id, sequence, id)."""
-    #     # Composite index fields, in the same order used by the query
-    #     fields = ["training_action_id", "sequence", "id"]
-
-    #     index_name = f"{self._table}__primary_teacher_idx"
-
-    #     create_index(
-    #         self.env,
-    #         self._table,
-    #         fields=fields,
-    #         unique=False,
-    #         name=index_name,
-    #     )
-
-    # @api.model
-    # def _normalize_sequence(self, training_action_ids=None):
-    #     """Reassign teacher-assignment sequences for the given actions.
-
-    #     Ensures that all records of this model related to the provided
-    #     actions have a strictly consecutive ``sequence`` starting at 1.
-    #     Ordering uses current ``sequence`` (NULLS LAST) and then ``id``.
-
-    #     Args:
-    #         training_action_ids (list[int] | None): Training action IDs to
-    #             normalize. If None or empty, nothing is done.
-    #     """
-    #     if not training_action_ids:
-    #         return
-
-    #     sql = f"""
-    #         WITH ranked AS (
-    #           SELECT
-    #             "id" AS link_id,
-    #             ROW_NUMBER() OVER (wnd) AS new_sequence
-    #           FROM {self._table}
-    #           WHERE training_action_id = ANY(%s)
-    #           WINDOW wnd AS (
-    #             PARTITION BY training_action_id
-    #             ORDER BY "sequence" NULLS LAST, "id" ASC
-    #           )
-    #         )
-    #         UPDATE {self._table} AS link AS link
-    #         SET "sequence" = ranked.new_sequence
-    #         FROM ranked
-    #         WHERE ranked.link_id = link."id"
-    #     """
-
-    #     self.env.cr.execute(sql, (training_action_ids,))
+                action_id = line_to_action_map.get(line_id)
+                if action_id:
+                    values["training_action_id"] = action_id

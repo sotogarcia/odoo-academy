@@ -351,19 +351,19 @@ def default_code(env, sequence_code):
     return value.upper()
 
 
-def sanitize_code(value_list, convert_case=None):
+def sanitize_code(values_list, convert_case=None):
     """
     Sanitize the 'code' field in a dict or in a collection of dicts.
 
     Args:
-        value_list (dict | list[dict] | tuple[dict]):
+        values_list (dict | list[dict] | tuple[dict]):
             A dict or sequence of dicts containing a 'code' field.
         convert_case (str, optional):
             A string specifying a case transformation method to apply.
             Accepted values are 'lower', 'upper', 'title', 'swapcase'.
 
     Raises:
-        ValueError: If `value_list` is not a dict, tuple, or list.
+        ValueError: If `values_list` is not a dict, tuple, or list.
         ValidationError: If the 'code' field exists but is not a string.
 
     Notes:
@@ -371,13 +371,13 @@ def sanitize_code(value_list, convert_case=None):
         - Empty strings are converted to None.
         - Case conversion is applied *after* stripping and before storage.
     """
-    if isinstance(value_list, dict):
-        target_list = [value_list]
-    elif isinstance(value_list, (tuple, list)):
-        target_list = value_list
+    if isinstance(values_list, dict):
+        target_list = [values_list]
+    elif isinstance(values_list, (tuple, list)):
+        target_list = values_list
     else:
         message = "Argument must be a dict, tuple or list, not %s"
-        raise ValueError(message % type(value_list))
+        raise ValueError(message % type(values_list))
 
     case_methods = ("lower", "upper", "title", "swapcase")
 
