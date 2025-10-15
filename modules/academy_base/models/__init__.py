@@ -79,6 +79,7 @@ from . import academy_training_action_line
 
 # from . import academy_training_action_group
 from . import academy_training_action_enrolment
+from . import academy_training_teacher_assignment
 
 # ---------------------------------------------------------------------------
 # Relationships between training models

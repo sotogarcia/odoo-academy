@@ -64,6 +64,10 @@
             <form string="academy_training_action_form" create="1" delete="1" edit="1">
               <sheet>
                 <div class="oe_button_box" name="button_box">
+                  <button name="view_teacher_assignments" type="object" class="oe_stat_button oe_read_only"
+                      icon="fa-users" help="View teacher assignments">
+                      <field name="teacher_assignment_count" widget="statinfo" string="Teachers" />
+                  </button>
                   <button name="view_training_action_groups" type="object" class="oe_stat_button oe_read_only"
                       icon="fa-list" help="View training action lines groups">
                       <field name="training_group_count" widget="statinfo" string="Groups" />
@@ -128,7 +132,16 @@
                 </div>
 
                 <notebook class="mt-3">
-                  <page name="groups" string="Groups" class="oe_page_groups" accesskey="G" invisible="context.get('default_parent_id', False)">
+                  <page string="Units" class="oe_page_lines" accesskey="L">
+                    <group col="2">
+                      <field name="action_line_ids" class="oe_field_action_line_ids" nolabel="1" colspan="2"
+                        context="{
+                          'default_training_action_id': id,
+                          'list_view_ref': 'academy_base.view_academy_training_action_line_tree_action_embed'
+                        }" />
+                    </group>
+                  </page>
+                  <page name="groups" string="Groups" class="oe_page_groups" accesskey="G" invisible="parent_id or context.get('default_parent_id', False) or not create_date">
                     <group col="2">
                       <field name="child_ids" class="oe_field_child_ids" nolabel="1" colspan="2"
                         context="{
@@ -139,17 +152,7 @@
                         }" />
                     </group>
                   </page>
-                  <page string="Units" class="oe_page_lines" accesskey="L">
-                    <group col="2">
-                      <field name="action_line_ids" class="oe_field_action_line_ids" nolabel="1" colspan="2"
-                        context="{'default_training_action_id': id, 'tree_view_ref': 'academy_base.view_academy_training_action_line_tree_action_embed'}" />
-                    </group>
-                  </page>
                   <page id="data" string="Data" class="oe_page_data" accesskey="T">
-
-                    <group string="Description">
-                        <field name="description" class="oe_field_description" colspan="4" nolabel="1" />
-                    </group>
                     <group string="Action details">
                       <group><field name="application_scope_id" class="od_field_application_scope"
                         options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"/></group>
@@ -158,7 +161,7 @@
                       <group><field name="professional_category_id"
                         options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" class="od_field_professional_category" string="Category" title="Professional category"/></group>
                     </group>
-                    <group string="Activity details">
+                    <group string="Program details">
                         <group><field name="professional_family_id"
                           options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" class="oe_field_professional_family_id" readonly="1"/></group>
                         <group><field name="professional_area_id"
@@ -167,7 +170,9 @@
                         <group><field name="qualification_level_id"
                           options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" class="oe_field_qualification_level_id" readonly="1"/></group>
                     </group>
-
+                    <group string="Description">
+                        <field name="description" class="oe_field_description" colspan="4" nolabel="1" />
+                    </group>
                   </page>
                   <page id="setup" string="Setup" class="oe_page_setup" accesskey="S">
                       <group col="4" string="Ownership" id="ownership"

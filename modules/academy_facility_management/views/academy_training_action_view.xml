@@ -14,9 +14,9 @@
             <field name="inherit_id" ref="academy_base.view_academy_training_action_form" />
             <field name="arch" type="xml">
                 <xpath expr="//page[@id='setup']" position="inside">
-                    <group col="6" string="Facilities">
+                    <group col="4" string="Facilities">
                         <field name="facility_link_ids" class="oe_field_facility_link_ids"
-                            colspan="6" context="{'default_training_action_id': id}" nolabel="1" />
+                            colspan="4" nolabel="1" context="{'default_training_action_id': id}" />
                         <field name="primary_complex_id" class="oe_field_primary_complex_id" />
                         <field name="primary_facility_id" class="oe_field_primary_facility_id" />
                     </group>

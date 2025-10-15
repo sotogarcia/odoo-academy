@@ -170,6 +170,16 @@ class AcademyTrainingAction(models.Model):
 
         return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
+    split_in_groups = fields.Boolean(
+        string="Is divisible",
+        required=False,
+        readonly=False,
+        index=True,
+        default=False,
+        help="If checked, this training action can be divided into smaller "
+        "groups or sessions (children records).",
+    )
+
     # -- Entity fields
     # -------------------------------------------------------------------------
 
@@ -579,7 +589,8 @@ class AcademyTrainingAction(models.Model):
     @api.onchange("seating")
     def _onchange_seating(self):
         for record in self:
-            record.excess = max(record.seating or 0, record.excess or 0)
+            if record.seating and record.seating > record.excess:
+                record.excess = record.seating
 
     excess = fields.Integer(
         string="Excess",
@@ -594,7 +605,8 @@ class AcademyTrainingAction(models.Model):
     @api.onchange("excess")
     def _onchange_excess(self):
         for record in self:
-            record.seating = min(record.seating or 0, record.excess or 0)
+            if record.excess and record.excess < record.seating:
+                record.excess = record.seating
 
     # -------------------------------------------------------------------------
 
@@ -696,6 +708,135 @@ class AcademyTrainingAction(models.Model):
             return FALSE_DOMAIN  # unsupported operator
 
         counts = one2many_count(self.search([]), "rollup_enrolment_ids")
+        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
+
+        return [("id", "in", matched)] if matched else FALSE_DOMAIN
+
+    # -- Teacher assignment: fields and logic
+    # -------------------------------------------------------------------------
+
+    teacher_assignment_ids = fields.One2many(
+        string="Teacher assignments",
+        required=False,
+        readonly=False,
+        index=True,
+        default=None,
+        help="Teacher assignments; order defines primary.",
+        comodel_name="academy.training.teacher.assignment",
+        inverse_name="training_action_id",
+        domain=[],
+        context={},
+        auto_join=False,
+    )
+
+    primary_teacher_id = fields.Many2one(
+        string="Lead",
+        required=False,
+        readonly=False,
+        index=True,
+        default=None,
+        help="Primary teacher (lowest sequence).",
+        comodel_name="academy.teacher",
+        domain=[],
+        context={},
+        ondelete="set null",
+        auto_join=False,
+        compute="_compute_primary_teacher_id",
+        inverse="_inverse_primary_teacher_id",
+        store=True,
+    )
+
+    @api.depends(
+        "teacher_assignment_ids",
+        "teacher_assignment_ids.sequence",
+        "teacher_assignment_ids.teacher_id",
+        "teacher_assignment_ids.teacher_id.active",
+        "teacher_assignment_ids.action_line_id",
+    )
+    def _compute_primary_teacher_id(self):
+        assignment_obj = self.env["academy.training.teacher.assignment"]
+        primary_dict = assignment_obj.get_primary(self)
+
+        for record in self:
+            record.primary_teacher_id = primary_dict.get(record.id)
+
+    def _inverse_primary_teacher_id(self):
+        """When setting a primary teacher:
+        - If the teacher already has an assignment in this unit, move it to 1st.
+        - Else, overwrite the teacher of the lowest-sequence assignment.
+          If there are no assignments yet, create one at sequence=1.
+        """
+        assignment_obj = self.env["academy.training.teacher.assignment"]
+        for record in self:
+            teacher = record.primary_teacher_id
+            if not record.id:
+                continue
+
+            domain = [("action_line_id", "=", record.id)]
+            assigns = assignment_obj.search(
+                domain, order="sequence NULLS LAST, id"
+            )
+
+            if not assigns:
+                if teacher:
+                    values = {
+                        "training_action_id": record.training_action_id.id,
+                        "action_line_id": record.id,
+                        "teacher_id": teacher.id,
+                        "sequence": 1,
+                    }
+                    assignment_obj.create(values)
+                continue
+
+            if teacher:
+                existing = assigns.filtered(lambda a: a.teacher_id == teacher)
+                if existing:
+                    # take to first place
+                    existing.write({"sequence": 0})
+                else:
+                    # overwrite the assignment with a lower sequence
+                    first = assigns[0]
+                    first.write({"teacher_id": teacher.id})
+
+                # normalize 1..n
+                ordered = assignment_obj.search(
+                    domain, order="sequence NULLS LAST, id"
+                )
+                for i, a in enumerate(ordered, start=1):
+                    if a.sequence != i:
+                        a.sequence = i
+
+    teacher_assignment_count = fields.Integer(
+        string="Teacher count",
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        help=False,
+        compute="_compute_teacher_assignment_count",
+        search="_search_teacher_assignment_count",
+    )
+
+    @api.depends("teacher_assignment_ids")
+    def _compute_teacher_assignment_count(self):
+        counts = one2many_count(self, "teacher_assignment_ids")
+
+        for record in self:
+            record.teacher_assignment_count = counts.get(record.id, 0)
+
+    @api.model
+    def _search_teacher_assignment_count(self, operator, value):
+        # Handle boolean-like searches Odoo may pass for required fields
+        if value is True:
+            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
+        if value is False:
+            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
+
+        cmp_func = OPERATOR_MAP.get(operator)
+        if not cmp_func:
+            return FALSE_DOMAIN  # unsupported operator
+
+        counts = one2many_count(self.search([]), "teacher_assignment_ids")
         matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
 
         return [("id", "in", matched)] if matched else FALSE_DOMAIN
@@ -868,17 +1009,17 @@ class AcademyTrainingAction(models.Model):
             if not record.parent_id:
                 continue
 
-            if not self.env.context.get("default_name"):
+            # Do not override if the user already typed a value
+            if not record.name:
                 record.name = record.first_available_group_name()
 
             seating, excess = record.available_capacity()
-            if not self.env.context.get("default_seating"):
+            if not record.seating:
                 record.seating = max(0, seating)
-            if not self.env.context.get("default_excess"):
+            if not record.excess or record.excess < record.seating:
                 record.excess = max(record.seating, excess)
 
-            exclude = list(_PARENT_EXCLUDE)
-            exclude.extend(["name", "seating", "excess"])
+            exclude = list(_PARENT_EXCLUDE) + ["name", "seating", "excess"]
             parent_values = record.parent_id.copy_data(default=None)[0]
             for key, value in parent_values.items():
                 if key in exclude:
@@ -963,13 +1104,15 @@ class AcademyTrainingAction(models.Model):
         self.ensure_one()
 
         parent = self.parent_id or self
+        others = parent.child_ids.filtered(lambda r: r != self)
 
-        other_groups = parent.child_ids.filtered(lambda r: r != self)
+        seating = sum((v or 0) for v in others.mapped("seating"))
+        excess = sum((v or 0) for v in others.mapped("excess"))
 
-        seating = sum((v or 0) for v in other_groups.mapped("seating"))
-        excess = sum((v or 0) for v in other_groups.mapped("excess"))
+        cap_s = max(0, (parent.seating or 0) - seating)
+        cap_e = max(cap_s, (parent.excess or 0) - excess)
 
-        return (parent.seating or 0) - seating, (parent.excess or 0) - excess
+        return cap_s, cap_e
 
     def default_start(self):
         today = fields.Date.context_today(self)
@@ -1095,6 +1238,32 @@ class AcademyTrainingAction(models.Model):
         return start, stop
 
     # --------------------------- PUBLIC METHODS ------------------------------
+
+    def view_teacher_assignments(self):
+        self.ensure_one()
+
+        action_xid = "academy_base.action_teacher_assignment_act_window"
+        act_wnd = self.env.ref(action_xid)
+
+        context = self.env.context.copy()
+        context.update(safe_eval(act_wnd.context))
+        context.update({"default_training_action_id": self.id})
+
+        domain = [("training_action_id", "=", self.id)]
+
+        serialized = {
+            "type": "ir.actions.act_window",
+            "res_model": act_wnd.res_model,
+            "target": "current",
+            "name": act_wnd.name,
+            "view_mode": act_wnd.view_mode,
+            "domain": domain,
+            "context": context,
+            "search_view_id": act_wnd.search_view_id.id,
+            "help": act_wnd.help,
+        }
+
+        return serialized
 
     def view_training_action_groups(self):
         self.ensure_one()

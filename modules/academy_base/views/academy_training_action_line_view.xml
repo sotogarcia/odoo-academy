@@ -29,6 +29,9 @@
       <xpath expr="//field[@name='training_program_id']" position="replace">
         <field name="training_action_id" column_invisible="1" />
       </xpath>
+      <xpath expr="//field[@name='training_module_id']" position="after">
+          <field name="primary_teacher_id" class="oe_field_primary_teacher_id" />
+      </xpath>
     </field>
   </record>
 
@@ -42,11 +45,24 @@
     <field name="active" eval="True"/>
     <field name="inherit_id" ref="view_academy_training_program_line_form" />
     <field name="arch" type="xml">
+      <xpath expr="//div[@name='button_box']" position="inside">
+        <button name="view_teacher_assignments" type="object" class="oe_stat_button oe_read_only"
+            icon="fa-users" help="View teacher assignments">
+            <field name="teacher_assignment_count" widget="statinfo" string="Teachers" />
+        </button>
+      </xpath>
       <xpath expr="//form" position="attributes">
           <attribute name="string">academy_training_action_line_form</attribute>
       </xpath>
       <xpath expr="//field[@name='training_program_id']" position="replace">
         <field name="training_action_id" class="oe_field_training_program_id"/>
+      </xpath>
+      <xpath expr="//page[@id='setup']" position="after">
+        <page string="Teaching" class="oe_page_teaching" accesskey="T">
+          <field name="teacher_assignment_ids" class="oe_field_teacher_assignment_ids"
+            options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"
+            context="{'default_training_action_id': training_action_id, 'default_action_line_id': id}" />
+        </page>
       </xpath>
     </field>
   </record>
@@ -101,31 +117,28 @@
     <field name="mode">primary</field>
     <field name="priority" eval="99"/>
     <field name="active" eval="True"/>
-    <field name="inherit_id" ref="view_academy_training_action_line_tree" />
+    <field name="inherit_id" />
     <field name="arch" type="xml">
-      <xpath expr="//list" position="attributes">
-          <attribute name="editable"/>
-          <attribute name="create">1</attribute>
-          <attribute name="delete">1</attribute>
-      </xpath>
+      <list string="academy_training_action_line_tree_action_embed" class="academy-training-program-line-tree"
+        create="1" delete="1" edit="1" decoration-bf="is_section" decoration-muted="is_section" >
 
-      <xpath expr="//field[@name='competency_unit_ids']" position="replace">
-          <field name="competency_unit_count" class="oe_field_competency_unit_count text-center"
-            invisible="is_section" optional="hide"/>
-      </xpath>
+        <field name="active" column_invisible="1"/>
+        <field name="training_program_id" column_invisible="1" />
+        <field name="is_section" class="oe_field_is_section" column_invisible="True"/>
 
-      <xpath expr="//field[@name='training_module_id']" position="attributes">
-          <attribute name="optional">hide</attribute>
-      </xpath>
+        <field name="sequence" class="oe_field_sequence" widget="handle" />
+        <field name="code" class="oe_field_code" invisible="is_section" optional="show" />
+        <field name="name" class="oe_field_name academy-section-title" />
+        <field name="hours" class="oe_field_hours" widget="float_time" required="not is_section" invisible="is_section"/>
+        <field name="primary_teacher_id" class="oe_field_primary_teacher_id" />
 
-      <xpath expr="//field[@name='description']" position="replace">
         <control>
           <create string="Add line"/>
           <create string="Add section" context="{'default_is_section': True}"/>
         </control>
-      </xpath>
+
+      </list>
     </field>
   </record>
-
 
 </odoo>
