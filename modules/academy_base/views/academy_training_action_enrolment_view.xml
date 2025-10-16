@@ -25,9 +25,10 @@
       <list string="academy_training_action_enrolment_tree" create="1" delete="1" edit="1"
         decoration-success="is_current">
         <field name="is_current" column_invisible="1"/>
-        <field name="code" class="oe_field_enrolment_code" />
+        <field name="code" class="oe_field_enrolment_code" optional="hide" />
         <field name="training_program_id" class="oe_field_training_program_id" optional="hide"/>
-        <field name="training_action_id" class="oe_field_training_action_id"/>
+        <field name="parent_action_id" class="oe_field_parent_action_id" string="Training action" />
+        <field name="training_action_id" class="oe_field_training_action_id" string="Training group" invisible="parent_action_id == training_action_id" />
         <field name="student_id" class="oe_field_student_id"/>
         <field name="training_modality_id" class="oe_field_training_modality_id" optional="show"/>
         <field name="register" class="oe_field_register" widget="date" />
@@ -58,7 +59,9 @@
               invisible="active == True"/>
           </div>
 
-          <field name="training_program_id" invisible="1"/>
+          <field name="training_program_id" invisible="1" force_save="1" />
+          <field name="parent_action_id" invisible="1" force_save="1" />
+          <field name="available_action_ids"  invisible="1" />
 
           <div class="w-100" id="academy-academy-training-action-enrolment-title">
             <field name="active" invisible="1"/>
@@ -73,6 +76,7 @@
           <group col="2">
             <group string="Training action">
               <field name="training_action_id" class="oe_field_training_action_id"
+                domain="[('id', '=', available_action_ids)]"
                 readonly="context.get('default_training_action_id', False) or id" string="Action"
                 options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
             </group>

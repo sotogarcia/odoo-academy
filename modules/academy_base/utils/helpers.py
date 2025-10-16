@@ -324,7 +324,7 @@ def many2many_count(parent_set, m2m_field_name, domain=None):
           AND EXISTS (
                 SELECT 1
                 FROM {from_clause}
-                WHERE "id" = mid_rel.{col_child}
+                WHERE {child_table}."id" = mid_rel.{col_child}
                   AND ({where_clause or 'TRUE'})
           )
         GROUP BY mid_rel.{col_parent}

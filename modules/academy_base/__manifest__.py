@@ -116,6 +116,7 @@ of reference catalogs and training structures across the platform.
         "security/academy_training_action_line.xml",
         "security/academy_training_teacher_assignment.xml",
         "security/academy_training_action_synchronize_wizard.xml",
+        "security/academy_training_action_student_rel.xml",
         "views/academy_base.xml",
         "views/academy_training_framework_view.xml",
         "views/academy_training_methodology_view.xml",

@@ -460,6 +460,12 @@ class AcademyTrainingActionEnrolment(models.Model):
     # -- Business fields and logic
     # -------------------------------------------
 
+    available_action_ids = fields.Many2many(
+        string="Available actions",
+        help=None,
+        related="parent_action_id.delivered_action_ids",
+    )
+
     color = fields.Integer(
         string="Color Index",
         required=True,
@@ -630,41 +636,6 @@ class AcademyTrainingActionEnrolment(models.Model):
         )
 
         return parent.copy(default)
-
-    # def _patch_parent_action(self, values_or_list):
-    #     """Fill `parent_action_id` based on `training_action_id.parent_id`"""
-
-    #     if not values_or_list:
-    #         return
-
-    #     # Normalize to list of dicts
-    #     if isinstance(values_or_list, dict):
-    #         values_or_list = [values_or_list]
-    #     elif not isinstance(values_or_list, (list, tuple)):
-    #         return
-
-    #     action_ids = set()
-    #     for values in values_or_list:
-    #         action_id = values.get("training_action_id")
-    #         if action_id:
-    #             action_ids.add(action_id)
-    #     if not action_ids:
-    #         return
-
-    #     action_obj = self.env["academy.training.action"]
-    #     action_set = action_obj.browse(action_ids)
-    #     if not action_set:
-    #         return
-
-    #     action_parent_map = {}
-    #     for action in action_set:
-    #         parent_id = action.parent_id.id if action.parent_id else None
-    #         action_parent_map[action.id] = parent_id
-
-    #     for values in values_or_list:
-    #         action_id = values.get("training_action_id")
-    #         if action_id in action_parent_map:
-    #             values["parent_action_id"] = action_parent_map[action_id]
 
     # Public methods
     # -------------------------------------------------------------------------

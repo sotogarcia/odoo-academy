@@ -64,6 +64,11 @@
             <form string="academy_training_action_form" create="1" delete="1" edit="1">
               <sheet>
                 <div class="oe_button_box" name="button_box">
+                  <button name="view_students" type="object"
+                      class="oe_stat_button oe_read_only" icon="fa-users"
+                      help="View enroled students">
+                      <field name="student_count" widget="statinfo" string="Students"/>
+                  </button>
                   <button name="view_teacher_assignments" type="object" class="oe_stat_button oe_read_only"
                       icon="fa-users" help="View teacher assignments">
                       <field name="teacher_assignment_count" widget="statinfo" string="Teachers" />

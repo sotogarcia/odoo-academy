@@ -13,8 +13,8 @@ from odoo.tools.misc import format_date
 from odoo import models, fields, api
 from odoo.tools.safe_eval import safe_eval
 from odoo.exceptions import ValidationError
-from odoo.osv.expression import AND, TRUE_DOMAIN, FALSE_DOMAIN
-from ..utils.helpers import OPERATOR_MAP, one2many_count
+from odoo.osv.expression import AND, OR, TRUE_DOMAIN, FALSE_DOMAIN
+from ..utils.helpers import OPERATOR_MAP, one2many_count, many2many_count
 from ..utils.sql_helpers import create_index
 
 from ..utils.record_utils import create_domain_for_ids
@@ -67,7 +67,7 @@ class AcademyTrainingAction(models.Model):
 
     _rec_name = "name"
     order = "parent_id, sequence, name, date_start"
-    _rec_names_search = ["name", "code", "training_program_id"]
+    _rec_names_search = ["name", "code", "training_program_id", "parent_id"]
 
     # -- Company dependency: Fields and logic
     # -------------------------------------------------------------------------
@@ -843,7 +843,7 @@ class AcademyTrainingAction(models.Model):
 
         return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
-    # -- Auxiliary fields and logic
+    # -- Business fields and logic
     # 1 => Red
     # 2 => Orange
     # 3 => Yellow
@@ -877,6 +877,97 @@ class AcademyTrainingAction(models.Model):
                 record.color = 10  # Green
             else:
                 record.color = 4  # Light blue
+
+    delivered_action_ids = fields.Many2many(
+        string="Delivered actions",
+        help=(
+            "Includes all child actions if present; otherwise, includes "
+            "this training action"
+        ),
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        comodel_name="academy.training.action",
+        relation="academy_training_action_delivered_action_rel",
+        column1="parent_action_id",
+        column2="child_action_id",
+        domain=[],
+        context={},
+        compute="_compute_delivered_action_ids",
+        search="_search_delivered_action_ids",
+    )
+
+    @api.depends("parent_id", "child_ids")
+    def _compute_delivered_action_ids(self):
+        for record in self:
+            record.delivered_action_ids = record.child_ids or record
+
+    def _search_delivered_action_ids(self, operator, value):
+        base_domain = [("child_ids", "=", False)]
+
+        rec_name_domains = [
+            [(field, operator, value)] for field in self._rec_names_search
+        ]
+        name_domain = OR(rec_name_domains) if rec_name_domains else []
+
+        return AND([base_domain, name_domain])
+
+    student_ids = fields.Many2manyView(
+        string="Students",
+        required=False,
+        readonly=True,
+        index=True,
+        default=None,
+        help="Students directly or indirectly enrolled in this action.",
+        comodel_name="academy.student",
+        relation="academy_training_action_student_rel",
+        column1="training_action_id",
+        column2="student_id",
+        domain=[],
+        context={},
+    )
+
+    student_count = fields.Integer(
+        string="Student count",
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        help=False,
+        compute="_compute_student_count",
+        search="_search_student_count",
+    )
+
+    @api.depends(
+        "enrolment_ids",
+        "rollup_enrolment_ids",
+        "enrolment_ids.student_id",
+        "rollup_enrolment_ids.student_id",
+        "student_ids",
+    )
+    def _compute_student_count(self):
+        counts = many2many_count(self, "student_ids")
+
+        for record in self:
+            record.student_count = counts.get(record.id, 0)
+
+    @api.model
+    def _search_student_count(self, operator, value):
+        # Handle boolean-like searches Odoo may pass for required fields
+        if value is True:
+            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
+        if value is False:
+            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
+
+        cmp_func = OPERATOR_MAP.get(operator)
+        if not cmp_func:
+            return FALSE_DOMAIN  # unsupported operator
+
+        counts = many2many_count(self.search([]), "student_ids")
+        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
+
+        return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
     # ------------------------------ CONSTRAINS -------------------------------
 
@@ -1228,6 +1319,31 @@ class AcademyTrainingAction(models.Model):
 
     # --------------------------- PUBLIC METHODS ------------------------------
 
+    def view_students(self):
+        self.ensure_one()
+
+        action_xid = "academy_base.action_student_act_window"
+        act_wnd = self.env.ref(action_xid)
+
+        context = self.env.context.copy()
+        context.update(safe_eval(act_wnd.context))
+
+        domain = [("id", "in", self.student_ids.ids)]
+
+        serialized = {
+            "type": "ir.actions.act_window",
+            "res_model": act_wnd.res_model,
+            "target": "current",
+            "name": act_wnd.name,
+            "view_mode": act_wnd.view_mode,
+            "domain": domain,
+            "context": context,
+            "search_view_id": act_wnd.search_view_id.id,
+            "help": act_wnd.help,
+        }
+
+        return serialized
+
     def view_teacher_assignments(self):
         self.ensure_one()
 
@@ -1434,12 +1550,13 @@ class AcademyTrainingAction(models.Model):
         action = self.env.ref(act_xid)
 
         parent_action_id = self.parent_id.id if self.parent_id else self.id
+        training_action_id = self.id if not self.child_ids else None
 
         ctx = self.env.context.copy()
         ctx.update(safe_eval(action.context))
         ctx.update(
             {
-                "default_training_action_id": self.id,
+                "default_training_action_id": training_action_id,
                 "default_parent_action_id": parent_action_id,
             }
         )
