@@ -4,7 +4,7 @@
 .module_item::after {counter-increment: modules; content: counter(modules)}
 
 .training-program-report {
-    font-size: 87.5%!important;
+    font-size: 0.9em!important;
 }
 
 .training-program-report h2,
@@ -17,7 +17,7 @@
 
 
 .training-program-report .table thead,
-.training-program-report .table .tr-thead {
+.training-program-report .table .thead {
     background-color: RGB(248, 249, 250) !important;;
 }
 

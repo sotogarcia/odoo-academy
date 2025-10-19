@@ -24,35 +24,35 @@
         <table border="1" cellspacing="0" cellpadding="1" class="table">
           <tbody>
             <tr>
-              <th>Code:</th>
+              <th class="thead">Code:</th>
               <td><span t-esc="o.code"/></td>
-              <th>Name:</th>
+              <th class="thead">Name:</th>
               <td colspan="3"><span t-esc="o.name"/></td>
             </tr>
             <tr>
-              <th>Responsible:</th>
+              <th class="thead">Responsible:</th>
               <td><span t-esc="o.manager_id.display_name"/></td>
-              <th>Hours:</th>
+              <th class="thead">Hours:</th>
               <td><span t-esc="f'{hours} h {minutes:02d} min'"/></td>
-              <th>Framework:</th>
+              <th class="thead">Framework:</th>
               <td><span t-esc="o.training_framework_id.display_name"/></td>
             </tr>
             <tr t-if="o.professional_family_id or o.professional_area_id or o.professional_field_id">
-              <th>Family:</th>
+              <th class="thead">Family:</th>
               <td><span t-esc="o.professional_family_id.display_name"/></td>
-              <th>Area:</th>
+              <th class="thead">Area:</th>
               <td><span t-esc="o.professional_area_id.display_name"/></td>
-              <th>Field:</th>
+              <th class="thead">Field:</th>
               <td><span t-esc="o.professional_field_id.display_name"/></td>
             </tr>
             <tr t-if="o.professional_sector_ids">
-              <th>Sectors:</th>
+              <th class="thead">Sectors:</th>
               <td colspan="5"><span t-esc="', '.join(o.professional_sector_ids.mapped('display_name'))" /></td>
             </tr>
             <tr>
-              <th>Attainment:</th>
+              <th class="thead">Attainment:</th>
               <td colspan="2"><span t-esc="o.attainment_id.display_name"/></td>
-              <th>Qualification:</th>
+              <th class="thead">Qualification:</th>
               <td colspan="2"><span t-esc="o.qualification_level_id.display_name"/></td>
             </tr>
           </tbody>
@@ -143,7 +143,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr clss="tr-thead">
+              <tr class="thead">
                 <th>Code</th>
                 <th>Hours</th>
                 <th>Manager</th>
@@ -163,7 +163,7 @@
                   </t>
                 </td>
               </tr>
-              <tr clss="tr-thead">
+              <tr class="thead">
                 <th>Interval</th>
                 <th>Modality</th>
                 <th>Enrolments</th>

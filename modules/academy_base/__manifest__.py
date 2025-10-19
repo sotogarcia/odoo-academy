@@ -179,14 +179,13 @@ of reference catalogs and training structures across the platform.
     "assets": {
         "web.assets_backend": [
             "academy_base/static/src/css/academy_base_view.css",
-            "academy_base/static/src/css/academy_training_program_report.css",
             "academy_base/static/src/scss/academy_program.scss",
         ],
         "web.report_assets_common": [
-            "academy_base/static/src/css/academy_training_program_details_report.css",
+            "academy_base/static/src/css/academy_training_program_report.css",
         ],
         "web.report_assets_pdf": [
-            "academy_base/static/src/css/academy_training_program_details_report.css",
+            "academy_base/static/src/css/academy_training_program_report.css",
         ],
     },
     "external_dependencies": {"python": []},
