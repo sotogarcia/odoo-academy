@@ -21,7 +21,7 @@
                         <section class="col-12">
 
                             <header>
-                                <h2>IDENTIFICATION OF THE TRAINING ACTIVITY</h2>
+                                <h2>IDENTIFICATION OF THE TRAINING PROGRAM</h2>
                             </header>
 
                             <div class="section-content">
@@ -53,20 +53,20 @@
                                 </dl>
 
                                 <!-- LIST OF COMPETENCY UNITS  - - - - - - - - - - - - - -->
-                                <h3 class="mt-4 mb-2">List of competence units</h3>
+                                <h3 class="mt-4 mb-2">List of components</h3>
 
-                                <t t-if="o.competency_unit_ids">
+                                <t t-if="o.program_line_ids">
                                     <ul class="list-unstyled unit_list">
-                                        <t t-foreach="o.competency_unit_ids"
-                                            t-as="competency_unit_id">
+                                        <t t-foreach="o.program_line_ids"
+                                            t-as="program_line_id">
                                             <li>
                                                 <strong class="mr-2">
-                                                  <span t-if="competency_unit_id.code"><t
-                                                  t-esc="competency_unit_id.code"
+                                                  <span t-if="program_line_id.code"><t
+                                                  t-esc="program_line_id.code"
                                                   /></span>
                                                   <span t-else="" class="unit_item">UNIT </span>: </strong>
                                                 <span>
-                                                  <t t-esc="competency_unit_id.name"/>
+                                                  <t t-esc="program_line_id.name"/>
                                                 </span>
                                             </li>
                                         </t>
@@ -75,7 +75,7 @@
                                 <t t-else="">It has not been specified.</t>
 
                                 <!-- GENERAL COMPETENCE  - - - - - - - - - - - - - - - - -->
-                                <h3 class="mt-4 mb-2">General competence</h3>
+                                <h3 class="mt-4 mb-2">Training component</h3>
                                 <p t-if="o.general_competence" class="text-justify">
                                     <t t-esc="o.general_competence"/>
                                 </p>
@@ -112,13 +112,13 @@
 
                                 <!-- LIST OF TRAINING MODULES  - - - - - - - - - - - - - -->
                                 <h3 class="mt-4 mb-2">List of training modules</h3>
-                                <t t-if="o.competency_unit_ids">
+                                <t t-if="o.program_line_ids">
                                     <ul class="list-unstyled module_list">
-                                        <t t-foreach="o.competency_unit_ids"
-                                            t-as="competency_unit_id">
+                                        <t t-foreach="o.program_line_ids"
+                                            t-as="program_line_id">
                                             <li>
                                                 <t t-set="module_id"
-                                                  t-value="competency_unit_id.training_module_id"/>
+                                                  t-value="program_line_id.training_module_id"/>
                                                 <strong class="mr-2">
                                                   <span t-if="module_id.code"><t
                                                   t-esc="module_id.code"/></span>
@@ -146,30 +146,29 @@
                             </header>
 
                             <div class="section-content unit_list">
-                                <t t-foreach="o.competency_unit_ids" t-as="competency_unit_id">
+                                <t t-foreach="o.program_line_ids" t-as="program_line_id">
                                     <t t-set="module_id"
-                                        t-value="competency_unit_id.training_module_id"/>
+                                        t-value="program_line_id.training_module_id"/>
                                     <div class="mt-6">
                                         <dl class="clearfix">
-                                            <dt class="mr-2" style="float: left;">COMPETENCY
-                                                UNIT</dt>
+                                            <dt class="mr-2" style="float: left;">TRAINING COMPONENT</dt>
                                             <dd style="float: left;"><b class="unit_item"
                                                 />&#160;</dd>
                                             <dt class="mr-2" style="float: left; clear: left;"
                                                 >Denomination:</dt>
                                             <dd style="float: left;"><t
-                                                  t-esc="competency_unit_id.name"
+                                                  t-esc="program_line_id.name"
                                                 />&#160;</dd>
                                             <dt class="mr-2" style="float: left; clear: left;"
                                                 >Code:</dt>
                                             <dd style="float: left;"><t
-                                                  t-esc="competency_unit_id.code"
+                                                  t-esc="program_line_id.code"
                                                 />&#160;</dd>
                                             <dt class="mr-2" style="float: left; clear: left;"
                                                 >Description:</dt>
                                             <dd style="float: left; clear: both;">
-                                                <t t-if="competency_unit_id.description"><t
-                                                  t-esc="competency_unit_id.description"/>&#160;</t>
+                                                <t t-if="program_line_id.description"><t
+                                                  t-esc="program_line_id.description"/>&#160;</t>
                                                 <t t-else="">It has not been specified.&#160;</t>
                                             </dd>
                                             <dt class="mr-2" style="float: left; clear: left;"

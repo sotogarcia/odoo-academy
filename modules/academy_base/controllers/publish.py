@@ -84,10 +84,10 @@ class Publish(http.Controller):
             act_et, "professional_sectors", sectors, "professional_sector"
         )
 
-        cunits = program.competency_unit_ids
+        cunits = program.program_line_ids
         cus_et = self.xml_item_ids(act_et, "competency_units", cunits)
 
-        for cu in program.competency_unit_ids:
+        for cu in program.program_line_ids:
             cu_et = self.xml_item_id(
                 cus_et, "competency", cu, ID_COMPETENY_UNIT_FIELD_MAP
             )
@@ -118,10 +118,10 @@ class Publish(http.Controller):
             act_et, "professional_sectors", sectors, "professional_sector"
         )
 
-        cunits = action.competency_unit_ids
+        cunits = action.program_line_ids
         cus_et = self.xml_item_ids(act_et, "competency_units", cunits)
 
-        for cu in action.competency_unit_ids:
+        for cu in action.program_line_ids:
             cu_et = self.xml_item_id(
                 cus_et, "competency", cu, ID_COMPETENY_UNIT_FIELD_MAP
             )
