@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo noupdate="0">
+
+  <record id="view_academy_training_program_general_qweb" model="ir.ui.view">
+    <field name="name">Training program general section</field>
+    <field name="model">academy.training.program</field>
+    <field name="type">qweb</field>
+    <field name="arch" type="xml">
+      <t t-name="academy_base.view_academy_training_program_general_qweb">
+
+        <!-- =========================================================== -->
+        <!--  General information                                        -->
+        <!-- =========================================================== -->
+        <p>
+          This section provides an overview of the training program, including
+          its official identification, responsible person, and total duration.
+          These details define the framework and coordination of the program.
+        </p>
+
+        <t t-set="hours" t-value="int(o.hours)"/>
+        <t t-set="minutes" t-value="int(round((o.hours - hours) * 60))"/>
+
+        <table border="1" cellspacing="0" cellpadding="1" class="table">
+          <tbody>
+            <tr>
+              <th>Code:</th>
+              <td><span t-esc="o.code"/></td>
+              <th>Name:</th>
+              <td colspan="3"><span t-esc="o.name"/></td>
+            </tr>
+            <tr>
+              <th>Responsible:</th>
+              <td><span t-esc="o.manager_id.display_name"/></td>
+              <th>Hours:</th>
+              <td><span t-esc="f'{hours} h {minutes:02d} min'"/></td>
+              <th>Framework:</th>
+              <td><span t-esc="o.training_framework_id.display_name"/></td>
+            </tr>
+            <tr t-if="o.professional_family_id or o.professional_area_id or o.professional_field_id">
+              <th>Family:</th>
+              <td><span t-esc="o.professional_family_id.display_name"/></td>
+              <th>Area:</th>
+              <td><span t-esc="o.professional_area_id.display_name"/></td>
+              <th>Field:</th>
+              <td><span t-esc="o.professional_field_id.display_name"/></td>
+            </tr>
+            <tr t-if="o.professional_sector_ids">
+              <th>Sectors:</th>
+              <td colspan="5"><span t-esc="', '.join(o.professional_sector_ids.mapped('display_name'))" /></td>
+            </tr>
+            <tr>
+              <th>Attainment:</th>
+              <td colspan="2"><span t-esc="o.attainment_id.display_name"/></td>
+              <th>Qualification:</th>
+              <td colspan="2"><span t-esc="o.qualification_level_id.display_name"/></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div t-if="o.general_competence">
+          <h3 class="h5">General competence</h3>
+          <p t-esc="o.general_competence"/>
+        </div>
+
+        <div t-if="o.description">
+          <h3 class="h5">Description</h3>
+          <div t-field="o.description"/>
+        </div>
+
+      </t>
+    </field>
+  </record>
+
+  <record id="view_academy_training_program_components_qweb" model="ir.ui.view">
+    <field name="name">Training program components section</field>
+    <field name="model">academy.training.program</field>
+    <field name="type">qweb</field>
+    <field name="arch" type="xml">
+      <t t-name="academy_base.view_academy_training_program_components_qweb">
+        <p>
+          This section lists the individual components that make up the
+          training program. Each component corresponds to a specific
+          learning unit or module within the overall curriculum.
+        </p>
+
+        <table class="table" t-if="o.program_line_ids">
+          <thead>
+            <tr>
+              <th>Code</th>
+              <th>Component</th>
+              <th>Module</th>
+            </tr>
+          </thead>
+          <tbody>
+            <t t-foreach="o.program_line_ids" t-as="line">
+              <tr>
+                <td><span t-esc="line.code"/></td>
+                <td><span t-esc="line.name"/></td>
+                <td>
+                  <a target="_self" t-if="line.training_module_id and line.training_module_id.code"
+                     t-att-href="'#' + (line.training_module_id.code or '').lower()"
+                     t-att-title="line.training_module_id.display_name"
+                     style="color: inherit; text-decoration: none;">
+                    <span t-esc="line.training_module_id.code"/>
+                  </a>
+                </td>
+              </tr>
+            </t>
+          </tbody>
+        </table>
+
+        <t t-if="not o.program_line_ids">
+          <p>No program components have been defined for this training program.</p>
+        </t>
+
+      </t>
+    </field>
+  </record>
+
+  <record id="view_academy_training_program_training_actions_qweb" model="ir.ui.view">
+    <field name="name">Training program actions section</field>
+    <field name="model">academy.training.program</field>
+    <field name="type">qweb</field>
+    <field name="arch" type="xml">
+      <t t-name="academy_base.view_academy_training_program_training_actions_qweb">
+        <p>
+          This section lists the training actions currently associated with
+          the program. Each action includes its code, title, scheduled
+          interval, delivery mode, assigned tutor, and related statistics.
+        </p>
+
+        <t t-foreach="o.training_action_ids" t-as="action">
+          <t t-set="ata_hours" t-value="int(action.hours)" />
+          <t t-set="ata_minutes" t-value="int(round((action.hours - ata_hours) * 60))" />
+
+          <table class="table" t-if="o.program_line_ids">
+            <thead>
+              <tr>
+                <th colspan="4">
+                  <h4 class="h6 card-title my-0"><t t-esc="action.display_name" /></h4>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr clss="tr-thead">
+                <th>Code</th>
+                <th>Hours</th>
+                <th>Manager</th>
+              </tr>
+              <tr>
+                <td><t t-esc="action.code" /></td>
+                <td><span t-esc="f'{ata_hours} h {ata_minutes:02d} min'"/></td>
+                <td>
+                  <t t-if="action.manager_id">
+                    <a target="_self" t-if="action.manager_id.email"
+                       t-att-href="'mailto:' + action.manager_id.email.lower()"
+                       t-att-title="action.manager_id.display_name"
+                       style="color: inherit; text-decoration: none;">
+                      <span t-esc="action.manager_id.display_name"/>
+                    </a>
+                    <t t-if="not action.manager_id.email" t-esc="action.display_name" />
+                  </t>
+                </td>
+              </tr>
+              <tr clss="tr-thead">
+                <th>Interval</th>
+                <th>Modality</th>
+                <th>Enrolments</th>
+              </tr>
+              <tr>
+                <td><t t-esc="action.lifespan" /></td>
+                <td><t t-esc="action.training_modality_id.display_name" /></td>
+                <td><t t-esc="action.enrolment_count" /></td>
+              </tr>
+              <tr t-if="action.description">
+                <td colspan="3">
+                  <h5 class="h6 card-title my-2">Description</h5>
+                  <div>
+                    <t t-esc="action.description" />
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </t>
+      </t>
+    </field>
+  </record>
+
+  <record id="view_academy_training_program_training_modules_qweb" model="ir.ui.view">
+    <field name="name">Training program modules section</field>
+    <field name="model">academy.training.program</field>
+    <field name="type">qweb</field>
+    <field name="arch" type="xml">
+      <t t-name="academy_base.view_academy_training_program_training_modules_qweb">
+        <p>
+          This section details the training modules that compose the program.
+          Each module includes its identification, responsible person, and
+          duration. When applicable, the training units or formative blocks
+          associated with a module are also listed below it.
+        </p>
+
+        <t t-foreach="o.program_line_ids" t-as="line">
+          <t t-set="module" t-value="line.training_module_id" />
+          <t t-set="mod_hours" t-value="int(module.hours)" />
+          <t t-set="mod_minutes" t-value="int(round((module.hours - mod_hours) * 60))" />
+
+          <table class="table" t-if="o.program_line_ids">
+            <thead>
+              <tr>
+                <th colspan="4">
+                  <h4 class="h6 card-title my-0"><t t-esc="module.display_name" /></h4>
+                </th>
+              </tr>
+              <tr>
+                <th>Code</th>
+                <th>Units</th>
+                <th>Hours</th>
+                <th>Manager</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><t t-esc="module.code" /></td>
+                <td><span t-esc="module.training_unit_count"/></td>
+                <td><span t-esc="f'{mod_hours} h {mod_minutes:02d} min'"/></td>
+                <td>
+                  <t t-if="module.manager_id">
+                    <a target="_self" t-if="module.manager_id.email"
+                       t-att-href="'mailto:' + module.manager_id.email.lower()"
+                       t-att-title="module.manager_id.display_name"
+                       style="color: inherit; text-decoration: none;">
+                      <span t-esc="module.manager_id.display_name"/>
+                    </a>
+                    <t t-if="not module.manager_id.email" t-esc="module.display_name" />
+                  </t>
+                </td>
+              </tr>
+              <tr t-if="module.description">
+                <td colspan="4">
+                  <h5 class="h6 card-title my-2">Description</h5>
+                  <div>
+                    <t t-esc="module.description" />
+                  </div>
+                </td>
+              </tr>
+              <tr t-if="module.training_unit_ids">
+                <td colspan="4">
+                  <h5 class="h6 card-title mt-3 mb-2">Training blocks/Training units</h5>
+                  <table class="table table-sm">
+                    <thead>
+                      <tr>
+                        <th>Code:</th>
+                        <th>Name:</th>
+                        <th>Hours:</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <t t-foreach="module.training_unit_ids" t-as="unit">
+                        <t t-set="unit_hours" t-value="int(unit.hours)" />
+                        <t t-set="unit_minutes" t-value="int(round((unit.hours - mod_hours) * 60))" />
+                        <tr>
+                          <td><t t-esc="unit.code" /></td>
+                          <td><t t-esc="unit.display_name" /></td>
+                          <td><span t-esc="f'{unit_hours} h {unit_minutes:02d} min'"/></td>
+                        </tr>
+                      </t>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </t>
+      </t>
+    </field>
+  </record>
+
+  <record id="view_academy_training_program_document_qweb" model="ir.ui.view">
+    <field name="name">Training program document</field>
+    <field name="model">academy.training.program</field>
+    <field name="type">qweb</field>
+    <field name="arch" type="xml">
+      <t t-name="academy_base.view_academy_training_program_document_qweb">
+
+        <!-- =========================================================== -->
+        <!--  Training program document                                  -->
+        <!-- =========================================================== -->
+        <article class="training-program-report">
+          <header>
+            <h2 class="h3"><t t-esc="o.display_name" /></h2>
+            <div class="mt-3" t-if="o.description">
+              <t t-esc="o.description" />
+            </div>
+          </header>
+
+          <!-- General information -->
+          <section id="general" class="program-general my-4">
+            <header>
+              <h2 class="h4">General information</h2>
+            </header>
+
+            <!-- Content placeholder -->
+            <div class="section-body">
+              <t t-call="academy_base.view_academy_training_program_general_qweb"/>
+            </div>
+          </section>
+
+          <!-- Components (program lines) -->
+          <section id="components" class="program-components my-4">
+            <header>
+              <h2 class="h4">Program components</h2>
+            </header>
+
+            <!-- Content placeholder -->
+            <div class="section-body">
+              <t t-call="academy_base.view_academy_training_program_components_qweb" />
+            </div>
+          </section>
+
+          <!-- Training actions -->
+          <section id="training-actions" class="program-training-actions my-4">
+            <header>
+              <h2 class="h4">Training actions</h2>
+            </header>
+
+            <!-- Content placeholder -->
+            <div class="section-body">
+              <t t-call="academy_base.view_academy_training_program_training_actions_qweb" />
+            </div>
+          </section>
+
+          <!-- Training modules -->
+          <section id="training-modules" class="program-training-modules my-4">
+            <header>
+              <h2 class="h4">Training modules</h2>
+            </header>
+
+            <!-- Content placeholder -->
+            <div class="section-body">
+              <t t-call="academy_base.view_academy_training_program_training_modules_qweb" />
+            </div>
+          </section>
+
+        </article>
+        <!-- /training-program -->
+
+      </t>
+    </field>
+  </record>
+
+  <record id="view_academy_training_program_qweb" model="ir.ui.view">
+    <field name="name">Training program details report</field>
+    <field name="model">academy.training.program</field>
+    <field name="type">qweb</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16"/>
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <t t-name="academy_base.view_academy_training_program_qweb">
+
+        <!-- =========================================================== -->
+        <!--  Training program container                                 -->
+        <!-- =========================================================== -->
+        <t t-call="web.html_container">
+          <t t-foreach="docs" t-as="o">
+            <t t-call="web.external_layout">
+                <t t-call="academy_base.view_academy_training_program_document_qweb"/>
+            </t>
+          </t>
+        </t>
+
+      </t>
+    </field>
+  </record>
+
+  <record id="action_report_academy_training_program" model="ir.actions.report">
+    <field name="name">Training program report</field>
+    <field name="model">academy.training.program</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">academy_base.view_academy_training_program_qweb</field>
+    <field name="attachment_use" eval="False"/>
+    <field name="attachment">(object.name + '.pdf')</field>
+    <field name="paperformat_id" ref="base.paperformat_euro"/>
+    <field name="help">Training program report</field>
+    <field name="binding_model_id" ref="academy_base.model_academy_training_program"/>
+  </record>
+
+</odoo>
