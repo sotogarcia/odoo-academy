@@ -303,6 +303,8 @@ class AcademyTrainingActionLine(models.Model):
     def view_teacher_assignments(self):
         self.ensure_one()
 
+        name = self.env._('Teachers: "{}"').format(self.display_name)
+
         action_xid = "academy_base.action_teacher_assignment_act_window"
         act_wnd = self.env.ref(action_xid)
 
@@ -321,7 +323,7 @@ class AcademyTrainingActionLine(models.Model):
             "type": "ir.actions.act_window",
             "res_model": act_wnd.res_model,
             "target": "current",
-            "name": act_wnd.name,
+            "name": name,
             "view_mode": act_wnd.view_mode,
             "domain": domain,
             "context": context,

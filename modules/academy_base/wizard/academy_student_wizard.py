@@ -705,7 +705,6 @@ class AcademyStudentWizard(models.TransientModel):
         self.ensure_one()
 
         ENROLMENT_MODEL = "academy.training.action.enrolment"
-
         active_model = self.env.context.get("active_model", False)
         if active_model == ENROLMENT_MODEL:
             model_name = _("students")

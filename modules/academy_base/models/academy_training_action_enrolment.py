@@ -4,9 +4,68 @@
 #    __openerp__.py file at the root folder of this module.                   #
 ###############################################################################
 
+"""
+academy.training.action.enrolment
+
+Enrollment records are attached to training actions that may be hierarchical.
+
+Relationship model
+------------------
+- A training action can have zero (0) or more child actions.
+- An enrollment must always target the *last* actionable unit (a leaf action).
+
+Field semantics
+---------------
+- training_action_id:
+    The leaf `academy.training.action` the learner actually enrolls in.
+    This MUST be a leaf (i.e., it cannot have child actions).
+
+- parent_action_id:
+    The direct parent action of `training_action_id` when the latter is a child.
+    If `training_action_id` has no parent (no children exist in that branch),
+    then `parent_action_id` MUST be the same record as `training_action_id`.
+
+Formal invariants
+-----------------
+Let A = training_action_id and P = A.parent_id.
+
+1) A.child_ids == False
+   (enrollment cannot point to a non-leaf action)
+
+2) parent_action_id == (P if P else A)
+
+These invariants must hold on create and on any update that changes A.
+
+Rationale
+---------
+Having both fields denormalizes the hierarchy for fast reporting and grouping:
+- training_action_id tells "where the learner really sits" (leaf).
+- parent_action_id allows easy aggregation by the immediate parent or by the
+  action itself when there is no child level.
+
+Examples
+--------
+1) Action A with child B:
+   training_action_id = B
+   parent_action_id   = A
+
+2) Action A with no children:
+   training_action_id = A
+   parent_action_id   = A
+
+Implementation notes
+--------------------
+- Enforce the invariants with an @api.constrains on training_action_id and
+  parent_action_id.
+- Recompute/validate parent_action_id whenever training_action_id changes.
+- Consider SQL/indexes on (parent_action_id, training_action_id) for common
+  reporting queries.
+"""
+
 from odoo import models, fields, api
 from odoo.tools.misc import format_date
 from odoo.exceptions import UserError, ValidationError
+from odoo.osv.expression import TRUE_DOMAIN
 from odoo.osv.expression import TERM_OPERATORS_NEGATION, AND
 from ..utils.helpers import sanitize_code, default_code
 from ..utils.sql_helpers import create_index
@@ -108,7 +167,17 @@ class AcademyTrainingActionEnrolment(models.Model):
         context={},
         ondelete="cascade",
         auto_join=False,
+        compute="_compute_parent_action_id",
+        store=True,
     )
+
+    @api.depends("training_action_id", "training_action_id.parent_id")
+    def _compute_parent_action_id(self):
+        for record in self:
+            record.parent_action_id = (
+                record.training_action_id.parent_id
+                or record.training_action_id
+            )
 
     action_line_ids = fields.Many2many(
         string="Action lines",
@@ -151,6 +220,16 @@ class AcademyTrainingActionEnrolment(models.Model):
             ("delivered", "Material Delivered"),
             ("na", "Not Applicable / Digital"),
         ],
+    )
+
+    full_enrolment = fields.Boolean(
+        string="Full enrolment",
+        required=False,
+        readonly=False,
+        index=True,
+        default=False,
+        help="If active, the student will be automatically enrolled in all "
+        "modules of the training program.",
     )
 
     # Student information
@@ -216,7 +295,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         default=None,
         help="Training action in which the student is enrolled",
         comodel_name="academy.training.action",
-        domain=[],
+        domain=[("child_ids", "=", False)],
         context={},
         ondelete="cascade",
         auto_join=False,
@@ -547,11 +626,22 @@ class AcademyTrainingActionEnrolment(models.Model):
                 ]
             )
 
-            if not record.deregister:
+            if record.deregister:
                 domains.append([("register", "<", record.deregister)])
 
             if enrolment_obj.search(AND(domains)):
-                ValidationError(message)
+                raise ValidationError(message)
+
+    @api.constrains("training_action_id")
+    def _check_training_action_is_leaf(self):
+        message = self.env._(
+            "Enrolments must be linked to a leaf training action "
+            "(an action without child actions)."
+        )
+        for record in self:
+            action = record.training_action_id
+            if action and action.child_ids:
+                raise ValidationError(message)
 
     # Overridden methods
     # -------------------------------------------------------------------------
@@ -594,7 +684,7 @@ class AcademyTrainingActionEnrolment(models.Model):
 
         sanitize_code(values_list, "upper")
 
-        self._perform_a_full_enrollment(values_list)
+        self._perform_a_full_enrolment(values_list)
 
         result = super().create(values_list)
 
@@ -606,7 +696,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         sanitize_code(values, "upper")
 
         self._check_that_the_student_is_not_the_template(values)
-        self._perform_a_full_enrollment(values)
+        self._perform_a_full_enrolment(values)
 
         result = super().write(values)
 
@@ -706,7 +796,7 @@ class AcademyTrainingActionEnrolment(models.Model):
 
                 register = register.strftime("")
 
-    def fetch_enrollments(
+    def fetch_enrolments(
         self,
         students=None,
         training_actions=None,
@@ -777,7 +867,7 @@ class AcademyTrainingActionEnrolment(models.Model):
                 raise ValidationError(msg)
 
     @api.model
-    def remove_temporary_student_enrollments(self):
+    def remove_temporary_student_enrolments(self):
         """When registrations are duplicated, the temporary student is
         assigned to them. These must be edited to establish the corresponding
         student or, otherwise, a scheduled task will invoke this method to
@@ -804,18 +894,31 @@ class AcademyTrainingActionEnrolment(models.Model):
         _logger.info("Temporary student enrolments will be removed {}")
         enrolment_set.unlink()
 
-    @api.model
-    def _perform_a_full_enrollment(self, values_list):
-        for values in values_list:
-            action_id = values.get("training_action_id", None)
+    def _perform_a_full_enrolment(self, values):
+        """Ensure the M2M of action lines is populated when full_enrolment is
+        True. Accepts either a dict (write) or a list of dicts (create).
+        """
+        values_list = values if isinstance(values, list) else [values]
+        for vals in values_list:
+            # Only act when explicitly requested or, on write, when the record
+            # has the flag
+            flag = vals.get("full_enrolment")
+            if flag is None and self:
+                flag = self[:1].full_enrolment
+            if not flag:
+                continue
+
+            action_id = vals.get("training_action_id")
+            if not action_id and self:
+                # during write, allow using the current action
+                action_id = self[:1].training_action_id.id
 
             if action_id:
-                action_obj = self.env["academy.training.action"]
-                action_set = action_obj.browse(action_id)
-
-                # if action_set and action_set.program_line_ids:
-                #     competency_ids = action_set.competency_unit_ids.ids
-                #     values["competency_unit_ids"] = [(6, 0, competency_ids)]
+                action = self.env["academy.training.action"].browse(action_id)
+                if action and action.action_line_ids:
+                    vals["action_line_ids"] = [
+                        (6, 0, action.action_line_ids.ids)
+                    ]
 
     @api.model
     def _ensure_enrolment_date(self, vals_list):
@@ -833,3 +936,9 @@ class AcademyTrainingActionEnrolment(models.Model):
 
         if not values.get("enrolment_date", False):
             self._ensure_enrolment_date([values])
+
+    # Maintenance tasks
+    # -------------------------------------------------------------------------
+
+    def full_enrolment_maintenance_task(self):
+        pass

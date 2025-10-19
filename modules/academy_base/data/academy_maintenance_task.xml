@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo noupdate="0">
+
+  <delete id="academy_maintenance_task_full_enrolment" model="academy.maintenance.task" />
+
+  <record id="academy_maintenance_full_enrolment_maintenance_task" model="academy.maintenance.task">
+      <field name="sequence" eval="10"/>
+      <field name="model_id" ref="academy_base.model_academy_training_action_enrolment"/>
+      <field name="method">full_enrolment_maintenance_task</field>
+      <field name="frequency">freq_1</field>
+      <field name="offset" eval="0"/>
+      <field name="active" eval="True"/>
+  </record>
+
+  <record id="academy_maintenance_training_action_group_sync_task" model="academy.maintenance.task">
+      <field name="sequence" eval="10"/>
+      <field name="model_id" ref="academy_base.model_academy_training_action"/>
+      <field name="method">training_action_group_sync_task</field>
+      <field name="frequency">freq_8</field>
+      <field name="offset" eval="7"/>
+      <field name="active" eval="True"/>
+  </record>
+
+</odoo>

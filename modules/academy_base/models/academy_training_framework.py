@@ -184,6 +184,8 @@ class AcademyTrainingFramework(models.Model):
     def view_training_programs(self):
         self.ensure_one()
 
+        name = self.env._('Programs: "{}"').format(self.display_name)
+
         action_xid = "{module}.{name}".format(
             module="academy_base",
             name="action_academy_training_program_act_window",
@@ -200,7 +202,7 @@ class AcademyTrainingFramework(models.Model):
             "type": "ir.actions.act_window",
             "res_model": act_wnd.res_model,
             "target": "current",
-            "name": act_wnd.name,
+            "name": name,
             "view_mode": act_wnd.view_mode,
             "domain": domain,
             "context": context,

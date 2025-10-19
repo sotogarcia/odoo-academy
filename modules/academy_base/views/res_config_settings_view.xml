@@ -179,6 +179,20 @@
           </block>
           <!-- Settings block: end -->
 
+          <!-- Settings block: begin -->
+          <block title="Maintenance" name="academy_base_maintenance">
+
+            <setting string="Maintenance tasks" help="View and edit maintenance tasks">
+              <div class="content-group mt8">
+                <button name="%(academy_base.action_maintenance_tasks_act_window)d"
+                  string="&#160;Update tasks" type="action" class="oe_link" icon="fa-arrow-right"/>
+
+              </div>
+            </setting>
+
+          </block>
+          <!-- Settings block: end -->
+
         </app>
       </xpath>
     </field>

@@ -96,4 +96,6 @@ from . import academy_training_action_student_rel
 # ---------------------------------------------------------------------------
 # Settings
 # ---------------------------------------------------------------------------
+
+from . import academy_maintenance_task
 from . import res_config_settings

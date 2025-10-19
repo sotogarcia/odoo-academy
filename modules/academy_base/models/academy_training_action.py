@@ -180,6 +180,18 @@ class AcademyTrainingAction(models.Model):
         "groups or sessions (children records).",
     )
 
+    keep_synchronized = fields.Boolean(
+        string="Sync parent program",
+        required=False,
+        readonly=False,
+        index=True,
+        default=False,
+        help=(
+            "If enabled, this child action will automatically keep its "
+            "training program synchronized with the parent action's program."
+        ),
+    )
+
     # -- Entity fields
     # -------------------------------------------------------------------------
 
@@ -774,16 +786,13 @@ class AcademyTrainingAction(models.Model):
             if not record.id:
                 continue
 
-            domain = [("action_line_id", "=", record.id)]
-            assigns = assignment_obj.search(
-                domain, order="sequence NULLS LAST"
-            )
+            domain = [("training_action_id", "=", record.id)]
+            assigns = assignment_obj.search(domain, order="sequence, id")
 
             if not assigns:
                 if teacher:
                     values = {
-                        "training_action_id": record.training_action_id.id,
-                        "action_line_id": record.id,
+                        "training_action_id": record.id,
                         "teacher_id": teacher.id,
                         "sequence": 1,
                     }
@@ -801,9 +810,7 @@ class AcademyTrainingAction(models.Model):
                     first.write({"teacher_id": teacher.id})
 
                 # normalize 1..n
-                ordered = assignment_obj.search(
-                    domain, order="sequence NULLS LAST"
-                )
+                ordered = assignment_obj.search(domain, order="sequence, id")
                 for i, a in enumerate(ordered, start=1):
                     if a.sequence != i:
                         a.sequence = i
@@ -1322,6 +1329,8 @@ class AcademyTrainingAction(models.Model):
     def view_students(self):
         self.ensure_one()
 
+        name = self.env._('Students: "{}"').format(self.display_name)
+
         action_xid = "academy_base.action_student_act_window"
         act_wnd = self.env.ref(action_xid)
 
@@ -1334,7 +1343,7 @@ class AcademyTrainingAction(models.Model):
             "type": "ir.actions.act_window",
             "res_model": act_wnd.res_model,
             "target": "current",
-            "name": act_wnd.name,
+            "name": name,
             "view_mode": act_wnd.view_mode,
             "domain": domain,
             "context": context,
@@ -1346,6 +1355,8 @@ class AcademyTrainingAction(models.Model):
 
     def view_teacher_assignments(self):
         self.ensure_one()
+
+        name = self.env._('Teachers: "{}"').format(self.display_name)
 
         action_xid = "academy_base.action_teacher_assignment_act_window"
         act_wnd = self.env.ref(action_xid)
@@ -1360,7 +1371,7 @@ class AcademyTrainingAction(models.Model):
             "type": "ir.actions.act_window",
             "res_model": act_wnd.res_model,
             "target": "current",
-            "name": act_wnd.name,
+            "name": name,
             "view_mode": act_wnd.view_mode,
             "domain": domain,
             "context": context,
@@ -1372,6 +1383,8 @@ class AcademyTrainingAction(models.Model):
 
     def view_training_action_groups(self):
         self.ensure_one()
+
+        name = self.env._('Groups: "{}"').format(self.display_name)
 
         action_xid = "academy_base.action_training_action_group_act_window"
         act_wnd = self.env.ref(action_xid)
@@ -1387,7 +1400,7 @@ class AcademyTrainingAction(models.Model):
             "type": "ir.actions.act_window",
             "res_model": act_wnd.res_model,
             "target": "current",
-            "name": act_wnd.name,
+            "name": name,
             "view_mode": act_wnd.view_mode,
             "domain": domain,
             "context": context,
@@ -1400,6 +1413,8 @@ class AcademyTrainingAction(models.Model):
 
     def view_action_lines(self):
         self.ensure_one()
+
+        name = self.env._('Program: "{}"').format(self.display_name)
 
         action_xid = "academy_base.action_training_action_line_act_window"
         act_wnd = self.env.ref(action_xid)
@@ -1414,7 +1429,7 @@ class AcademyTrainingAction(models.Model):
             "type": "ir.actions.act_window",
             "res_model": act_wnd.res_model,
             "target": "current",
-            "name": act_wnd.name,
+            "name": name,
             "view_mode": act_wnd.view_mode,
             "domain": domain,
             "context": context,
@@ -1512,6 +1527,8 @@ class AcademyTrainingAction(models.Model):
     def view_enrolments(self):
         self.ensure_one()
 
+        name = self.env._('Enrolments: "{}"').format(self.display_name)
+
         act_xid = "academy_base.action_training_action_enrolment_act_window"
         action = self.env.ref(act_xid)
 
@@ -1530,7 +1547,7 @@ class AcademyTrainingAction(models.Model):
         domain = AND([domain, [("training_action_id", "=", self.id)]])
 
         action_values = {
-            "name": "{} {}".format(_("Enroled in"), self.name),
+            "name": name,
             "type": action.type,
             "help": action.help,
             "domain": domain,
@@ -1545,6 +1562,8 @@ class AcademyTrainingAction(models.Model):
 
     def view_rollup_enrolments(self):
         self.ensure_one()
+
+        name = self.env._('Enrolments: "{}"').format(self.display_name)
 
         act_xid = "academy_base.action_training_action_enrolment_act_window"
         action = self.env.ref(act_xid)
@@ -1565,7 +1584,7 @@ class AcademyTrainingAction(models.Model):
         domain = AND([domain, [("parent_action_id", "=", self.id)]])
 
         action_values = {
-            "name": "{} {}".format(_("Enroled in"), self.name),
+            "name": name,
             "type": action.type,
             "help": action.help,
             "domain": domain,
@@ -1704,3 +1723,80 @@ class AcademyTrainingAction(models.Model):
 
         for record in self:
             record._synchronize_from_program(mode, add_optional)
+
+    # Maintenance tasks
+    # -------------------------------------------------------------------------
+
+    @api.model
+    def training_action_group_sync_task(self, limit=None):
+        cr = self.env.cr
+        cr.execute(
+            """
+            SELECT c.id
+            FROM academy_training_action AS c
+            JOIN academy_training_action AS p
+              ON p.id = c.parent_id
+            WHERE c.keep_synchronized = TRUE
+              AND c.parent_id IS NOT NULL
+              AND COALESCE(c.lines_last_updated, TIMESTAMP '1900-01-01')
+                  < COALESCE(p.lines_last_updated, TIMESTAMP '1900-01-01')
+            ORDER BY p.id
+            {limit_clause}
+        """.format(
+                limit_clause=f"LIMIT {int(limit)}" if limit else ""
+            )
+        )
+        child_ids = [row[0] for row in cr.fetchall()]
+        if not child_ids:
+            return 0
+
+        children = self.browse(child_ids).with_context(
+            skip_program_recompute=True
+        )
+
+        for child in children:
+            parent = child.parent_id
+            child.action_line_ids.unlink()
+            vals_list = []
+            for line in parent.action_line_ids:
+                vals = {
+                    "name": line.name,
+                    "sequence": line.sequence,
+                    "duration": line.duration,
+                    "action_id": child.id,
+                }
+                vals_list.append(vals)
+            if vals_list:
+                self.env["academy.training.action.line"].create(vals_list)
+
+        # Opcional: invalidar/calc. campos dependientes en bloque
+        children.invalidate_cache(["action_line_ids", "lines_last_updated"])
+        return len(children)
+
+    lines_last_updated = fields.Datetime(
+        string="Lines last updated",
+        required=False,
+        readonly=True,
+        index=True,
+        default=None,
+        help="Max(create/write date) among action_line_ids.",
+        compute="_compute_lines_last_updated",
+        store=True,
+    )
+
+    @api.depends(
+        "action_line_ids",
+        "action_line_ids.create_date",
+        "action_line_ids.write_date",
+        "action_line_ids.sequence",
+    )
+    def _compute_lines_last_updated(self):
+        for record in self:
+            lines = record.action_line_ids
+            if not lines:
+                record.lines_last_updated = False
+                continue
+            dates = [d for d in lines.mapped("write_date") if d] + [
+                d for d in lines.mapped("create_date") if d
+            ]
+            record.lines_last_updated = max(dates) if dates else False

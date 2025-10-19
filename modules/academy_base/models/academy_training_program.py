@@ -340,6 +340,8 @@ class AcademyTrainingProgram(models.Model):
     def view_training_actions(self):
         self.ensure_one()
 
+        name = self.env._('Actions: "{}"').format(self.display_name)
+
         action_xid = "academy_base.action_training_action_act_window"
         act_wnd = self.env.ref(action_xid)
 
@@ -353,7 +355,7 @@ class AcademyTrainingProgram(models.Model):
             "type": "ir.actions.act_window",
             "res_model": act_wnd.res_model,
             "target": "current",
-            "name": act_wnd.name,
+            "name": name,
             "view_mode": act_wnd.view_mode,
             "domain": domain,
             "context": context,
@@ -365,6 +367,8 @@ class AcademyTrainingProgram(models.Model):
 
     def view_training_program_lines(self):
         self.ensure_one()
+
+        name = self.env._('Program: "{}"').format(self.display_name)
 
         action_xid = "academy_base.action_training_program_line_act_window"
         act_wnd = self.env.ref(action_xid)
@@ -380,7 +384,7 @@ class AcademyTrainingProgram(models.Model):
             "type": "ir.actions.act_window",
             "res_model": act_wnd.res_model,
             "target": "current",
-            "name": act_wnd.name,
+            "name": name,
             "view_mode": act_wnd.view_mode,
             "domain": domain,
             "context": context,

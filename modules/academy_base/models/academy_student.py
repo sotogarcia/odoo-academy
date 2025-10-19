@@ -309,6 +309,8 @@ class AcademyStudent(models.Model):
     def view_enrolments(self):
         self.ensure_one()
 
+        name = self.env._('Enrolments: "{}"').format(self.display_name)
+
         act_xid = "{module}.{name}".format(
             module="academy_base",
             name="action_training_action_enrolment_act_window",
@@ -329,7 +331,7 @@ class AcademyStudent(models.Model):
         domain = AND([domain, [("student_id", "=", self.id)]])
 
         action_values = {
-            "name": _('Enrolments for "{}"').format(self.name),
+            "name": name,
             "type": action.type,
             "help": action.help,
             "domain": domain,
