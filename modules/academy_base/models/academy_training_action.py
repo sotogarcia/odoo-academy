@@ -928,7 +928,7 @@ class AcademyTrainingAction(models.Model):
         default=None,
         help="Students directly or indirectly enrolled in this action.",
         comodel_name="academy.student",
-        relation="academy_training_action_student_rel",
+        relation="academy_training_action_student_link",
         column1="training_action_id",
         column2="student_id",
         domain=[],
@@ -1234,7 +1234,7 @@ class AcademyTrainingAction(models.Model):
             remove_tz=True,
         )
 
-    # -- overloaded methods
+    # -- Overridden methods
     # -------------------------------------------------------------------------
 
     def _auto_init(self):
@@ -1329,7 +1329,7 @@ class AcademyTrainingAction(models.Model):
     def view_students(self):
         self.ensure_one()
 
-        name = self.env._('Students: "{}"').format(self.display_name)
+        name = self.env._("Students: {}").format(self.display_name)
 
         action_xid = "academy_base.action_student_act_window"
         act_wnd = self.env.ref(action_xid)
@@ -1356,7 +1356,7 @@ class AcademyTrainingAction(models.Model):
     def view_teacher_assignments(self):
         self.ensure_one()
 
-        name = self.env._('Teachers: "{}"').format(self.display_name)
+        name = self.env._("Teachers: {}").format(self.display_name)
 
         action_xid = "academy_base.action_teacher_assignment_act_window"
         act_wnd = self.env.ref(action_xid)
@@ -1384,7 +1384,7 @@ class AcademyTrainingAction(models.Model):
     def view_training_action_groups(self):
         self.ensure_one()
 
-        name = self.env._('Groups: "{}"').format(self.display_name)
+        name = self.env._("Groups: {}").format(self.display_name)
 
         action_xid = "academy_base.action_training_action_group_act_window"
         act_wnd = self.env.ref(action_xid)
@@ -1414,7 +1414,7 @@ class AcademyTrainingAction(models.Model):
     def view_action_lines(self):
         self.ensure_one()
 
-        name = self.env._('Program: "{}"').format(self.display_name)
+        name = self.env._("Program: {}").format(self.display_name)
 
         action_xid = "academy_base.action_training_action_line_act_window"
         act_wnd = self.env.ref(action_xid)
@@ -1458,50 +1458,6 @@ class AcademyTrainingAction(models.Model):
                     {"date_stop": fields.Datetime.to_string(record.date_stop)}
                 )
 
-    # def session_wizard(self):
-    #     """Launch the Session wizard.
-    #     This wizard has a related window action, this method reads the action,
-    #     updates context using current evironment and sets the wizard training
-    #     action to this action.
-    #     """
-
-    #     module = "academy_base"
-    #     name = "action_academy_training_session_wizard_act_window"
-    #     act_xid = "{}.{}".format(module, name)
-
-    #     self.ensure_one()
-
-    #     # STEP 1: Initialize variables
-    #     action = self.env.ref(act_xid)
-    #     actx = safe_eval(action.context)
-
-    #     # STEP 2 Update context:
-    #     ctx = dict()
-    #     ctx.update(self.env.context)  # dictionary from environment
-    #     ctx.update(actx)  # add action context
-
-    #     # STEP 3: Set training action for wizard. This action will be send in
-    #     # context as a default value. If this recordset have not records,
-    #     # any training action will be set
-    #     if self.id:
-    #         ctx.update(dict(default_training_action_id=self.id))
-
-    #     # STEP 4: Map training action and add computed context
-    #     action_map = {
-    #         "type": action.type,
-    #         "name": action.name,
-    #         "res_model": action.res_model,
-    #         "view_mode": action.view_mode,
-    #         "target": action.target,
-    #         "domain": action.domain,
-    #         "context": ctx,
-    #         "search_view_id": action.search_view_id,
-    #         "help": action.help,
-    #     }
-
-    #     # STEP 5: Return the action
-    #     return action_map
-
     @staticmethod
     def _eval_domain(domain):
         """Evaluate a domain expresion (str, False, None, list or tuple) an
@@ -1527,7 +1483,7 @@ class AcademyTrainingAction(models.Model):
     def view_enrolments(self):
         self.ensure_one()
 
-        name = self.env._('Enrolments: "{}"').format(self.display_name)
+        name = self.env._("Enrolments: {}").format(self.display_name)
 
         act_xid = "academy_base.action_training_action_enrolment_act_window"
         action = self.env.ref(act_xid)
@@ -1563,7 +1519,7 @@ class AcademyTrainingAction(models.Model):
     def view_rollup_enrolments(self):
         self.ensure_one()
 
-        name = self.env._('Enrolments: "{}"').format(self.display_name)
+        name = self.env._("Enrolments: {}").format(self.display_name)
 
         act_xid = "academy_base.action_training_action_enrolment_act_window"
         action = self.env.ref(act_xid)
@@ -1597,7 +1553,7 @@ class AcademyTrainingAction(models.Model):
 
         return action_values
 
-    def copy_activity_image(self):
+    def copy_program_image(self):
         for record in self:
             if not record.training_program_id:
                 continue
@@ -1729,7 +1685,13 @@ class AcademyTrainingAction(models.Model):
 
     @api.model
     def training_action_group_sync_task(self, limit=None):
+        """
+        1) Localiza HIJAS que deben sincronizarse (keep_synchronized = True) porque
+           su snapshot (lines_last_updated) es más antiguo que el del padre.
+        2) Sincroniza esas hijas con el programa del padre.
+        """
         cr = self.env.cr
+        # Nota: COALESCE para tratar NULLs como muy antiguos
         cr.execute(
             """
             SELECT c.id
@@ -1754,15 +1716,22 @@ class AcademyTrainingAction(models.Model):
             skip_program_recompute=True
         )
 
+        # --- Sincronización (ejemplo orientativo) ---
+        # Copia el snapshot (action_line_ids) del padre a la hija.
+        # Adapta a tu método real de clonado/sync.
         for child in children:
             parent = child.parent_id
+            # Reemplazar snapshot de la hija por el del padre
+            # (ejemplo: borrar líneas actuales y clonar del padre)
             child.action_line_ids.unlink()
             vals_list = []
             for line in parent.action_line_ids:
                 vals = {
+                    # copia de campos relevantes de la línea
                     "name": line.name,
                     "sequence": line.sequence,
                     "duration": line.duration,
+                    # ...
                     "action_id": child.id,
                 }
                 vals_list.append(vals)

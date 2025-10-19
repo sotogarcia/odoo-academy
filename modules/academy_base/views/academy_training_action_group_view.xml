@@ -58,7 +58,7 @@
       <xpath expr="//button[@name='view_training_action_groups']" position="replace" />
       <xpath expr="//button[@name='view_rollup_enrolments']" position="replace">
         <button name="view_enrolments" type="object"
-            class="oe_stat_button oe_read_only" icon="fa-id-card-o"
+            class="oe_stat_button oe_read_only" icon="fa-sign-in"
             help="View training group enrolments">
             <field name="enrolment_count" widget="statinfo" string="Enrolments"/>
         </button>
@@ -89,9 +89,9 @@
       <xpath expr="//field[@name='rollup_enrolment_count']" position="replace">
         <field name="enrolment_count" />
       </xpath>
-      <xpath expr="//button[@name='view_rollup_enrolments']" position="after">
+      <xpath expr="//button[@name='view_rollup_enrolments']" position="replace">
         <button name="view_enrolments" type="object" class="btn my-0 py-0" string="Student enrolments">
-          <i class="fa fa-lg fa-id-card-o me-2" aria-hidden="true" title="View training group enrolments"></i>
+          <i class="fa fa-lg fa-sign-in me-2" aria-hidden="true" title="View training group enrolments"></i>
           <field name="enrolment_count" class="oe_field_enrolment_count" />
         </button>
       </xpath>

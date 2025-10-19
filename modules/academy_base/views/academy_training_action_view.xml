@@ -65,24 +65,24 @@
               <sheet>
                 <div class="oe_button_box" name="button_box">
                   <button name="view_students" type="object"
-                      class="oe_stat_button oe_read_only" icon="fa-users"
+                      class="oe_stat_button oe_read_only" icon="fa-child"
                       help="View enroled students">
                       <field name="student_count" widget="statinfo" string="Students"/>
                   </button>
                   <button name="view_teacher_assignments" type="object" class="oe_stat_button oe_read_only"
-                      icon="fa-users" help="View teacher assignments">
+                      icon="fa-black-tie" help="View teacher assignments">
                       <field name="teacher_assignment_count" widget="statinfo" string="Teachers" />
                   </button>
                   <button name="view_training_action_groups" type="object" class="oe_stat_button oe_read_only"
-                      icon="fa-list" help="View training action lines groups" invisible="parent_id">
+                      icon="fa-clipboard" help="View training action lines groups" invisible="parent_id">
                       <field name="training_group_count" widget="statinfo" string="Groups" />
                   </button>
                   <button name="view_action_lines" type="object" class="oe_stat_button oe_read_only"
-                      icon="fa-list-ul" help="View training action lines">
-                      <field name="action_line_count" widget="statinfo" string="Units" />
+                      icon="fa-cubes" help="View detailed curriculum">
+                      <field name="action_line_count" widget="statinfo" string="Components" />
                   </button>
                   <button name="view_rollup_enrolments" type="object"
-                      class="oe_stat_button oe_read_only" icon="fa-id-card-o"
+                      class="oe_stat_button oe_read_only" icon="fa-sign-in"
                       help="View training action enrolments">
                       <field name="rollup_enrolment_count" widget="statinfo" string="Enrolments"/>
                   </button>
@@ -214,6 +214,7 @@
             <field name="code"/>
             <field name="rollup_enrolment_count" />
             <field name="action_line_count" />
+            <field name="training_group_count" />
             <field name="training_framework_id" />
             <field name="parent_id" />
             <field name="hours" />
@@ -246,7 +247,7 @@
                         <field name="display_name"/>
                     </h2>
 
-                    <ul class="list-unstyled w-100 small">
+                    <ul class="list-unstyled w-100 small my-0">
                       <li class="d-flex flex-row justify-content-start lh-lg text-truncate" title="Training action code">
                        <span t-if="record.code.raw_value">
                           <t t-esc="record.code.raw_value"/>
@@ -267,18 +268,18 @@
 
                   <!-- footer: begin -->
                   <footer class="d-flex justify-content-end align-items-start mt-2">
-                    <button name="view_action_lines" type="object" class="btn my-0 py-0" string="Program lines">
-                      <i class="fa fa-lg fa-list me-2" aria-hidden="true" title="View training action lines"></i>
+                    <button name="view_action_lines" type="object" class="btn my-0 py-0">
+                      <i class="fa fa-lg fa-cubes me-2" aria-hidden="true" title="View detailed curriculum" string="Components"></i>
                       <field name="action_line_count" class="oe_field_action_line_count" />
                     </button>
-                    <t t-if="!record.parent_id.raw_value">
+                    <t t-if="record.training_group_count and record.training_group_count.raw_value">
                     <button name="view_training_action_groups" type="object" class="btn my-0 py-0" string="Training groups">
-                      <i class="fa fa-lg fa-list-ul me-2" aria-hidden="true" title="View training action groups"></i>
+                      <i class="fa fa-lg fa-clipboard me-2" aria-hidden="true" title="View training action groups"></i>
                       <field name="training_group_count" class="oe_field_action_group_count" />
                     </button>
                     </t>
                     <button name="view_rollup_enrolments" type="object" class="btn my-0 py-0" string="Student enrolments">
-                      <i class="fa fa-lg fa-id-card-o me-2" aria-hidden="true" title="View training action enrolments"></i>
+                      <i class="fa fa-lg fa-sign-in me-2" aria-hidden="true" title="View training action enrolments"></i>
                       <field name="rollup_enrolment_count" class="oe_field_rollup_enrolment_count" />
                     </button>
 

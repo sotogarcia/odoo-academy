@@ -184,7 +184,7 @@ class AcademyTrainingFramework(models.Model):
     def view_training_programs(self):
         self.ensure_one()
 
-        name = self.env._('Programs: "{}"').format(self.display_name)
+        name = self.env._("Programs: {}").format(self.display_name)
 
         action_xid = "{module}.{name}".format(
             module="academy_base",

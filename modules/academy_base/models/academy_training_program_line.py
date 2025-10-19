@@ -25,6 +25,7 @@ class AcademyTrainingProgramLine(models.Model):
     _inherit = [
         "image.mixin",
         "mail.thread",
+        "mail.activity.mixin",
         "ownership.mixin",
     ]
 

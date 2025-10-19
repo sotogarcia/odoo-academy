@@ -1,21 +1,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #    License, author and contributors information in:                         #
-#    __openerp__.py file at the root folder of this module.                   #
-###############################################################################
-
-from odoo import models, fields, api
-from odoo.tools.translate import _
-from logging import getLogger
-
-
-_logger = getLogger(__name__)
-
-
-# -*- coding: utf-8 -*-
-###############################################################################
-#    License, author and contributors information in:                         #
-#    __openerp__.py file at the root folder of this module.                   #
+#    __manifest__.py file at the root folder of this module.                  #
 ###############################################################################
 
 from odoo import models, fields
@@ -27,16 +13,16 @@ from logging import getLogger
 _logger = getLogger(__name__)
 
 
-class AcademyTrainingActionStudentRel(models.Model):
+class AcademyTrainingActionStudentLink(models.Model):
     """This act as middle relation in many to many relationship between
     academy.training.action and academy.student
     """
 
-    _name = "academy.training.action.student.rel"
+    _name = "academy.training.action.student.link"
     _description = "Academy training action student"
 
-    _order = "training_action_id DESC, field_name DESC"
-    _table = "academy_training_action_student_rel"
+    _order = "training_action_id DESC, student_id DESC"
+    _table = "academy_training_action_student_link"
 
     _auto = False
 
@@ -115,4 +101,5 @@ class AcademyTrainingActionStudentRel(models.Model):
             parent_action_id AS training_action_id,
             student_id
         FROM enrolment_source
+        ORDER BY training_action_id DESC, student_id DESC
     """

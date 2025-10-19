@@ -48,7 +48,7 @@
     <field name="arch" type="xml">
       <xpath expr="//div[@name='button_box']" position="inside">
         <button name="view_teacher_assignments" type="object" class="oe_stat_button oe_read_only"
-            icon="fa-users" help="View teacher assignments">
+            icon="fa-black-tie" help="View teacher assignments">
             <field name="teacher_assignment_count" widget="statinfo" string="Teachers" />
         </button>
       </xpath>

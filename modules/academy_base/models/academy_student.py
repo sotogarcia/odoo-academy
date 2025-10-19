@@ -309,7 +309,7 @@ class AcademyStudent(models.Model):
     def view_enrolments(self):
         self.ensure_one()
 
-        name = self.env._('Enrolments: "{}"').format(self.display_name)
+        name = self.env._("Enrolments: {}").format(self.display_name)
 
         act_xid = "{module}.{name}".format(
             module="academy_base",

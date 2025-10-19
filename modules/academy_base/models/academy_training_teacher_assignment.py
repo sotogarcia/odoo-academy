@@ -18,13 +18,15 @@ class AcademyTrainingActionAssignment(models.Model):
     """Link between a training action and a teacher (optionally a program
     unit).
 
-    Stores the assignment of ``teacher_id`` to a given
-    ``training_action_id`` and, optionally, to a specific ``action_line_id``.
+    Stores the assignment of ``teacher_id`` to a given ``training_action_id``
+    and, optionally, to a specific ``action_line_id``.
     The ``sequence`` field provides a stable, per-action ordering.
     """
 
     _name = "academy.training.teacher.assignment"
     _description = "Academy training action teacher assignment"
+
+    _inherit = ["mail.thread"]
 
     training_action_id = fields.Many2one(
         string="Training action",
@@ -32,12 +34,13 @@ class AcademyTrainingActionAssignment(models.Model):
         readonly=False,
         index=True,
         default=None,
-        help="Training action to which this assignment belongs",
+        help="Training action to which this assignment belongs.",
         comodel_name="academy.training.action",
         domain=[],
         context={},
         ondelete="cascade",
         auto_join=False,
+        tracking=True,
     )
 
     action_line_id = fields.Many2one(
@@ -46,12 +49,13 @@ class AcademyTrainingActionAssignment(models.Model):
         readonly=False,
         index=True,
         default=None,
-        help="Program unit within the training action (optional)",
+        help="Program unit within the training action (optional).",
         comodel_name="academy.training.action.line",
         domain=[],
         context={},
         ondelete="cascade",
         auto_join=False,
+        tracking=True,
     )
 
     teacher_id = fields.Many2one(
@@ -60,12 +64,13 @@ class AcademyTrainingActionAssignment(models.Model):
         readonly=False,
         index=True,
         default=None,
-        help="Assigned teacher",
+        help="Assigned teacher.",
         comodel_name="academy.teacher",
         domain=[],
         context={},
         ondelete="cascade",
         auto_join=False,
+        tracking=True,
     )
 
     sequence = fields.Integer(
@@ -74,10 +79,12 @@ class AcademyTrainingActionAssignment(models.Model):
         readonly=False,
         index=True,
         default=0,
-        help="Display/relevancy order within the training action",
+        help="Display/relevancy order within the training action.",
+        tracking=True,
     )
 
-    # -- Constraints ----------------------------------------------------------
+    # -- Constraints
+    # -------------------------------------------------------------------------
 
     def init(self):
         """Uniqueness: by line (when set) else by action (when line is NULL)."""
@@ -117,7 +124,52 @@ class AcademyTrainingActionAssignment(models.Model):
             ):
                 raise ValidationError(message)
 
-    # -- Auxiliary methods ----------------------------------------------------
+    # -- Overridden methods
+    # -------------------------------------------------------------------------
+
+    @api.model_create_multi
+    def create(self, values_list):
+        """Populate ``training_action_id`` from ``action_line_id`` and ensure
+        the initial chatter message (creation) is forwarded to the most
+        specific thread (line if present, else action).
+        """
+
+        self._complete_training_action_from_lines(values_list)
+
+        result = super().create(values_list)
+        result._forward_messages_to_the_training_item()
+
+        return result
+
+    def write(self, values):
+        """Keep coherence when updating ``action_line_id`` and forward
+        chatter only if thread-defining fields changed.
+        """
+
+        # If a single line is being set for the batch and action is omitted,
+        # complete it here (same action will apply to all records in self).
+        self._complete_training_action_from_single_line(values)
+
+        result = super().write(values)
+
+        if any(k in values for k in ("action_line_id", "training_action_id")):
+            self._forward_messages_to_the_training_item()
+
+        return result
+
+    # -- Auxiliary methods
+    # -------------------------------------------------------------------------
+
+    def _forward_messages_to_the_training_item(self):
+        """Move chatter to the most specific training thread available."""
+        for record in self:
+            destination = record.action_line_id or record.training_action_id
+            if not destination:
+                continue
+
+            # Avoid work if already pointing to the same thread (best effort).
+            # message_change_thread is idempotent; calling is safe either way.
+            record.message_change_thread(destination)
 
     def _get_training_action_ids(self):
         """Return the list of involved training action IDs for ``self``."""
@@ -125,6 +177,10 @@ class AcademyTrainingActionAssignment(models.Model):
 
     @api.model
     def get_primary(self, targets):
+        """Return the *primary* (first by sequence) active teacher per target
+        (action or program unit), as a dict: {target_id: teacher_record}.
+        For targets with no assignment, value is an empty recordset.
+        """
         mapping = {
             "academy.training.action": "training_action_id",
             "academy.training.action.line": "action_line_id",
@@ -134,7 +190,7 @@ class AcademyTrainingActionAssignment(models.Model):
             raise ValidationError(self.env._("A recordset is required"))
 
         model_name = targets._name
-        if targets._name not in mapping.keys():
+        if model_name not in mapping.keys():
             message = self.env._("Unsupported model: %s")
             raise ValidationError(message % model_name)
 
@@ -152,28 +208,26 @@ class AcademyTrainingActionAssignment(models.Model):
         order = f"{field_name}, sequence NULLS LAST"
         assignment_set = assignment_obj.search(domain, order=order)
 
-        result = {ass.id: teacher_obj.browse() for ass in assignment_set}
+        # Seed all targets with empty teacher to ensure total coverage
+        result = {t.id: teacher_obj.browse() for t in targets}
         for assignment in assignment_set:
             key = getattr(assignment, field_name).id
-            result.setdefault(key, assignment.teacher_id)
+            # Keep first (lowest sequence) assignment only
+            if not result[key]:
+                result[key] = assignment.teacher_id
 
         return result
 
-    @api.model_create_multi
-    def create(self, values_list):
-        """Overridden method 'create' to populate training_action_id from action_line_id."""
-        self._complete_training_action_from_lines(values_list)
-
-        return super().create(values_list)
-
+    @api.model
     def _complete_training_action_from_lines(self, values_list):
         # 1. Collect action_line_ids where training_action_id is missing
         missing_action_line_ids = set()
+
         for values in values_list:
             action_id = values.get("training_action_id")
-            line_id = values.get("action_line_id", False)
+            line_id = values.get("action_line_id") or False
             if not action_id and line_id:
-                missing_action_line_ids.add(values["action_line_id"])
+                missing_action_line_ids.add(line_id)
 
         if missing_action_line_ids:
             # 2. Fetch parent training_action_id in a single query
@@ -189,10 +243,19 @@ class AcademyTrainingActionAssignment(models.Model):
 
             # 4. Update values_list with the fetched training_action_id
             for values in values_list:
-                line_id = values.get("action_line_id", False)
+                line_id = values.get("action_line_id") or False
                 if values.get("training_action_id") or not line_id:
                     continue
 
                 action_id = line_to_action_map.get(line_id)
                 if action_id:
                     values["training_action_id"] = action_id
+
+    def _complete_training_action_from_single_line(self, values):
+        """If a single ``action_line_id`` is provided for the write batch and
+        ``training_action_id`` is omitted, inject the parent's action id.
+        """
+        line_id = values.get("action_line_id")
+        if line_id and "training_action_id" not in values:
+            line = self.env["academy.training.action.line"].browse(line_id)
+            values["training_action_id"] = line.training_action_id.id

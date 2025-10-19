@@ -541,9 +541,48 @@ class AcademyTrainingActionEnrolment(models.Model):
 
     available_action_ids = fields.Many2many(
         string="Available actions",
-        help=None,
-        related="parent_action_id.delivered_action_ids",
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help="Actions that the student may be assigned to: leaf actions "
+        "(no children). If a parent action is set, show only its children.",
+        comodel_name="academy.training.action",
+        domain=[],
+        context={},
+        compute="_compute_available_action_ids",
     )
+
+    @api.depends("parent_action_id", "parent_action_id.child_ids")
+    def _compute_available_action_ids(self):
+        action_obj = self.env["academy.training.action"]
+        base_domain = [("child_ids", "=", False)]
+        parent_ids = {
+            record.parent_action_id.id
+            for record in self
+            if record.parent_action_id
+        }
+        without_parent = any(not record.parent_action_id for record in self)
+
+        child_action_set = action_obj.browse()
+        full_action_set = action_obj.browse()
+
+        if parent_ids:
+            domain = AND(
+                [base_domain, [("parent_id", "in", list(parent_ids))]]
+            )
+            child_action_set = action_obj.search(domain)
+
+        if without_parent:
+            full_action_set = action_obj.search(base_domain)
+
+        for record in self:
+            if record.parent_action_id:
+                record.available_action_ids = child_action_set.filtered(
+                    lambda r: r.parent_id == record.parent_action_id
+                )
+            else:
+                record.available_action_ids = full_action_set
 
     color = fields.Integer(
         string="Color Index",

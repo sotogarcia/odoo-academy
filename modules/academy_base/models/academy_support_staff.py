@@ -371,14 +371,6 @@ class AcademySupportStaff(models.Model):
         act_wnd = self.env.ref(action_xid)
 
         context = (self.env.context or {}).copy()
-        # context.update(
-        #     {
-        #         "uid": self.env.uid,
-        #         "active_model": "res.partner",
-        #         "active_id": self.partner_id.id,
-        #         "active_ids": [self.partner_id.id],
-        #     }
-        # )
         domain = self._eval_domain(act_wnd.domain)
         domain = AND([domain, [("id", "=", self.partner_id.id)]])
 

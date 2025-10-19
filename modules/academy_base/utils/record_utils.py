@@ -249,7 +249,7 @@ def get_training_program(env, target):
     """Get the related training program record based on the given target
     record.
 
-    This is useful to get the activity from a training ``fields.Reference``
+    This is useful to get the program from a training ``fields.Reference``
     field.
 
     Args:
@@ -260,21 +260,21 @@ def get_training_program(env, target):
         academy.training.program: The related training program record.
     """
 
-    activity = env["academy.training.program"]
+    program = env["academy.training.program"]
 
     if target:
         model = target._name
 
         if model == "academy.training.action.enrolment":
-            activity = target.training_action_id.training_program_id
+            program = target.training_action_id.training_program_id
         elif model == "academy.training.action":
-            activity = target.training_program_id
+            program = target.training_program_id
         elif model == "academy.training.program":
-            activity = target
+            program = target
         elif model == "academy.competency.unit":
-            activity = target.training_program_id
+            program = target.training_program_id
 
-    return activity
+    return program
 
 
 def ensure_recordset(env, targets, model):

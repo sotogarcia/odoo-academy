@@ -2,8 +2,6 @@
 
 <odoo noupdate="0">
 
-  <delete id="academy_maintenance_task_full_enrolment" model="academy.maintenance.task" />
-
   <record id="academy_maintenance_full_enrolment_maintenance_task" model="academy.maintenance.task">
       <field name="sequence" eval="10"/>
       <field name="model_id" ref="academy_base.model_academy_training_action_enrolment"/>

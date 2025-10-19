@@ -303,7 +303,7 @@ class AcademyTrainingActionLine(models.Model):
     def view_teacher_assignments(self):
         self.ensure_one()
 
-        name = self.env._('Teachers: "{}"').format(self.display_name)
+        name = self.env._("Teachers: {}").format(self.display_name)
 
         action_xid = "academy_base.action_teacher_assignment_act_window"
         act_wnd = self.env.ref(action_xid)
