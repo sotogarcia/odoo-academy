@@ -10,7 +10,7 @@ from ..utils.record_utils import get_active_records, has_changed
 from odoo.exceptions import UserError
 from ..utils.record_utils import DATE_FORMAT
 from odoo.osv.expression import TRUE_DOMAIN, FALSE_DOMAIN
-from ..utils.helpers import OPERATOR_MAP, one2many_count, many2many_count
+from ..utils.helpers import OPERATOR_MAP, many2many_count
 
 from logging import getLogger
 from datetime import date
@@ -37,7 +37,7 @@ class AcademyTrainingActionEnrolmentWizard(models.TransientModel):
         required=False,
         readonly=True,
         index=False,
-        default=lambda self: self.default_enrolment_ids(),
+        default=None,
         help=False,
         comodel_name="academy.training.action.enrolment",
         relation="academy_training_action_enrolment_wizard_enrolment_rel",
@@ -47,39 +47,6 @@ class AcademyTrainingActionEnrolmentWizard(models.TransientModel):
         context={},
     )
 
-    def default_enrolment_ids(self):
-        """Retrieves a set of active student enrolments from the environment,
-        supporting flexibility in handling different types of records related
-        to student enrolments.
-
-        Raises:
-            UserError: If the active record set is neither 'academy.student'
-                       and does not have any of the following attributes:
-                       'student_id' or 'student_ids'.
-
-        Returns:
-            recordset: A recordset of student IDs, either directly from the
-                       'academy.student' model or mapped from related records
-                       in the active environment.
-        """
-        active_set = self.env["academy.training.action.enrolment"]
-
-        active_set = get_active_records(self.env)
-        if active_set and active_set._name != active_set._name:
-            if hasattr(active_set, "enrolment_id"):
-                active_set = active_set.mapped("enrolment_id.id")
-            elif hasattr(active_set, "enrolment_ids"):
-                active_set = active_set.mapped("enrolment_ids.id")
-            else:
-                msg = _('Provided object "{}" has not enrolments')
-                raise UserError(msg.format(active_set._name))
-
-        return active_set
-
-    # -------------------------------------------------------------------------
-    # Field: enrolment_count
-    # -------------------------------------------------------------------------
-
     enrolment_count = fields.Integer(
         string="Enrolment count",
         required=True,
@@ -87,33 +54,7 @@ class AcademyTrainingActionEnrolmentWizard(models.TransientModel):
         index=False,
         default=0,
         help="Number of enrolments on whom the action will be carried out",
-        compute="_compute_enrolment_count",
-        search="_search_enrolment_count",
     )
-
-    @api.depends("enrolment_ids")
-    def _compute_enrolment_count(self):
-        counts = many2many_count(self, "enrolment_ids")
-
-        for record in self:
-            record.enrolment_count = counts.get(record.id, 0)
-
-    @api.model
-    def _search_enrolment_count(self, operator, value):
-        # Handle boolean-like searches Odoo may pass for required fields
-        if value is True:
-            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
-        if value is False:
-            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
-
-        cmp_func = OPERATOR_MAP.get(operator)
-        if not cmp_func:
-            return FALSE_DOMAIN  # unsupported operator
-
-        counts = many2many_count(self.search([]), "enrolment_ids")
-        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
-
-        return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
     # -------------------------------------------------------------------------
     # Field: student_ids
@@ -132,18 +73,7 @@ class AcademyTrainingActionEnrolmentWizard(models.TransientModel):
         column2="student_id",
         domain=[],
         context={},
-        compute="_compute_student_ids",
     )
-
-    @api.depends("enrolment_ids")
-    def _compute_student_ids(self):
-        for record in self:
-            ids = record.mapped("enrolment_ids.student_id.id")
-            record.student_ids = [(6, 0, ids)] if ids else [(5, 0, 0)]
-
-    # -------------------------------------------------------------------------
-    # Field: student_count
-    # -------------------------------------------------------------------------
 
     student_count = fields.Integer(
         string="Student count",
@@ -151,37 +81,8 @@ class AcademyTrainingActionEnrolmentWizard(models.TransientModel):
         readonly=True,
         index=False,
         default=0,
-        help=(
-            "Number of different students related to the selected "
-            "enrolments"
-        ),
-        compute="_compute_student_count",
-        search="_search_student_count",
+        help="Number of different students in the selected enrolments",
     )
-
-    @api.depends("student_ids")
-    def _compute_student_count(self):
-        counts = many2many_count(self, "student_ids")
-
-        for record in self:
-            record.student_count = counts.get(record.id, 0)
-
-    @api.model
-    def _search_student_count(self, operator, value):
-        # Handle boolean-like searches Odoo may pass for required fields
-        if value is True:
-            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
-        if value is False:
-            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
-
-        cmp_func = OPERATOR_MAP.get(operator)
-        if not cmp_func:
-            return FALSE_DOMAIN  # unsupported operator
-
-        counts = many2many_count(self.search([]), "student_ids")
-        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
-
-        return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
     # -------------------------------------------------------------------------
     # Field: training_action_ids
@@ -200,18 +101,7 @@ class AcademyTrainingActionEnrolmentWizard(models.TransientModel):
         column2="training_action_id",
         domain=[],
         context={},
-        compute="_compute_training_action_ids",
     )
-
-    @api.depends("enrolment_ids")
-    def _compute_training_action_ids(self):
-        for record in self:
-            ids = record.mapped("enrolment_ids.training_action_id.id")
-            record.training_action_ids = [(6, 0, ids)] if ids else [(5, 0, 0)]
-
-    # -------------------------------------------------------------------------
-    # Field: training_action_count
-    # -------------------------------------------------------------------------
 
     training_action_count = fields.Integer(
         string="Training action count",
@@ -219,37 +109,8 @@ class AcademyTrainingActionEnrolmentWizard(models.TransientModel):
         readonly=True,
         index=False,
         default=0,
-        help=(
-            "Number of different training actions related to the selected "
-            "enrolments"
-        ),
-        compute="_compute_training_action_count",
-        search="_search_training_action_count",
+        help="Number of different training actions in the selected enrolments",
     )
-
-    @api.depends("training_action_ids")
-    def _compute_training_action_count(self):
-        counts = many2many_count(self, "training_action_ids")
-
-        for record in self:
-            record.training_action_count = counts.get(record.id, 0)
-
-    @api.model
-    def _search_training_action_count(self, operator, value):
-        # Handle boolean-like searches Odoo may pass for required fields
-        if value is True:
-            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
-        if value is False:
-            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
-
-        cmp_func = OPERATOR_MAP.get(operator)
-        if not cmp_func:
-            return FALSE_DOMAIN  # unsupported operator
-
-        counts = many2many_count(self.search([]), "training_action_ids")
-        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
-
-        return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
     # -------------------------------------------------------------------------
     # Field: update_date_start
@@ -272,25 +133,14 @@ class AcademyTrainingActionEnrolmentWizard(models.TransientModel):
         else:
             self.date_start = None
 
-    # -------------------------------------------------------------------------
-    # Field: date_start
-    # -------------------------------------------------------------------------
-
     date_start = fields.Datetime(
         string="Date date_start",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help=(
-            "Enrolment date_start date will be set for all the selected "
-            "enrolments"
-        ),
+        help="Start date date will be set for all the selected enrolments",
     )
-
-    # -------------------------------------------------------------------------
-    # Field: update_date_stop
-    # -------------------------------------------------------------------------
 
     update_date_stop = fields.Boolean(
         string="Update date stop",
@@ -309,20 +159,13 @@ class AcademyTrainingActionEnrolmentWizard(models.TransientModel):
         else:
             self.date_stop = None
 
-    # -------------------------------------------------------------------------
-    # Field: date_stop
-    # -------------------------------------------------------------------------
-
     date_stop = fields.Datetime(
         string="Date date_stop",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help=(
-            "Enrolment date stop will be set for all the selected "
-            "enrolments"
-        ),
+        help="End date date will be set for all the selected enrolments",
     )
 
     # -------------------------------------------------------------------------
@@ -340,17 +183,17 @@ class AcademyTrainingActionEnrolmentWizard(models.TransientModel):
 
     @api.onchange("update_modalities")
     def _onchange_update_modalities(self):
-        self.training_modality_ids = [(5, 0, 0)]
+        self.training_modality_id = None
 
         training_action_set = self.mapped("enrolment_ids.training_action_id")
-        modality_set = training_action_set.mapped("training_modality_ids")
+        modality_set = training_action_set.mapped("training_modality_id")
 
         if modality_set:
             for action in training_action_set:
-                modality_set &= action.training_modality_ids
+                modality_set &= action.training_modality_id
 
             if self.update_modalities and len(modality_set) == 1:
-                self.training_modality_ids = [(6, 0, modality_set.ids)]
+                self.training_modality_id = modality_set
 
     # -------------------------------------------------------------------------
     # Field: available_training_modality_ids
@@ -372,7 +215,7 @@ class AcademyTrainingActionEnrolmentWizard(models.TransientModel):
     @api.depends(
         "enrolment_ids",
         "enrolment_ids.training_action_id",
-        "enrolment_ids.training_action_id.training_modality_ids",
+        "enrolment_ids.training_action_id.training_modality_id",
     )
     def _compute_available_training_modality_ids(self):
         """Compute intersection of modalities across all actions."""
@@ -385,9 +228,9 @@ class AcademyTrainingActionEnrolmentWizard(models.TransientModel):
                 record.available_training_modality_ids = empty
                 continue
 
-            modalities = actions[0].training_modality_ids
+            modalities = actions[0].training_modality_id
             for action in actions[1:]:
-                modalities = modalities & action.training_modality_ids
+                modalities = modalities & action.training_modality_id
                 if not modalities:
                     break
 
@@ -397,22 +240,18 @@ class AcademyTrainingActionEnrolmentWizard(models.TransientModel):
     # Field: training_modality_ids
     # -------------------------------------------------------------------------
 
-    training_modality_ids = fields.Many2many(
-        string="Training modalities",
+    training_modality_id = fields.Many2one(
+        string="Training modality",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help=(
-            "Training modalities will be set for all the selected "
-            "enrolments"
-        ),
+        help="Training modalities will be set for all the target enrolments",
         comodel_name="academy.training.modality",
-        relation="academy_training_action_enrolment_wizard_modality_rel",
-        column1="wizard_id",
-        column2="modality_id",
         domain=[],
         context={},
+        ondelete="cascade",
+        auto_join=False,
     )
 
     # -------------------------------------------------------------------------
@@ -430,21 +269,25 @@ class AcademyTrainingActionEnrolmentWizard(models.TransientModel):
 
     @api.onchange("update_material")
     def _onchange_update_material(self):
-        material = self.mapped("enrolment_ids.material")
-        self.material = material[0] if len(material) == 1 else None
+        material = self.mapped("enrolment_ids.material_status")
+        self.material_status = material[0] if len(material) == 1 else None
 
     # -------------------------------------------------------------------------
     # Field: material
     # -------------------------------------------------------------------------
 
-    material = fields.Selection(
+    material_status = fields.Selection(
         string="Material",
-        required=False,
+        required=True,
         readonly=False,
         index=True,
-        default="digital",
-        help=("Material will be set for all the selected enrolments"),
-        selection=[("printed", "Printed"), ("digital", "Digital")],
+        default="na",
+        help="Current status of material delivery.",
+        selection=[
+            ("pending", "Pending Delivery"),
+            ("delivered", "Material Delivered"),
+            ("na", "Not Applicable / Digital"),
+        ],
     )
 
     # -------------------------------------------------------------------------
@@ -486,14 +329,14 @@ class AcademyTrainingActionEnrolmentWizard(models.TransientModel):
             values["deregister"] = date_stop_str
 
         if self.update_modalities:
-            modality_ids = self.training_modality_ids.ids
-            if modality_ids:
-                values["training_modality_ids"] = [(6, 0, modality_ids)]
-            else:
-                values["training_modality_ids"] = [(5, 0, 0)]
+            values["training_modality_id"] = (
+                self.training_modality_id.id
+                if self.training_modality_id
+                else None
+            )
 
         if self.update_material:
-            values["material"] = self.material
+            values["material_status"] = self.material_status
 
         if values:
             ids = self.enrolment_ids.ids
@@ -505,3 +348,38 @@ class AcademyTrainingActionEnrolmentWizard(models.TransientModel):
     def perform_action(self):
         for record in self:
             record._perform_action()
+
+    # -- Defaults
+    # -------------------------------------------------------------------------
+
+    @api.model
+    def default_get(self, fields_list):
+        defaults = super().default_get(fields_list)
+
+        active_set = self.env["academy.training.action.enrolment"]
+
+        active_set = get_active_records(self.env)
+        if active_set and active_set._name != active_set._name:
+            if hasattr(active_set, "enrolment_id"):
+                active_set = active_set.mapped("enrolment_id.id")
+            elif hasattr(active_set, "enrolment_ids"):
+                active_set = active_set.mapped("enrolment_ids.id")
+            else:
+                msg = _('Provided object "{}" has not enrolments')
+                raise UserError(msg.format(active_set._name))
+
+        enrol_ops = [(6, 0, active_set.ids)] if active_set else [(5, 0, 0)]
+        defaults["enrolment_ids"] = enrol_ops
+        defaults["enrolment_count"] = len(active_set)
+
+        student_ids = active_set.mapped("student_id").ids
+        student_ops = [(6, 0, student_ids)] if student_ids else [(5, 0, 0)]
+        defaults["student_ids"] = student_ops
+        defaults["student_count"] = len(student_ids)
+
+        action_ids = active_set.mapped("training_action_id").ids
+        action_ops = [(6, 0, action_ids)] if action_ids else [(5, 0, 0)]
+        defaults["training_action_ids"] = action_ops
+        defaults["training_action_count"] = len(action_ids)
+
+        return defaults

@@ -313,7 +313,7 @@
     <field name="type">ir.actions.act_window</field>
     <field name="name">Support staff</field>
     <field name="res_model">academy.support.staff</field>
-    <field name="view_mode">kanban,list,form</field>
+    <field name="view_mode">kanban,list,form,activity</field>
     <field name="path">academy-support-staff</field>
     <field name="target">current</field>
     <field name="domain">[]</field>

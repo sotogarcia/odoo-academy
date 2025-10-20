@@ -58,7 +58,7 @@
                     <field name="state" widget="statusbar" options="{'clickable': 1}" />
                 </header>
 
-                <group col="4" invisible="[(state != 'main')]">
+                <group col="4" invisible="state != 'main'">
 
                     <field name="update_date_start" class="oe_field_update_date_start"
                         string="Enrolment date" />
@@ -73,25 +73,24 @@
 
                     <field name="update_modalities" class="oe_field_update_modalities"
                         string="Modalities"/>
-                    <field name="training_modality_ids" class="oe_field_training_modality_ids"
-                        domain="[('id', 'in', available_training_modality_ids)]"
-                        string="New value" widget="many2many_tags"
+                    <field name="training_modality_id" class="oe_field_training_modality_id"
+                        domain="[('id', 'in', available_training_modality_ids)]" string="New value"
                         readonly="not update_modalities"/>
 
                     <field name="update_material" class="oe_field_update_material" string="Material"/>
-                    <field name="material" class="oe_field_material" string="New value"
+                    <field name="material_status" class="oe_field_material_status" string="New value"
                         readonly="not update_material"/>
 
                 </group>
 
-                <group col="2" invisible="[(state != 'students')]">
+                <group col="2" invisible="state != 'students'">
                     <field name="student_ids" class="oe_field_student_ids w-100" nolabel="1"
                         colspan="2"
                         context="{'list_view_ref': 'academy_base.view_academy_student_enrolment_wizard_tree'}"/>
                     <field name="student_count" class="oe_field_student_count" string="Item count"/>
                 </group>
 
-                <group col="2" invisible="[(state != 'training')]">
+                <group col="2" invisible="state != 'training'">
                     <field name="training_action_ids" class="oe_field_training_action_ids w-100"
                         nolabel="1" colspan="2"
                         context="{'list_view_ref': 'academy_base.view_academy_training_action_enrolment_wizard_tree'}"/>

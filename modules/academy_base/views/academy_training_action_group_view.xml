@@ -54,7 +54,7 @@
       <xpath expr="//field[@name='training_program_id']" position="attributes">
           <attribute name="invisible">1</attribute>
       </xpath>
-      <xpath expr="//page[@name='groups']" position="replace" />
+      <!-- <xpath expr="//page[@name='groups']" position="replace" /> -->
       <xpath expr="//button[@name='view_training_action_groups']" position="replace" />
       <xpath expr="//button[@name='view_rollup_enrolments']" position="replace">
         <button name="view_enrolments" type="object"
@@ -128,7 +128,7 @@
     <field name="type">ir.actions.act_window</field>
     <field name="name">Training group</field>
     <field name="res_model">academy.training.action</field>
-    <field name="view_mode">kanban,list,form</field>
+    <field name="view_mode">kanban,list,form,activity</field>
     <field name="path">academy-training-group</field>
     <field name="target">current</field>
     <field name="domain">[("child_ids", "=", False)]</field>

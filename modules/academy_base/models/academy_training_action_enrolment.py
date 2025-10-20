@@ -301,6 +301,12 @@ class AcademyTrainingActionEnrolment(models.Model):
         auto_join=False,
     )
 
+    @api.onchange("training_action_id")
+    def _onchange_training_action_id(self):
+        self.training_modality_id = (
+            self.training_action_id.training_modality_id
+        )
+
     company_id = fields.Many2one(
         string="Company",
         related="training_action_id.company_id",

@@ -924,7 +924,7 @@ class AcademyTrainingAction(models.Model):
         string="Students",
         required=False,
         readonly=True,
-        index=True,
+        index=False,
         default=None,
         help="Students directly or indirectly enrolled in this action.",
         comodel_name="academy.student",
@@ -933,6 +933,7 @@ class AcademyTrainingAction(models.Model):
         column2="student_id",
         domain=[],
         context={},
+        copy=False,
     )
 
     student_count = fields.Integer(
@@ -989,22 +990,60 @@ class AcademyTrainingAction(models.Model):
             "CHECK(seating >= 0)",
             "The number of users must be greater than or equal to zero",
         ),
-        (
-            "prevent_enrolment_group_mix",
-            "CHECK (COALESCE(training_group_count, 0) = 0 "
-            "OR COALESCE(enrolment_count, 0) = 0)",
-            "An action with groups cannot have direct enrolments, and an action "
-            "with direct enrolments cannot have groups.",
-        ),
     ]
+
+    # Funcionará si los campos vuelve a ser almacenados. Ahora NO lo son.
+    # (
+    #     "prevent_enrolment_group_mix",
+    #     "CHECK (COALESCE(training_group_count, 0) = 0 "
+    #     "OR COALESCE(enrolment_count, 0) = 0)",
+    #     "An action with groups cannot have direct enrolments, and an action "
+    #     "with direct enrolments cannot have groups.",
+    # ),
+
+    @api.constrains("enrolment_ids", "child_ids", "parent_id")
+    def _check_enrolment_group_conflict(self):
+        for record in self:
+            parent = record.parent_id or self.env["academy.training.action"]
+
+            # --- Case 1: the parent already has enrolments → cannot add child
+            if parent and parent.enrolment_ids:
+                raise ValidationError(
+                    _(
+                        "You cannot create or assign a training group under "
+                        "an action that already has student enrolments.\n\n"
+                        "Remove the enrolments from the parent action first."
+                    )
+                )
+
+            # --- Case 2: the parent already has child groups → cannot enrol
+            if record.enrolment_ids and parent and parent.child_ids:
+                raise ValidationError(
+                    _(
+                        "You cannot enrol students in a training action whose "
+                        "parent already contains training groups.\n\n"
+                        "Enrol them in one of the existing groups instead."
+                    )
+                )
+
+            # --- Case 3: the record itself is a parent (top-level action)
+            # It cannot have both enrolments and groups at the same time.
+            if record.enrolment_ids and record.child_ids:
+                raise ValidationError(
+                    _(
+                        "A training action cannot have both direct student "
+                        "enrolments and associated training groups.\n\n"
+                        "Remove either the enrolments or the groups before "
+                        "proceeding."
+                    )
+                )
 
     @api.constrains("parent_id")
     def _check_no_cycle(self):
         """Prevent recursive hierarchies."""
+        message = _("You cannot create a recursive hierarchy.")
         if self._has_cycle("parent_id"):
-            raise ValidationError(
-                self.env._("You cannot create a recursive hierarchy.")
-            )
+            raise ValidationError(message)
 
     @api.constrains("date_start", "date_stop")
     def _constrains_groups_inside_action_parent(self):
@@ -1260,6 +1299,7 @@ class AcademyTrainingAction(models.Model):
         self._fill_from_parent(values_list)
 
         sanitize_code(values_list, "upper")
+        self._prevent_use_student_link(values_list)
 
         records = super().create(values_list)
 
@@ -1276,12 +1316,26 @@ class AcademyTrainingAction(models.Model):
     def write(self, values):
         """Overridden method 'write'"""
         sanitize_code(values, "upper")
+        self._prevent_use_student_link(values)
 
         result = super().write(values)
 
         self.update_enrolments()
 
         return result
+
+    @staticmethod
+    def _prevent_use_student_link(values_list):
+        if not values_list:
+            pass
+        elif isinstance(values_list, list):
+            for values in values_list:
+                if "student_ids" in values:
+                    print("Deleting student_ids", values["student_ids"])
+                    del values["student_ids"]
+        elif isinstance(values_list, dict) and "student_ids" in values_list:
+            print("Deleting student_ids", values["student_ids"])
+            del values_list["student_ids"]
 
     def _batch_read_parent_data(self, values_list):
         """Return {parent_id: copy_data(parent)} for all parents in vals."""

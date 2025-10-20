@@ -74,7 +74,7 @@
                       <field name="teacher_assignment_count" widget="statinfo" string="Teachers" />
                   </button>
                   <button name="view_training_action_groups" type="object" class="oe_stat_button oe_read_only"
-                      icon="fa-clipboard" help="View training action lines groups" invisible="parent_id">
+                      icon="fa-clipboard" help="View training action lines groups" invisible="parent_id or enrolment_ids">
                       <field name="training_group_count" widget="statinfo" string="Groups" />
                   </button>
                   <button name="view_action_lines" type="object" class="oe_stat_button oe_read_only"
@@ -146,9 +146,10 @@
                         }" />
                     </group>
                   </page>
-                  <page name="groups" string="Groups" class="oe_page_groups" accesskey="G" invisible="parent_id or context.get('default_parent_id', False) or not create_date">
+<!--                   <page name="groups" string="Groups" class="oe_page_groups" accesskey="G" invisible="parent_id or context.get('default_parent_id', False) or not create_date">
                     <group col="2">
                       <field name="child_ids" class="oe_field_child_ids" nolabel="1" colspan="2"
+                        invisible="enrolment_ids"
                         context="{
                           'default_parent_id': id,
                           'default_training_program_id': training_program_id,
@@ -156,7 +157,7 @@
                           'list_view_ref': 'academy_base.view_academy_training_action_group_embed_tree'
                         }" />
                     </group>
-                  </page>
+                  </page> -->
                   <page id="data" string="Data" class="oe_page_data" accesskey="T">
                     <group string="Action details">
                       <group><field name="application_scope_id" class="od_field_application_scope"
@@ -349,7 +350,7 @@
       <field name="type">ir.actions.act_window</field>
       <field name="name">Training actions</field>
       <field name="res_model">academy.training.action</field>
-      <field name="view_mode">kanban,list,form</field>
+      <field name="view_mode">kanban,list,form,activity</field>
       <field name="path">academy-training-action</field>
       <field name="target">current</field>
       <field name="domain">[('parent_id', '=', False)]</field>
