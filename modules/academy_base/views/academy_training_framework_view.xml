@@ -185,7 +185,7 @@
 
               <!-- footer: begin -->
               <footer class="d-flex justify-content-end align-items-start mt-2">
-                <button name="view_training_programs" type="object" class="btn my-0 py-0" string="Components">
+                <button name="view_training_programs" type="object" class="btn my-0 py-0" string="No. of programs">
                   <i class="fa fa-lg fa-book me-2" aria-hidden="true" title="View training programs"></i>
                   <field name="training_program_count" class="oe_field_program_line_count" />
                 </button>

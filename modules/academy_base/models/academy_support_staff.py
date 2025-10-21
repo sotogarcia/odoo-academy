@@ -64,7 +64,7 @@ class AcademySupportStaff(models.Model):
         readonly=False,
         index=True,
         default=lambda self: self._next_signup_code(self.env.company.id),
-        help="Unique code assigned when the student signs up at the center.",
+        help="Unique code assigned when the student signs up at the centre.",
         size=50,
         translate=False,
     )
@@ -75,7 +75,7 @@ class AcademySupportStaff(models.Model):
         readonly=False,
         index=False,
         default=lambda self: fields.Datetime.now(),
-        help="Date when the student signed up at the center.",
+        help="Date when the student signed up at the centre.",
         tracking=True,
     )
 

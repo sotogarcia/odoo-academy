@@ -1802,7 +1802,7 @@ class AcademyTrainingAction(models.Model):
         readonly=True,
         index=True,
         default=None,
-        help="Max(create/write date) among action_line_ids.",
+        help="Most recent line update date.",
         compute="_compute_lines_last_updated",
         store=True,
     )

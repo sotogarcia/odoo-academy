@@ -46,7 +46,7 @@
           <div class="oe_button_box" name="button_box">
             <button name="view_training_program_lines" type="object" class="oe_stat_button"
               icon="fa-th-list" title="View detailed program">
-              <field name="program_line_count" widget="statinfo" string="Components"/>
+              <field name="program_line_count" widget="statinfo" string="No. of lines"/>
             </button>
           </div>
 
@@ -143,7 +143,7 @@
 
               <!-- footer: begin -->
               <footer class="d-flex justify-content-end align-items-start mt-2">
-                <button name="view_training_programs" type="object" class="btn my-0 py-0" string="Components">
+                <button name="view_training_programs" type="object" class="btn my-0 py-0" string="No. of programs">
                   <i class="fa fa-lg fa-cubes me-2" aria-hidden="true" title="View training programs"></i>
                   <field name="training_program_count" class="oe_field_training_program_count" />
                 </button>
@@ -211,7 +211,7 @@
     <field name="arch" type="xml">
       <xpath expr="//div[@name='button_box']" position="inside">
         <button name="view_training_units" type="object" class="oe_stat_button" icon="fa-list-ul">
-          <field name="training_unit_count" widget="statinfo" string="Units"/>
+          <field name="training_unit_count" widget="statinfo" string="No. of units"/>
         </button>
       </xpath>
       <xpath expr="//notebook/page" position="after">

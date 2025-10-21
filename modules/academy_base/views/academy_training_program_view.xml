@@ -60,7 +60,7 @@
           <div class="oe_button_box" name="button_box">
             <button name="view_training_program_lines" type="object" class="oe_stat_button"
               icon="fa-cubes" title="View detailed program">
-              <field name="program_line_count" widget="statinfo" string="Components"/>
+              <field name="program_line_count" widget="statinfo" string="No. of lines"/>
             </button>
             <button name="view_training_actions" type="object" class="oe_stat_button"
               icon="fa-clipboard">
@@ -213,7 +213,7 @@
 
               <!-- footer: begin -->
               <footer class="d-flex justify-content-end align-items-start mt-2">
-                <button name="view_training_program_lines" type="object" class="btn my-0 py-0" string="Components">
+                <button name="view_training_program_lines" type="object" class="btn my-0 py-0" string="Lines">
                   <i class="fa fa-lg fa-cubes me-2" aria-hidden="true" title="View detailed program"></i>
                   <field name="program_line_count" class="oe_field_program_line_count" />
                 </button>
