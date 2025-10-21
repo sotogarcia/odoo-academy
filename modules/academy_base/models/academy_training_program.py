@@ -46,7 +46,7 @@ class AcademyTrainingProgram(models.Model):
         readonly=False,
         index=True,
         default=None,
-        help="Official name of the Training Program",
+        help="Official name of the training program",
         size=1024,
         translate=True,
     )

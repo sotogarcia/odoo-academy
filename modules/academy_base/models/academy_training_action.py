@@ -181,7 +181,7 @@ class AcademyTrainingAction(models.Model):
     )
 
     keep_synchronized = fields.Boolean(
-        string="Sync parent program",
+        string="Synchronize from the parent program",
         required=False,
         readonly=False,
         index=True,
@@ -201,7 +201,7 @@ class AcademyTrainingAction(models.Model):
         readonly=False,
         index=True,
         default=None,
-        help="Official name of the Training Action",
+        help="Official name of the training action",
         size=1024,
         translate=True,
     )
