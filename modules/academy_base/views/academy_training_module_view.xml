@@ -223,9 +223,9 @@
       </xpath>
       <xpath expr="//field[@name='code']" position="after">
         <field name="hours" class="oe_field_ownhours" widget="float_time"
-          placeholder="Enter number of hours to this module" invisible="training_unit_count != 0"/>
+          placeholder="Enter the number of hours for this module" invisible="training_unit_count != 0"/>
         <field name="hours" class="oe_field_hours" widget="float_time"
-          placeholder="Total of hours from all units in module" invisible="training_unit_count == 0"
+          placeholder="Total hours from all units in the module" invisible="training_unit_count == 0"
         />
       </xpath>
     </field>

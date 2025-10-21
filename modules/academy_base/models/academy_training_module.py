@@ -117,7 +117,7 @@ class AcademyTrainingModule(models.Model):
         readonly=False,
         index=False,
         default=lambda self: default_code(self.env, CODE_SEQUENCE),
-        help="Enter code for training module",
+        help="Enter module code",
         size=30,
         translate=False,
     )

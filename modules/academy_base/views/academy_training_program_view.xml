@@ -121,7 +121,7 @@
                   <field name="qualification_level_id" class="oe_field_qualification_level_id"
                     string="Granted"/>
                   <field name="general_competence" class="oe_field_general_competence"
-                    string="Competence" placeholder="Tasks will carry out in the future"/>
+                    string="Competence" placeholder="Tasks to be carried out in the future"/>
                 </group>
               </group>
 

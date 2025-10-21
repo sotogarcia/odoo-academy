@@ -594,7 +594,7 @@ class AcademyTrainingAction(models.Model):
         readonly=False,
         index=False,
         default=None,
-        help="Maximum number of signups allowed",
+        help="Maximum number of sign-ups allowed",
         copy=True,
     )
 

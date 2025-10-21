@@ -201,8 +201,7 @@
     <field name="active" eval="True"/>
     <field name="arch" type="xml">
       <pivot string="Enrolments">
-        <field name="student_id" type="row"/>
-        <field name="training_action_id" type="col"/>
+        <field name="training_action_id" type="row"/>
       </pivot>
     </field>
   </record>

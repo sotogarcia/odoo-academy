@@ -448,7 +448,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         readonly=True,
         index=True,
         default=None,
-        help="00:00 the day after, or indefinitely for open enrolments.",
+        help="00:00 the day after, or indefinity for open enrolments.",
         compute="_compute_available_until",
         store=True,
     )
@@ -460,9 +460,9 @@ class AcademyTrainingActionEnrolment(models.Model):
         infinity = datetime.max
 
         for record in self:
-            deregister = record.deregister or indefinitely
+            deregister = record.deregister or indefinity
             action_date_stop = (
-                record.training_action_id.date_stop or indefinitely
+                record.training_action_id.date_stop or indefinity
             )
             record.available_until = min(deregister, action_date_stop)
 
@@ -608,7 +608,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         now = fields.Datetime.now()
         for record in self:
             register = record.register
-            deregister = record.deregister or indefinitely
+            deregister = record.deregister or indefinity
 
             if register < now and deregister >= now:
                 record.color = 10

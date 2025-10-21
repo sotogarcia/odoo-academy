@@ -74,7 +74,7 @@
                       <field name="teacher_assignment_count" widget="statinfo" string="Teachers" />
                   </button>
                   <button name="view_training_action_groups" type="object" class="oe_stat_button oe_read_only"
-                      icon="fa-clipboard" help="View training action lines groups" invisible="parent_id or enrolment_ids">
+                      icon="fa-clipboard" help="View training action groups" invisible="parent_id or enrolment_ids">
                       <field name="training_group_count" widget="statinfo" string="Groups" />
                   </button>
                   <button name="view_action_lines" type="object" class="oe_stat_button oe_read_only"

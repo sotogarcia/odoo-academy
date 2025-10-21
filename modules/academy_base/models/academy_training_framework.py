@@ -72,7 +72,7 @@ class AcademyTrainingFramework(models.Model):
         readonly=False,
         index=True,
         default=lambda self: default_code(self.env, CODE_SEQUENCE),
-        help="Short, unique-ish code used in URLs/filters",
+        help="Short, roughly unique code used in URLs/filters",
         translate=False,
     )
 

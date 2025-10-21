@@ -74,7 +74,7 @@
     </record>
 
     <record id="academy_qualification_level_level_isced_2011_8" model="academy.qualification.level">
-        <field name="name">Doctoral or equivalent level</field>
+        <field name="name">Programmes designed primarily to lead to an advanced research qualification, usually concluding with the submission and defence of a substantive dissertation of publishable quality based on original research</field>
         <field name="description">Programmes designed primarily to lead to an advanced research
             qualification, usually concluding with the submission and defense of a substantive
             dissertation of publishable quality based on original research</field>

@@ -39,7 +39,7 @@ class AcademyMaintenanceTask(models.Model):
         readonly=False,
         index=True,
         default=True,
-        help="Enable/disable the execution of this task.",
+        help="Enable or disable the execution of this task.",
     )
 
     sequence = fields.Integer(

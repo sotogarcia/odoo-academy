@@ -143,7 +143,7 @@
     </record>
 
     <record id="academy_knowledge_area_29" model="academy.knowledge.area">
-        <field name="name">Electric Engineering</field>
+        <field name="name">Electrical Engineering</field>
         <field name="knowle_code">535</field>
     </record>
 
