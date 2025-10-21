@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo noupdate="0">
+
+  <record id="view_academy_change_training_action_wizard_wizard" model="ir.ui.view">
+      <field name="name">Enrolment Transfer</field>
+      <field name="model">academy.change.training.action.wizard</field>
+      <field name="type">form</field>
+      <field name="mode">primary</field>
+      <field name="priority" eval="16" />
+      <field name="active" eval="True" />
+      <field name="arch" type="xml">
+          <form string="Enrolment Transfer" create="1" delete="1" edit="1">
+              <field name="enrolment_ids" invisible="1" />
+
+              <group col="2">
+                <group col="2" colspan="2">
+                  <field name="training_action_id" class="oe_field_training_action_id" />
+                  <field name="full_enrolment" class="oe_field_full_enrolment" />
+                </group>
+
+                <group col="2" string="Dates">
+                  <field name="register" class="oe_field_register" />
+                  <field name="deregister" class="oe_field_deregister" />
+                </group>
+
+                <group col="2" string="Details">
+                  <field name="training_modality_id" class="oe_field_training_modality_id" />
+                  <field name="material_status" class="oe_field_material_status" />
+                </group>
+              </group>
+
+              <footer>
+                <button name="perform_action" string="Accept" type="object" />
+                <button name="Cancel" string="Cancel" type="object" special="cancel" />
+              </footer>
+
+          </form>
+      </field>
+  </record>
+
+  <record id="action_academy_change_training_action_wizard_wizard_act_window" model="ir.actions.act_window">
+      <field name="type">ir.actions.act_window</field>
+      <field name="name">Enrolment Transfer</field>
+      <field name="res_model">academy.change.training.action.wizard</field>
+      <field name="view_mode">form</field>
+      <field name="target">new</field>
+      <field name="domain">[]</field>
+      <field name="context">{}</field>
+      <field name="binding_model_id" ref="academy_base.model_academy_training_action_enrolment"/>
+      <field name="binding_type">action</field>
+      <field name="binding_view_types">list,form</field>
+  </record>
+
+</odoo>

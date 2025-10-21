@@ -394,3 +394,37 @@ def sanitize_code(values_list, convert_case=None):
         else:
             message = _lt("Field 'code' must be a string.")
             raise ValidationError(message)
+
+
+def post_note(recordset, pattern, *args, **kwargs):
+    """Post an internal note to the chatter of the given recordset.
+
+    Args:
+        recordset (RecordSet): Any recordset inheriting from mail.thread.
+        pattern (str): Message body format string.
+        *args: Positional arguments for string formatting.
+        **kwargs: Keyword arguments for string formatting.
+    """
+    if not recordset:
+        return
+
+    try:
+        message = str(pattern).format(*args, **kwargs)
+    except Exception as ex:
+        _logger.warning("post_note format failed: %s", ex)
+        message = str(pattern)
+
+    # Ensure recordset supports chatter
+    if not hasattr(recordset, "message_post"):
+        _logger.warning(
+            "Recordset %s does not support chatter (mail.thread)",
+            recordset._name,
+        )
+        return
+
+    for record in recordset:
+        record.message_post(
+            body=message,
+            message_type="comment",
+            subtype_xmlid="mail.mt_note",
+        )

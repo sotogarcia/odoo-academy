@@ -728,6 +728,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         """Overridden method 'create'"""
 
         sanitize_code(values_list, "upper")
+        self._ensure_parent_action(values_list)
 
         self._perform_a_full_enrolment(values_list)
 
@@ -739,6 +740,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         """Overridden method 'write'"""
 
         sanitize_code(values, "upper")
+        self._ensure_parent_action(values)
 
         self._check_that_the_student_is_not_the_template(values)
         self._perform_a_full_enrolment(values)
@@ -892,6 +894,46 @@ class AcademyTrainingActionEnrolment(models.Model):
 
     # Auxiliary methods
     # -------------------------------------------------------------------------
+
+    @api.model
+    def _ensure_parent_action(self, values_list):
+        """Ensure each value dict includes its parent training action.
+
+        When creating enrolments, this method automatically assigns
+        the `parent_action_id` based on the `training_action_id`.
+        """
+        if isinstance(values_list, dict):
+            values_list = [values_list]
+
+        # Collect all referenced training_action_id values
+        action_ids = set()
+        for values in values_list:
+            action_id = values.get("training_action_id")
+            if isinstance(action_id, models.BaseModel):
+                action_id = action_id.id
+            if action_id:
+                action_ids.add(action_id)
+
+        if not action_ids:
+            return
+
+        action_obj = self.env["academy.training.action"]
+        action_set = action_obj.browse(action_ids)
+
+        # Map each training action to its parent action
+        parent_map = {
+            action.id: action.parent_id.id if action.parent_id else action.id
+            for action in action_set
+        }
+
+        # Apply parent_action_id to values dicts where applicable
+        for values in values_list:
+            action_id = values.get("training_action_id")
+            if isinstance(action_id, models.BaseModel):
+                action_id = action_id.id
+            parent_id = parent_map.get(action_id)
+            if parent_id:
+                values["parent_action_id"] = parent_id
 
     def _check_that_the_student_is_not_the_template(self, values):
         """When registrations are duplicated, the temporary student is

@@ -54,6 +54,10 @@
         </button>
       </xpath>
 
+      <xpath expr="//field[@name='id']" position="after">
+          <field name="current_enrolment_ids" invisible="1" />
+      </xpath>
+
       <xpath expr="//notebook/page[1]" position="before">
         <page string="Enrolments" class="oe_page_enrolments" accesskey="E" autofocus="autofocus">
           <field name="enrolment_ids" class="oe_field_current_enrolment_ids"

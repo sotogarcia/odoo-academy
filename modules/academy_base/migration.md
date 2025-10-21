@@ -161,6 +161,8 @@ attrs=["']\{["'](readonly|invisible|required)["']: *(\[[^\]]+\])\}["']
 1 [ ] Buscar todos los wizard para revisar
 3 [ ] Revisar el modelo y vista de training session
 7 [ ] Revisar informes y correos
+  [ ] Modalidad en vistas kanban y list de training action
+  [ ] La vista pivot de matrículas debe mostrarlas agrupadas por acción y no por alumno
 
 
 - [ ] El campo hours del módulo debe desaparecer
