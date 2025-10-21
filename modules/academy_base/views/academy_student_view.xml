@@ -46,11 +46,16 @@
       <xpath expr="//form" position="attributes">
         <attribute name="string">academy_student_form</attribute>
       </xpath>
+
       <xpath expr="//div[@name='button_box']" position="inside">
         <button name="view_enrolments" type="object" class="oe_stat_button oe_read_only"
-          icon="fa-id-card-o" help="View student enrolments">
+          icon="fa-sign-in" help="View student enrolments">
           <field name="enrolment_str" widget="statinfo" string="Enrolments"/>
         </button>
+      </xpath>
+
+      <xpath expr="//field[@name='id']" position="after">
+          <field name="current_enrolment_ids" invisible="1" />
       </xpath>
 
       <xpath expr="//notebook/page[1]" position="before">
@@ -108,7 +113,7 @@
     <field name="type">ir.actions.act_window</field>
     <field name="name">Students</field>
     <field name="res_model">academy.student</field>
-    <field name="view_mode">kanban,list,form</field>
+    <field name="view_mode">kanban,list,form,activity</field>
     <field name="path">academy-student</field>
     <field name="target">current</field>
     <field name="domain"

@@ -45,8 +45,8 @@
         <sheet>
           <div class="oe_button_box" name="button_box">
             <button name="view_training_program_lines" type="object" class="oe_stat_button"
-              icon="fa-th-list">
-              <field name="program_line_count" widget="statinfo" string="Program lines"/>
+              icon="fa-th-list" title="View detailed program">
+              <field name="program_line_count" widget="statinfo" string="Components"/>
             </button>
           </div>
 
@@ -124,7 +124,7 @@
                   <field name="display_name"/>
                 </h2>
 
-                <ul class="list-unstyled w-100 small">
+                <ul class="list-unstyled w-100 small my-0">
                   <li class="d-flex flex-row justify-content-start lh-lg text-truncate" title="Training module code">
                         <span t-if="record.code.raw_value">
                           <t t-esc="record.code.raw_value"/>
@@ -143,8 +143,8 @@
 
               <!-- footer: begin -->
               <footer class="d-flex justify-content-end align-items-start mt-2">
-                <button name="view_training_programs" type="object" class="btn my-0 py-0" string="Training programs">
-                  <i class="fa fa-lg fa-list-ul me-2" aria-hidden="true" title="View training programs"></i>
+                <button name="view_training_programs" type="object" class="btn my-0 py-0" string="Components">
+                  <i class="fa fa-lg fa-cubes me-2" aria-hidden="true" title="View training programs"></i>
                   <field name="training_program_count" class="oe_field_training_program_count" />
                 </button>
               </footer>

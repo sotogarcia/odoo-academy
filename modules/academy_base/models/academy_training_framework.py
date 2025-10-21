@@ -5,12 +5,16 @@
 ###############################################################################
 
 from odoo import models, fields, api, _
-from logging import getLogger
 from odoo.exceptions import ValidationError
-from ..utils.helpers import OPERATOR_MAP, one2many_count
-from ..utils.helpers import sanitize_code
 from odoo.osv.expression import TRUE_DOMAIN, FALSE_DOMAIN
 from odoo.tools.safe_eval import safe_eval
+from ..utils.helpers import OPERATOR_MAP, one2many_count
+from ..utils.helpers import sanitize_code, default_code
+
+from logging import getLogger
+
+
+CODE_SEQUENCE = "academy.training.framework.sequence"
 
 _logger = getLogger(__name__)
 
@@ -27,7 +31,7 @@ class AcademyTrainingFramework(models.Model):
 
     _order = "name ASC"
     _rec_name = "name"
-    _rec_names_search = ["name", "code", "issuing_authority", "legal_code"]
+    _rec_names_search = ["name", "code", "legal_code"]
 
     name = fields.Char(
         string="Name",
@@ -64,10 +68,10 @@ class AcademyTrainingFramework(models.Model):
 
     code = fields.Char(
         string="Framework Code",
-        required=False,
+        required=True,
         readonly=False,
         index=True,
-        default=None,
+        default=lambda self: default_code(self.env, CODE_SEQUENCE),
         help="Short, unique-ish code used in URLs/filters",
         translate=False,
     )
@@ -167,9 +171,9 @@ class AcademyTrainingFramework(models.Model):
     # -- Methods overrides ----------------------------------------------------
 
     @api.model_create_multi
-    def create(self, value_list):
-        sanitize_code(value_list, "upper")
-        return super().create(value_list)
+    def create(self, values_list):
+        sanitize_code(values_list, "upper")
+        return super().create(values_list)
 
     def write(self, values):
         sanitize_code(values, "upper")
@@ -179,6 +183,8 @@ class AcademyTrainingFramework(models.Model):
 
     def view_training_programs(self):
         self.ensure_one()
+
+        name = self.env._("Programs: {}").format(self.display_name)
 
         action_xid = "{module}.{name}".format(
             module="academy_base",
@@ -196,7 +202,7 @@ class AcademyTrainingFramework(models.Model):
             "type": "ir.actions.act_window",
             "res_model": act_wnd.res_model,
             "target": "current",
-            "name": act_wnd.name,
+            "name": name,
             "view_mode": act_wnd.view_mode,
             "domain": domain,
             "context": context,

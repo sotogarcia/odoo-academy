@@ -25,6 +25,7 @@ class AcademyTrainingProgramLine(models.Model):
     _inherit = [
         "image.mixin",
         "mail.thread",
+        "mail.activity.mixin",
         "ownership.mixin",
     ]
 
@@ -64,7 +65,7 @@ class AcademyTrainingProgramLine(models.Model):
 
     code = fields.Char(
         string="Code",
-        required=False,
+        required=True,
         readonly=False,
         index=False,
         default=None,
@@ -249,9 +250,9 @@ class AcademyTrainingProgramLine(models.Model):
     # -- Methods overrides ----------------------------------------------------
 
     @api.model_create_multi
-    def create(self, value_list):
-        sanitize_code(value_list, "upper")
-        return super().create(value_list)
+    def create(self, values_list):
+        sanitize_code(values_list, "upper")
+        return super().create(values_list)
 
     def write(self, values):
         sanitize_code(values, "upper")

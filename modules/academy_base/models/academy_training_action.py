@@ -13,20 +13,29 @@ from odoo.tools.misc import format_date
 from odoo import models, fields, api
 from odoo.tools.safe_eval import safe_eval
 from odoo.exceptions import ValidationError
-from odoo.osv.expression import AND, TRUE_DOMAIN, FALSE_DOMAIN
-from ..utils.helpers import OPERATOR_MAP, one2many_count
+from odoo.osv.expression import AND, OR, TRUE_DOMAIN, FALSE_DOMAIN
+from ..utils.helpers import OPERATOR_MAP, one2many_count, many2many_count
+from ..utils.sql_helpers import create_index
 
 from ..utils.record_utils import create_domain_for_ids
 from ..utils.record_utils import create_domain_for_interval
 from ..utils.record_utils import ARCHIVED_DOMAIN, INCLUDE_ARCHIVED_DOMAIN
+from ..utils.datetime_utils import local_midnight_as_utc
+from ..utils.helpers import sanitize_code, default_code
 
 from logging import getLogger
 from pytz import utc
 from uuid import uuid4
 from psycopg2 import Error as PsqlError
 from enum import IntFlag, auto
+from datetime import datetime, date, time, timedelta
 
-# pylint: disable=locally-disabled, C0103
+TA_CODE_SEQUENCE = "academy.training.action.sequence"
+TAG_CODE_SEQUENCE = "academy.training.action.group.sequence"
+_INFINITY = fields.Datetime.to_datetime("9999-12-31 23:59:59")
+_PARENT_EXCLUDE = {"parent_id", "name", "child_ids"}
+
+
 _logger = getLogger(__name__)
 
 
@@ -46,10 +55,6 @@ class AcademyTrainingAction(models.Model):
     training program
     """
 
-    MSG_ATA01 = _lt(
-        "There are enrolments that are outside the range of " "training action"
-    )
-
     _name = "academy.training.action"
     _description = "Academy training action"
 
@@ -61,8 +66,11 @@ class AcademyTrainingAction(models.Model):
     ]
 
     _rec_name = "name"
-    order = "name, date_start"
-    _rec_names_search = ["name", "code", "training_program_id"]
+    order = "parent_id, sequence, name, date_start"
+    _rec_names_search = ["name", "code", "training_program_id", "parent_id"]
+
+    # -- Company dependency: Fields and logic
+    # -------------------------------------------------------------------------
 
     _check_company_auto = True
 
@@ -71,7 +79,7 @@ class AcademyTrainingAction(models.Model):
         required=True,
         readonly=True,
         index=True,
-        default=lambda self: self.env.company,
+        default=None,
         help="The company this record belongs to",
         comodel_name="res.company",
         domain=[],
@@ -79,6 +87,113 @@ class AcademyTrainingAction(models.Model):
         ondelete="cascade",
         auto_join=False,
     )
+
+    # -- Hierarchy: Fields and logic
+    # -------------------------------------------------------------------------
+
+    _parent_store = True
+
+    parent_id = fields.Many2one(
+        string="Training action",
+        required=False,
+        readonly=False,
+        index=True,
+        default=None,
+        help="Parent training action used to group this record.",
+        comodel_name="academy.training.action",
+        domain=[],
+        context={},
+        ondelete="cascade",
+        auto_join=False,
+        copy=True,
+    )
+
+    parent_path = fields.Char(
+        string="Parent path",
+        required=False,
+        readonly=True,
+        index=True,
+        default=None,
+        help="Path used for efficient ancestors/descendants queries.",
+        translate=False,
+        copy=False,
+    )
+
+    child_ids = fields.One2many(
+        string="Training groups",
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help="Children training actions belonging to this record.",
+        comodel_name="academy.training.action",
+        inverse_name="parent_id",
+        domain=[],
+        context={},
+        auto_join=False,
+        copy=True,
+    )
+
+    training_group_count = fields.Integer(
+        string="Training group count",
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help=False,
+        compute="_compute_training_group_count",
+        search="_search_training_group_count",
+        copy=False,
+    )
+
+    @api.depends("child_ids")
+    def _compute_training_group_count(self):
+        counts = one2many_count(self, "child_ids")
+
+        for record in self:
+            record.training_group_count = counts.get(record.id, 0)
+
+    @api.model
+    def _search_training_group_count(self, operator, value):
+        # Handle boolean-like searches Odoo may pass for required fields
+        if value is True:
+            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
+        if value is False:
+            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
+
+        cmp_func = OPERATOR_MAP.get(operator)
+        if not cmp_func:
+            return FALSE_DOMAIN  # unsupported operator
+
+        counts = one2many_count(self.search([]), "child_ids")
+        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
+
+        return [("id", "in", matched)] if matched else FALSE_DOMAIN
+
+    split_in_groups = fields.Boolean(
+        string="Is divisible",
+        required=False,
+        readonly=False,
+        index=True,
+        default=False,
+        help="If checked, this training action can be divided into smaller "
+        "groups or sessions (children records).",
+    )
+
+    keep_synchronized = fields.Boolean(
+        string="Sync parent program",
+        required=False,
+        readonly=False,
+        index=True,
+        default=False,
+        help=(
+            "If enabled, this child action will automatically keep its "
+            "training program synchronized with the parent action's program."
+        ),
+    )
+
+    # -- Entity fields
+    # -------------------------------------------------------------------------
 
     name = fields.Char(
         string="Action name",
@@ -110,6 +225,15 @@ class AcademyTrainingAction(models.Model):
         help="Disable to archive without deleting.",
     )
 
+    sequence = fields.Integer(
+        string="Sequence",
+        required=True,
+        readonly=False,
+        index=False,
+        default=10,
+        help="Enrollment priority for new students",
+    )
+
     code = fields.Char(
         string="Internal code",
         required=True,
@@ -119,6 +243,7 @@ class AcademyTrainingAction(models.Model):
         help="Enter new internal code",
         size=30,
         translate=False,
+        copy=False,
     )
 
     comment = fields.Html(
@@ -135,90 +260,8 @@ class AcademyTrainingAction(models.Model):
         sanitize_attributes=False,
         strip_style=True,
         translate=False,
+        copy=False,
     )
-
-    # pylint: disable=locally-disabled, w0212
-    date_start = fields.Datetime(
-        string="Start",
-        required=True,
-        readonly=False,
-        index=False,
-        default=lambda self: self.default_start(),
-        help="Start date of an event, without time for full day events",
-    )
-
-    def default_start(self):
-        now = fields.Datetime.now()
-        now = fields.Datetime.context_timestamp(self, now)
-        now = now.replace(hour=0, minute=0, second=0)
-
-        return now.astimezone(utc).replace(tzinfo=None)
-
-    # pylint: disable=locally-disabled, w0212
-    date_stop = fields.Datetime(
-        string="End",
-        required=False,
-        readonly=False,
-        index=False,
-        default=lambda self: self.default_date_stop(),
-        help="Stop date of an event, without time for full day events",
-    )
-
-    def default_date_stop(self):
-        now = fields.Datetime.now()
-        now = fields.Datetime.context_timestamp(self, now)
-        now = now.replace(hour=23, minute=59, second=59)
-
-        return now.astimezone(utc).replace(tzinfo=None)
-
-    training_group_ids = fields.One2many(
-        string="Training groups",
-        required=True,
-        readonly=False,
-        index=True,
-        default=None,
-        help=False,
-        comodel_name="academy.training.action.group",
-        inverse_name="training_action_id",
-        domain=[],
-        context={},
-        auto_join=False,
-    )
-
-    training_group_count = fields.Integer(
-        string="Training group count",
-        required=False,
-        readonly=False,
-        index=False,
-        default=0,
-        help=False,
-        compute="_compute_training_group_count",
-        search="_search_training_group_count",
-    )
-
-    @api.depends("training_group_ids")
-    def _compute_training_group_count(self):
-        counts = one2many_count(self, "training_group_ids")
-
-        for record in self:
-            record.training_group_count = counts.get(record.id, 0)
-
-    @api.model
-    def _search_training_group_count(self, operator, value):
-        # Handle boolean-like searches Odoo may pass for required fields
-        if value is True:
-            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
-        if value is False:
-            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
-
-        cmp_func = OPERATOR_MAP.get(operator)
-        if not cmp_func:
-            return FALSE_DOMAIN  # unsupported operator
-
-        counts = one2many_count(self.search([]), "training_group_ids")
-        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
-
-        return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
     application_scope_id = fields.Many2one(
         string="Application scope",
@@ -232,6 +275,7 @@ class AcademyTrainingAction(models.Model):
         context={},
         ondelete="cascade",
         auto_join=False,
+        copy=True,
     )
 
     professional_category_id = fields.Many2one(
@@ -246,20 +290,7 @@ class AcademyTrainingAction(models.Model):
         context={},
         ondelete="cascade",
         auto_join=False,
-    )
-
-    training_action_category_id = fields.Many2one(
-        string="Training action category",
-        required=False,
-        readonly=False,
-        index=False,
-        default=None,
-        help="Choose related training action",
-        comodel_name="academy.training.action",
-        domain=[],
-        context={},
-        ondelete="cascade",
-        auto_join=False,
+        copy=True,
     )
 
     knowledge_area_ids = fields.Many2many(
@@ -275,6 +306,7 @@ class AcademyTrainingAction(models.Model):
         column2="knowledge_area_id",
         domain=[],
         context={},
+        copy=True,
     )
 
     training_modality_id = fields.Many2one(
@@ -292,6 +324,7 @@ class AcademyTrainingAction(models.Model):
         context={},
         ondelete="cascade",
         auto_join=False,
+        copy=True,
     )
 
     training_methodology_ids = fields.Many2many(
@@ -307,9 +340,123 @@ class AcademyTrainingAction(models.Model):
         column2="training_methodology_id",
         domain=[],
         context={},
+        copy=True,
     )
 
-    # -- Training program and its attributes ----------------------------------
+    # -- Time interval fields and logic
+    # -------------------------------------------------------------------------
+
+    date_start = fields.Datetime(
+        string="Start date",
+        required=True,
+        readonly=False,
+        index=False,
+        default=None,
+        help="Start date of an event, without time for full day events",
+        copy=True,
+    )
+
+    date_stop = fields.Datetime(
+        string="End date",
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help="Stop date of an event, without time for full day events",
+        copy=True,
+    )
+
+    available_until = fields.Datetime(
+        string="Available at",
+        required=False,
+        readonly=True,
+        index=True,
+        default=None,
+        help="00:00 the day after, or infinity for open enrolments.",
+        compute="_compute_available_until",
+        search="_search_available_until",
+        copy=False,
+    )
+
+    @api.depends("date_stop")
+    def _compute_available_until(self):
+        for record in self:
+            if record.date_stop:
+                record.available_until = record.date_stop
+            else:
+                record.available_until = _INFINITY
+
+    @api.model
+    def _search_available_until(self, op, val):
+        """
+        Map filters on the computed 'available_until' to the real 'date_stop'.
+
+        Semantics:
+          - available_until is 'date_stop' if set; otherwise it's INFINITY.
+          - So:
+            >= X or > X -> date_stop >= X (or open)  -> date_stop False OR >= X
+            <= X or < X -> date_stop <= X (not open) -> date_stop set AND <= X
+            =  X        -> if X == INFINITY -> open; else exact date_stop == X
+            != X        -> complement of '=':
+                            if X == INFINITY -> date_stop is set (not open)
+                            else open OR date_stop != X
+        """
+        # Normalize incoming value to a datetime when applicable
+        dt = val
+        if isinstance(dt, str):
+            try:
+                dt = fields.Datetime.to_datetime(dt)
+            except Exception:
+                dt = val  # leave as-is for non-datetime ops
+
+        if op in (">=", ">"):
+            return ["|", ("date_stop", "=", False), ("date_stop", op, dt)]
+
+        if op in ("<=", "<"):
+            return ["&", ("date_stop", "!=", False), ("date_stop", op, dt)]
+
+        if op == "=":
+            if dt == _INFINITY:
+                return [("date_stop", "=", False)]
+            return ["&", ("date_stop", "!=", False), ("date_stop", "=", dt)]
+
+        if op == "!=":
+            if dt == _INFINITY:
+                return [("date_stop", "!=", False)]
+            return ["|", ("date_stop", "=", False), ("date_stop", "!=", dt)]
+
+        if op in ("=", "!=") and val in (False, None):
+            return FALSE_DOMAIN if op == "=" else TRUE_DOMAIN
+
+        return TRUE_DOMAIN
+
+    lifespan = fields.Char(
+        string="Lifespan",
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help="Start and end dates as a formatted range",
+        size=50,
+        translate=False,
+        compute="_compute_lifespan",
+    )
+
+    @api.depends("date_start", "date_stop")
+    @api.depends_context("uid")
+    def _compute_lifespan(self):
+        for record in self:
+            if record.date_start and record.date_stop:
+                register_str = format_date(self.env, record.date_start)
+                deregister_str = format_date(self.env, record.date_stop)
+                record.lifespan = f"{register_str} ‒ {deregister_str}"
+            elif record.date_start:
+                record.lifespan = format_date(self.env, record.date_start)
+            else:
+                record.lifespan = ""
+
+    # -- Training program and its attributes
+    # -------------------------------------------------------------------------
 
     training_program_id = fields.Many2one(
         string="Training program",
@@ -323,11 +470,8 @@ class AcademyTrainingAction(models.Model):
         context={},
         ondelete="cascade",
         auto_join=False,
+        copy=True,
     )
-
-    @api.onchange("training_program_id")
-    def _onchange_training_program_id(self):
-        self.synchronise_program_lines(add_optional=True)
 
     program_name = fields.Char(
         string="Name",
@@ -384,6 +528,9 @@ class AcademyTrainingAction(models.Model):
         related="training_program_id.professional_sector_ids",
     )
 
+    # -- Training program snapshop: fields and logic
+    # -------------------------------------------------------------------------
+
     action_line_ids = fields.One2many(
         string="Action lines",
         required=True,
@@ -399,6 +546,7 @@ class AcademyTrainingAction(models.Model):
         domain=[],
         context={},
         auto_join=False,
+        copy=False,
     )
 
     action_line_count = fields.Integer(
@@ -406,10 +554,11 @@ class AcademyTrainingAction(models.Model):
         required=False,
         readonly=False,
         index=False,
-        default=0,
+        default=None,
         help=False,
         compute="_compute_action_line_count",
-        search="_search_training_action_count",
+        search="_search_action_line_count",
+        copy=False,
     )
 
     @api.depends("action_line_ids")
@@ -420,7 +569,7 @@ class AcademyTrainingAction(models.Model):
             record.action_line_count = counts.get(record.id, 0)
 
     @api.model
-    def _search_training_action_count(self, operator, value):
+    def _search_action_line_count(self, operator, value):
         # Handle boolean-like searches Odoo may pass for required fields
         if value is True:
             return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
@@ -436,30 +585,42 @@ class AcademyTrainingAction(models.Model):
 
         return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
+    # -- Capacity: fields and logic
+    # -------------------------------------------------------------------------
+
     seating = fields.Integer(
         string="Seating",
         required=True,
         readonly=False,
         index=False,
-        default=20,
+        default=None,
         help="Maximum number of signups allowed",
+        copy=True,
     )
+
+    @api.onchange("seating")
+    def _onchange_seating(self):
+        for record in self:
+            if record.seating and record.seating > record.excess:
+                record.excess = record.seating
 
     excess = fields.Integer(
         string="Excess",
         required=True,
         readonly=False,
         index=False,
-        default=0,
-        help=(
-            "Maximum number of students who can be invited to use this "
-            "feature at the same time"
-        ),
+        default=None,
+        help="Upper bound of seats that may be admitted (>= Seating).",
+        copy=True,
     )
 
-    @api.onchange("seating")
-    def _onchange_seating(self):
-        self.excess = max(self.seating, self.excess)
+    @api.onchange("excess")
+    def _onchange_excess(self):
+        for record in self:
+            if record.excess and record.excess < record.seating:
+                record.excess = record.seating
+
+    # -------------------------------------------------------------------------
 
     enrolment_ids = fields.One2many(
         string="Enrolments",
@@ -481,10 +642,11 @@ class AcademyTrainingAction(models.Model):
         required=False,
         readonly=True,
         index=False,
-        default=0,
+        default=None,
         help="Show number of enrolments",
         compute="_compute_enrolment_count",
         search="_search_enrolment_count",
+        copy=False,
     )
 
     @api.depends("enrolment_ids")
@@ -511,41 +673,313 @@ class AcademyTrainingAction(models.Model):
 
         return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
-    # -- Computed field: lifespan ---------------------------------------------
+    rollup_enrolment_ids = fields.One2many(
+        string="Enrolments (rollup)",
+        required=False,
+        readonly=True,
+        index=True,
+        default=None,
+        help="All enrolments from this action and its direct groups.",
+        comodel_name="academy.training.action.enrolment",
+        inverse_name="parent_action_id",
+        domain=[],
+        context={},
+        auto_join=False,
+        copy=False,
+    )
 
-    lifespan = fields.Char(
-        string="Lifespan",
+    rollup_enrolment_count = fields.Integer(
+        string="Enrolment (rollup) count",
         required=False,
         readonly=True,
         index=False,
         default=None,
-        help="Start and end dates as a formatted range",
-        size=50,
-        translate=False,
-        compute="_compute_lifespan",
+        help="Show number of enrolments",
+        compute="_compute_rollup_enrolment_count",
+        search="_search_rollup_enrolment_count",
+        copy=False,
     )
 
-    @api.depends("date_start", "date_stop")
-    @api.depends_context("uid")
-    def _compute_lifespan(self):
+    @api.depends("rollup_enrolment_ids")
+    def _compute_rollup_enrolment_count(self):
+        counts = one2many_count(self, "rollup_enrolment_ids")
+
         for record in self:
-            if record.date_start and record.date_stop:
-                register_str = format_date(self.env, record.date_start)
-                deregister_str = format_date(self.env, record.date_stop)
-                record.lifespan = f"{register_str} ‒ {deregister_str}"
-            elif record.date_start:
-                record.lifespan = format_date(self.env, record.date_start)
+            record.rollup_enrolment_count = counts.get(record.id, 0)
+
+    @api.model
+    def _search_rollup_enrolment_count(self, operator, value):
+        # Handle boolean-like searches Odoo may pass for required fields
+        if value is True:
+            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
+        if value is False:
+            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
+
+        cmp_func = OPERATOR_MAP.get(operator)
+        if not cmp_func:
+            return FALSE_DOMAIN  # unsupported operator
+
+        counts = one2many_count(self.search([]), "rollup_enrolment_ids")
+        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
+
+        return [("id", "in", matched)] if matched else FALSE_DOMAIN
+
+    # -- Teacher assignment: fields and logic
+    # -------------------------------------------------------------------------
+
+    teacher_assignment_ids = fields.One2many(
+        string="Teacher assignments",
+        required=False,
+        readonly=False,
+        index=True,
+        default=None,
+        help="Teacher assignments; order defines primary.",
+        comodel_name="academy.training.teacher.assignment",
+        inverse_name="training_action_id",
+        domain=[],
+        context={},
+        auto_join=False,
+        copy=False,
+    )
+
+    primary_teacher_id = fields.Many2one(
+        string="Lead",
+        required=False,
+        readonly=False,
+        index=True,
+        default=None,
+        help="Primary teacher (lowest sequence).",
+        comodel_name="academy.teacher",
+        domain=[],
+        context={},
+        ondelete="set null",
+        auto_join=False,
+        compute="_compute_primary_teacher_id",
+        inverse="_inverse_primary_teacher_id",
+        store=True,
+        copy=False,
+    )
+
+    @api.depends(
+        "teacher_assignment_ids",
+        "teacher_assignment_ids.sequence",
+        "teacher_assignment_ids.teacher_id",
+        "teacher_assignment_ids.teacher_id.active",
+        "teacher_assignment_ids.action_line_id",
+    )
+    def _compute_primary_teacher_id(self):
+        assignment_obj = self.env["academy.training.teacher.assignment"]
+        primary_dict = assignment_obj.get_primary(self)
+
+        for record in self:
+            record.primary_teacher_id = primary_dict.get(record.id)
+
+    def _inverse_primary_teacher_id(self):
+        """When setting a primary teacher:
+        - If the teacher already has an assignment in this unit, move it to 1st.
+        - Else, overwrite the teacher of the lowest-sequence assignment.
+          If there are no assignments yet, create one at sequence=1.
+        """
+        assignment_obj = self.env["academy.training.teacher.assignment"]
+        for record in self:
+            teacher = record.primary_teacher_id
+            if not record.id:
+                continue
+
+            domain = [("training_action_id", "=", record.id)]
+            assigns = assignment_obj.search(domain, order="sequence, id")
+
+            if not assigns:
+                if teacher:
+                    values = {
+                        "training_action_id": record.id,
+                        "teacher_id": teacher.id,
+                        "sequence": 1,
+                    }
+                    assignment_obj.create(values)
+                continue
+
+            if teacher:
+                existing = assigns.filtered(lambda a: a.teacher_id == teacher)
+                if existing:
+                    # take to first place
+                    existing.write({"sequence": 0})
+                else:
+                    # overwrite the assignment with a lower sequence
+                    first = assigns[0]
+                    first.write({"teacher_id": teacher.id})
+
+                # normalize 1..n
+                ordered = assignment_obj.search(domain, order="sequence, id")
+                for i, a in enumerate(ordered, start=1):
+                    if a.sequence != i:
+                        a.sequence = i
+
+    teacher_assignment_count = fields.Integer(
+        string="Teacher count",
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        help=False,
+        compute="_compute_teacher_assignment_count",
+        search="_search_teacher_assignment_count",
+    )
+
+    @api.depends("teacher_assignment_ids")
+    def _compute_teacher_assignment_count(self):
+        counts = one2many_count(self, "teacher_assignment_ids")
+
+        for record in self:
+            record.teacher_assignment_count = counts.get(record.id, 0)
+
+    @api.model
+    def _search_teacher_assignment_count(self, operator, value):
+        # Handle boolean-like searches Odoo may pass for required fields
+        if value is True:
+            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
+        if value is False:
+            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
+
+        cmp_func = OPERATOR_MAP.get(operator)
+        if not cmp_func:
+            return FALSE_DOMAIN  # unsupported operator
+
+        counts = one2many_count(self.search([]), "teacher_assignment_ids")
+        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
+
+        return [("id", "in", matched)] if matched else FALSE_DOMAIN
+
+    # -- Business fields and logic
+    # 1 => Red
+    # 2 => Orange
+    # 3 => Yellow
+    # 4 => Light blue
+    # 5 => Dark purple
+    # 6 => Salmon pink
+    # 7 => Medium blue
+    # 8 => Dark blue
+    # 9 => Fushia
+    # 10 => Green
+    # 11 => Purple
+    # -------------------------------------------------------------------------
+
+    color = fields.Integer(
+        string="Color",
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        help=False,
+        compute="_compute_color",
+    )
+
+    @api.depends("child_ids", "date_stop")
+    def _compute_color(self):
+        now = fields.Datetime.now()
+        for record in self:
+            if record.date_stop and record.date_stop < now:
+                record.color = 2  # Orange
+            elif record.child_ids:
+                record.color = 10  # Green
             else:
-                record.lifespan = ""
+                record.color = 4  # Light blue
+
+    delivered_action_ids = fields.Many2many(
+        string="Delivered actions",
+        help=(
+            "Includes all child actions if present; otherwise, includes "
+            "this training action"
+        ),
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        comodel_name="academy.training.action",
+        relation="academy_training_action_delivered_action_rel",
+        column1="parent_action_id",
+        column2="child_action_id",
+        domain=[],
+        context={},
+        compute="_compute_delivered_action_ids",
+        search="_search_delivered_action_ids",
+    )
+
+    @api.depends("parent_id", "child_ids")
+    def _compute_delivered_action_ids(self):
+        for record in self:
+            record.delivered_action_ids = record.child_ids or record
+
+    def _search_delivered_action_ids(self, operator, value):
+        base_domain = [("child_ids", "=", False)]
+
+        rec_name_domains = [
+            [(field, operator, value)] for field in self._rec_names_search
+        ]
+        name_domain = OR(rec_name_domains) if rec_name_domains else []
+
+        return AND([base_domain, name_domain])
+
+    student_ids = fields.Many2manyView(
+        string="Students",
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help="Students directly or indirectly enrolled in this action.",
+        comodel_name="academy.student",
+        relation="academy_training_action_student_link",
+        column1="training_action_id",
+        column2="student_id",
+        domain=[],
+        context={},
+        copy=False,
+    )
+
+    student_count = fields.Integer(
+        string="Student count",
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        help=False,
+        compute="_compute_student_count",
+        search="_search_student_count",
+    )
+
+    @api.depends(
+        "enrolment_ids",
+        "rollup_enrolment_ids",
+        "enrolment_ids.student_id",
+        "rollup_enrolment_ids.student_id",
+        "student_ids",
+    )
+    def _compute_student_count(self):
+        counts = many2many_count(self, "student_ids")
+
+        for record in self:
+            record.student_count = counts.get(record.id, 0)
+
+    @api.model
+    def _search_student_count(self, operator, value):
+        # Handle boolean-like searches Odoo may pass for required fields
+        if value is True:
+            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
+        if value is False:
+            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
+
+        cmp_func = OPERATOR_MAP.get(operator)
+        if not cmp_func:
+            return FALSE_DOMAIN  # unsupported operator
+
+        counts = many2many_count(self.search([]), "student_ids")
+        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
+
+        return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
     # ------------------------------ CONSTRAINS -------------------------------
 
     _sql_constraints = [
-        (
-            "unique_action_code",
-            'UNIQUE("code")',
-            "The given action code already exists",
-        ),
         (
             "check_date_order",
             'CHECK("date_stop" IS NULL OR "date_start" < "date_stop")',
@@ -558,163 +992,427 @@ class AcademyTrainingAction(models.Model):
         ),
     ]
 
-    @api.constrains("date_start", "date_stop", "training_group_ids")
-    def _constrains_groups_inside_action(self):
-        group_obj = self.env["academy.training.action.group"]
+    # Funcionará si los campos vuelve a ser almacenados. Ahora NO lo son.
+    # (
+    #     "prevent_enrolment_group_mix",
+    #     "CHECK (COALESCE(training_group_count, 0) = 0 "
+    #     "OR COALESCE(enrolment_count, 0) = 0)",
+    #     "An action with groups cannot have direct enrolments, and an action "
+    #     "with direct enrolments cannot have groups.",
+    # ),
 
-        error_start = _("Group starts before action start.")
-        error_stop = _("Group ends after action stop.")
+    @api.constrains("enrolment_ids", "child_ids", "parent_id")
+    def _check_enrolment_group_conflict(self):
+        for record in self:
+            parent = record.parent_id or self.env["academy.training.action"]
 
-        infinity = fields.Datetime.to_datetime("9999-12-31 23:59:59")
+            # --- Case 1: the parent already has enrolments → cannot add child
+            if parent and parent.enrolment_ids:
+                raise ValidationError(
+                    _(
+                        "You cannot create or assign a training group under "
+                        "an action that already has student enrolments.\n\n"
+                        "Remove the enrolments from the parent action first."
+                    )
+                )
 
-        for action in self:
-            domain = [
-                ("training_action_id", "=", action.id),
-                ("date_start", "!=", False),
-            ]
+            # --- Case 2: the parent already has child groups → cannot enrol
+            if record.enrolment_ids and parent and parent.child_ids:
+                raise ValidationError(
+                    _(
+                        "You cannot enrol students in a training action whose "
+                        "parent already contains training groups.\n\n"
+                        "Enrol them in one of the existing groups instead."
+                    )
+                )
 
-            action_start = action.date_start
-            action_stop = action.date_stop or infinity
+            # --- Case 3: the record itself is a parent (top-level action)
+            # It cannot have both enrolments and groups at the same time.
+            if record.enrolment_ids and record.child_ids:
+                raise ValidationError(
+                    _(
+                        "A training action cannot have both direct student "
+                        "enrolments and associated training groups.\n\n"
+                        "Remove either the enrolments or the groups before "
+                        "proceeding."
+                    )
+                )
 
-            for group in group_obj.search(domain):
-                group_start = group.date_start
-                group_stop = group.date_stop or infinity
+    @api.constrains("parent_id")
+    def _check_no_cycle(self):
+        """Prevent recursive hierarchies."""
+        message = _("You cannot create a recursive hierarchy.")
+        if self._has_cycle("parent_id"):
+            raise ValidationError(message)
 
-                if action_start and group_start < action_start:
-                    raise ValidationError(error_start)
-                if group_stop > action_stop:
-                    raise ValidationError(error_stop)
+    @api.constrains("date_start", "date_stop")
+    def _constrains_groups_inside_action_parent(self):
+        """Parent-level constraint.
 
-    @api.constrains("seating", "excess", "training_group_ids")
-    def _constrains_group_capacity(self):
-        error_seating = _("Sum of groups 'Seating' exceeds action 'Seating'.")
-        error_excess = _("Sum of groups 'Excess' exceeds action 'Excess'.")
-
-        for action in self:
-            groups = action.training_group_ids
-
-            seat_sum = sum(groups.mapped("seating")) if groups else 0
-            excess_sum = sum(groups.mapped("excess")) if groups else 0
-
-            if seat_sum > action.seating:
-                raise ValidationError(error_seating)
-
-            if excess_sum > action.excess:
-                raise ValidationError(error_excess)
-
-    # -------------------------- OVERLOADED METHODS ---------------------------
-
-    @api.returns("self", lambda value: value.id)
-    def copy(self, defaults=None):
-        """Prevents new record of the inherited (_inherits) model will be
-        created
+        Evaluates on parent actions (not groups). Ensures every child group's
+        date window lies within the parent's [date_start, date_stop]. Triggered
+        when the parent's date_start/date_stop change.
         """
+        for parent in self:
+            start, stop = self._parent_window(parent)
 
-        action_obj = self.env[self._name]
-        action_set = action_obj.search([], order="id DESC", limit=1)
+            # No window => nothing to validate
+            if not (start or parent.date_stop):
+                continue
 
-        defaults = dict(defaults or {})
-        # default.update({
-        #     'training_program_id': self.training_program_id.id
-        # })
-        #
-        if "code" not in defaults:
-            defaults["code"] = uuid4().hex.upper()
+            # Fetch only children that could violate
+            kids = parent.child_ids.filtered(lambda g: g.date_start)
+            for g in kids:
+                g_start = g.date_start
+                g_stop = g.date_stop or _INFINITY
 
-        if "name" not in defaults:
-            defaults["name"] = "{} - {}".format(self.name, action_set.id + 1)
+                if start and g_start < start:
+                    raise ValidationError(
+                        self.env._("Group starts before action start.")
+                    )
 
-        rec = super(AcademyTrainingAction, self).copy(defaults)
-        return rec
+                print(g_stop, stop)
+                if g_stop > stop:
+                    raise ValidationError(
+                        self.env._("Group ends after action stop.")
+                    )
+
+    @api.constrains("seating", "excess")
+    def _constrains_group_capacity_parent(self):
+        """Parent-level constraint.
+
+        Evaluates on parent actions (not groups). Ensures the sum of children's
+        seating/excess does not exceed the parent's seating/excess. Triggered
+        when the parent's seating/excess change.
+        """
+        Child = self.env["academy.training.action"]
+        for parent in self:
+            if not parent.child_ids:
+                continue
+
+            # Aggregate with read_group (efficient on large sets)
+            data = Child.read_group(
+                domain=[("parent_id", "=", parent.id)],
+                fields=["seating:sum", "excess:sum"],
+                groupby=[],
+            )[0]
+            seat_sum = data.get("seating_sum") or 0
+            exc_sum = data.get("excess_sum") or 0
+
+            if parent.seating is not None and seat_sum > parent.seating:
+                raise ValidationError(
+                    self.env._(
+                        "Sum of groups 'Seating' exceeds action 'Seating'."
+                    )
+                )
+            if parent.excess is not None and exc_sum > parent.excess:
+                raise ValidationError(
+                    self.env._(
+                        "Sum of groups 'Excess' exceeds action 'Excess'."
+                    )
+                )
+
+    @api.constrains("date_start", "date_stop", "parent_id")
+    def _constrains_within_parent_child(self):
+        """Child-level constraint.
+
+        Evaluates on groups (children). Ensures this group's date window fits
+        within its parent's [date_start, date_stop]. Triggered when this
+        record's date_start/date_stop/parent_id change.
+        """
+        for group in self:
+            parent = group.parent_id
+            if not parent:
+                continue
+
+            p_start, p_stop = self._parent_window(parent)
+            if group.date_start and p_start and group.date_start < p_start:
+                raise ValidationError(
+                    self.env._("Group starts before action start.")
+                )
+            g_stop = group.date_stop or _INFINITY
+            if g_stop > p_stop:
+                raise ValidationError(
+                    self.env._("Group ends after action stop.")
+                )
+
+    @api.constrains("seating", "excess", "parent_id")
+    def _constrains_capacity_child(self):
+        """Child-level constraint.
+
+        Evaluates on groups (children). After this group's change, ensures the
+        aggregated seating/excess under the same parent does not exceed the
+        parent's limits. Triggered when this record's seating/excess/parent_id
+        change.
+        """
+        Child = self.env["academy.training.action"]
+        for group in self:
+            parent = group.parent_id
+            if not parent:
+                continue
+
+            data = Child.read_group(
+                domain=[("parent_id", "=", parent.id)],
+                fields=["seating:sum", "excess:sum"],
+                groupby=[],
+            )[0]
+            seat_sum = data.get("seating_sum") or 0
+            exc_sum = data.get("excess_sum") or 0
+
+            if parent.seating is not None and seat_sum > parent.seating:
+                raise ValidationError(
+                    self.env._(
+                        "Sum of groups 'Seating' exceeds action 'Seating'."
+                    )
+                )
+            if parent.excess is not None and exc_sum > parent.excess:
+                raise ValidationError(
+                    self.env._(
+                        "Sum of groups 'Excess' exceeds action 'Excess'."
+                    )
+                )
+
+    # -- Defaults
+    # -------------------------------------------------------------------------
 
     @api.model
-    def _create(self, values):
-        """Overridden low-level method '_create' to handle custom PostgreSQL
-        exceptions.
+    def default_get(self, fields_list):
+        defaults = super().default_get(fields_list)
 
-        This method handles custom PostgreSQL exceptions, specifically catching
-        the exception with code 'ATE01', triggered by a database trigger that
-        validates enrolment dates in training actions.
+        parent_action = self._get_default_parent_training_action(defaults)
+        parent_action = parent_action.exists()
+        if parent_action:
+            parent_action._patch_defaults_on_child(defaults, fields_list)
+        else:
+            self._patch_defaults_on_parent(defaults)
 
-        Args:
-            values (dict): The values to create a new record.
+        return defaults
 
-        Returns:
-            Record: The newly created record.
+    @api.model
+    def _patch_defaults_on_parent(self, defaults):
+        defaults.setdefault("company_id", self.env.company.id)
+        defaults.setdefault("code", default_code(self.env, TA_CODE_SEQUENCE))
+        defaults.setdefault("date_start", self.default_start())
+        defaults.setdefault("seating", 20)
+        defaults.setdefault("excess", 20)
 
-        Raises:
-            ValidationError: If a PostgreSQL error with code 'ATE01' is raised.
-        """
+    def _patch_defaults_on_child(self, defaults, fields_list):
+        self.ensure_one()
 
-        parent = super(AcademyTrainingAction, self)
+        defaults.setdefault("code", default_code(self.env, TAG_CODE_SEQUENCE))
 
-        try:
-            result = parent._create(values)
-        except PsqlError as ex:
-            if "ATA01" in str(ex.pgcode):
-                raise ValidationError(self.MSG_ATA01)
-            else:
-                raise
+        if "name" not in defaults:
+            group_name = self.first_available_group_name()
+            defaults["name"] = group_name
 
-        return result
+        seating, excess = self.available_capacity()
+        if "seating" not in defaults:
+            defaults["seating"] = seating
+        if "excess" not in defaults or defaults.get("excess", 0) < seating:
+            defaults["excess"] = max(seating, excess)
 
-    def _write(self, values):
-        """Overridden low-level method '_write' to handle custom PostgreSQL
-        exceptions.
+        parent_values = self.copy_data(default=None)[0] or {}
+        fields_list = fields_list or parent_values.keys()
+        for key, value in parent_values.items():
+            if key in _PARENT_EXCLUDE:
+                continue
+            if key in fields_list:
+                defaults.setdefault(key, value)
 
-        This method handles custom PostgreSQL exceptions, specifically catching
-        the exception with code 'ATE01', triggered by a database trigger that
-        validates enrolment dates in training actions.
+    def _get_default_parent_training_action(self, values=None):
+        action_obj = self.env["academy.training.action"]
 
-        Args:
-            values (dict): The values to update the record.
+        parent_id = (values or {}).get("parent_id")
+        if not parent_id:
+            parent_id = self.env.context.get("default_parent_id")
 
-        Returns:
-            Boolean: True if the write operation was successful.
+        if parent_id:
+            return action_obj.with_context(active_test=False).browse(parent_id)
 
-        Raises:
-            ValidationError: If a PostgreSQL error with code 'ATE01' is raised.
-        """
+        return action_obj.browse()
 
-        parent = super(AcademyTrainingAction, self)
+    def first_available_group_name(self):
+        self.ensure_one()
 
-        try:
-            result = parent._write(values)
-        except PsqlError as ex:
-            if "ATA01" in str(ex.pgcode):
-                raise ValidationError(self.MSG_ATA01)
-            else:
-                raise
+        parent = self.parent_id or self
+
+        action_name = parent.name or self.env._("New training action")
+        other_groups = parent.child_ids.filtered(lambda r: r != self)
+
+        if not other_groups:
+            return f"{action_name} ‒ A"
+
+        used_names = set(other_groups.mapped("name"))
+        for name in [f"{action_name} ‒ {chr(i)}" for i in range(65, 91)]:
+            if name not in used_names:
+                return name
+
+        return f"{action_name} ‒ {uuid4().hex[:6].upper()}"
+
+    def available_capacity(self):
+        self.ensure_one()
+
+        parent = self.parent_id or self
+        others = parent.child_ids.filtered(lambda r: r != self)
+
+        seating = sum((v or 0) for v in others.mapped("seating"))
+        excess = sum((v or 0) for v in others.mapped("excess"))
+
+        cap_s = max(0, (parent.seating or 0) - seating)
+        cap_e = max(cap_s, (parent.excess or 0) - excess)
+
+        return cap_s, cap_e
+
+    def default_start(self):
+        today = fields.Date.context_today(self)
+        tz_name = self.env.user.tz or self.env.company.partner_id.tz or "UTC"
+
+        return local_midnight_as_utc(
+            value=today,
+            from_tz=tz_name,
+            remove_tz=True,
+        )
+
+    # -- Overridden methods
+    # -------------------------------------------------------------------------
+
+    def _auto_init(self):
+        result = super()._auto_init()
+
+        table = self._table
+        code_fields = ["company_id", "LOWER(code)", "COALESCE(parent_id, 0)"]
+        create_index(
+            env=self.env,
+            table_name=table,
+            fields=code_fields,
+            unique=True,
+            name=f"{table}_code_uniq",
+            method="btree",
+        )
 
         return result
 
     @api.model_create_multi
-    def create(self, value_list):
-        """Overridden method 'create'"""
+    def create(self, values_list):
+        """Create records: inherit from parent, sanitize code, sync, enrols."""
 
-        parent = super(AcademyTrainingAction, self)
-        result = parent.create(value_list)
+        self._fill_from_parent(values_list)
 
-        result.update_enrolments()
+        sanitize_code(values_list, "upper")
+        self._prevent_use_student_link(values_list)
 
-        return result
+        records = super().create(values_list)
+
+        to_sync = records.filtered(lambda r: not r.action_line_ids)
+        if to_sync:
+            to_sync.synchronize_from_program(
+                mode=SyncMode.ALL, add_optional=True
+            )
+
+        records.update_enrolments()
+
+        return records
 
     def write(self, values):
         """Overridden method 'write'"""
+        sanitize_code(values, "upper")
+        self._prevent_use_student_link(values)
 
-        parent = super(AcademyTrainingAction, self)
-        result = parent.write(values)
+        result = super().write(values)
 
         self.update_enrolments()
 
         return result
 
+    @staticmethod
+    def _prevent_use_student_link(values_list):
+        if not values_list:
+            pass
+        elif isinstance(values_list, list):
+            for values in values_list:
+                if "student_ids" in values:
+                    print("Deleting student_ids", values["student_ids"])
+                    del values["student_ids"]
+        elif isinstance(values_list, dict) and "student_ids" in values_list:
+            print("Deleting student_ids", values["student_ids"])
+            del values_list["student_ids"]
+
+    def _batch_read_parent_data(self, values_list):
+        """Return {parent_id: copy_data(parent)} for all parents in vals."""
+        parent_ids = {
+            vals.get("parent_id")
+            for vals in values_list
+            if vals.get("parent_id")
+        }
+
+        if not parent_ids:
+            return {}
+
+        parents = self.with_context(active_test=False).browse(list(parent_ids))
+        copied = parents.copy_data(default=None)
+
+        return {rec.id: data for rec, data in zip(parents, copied)}
+
+    def _fill_from_parent(self, values_list):
+        """Inherit parent's values (incl. O2M/M2M with copy=True)."""
+        if not values_list:
+            return
+
+        parent_data = self._batch_read_parent_data(values_list)
+        if not parent_data:
+            return
+
+        for values in values_list:
+            pid = values.get("parent_id")
+            if not pid:
+                continue
+            pvals = parent_data.get(pid, {})
+            for key, val in pvals.items():
+                if key in _PARENT_EXCLUDE:
+                    continue
+                values.setdefault(key, val)
+
+    def _parent_window(self, action):
+        """Return (start, stop_or_infinity) for the given action."""
+        start = action.date_start
+        stop = action.date_stop or _INFINITY
+        return start, stop
+
     # --------------------------- PUBLIC METHODS ------------------------------
 
-    def view_training_action_groups(self):
+    def view_students(self):
         self.ensure_one()
 
-        action_xid = "academy_base.action_training_action_group_act_window"
+        name = self.env._("Students: {}").format(self.display_name)
+
+        action_xid = "academy_base.action_student_act_window"
+        act_wnd = self.env.ref(action_xid)
+
+        context = self.env.context.copy()
+        context.update(safe_eval(act_wnd.context))
+
+        domain = [("id", "in", self.student_ids.ids)]
+
+        serialized = {
+            "type": "ir.actions.act_window",
+            "res_model": act_wnd.res_model,
+            "target": "current",
+            "name": name,
+            "view_mode": act_wnd.view_mode,
+            "domain": domain,
+            "context": context,
+            "search_view_id": act_wnd.search_view_id.id,
+            "help": act_wnd.help,
+        }
+
+        return serialized
+
+    def view_teacher_assignments(self):
+        self.ensure_one()
+
+        name = self.env._("Teachers: {}").format(self.display_name)
+
+        action_xid = "academy_base.action_teacher_assignment_act_window"
         act_wnd = self.env.ref(action_xid)
 
         context = self.env.context.copy()
@@ -727,7 +1425,7 @@ class AcademyTrainingAction(models.Model):
             "type": "ir.actions.act_window",
             "res_model": act_wnd.res_model,
             "target": "current",
-            "name": act_wnd.name,
+            "name": name,
             "view_mode": act_wnd.view_mode,
             "domain": domain,
             "context": context,
@@ -737,8 +1435,40 @@ class AcademyTrainingAction(models.Model):
 
         return serialized
 
+    def view_training_action_groups(self):
+        self.ensure_one()
+
+        name = self.env._("Groups: {}").format(self.display_name)
+
+        action_xid = "academy_base.action_training_action_group_act_window"
+        act_wnd = self.env.ref(action_xid)
+
+        context = self.env.context.copy()
+        context.update(safe_eval(act_wnd.context))
+        context.update({"default_parent_id": self.id})
+
+        domain = [("parent_id", "=", self.id)]
+        views = [(v.view_id.id, v.view_mode) for v in act_wnd.view_ids]
+
+        serialized = {
+            "type": "ir.actions.act_window",
+            "res_model": act_wnd.res_model,
+            "target": "current",
+            "name": name,
+            "view_mode": act_wnd.view_mode,
+            "domain": domain,
+            "context": context,
+            "views": views,
+            "search_view_id": act_wnd.search_view_id.id,
+            "help": act_wnd.help,
+        }
+
+        return serialized
+
     def view_action_lines(self):
         self.ensure_one()
+
+        name = self.env._("Program: {}").format(self.display_name)
 
         action_xid = "academy_base.action_training_action_line_act_window"
         act_wnd = self.env.ref(action_xid)
@@ -753,7 +1483,7 @@ class AcademyTrainingAction(models.Model):
             "type": "ir.actions.act_window",
             "res_model": act_wnd.res_model,
             "target": "current",
-            "name": act_wnd.name,
+            "name": name,
             "view_mode": act_wnd.view_mode,
             "domain": domain,
             "context": context,
@@ -764,72 +1494,23 @@ class AcademyTrainingAction(models.Model):
         return serialized
 
     def update_enrolments(self, force=False):
-        dtformat = "%Y-%m-%d %H:%M:%S.%f"
-
         for record in self:
             enrol_set = record.enrolment_ids
-
-            # Enrolment date_start must be great or equal than record date_start
-            target_set = enrol_set.filtered(
+            target = enrol_set.filtered(
                 lambda r: r.date_start < record.date_start
             )
-            target_set.write(
-                {"date_start": record.date_start.strftime(dtformat)}
+
+            target.write(
+                {"date_start": fields.Datetime.to_string(record.date_start)}
             )
 
-            # Enrolment end must be less or equal than record end
-            # NOTE: end date can be null
             if record.date_stop:
-                target_set = enrol_set.filtered(
+                target = enrol_set.filtered(
                     lambda r: r.date_stop and r.date_stop > record.date_stop
                 )
-                target_set.write(
-                    {"date_stop": record.date_stop.strftime(dtformat)}
+                target.write(
+                    {"date_stop": fields.Datetime.to_string(record.date_stop)}
                 )
-
-    def session_wizard(self):
-        """Launch the Session wizard.
-        This wizard has a related window action, this method reads the action,
-        updates context using current evironment and sets the wizard training
-        action to this action.
-        """
-
-        module = "academy_base"
-        name = "action_academy_training_session_wizard_act_window"
-        act_xid = "{}.{}".format(module, name)
-
-        self.ensure_one()
-
-        # STEP 1: Initialize variables
-        action = self.env.ref(act_xid)
-        actx = safe_eval(action.context)
-
-        # STEP 2 Update context:
-        ctx = dict()
-        ctx.update(self.env.context)  # dictionary from environment
-        ctx.update(actx)  # add action context
-
-        # STEP 3: Set training action for wizard. This action will be send in
-        # context as a default value. If this recordset have not records,
-        # any training action will be set
-        if self.id:
-            ctx.update(dict(default_training_action_id=self.id))
-
-        # STEP 4: Map training action and add computed context
-        action_map = {
-            "type": action.type,
-            "name": action.name,
-            "res_model": action.res_model,
-            "view_mode": action.view_mode,
-            "target": action.target,
-            "domain": action.domain,
-            "context": ctx,
-            "search_view_id": action.search_view_id,
-            "help": action.help,
-        }
-
-        # STEP 5: Return the action
-        return action_map
 
     @staticmethod
     def _eval_domain(domain):
@@ -847,7 +1528,7 @@ class AcademyTrainingAction(models.Model):
             domain = []
         elif not isinstance(domain, (list, tuple)):
             try:
-                domain = eval(domain)
+                domain = safe_eval(domain)
             except Exception:
                 domain = []
 
@@ -856,18 +1537,27 @@ class AcademyTrainingAction(models.Model):
     def view_enrolments(self):
         self.ensure_one()
 
+        name = self.env._("Enrolments: {}").format(self.display_name)
+
         act_xid = "academy_base.action_training_action_enrolment_act_window"
         action = self.env.ref(act_xid)
 
+        parent_action_id = self.parent_id.id if self.parent_id else self.id
+
         ctx = self.env.context.copy()
         ctx.update(safe_eval(action.context))
-        ctx.update({"default_training_action_id": self.id})
+        ctx.update(
+            {
+                "default_training_action_id": self.id,
+                "default_parent_action_id": parent_action_id,
+            }
+        )
 
         domain = self._eval_domain(action.domain)
         domain = AND([domain, [("training_action_id", "=", self.id)]])
 
         action_values = {
-            "name": "{} {}".format(_("Enroled in"), self.name),
+            "name": name,
             "type": action.type,
             "help": action.help,
             "domain": domain,
@@ -880,7 +1570,44 @@ class AcademyTrainingAction(models.Model):
 
         return action_values
 
-    def copy_activity_image(self):
+    def view_rollup_enrolments(self):
+        self.ensure_one()
+
+        name = self.env._("Enrolments: {}").format(self.display_name)
+
+        act_xid = "academy_base.action_training_action_enrolment_act_window"
+        action = self.env.ref(act_xid)
+
+        parent_action_id = self.parent_id.id if self.parent_id else self.id
+        training_action_id = self.id if not self.child_ids else None
+
+        ctx = self.env.context.copy()
+        ctx.update(safe_eval(action.context))
+        ctx.update(
+            {
+                "default_training_action_id": training_action_id,
+                "default_parent_action_id": parent_action_id,
+            }
+        )
+
+        domain = self._eval_domain(action.domain)
+        domain = AND([domain, [("parent_action_id", "=", self.id)]])
+
+        action_values = {
+            "name": name,
+            "type": action.type,
+            "help": action.help,
+            "domain": domain,
+            "context": ctx,
+            "res_model": action.res_model,
+            "target": action.target,
+            "view_mode": action.view_mode,
+            "search_view_id": action.search_view_id.id,
+        }
+
+        return action_values
+
+    def copy_program_image(self):
         for record in self:
             if not record.training_program_id:
                 continue
@@ -988,7 +1715,7 @@ class AcademyTrainingAction(models.Model):
             )
 
     def synchronize_from_program(
-        self, mode: SyncMode, add_optional: bool = True
+        self, mode: SyncMode = SyncMode.ALL, add_optional: bool = True
     ):
         """
         Synchronize each training action with its program lines.
@@ -1006,3 +1733,93 @@ class AcademyTrainingAction(models.Model):
 
         for record in self:
             record._synchronize_from_program(mode, add_optional)
+
+    # Maintenance tasks
+    # -------------------------------------------------------------------------
+
+    @api.model
+    def training_action_group_sync_task(self, limit=None):
+        """
+        1) Localiza HIJAS que deben sincronizarse (keep_synchronized = True) porque
+           su snapshot (lines_last_updated) es más antiguo que el del padre.
+        2) Sincroniza esas hijas con el programa del padre.
+        """
+        cr = self.env.cr
+        # Nota: COALESCE para tratar NULLs como muy antiguos
+        cr.execute(
+            """
+            SELECT c.id
+            FROM academy_training_action AS c
+            JOIN academy_training_action AS p
+              ON p.id = c.parent_id
+            WHERE c.keep_synchronized = TRUE
+              AND c.parent_id IS NOT NULL
+              AND COALESCE(c.lines_last_updated, TIMESTAMP '1900-01-01')
+                  < COALESCE(p.lines_last_updated, TIMESTAMP '1900-01-01')
+            ORDER BY p.id
+            {limit_clause}
+        """.format(
+                limit_clause=f"LIMIT {int(limit)}" if limit else ""
+            )
+        )
+        child_ids = [row[0] for row in cr.fetchall()]
+        if not child_ids:
+            return 0
+
+        children = self.browse(child_ids).with_context(
+            skip_program_recompute=True
+        )
+
+        # --- Sincronización (ejemplo orientativo) ---
+        # Copia el snapshot (action_line_ids) del padre a la hija.
+        # Adapta a tu método real de clonado/sync.
+        for child in children:
+            parent = child.parent_id
+            # Reemplazar snapshot de la hija por el del padre
+            # (ejemplo: borrar líneas actuales y clonar del padre)
+            child.action_line_ids.unlink()
+            vals_list = []
+            for line in parent.action_line_ids:
+                vals = {
+                    # copia de campos relevantes de la línea
+                    "name": line.name,
+                    "sequence": line.sequence,
+                    "duration": line.duration,
+                    # ...
+                    "action_id": child.id,
+                }
+                vals_list.append(vals)
+            if vals_list:
+                self.env["academy.training.action.line"].create(vals_list)
+
+        # Opcional: invalidar/calc. campos dependientes en bloque
+        children.invalidate_cache(["action_line_ids", "lines_last_updated"])
+        return len(children)
+
+    lines_last_updated = fields.Datetime(
+        string="Lines last updated",
+        required=False,
+        readonly=True,
+        index=True,
+        default=None,
+        help="Max(create/write date) among action_line_ids.",
+        compute="_compute_lines_last_updated",
+        store=True,
+    )
+
+    @api.depends(
+        "action_line_ids",
+        "action_line_ids.create_date",
+        "action_line_ids.write_date",
+        "action_line_ids.sequence",
+    )
+    def _compute_lines_last_updated(self):
+        for record in self:
+            lines = record.action_line_ids
+            if not lines:
+                record.lines_last_updated = False
+                continue
+            dates = [d for d in lines.mapped("write_date") if d] + [
+                d for d in lines.mapped("create_date") if d
+            ]
+            record.lines_last_updated = max(dates) if dates else False

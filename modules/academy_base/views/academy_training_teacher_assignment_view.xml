@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo noupdate="0">
+
+  <!-- VIEWS: "Teacher assignment"
+
+      - Model·········: academy.training.teacher.assignment
+      - _rec_name·····: name
+      - Domain········: []
+      - Context·······: {}
+      - Parent menu ··: academy_base.menu_academy_monitoring
+      - View priority·: 16    Sequence····: 10
+      - Action help···: There are not teacher assignments
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+  <!-- Tree view for "academy.training.teacher.assignment" -->
+  <record id="view_academy_training_teacher_assignment_tree" model="ir.ui.view">
+      <field name="name">view.academy.training.teacher.assignment.tree</field>
+      <field name="model">academy.training.teacher.assignment</field>
+      <field name="type">list</field>
+      <field name="mode">primary</field>
+      <field name="priority" eval="16" />
+      <field name="active" eval="True" />
+      <field name="arch" type="xml">
+          <list string="academy_training_teacher_assignment_tree" create="1" delete="1" edit="1" editable="top">
+            <field name="sequence" class="oe_field_sequence" widget="handle" />
+            <field name="training_action_id" class="oe_field_training_action_id"
+              options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"
+              readonly="context.get('default_training_action_id', False)" />
+            <field name="action_line_id" class="oe_field_action_line_id"
+              options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"
+              domain="[('training_action_id', '=', training_action_id)]"
+              readonly="context.get('default_action_line_id', False)" />
+            <field name="teacher_id" class="oe_field_teacher_id" />
+          </list>
+      </field>
+  </record>
+
+  <!-- Form view for "academy.training.teacher.assignment" -->
+  <record id="view_academy_training_teacher_assignment_form" model="ir.ui.view">
+      <field name="name">view.academy.training.teacher.assignment.form</field>
+      <field name="model">academy.training.teacher.assignment</field>
+      <field name="type">form</field>
+      <field name="mode">primary</field>
+      <field name="priority" eval="16" />
+      <field name="active" eval="True" />
+      <field name="arch" type="xml">
+          <form string="academy_training_teacher_assignment_form" create="1" delete="1" edit="1">
+              <sheet>
+                  <div class="oe_title">
+                      <label for="display_name" class="oe_edit_only" />
+                      <h1>
+                          <field name="display_name" class="oe_field_display_name" />
+                      </h1>
+                  </div>
+                  <group col="2">
+                    <field name="teacher_id" class="oe_field_teacher_id" />
+                    <field name="training_action_id" class="oe_field_training_action_id"
+                      options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"
+                      readonly="context.get('default_training_action_id', False)" />
+                    <field name="action_line_id" class="oe_field_action_line_id"
+                      options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"
+                      domain="[('training_action_id', '=', training_action_id)]"
+                      readonly="context.get('default_action_line_id', False)" />
+                  </group>
+              </sheet>
+          </form>
+      </field>
+  </record>
+
+  <!-- Search view for "academy.training.teacher.assignment" -->
+  <record id="view_academy_training_teacher_assignment_search" model="ir.ui.view">
+      <field name="name">view.academy.training.teacher.assignment.search</field>
+      <field name="model">academy.training.teacher.assignment</field>
+      <field name="type">search</field>
+      <field name="mode">primary</field>
+      <field name="priority" eval="16" />
+      <field name="active" eval="True" />
+      <field name="arch" type="xml">
+          <search string="academy_training_teacher_assignment_search">
+            <field name="teacher_id" />
+            <field name="training_action_id" />
+            <field name="action_line_id" />
+          </search>
+      </field>
+  </record>
+
+  <!-- Main window action for model.name -->
+  <record id="action_teacher_assignment_act_window" model="ir.actions.act_window">
+      <field name="type">ir.actions.act_window</field>
+      <field name="name">Teacher assignment</field>
+      <field name="res_model">academy.training.teacher.assignment</field>
+      <field name="view_mode">list</field>
+      <field name="target">current</field>
+      <field name="domain">[]</field>
+      <field name="context">{}</field>
+      <field name="search_view_id" ref="view_academy_training_teacher_assignment_search" />
+      <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+              Click to add new teacher assignment
+          </p><p>
+              There are not teacher assignments
+          </p>
+      </field>
+  </record>
+
+  <!-- Main menu for model.name -->
+  <!--
+  <record id="menu_teacher_assignment" model="ir.ui.menu" >
+      <field name="name">Teacher assignment</field>
+      <field name="sequence" eval="10" />
+      <field name="action" ref="action_teacher_assignment_act_window" />
+      <field name="parent_id" ref="academy_base.menu_academy_monitoring" />
+  </record> -->
+
+</odoo>

@@ -49,7 +49,7 @@
 
           <div class="oe_button_box" name="button_box">
             <button name="view_training_programs" type="object" class="oe_stat_button"
-              icon="fa-id-card-o">
+              icon="fa-cubes">
               <field name="training_program_count" widget="statinfo" string="Programs"/>
             </button>
           </div>
@@ -185,8 +185,8 @@
 
               <!-- footer: begin -->
               <footer class="d-flex justify-content-end align-items-start mt-2">
-                <button name="view_training_programs" type="object" class="btn my-0 py-0">
-                  <i class="fa fa-lg fa-list-ul me-2" aria-hidden="true" title="View training programs"></i>
+                <button name="view_training_programs" type="object" class="btn my-0 py-0" string="Components">
+                  <i class="fa fa-lg fa-book me-2" aria-hidden="true" title="View training programs"></i>
                   <field name="training_program_count" class="oe_field_program_line_count" />
                 </button>
               </footer>

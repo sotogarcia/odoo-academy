@@ -1,4 +1,0 @@
-.unit_list {counter-reset: units;}
-.unit_item::after {counter-increment: units; content: counter(units)}
-.module_list {counter-reset: modules;}
-.module_item::after {counter-increment: modules; content: counter(modules)}

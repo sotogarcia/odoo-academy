@@ -2,18 +2,6 @@
 
 <odoo noupdate="1">
 
-    <record id="ir_sequence_academy_action_enrolment" model="ir.sequence">
-        <field name="name">Academy action enrolment sequence</field>
-        <field name="active" eval="True"/>
-        <field name="code">academy.action.enrolment.sequence</field>
-        <field name="prefix">%(year)s%(month)s%(day)s</field>
-        <field name="number_next" eval="1"/>
-        <field name="number_increment" eval="1"/>
-        <field name="padding" eval="4"/>
-        <field name="suffix"/>
-        <field name="company_id" eval="False"/>
-    </record>
-
     <record id="ir_sequence_academy_student_signup" model="ir.sequence">
         <field name="name">Academy student sign-up sequence</field>
         <field name="active" eval="True"/>
@@ -55,6 +43,78 @@
         <field name="active" eval="True"/>
         <field name="code">academy.technical.staff.signup.sequence</field>
         <field name="prefix">TECH-</field>
+        <field name="number_next" eval="1"/>
+        <field name="number_increment" eval="1"/>
+        <field name="padding" eval="5"/>
+        <field name="suffix"/>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="ir_sequence_academy_training_framework" model="ir.sequence">
+        <field name="name">Academy training framework</field>
+        <field name="active" eval="True"/>
+        <field name="code">academy.training.framework.sequence</field>
+        <field name="prefix">TF-</field>
+        <field name="number_next" eval="1"/>
+        <field name="number_increment" eval="1"/>
+        <field name="padding" eval="5"/>
+        <field name="suffix"/>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="ir_sequence_academy_training_program" model="ir.sequence">
+        <field name="name">Academy training program</field>
+        <field name="active" eval="True"/>
+        <field name="code">academy.training.program.sequence</field>
+        <field name="prefix">TP-</field>
+        <field name="number_next" eval="1"/>
+        <field name="number_increment" eval="1"/>
+        <field name="padding" eval="5"/>
+        <field name="suffix"/>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="ir_sequence_academy_training_action" model="ir.sequence">
+        <field name="name">Academy training action</field>
+        <field name="active" eval="True"/>
+        <field name="code">academy.training.action.sequence</field>
+        <field name="prefix">TA-</field>
+        <field name="number_next" eval="1"/>
+        <field name="number_increment" eval="1"/>
+        <field name="padding" eval="5"/>
+        <field name="suffix">-%(year)s</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="ir_sequence_academy_training_action_group" model="ir.sequence">
+        <field name="name">Academy training action group</field>
+        <field name="active" eval="True"/>
+        <field name="code">academy.training.action.group.sequence</field>
+        <field name="prefix">TAG-</field>
+        <field name="number_next" eval="1"/>
+        <field name="number_increment" eval="1"/>
+        <field name="padding" eval="5"/>
+        <field name="suffix">-%(year)s</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="ir_sequence_academy_training_action_enrolment" model="ir.sequence">
+        <field name="name">Academy training action enrolment</field>
+        <field name="active" eval="True"/>
+        <field name="code">academy.training.action.enrolment.sequence</field>
+        <field name="prefix">TAE-%(year)s-%(month)s-%(day)s-</field>
+        <field name="number_next" eval="1"/>
+        <field name="number_increment" eval="1"/>
+        <field name="padding" eval="5"/>
+        <field name="suffix"/>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="ir_sequence_academy_training_module" model="ir.sequence">
+        <field name="name">Academy training module</field>
+        <field name="active" eval="True"/>
+        <field name="code">academy.training.module.sequence</field>
+        <field name="prefix">TM-</field>
         <field name="number_next" eval="1"/>
         <field name="number_increment" eval="1"/>
         <field name="padding" eval="5"/>

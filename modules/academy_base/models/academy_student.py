@@ -12,12 +12,15 @@ from odoo.tools.safe_eval import safe_eval
 from odoo.osv.expression import OR
 from odoo.osv.expression import AND, TRUE_DOMAIN, FALSE_DOMAIN
 
+from operator import eq, ne, gt, ge, lt, le
 from ..utils.record_utils import create_domain_for_ids
 from ..utils.record_utils import create_domain_for_interval
 from ..utils.record_utils import INCLUDE_ARCHIVED_DOMAIN, ARCHIVED_DOMAIN
 from ..utils.helpers import OPERATOR_MAP, one2many_count
 
 from logging import getLogger
+from datetime import datetime, date, time, timedelta
+
 
 _logger = getLogger(__name__)
 
@@ -114,6 +117,108 @@ class AcademyStudent(models.Model):
         auto_join=False,
     )
 
+    # -- Computed field: last_deregister --------------------------------------
+
+    last_deregister = fields.Datetime(
+        string="End of training",
+        required=False,
+        readonly=True,
+        index=True,
+        default=None,
+        help="End date of the most recent enrolment; 9999-12-31 if open.",
+        compute="_compute_last_deregister",
+    )
+
+    @api.depends(
+        "enrolment_ids",
+        "enrolment_ids.deregister",
+        "enrolment_ids.active",
+    )
+    @api.depends_context("allowed_company_ids", "force_company")
+    def _compute_last_deregister(self):
+        self.ensure_one()
+
+        context = self.env.context.copy()
+        context.update(active_test=False)
+
+        enrolment_obj = self.env["academy.training.action.enrolment"]
+        enrolment_obj = enrolment_obj.with_context(context).sudo()
+
+        now = fields.Datetime.now()
+        infinity = datetime.max
+
+        domain = [
+            "&",
+            "&",
+            ("student_id", "in", self.ids),
+            ("company_id", "=", self.env.company.id),
+            "|",
+            ("available_until", "<=", now),
+            ("active", "=", True),
+        ]
+        rows = enrolment_obj.read_group(
+            domain=domain,
+            fields=["available_until:max"],
+            groupby=["student_id"],
+            lazy=False,
+        )
+
+        last_out = {r["student_id"][0]: r.get("available_until") for r in rows}
+
+        for record in self:
+            if record.id not in last_out:
+                record.last_deregister = None
+            else:
+                record.last_deregister = last_out.get(record.id, infinity)
+
+    def _search_last_deregister(self, operator, value):
+        """Search students by the deregister date of their most recent
+        enrolment within the active company.
+        """
+
+        # Ensure the context ignores active_test, to include all enrolments
+        context = dict(self.env.context, active_test=False)
+
+        enrolment_obj = (
+            self.env["academy.training.action.enrolment"]
+            .with_context(context)
+            .sudo()
+        )
+
+        # Group by student_id and get the latest deregister date per company
+        rows = enrolment_obj.read_group(
+            domain=[("company_id", "=", self.env.company.id)],
+            fields=["deregister:max"],
+            groupby=["student_id"],
+            lazy=False,
+        )
+
+        # Build dict: {student_id: last_deregister}
+        last_out = {r["student_id"][0]: r.get("deregister") for r in rows}
+
+        # Map Odoo operators to Python comparison functions
+        pycmp = {
+            "=": eq,
+            "==": eq,
+            "!=": ne,
+            "<>": ne,
+            ">": gt,
+            "<": lt,
+            ">=": ge,
+            "<=": le,
+        }
+
+        compare = pycmp.get(operator)
+        if not compare:
+            # Return empty domain for unsupported operators
+            return [("id", "in", [])]
+
+        matched_ids = [
+            sid for sid, dt in last_out.items() if dt and compare(dt, value)
+        ]
+
+        return [("id", "in", matched_ids)]
+
     # -- Computed field: current_enrolment_count ------------------------------
 
     current_enrolment_count = fields.Integer(
@@ -204,6 +309,8 @@ class AcademyStudent(models.Model):
     def view_enrolments(self):
         self.ensure_one()
 
+        name = self.env._("Enrolments: {}").format(self.display_name)
+
         act_xid = "{module}.{name}".format(
             module="academy_base",
             name="action_training_action_enrolment_act_window",
@@ -224,7 +331,7 @@ class AcademyStudent(models.Model):
         domain = AND([domain, [("student_id", "=", self.id)]])
 
         action_values = {
-            "name": _('Enrolments for "{}"').format(self.name),
+            "name": name,
             "type": action.type,
             "help": action.help,
             "domain": domain,

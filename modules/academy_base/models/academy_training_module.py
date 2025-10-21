@@ -11,10 +11,11 @@ from odoo.tools.safe_eval import safe_eval
 from odoo.exceptions import ValidationError
 from odoo.osv.expression import TRUE_DOMAIN, FALSE_DOMAIN
 from ..utils.helpers import OPERATOR_MAP, one2many_count, many2many_count
-from ..utils.helpers import sanitize_code
+from ..utils.helpers import sanitize_code, default_code
 
 from logging import getLogger
-from uuid import uuid4
+
+CODE_SEQUENCE = "academy.training.module.sequence"
 
 _logger = getLogger(__name__)
 
@@ -112,10 +113,10 @@ class AcademyTrainingModule(models.Model):
 
     code = fields.Char(
         string="Code",
-        required=False,
+        required=True,
         readonly=False,
         index=False,
-        default=None,
+        default=lambda self: default_code(self.env, CODE_SEQUENCE),
         help="Enter code for training module",
         size=30,
         translate=False,
@@ -325,10 +326,10 @@ class AcademyTrainingModule(models.Model):
     # -- Methods overrides ----------------------------------------------------
 
     @api.model_create_multi
-    def create(self, value_list):
-        sanitize_code(value_list, "upper")
+    def create(self, values_list):
+        sanitize_code(values_list, "upper")
 
-        result = super().create(value_list)
+        result = super().create(values_list)
         after_parents = result.mapped("training_module_id")
 
         self._update_parent_hours(parents=after_parents)
@@ -352,6 +353,8 @@ class AcademyTrainingModule(models.Model):
     def view_training_units(self):
         self.ensure_one()
 
+        name = self.env._("Units/Blocks: {}").format(self.display_name)
+
         action_xid = "academy_base.action_training_module_units_act_window"
         act_wnd = self.env.ref(action_xid)
 
@@ -365,7 +368,7 @@ class AcademyTrainingModule(models.Model):
             "type": "ir.actions.act_window",
             "res_model": act_wnd.res_model,
             "target": "current",
-            "name": act_wnd.name,
+            "name": name,
             "view_mode": act_wnd.view_mode,
             "domain": domain,
             "context": context,
@@ -384,6 +387,8 @@ class AcademyTrainingModule(models.Model):
     def view_training_program_lines(self):
         self.ensure_one()
 
+        name = self.env._("Program: {}").format(self.display_name)
+
         action_xid = "academy_base.action_training_program_line_act_window"
         act_wnd = self.env.ref(action_xid)
 
@@ -397,7 +402,7 @@ class AcademyTrainingModule(models.Model):
             "type": "ir.actions.act_window",
             "res_model": act_wnd.res_model,
             "target": "current",
-            "name": act_wnd.name,
+            "name": name,
             "view_mode": act_wnd.view_mode,
             "domain": domain,
             "context": context,
@@ -409,6 +414,8 @@ class AcademyTrainingModule(models.Model):
 
     def view_training_programs(self):
         self.ensure_one()
+
+        name = self.env._("Programs: {}").format(self.display_name)
 
         action_xid = "academy_base.action_academy_training_program_act_window"
         act_wnd = self.env.ref(action_xid)
@@ -422,7 +429,7 @@ class AcademyTrainingModule(models.Model):
             "type": "ir.actions.act_window",
             "res_model": act_wnd.res_model,
             "target": "current",
-            "name": act_wnd.name,
+            "name": name,
             "view_mode": act_wnd.view_mode,
             "domain": domain,
             "context": context,

@@ -76,19 +76,26 @@ from . import academy_training_program_line
 # ---------------------------------------------------------------------------
 from . import academy_training_action
 from . import academy_training_action_line
-from . import academy_training_action_group
+
+# from . import academy_training_action_group
 from . import academy_training_action_enrolment
+from . import academy_training_teacher_assignment
 
 # ---------------------------------------------------------------------------
 # Relationships between training models
 # ---------------------------------------------------------------------------
+
+from . import academy_training_action_student_link
+
 # from . import academy_competency_unit_teacher_rel
 # from . import academy_training_program_training_module_rel
 # from . import academy_training_program_training_unit_rel
 # from . import academy_training_module_used_in_training_action_rel
-# from . import academy_training_action_student_rel
+
 
 # ---------------------------------------------------------------------------
 # Settings
 # ---------------------------------------------------------------------------
+
+from . import academy_maintenance_task
 from . import res_config_settings

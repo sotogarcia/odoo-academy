@@ -112,7 +112,7 @@ class AcademyTrainingAction(models.Model):
         compute_sudo=True,
     )
 
-    @api.depends("training_group_ids")
+    @api.depends("child_ids")
     def _compute_facility_count(self):
         counts = many2many_count(self, "facility_ids")
 

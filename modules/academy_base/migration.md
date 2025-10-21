@@ -131,19 +131,38 @@ attrs=["']\{["'](readonly|invisible|required)["']: *(\[[^\]]+\])\}["']
 - [x] Student: Name and surname
 - [x] Kanban de student
 - [x] Mostrar móvil o teléfono, el que tenga.
-- [ ] Secuencia para las matrículas
+- [x] Secuencia para las matrículas
 - [x] Botón ver actividades
 
-- [ ] Errores y warnings del log
-- [ ] "depends": ["dms", "dms_field", "dms_attachment_link"]
+- [x] Errores y warnings del log
 - [x] Poner internal notes en una ficha separada tanto para student compara training action
 - [ ] En el enrolment los datos del alumno en una ficha y los de la acción en otra, el apartado admisión arriba de todo
 - [ ] Cómo llevar cuenta de si se imprimió el material
 - [ ] ¿Qué ocurre si, por fuera de student, se elige company?
 - [ ] No mostrar información de parent_id en student
-- [ ] Botón actividades en kanban y form
+- [x] Botón actividades en kanban y form
 - [ ] barcode
+- [ ] Corregir `activity`, cambiándolo por `program`
+- [ ] No se puede sustituir el programa de una acción formativa creada
+- [ ] No se puede sustituir la acción formativa en un grupo ya creado
+- [ ] Quitar instalaciones de training action y poner facility.reservation
+- [ ] Añadir vista kanban a enrolments
+- [ ] Añadir tareas NO formativas
+- [ ] Sincronizar acciones formativas con grupos formativos
+- [ ] Añadir botón actividades en la parte superior derecha como en las facturas
 
+1 [ ] Acción de mantenimiento
+5 [x] Nombres en los act_window retornados desde python
+2 [ ] Revisar el modelo y vista de enrolment
+      [ ] No deja crear un enrolment nuevo en el menú matrículas
+      [ ] Opción por defecto matrícula completa (boolean)
+4 [ ] Revisar las vistas embebidas
+6 [ ] Comprobar que se puede realizar un copy
+1 [ ] Buscar todos los wizard para revisar
+3 [ ] Revisar el modelo y vista de training session
+7 [ ] Revisar informes y correos
+  [ ] Modalidad en vistas kanban y list de training action
+  [ ] La vista pivot de matrículas debe mostrarlas agrupadas por acción y no por alumno
 
 
 - [ ] El campo hours del módulo debe desaparecer
@@ -151,7 +170,7 @@ attrs=["']\{["'](readonly|invisible|required)["']: *(\[[^\]]+\])\}["']
       Â· Si tiene unidades se calcularÃ¡ al guardar
 - [ ] Los campos training_module_id y training_unit_ids pasan a ser parent_id y child_ids
 - [ ] Description como HTML
-- [ ] Internat notes a todo
+- [ ] InternaL notes a todo
 - [ ] Retirar los contraint de token
 
 
@@ -171,6 +190,7 @@ attrs=["']\{["'](readonly|invisible|required)["']: *(\[[^\]]+\])\}["']
 - [ ] Añadir campo delivery_ids a las acciones.
 - [ ] revisar los hooks
 
+- [ ] "depends": ["dms", "dms_field", "dms_attachment_link"]
 
 ## Solución a la matriculación por grupos
 
@@ -208,3 +228,44 @@ El campo enrolment_ids
 - academy_professional_qualification
 - academy_professional_sector
 - academy_qualification_level
+
+
+
+## Tarea de mantenimiento
+
+Una tarea de mantenimiento se ejecutará a intervalos regulares.
+
+Los métodos ejecución de las siguientes tareas se ajustará en base a la premisa 
+de que la tarea es horaria. Si el administrador cambia el horario, lo hace bajo
+su responsabilidad. 
+
+Un día tiene veinticuatro (24) horas y será por tanto este el número de 
+ejecuciones diarias de la acción programada. Las diferentes tareas se pueden 
+ajustar de la siguiente manera.
+
+24 | 3     
+ 8 | 2
+ 4 | 2
+ 2 | 2
+ 1
+
+| Intvlo | Ejec. | Name     |
+| ------ | ----- | -------- |
+|   24   |   1   | freq_24  |            
+|   12   |   2   | freq_12  |                    
+|    8   |   3   | freq_8   |                        
+|    6   |   4   | freq_6   |    
+|    4   |   6   | freq_4   |    
+|    3   |   8   | freq_3   |    
+|    2   |  12   | freq_2   |    
+|    1   |  24   | freq_1   |            
+
+
+24
+12
+ 8
+ 6
+ 4
+ 3
+ 2
+ 1

@@ -5,11 +5,12 @@
 ###############################################################################
 
 from odoo import models, fields, api
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
+from odoo.osv.expression import FALSE_DOMAIN
 from ..utils.sql_helpers import create_index
 
 
-from logging import getLogger
+from logging import exception, getLogger
 
 _logger = getLogger(__name__)
 
@@ -47,6 +48,45 @@ class ResPartner(models.Model):
     """
 
     _inherit = "res.partner"
+
+    has_active_users = fields.Boolean(
+        string="Has active users",
+        required=False,
+        readonly=True,
+        index=False,
+        default=False,
+        help="True if this partner has any active linked users.",
+        compute="_compute_has_active_users",
+        search="_search_has_active_users",
+    )
+
+    def _compute_has_active_users(self):
+        for record in self:
+            record.has_active_users = bool(record.user_ids)
+
+    @api.model
+    def _search_has_active_users(self, operator, value):
+        if operator == "<>":
+            operator = "!="
+
+        if operator not in ("=", "!="):
+            message = f"Invalid operator {operator} for boolean value"
+            raise ValidationError(message)
+
+        value = bool(value)
+
+        if operator == "=" and value is True:
+            domain = [("user_ids", "!=", False)]
+        elif operator == "=" and value is False:
+            domain = [("user_ids", "=", False)]
+        elif operator == "!=" and value is True:
+            domain = [("user_ids", "=", False)]
+        elif operator == "!=" and value is False:
+            domain = [("user_ids", "!=", False)]
+        else:
+            domain = FALSE_DOMAIN
+
+        return domain
 
     student_id = fields.One2many(
         string="Student",
@@ -199,7 +239,7 @@ class ResPartner(models.Model):
     # -- Sanitize some relevant fields-----------------------------------------
 
     @staticmethod
-    def _sanitize_indexing_values(value_list):
+    def _sanitize_indexing_values(values_list):
         """Normalize partner indexing fields before storing.
 
         Accepts a dict (single record) or a list/tuple of dicts (multi).
@@ -213,13 +253,13 @@ class ResPartner(models.Model):
         """
         sanitize = dict(ref=None, vat="upper", email="lower")
 
-        if not value_list:
-            return value_list
+        if not values_list:
+            return values_list
 
-        if isinstance(value_list, dict):
-            target_list = [value_list]
+        if isinstance(values_list, dict):
+            target_list = [values_list]
         else:
-            target_list = value_list
+            target_list = values_list
 
         for values in target_list:
             for key, operation in sanitize.items():
@@ -236,7 +276,7 @@ class ResPartner(models.Model):
 
                 values[key] = value or None
 
-        return value_list
+        return values_list
 
     # -- Auxiliary methods ----------------------------------------------------
 
