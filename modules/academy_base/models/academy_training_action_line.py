@@ -180,7 +180,7 @@ class AcademyTrainingActionLine(models.Model):
                         a.sequence = i
 
     teacher_assignment_count = fields.Integer(
-        string="Teacher count",
+        string="No. of teachers",
         required=False,
         readonly=True,
         index=False,

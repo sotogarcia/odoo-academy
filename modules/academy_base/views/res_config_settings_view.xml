@@ -14,7 +14,7 @@
           <!-- Settings block: begin -->
           <block title="Responsibility" name="academy_base_responsibility">
 
-            <setting string="Head of studies" help="Head of Studies for the educational platform">
+            <setting string="Head of Studies" help="Head of Studies for the educational platform">
               <div class="content-group mt8">
                 <field name="head_of_studies_id" widget="res_users"
                   options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"
@@ -22,7 +22,7 @@
               </div>
             </setting>
 
-            <setting string="ERP Manager" help="ERP Manager at the institution (non technical)">
+            <setting string="ERP Manager" help="ERP Manager at the institution (non-technical)">
               <div class="content-group mt8">
                 <field name="erp_manager_id" widget="res_users"
                   options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"
@@ -78,7 +78,7 @@
           <!-- Settings block: end -->
 
           <!-- Settings block: begin -->
-          <block title="Training specialties" name="academy_base_training_specialties">
+          <block title="Training specialities" name="academy_base_training_specialties">
 
             <setting string="Professional sectors" help="View and edit professional sectors">
               <div class="content-group mt8">

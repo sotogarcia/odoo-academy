@@ -10,7 +10,7 @@
       - Context·······: {}
       - Parent menu ··: base.menu_custom
       - View priority·: 16    Sequence····: 10
-      - Action help···: There are not maintenance tasks
+      - Action help···: There are no maintenance tasks
   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
   <!-- Tree view for "academy.maintenance.task" -->
@@ -68,7 +68,7 @@
           <p class="oe_view_nocontent_create">
               Click to add new maintenance tasks
           </p><p>
-              There are not maintenance tasks
+              There are no maintenance tasks
           </p>
       </field>
   </record>

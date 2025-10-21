@@ -10,7 +10,7 @@
             - Context·······: {}
             - Parent menu ··: academy_base.menu_academy_settings_helper
             - View priority·: 16    Sequence····: 10
-            - Action help···: There are not qualification levels in catalog
+            - Action help···: There are no qualification levels in catalog
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
   <!-- List view for "academy.qualification.level" -->

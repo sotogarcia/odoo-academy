@@ -381,7 +381,7 @@ class AcademyChangeTrainingActionWizard(models.Model):
 
         if action_start > enrol_start or action_stop < enrol_stop:
             message = _(
-                "Enrollment dates are outside the training action's period. "
+                "<Enrolment> dates are outside the training action's period. "
                 "The registration must start on or after "
                 "'%s' and stop on or before '%s'."
             ) % (

@@ -117,7 +117,7 @@ class AcademyTrainingModule(models.Model):
         readonly=False,
         index=False,
         default=lambda self: default_code(self.env, CODE_SEQUENCE),
-        help="Enter code for training module",
+        help="Enter module code",
         size=30,
         translate=False,
     )
@@ -156,7 +156,7 @@ class AcademyTrainingModule(models.Model):
     )
 
     program_line_count = fields.Integer(
-        string="Program line count",
+        string="No. of lines",
         required=True,
         readonly=True,
         index=False,
@@ -192,7 +192,7 @@ class AcademyTrainingModule(models.Model):
     # --------------------------- COMPUTED FIELDS -----------------------------
 
     training_unit_count = fields.Integer(
-        string="Units",
+        string="No. of units",
         required=False,
         readonly=True,
         index=False,
@@ -264,7 +264,7 @@ class AcademyTrainingModule(models.Model):
     )
 
     training_program_count = fields.Integer(
-        string="Training program count",
+        string="No. of programs",
         required=True,
         readonly=True,
         index=False,

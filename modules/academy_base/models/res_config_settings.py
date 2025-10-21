@@ -19,7 +19,7 @@ class ResConfigSettings(models.TransientModel):
     _inherit = ["res.config.settings"]
 
     head_of_studies_id = fields.Many2one(
-        string="Head of studies",
+        string="Head of Studies",
         required=True,
         readonly=False,
         index=False,
@@ -61,7 +61,7 @@ class ResConfigSettings(models.TransientModel):
         selection=[
             ("never", "Never"),
             ("always", "Always"),
-            ("except_debug", "Except in debug"),
+            ("except_debug", "Except in developer mode"),
         ],
         config_parameter="academy_base.partner_email_required",
     )
@@ -79,7 +79,7 @@ class ResConfigSettings(models.TransientModel):
         selection=[
             ("never", "Never"),
             ("always", "Always"),
-            ("except_debug", "Except in debug"),
+            ("except_debug", "Except in developer mode"),
         ],
         config_parameter="academy_base.partner_vat_required",
     )

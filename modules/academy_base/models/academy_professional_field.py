@@ -70,7 +70,7 @@ class AcademyProfessionalField(models.Model):
         readonly=False,
         index=False,
         default=None,
-        help="List of sectors related with this professional field.",
+        help="List of sectors related to this professional field.",
         comodel_name="academy.professional.sector",
         inverse_name="professional_field_id",
         domain=[],

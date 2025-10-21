@@ -7,12 +7,12 @@
 """
 academy.training.action.enrolment
 
-Enrollment records are attached to training actions that may be hierarchical.
+<Enrolment> records are attached to training actions that may be hierarchical.
 
 Relationship model
 ------------------
 - A training action can have zero (0) or more child actions.
-- An enrollment must always target the *last* actionable unit (a leaf action).
+- An <enrolment> must always target the *last* actionable unit (a leaf action).
 
 Field semantics
 ---------------
@@ -30,7 +30,7 @@ Formal invariants
 Let A = training_action_id and P = A.parent_id.
 
 1) A.child_ids == False
-   (enrollment cannot point to a non-leaf action)
+   (<enrolment> cannot point to a non-leaf action)
 
 2) parent_action_id == (P if P else A)
 
@@ -257,7 +257,7 @@ class AcademyTrainingActionEnrolment(models.Model):
     )
 
     vat = fields.Char(
-        string="Vat", related="student_id.vat", help="Student’s VAT number"
+        string="VAT", related="student_id.vat", help="Student’s VAT number"
     )
 
     email = fields.Char(
@@ -448,7 +448,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         readonly=True,
         index=True,
         default=None,
-        help="00:00 the day after, or infinity for open enrolments.",
+        help="00:00 the day after, or indefinity for open enrolments.",
         compute="_compute_available_until",
         store=True,
     )
@@ -460,8 +460,10 @@ class AcademyTrainingActionEnrolment(models.Model):
         infinity = datetime.max
 
         for record in self:
-            deregister = record.deregister or infinity
-            action_date_stop = record.training_action_id.date_stop or infinity
+            deregister = record.deregister or indefinity
+            action_date_stop = (
+                record.training_action_id.date_stop or indefinity
+            )
             record.available_until = min(deregister, action_date_stop)
 
     lifespan = fields.Char(
@@ -470,7 +472,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         readonly=True,
         index=False,
         default=None,
-        help="Formatted range of register and deregister dates",
+        help="Formatted range of registration and deregistration dates",
         size=50,
         translate=False,
         compute="_compute_lifespan",
@@ -606,7 +608,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         now = fields.Datetime.now()
         for record in self:
             register = record.register
-            deregister = record.deregister or infinity
+            deregister = record.deregister or indefinity
 
             if register < now and deregister >= now:
                 record.color = 10
@@ -622,7 +624,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         (
             "check_date_order",
             'CHECK("deregister" IS NULL OR "register" <= "deregister")',
-            "End date must be greater then date_start date",
+            "End date must be greater than start date",
         ),
         (
             "prevent_overlap",
@@ -651,7 +653,7 @@ class AcademyTrainingActionEnrolment(models.Model):
     def _check_unique_enrolment(self):
         """ """
         message = self.env._(
-            "Student is already enroled in the training action"
+            "Student is already enrolled in the training action"
         )
         enrolment_obj = self.env["academy.training.action.enrolment"]
 
@@ -781,7 +783,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         student_set = self.mapped("student_id")
 
         if not student_set:
-            msg = self.env._("There is no students")
+            msg = self.env._("There are no students")
             raise UserError(msg)
         else:
             view_act = {

@@ -10,7 +10,7 @@
             - Context·······: {}
             - Parent menu ··: academy_base.menu_academy_catalog
             - View priority·: 16    Sequence····: 10
-            - Action help···: There are not training modules in catalog
+            - Action help···: There are no training modules in catalog
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
   <!-- List view for "academy.training.module" -->
@@ -46,7 +46,7 @@
           <div class="oe_button_box" name="button_box">
             <button name="view_training_program_lines" type="object" class="oe_stat_button"
               icon="fa-th-list" title="View detailed program">
-              <field name="program_line_count" widget="statinfo" string="Components"/>
+              <field name="program_line_count" widget="statinfo" string="No. of lines"/>
             </button>
           </div>
 
@@ -143,7 +143,7 @@
 
               <!-- footer: begin -->
               <footer class="d-flex justify-content-end align-items-start mt-2">
-                <button name="view_training_programs" type="object" class="btn my-0 py-0" string="Components">
+                <button name="view_training_programs" type="object" class="btn my-0 py-0" string="No. of programs">
                   <i class="fa fa-lg fa-cubes me-2" aria-hidden="true" title="View training programs"></i>
                   <field name="training_program_count" class="oe_field_training_program_count" />
                 </button>
@@ -211,7 +211,7 @@
     <field name="arch" type="xml">
       <xpath expr="//div[@name='button_box']" position="inside">
         <button name="view_training_units" type="object" class="oe_stat_button" icon="fa-list-ul">
-          <field name="training_unit_count" widget="statinfo" string="Units"/>
+          <field name="training_unit_count" widget="statinfo" string="No. of units"/>
         </button>
       </xpath>
       <xpath expr="//notebook/page" position="after">
@@ -223,9 +223,9 @@
       </xpath>
       <xpath expr="//field[@name='code']" position="after">
         <field name="hours" class="oe_field_ownhours" widget="float_time"
-          placeholder="Enter number of hours to this module" invisible="training_unit_count != 0"/>
+          placeholder="Enter the number of hours for this module" invisible="training_unit_count != 0"/>
         <field name="hours" class="oe_field_hours" widget="float_time"
-          placeholder="Total of hours from all units in module" invisible="training_unit_count == 0"
+          placeholder="Total hours from all units in the module" invisible="training_unit_count == 0"
         />
       </xpath>
     </field>

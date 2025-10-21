@@ -171,7 +171,7 @@ class AcademyTrainingProgramLine(models.Model):
     # -- Computed field: competency_unit_count --------------------------------
 
     competency_unit_count = fields.Integer(
-        string="Competence Standard count",
+        string="No. of competences",
         required=True,
         readonly=True,
         index=False,

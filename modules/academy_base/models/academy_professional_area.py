@@ -60,7 +60,7 @@ class AcademyProfessionalArea(models.Model):
         readonly=False,
         index=False,
         default=None,
-        help="Choose professional family to which this area belongs",
+        help="Choose the professional family to which this area belongs",
         comodel_name="academy.professional.family",
         domain=[],
         context={},

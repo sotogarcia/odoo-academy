@@ -1102,7 +1102,7 @@
     </record>
 
     <record id="professional_sector_5312" model="academy.professional.sector">
-        <field name="name">Sectorial economics</field>
+        <field name="name">Sectoral economics</field>
         <field name="code">5312</field>
         <field name="active" eval="1"/>
         <field name="professional_field_id" ref="professional_field_53"/>

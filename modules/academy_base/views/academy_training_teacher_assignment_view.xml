@@ -10,7 +10,7 @@
       - Context·······: {}
       - Parent menu ··: academy_base.menu_academy_monitoring
       - View priority·: 16    Sequence····: 10
-      - Action help···: There are not teacher assignments
+      - Action help···: There are no teacher assignments
   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
   <!-- Tree view for "academy.training.teacher.assignment" -->
@@ -99,7 +99,7 @@
           <p class="oe_view_nocontent_create">
               Click to add new teacher assignment
           </p><p>
-              There are not teacher assignments
+              There are no teacher assignments
           </p>
       </field>
   </record>

@@ -31,7 +31,7 @@
     </record>
 
     <record id="academy_professional_family_08" model="academy.professional.family">
-        <field name="name">Electricity and electronic</field>
+        <field name="name">Electricity and electronics</field>
     </record>
 
     <record id="academy_professional_family_09" model="academy.professional.family">

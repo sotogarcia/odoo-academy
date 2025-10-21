@@ -88,7 +88,7 @@ class AcademyProfessionalFamily(models.Model):
 
     # pylint: disable=locally-disabled, W0212
     professional_area_count = fields.Integer(
-        string="Professional areas",
+        string="No. of areas",
         required=False,
         readonly=True,
         index=False,

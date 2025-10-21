@@ -63,7 +63,7 @@ class AcademyStudent(models.Model):
     # -- Computed field: enrolment_count --------------------------------------
 
     enrolment_count = fields.Integer(
-        string="Nº enrolments",
+        string="No. of enrolments",
         required=False,
         readonly=True,
         index=False,
@@ -222,7 +222,7 @@ class AcademyStudent(models.Model):
     # -- Computed field: current_enrolment_count ------------------------------
 
     current_enrolment_count = fields.Integer(
-        string="Nº current enrolments",
+        string="No. of current enrolments",
         required=False,
         readonly=True,
         index=False,

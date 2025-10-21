@@ -10,7 +10,7 @@
             - Context·······: {}
             - Parent menu ··: academy_base.menu_academy_monitoring
             - View priority·: 16    Sequence····: 10
-            - Action help···: There are not enrolments
+            - Action help···: There are no enrolments
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
   <!-- List view for "academy.training.action.enrolment" -->
@@ -201,8 +201,7 @@
     <field name="active" eval="True"/>
     <field name="arch" type="xml">
       <pivot string="Enrolments">
-        <field name="student_id" type="row"/>
-        <field name="training_action_id" type="col"/>
+        <field name="training_action_id" type="row"/>
       </pivot>
     </field>
   </record>
