@@ -10,7 +10,7 @@
             - Context·······: {}
             - Parent menu ··: menu_academy_settings_helper
             - View priority·: 16    Sequence····: 10
-            - Action help···: There are not any defined professional categories
+            - Action help···: There are no any defined professional categories
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
   <!-- List view for "academy.professional.category" -->

@@ -40,7 +40,7 @@ class AcademyTrainingActionSynchronizeWizard(models.TransientModel):
     )
 
     training_action_count = fields.Integer(
-        string="Number of training actions",
+        string="No. of actions",
         required=False,
         readonly=True,
         index=False,

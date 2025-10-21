@@ -10,7 +10,7 @@
             - Context·······: {}
             - Parent menu ··: menu_academy_settings_helper
             - View priority·: 16    Sequence····: 10
-            - Action help···: There are not any training modalities
+            - Action help···: There are no any training modalities
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
   <!-- List view for "academy.training.modality" -->

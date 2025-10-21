@@ -163,6 +163,7 @@ attrs=["']\{["'](readonly|invisible|required)["']: *(\[[^\]]+\])\}["']
 7 [ ] Revisar informes y correos
   [ ] Modalidad en vistas kanban y list de training action
   [ ] La vista pivot de matrículas debe mostrarlas agrupadas por acción y no por alumno
+- [ ] Tareas NO docentes
 
 
 - [ ] El campo hours del módulo debe desaparecer
@@ -172,7 +173,6 @@ attrs=["']\{["'](readonly|invisible|required)["']: *(\[[^\]]+\])\}["']
 - [ ] Description como HTML
 - [ ] InternaL notes a todo
 - [ ] Retirar los contraint de token
-
 
 - [ ] Comprobar widgets one2many_tags y many2many_tags
 - [ ] Añadir internal notes

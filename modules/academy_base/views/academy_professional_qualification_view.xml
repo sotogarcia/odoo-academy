@@ -10,7 +10,7 @@
             - Context·······: {}
             - Parent menu ··: academy_base.menu_academy_settings_helper
             - View priority·: 16    Sequence····: 10
-            - Action help···: There are not professional qualifications in catalog
+            - Action help···: There are no professional qualifications in catalog
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
   <!-- List view for "academy.professional.qualification" -->

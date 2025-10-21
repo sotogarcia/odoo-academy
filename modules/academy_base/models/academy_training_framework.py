@@ -105,7 +105,7 @@ class AcademyTrainingFramework(models.Model):
     )
 
     training_program_count = fields.Integer(
-        string="Training program count",
+        string="No. of programs",
         required=True,
         readonly=True,
         index=False,

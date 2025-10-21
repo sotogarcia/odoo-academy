@@ -135,7 +135,7 @@ class AcademyTrainingAction(models.Model):
     )
 
     training_group_count = fields.Integer(
-        string="Training group count",
+        string="No. of groups",
         required=False,
         readonly=False,
         index=False,
@@ -231,7 +231,7 @@ class AcademyTrainingAction(models.Model):
         readonly=False,
         index=False,
         default=10,
-        help="Enrollment priority for new students",
+        help="<Enrolment> priority for new students",
     )
 
     code = fields.Char(
@@ -372,7 +372,7 @@ class AcademyTrainingAction(models.Model):
         readonly=True,
         index=True,
         default=None,
-        help="00:00 the day after, or infinity for open enrolments.",
+        help="00:00 the day after, or indefinitely for open enrolments.",
         compute="_compute_available_until",
         search="_search_available_until",
         copy=False,
@@ -464,7 +464,7 @@ class AcademyTrainingAction(models.Model):
         readonly=False,
         index=False,
         default=None,
-        help="Training program will be imparted in this action",
+        help="Training program will be delivered in this action",
         comodel_name="academy.training.program",
         domain=[],
         context={},
@@ -550,7 +550,7 @@ class AcademyTrainingAction(models.Model):
     )
 
     action_line_count = fields.Integer(
-        string="Action line count",
+        string="No. of lines",
         required=False,
         readonly=False,
         index=False,
@@ -638,7 +638,7 @@ class AcademyTrainingAction(models.Model):
     )
 
     enrolment_count = fields.Integer(
-        string="Enrolment count",
+        string="No. of enrolments",
         required=False,
         readonly=True,
         index=False,
@@ -689,7 +689,7 @@ class AcademyTrainingAction(models.Model):
     )
 
     rollup_enrolment_count = fields.Integer(
-        string="Enrolment (rollup) count",
+        string="No. of enrolments (rollup)",
         required=False,
         readonly=True,
         index=False,
@@ -816,7 +816,7 @@ class AcademyTrainingAction(models.Model):
                         a.sequence = i
 
     teacher_assignment_count = fields.Integer(
-        string="Teacher count",
+        string="No. of teachers",
         required=False,
         readonly=True,
         index=False,
@@ -937,7 +937,7 @@ class AcademyTrainingAction(models.Model):
     )
 
     student_count = fields.Integer(
-        string="Student count",
+        string="No. of students",
         required=False,
         readonly=True,
         index=False,
@@ -983,7 +983,7 @@ class AcademyTrainingAction(models.Model):
         (
             "check_date_order",
             'CHECK("date_stop" IS NULL OR "date_start" < "date_stop")',
-            "End date must be greater then date_start date",
+            "End date must be greater than start date",
         ),
         (
             "users_greater_or_equal_to_zero",

@@ -10,7 +10,7 @@
             - Context·······: {}
             - Parent menu ··: academy_base.menu_academy_catalog
             - View priority·: 16    Sequence····: 10
-            - Action help···: There are not training modules in catalog
+            - Action help···: There are no training modules in catalog
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
   <!-- List view for "academy.training.module" -->

@@ -10,7 +10,7 @@
       - Context·······: {}
       - Parent menu ··: academy_base.menu_academy_monitoring
       - View priority·: 16    Sequence····: 10
-      - Action help···: There are not training groups in catalog
+      - Action help···: There are no training groups in catalog
   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
   <!-- Tree view for "academy.training.action" -->
@@ -142,7 +142,7 @@
         <p class="oe_view_nocontent_create">
             Click to add new training group
         </p><p>
-            There are not training groups in catalog
+            There are no training groups in catalog
         </p>
     </field>
   </record>

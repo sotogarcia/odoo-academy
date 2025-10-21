@@ -10,7 +10,7 @@
             - Context·······: {}
             - Parent menu ··: academy_base.menu_academy_monitoring
             - View priority·: 16    Sequence····: 10
-            - Action help···: There are not training actions in catalog
+            - Action help···: There are no training actions in catalog
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
     <!-- List view for "academy.training.action" -->
@@ -46,7 +46,7 @@
                 <field name="excess" class="oe_field_excess" optional="hide"/>
                 <field name="rollup_enrolment_count" class="oe_field_rollup_enrolment_count" optional="show"/>
 
-                <field name="manager_id" class="oe_field_manager_id" string="Tuttor" optional="show"
+                <field name="manager_id" class="oe_field_manager_id" string="Tutor" optional="show"
                 />
             </list>
         </field>
@@ -66,7 +66,7 @@
                 <div class="oe_button_box" name="button_box">
                   <button name="view_students" type="object"
                       class="oe_stat_button oe_read_only" icon="fa-child"
-                      help="View enroled students">
+                      help="View enrolled students">
                       <field name="student_count" widget="statinfo" string="Students"/>
                   </button>
                   <button name="view_teacher_assignments" type="object" class="oe_stat_button oe_read_only"

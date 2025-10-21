@@ -231,7 +231,7 @@ class AcademyTrainingProgram(models.Model):
     # Computed field: program_line_count --------------------------------------
 
     program_line_count = fields.Integer(
-        string="Program line count",
+        string="No. of lines",
         required=True,
         readonly=True,
         index=False,
@@ -266,7 +266,7 @@ class AcademyTrainingProgram(models.Model):
     # Computed field: training_action_count -----------------------------------
 
     training_action_count = fields.Integer(
-        string="Number of training actions",
+        string="No. of actions",
         required=False,
         readonly=True,
         index=False,

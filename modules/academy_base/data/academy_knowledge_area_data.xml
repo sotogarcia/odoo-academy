@@ -53,7 +53,7 @@
     </record>
 
     <record id="academy_knowledge_area_11" model="academy.knowledge.area">
-        <field name="name">Old History</field>
+        <field name="name">Ancient Histor</field>
         <field name="knowle_code">445</field>
     </record>
 
@@ -148,7 +148,7 @@
     </record>
 
     <record id="academy_knowledge_area_30" model="academy.knowledge.area">
-        <field name="name">Hydraulic Engineer</field>
+        <field name="name">Hydraulic Engineering</field>
         <field name="knowle_code">540</field>
     </record>
 

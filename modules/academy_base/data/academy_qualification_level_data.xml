@@ -58,7 +58,7 @@
     <record id="academy_qualification_level_level_isced_2011_6" model="academy.qualification.level">
         <field name="name">Bachelor's or equivalent level</field>
         <field name="description">Programmes designed to provide intermediate academic and/or
-            professional knowledge, skills and competencies leading to a first tertiary degree or
+            professional knowledge, skills and competences leading to a first tertiary degree or
             equivalent qualification</field>
         <field name="level">6</field>
         <field name="sequence" eval="70"/>
@@ -67,7 +67,7 @@
     <record id="academy_qualification_level_level_isced_2011_7" model="academy.qualification.level">
         <field name="name">Master’s or equivalent level</field>
         <field name="description">Programmes designed to provide advanced academic and/or
-            professional knowledge, skills and competencies leading to a second tertiary degree or
+            professional knowledge, skills and competences leading to a second tertiary degree or
             equivalent qualification</field>
         <field name="level">7</field>
         <field name="sequence" eval="80"/>

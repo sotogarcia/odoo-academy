@@ -10,7 +10,7 @@
             - Context·······: {}
             - Parent menu ··: academy_base.menu_academy_monitoring
             - View priority·: 16    Sequence····: 10
-            - Action help···: There are not enrolments
+            - Action help···: There are no enrolments
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
   <!-- List view for "academy.training.action.enrolment" -->
