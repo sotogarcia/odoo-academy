@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Odoo Server 18.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-21 12:41+0000\n"
-"PO-Revision-Date: 2025-10-21 16:34+0200\n"
+"PO-Revision-Date: 2025-10-21 21:43+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -86,7 +86,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/academy_base/wizard/academy_change_training_action_wizard.py:0
 msgid "<Enrolment> dates are outside the training action's period. The registration must start on or after '%s' and stop on or before '%s'."
-msgstr ""
+msgstr "Las fechas de inscripción están fuera del período de la acción formativa. El registro debe comenzar en o después de '%s' y finalizar en o antes de '%s'."
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_action__sequence
@@ -96,47 +96,47 @@ msgstr "Prioridad de <Matrícula> para el alumnado nuevo"
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_framework_kanban
 msgid "<i class=\"fa fa-lg fa-book me-2\" aria-hidden=\"true\" title=\"View training programs\"/>"
-msgstr ""
+msgstr "<i class=\"fa fa-lg fa-book me-2\" aria-hidden=\"true\" title=\"Ver programas de formación\"/>"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_kanban
 msgid "<i class=\"fa fa-lg fa-clipboard me-2\" aria-hidden=\"true\" title=\"View training action groups\"/>"
-msgstr ""
+msgstr "<i class=\"fa fa-lg fa-clipboard me-2\" aria-hidden=\"true\" title=\"Ver grupos de acciones formativas\"/>"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_kanban
 msgid "<i class=\"fa fa-lg fa-clipboard me-2\" aria-hidden=\"true\" title=\"View training actions\"/>"
-msgstr ""
+msgstr "<i class=\"fa fa-lg fa-clipboard me-2\" aria-hidden=\"true\" title=\"Ver acciones formativas\"/>"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_kanban
 msgid "<i class=\"fa fa-lg fa-cubes me-2\" aria-hidden=\"true\" title=\"View detailed curriculum\" string=\"Components\"/>"
-msgstr ""
+msgstr "<i class=\"fa fa-lg fa-cubes me-2\" aria-hidden=\"true\" title=\"Ver currículo detallado\" string=\"Componentes\"/>"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_kanban
 msgid "<i class=\"fa fa-lg fa-cubes me-2\" aria-hidden=\"true\" title=\"View detailed program\"/>"
-msgstr ""
+msgstr "<i class=\"fa fa-lg fa-cubes me-2\" aria-hidden=\"true\" title=\"Ver programa detallado\"/>"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_module_kanban
 msgid "<i class=\"fa fa-lg fa-cubes me-2\" aria-hidden=\"true\" title=\"View training programs\"/>"
-msgstr ""
+msgstr "<i class=\"fa fa-lg fa-cubes me-2\" aria-hidden=\"true\" title=\"Ver programas de formación\"/>"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_module_module_kanban
 msgid "<i class=\"fa fa-lg fa-list me-2\" aria-hidden=\"true\" title=\"View training units/blocks\"/>"
-msgstr ""
+msgstr "<i class=\"fa fa-lg fa-list me-2\" aria-hidden=\"true\" title=\"Ver unidades/bloques formativos\"/>"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_kanban
 msgid "<i class=\"fa fa-lg fa-sign-in me-2\" aria-hidden=\"true\" title=\"View training action enrolments\"/>"
-msgstr ""
+msgstr "<i class=\"fa fa-lg fa-sign-in me-2\" aria-hidden=\"true\" title=\"Ver inscripciones en  acciones formativas\"/>"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_group_kanban
 msgid "<i class=\"fa fa-lg fa-sign-in me-2\" aria-hidden=\"true\" title=\"View training group enrolments\"/>"
-msgstr ""
+msgstr "<i class=\"fa fa-lg fa-sign-in me-2\" aria-hidden=\"true\" title=\"Ver inscripciones de grupos formativos\"/>"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_support_staff_form
@@ -145,6 +145,9 @@ msgid ""
 "                <span>Address</span>\n"
 "              </span>"
 msgstr ""
+"<span class=\"o_form_label o_td_label o_address_type\" name=\"address_name\">\n"
+"                <span>Dirección</span>\n"
+"              </span>"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_support_staff_kanban
@@ -152,16 +155,15 @@ msgid "<span> / </span>"
 msgstr ""
 
 #. module: academy_base
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_kanban
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_module_kanban
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_kanban model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_module_kanban
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_kanban
 msgid "<strong class=\"pe-2\">Hours:</strong>"
-msgstr ""
+msgstr "<strong class=\"pe-2\">Horas:</strong>"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_module_module_kanban
 msgid "<strong class=\"pe-2\">Units:</strong>"
-msgstr ""
+msgstr "<strong class=\"pe-2\">Unidades:</strong>"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_qualification_kanban
@@ -180,19 +182,19 @@ msgid ""
 "            in education, some participation in early childhood education and/or some participation\n"
 "            in primary education"
 msgstr ""
-"Un nivel amplio de logro educativo que cubre la no participación en la educación, alguna participación en la educación de la primera "
-"infancia y/o alguna participación en la educación primaria"
+"Un nivel amplio de logro educativo que cubre la no participación en la educación, alguna participación en la educación de la primera infancia y/o alguna "
+"participación en la educación primaria"
 
 #. module: academy_base
 #: model:ir.model.constraint,message:academy_base.constraint_academy_maintenance_task_uniq_model_method
 msgid "A method should be listed only once per model."
-msgstr ""
+msgstr "Un método solo debe aparecer listado una vez por modelo."
 
 #. module: academy_base
 #. odoo-python
 #: code:addons/academy_base/models/academy_training_teacher_assignment.py:0
 msgid "A recordset is required"
-msgstr ""
+msgstr "Se requiere un conjunto de registros"
 
 #. module: academy_base
 #. odoo-python
@@ -202,6 +204,9 @@ msgid ""
 "\n"
 "Remove either the enrolments or the groups before proceeding."
 msgstr ""
+"Una acción formativa no puede tener simultáneamente inscripciones directas de estudiantes y grupos formativos asociados.\n"
+"\n"
+"Antes de continuar, deben eliminarse las inscripciones o los grupos."
 
 #. module: academy_base
 #. odoo-python
@@ -251,8 +256,7 @@ msgid "Academy knowledge area"
 msgstr "Área de conocimiento"
 
 #. module: academy_base
-#: model:ir.actions.server,name:academy_base.ir_cron_academy_maintenance_task_ir_actions_server
-#: model:ir.model,name:academy_base.model_academy_maintenance_task
+#: model:ir.actions.server,name:academy_base.ir_cron_academy_maintenance_task_ir_actions_server model:ir.model,name:academy_base.model_academy_maintenance_task
 msgid "Academy maintenance task"
 msgstr ""
 
@@ -424,15 +428,14 @@ msgid "Action name"
 msgstr "Nombre"
 
 #. module: academy_base
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_tree
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_tree
 msgid "Actions"
 msgstr "Acciones"
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment__available_action_ids
 msgid "Actions that the student may be assigned to: leaf actions (no children). If a parent action is set, show only its children."
-msgstr ""
+msgstr "Acciones a las que se puede asignar al estudiante: acciones hoja (sin acciones hijas). Si se define una acción superior, solo se muestran sus acciones hijas."
 
 #. module: academy_base
 #. odoo-python
@@ -527,7 +530,7 @@ msgstr "Estado de la actividad"
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_program__activity_type_icon
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_program_line__activity_type_icon
 msgid "Activity Type Icon"
-msgstr ""
+msgstr "Icono del tipo de actividad"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_line_tree_action_embed
@@ -565,8 +568,7 @@ msgid "Adolescent and child psychology"
 msgstr "Psicología de niños y adolescentes"
 
 #. module: academy_base
-#: model:ir.model.fields.selection,name:academy_base.selection__academy_competency_unit__level__l3
-#: model:ir.ui.menu,name:academy_base.menu_academy_advanced
+#: model:ir.model.fields.selection,name:academy_base.selection__academy_competency_unit__level__l3 model:ir.ui.menu,name:academy_base.menu_academy_advanced
 msgid "Advanced"
 msgstr "Avanzado"
 
@@ -618,8 +620,7 @@ msgid "Agronomy"
 msgstr "Agronomía"
 
 #. module: academy_base
-#: model:academy.knowledge.area,name:academy_base.academy_knowledge_area_01
-#: model:academy.professional.sector,name:academy_base.professional_sector_1201
+#: model:academy.knowledge.area,name:academy_base.academy_knowledge_area_01 model:academy.professional.sector,name:academy_base.professional_sector_1201
 msgid "Algebra"
 msgstr "Álgebra"
 
@@ -634,10 +635,8 @@ msgid "All enrolments: past, current and future"
 msgstr "Enumere todas las inscripciones, incluidas las actuales, pasadas y futuras"
 
 #. module: academy_base
-#: model:ir.model.fields,help:academy_base.field_academy_student__lang
-#: model:ir.model.fields,help:academy_base.field_academy_support_staff__lang
-#: model:ir.model.fields,help:academy_base.field_academy_teacher__lang
-#: model:ir.model.fields,help:academy_base.field_academy_technical_staff__lang
+#: model:ir.model.fields,help:academy_base.field_academy_student__lang model:ir.model.fields,help:academy_base.field_academy_support_staff__lang
+#: model:ir.model.fields,help:academy_base.field_academy_teacher__lang model:ir.model.fields,help:academy_base.field_academy_technical_staff__lang
 msgid "All the emails and documents sent to this contact will be translated in this language."
 msgstr "Todos los correos electrónicos y documentos enviados a este contacto serán traducidos a este idioma."
 
@@ -683,8 +682,7 @@ msgid "Animal husbandry"
 msgstr "Animales domésticos"
 
 #. module: academy_base
-#: model:academy.professional.field,name:academy_base.professional_field_51
-#: model:academy.professional.sector,name:academy_base.professional_sector_2402
+#: model:academy.professional.field,name:academy_base.professional_field_51 model:academy.professional.sector,name:academy_base.professional_sector_2402
 msgid "Anthropology"
 msgstr "Antropología"
 
@@ -730,51 +728,36 @@ msgid "Architecture"
 msgstr "Arquitectura"
 
 #. module: academy_base
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_application_scope_search
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_competency_unit_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_competency_unit_search
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_educational_attainment_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_educational_attainment_search
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_knowledge_area_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_knowledge_area_search
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_maintenance_task_search
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_area_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_area_search
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_application_scope_search model_terms:ir.ui.view,arch_db:academy_base.view_academy_competency_unit_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_competency_unit_search model_terms:ir.ui.view,arch_db:academy_base.view_academy_educational_attainment_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_educational_attainment_search model_terms:ir.ui.view,arch_db:academy_base.view_academy_knowledge_area_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_knowledge_area_search model_terms:ir.ui.view,arch_db:academy_base.view_academy_maintenance_task_search
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_area_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_area_search
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_category_form
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_category_search
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_family_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_family_search
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_field_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_family_search model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_field_form
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_field_search
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_qualification_form
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_qualification_search
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_sector_form
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_sector_search
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_qualification_level_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_qualification_level_search
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_support_staff_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_support_staff_kanban
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_support_staff_search
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_qualification_level_search model_terms:ir.ui.view,arch_db:academy_base.view_academy_support_staff_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_support_staff_kanban model_terms:ir.ui.view,arch_db:academy_base.view_academy_support_staff_search
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_enrolment_form
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_enrolment_kanban
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_enrolment_search
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_kanban
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_search
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_framework_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_kanban
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_search model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_framework_form
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_framework_kanban
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_framework_search
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_methodology_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_methodology_search
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_modality_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_modality_search
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_module_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_module_kanban
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_module_search
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_kanban
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_line_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_search
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_methodology_search model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_modality_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_modality_search model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_module_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_module_kanban model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_module_search
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_kanban
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_line_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_search
 msgid "Archived"
 msgstr "Archivado"
 
@@ -784,8 +767,7 @@ msgid "Are you sure you want to apply the changes?"
 msgstr "¿Confirmas que quieres aplicar los cambios?"
 
 #. module: academy_base
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_form
 msgid "Area"
 msgstr "Área"
 
@@ -801,8 +783,7 @@ msgid "Area:"
 msgstr "Área:"
 
 #. module: academy_base
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_family_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_family_tree
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_family_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_family_tree
 msgid "Areas"
 msgstr "Áreas"
 
@@ -845,12 +826,12 @@ msgstr "Nº de de adjuntos"
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_search
 msgid "Attainment"
-msgstr ""
+msgstr "Grado de formación"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_general_qweb
 msgid "Attainment:"
-msgstr ""
+msgstr "Grado de formación:"
 
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment__available_action_ids
@@ -1077,36 +1058,28 @@ msgid "Channels"
 msgstr "Canales"
 
 #. module: academy_base
-#: model:ir.model.fields,help:academy_base.field_academy_student__is_student
-#: model:ir.model.fields,help:academy_base.field_academy_support_staff__is_student
-#: model:ir.model.fields,help:academy_base.field_academy_teacher__is_student
-#: model:ir.model.fields,help:academy_base.field_academy_technical_staff__is_student
+#: model:ir.model.fields,help:academy_base.field_academy_student__is_student model:ir.model.fields,help:academy_base.field_academy_support_staff__is_student
+#: model:ir.model.fields,help:academy_base.field_academy_teacher__is_student model:ir.model.fields,help:academy_base.field_academy_technical_staff__is_student
 #: model:ir.model.fields,help:academy_base.field_res_partner__is_student model:ir.model.fields,help:academy_base.field_res_users__is_student
 msgid "Check if partner is a student"
 msgstr "Comprobar si el socio es un estudiante"
 
 #. module: academy_base
-#: model:ir.model.fields,help:academy_base.field_academy_student__is_teacher
-#: model:ir.model.fields,help:academy_base.field_academy_support_staff__is_teacher
-#: model:ir.model.fields,help:academy_base.field_academy_teacher__is_teacher
-#: model:ir.model.fields,help:academy_base.field_academy_technical_staff__is_teacher
+#: model:ir.model.fields,help:academy_base.field_academy_student__is_teacher model:ir.model.fields,help:academy_base.field_academy_support_staff__is_teacher
+#: model:ir.model.fields,help:academy_base.field_academy_teacher__is_teacher model:ir.model.fields,help:academy_base.field_academy_technical_staff__is_teacher
 #: model:ir.model.fields,help:academy_base.field_res_partner__is_teacher model:ir.model.fields,help:academy_base.field_res_users__is_teacher
 msgid "Check if partner is a teacher"
 msgstr "Marcado si el contacto es docente"
 
 #. module: academy_base
-#: model:ir.model.fields,help:academy_base.field_academy_student__is_company
-#: model:ir.model.fields,help:academy_base.field_academy_support_staff__is_company
-#: model:ir.model.fields,help:academy_base.field_academy_teacher__is_company
-#: model:ir.model.fields,help:academy_base.field_academy_technical_staff__is_company
+#: model:ir.model.fields,help:academy_base.field_academy_student__is_company model:ir.model.fields,help:academy_base.field_academy_support_staff__is_company
+#: model:ir.model.fields,help:academy_base.field_academy_teacher__is_company model:ir.model.fields,help:academy_base.field_academy_technical_staff__is_company
 msgid "Check if the contact is a company, otherwise it is a person"
 msgstr "Marcar si el contacto es una empresa, de lo contrario es una persona"
 
 #. module: academy_base
-#: model:ir.model.fields,help:academy_base.field_academy_student__employee
-#: model:ir.model.fields,help:academy_base.field_academy_support_staff__employee
-#: model:ir.model.fields,help:academy_base.field_academy_teacher__employee
-#: model:ir.model.fields,help:academy_base.field_academy_technical_staff__employee
+#: model:ir.model.fields,help:academy_base.field_academy_student__employee model:ir.model.fields,help:academy_base.field_academy_support_staff__employee
+#: model:ir.model.fields,help:academy_base.field_academy_teacher__employee model:ir.model.fields,help:academy_base.field_academy_technical_staff__employee
 msgid "Check this box if this contact is an Employee."
 msgstr "Marcar si este contacto es un empleado."
 
@@ -1121,8 +1094,7 @@ msgid "Chemical technology and engineering"
 msgstr "Ingeniería Y tecnología química"
 
 #. module: academy_base
-#: model:academy.professional.family,name:academy_base.academy_professional_family_20
-#: model:academy.professional.field,name:academy_base.professional_field_23
+#: model:academy.professional.family,name:academy_base.academy_professional_family_20 model:academy.professional.field,name:academy_base.professional_field_23
 msgid "Chemistry"
 msgstr "Química"
 
@@ -1191,8 +1163,7 @@ msgstr "Elegir las metodologías de formación"
 #: model:ir.model.fields,field_description:academy_base.field_academy_student__city
 #: model:ir.model.fields,field_description:academy_base.field_academy_support_staff__city
 #: model:ir.model.fields,field_description:academy_base.field_academy_teacher__city
-#: model:ir.model.fields,field_description:academy_base.field_academy_technical_staff__city
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_support_staff_form
+#: model:ir.model.fields,field_description:academy_base.field_academy_technical_staff__city model_terms:ir.ui.view,arch_db:academy_base.view_academy_support_staff_form
 msgid "City"
 msgstr "Ciudad"
 
@@ -1372,11 +1343,9 @@ msgstr "Formación"
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_module__code
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_program__code
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_program_line__code
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_competency_unit_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_competency_unit_tree
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_competency_unit_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_competency_unit_tree
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_educational_attainment_search
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_qualification_level_search
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_search
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_qualification_level_search model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_search
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_framework_form
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_components_qweb
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_training_actions_qweb
@@ -1535,12 +1504,9 @@ msgid "Component"
 msgstr "Materia"
 
 #. module: academy_base
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_framework_kanban
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_module_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_module_kanban
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_kanban
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_framework_kanban
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_module_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_module_kanban
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_kanban
 msgid "Components"
 msgstr "Materias"
 
@@ -1605,10 +1571,8 @@ msgid "Contact"
 msgstr "Contacto"
 
 #. module: academy_base
-#: model:ir.model.fields,help:academy_base.field_academy_student__birthday
-#: model:ir.model.fields,help:academy_base.field_academy_support_staff__birthday
-#: model:ir.model.fields,help:academy_base.field_academy_teacher__birthday
-#: model:ir.model.fields,help:academy_base.field_academy_technical_staff__birthday
+#: model:ir.model.fields,help:academy_base.field_academy_student__birthday model:ir.model.fields,help:academy_base.field_academy_support_staff__birthday
+#: model:ir.model.fields,help:academy_base.field_academy_teacher__birthday model:ir.model.fields,help:academy_base.field_academy_technical_staff__birthday
 msgid "Contact date of birth"
 msgstr "Fecha en que nació el estudiante"
 
@@ -1658,10 +1622,8 @@ msgid "Counselling and guidance"
 msgstr "Consejo y guía"
 
 #. module: academy_base
-#: model:ir.model.fields,help:academy_base.field_academy_student__message_bounce
-#: model:ir.model.fields,help:academy_base.field_academy_support_staff__message_bounce
-#: model:ir.model.fields,help:academy_base.field_academy_teacher__message_bounce
-#: model:ir.model.fields,help:academy_base.field_academy_technical_staff__message_bounce
+#: model:ir.model.fields,help:academy_base.field_academy_student__message_bounce model:ir.model.fields,help:academy_base.field_academy_support_staff__message_bounce
+#: model:ir.model.fields,help:academy_base.field_academy_teacher__message_bounce model:ir.model.fields,help:academy_base.field_academy_technical_staff__message_bounce
 msgid "Counter of the number of bounced emails for this contact"
 msgstr "Contador de correos electrónicos rechazados para este contacto"
 
@@ -1670,8 +1632,7 @@ msgstr "Contador de correos electrónicos rechazados para este contacto"
 #: model:ir.model.fields,field_description:academy_base.field_academy_support_staff__country_id
 #: model:ir.model.fields,field_description:academy_base.field_academy_teacher__country_id
 #: model:ir.model.fields,field_description:academy_base.field_academy_technical_staff__country_id
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_support_staff_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_support_staff_search
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_support_staff_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_support_staff_search
 msgid "Country"
 msgstr "País"
 
@@ -1692,10 +1653,8 @@ msgid "Create from scratch"
 msgstr "Crear desde cero"
 
 #. module: academy_base
-#: model:ir.model.fields,help:academy_base.field_academy_student__creation_mode
-#: model:ir.model.fields,help:academy_base.field_academy_support_staff__creation_mode
-#: model:ir.model.fields,help:academy_base.field_academy_teacher__creation_mode
-#: model:ir.model.fields,help:academy_base.field_academy_technical_staff__creation_mode
+#: model:ir.model.fields,help:academy_base.field_academy_student__creation_mode model:ir.model.fields,help:academy_base.field_academy_support_staff__creation_mode
+#: model:ir.model.fields,help:academy_base.field_academy_teacher__creation_mode model:ir.model.fields,help:academy_base.field_academy_technical_staff__creation_mode
 msgid "Create from scratch or use an existing contact."
 msgstr "Crear desde cero o usar un contacto existente."
 
@@ -1712,7 +1671,7 @@ msgstr "Crear nuevo"
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_support_staff_form
 msgid "Created at"
-msgstr ""
+msgstr "Creado en"
 
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_application_scope__create_uid
@@ -1816,8 +1775,7 @@ msgstr "Número de matrículas actuales sobre el total de matrículas del estudi
 #: model:ir.model.fields,help:academy_base.field_academy_training_action__owner_id
 #: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment__owner_id
 #: model:ir.model.fields,help:academy_base.field_academy_training_action_line__owner_id
-#: model:ir.model.fields,help:academy_base.field_academy_training_framework__owner_id
-#: model:ir.model.fields,help:academy_base.field_academy_training_module__owner_id
+#: model:ir.model.fields,help:academy_base.field_academy_training_framework__owner_id model:ir.model.fields,help:academy_base.field_academy_training_module__owner_id
 #: model:ir.model.fields,help:academy_base.field_academy_training_program__owner_id
 #: model:ir.model.fields,help:academy_base.field_academy_training_program_line__owner_id
 msgid "Current record owner"
@@ -1871,10 +1829,8 @@ msgid "Date the enrolment ends (leave empty if still ongoing)"
 msgstr "Fecha en que el estudiante ha sido dado de baja"
 
 #. module: academy_base
-#: model:ir.model.fields,help:academy_base.field_academy_student__signup_date
-#: model:ir.model.fields,help:academy_base.field_academy_support_staff__signup_date
-#: model:ir.model.fields,help:academy_base.field_academy_teacher__signup_date
-#: model:ir.model.fields,help:academy_base.field_academy_technical_staff__signup_date
+#: model:ir.model.fields,help:academy_base.field_academy_student__signup_date model:ir.model.fields,help:academy_base.field_academy_support_staff__signup_date
+#: model:ir.model.fields,help:academy_base.field_academy_teacher__signup_date model:ir.model.fields,help:academy_base.field_academy_technical_staff__signup_date
 msgid "Date when the student signed up at the centre."
 msgstr "Fecha en la que el estudiante se matricuó en el centro."
 
@@ -1972,14 +1928,11 @@ msgstr "Fecha de baja"
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_module__description
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_program__description
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_program_line__description
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_area_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_family_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_area_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_family_form
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_field_form
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_qualification_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_framework_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_module_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_framework_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_module_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_form
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_general_qweb
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_line_form
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_training_actions_qweb
@@ -2070,8 +2023,7 @@ msgstr "Descripción detallada del contenido, alcance y objetivos de la línea"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_change_training_action_wizard_wizard
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_support_staff_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_enrolment_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_support_staff_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_enrolment_form
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_form
 msgid "Details"
 msgstr "Detalles"
@@ -2097,25 +2049,17 @@ msgid "Disable to archive without deleting"
 msgstr "Habilita/deshabilita el registro"
 
 #. module: academy_base
-#: model:ir.model.fields,help:academy_base.field_academy_application_scope__active
-#: model:ir.model.fields,help:academy_base.field_academy_competency_unit__active
-#: model:ir.model.fields,help:academy_base.field_academy_educational_attainment__active
-#: model:ir.model.fields,help:academy_base.field_academy_knowledge_area__active
-#: model:ir.model.fields,help:academy_base.field_academy_professional_area__active
-#: model:ir.model.fields,help:academy_base.field_academy_professional_category__active
-#: model:ir.model.fields,help:academy_base.field_academy_professional_family__active
-#: model:ir.model.fields,help:academy_base.field_academy_professional_field__active
+#: model:ir.model.fields,help:academy_base.field_academy_application_scope__active model:ir.model.fields,help:academy_base.field_academy_competency_unit__active
+#: model:ir.model.fields,help:academy_base.field_academy_educational_attainment__active model:ir.model.fields,help:academy_base.field_academy_knowledge_area__active
+#: model:ir.model.fields,help:academy_base.field_academy_professional_area__active model:ir.model.fields,help:academy_base.field_academy_professional_category__active
+#: model:ir.model.fields,help:academy_base.field_academy_professional_family__active model:ir.model.fields,help:academy_base.field_academy_professional_field__active
 #: model:ir.model.fields,help:academy_base.field_academy_professional_qualification__active
-#: model:ir.model.fields,help:academy_base.field_academy_professional_sector__active
-#: model:ir.model.fields,help:academy_base.field_academy_qualification_level__active
+#: model:ir.model.fields,help:academy_base.field_academy_professional_sector__active model:ir.model.fields,help:academy_base.field_academy_qualification_level__active
 #: model:ir.model.fields,help:academy_base.field_academy_training_action__active
 #: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment__active
-#: model:ir.model.fields,help:academy_base.field_academy_training_action_line__active
-#: model:ir.model.fields,help:academy_base.field_academy_training_framework__active
-#: model:ir.model.fields,help:academy_base.field_academy_training_methodology__active
-#: model:ir.model.fields,help:academy_base.field_academy_training_modality__active
-#: model:ir.model.fields,help:academy_base.field_academy_training_module__active
-#: model:ir.model.fields,help:academy_base.field_academy_training_program_line__active
+#: model:ir.model.fields,help:academy_base.field_academy_training_action_line__active model:ir.model.fields,help:academy_base.field_academy_training_framework__active
+#: model:ir.model.fields,help:academy_base.field_academy_training_methodology__active model:ir.model.fields,help:academy_base.field_academy_training_modality__active
+#: model:ir.model.fields,help:academy_base.field_academy_training_module__active model:ir.model.fields,help:academy_base.field_academy_training_program_line__active
 msgid "Disable to archive without deleting."
 msgstr "Habilita/deshabilita el registro."
 
@@ -2246,8 +2190,8 @@ msgid ""
 "            participation in school and society. Programmes designed for children below the age of\n"
 "            3"
 msgstr ""
-"Educación diseñada para apoyar el desarrollo temprano en preparación para la participación en la escuela y la sociedad. Programas diseñados "
-"para niños menores de 3 años"
+"Educación diseñada para apoyar el desarrollo temprano en preparación para la participación en la escuela y la sociedad. Programas diseñados para niños menores de 3 "
+"años"
 
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action__attainment_id
@@ -2280,16 +2224,12 @@ msgid "Educational theory and methods"
 msgstr "Teoría y métodos educativos"
 
 #. module: academy_base
-#: model:ir.model.fields,help:academy_base.field_academy_student__partner_share
-#: model:ir.model.fields,help:academy_base.field_academy_support_staff__partner_share
-#: model:ir.model.fields,help:academy_base.field_academy_teacher__partner_share
-#: model:ir.model.fields,help:academy_base.field_academy_technical_staff__partner_share
-msgid ""
-"Either customer (not a user), either shared user. Indicated the current partner is a customer without access or with a limited access "
-"created for sharing data."
+#: model:ir.model.fields,help:academy_base.field_academy_student__partner_share model:ir.model.fields,help:academy_base.field_academy_support_staff__partner_share
+#: model:ir.model.fields,help:academy_base.field_academy_teacher__partner_share model:ir.model.fields,help:academy_base.field_academy_technical_staff__partner_share
+msgid "Either customer (not a user), either shared user. Indicated the current partner is a customer without access or with a limited access created for sharing data."
 msgstr ""
-"Cualquiera de los clientes (no un usuario), cualquiera de los usuarios compartidos. Indica que el socio actual es un cliente sin acceso o "
-"con un acceso limitado creado para compartir datos."
+"Cualquiera de los clientes (no un usuario), cualquiera de los usuarios compartidos. Indica que el socio actual es un cliente sin acceso o con un acceso limitado "
+"creado para compartir datos."
 
 #. module: academy_base
 #: model:academy.knowledge.area,name:academy_base.academy_knowledge_area_29
@@ -2433,8 +2373,7 @@ msgstr "Matriculaciones"
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_student_form
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_enrolment_pivot_primary_16
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_enrolment_tree_embed
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_group_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_group_form
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_training_actions_qweb
 msgid "Enrolments"
 msgstr "Matrícula"
@@ -2473,30 +2412,21 @@ msgstr "Introducir el código del módulo"
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_educational_attainment__level
-#: model:ir.model.fields,help:academy_base.field_academy_knowledge_area__knowle_code
-#: model:ir.model.fields,help:academy_base.field_academy_professional_field__code
-#: model:ir.model.fields,help:academy_base.field_academy_professional_sector__code
-#: model:ir.model.fields,help:academy_base.field_academy_qualification_level__level
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_competency_unit_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_knowledge_area_form
+#: model:ir.model.fields,help:academy_base.field_academy_knowledge_area__knowle_code model:ir.model.fields,help:academy_base.field_academy_professional_field__code
+#: model:ir.model.fields,help:academy_base.field_academy_professional_sector__code model:ir.model.fields,help:academy_base.field_academy_qualification_level__level
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_competency_unit_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_knowledge_area_form
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_module_form
 msgid "Enter new code"
 msgstr "Introduzca un nuevo código"
 
 #. module: academy_base
-#: model:ir.model.fields,help:academy_base.field_academy_training_module__description
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_application_scope_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_educational_attainment_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_knowledge_area_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_area_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_category_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_family_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_field_form
+#: model:ir.model.fields,help:academy_base.field_academy_training_module__description model_terms:ir.ui.view,arch_db:academy_base.view_academy_application_scope_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_educational_attainment_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_knowledge_area_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_area_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_category_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_family_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_field_form
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_qualification_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_sector_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_qualification_level_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_framework_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_methodology_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_sector_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_qualification_level_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_framework_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_methodology_form
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_modality_form
 msgid "Enter new description"
 msgstr "Introduzca una nueva descripción"
@@ -2508,24 +2438,16 @@ msgid "Enter new internal code"
 msgstr "Introduzca un nuevo código interno"
 
 #. module: academy_base
-#: model:ir.model.fields,help:academy_base.field_academy_application_scope__name
-#: model:ir.model.fields,help:academy_base.field_academy_training_module__name
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_application_scope_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_educational_attainment_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_knowledge_area_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_area_form
+#: model:ir.model.fields,help:academy_base.field_academy_application_scope__name model:ir.model.fields,help:academy_base.field_academy_training_module__name
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_application_scope_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_educational_attainment_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_knowledge_area_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_area_form
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_category_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_family_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_field_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_family_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_field_form
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_qualification_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_sector_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_qualification_level_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_framework_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_methodology_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_modality_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_module_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_sector_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_qualification_level_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_framework_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_methodology_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_modality_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_module_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_form
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_line_form
 msgid "Enter new name"
 msgstr "Introduzca un nuevo nombre"
@@ -2629,16 +2551,14 @@ msgstr "Sociología experimental"
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_framework__description
 msgid "Extended notes about scope, applicability, exceptions, and internal criteria for using this framework in programs and enrolments."
-msgstr ""
+msgstr "Notas extendidas sobre el alcance, la aplicabilidad, las excepciones y los criterios internos para utilizar este marco en los programas e inscripciones."
 
 #. module: academy_base
 #: model:academy.qualification.level,description:academy_base.academy_qualification_level_05
 msgid ""
 "Extensive specialized knowledge, factual and theoretical, in a\n"
 "            specific field of work or study, being aware of the limits of this knowledge"
-msgstr ""
-"Amplio conocimiento especializado, fáctico y teórico, en un campo específico de trabajo o estudio, conociendo los límites de este "
-"conocimiento"
+msgstr "Amplio conocimiento especializado, fáctico y teórico, en un campo específico de trabajo o estudio, conociendo los límites de este conocimiento"
 
 #. module: academy_base
 #: model:academy.professional.family,name:academy_base.academy_professional_family_15
@@ -2648,7 +2568,7 @@ msgstr "Industrias extractivas"
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_synchronize_wizard_wizard
 msgid "Facility reporting wizard"
-msgstr ""
+msgstr "Asistente de informes de instalaciones"
 
 #. module: academy_base
 #: model:academy.qualification.level,description:academy_base.academy_qualification_level_04
@@ -2713,9 +2633,7 @@ msgstr "Nombre"
 msgid ""
 "First stage of secondary education building on primary education,\n"
 "            typically with a more subject-oriented curriculum"
-msgstr ""
-"Primera etapa de la educación secundaria basada en la educación primaria, generalmente con un plan de estudios más orientado a las "
-"asignaturas"
+msgstr "Primera etapa de la educación secundaria basada en la educación primaria, generalmente con un plan de estudios más orientado a las asignaturas"
 
 #. module: academy_base
 #: model:academy.professional.sector,name:academy_base.professional_sector_3105
@@ -2793,7 +2711,7 @@ msgstr "Florestas"
 #: model:ir.model.fields,field_description:academy_base.field_academy_teacher__form_has_lastname_first
 #: model:ir.model.fields,field_description:academy_base.field_academy_technical_staff__form_has_lastname_first
 msgid "Form Has Lastname First"
-msgstr "l formulario muestra primero el apellido."
+msgstr "El formulario muestra primero el apellido"
 
 #. module: academy_base
 #: model:academy.training.framework,description:academy_base.framework_sepe_programs
@@ -2801,8 +2719,7 @@ msgid "Formación del Catálogo de especialidades formativas (SEPE)."
 msgstr "Formación del Catálogo de especialidades formativas (SEPE)."
 
 #. module: academy_base
-#: model:ir.model.fields,help:academy_base.field_academy_student__email_formatted
-#: model:ir.model.fields,help:academy_base.field_academy_support_staff__email_formatted
+#: model:ir.model.fields,help:academy_base.field_academy_student__email_formatted model:ir.model.fields,help:academy_base.field_academy_support_staff__email_formatted
 #: model:ir.model.fields,help:academy_base.field_academy_teacher__email_formatted
 #: model:ir.model.fields,help:academy_base.field_academy_technical_staff__email_formatted
 msgid "Format email address \"Name <email@domain>\""
@@ -2941,8 +2858,7 @@ msgid "Geographical demography"
 msgstr "Demografía histórica"
 
 #. module: academy_base
-#: model:academy.professional.field,name:academy_base.professional_field_54
-#: model:academy.professional.sector,name:academy_base.professional_sector_2505
+#: model:academy.professional.field,name:academy_base.professional_field_54 model:academy.professional.sector,name:academy_base.professional_sector_2505
 msgid "Geography"
 msgstr "Geografía"
 
@@ -3029,8 +2945,7 @@ msgstr "Geotecnia"
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_support_staff_search
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_enrolment_search
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_search
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_framework_search
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_search model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_framework_search
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_search
 msgid "Group By"
 msgstr "Agrupar por"
@@ -3154,8 +3069,8 @@ msgid ""
 "            field of work or concrete study, which lay the foundations of an original thought or\n"
 "            investigation"
 msgstr ""
-"Conocimientos altamente especializados, algunos de ellos a la vanguardia en un campo de trabajo o estudio concreto, que sientan las bases de "
-"un pensamiento o investigación original"
+"Conocimientos altamente especializados, algunos de ellos a la vanguardia en un campo de trabajo o estudio concreto, que sientan las bases de un pensamiento o "
+"investigación original"
 
 #. module: academy_base
 #: model:academy.knowledge.area,name:academy_base.academy_knowledge_area_10
@@ -3230,9 +3145,10 @@ msgstr "Hostelería y Turismo"
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_maintenance_task__offset
 msgid ""
-"Hour offset within the frequency cycle. For example, with 'Every 8 hours', offsets 0/1/2... schedule at 00/01/02... then +8 and +16. Valid "
-"range is 0..(divisor-1)."
+"Hour offset within the frequency cycle. For example, with 'Every 8 hours', offsets 0/1/2... schedule at 00/01/02... then +8 and +16. Valid range is 0..(divisor-1)."
 msgstr ""
+"Desfase horario dentro del ciclo de frecuencia. Por ejemplo, con 'Cada 8 horas', los desfases 0/1/2... se programan a 00/01/02... y luego +8 y +16. El rango válido "
+"es 0..(divisor-1)."
 
 #. module: academy_base
 #: model:ir.model.fields.selection,name:academy_base.selection__academy_maintenance_task__frequency__freq_1
@@ -3306,8 +3222,7 @@ msgstr "Hidrología"
 #: model:ir.model.fields,field_description:academy_base.field_academy_professional_qualification__id
 #: model:ir.model.fields,field_description:academy_base.field_academy_professional_sector__id
 #: model:ir.model.fields,field_description:academy_base.field_academy_qualification_level__id
-#: model:ir.model.fields,field_description:academy_base.field_academy_student__id
-#: model:ir.model.fields,field_description:academy_base.field_academy_support_staff__id
+#: model:ir.model.fields,field_description:academy_base.field_academy_student__id model:ir.model.fields,field_description:academy_base.field_academy_support_staff__id
 #: model:ir.model.fields,field_description:academy_base.field_academy_teacher__id
 #: model:ir.model.fields,field_description:academy_base.field_academy_technical_staff__id
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action__id
@@ -3416,13 +3331,11 @@ msgstr "Si está marcado, esta acción formativa puede dividirse en grupos o ses
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_action__keep_synchronized
 msgid "If enabled, this child action will automatically keep its training program synchronized with the parent action's program."
-msgstr ""
+msgstr "Si está habilitada, esta acción hija mantendrá automáticamente su programa de formación sincronizado con el programa de la acción superior."
 
 #. module: academy_base
-#: model:ir.model.fields,help:academy_base.field_academy_student__is_blacklisted
-#: model:ir.model.fields,help:academy_base.field_academy_support_staff__is_blacklisted
-#: model:ir.model.fields,help:academy_base.field_academy_teacher__is_blacklisted
-#: model:ir.model.fields,help:academy_base.field_academy_technical_staff__is_blacklisted
+#: model:ir.model.fields,help:academy_base.field_academy_student__is_blacklisted model:ir.model.fields,help:academy_base.field_academy_support_staff__is_blacklisted
+#: model:ir.model.fields,help:academy_base.field_academy_teacher__is_blacklisted model:ir.model.fields,help:academy_base.field_academy_technical_staff__is_blacklisted
 msgid "If the email address is on the blacklist, the contact won't receive mass mailing anymore, from any list"
 msgstr "Si la dirección de correo electrónico está en la lista negra, el contacto ya no recibirá correos masivos de ninguna lista"
 
@@ -3537,8 +3450,7 @@ msgid "Image and sound"
 msgstr "Imagen y sonido"
 
 #. module: academy_base
-#: model:academy.knowledge.area,name:academy_base.academy_knowledge_area_36
-#: model:academy.professional.sector,name:academy_base.professional_sector_2412
+#: model:academy.knowledge.area,name:academy_base.academy_knowledge_area_36 model:academy.professional.sector,name:academy_base.professional_sector_2412
 msgid "Immunology"
 msgstr "Inmunología"
 
@@ -3547,8 +3459,7 @@ msgstr "Inmunología"
 msgid ""
 "Imparted by one or more experts in each discipline, allowing\n"
 "            continuous and direct interaction between the participants and teacher"
-msgstr ""
-"Impartido por uno o más expertos en cada disciplina, lo que permite una interacción continua y directa entre los participantes y el docente"
+msgstr "Impartido por uno o más expertos en cada disciplina, lo que permite una interacción continua y directa entre los participantes y el docente"
 
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_student__implied_cefrl_ids
@@ -3643,10 +3554,8 @@ msgid "Instrumentation technology"
 msgstr "Instrumentación tecnológica"
 
 #. module: academy_base
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_support_staff_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_enrolment_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_support_staff_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_enrolment_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_form
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_line_form
 msgid "Internal Notes"
 msgstr "Notas internas"
@@ -3787,8 +3696,7 @@ msgstr "Es sección"
 #: model:ir.model.fields,field_description:academy_base.field_academy_support_staff__is_student
 #: model:ir.model.fields,field_description:academy_base.field_academy_teacher__is_student
 #: model:ir.model.fields,field_description:academy_base.field_academy_technical_staff__is_student
-#: model:ir.model.fields,field_description:academy_base.field_res_partner__is_student
-#: model:ir.model.fields,field_description:academy_base.field_res_users__is_student
+#: model:ir.model.fields,field_description:academy_base.field_res_partner__is_student model:ir.model.fields,field_description:academy_base.field_res_users__is_student
 msgid "Is student"
 msgstr "Es estudiante"
 
@@ -3797,8 +3705,7 @@ msgstr "Es estudiante"
 #: model:ir.model.fields,field_description:academy_base.field_academy_support_staff__is_teacher
 #: model:ir.model.fields,field_description:academy_base.field_academy_teacher__is_teacher
 #: model:ir.model.fields,field_description:academy_base.field_academy_technical_staff__is_teacher
-#: model:ir.model.fields,field_description:academy_base.field_res_partner__is_teacher
-#: model:ir.model.fields,field_description:academy_base.field_res_users__is_teacher
+#: model:ir.model.fields,field_description:academy_base.field_res_partner__is_teacher model:ir.model.fields,field_description:academy_base.field_res_users__is_teacher
 msgid "Is teacher"
 msgstr "Es docente"
 
@@ -3818,8 +3725,7 @@ msgid ""
 "It allows directing, instructing and training in accordance with\n"
 "            the objectives and expectations defined, starting from the current student\n"
 "            knowledge"
-msgstr ""
-"Permite dirigir, instruir y capacitar de acuerdo con los objetivos y expectativas definidos, a partir del conocimiento actual del estudiante"
+msgstr "Permite dirigir, instruir y capacitar de acuerdo con los objetivos y expectativas definidos, a partir del conocimiento actual del estudiante"
 
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_student__function
@@ -3851,8 +3757,7 @@ msgstr "Áreas de conocimiento"
 msgid ""
 "Knowledge at the most advanced frontier of a particular work field\n"
 "            or study and at the point of articulation between different fields"
-msgstr ""
-"Conocimiento en la frontera más avanzada de un campo de trabajo o estudio en particular y en el punto de articulación entre diferentes campos"
+msgstr "Conocimiento en la frontera más avanzada de un campo de trabajo o estudio en particular y en el punto de articulación entre diferentes campos"
 
 #. module: academy_base
 #: model:academy.qualification.level,description:academy_base.academy_qualification_level_03
@@ -4033,10 +3938,8 @@ msgid "Linguistics"
 msgstr "Lingüística"
 
 #. module: academy_base
-#: model:ir.model.fields,help:academy_base.field_academy_student__partner_id
-#: model:ir.model.fields,help:academy_base.field_academy_support_staff__partner_id
-#: model:ir.model.fields,help:academy_base.field_academy_teacher__partner_id
-#: model:ir.model.fields,help:academy_base.field_academy_technical_staff__partner_id
+#: model:ir.model.fields,help:academy_base.field_academy_student__partner_id model:ir.model.fields,help:academy_base.field_academy_support_staff__partner_id
+#: model:ir.model.fields,help:academy_base.field_academy_teacher__partner_id model:ir.model.fields,help:academy_base.field_academy_technical_staff__partner_id
 msgid "Linked contact record (res.partner) for this record"
 msgstr "Datos del socio relacionado con el usuario"
 
@@ -4069,7 +3972,7 @@ msgstr "Primera etapa de educación secundaria y similar"
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_maintenance_task__sequence
 msgid "Lower values run first when multiple tasks match the same hour."
-msgstr ""
+msgstr "Los valores inferiores se ejecutan primero cuando varias tareas coinciden con la misma hora."
 
 #. module: academy_base
 #: model:academy.professional.sector,name:academy_base.professional_sector_2304
@@ -4077,16 +3980,13 @@ msgid "Macromolecular chemistry"
 msgstr "Química macromolecular"
 
 #. module: academy_base
-#: model:ir.model.fields,help:academy_base.field_academy_student__call_number
-#: model:ir.model.fields,help:academy_base.field_academy_support_staff__call_number
-#: model:ir.model.fields,help:academy_base.field_academy_teacher__call_number
-#: model:ir.model.fields,help:academy_base.field_academy_technical_staff__call_number
+#: model:ir.model.fields,help:academy_base.field_academy_student__call_number model:ir.model.fields,help:academy_base.field_academy_support_staff__call_number
+#: model:ir.model.fields,help:academy_base.field_academy_teacher__call_number model:ir.model.fields,help:academy_base.field_academy_technical_staff__call_number
 msgid "Main number used for calls"
 msgstr "Número telefónico principal usado para las llamadas"
 
 #. module: academy_base
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_framework_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_line_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_framework_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_line_form
 msgid "Main settings"
 msgstr "Configuración principal"
 
@@ -4108,8 +4008,7 @@ msgstr "Tareas de mantenimiento"
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_framework__manager_id
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_module__manager_id
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_program__manager_id
-#: model:ir.model.fields,field_description:academy_base.field_academy_training_program_line__manager_id
-#: model:res.groups,name:academy_base.academy_group_manager
+#: model:ir.model.fields,field_description:academy_base.field_academy_training_program_line__manager_id model:res.groups,name:academy_base.academy_group_manager
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_training_actions_qweb
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_training_modules_qweb
 msgid "Manager"
@@ -4177,7 +4076,7 @@ msgstr "Matemáticas"
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_action__lines_last_updated
 msgid "Most recent line update date"
-msgstr "Fecha de la actualización más reciente de una línea."
+msgstr "Fecha de la actualización más reciente de una línea"
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_action__seating
@@ -4294,8 +4193,7 @@ msgid "Method must be a valid Python identifier (letters, digits, underscores) s
 msgstr "El método debe ser un identificador Python válido (letras, dígitos o guiones bajos) que comience con una letra."
 
 #. module: academy_base
-#: model:academy.professional.sector,name:academy_base.professional_sector_1105
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form
+#: model:academy.professional.sector,name:academy_base.professional_sector_1105 model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form
 msgid "Methodology"
 msgstr "Metodología"
 
@@ -4323,7 +4221,7 @@ msgstr "Tecnología de las minas"
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_support_staff_form
 msgid "Misc"
-msgstr "Misc."
+msgstr "Misc"
 
 #. module: academy_base
 #. odoo-python
@@ -4458,17 +4356,14 @@ msgstr "Fecha límite de mi actividad"
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_module__name
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_program__name
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_program_line__name
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_competency_unit_search
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_competency_unit_tree
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_competency_unit_search model_terms:ir.ui.view,arch_db:academy_base.view_academy_competency_unit_tree
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_enrolment_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_search
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_tree
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_search model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_tree
 msgid "Name"
 msgstr "Nombre"
 
 #. module: academy_base
-#: model:ir.model.fields,help:academy_base.field_academy_training_action_line__name
-#: model:ir.model.fields,help:academy_base.field_academy_training_program_line__name
+#: model:ir.model.fields,help:academy_base.field_academy_training_action_line__name model:ir.model.fields,help:academy_base.field_academy_training_program_line__name
 msgid "Name of the program line; usually the module or block title"
 msgstr "Nombre de la materia del programa; normalmente el título del módulo o bloque"
 
@@ -4633,8 +4528,7 @@ msgid "No. of units"
 msgstr "Unidades"
 
 #. module: academy_base
-#: model:ir.model.fields,help:academy_base.field_academy_training_action_line__hours
-#: model:ir.model.fields,help:academy_base.field_academy_training_program_line__hours
+#: model:ir.model.fields,help:academy_base.field_academy_training_action_line__hours model:ir.model.fields,help:academy_base.field_academy_training_program_line__hours
 msgid "Nominal duration of the line in hours"
 msgstr "Duración nominal de la materia en horas"
 
@@ -4889,14 +4783,12 @@ msgid "Official name of the Training Modality"
 msgstr "Introduzca un nuevo nombre"
 
 #. module: academy_base
-#: model:ir.model.fields,help:academy_base.field_academy_training_action__program_name
-#: model:ir.model.fields,help:academy_base.field_academy_training_program__name
+#: model:ir.model.fields,help:academy_base.field_academy_training_action__program_name model:ir.model.fields,help:academy_base.field_academy_training_program__name
 msgid "Official name of the training program"
 msgstr "Nombre oficial del programa formativo"
 
 #. module: academy_base
-#: model:ir.model.fields,help:academy_base.field_academy_training_action_line__code
-#: model:ir.model.fields,help:academy_base.field_academy_training_program_line__code
+#: model:ir.model.fields,help:academy_base.field_academy_training_action_line__code model:ir.model.fields,help:academy_base.field_academy_training_program_line__code
 msgid "Official or internal code for this program line"
 msgstr "Código oficial o interno de esta materia del programa"
 
@@ -5123,10 +5015,8 @@ msgstr "Titular"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_enrolment_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_framework_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_module_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_framework_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_module_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_form
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_line_form
 msgid "Ownership"
 msgstr "Titular"
@@ -5237,8 +5127,7 @@ msgstr "Entrega pendiente"
 #: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment__manager_id
 #: model:ir.model.fields,help:academy_base.field_academy_training_action_line__manager_id
 #: model:ir.model.fields,help:academy_base.field_academy_training_framework__manager_id
-#: model:ir.model.fields,help:academy_base.field_academy_training_module__manager_id
-#: model:ir.model.fields,help:academy_base.field_academy_training_program__manager_id
+#: model:ir.model.fields,help:academy_base.field_academy_training_module__manager_id model:ir.model.fields,help:academy_base.field_academy_training_program__manager_id
 #: model:ir.model.fields,help:academy_base.field_academy_training_program_line__manager_id
 msgid "Person in charge of this record"
 msgstr "Responsable de este registro"
@@ -5339,8 +5228,7 @@ msgid "Physical chemistry"
 msgstr "Química física"
 
 #. module: academy_base
-#: model:academy.professional.field,name:academy_base.professional_field_22
-#: model:academy.professional.sector,name:academy_base.professional_sector_2204
+#: model:academy.professional.field,name:academy_base.professional_field_22 model:academy.professional.sector,name:academy_base.professional_sector_2204
 msgid "Physics"
 msgstr "Física"
 
@@ -5454,10 +5342,8 @@ msgid "Primary teacher (lowest sequence)."
 msgstr "Docente principal (secuencia más baja)"
 
 #. module: academy_base
-#: model:ir.model.fields,help:academy_base.field_academy_training_action__comment
-#: model:ir.model.fields,help:academy_base.field_academy_training_action_line__comment
-#: model:ir.model.fields,help:academy_base.field_academy_training_program__comment
-#: model:ir.model.fields,help:academy_base.field_academy_training_program_line__comment
+#: model:ir.model.fields,help:academy_base.field_academy_training_action__comment model:ir.model.fields,help:academy_base.field_academy_training_action_line__comment
+#: model:ir.model.fields,help:academy_base.field_academy_training_program__comment model:ir.model.fields,help:academy_base.field_academy_training_program_line__comment
 msgid "Private notes for staff only. Not shown to students, not exported, and excluded from printed reports."
 msgstr "Notas privadas solo para el personal. No se muestran a estudiantes, no se exportan ni se incluyen en informes impresos."
 
@@ -5543,8 +5429,7 @@ msgstr "Sectores profesionales"
 #: model:ir.model.fields,field_description:academy_base.field_academy_professional_family__professional_area_ids
 #: model:ir.model.fields,field_description:academy_base.field_academy_professional_qualification__professional_area_id
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_program__professional_area_id
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_search
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_search
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_search model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_search
 msgid "Professional area"
 msgstr "Área profesional"
 
@@ -5573,8 +5458,7 @@ msgstr "Categoría profesional"
 
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action__professional_category_id
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_search
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_search
 msgid "Professional category"
 msgstr "Categoría profesional"
 
@@ -5594,8 +5478,7 @@ msgstr "Familia profesional"
 #: model:ir.model.fields,field_description:academy_base.field_academy_professional_area__professional_family_id
 #: model:ir.model.fields,field_description:academy_base.field_academy_professional_qualification__professional_family_id
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_program__professional_family_id
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_search
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_search
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_search model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_search
 msgid "Professional family"
 msgstr "Familia profesional"
 
@@ -5744,8 +5627,8 @@ msgid ""
 "            qualification, usually concluding with the submission and defense of a substantive\n"
 "            dissertation of publishable quality based on original research"
 msgstr ""
-"Programas diseñados principalmente para conducir a una calificación de investigación avanzada, generalmente concluyendo con la presentación "
-"y defensa de una disertación sustantiva de calidad publicable basada en una investigación original"
+"Programas diseñados principalmente para conducir a una calificación de investigación avanzada, generalmente concluyendo con la presentación y defensa de una "
+"disertación sustantiva de calidad publicable basada en una investigación original"
 
 #. module: academy_base
 #: model:academy.educational.attainment,description:academy_base.academy_educational_attainment_level_isced_2011_7
@@ -5755,8 +5638,8 @@ msgid ""
 "            professional knowledge, skills and competencies leading to a second tertiary degree or\n"
 "            equivalent qualification"
 msgstr ""
-"Programas diseñados para proporcionar conocimientos, habilidades y competencias académicas y / o profesionales avanzados que conduzcan a un "
-"segundo título terciario o título equivalente"
+"Programas diseñados para proporcionar conocimientos, habilidades y competencias académicas y / o profesionales avanzados que conduzcan a un segundo título terciario "
+"o título equivalente"
 
 #. module: academy_base
 #: model:academy.educational.attainment,description:academy_base.academy_educational_attainment_level_isced_2011_6
@@ -5766,8 +5649,8 @@ msgid ""
 "            professional knowledge, skills and competencies leading to a first tertiary degree or\n"
 "            equivalent qualification"
 msgstr ""
-"Programas diseñados para proporcionar conocimientos académicos y / o profesionales intermedios, habilidades y competencias que conducen a un "
-"primer título terciario o calificación equivalente"
+"Programas diseñados para proporcionar conocimientos académicos y / o profesionales intermedios, habilidades y competencias que conducen a un primer título terciario "
+"o calificación equivalente"
 
 #. module: academy_base
 #: model:academy.educational.attainment,description:academy_base.academy_educational_attainment_level_isced_2011_4
@@ -5777,8 +5660,8 @@ msgid ""
 "            education and prepare for labour market entry and/or tertiary education. The content is\n"
 "            broader than secondary but not as complex as tertiary education"
 msgstr ""
-"Programas que brindan experiencias de aprendizaje que se basan en la educación secundaria y preparan para el ingreso al mercado laboral y / "
-"o la educación terciaria. El contenido es más amplio que el secundario pero no tan complejo como el terciario"
+"Programas que brindan experiencias de aprendizaje que se basan en la educación secundaria y preparan para el ingreso al mercado laboral y / o la educación "
+"terciaria. El contenido es más amplio que el secundario pero no tan complejo como el terciario"
 
 #. module: academy_base
 #: model:academy.educational.attainment,description:academy_base.academy_educational_attainment_level_isced_2011_1
@@ -5788,12 +5671,11 @@ msgid ""
 "            skills in reading, writing and mathematics and to establish a solid foundation for\n"
 "            learning"
 msgstr ""
-"Programas típicamente diseñados para proporcionar a los estudiantes habilidades fundamentales en lectura, escritura y matemáticas y para "
-"establecer una base sólida para el aprendizaje"
+"Programas típicamente diseñados para proporcionar a los estudiantes habilidades fundamentales en lectura, escritura y matemáticas y para establecer una base sólida "
+"para el aprendizaje"
 
 #. module: academy_base
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_framework_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_framework_tree
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_framework_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_framework_tree
 msgid "Programs"
 msgstr "Programas"
 
@@ -5834,14 +5716,12 @@ msgid "Psychopharmacology"
 msgstr "Psicofarmacología"
 
 #. module: academy_base
-#: model:academy.application.scope,name:academy_base.academy_application_scope_public
-#: model:academy.professional.sector,name:academy_base.professional_sector_5909
+#: model:academy.application.scope,name:academy_base.academy_application_scope_public model:academy.professional.sector,name:academy_base.professional_sector_5909
 msgid "Public administration"
 msgstr "Administración Pública"
 
 #. module: academy_base
-#: model:ir.model.fields,help:academy_base.field_academy_training_action__program_code
-#: model:ir.model.fields,help:academy_base.field_academy_training_program__code
+#: model:ir.model.fields,help:academy_base.field_academy_training_action__program_code model:ir.model.fields,help:academy_base.field_academy_training_program__code
 msgid "Public code or short identifier for the program"
 msgstr "Código público o identificador corto del programa"
 
@@ -5861,8 +5741,7 @@ msgid "Purchase"
 msgstr "Compra"
 
 #. module: academy_base
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_support_staff_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_support_staff_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_form
 msgid "Qualification"
 msgstr "Cualificación"
 
@@ -5874,8 +5753,7 @@ msgstr "Nivel de cualificación"
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_professional_qualification__qualification_level_id
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_program__qualification_level_id
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_search
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_search
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_search model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_search
 msgid "Qualification level"
 msgstr "Nivel de cualificación"
 
@@ -5897,8 +5775,7 @@ msgid "Qualification:"
 msgstr "Cualificación:"
 
 #. module: academy_base
-#: model:ir.ui.menu,name:academy_base.menu_academy_advanced_quick_edit
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_actions_quick_edit_tree
+#: model:ir.ui.menu,name:academy_base.menu_academy_advanced_quick_edit model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_actions_quick_edit_tree
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_activites_quick_edit_tree
 msgid "Quick edit"
 msgstr "Edición rápida"
@@ -6007,8 +5884,7 @@ msgid "Require email for partners"
 msgstr "Requerir correo electrónico para las personas asociadas"
 
 #. module: academy_base
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_line_search
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_line_search
 msgid "Required"
 msgstr "Requerido"
 
@@ -6092,8 +5968,8 @@ msgid ""
 "            education and/or providing skills relevant to employment. Usually with an increased\n"
 "            range of subject options and streams"
 msgstr ""
-"Segunda / última etapa de la educación secundaria preparándose para la educación terciaria y / o proporcionando habilidades relevantes para "
-"el empleo. Por lo general, con una mayor variedad de opciones de temas y transmisiones"
+"Segunda / última etapa de la educación secundaria preparándose para la educación terciaria y / o proporcionando habilidades relevantes para el empleo. Por lo "
+"general, con una mayor variedad de opciones de temas y transmisiones"
 
 #. module: academy_base
 #: model:academy.application.scope,name:academy_base.academy_application_scope_sectoral
@@ -6106,8 +5982,7 @@ msgid "Sectorial economics"
 msgstr "Economía sectorial"
 
 #. module: academy_base
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_field_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_field_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_form
 msgid "Sectors"
 msgstr "Sectores"
 
@@ -6160,10 +6035,8 @@ msgstr "Verdadero si se completa el período"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_enrolment_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_framework_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_module_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_framework_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_module_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_form
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_line_form
 msgid "Setup"
 msgstr "Configuración"
@@ -6184,8 +6057,8 @@ msgid ""
 "            practically-based, occupationally-specific and prepare for labour market entry. These\n"
 "            programmes may also provide a pathway to other tertiary programmes"
 msgstr ""
-"Primeros programas terciarios cortos que suelen tener una base práctica, ocupaciones específicas y preparan para la entrada al mercado "
-"laboral. Estos programas también pueden proporcionar un camino hacia otros programas terciarios"
+"Primeros programas terciarios cortos que suelen tener una base práctica, ocupaciones específicas y preparan para la entrada al mercado laboral. Estos programas "
+"también pueden proporcionar un camino hacia otros programas terciarios"
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_framework__legal_code
@@ -6201,9 +6074,9 @@ msgstr "Código corto, aproximadamente único, utilizado en URL o filtros"
 #: model:academy.educational.attainment,name:academy_base.academy_educational_attainment_level_isced_2011_5
 #: model:academy.qualification.level,name:academy_base.academy_qualification_level_level_isced_2011_5
 msgid "Short-cycle tertiary education"
-msgstr "Educación terciaria de ciclo corto"
-"Enseñanzas de formación profesional, artes plásticas y diseño y deportivas de grado superior y equivalentes; títulos propios universitarios "
-"que precisan del título de bachiller, de duración igual o superior a 2 años"
+msgstr ""
+"Educación terciaria de ciclo cortoEnseñanzas de formación profesional, artes plásticas y diseño y deportivas de grado superior y equivalentes; títulos propios "
+"universitarios que precisan del título de bachiller, de duración igual o superior a 2 años"
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_action__enrolment_count
@@ -6222,19 +6095,15 @@ msgid "Show the number of training units in the training module"
 msgstr "Mostrar el número de unidades formativas para el módulo formativo"
 
 #. module: academy_base
-#: model:ir.model.fields,help:academy_base.field_academy_student__student_id
-#: model:ir.model.fields,help:academy_base.field_academy_support_staff__student_id
-#: model:ir.model.fields,help:academy_base.field_academy_teacher__student_id
-#: model:ir.model.fields,help:academy_base.field_academy_technical_staff__student_id
+#: model:ir.model.fields,help:academy_base.field_academy_student__student_id model:ir.model.fields,help:academy_base.field_academy_support_staff__student_id
+#: model:ir.model.fields,help:academy_base.field_academy_teacher__student_id model:ir.model.fields,help:academy_base.field_academy_technical_staff__student_id
 #: model:ir.model.fields,help:academy_base.field_res_partner__student_id model:ir.model.fields,help:academy_base.field_res_users__student_id
 msgid "Show the single related student"
 msgstr "Mostrar estudiante relacionado"
 
 #. module: academy_base
-#: model:ir.model.fields,help:academy_base.field_academy_student__teacher_id
-#: model:ir.model.fields,help:academy_base.field_academy_support_staff__teacher_id
-#: model:ir.model.fields,help:academy_base.field_academy_teacher__teacher_id
-#: model:ir.model.fields,help:academy_base.field_academy_technical_staff__teacher_id
+#: model:ir.model.fields,help:academy_base.field_academy_student__teacher_id model:ir.model.fields,help:academy_base.field_academy_support_staff__teacher_id
+#: model:ir.model.fields,help:academy_base.field_academy_teacher__teacher_id model:ir.model.fields,help:academy_base.field_academy_technical_staff__teacher_id
 #: model:ir.model.fields,help:academy_base.field_res_partner__teacher_id model:ir.model.fields,help:academy_base.field_res_users__teacher_id
 msgid "Show the single related teacher"
 msgstr "Mostrar el único docente relacionado"
@@ -6249,8 +6118,7 @@ msgstr "Muestra el número de áreas profesionales que pertenecen a esta familia
 #: model:ir.model.fields,field_description:academy_base.field_academy_support_staff__signup_code
 #: model:ir.model.fields,field_description:academy_base.field_academy_teacher__signup_code
 #: model:ir.model.fields,field_description:academy_base.field_academy_technical_staff__signup_code
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_support_staff_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_support_staff_tree
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_support_staff_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_support_staff_tree
 msgid "Sign-up code"
 msgstr "Código de inscripción"
 
@@ -6432,10 +6300,8 @@ msgid "Statistics"
 msgstr "Estadística"
 
 #. module: academy_base
-#: model:ir.model.fields,help:academy_base.field_academy_student__activity_state
-#: model:ir.model.fields,help:academy_base.field_academy_support_staff__activity_state
-#: model:ir.model.fields,help:academy_base.field_academy_teacher__activity_state
-#: model:ir.model.fields,help:academy_base.field_academy_technical_staff__activity_state
+#: model:ir.model.fields,help:academy_base.field_academy_student__activity_state model:ir.model.fields,help:academy_base.field_academy_support_staff__activity_state
+#: model:ir.model.fields,help:academy_base.field_academy_teacher__activity_state model:ir.model.fields,help:academy_base.field_academy_technical_staff__activity_state
 #: model:ir.model.fields,help:academy_base.field_academy_training_action__activity_state
 #: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment__activity_state
 #: model:ir.model.fields,help:academy_base.field_academy_training_action_line__activity_state
@@ -6490,10 +6356,8 @@ msgstr "Calle 2"
 #: model:ir.model.fields,field_description:academy_base.field_academy_technical_staff__student_id
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment__student_id
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action_student_link__student_id
-#: model:ir.model.fields,field_description:academy_base.field_res_partner__student_id
-#: model:ir.model.fields,field_description:academy_base.field_res_users__student_id
-#: model:res.partner.category,name:academy_base.res_partner_category_student
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_enrolment_form
+#: model:ir.model.fields,field_description:academy_base.field_res_partner__student_id model:ir.model.fields,field_description:academy_base.field_res_users__student_id
+#: model:res.partner.category,name:academy_base.res_partner_category_student model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_enrolment_form
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_enrolment_search
 msgid "Student"
 msgstr "Estudiante"
@@ -6528,10 +6392,9 @@ msgstr "Elegir estudiante matriculado"
 
 #. module: academy_base
 #. odoo-python
-#: code:addons/academy_base/models/academy_training_action_enrolment.py:0
-#: model:ir.actions.act_window,name:academy_base.action_student_act_window
-#: model:ir.model.fields,field_description:academy_base.field_academy_training_action__student_ids
-#: model:ir.ui.menu,name:academy_base.menu_student model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form
+#: code:addons/academy_base/models/academy_training_action_enrolment.py:0 model:ir.actions.act_window,name:academy_base.action_student_act_window
+#: model:ir.model.fields,field_description:academy_base.field_academy_training_action__student_ids model:ir.ui.menu,name:academy_base.menu_student
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form
 msgid "Students"
 msgstr "Estudiantes"
 
@@ -6562,10 +6425,8 @@ msgid "Student’s email address"
 msgstr "Dirección de correo electrónico del estudiante"
 
 #. module: academy_base
-#: model:ir.model.fields,help:academy_base.field_academy_student__attainment_id
-#: model:ir.model.fields,help:academy_base.field_academy_support_staff__attainment_id
-#: model:ir.model.fields,help:academy_base.field_academy_teacher__attainment_id
-#: model:ir.model.fields,help:academy_base.field_academy_technical_staff__attainment_id
+#: model:ir.model.fields,help:academy_base.field_academy_student__attainment_id model:ir.model.fields,help:academy_base.field_academy_support_staff__attainment_id
+#: model:ir.model.fields,help:academy_base.field_academy_teacher__attainment_id model:ir.model.fields,help:academy_base.field_academy_technical_staff__attainment_id
 msgid "Student’s highest educational attainment"
 msgstr "Elegir el nivel educativo relacionado"
 
@@ -6604,10 +6465,9 @@ msgstr "La suma de las «Plazas» de los grupos supera las «Plazas» de la acci
 
 #. module: academy_base
 #: model:ir.actions.act_window,name:academy_base.action_support_staff_act_window model:ir.ui.menu,name:academy_base.menu_support_staff
-#: model:res.partner.category,name:academy_base.res_partner_category_support_staff
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_support_staff_form
+#: model:res.partner.category,name:academy_base.res_partner_category_support_staff model_terms:ir.ui.view,arch_db:academy_base.view_academy_support_staff_form
 msgid "Support staff"
-msgstr "Personal de Administración y Servicios (PAS)"
+msgstr "PAS"
 
 #. module: academy_base
 #: model:academy.professional.sector,name:academy_base.professional_sector_3213
@@ -6690,9 +6550,8 @@ msgstr "Etiqueta del NIF"
 #: model:ir.model.fields,field_description:academy_base.field_academy_teacher__teacher_id
 #: model:ir.model.fields,field_description:academy_base.field_academy_technical_staff__teacher_id
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_teacher_assignment__teacher_id
-#: model:ir.model.fields,field_description:academy_base.field_res_partner__teacher_id
-#: model:ir.model.fields,field_description:academy_base.field_res_users__teacher_id model:res.groups,name:academy_base.academy_group_teacher
-#: model:res.partner.category,name:academy_base.res_partner_category_teacher
+#: model:ir.model.fields,field_description:academy_base.field_res_partner__teacher_id model:ir.model.fields,field_description:academy_base.field_res_users__teacher_id
+#: model:res.groups,name:academy_base.academy_group_teacher model:res.partner.category,name:academy_base.res_partner_category_teacher
 msgid "Teacher"
 msgstr "Docente"
 
@@ -6720,8 +6579,7 @@ msgstr "Preparación y trabajo de los docentes"
 
 #. module: academy_base
 #: model:ir.actions.act_window,name:academy_base.action_teacher_act_window model:ir.ui.menu,name:academy_base.menu_teacher
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_line_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_line_form
 msgid "Teachers"
 msgstr "Docentes"
 
@@ -6737,8 +6595,7 @@ msgid "Teaching"
 msgstr "Formación"
 
 #. module: academy_base
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_kanban
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_module_kanban
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_kanban model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_module_kanban
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_module_module_kanban
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_kanban
 msgid "Teaching hours"
@@ -6791,25 +6648,20 @@ msgid "Textile technology"
 msgstr "Tecnología textil"
 
 #. module: academy_base
-#: model:ir.model.fields,help:academy_base.field_academy_student__country_code
-#: model:ir.model.fields,help:academy_base.field_academy_support_staff__country_code
-#: model:ir.model.fields,help:academy_base.field_academy_teacher__country_code
-#: model:ir.model.fields,help:academy_base.field_academy_technical_staff__country_code
+#: model:ir.model.fields,help:academy_base.field_academy_student__country_code model:ir.model.fields,help:academy_base.field_academy_support_staff__country_code
+#: model:ir.model.fields,help:academy_base.field_academy_teacher__country_code model:ir.model.fields,help:academy_base.field_academy_technical_staff__country_code
 msgid ""
 "The ISO country code in two chars. \n"
 "You can use this field for quick search."
 msgstr ""
+"El código de país ISO en dos caracteres.\n"
+"Se puede utilizar este campo para una búsqueda rápida."
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_student__vat model:ir.model.fields,help:academy_base.field_academy_support_staff__vat
-#: model:ir.model.fields,help:academy_base.field_academy_teacher__vat
-#: model:ir.model.fields,help:academy_base.field_academy_technical_staff__vat
-msgid ""
-"The Tax Identification Number. Values here will be validated based on the country format. You can use '/' to indicate that the partner is "
-"not subject to tax."
-msgstr ""
-"El número de identificación fiscal. Complete esto si el contacto está sujeto a impuestos gubernamentales. Usado en algunas declaraciones "
-"legales."
+#: model:ir.model.fields,help:academy_base.field_academy_teacher__vat model:ir.model.fields,help:academy_base.field_academy_technical_staff__vat
+msgid "The Tax Identification Number. Values here will be validated based on the country format. You can use '/' to indicate that the partner is not subject to tax."
+msgstr "El número de identificación fiscal. Complete esto si el contacto está sujeto a impuestos gubernamentales. Usado en algunas declaraciones legales."
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_action__company_id
@@ -6817,10 +6669,8 @@ msgid "The company this record belongs to"
 msgstr "La empresa a la que pertenece este registro"
 
 #. module: academy_base
-#: model:ir.model.fields,help:academy_base.field_academy_student__user_id
-#: model:ir.model.fields,help:academy_base.field_academy_support_staff__user_id
-#: model:ir.model.fields,help:academy_base.field_academy_teacher__user_id
-#: model:ir.model.fields,help:academy_base.field_academy_technical_staff__user_id
+#: model:ir.model.fields,help:academy_base.field_academy_student__user_id model:ir.model.fields,help:academy_base.field_academy_support_staff__user_id
+#: model:ir.model.fields,help:academy_base.field_academy_teacher__user_id model:ir.model.fields,help:academy_base.field_academy_technical_staff__user_id
 msgid "The internal user in charge of this contact."
 msgstr "El usuario interno a cargo de este contacto."
 
@@ -6835,7 +6685,7 @@ msgstr "El número de usuarios debe ser mayor o igual que cero"
 #: model:ir.model.fields,help:academy_base.field_academy_teacher__company_registry
 #: model:ir.model.fields,help:academy_base.field_academy_technical_staff__company_registry
 msgid "The registry number of the company. Use it if it is different from the Tax ID. It must be unique across all partners of a same country"
-msgstr ""
+msgstr "El número de registro de la empresa. Utilizarlo si es diferente del NIF. Debe ser único para todas las personas asociadas de un mismo país"
 
 #. module: academy_base
 #: model:academy.professional.sector,name:academy_base.professional_sector_2212
@@ -7013,8 +6863,8 @@ msgstr "Termodinámica"
 #: model:ir.model.fields,help:academy_base.field_academy_technical_staff__email_normalized
 msgid "This field is used to search on email address as the primary email field can contain more than strictly an email address."
 msgstr ""
-"Este campo se usa para buscar en la dirección de correo electrónico, ya que el campo de correo electrónico principal puede contener más de "
-"una dirección de correo electrónico."
+"Este campo se usa para buscar en la dirección de correo electrónico, ya que el campo de correo electrónico principal puede contener más de una dirección de correo "
+"electrónico."
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_training_modules_qweb
@@ -7024,6 +6874,10 @@ msgid ""
 "          duration. When applicable, the training units or formative blocks\n"
 "          associated with a module are also listed below it."
 msgstr ""
+"Esta sección detalla los módulos formativos que componen el programa.\n"
+"          Cada módulo incluye su identificación, persona responsable y\n"
+"          duración. Cuando corresponda, las unidades formativas o bloques formativos\n"
+"          asociados a un módulo se enumeran también debajo de este."
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_components_qweb
@@ -7032,6 +6886,9 @@ msgid ""
 "          training program. Each component corresponds to a specific\n"
 "          learning unit or module within the overall curriculum."
 msgstr ""
+"Esta sección enumera las acciones formativas actualmente asociadas con\n"
+"          el programa. Cada acción incluye su código, título,\n"
+"          intervalo programado, modalidad de impartición, tutor asignado y estadísticas relacionadas."
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_training_actions_qweb
@@ -7040,6 +6897,9 @@ msgid ""
 "          the program. Each action includes its code, title, scheduled\n"
 "          interval, delivery mode, assigned tutor, and related statistics."
 msgstr ""
+"Esta sección enumera las acciones formativas actualmente asociadas con\n"
+"          el programa. Cada acción incluye su código, título,\n"
+"          intervalo programado, modalidad de impartición, tutor asignado y estadísticas relacionadas."
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_general_qweb
@@ -7048,10 +6908,12 @@ msgid ""
 "          its official identification, responsible person, and total duration.\n"
 "          These details define the framework and coordination of the program."
 msgstr ""
+"Esta sección ofrece una visión general del programa de formación, que incluye\n"
+"          su identificación oficial, persona responsable y duración total.\n"
+"          Estos detalles definen el marco y la coordinación del programa."
 
 #. module: academy_base
-#: model:ir.model.fields,field_description:academy_base.field_academy_student__tz
-#: model:ir.model.fields,field_description:academy_base.field_academy_support_staff__tz
+#: model:ir.model.fields,field_description:academy_base.field_academy_student__tz model:ir.model.fields,field_description:academy_base.field_academy_support_staff__tz
 #: model:ir.model.fields,field_description:academy_base.field_academy_teacher__tz
 #: model:ir.model.fields,field_description:academy_base.field_academy_technical_staff__tz
 msgid "Timezone"
@@ -7084,8 +6946,7 @@ msgid "Topology"
 msgstr "Topología"
 
 #. module: academy_base
-#: model:ir.model.fields,help:academy_base.field_academy_training_action__hours
-#: model:ir.model.fields,help:academy_base.field_academy_training_program__hours
+#: model:ir.model.fields,help:academy_base.field_academy_training_action__hours model:ir.model.fields,help:academy_base.field_academy_training_program__hours
 msgid "Total hours computed from linked modules"
 msgstr "Total de horas calculadas a partir de los módulos vinculados"
 
@@ -7105,8 +6966,7 @@ msgid "Toxicology"
 msgstr "Toxicología"
 
 #. module: academy_base
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_line_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_line_form
 msgid "Training"
 msgstr "Formación"
 
@@ -7172,8 +7032,7 @@ msgid "Training action in which the student is enrolled"
 msgstr "Elegir la acción formativa en la que se matriculará al estudiante"
 
 #. module: academy_base
-#: model:ir.actions.act_window,name:academy_base.action_training_action_line_act_window
-#: model:ir.model,name:academy_base.model_academy_training_action_line
+#: model:ir.actions.act_window,name:academy_base.action_training_action_line_act_window model:ir.model,name:academy_base.model_academy_training_action_line
 msgid "Training action line"
 msgstr "Materia de la acción formativa"
 
@@ -7201,9 +7060,8 @@ msgstr "Acción formativa sin imagen"
 #: model:ir.actions.act_window,name:academy_base.action_training_action_act_window
 #: model:ir.actions.act_window,name:academy_base.action_training_actions_quick_edit_act_window
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action_synchronize_wizard__training_action_ids
-#: model:ir.model.fields,field_description:academy_base.field_academy_training_program__training_action_ids
-#: model:ir.ui.menu,name:academy_base.menu_training_action model:ir.ui.menu,name:academy_base.menu_training_actions_quick_edit
-#: model_terms:ir.ui.view,arch_db:academy_base.res_config_settings_view_form_academy_base
+#: model:ir.model.fields,field_description:academy_base.field_academy_training_program__training_action_ids model:ir.ui.menu,name:academy_base.menu_training_action
+#: model:ir.ui.menu,name:academy_base.menu_training_actions_quick_edit model_terms:ir.ui.view,arch_db:academy_base.res_config_settings_view_form_academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_kanban
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_modules_qweb
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_qweb
@@ -7228,8 +7086,7 @@ msgid "Training actions whose program will be synchronized"
 msgstr "Acciones formativas cuyo programa se sincronizará"
 
 #. module: academy_base
-#: model:ir.actions.act_window,name:academy_base.action_academy_training_program_act_window
-#: model:ir.ui.menu,name:academy_base.menu_academy_training_program
+#: model:ir.actions.act_window,name:academy_base.action_academy_training_program_act_window model:ir.ui.menu,name:academy_base.menu_academy_training_program
 msgid "Training activities"
 msgstr "Programas formativos"
 
@@ -7278,8 +7135,7 @@ msgid "Training framework to which this program belongs"
 msgstr "Marco formativo al que pertenece este programa"
 
 #. module: academy_base
-#: model:ir.actions.act_window,name:academy_base.action_academy_training_framework_act_window
-#: model:ir.ui.menu,name:academy_base.menu_training_frameworks
+#: model:ir.actions.act_window,name:academy_base.action_academy_training_framework_act_window model:ir.ui.menu,name:academy_base.menu_training_frameworks
 msgid "Training frameworks"
 msgstr "Marcos formativos"
 
@@ -7297,8 +7153,8 @@ msgid "Training group"
 msgstr "Grupo formativo"
 
 #. module: academy_base
-#: model:ir.model.fields,field_description:academy_base.field_academy_training_action__child_ids
-#: model:ir.ui.menu,name:academy_base.menu_training_group model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_kanban
+#: model:ir.model.fields,field_description:academy_base.field_academy_training_action__child_ids model:ir.ui.menu,name:academy_base.menu_training_group
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_kanban
 msgid "Training groups"
 msgstr "Grupos formativos"
 
@@ -7332,8 +7188,7 @@ msgstr "Modalidad de formación"
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action_line__training_module_id
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_module__training_module_id
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_program_line__training_module_id
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_module_kanban
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_module_unit_kanban
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_module_kanban model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_module_unit_kanban
 msgid "Training module"
 msgstr "Módulo formativo"
 
@@ -7358,8 +7213,7 @@ msgstr "Módulos formativos"
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment__training_program_id
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action_line__training_program_id
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_program_line__training_program_id
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_search
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_framework_kanban
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_search model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_framework_kanban
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_kanban
 msgid "Training program"
 msgstr "Actividad formativa"
@@ -7389,7 +7243,7 @@ msgstr "Programa formativo de la materia original (solo lectura)."
 #: model_terms:ir.actions.report,help:academy_base.action_report_academy_training_program
 #: model_terms:ir.actions.report,help:academy_base.action_report_academy_training_program_modules
 msgid "Training program report"
-msgstr ""
+msgstr "Informe del programa de formación"
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_program_line__training_program_id
@@ -7407,8 +7261,7 @@ msgid "Training program with modules report"
 msgstr "Programa formativo al que pertenece esta materia"
 
 #. module: academy_base
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_framework_kanban
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_kanban
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_framework_kanban model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_kanban
 msgid "Training program without image"
 msgstr "Programa formativo sin imagen"
 
@@ -7488,8 +7341,7 @@ msgstr "Tecnología de sistemas de transportes"
 #: model:ir.model.fields,help:academy_base.field_academy_student__has_active_users
 #: model:ir.model.fields,help:academy_base.field_academy_support_staff__has_active_users
 #: model:ir.model.fields,help:academy_base.field_academy_teacher__has_active_users
-#: model:ir.model.fields,help:academy_base.field_academy_technical_staff__has_active_users
-#: model:ir.model.fields,help:academy_base.field_res_partner__has_active_users
+#: model:ir.model.fields,help:academy_base.field_academy_technical_staff__has_active_users model:ir.model.fields,help:academy_base.field_res_partner__has_active_users
 #: model:ir.model.fields,help:academy_base.field_res_users__has_active_users
 msgid "True if this partner has any active linked users."
 msgstr "Verdadero si esta persona asociada tiene usuarios vinculados activos."
@@ -7523,10 +7375,8 @@ msgid "Unemployed"
 msgstr "Desempleados"
 
 #. module: academy_base
-#: model:ir.model.fields,help:academy_base.field_academy_student__signup_code
-#: model:ir.model.fields,help:academy_base.field_academy_support_staff__signup_code
-#: model:ir.model.fields,help:academy_base.field_academy_teacher__signup_code
-#: model:ir.model.fields,help:academy_base.field_academy_technical_staff__signup_code
+#: model:ir.model.fields,help:academy_base.field_academy_student__signup_code model:ir.model.fields,help:academy_base.field_academy_support_staff__signup_code
+#: model:ir.model.fields,help:academy_base.field_academy_teacher__signup_code model:ir.model.fields,help:academy_base.field_academy_technical_staff__signup_code
 msgid "Unique code assigned when the student signs up at the centre."
 msgstr "Código único asignado cuando el estudiante se inscribe en el centro."
 
@@ -7541,10 +7391,8 @@ msgid "Unit operations technology"
 msgstr "Procesos tecnológicos"
 
 #. module: academy_base
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_module_module_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_module_module_tree
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_module_module_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_module_module_tree model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_form
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_training_modules_qweb
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_tree
 msgid "Units"
@@ -7567,6 +7415,8 @@ msgid ""
 "University-level or specialization offer linked to VET\n"
 "      pathways."
 msgstr ""
+"Oferta de nivel universitario o de especialización vinculada a las\n"
+"         vías de Formación Profesional."
 
 #. module: academy_base
 #. odoo-python
@@ -7584,7 +7434,7 @@ msgstr "Datos desconocidos para el parámetro de destino"
 #. odoo-python
 #: code:addons/academy_base/models/academy_training_action_enrolment.py:0
 msgid "Unsupported domain leaf (\"finalized\", \"{}\", \"{}\")"
-msgstr ""
+msgstr "Dominio hoja no admitido (\"finalizado\", \"{}\", \"{}\")"
 
 #. module: academy_base
 #. odoo-python
@@ -7699,10 +7549,8 @@ msgid "Urban Planning"
 msgstr "Planificación regional y urbana"
 
 #. module: academy_base
-#: model:ir.model.fields,help:academy_base.field_academy_student__barcode
-#: model:ir.model.fields,help:academy_base.field_academy_support_staff__barcode
-#: model:ir.model.fields,help:academy_base.field_academy_teacher__barcode
-#: model:ir.model.fields,help:academy_base.field_academy_technical_staff__barcode
+#: model:ir.model.fields,help:academy_base.field_academy_student__barcode model:ir.model.fields,help:academy_base.field_academy_support_staff__barcode
+#: model:ir.model.fields,help:academy_base.field_academy_teacher__barcode model:ir.model.fields,help:academy_base.field_academy_technical_staff__barcode
 msgid "Use a barcode to identify this contact."
 msgstr "Utilizar un código de barras para identificar este contacto."
 
@@ -7749,8 +7597,7 @@ msgstr "Usuarios que solo pueden leer el catálogo base y las acciones de capaci
 msgid ""
 "Users who can read and manage full catalog, create/edit training\n"
 "            actions and assign to them teachers or consultants"
-msgstr ""
-"Usuarios que pueden leer y administrar el catálogo completo, crear/editar acciones de capacitación y asignarles docentes o consultores"
+msgstr "Usuarios que pueden leer y administrar el catálogo completo, crear/editar acciones de capacitación y asignarles docentes o consultores"
 
 #. module: academy_base
 #: model:res.groups,comment:academy_base.academy_group_teacher
@@ -7758,6 +7605,8 @@ msgid ""
 "Users who can read base catalog, manage assigned training actions and\n"
 "            create/edit their own resources"
 msgstr ""
+"Personas usuarias que pueden leer el catálogo base, gestionar las acciones formativas asignadas y\n"
+"          crear o editar sus propios recursos"
 
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment__vat
@@ -7798,12 +7647,12 @@ msgstr "Ver y editar las áreas de conocimiento."
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.res_config_settings_view_form_academy_base
 msgid "View and edit maintenance tasks"
-msgstr "Ver y editar las tareas de mantenimiento."
+msgstr "Ver y editar las tareas de mantenimiento"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.res_config_settings_view_form_academy_base
 msgid "View and edit professional areas"
-msgstr "Ver y editar las áreas profesionales."
+msgstr "Ver y editar las áreas profesionales"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.res_config_settings_view_form_academy_base
@@ -7813,12 +7662,12 @@ msgstr "Ver y editar las categorías profesionales."
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.res_config_settings_view_form_academy_base
 msgid "View and edit professional families"
-msgstr "Ver y editar las familias profesionales."
+msgstr "Ver y editar las familias profesionales"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.res_config_settings_view_form_academy_base
 msgid "View and edit professional fields"
-msgstr "Ver y editar los campos profesionales."
+msgstr "Ver y editar los campos profesionales"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.res_config_settings_view_form_academy_base
@@ -7828,7 +7677,7 @@ msgstr "Ver y editar las cualificaciones profesionales."
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.res_config_settings_view_form_academy_base
 msgid "View and edit professional sectors"
-msgstr "Ver y editar los sectores profesionales."
+msgstr "Ver y editar los sectores profesionales"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.res_config_settings_view_form_academy_base
@@ -7848,23 +7697,22 @@ msgstr "Ver y editar las modalidades formativas."
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.res_config_settings_view_form_academy_base
 msgid "View and edit training program lines"
-msgstr "Ver y editar las materias del programa formativo."
+msgstr "Ver y editar las materias del programa formativo"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.res_config_settings_view_form_academy_base
 msgid "View and edit training units"
-msgstr "Ver y editar las unidades formativas."
+msgstr "Ver y editar las unidades formativas"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form
 msgid "View detailed curriculum"
-msgstr "Ver el plan de estudios detallado."
+msgstr "Ver el plan de estudios detallado"
 
 #. module: academy_base
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_module_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_module_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_form
 msgid "View detailed program"
-msgstr "Ver el programa detallado."
+msgstr "Ver el programa detallado"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form
@@ -7877,10 +7725,9 @@ msgid "View student enrolments"
 msgstr "Ver matrículas de estudiantes"
 
 #. module: academy_base
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_line_form
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_line_form
 msgid "View teacher assignments"
-msgstr "Ver las asignaciones de docentes."
+msgstr "Ver las asignaciones de docentes"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form
@@ -7895,7 +7742,7 @@ msgstr "View training action lines groups"
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_group_form
 msgid "View training group enrolments"
-msgstr "Ver las inscripciones del grupo formativo."
+msgstr "Ver las inscripciones del grupo formativo"
 
 #. module: academy_base
 #: model:academy.professional.sector,name:academy_base.professional_sector_2420
@@ -7916,18 +7763,14 @@ msgid "Website Link"
 msgstr "Enlace a un sitio web"
 
 #. module: academy_base
-#: model:ir.model.fields,help:academy_base.field_academy_student__vat_required
-#: model:ir.model.fields,help:academy_base.field_academy_support_staff__vat_required
-#: model:ir.model.fields,help:academy_base.field_academy_teacher__vat_required
-#: model:ir.model.fields,help:academy_base.field_academy_technical_staff__vat_required
+#: model:ir.model.fields,help:academy_base.field_academy_student__vat_required model:ir.model.fields,help:academy_base.field_academy_support_staff__vat_required
+#: model:ir.model.fields,help:academy_base.field_academy_teacher__vat_required model:ir.model.fields,help:academy_base.field_academy_technical_staff__vat_required
 msgid "When enabled, a VAT number is mandatory for this record."
 msgstr "Cuando está activado, el número de NIF es obligatorio para este registro."
 
 #. module: academy_base
-#: model:ir.model.fields,help:academy_base.field_academy_student__email_required
-#: model:ir.model.fields,help:academy_base.field_academy_support_staff__email_required
-#: model:ir.model.fields,help:academy_base.field_academy_teacher__email_required
-#: model:ir.model.fields,help:academy_base.field_academy_technical_staff__email_required
+#: model:ir.model.fields,help:academy_base.field_academy_student__email_required model:ir.model.fields,help:academy_base.field_academy_support_staff__email_required
+#: model:ir.model.fields,help:academy_base.field_academy_teacher__email_required model:ir.model.fields,help:academy_base.field_academy_technical_staff__email_required
 msgid "When enabled, an email address is mandatory for this record."
 msgstr "Cuando está activado, la dirección de correo electrónico es obligatoria para este registro."
 
@@ -7979,6 +7822,9 @@ msgid ""
 "\n"
 "Remove the enrolments from the parent action first."
 msgstr ""
+"No se puede crear ni asignar un grupo formativo bajo una acción que ya contiene inscripciones de estudiantes.\n"
+"\n"
+"En primer lugar, deben eliminarse las inscripciones de la acción superior."
 
 #. module: academy_base
 #. odoo-python
@@ -7988,6 +7834,9 @@ msgid ""
 "\n"
 "Enrol them in one of the existing groups instead."
 msgstr ""
+"No se pueden inscribir estudiantes en una acción formativa cuyo elemento superior ya contiene grupos formativos.\n"
+"\n"
+"En su lugar, la inscripción debe hacerse en alguno de los grupos formativos existentes."
 
 #. module: academy_base
 #. odoo-python
@@ -8457,7 +8306,7 @@ msgstr ""
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_support_staff_form
 msgid "e.g. Sales Director"
-msgstr ""
+msgstr "ej. Director/a de Ventas"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_support_staff_form
@@ -8467,7 +8316,7 @@ msgstr ""
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action__hours
 msgid "hours"
-msgstr ""
+msgstr "horas"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_support_staff_kanban
