@@ -115,7 +115,7 @@
                     class="oe_field_professional_sector_ids" widget="many2many_tags"
                     string="Sectors"/>
                 </group>
-                <group string="Qualification">
+                <group string="Attainment">
                   <field name="attainment_id" class="oe_field_attainment_id" string="Required"/>
                   <field name="hours" class="oe_field_hours" widget="float_time" />
                   <field name="qualification_level_id" class="oe_field_qualification_level_id"

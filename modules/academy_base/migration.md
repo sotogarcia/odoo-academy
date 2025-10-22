@@ -164,6 +164,7 @@ attrs=["']\{["'](readonly|invisible|required)["']: *(\[[^\]]+\])\}["']
   [ ] Modalidad en vistas kanban y list de training action
   [ ] La vista pivot de matrículas debe mostrarlas agrupadas por acción y no por alumno
 - [ ] Tareas NO docentes
+- [ ] sanitize_phone_number da error de límite de recursión excedido
 
 
 - [ ] El campo hours del módulo debe desaparecer

@@ -20,12 +20,12 @@ msgstr ""
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_action__available_until
 msgid "00:00 the day after, or indefinitely for open enrolments."
-msgstr "00:00 del día siguiente, o indefinidamente para matrículas abiertas."
+msgstr "00:00 del día siguiente, o indefinidamente para inscripciones abiertas."
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment__available_until
 msgid "00:00 the day after, or indefinity for open enrolments."
-msgstr "00:00 del día siguiente, o indefinidamente para matrículas abiertas."
+msgstr "00:00 del día siguiente, o indefinidamente para inscripciones abiertas."
 
 #. module: academy_base
 #: model:academy.qualification.level,level:academy_base.academy_qualification_level_es_3B
@@ -91,7 +91,7 @@ msgstr "Las fechas de inscripción están fuera del período de la acción forma
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_action__sequence
 msgid "<Enrolment> priority for new students"
-msgstr "Prioridad de <Matrícula> para el alumnado nuevo"
+msgstr "Prioridad de <Incripción> para el alumnado nuevo"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_framework_kanban
@@ -420,7 +420,7 @@ msgstr "Materias (acción)"
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment__action_line_ids
 msgid "Action lines linked to this enrolment"
-msgstr "Materias vinculadas a esta matrícula"
+msgstr "Materias vinculadas a esta inscripción"
 
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action__name
@@ -560,7 +560,7 @@ msgstr "Administración y gestión"
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment__enrolment_date
 msgid "Administrative date when the enrolment was recorded"
-msgstr "Fecha administrativa en la que se registró la matrícula"
+msgstr "Fecha administrativa en la que se registró la inscripción"
 
 #. module: academy_base
 #: model:academy.professional.sector,name:academy_base.professional_sector_6102
@@ -627,7 +627,7 @@ msgstr "Álgebra"
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_action__rollup_enrolment_ids
 msgid "All enrolments from this action and its direct groups."
-msgstr "Todas las matrículas de esta acción y sus grupos directos."
+msgstr "Todas las inscripciones de esta acción y sus grupos directos."
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_student__enrolment_ids
@@ -643,7 +643,7 @@ msgstr "Todos los correos electrónicos y documentos enviados a este contacto se
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_framework__is_modular
 msgid "Allows enrolment by module (modular delivery permitted)"
-msgstr "Permite la matrícula por módulos (se admite impartición modular)"
+msgstr "Permite la inscripción por módulos (se admite impartición modular)"
 
 #. module: academy_base
 #: model:ir.model.fields.selection,name:academy_base.selection__res_config_settings__partner_email_required__always
@@ -825,8 +825,9 @@ msgstr "Nº de de adjuntos"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_search
+#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_support_staff_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_form
 msgid "Attainment"
-msgstr "Grado de formación"
+msgstr "Nivel de estudios"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_general_qweb
@@ -1200,7 +1201,7 @@ msgstr "Clic para agregar nuevos logros educativos"
 #. module: academy_base
 #: model_terms:ir.actions.act_window,help:academy_base.action_training_action_enrolment_act_window
 msgid "Click to add new enrolments"
-msgstr "Clic para agregar una nueva matrícula"
+msgstr "Clic para agregar una nueva inscripción"
 
 #. module: academy_base
 #: model_terms:ir.actions.act_window,help:academy_base.action_knowledge_area_act_window
@@ -1764,12 +1765,12 @@ msgstr "Sociología cultural"
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_student__current_enrolment_ids
 msgid "Current enrolments"
-msgstr "Matrículas actuales"
+msgstr "Inscripciones actuales"
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_student__enrolment_str
 msgid "Current over total enrolments (e.g., “2 / 5”)"
-msgstr "Número de matrículas actuales sobre el total de matrículas del estudiante"
+msgstr "Número de inscripciones actuales sobre el total de inscripciones del estudiante"
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_action__owner_id
@@ -1820,7 +1821,7 @@ msgstr "Intervalo de fechas"
 #: model:ir.model.fields,help:academy_base.field_academy_change_training_action_wizard__register
 #: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment__register
 msgid "Date the enrolment becomes effective"
-msgstr "Fecha en la cual el estudiante ha sido matriculado"
+msgstr "Fecha en la cual el estudiante ha sido inscrito"
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_change_training_action_wizard__deregister
@@ -1832,7 +1833,7 @@ msgstr "Fecha en que el estudiante ha sido dado de baja"
 #: model:ir.model.fields,help:academy_base.field_academy_student__signup_date model:ir.model.fields,help:academy_base.field_academy_support_staff__signup_date
 #: model:ir.model.fields,help:academy_base.field_academy_teacher__signup_date model:ir.model.fields,help:academy_base.field_academy_technical_staff__signup_date
 msgid "Date when the student signed up at the centre."
-msgstr "Fecha en la que el estudiante se matricuó en el centro."
+msgstr "Fecha en la que el estudiante se inscribió en el centro."
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_change_training_action_wizard_wizard
@@ -2181,7 +2182,7 @@ msgstr "Contabilidad"
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.res_config_settings_view_form_academy_base
 msgid "Edit partner educational attainment information."
-msgstr "Editar la información sobre el nivel educativo del contacto."
+msgstr "Editar la información sobre el nivel de estudios del contacto."
 
 #. module: academy_base
 #: model:academy.qualification.level,description:academy_base.academy_qualification_level_level_isced_2011_0
@@ -2196,7 +2197,7 @@ msgstr ""
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action__attainment_id
 msgid "Educational Attainment"
-msgstr "Nivel educativo"
+msgstr "Nivel de estudios"
 
 #. module: academy_base
 #: model:ir.actions.act_window,name:academy_base.action_educational_attainment_act_window
@@ -2206,12 +2207,12 @@ msgstr "Nivel educativo"
 #: model:ir.model.fields,field_description:academy_base.field_academy_technical_staff__attainment_id
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_program__attainment_id
 msgid "Educational attainment"
-msgstr "Nivel educativo"
+msgstr "Nivel de estudios"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.res_config_settings_view_form_academy_base
 msgid "Educational attainments"
-msgstr "Nivel educativo"
+msgstr "Nivel de estudios"
 
 #. module: academy_base
 #: model:academy.professional.sector,name:academy_base.professional_sector_6104
@@ -2308,7 +2309,7 @@ msgstr "La fecha de finalización debe ser mayor que la fecha de inicio"
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_student__last_deregister
 msgid "End date of the most recent enrolment; 9999-12-31 if open."
-msgstr "Fecha de fin de la matrícula más reciente; 9999-12-31 si está abierta."
+msgstr "Fecha de fin de la inscripción más reciente; 9999-12-31 si está abierta."
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment__date_stop
@@ -2349,7 +2350,7 @@ msgstr "Inscritos"
 #: model:ir.actions.act_window,name:academy_base.action_academy_change_training_action_wizard_wizard_act_window
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_change_training_action_wizard_wizard
 msgid "Enrolment Transfer"
-msgstr "Transferir matrícula"
+msgstr "Transferir inscripción"
 
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment__code
@@ -2359,12 +2360,12 @@ msgstr "Código"
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment__enrolment_date
 msgid "Enrolment date"
-msgstr "Fecha de matrícula"
+msgstr "Fecha de inscripción"
 
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_student__enrolment_str
 msgid "Enrolment summary"
-msgstr "Matriculaciones"
+msgstr "Inscripciones"
 
 #. module: academy_base
 #: model:ir.actions.act_window,name:academy_base.action_training_action_enrolment_act_window
@@ -2376,12 +2377,12 @@ msgstr "Matriculaciones"
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_group_form
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_training_actions_qweb
 msgid "Enrolments"
-msgstr "Matrícula"
+msgstr "Inscripciones"
 
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action__rollup_enrolment_ids
 msgid "Enrolments (rollup)"
-msgstr "Matrículas (agregado)"
+msgstr "Inscripciones (agregado)"
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_student__current_enrolment_ids
@@ -2392,18 +2393,18 @@ msgstr "Enumere todas las inscripciones, incluidas las actuales, pasadas y futur
 #. odoo-python
 #: code:addons/academy_base/models/academy_training_action_enrolment.py:0
 msgid "Enrolments must be linked to a leaf training action (an action without child actions)."
-msgstr "Las matrículas deben vincularse a una acción formativa hoja (una acción sin acciones hijas)."
+msgstr "Las inscripciones deben vincularse a una acción formativa hoja (una acción sin acciones hijas)."
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_change_training_action_wizard__enrolment_ids
 msgid "Enrolments to be reassigned to another training action."
-msgstr "Matrículas que se reasignarán a otra acción formativa."
+msgstr "Inscripciones que se reasignarán a otra acción formativa."
 
 #. module: academy_base
 #. odoo-python
 #: code:addons/academy_base/models/academy_student.py:0 code:addons/academy_base/models/academy_training_action.py:0
 msgid "Enrolments: {}"
-msgstr "Matrículas: {}"
+msgstr "Inscripciones: {}"
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_module__code
@@ -2757,7 +2758,7 @@ msgstr "Frecuencia"
 #: model:ir.model.fields,field_description:academy_base.field_academy_change_training_action_wizard__full_enrolment
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment__full_enrolment
 msgid "Full enrolment"
-msgstr "Matrícula completa"
+msgstr "Inscripción completa"
 
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action__general_competence
@@ -3283,7 +3284,7 @@ msgstr "Icono para indicar una actividad de excepción."
 #: model:ir.model.fields,help:academy_base.field_academy_change_training_action_wizard__full_enrolment
 #: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment__full_enrolment
 msgid "If active, the student will be automatically enrolled in all modules of the training program."
-msgstr "Si está activo, el estudiante se matriculará automáticamente en todos los módulos del programa formativo."
+msgstr "Si está activo, el estudiante se inscribirá automáticamente en todos los módulos del programa formativo."
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_student__message_needaction
@@ -3869,7 +3870,7 @@ msgstr "Docente titular"
 #: model:ir.model.fields,help:academy_base.field_academy_change_training_action_wizard__training_modality_id
 #: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment__training_modality_id
 msgid "Learning modality for this enrolment"
-msgstr "Modalidad formativa para esta matrícula"
+msgstr "Modalidad formativa para esta inscripción"
 
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_framework__legal_code
@@ -4211,7 +4212,7 @@ msgstr "Microbiología"
 #: model:ir.model.fields,help:academy_base.field_academy_training_action__attainment_id
 #: model:ir.model.fields,help:academy_base.field_academy_training_program__attainment_id
 msgid "Minimum educational requirement to access this program"
-msgstr "Elegir el nivel educativo relacionado"
+msgstr "Elegir el nivel de estudios relacionado"
 
 #. module: academy_base
 #: model:academy.professional.sector,name:academy_base.professional_sector_3318
@@ -4227,7 +4228,7 @@ msgstr "Misc"
 #. odoo-python
 #: code:addons/academy_base/wizard/academy_change_training_action_wizard.py:0
 msgid "Missing enrolment start date."
-msgstr "Falta la fecha de inicio de la matrícula."
+msgstr "Falta la fecha de inicio de la inscripción."
 
 #. module: academy_base
 #. odoo-python
@@ -4409,7 +4410,7 @@ msgstr "Nueva inscripción"
 #. odoo-python
 #: code:addons/academy_base/models/academy_training_action.py:0
 msgid "New training action"
-msgstr "Nueva matrícula"
+msgstr "Nueva inscripción"
 
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_student__activity_date_deadline
@@ -4480,13 +4481,13 @@ msgstr "Nº de materias"
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_student__current_enrolment_count
 msgid "No. of current enrolments"
-msgstr "Nº de matriculaciones vigentes"
+msgstr "Nº de inscripciones vigentes"
 
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_student__enrolment_count
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action__enrolment_count
 msgid "No. of enrolments"
-msgstr "Nº de matrículas"
+msgstr "Nº de inscripciones"
 
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action__rollup_enrolment_count
@@ -5741,11 +5742,6 @@ msgid "Purchase"
 msgstr "Compra"
 
 #. module: academy_base
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_support_staff_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_form
-msgid "Qualification"
-msgstr "Cualificación"
-
-#. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action__qualification_level_id
 msgid "Qualification Level"
 msgstr "Nivel de cualificación"
@@ -5855,7 +5851,7 @@ msgstr "Eliminar obsoletos"
 #. module: academy_base
 #: model:ir.actions.server,name:academy_base.ir_cron_remove_temporary_student_enrollments_ir_actions_server
 msgid "Remove temporary student enrolments"
-msgstr "Eliminar matrículas temporales de estudiantes"
+msgstr "Eliminar inscripciones temporales de estudiantes"
 
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_student__vat_required
@@ -6082,7 +6078,7 @@ msgstr ""
 #: model:ir.model.fields,help:academy_base.field_academy_training_action__enrolment_count
 #: model:ir.model.fields,help:academy_base.field_academy_training_action__rollup_enrolment_count
 msgid "Show number of enrolments"
-msgstr "Mostrar número de matrículas"
+msgstr "Mostrar número de inscripciones"
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_action__enrolment_ids
@@ -6120,7 +6116,7 @@ msgstr "Muestra el número de áreas profesionales que pertenecen a esta familia
 #: model:ir.model.fields,field_description:academy_base.field_academy_technical_staff__signup_code
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_support_staff_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_support_staff_tree
 msgid "Sign-up code"
-msgstr "Código de inscripción"
+msgstr "Nº de matrícula"
 
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_student__signup_date
@@ -6128,7 +6124,7 @@ msgstr "Código de inscripción"
 #: model:ir.model.fields,field_description:academy_base.field_academy_teacher__signup_date
 #: model:ir.model.fields,field_description:academy_base.field_academy_technical_staff__signup_date
 msgid "Sign-up date"
-msgstr "Fecha de inscripción"
+msgstr "Fecha de alta"
 
 #. module: academy_base
 #: model:academy.knowledge.area,name:academy_base.academy_knowledge_area_08
@@ -6367,12 +6363,12 @@ msgstr "Estudiante"
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_group_kanban
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_kanban
 msgid "Student enrolments"
-msgstr "Matrículas de estudiantes"
+msgstr "Inscripciones de estudiantes"
 
 #. module: academy_base
 #: model:ir.model.constraint,message:academy_base.constraint_academy_training_action_enrolment_prevent_overlap
 msgid "Student enrolments cannot overlap for the same action"
-msgstr "Las matriculaciones de estudiantes no pueden solaparse en el tiempo para una misma acción formativa"
+msgstr "Las inscripciones de estudiantes no pueden solaparse en el tiempo para una misma acción formativa"
 
 #. module: academy_base
 #. odoo-python
@@ -6388,7 +6384,7 @@ msgstr "Nombre del estudiante"
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment__student_id
 msgid "Student to enrol"
-msgstr "Elegir estudiante matriculado"
+msgstr "Estudiante a inscribir"
 
 #. module: academy_base
 #. odoo-python
@@ -6401,7 +6397,7 @@ msgstr "Estudiantes"
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_action__student_ids
 msgid "Students directly or indirectly enrolled in this action."
-msgstr "Mostrar los estudiantes que se han matriculado en esta acción formativa."
+msgstr "Mostrar los estudiantes que se han inscrito en esta acción formativa."
 
 #. module: academy_base
 #. odoo-python
@@ -6428,7 +6424,7 @@ msgstr "Dirección de correo electrónico del estudiante"
 #: model:ir.model.fields,help:academy_base.field_academy_student__attainment_id model:ir.model.fields,help:academy_base.field_academy_support_staff__attainment_id
 #: model:ir.model.fields,help:academy_base.field_academy_teacher__attainment_id model:ir.model.fields,help:academy_base.field_academy_technical_staff__attainment_id
 msgid "Student’s highest educational attainment"
-msgstr "Elegir el nivel educativo relacionado"
+msgstr "Elegir el nivel de estudios relacionado"
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment__mobile
@@ -6710,7 +6706,7 @@ msgstr "Todavía no hay logros educativos"
 #. module: academy_base
 #: model_terms:ir.actions.act_window,help:academy_base.action_training_action_enrolment_act_window
 msgid "There are no enrolments yet"
-msgstr "No hay matrículas"
+msgstr "No hay inscripciones"
 
 #. module: academy_base
 #: model_terms:ir.actions.act_window,help:academy_base.action_knowledge_area_act_window
@@ -7029,7 +7025,7 @@ msgstr "Imagen de la acción formativa (512 px)"
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment__training_action_id
 msgid "Training action in which the student is enrolled"
-msgstr "Elegir la acción formativa en la que se matriculará al estudiante"
+msgstr "Elegir la acción formativa en la que se inscribirá al estudiante"
 
 #. module: academy_base
 #: model:ir.actions.act_window,name:academy_base.action_training_action_line_act_window model:ir.model,name:academy_base.model_academy_training_action_line
@@ -7113,7 +7109,7 @@ msgstr "Bloques o unidades formativas"
 #. module: academy_base
 #: model:ir.ui.menu,name:academy_base.menu_training_action_enrolment
 msgid "Training enrolments"
-msgstr "Matrículas"
+msgstr "Inscripciones"
 
 #. module: academy_base
 #: model:academy.application.scope,description:academy_base.academy_application_scope_intersectoral
@@ -7722,7 +7718,7 @@ msgstr "View enroled students"
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_student_form
 msgid "View student enrolments"
-msgstr "Ver matrículas de estudiantes"
+msgstr "Ver inscripciones de estudiantes"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_line_form
@@ -7732,7 +7728,7 @@ msgstr "Ver las asignaciones de docentes"
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form
 msgid "View training action enrolments"
-msgstr "Ver matrículas en acciones formativas"
+msgstr "Ver inscripciones en acciones formativas"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form
@@ -7790,13 +7786,13 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_group_search
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_search
 msgid "With enrolments"
-msgstr "Con matrículas"
+msgstr "Con inscripciones"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_group_search
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_search
 msgid "Without enrolments"
-msgstr "Sin matrículas"
+msgstr "Sin inscripciones"
 
 #. module: academy_base
 #: model:academy.professional.family,name:academy_base.academy_professional_family_18

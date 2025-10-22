@@ -151,7 +151,7 @@
                   <field name="create_date" class="oe_field_create_date" string="Created at" />
                 </group>
                 <group colspan="6">
-                  <field name="attainment_id" class="oe_field_attainment_id" string="Qualification"
+                  <field name="attainment_id" class="oe_field_attainment_id" string="Attainment"
                     options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"/>
                 </group>
                 <group colspan="6">
