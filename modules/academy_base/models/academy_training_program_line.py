@@ -44,6 +44,7 @@ class AcademyTrainingProgramLine(models.Model):
         size=1024,
         translate=True,
         copy=True,
+        tracking=True,
     )
 
     description = fields.Text(
@@ -65,6 +66,7 @@ class AcademyTrainingProgramLine(models.Model):
         default=True,
         help="Disable to archive without deleting.",
         copy=True,
+        tracking=True,
     )
 
     code = fields.Char(
@@ -77,6 +79,7 @@ class AcademyTrainingProgramLine(models.Model):
         size=30,
         translate=False,
         copy=False,
+        tracking=True,
     )
 
     sequence = fields.Integer(
@@ -114,6 +117,7 @@ class AcademyTrainingProgramLine(models.Model):
         default=False,
         help="Mark if this line is optional/elective for the learner",
         copy=True,
+        tracking=True,
     )
 
     hours = fields.Float(
@@ -125,6 +129,7 @@ class AcademyTrainingProgramLine(models.Model):
         digits=(16, 2),
         help="Nominal duration of the line in hours",
         copy=True,
+        tracking=True,
     )
 
     training_program_id = fields.Many2one(
@@ -140,6 +145,7 @@ class AcademyTrainingProgramLine(models.Model):
         ondelete="cascade",
         auto_join=False,
         copy=False,
+        tracking=True,
     )
 
     training_module_id = fields.Many2one(
@@ -155,6 +161,7 @@ class AcademyTrainingProgramLine(models.Model):
         ondelete="restrict",
         auto_join=False,
         copy=True,
+        tracking=True,
     )
 
     @api.onchange("training_module_id")

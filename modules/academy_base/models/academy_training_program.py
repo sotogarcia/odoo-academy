@@ -50,6 +50,7 @@ class AcademyTrainingProgram(models.Model):
         size=1024,
         translate=True,
         copy=False,
+        tracking=True,
     )
 
     description = fields.Text(
@@ -71,6 +72,7 @@ class AcademyTrainingProgram(models.Model):
         default=True,
         help="Disable to archive without deleting",
         copy=True,
+        tracking=True,
     )
 
     comment = fields.Html(
@@ -100,6 +102,7 @@ class AcademyTrainingProgram(models.Model):
         size=30,
         translate=False,
         copy=False,
+        tracking=True,
     )
 
     training_framework_id = fields.Many2one(
@@ -115,6 +118,7 @@ class AcademyTrainingProgram(models.Model):
         ondelete="restrict",
         auto_join=False,
         copy=True,
+        tracking=True,
     )
 
     professional_family_id = fields.Many2one(
@@ -330,6 +334,7 @@ class AcademyTrainingProgram(models.Model):
         compute="_compute_hours",
         store=True,
         copy=True,
+        tracking=True,
     )
 
     @api.depends("program_line_ids.training_module_id.hours")

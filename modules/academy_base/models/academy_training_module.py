@@ -56,6 +56,7 @@ class AcademyTrainingModule(models.Model):
         size=1024,
         translate=True,
         copy=False,
+        tracking=True,
     )
 
     description = fields.Text(
@@ -77,6 +78,7 @@ class AcademyTrainingModule(models.Model):
         default=True,
         help="Disable to archive without deleting.",
         copy=True,
+        tracking=True,
     )
 
     training_module_id = fields.Many2one(
@@ -92,6 +94,7 @@ class AcademyTrainingModule(models.Model):
         ondelete="cascade",
         auto_join=False,
         copy=False,
+        tracking=True,
     )
 
     training_unit_ids = fields.One2many(
@@ -129,6 +132,7 @@ class AcademyTrainingModule(models.Model):
         size=30,
         translate=False,
         copy=False,
+        tracking=True,
     )
 
     def default_code(self):
@@ -146,6 +150,7 @@ class AcademyTrainingModule(models.Model):
         digits=(16, 2),
         help="Length in hours",
         copy=True,
+        tracking=True,
     )
 
     sequence = fields.Integer(
@@ -246,7 +251,7 @@ class AcademyTrainingModule(models.Model):
 
         return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
-    resolved_ids = fields.Many2many(
+    delivered_modules_ids = fields.Many2many(
         string="Deliverable modules",
         required=False,
         readonly=True,
@@ -257,17 +262,17 @@ class AcademyTrainingModule(models.Model):
             "If it has children, it points to its sub-modules."
         ),
         comodel_name="academy.training.module",
-        compute="_compute_resolved_ids",
+        compute="_compute_delivered_modules_ids",
         copy=False,
     )
 
     @api.depends("training_unit_ids")
-    def _compute_resolved_ids(self):
+    def _compute_delivered_modules_ids(self):
         for record in self:
             if record.training_unit_ids:
-                record.resolved_ids = record.training_unit_ids
+                record.delivered_modules_ids = record.training_unit_ids
             else:
-                record.resolved_ids = record
+                record.delivered_modules_ids = record
 
     training_program_ids = fields.Many2many(
         string="Training programs",

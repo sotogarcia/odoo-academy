@@ -363,7 +363,7 @@ msgstr "Módulo formativo"
 #. module: academy_base
 #: model:ir.model,name:academy_base.model_academy_training_program
 msgid "Academy training program"
-msgstr "Actividad formativa"
+msgstr "Programa formativa"
 
 #. module: academy_base
 #: model:ir.model,name:academy_base.model_academy_training_program_line
@@ -2319,12 +2319,12 @@ msgstr "Fecha y hora de fin de la acción formativa"
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment__date_stop
 msgid "End of action"
-msgstr "Finalización de la acción"
+msgstr "Final de la acción"
 
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_student__last_deregister
 msgid "End of training"
-msgstr "Finalización de la formación"
+msgstr "Final de la formación"
 
 #. module: academy_base
 #: model:academy.professional.family,name:academy_base.academy_professional_family_09
@@ -7178,7 +7178,7 @@ msgstr "Modalidades de formación"
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment__training_modality_id
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form
 msgid "Training modality"
-msgstr "Modalidad de formación"
+msgstr "Modalidad"
 
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action_line__training_module_id
@@ -7212,7 +7212,7 @@ msgstr "Módulos formativos"
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_search model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_framework_kanban
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_kanban
 msgid "Training program"
-msgstr "Actividad formativa"
+msgstr "Programa formativo"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_kanban
@@ -7222,7 +7222,7 @@ msgstr "Código del programa formativo"
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment__training_program_id
 msgid "Training program delivered in this action"
-msgstr "Actividad formativa que será impartida en esta acción"
+msgstr "Program formativa que será impartida en esta acción"
 
 #. module: academy_base
 #: model:ir.actions.act_window,name:academy_base.action_training_program_line_act_window
@@ -7249,7 +7249,7 @@ msgstr "Informe del programa formativo"
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_action__training_program_id
 msgid "Training program will be delivered in this action"
-msgstr "Actividad formativa que será impartida en esta acción"
+msgstr "Program formativo que será impartida en esta acción"
 
 #. module: academy_base
 #: model:ir.actions.report,name:academy_base.action_report_academy_training_program_modules
@@ -7267,7 +7267,7 @@ msgstr "Programa formativo sin imagen"
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_module__training_program_ids
 #: model:ir.ui.menu,name:academy_base.menu_training_activites_quick_edit
 msgid "Training programs"
-msgstr "Actividades"
+msgstr "Programas"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.res_config_settings_view_form_academy_base

@@ -48,6 +48,7 @@ class AcademyTrainingActionLine(models.Model):
         ondelete="cascade",
         auto_join=False,
         copy=True,
+        tracking=True,
     )
 
     training_program_id = fields.Many2one(
@@ -125,6 +126,7 @@ class AcademyTrainingActionLine(models.Model):
         inverse="_inverse_primary_teacher_id",
         store=True,
         copy=False,
+        tracking=True,
     )
 
     @api.depends(

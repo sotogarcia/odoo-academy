@@ -143,4 +143,25 @@
     </field>
   </record>
 
+  <!-- Tree view for "academy.training.action.line" -->
+  <record id="view_academy_training_action_line_tree_m2m" model="ir.ui.view">
+    <field name="name">view.academy.training.action.line.tree.m2m</field>
+    <field name="model">academy.training.action.line</field>
+    <field name="type">list</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="99"/>
+    <field name="active" eval="True"/>
+    <field name="inherit_id" />
+    <field name="arch" type="xml">
+      <list string="academy_training_action_line_tree_m2m" class="academy-training-program-line-tree"
+        create="1" delete="1" edit="1" decoration-bf="is_section" decoration-it="not program_line_id" decoration-muted="is_section" >
+
+        <field name="code" class="oe_field_code" invisible="is_section" optional="show" />
+        <field name="name" class="oe_field_name academy-section-title" />
+        <field name="hours" class="oe_field_hours" widget="float_time" required="not is_section" invisible="is_section"/>
+        <field name="primary_teacher_id" class="oe_field_primary_teacher_id" />
+
+      </list>
+    </field>
+  </record>
 </odoo>

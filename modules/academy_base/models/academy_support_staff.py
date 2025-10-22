@@ -206,7 +206,7 @@ class AcademySupportStaff(models.Model):
             ("phone", operator, value),
         ]
 
-    # -- Compute where fields will be required --------------------------------
+    # -- Business fields ------------------------------------------------------
 
     email_required = fields.Boolean(
         string="Require email",
@@ -267,8 +267,6 @@ class AcademySupportStaff(models.Model):
 
         for record in self:
             record.vat_required = required
-
-    # -- Business fields -----------------------------------------------------
 
     has_custom_avatar = fields.Boolean(
         string="Has custom avatar",

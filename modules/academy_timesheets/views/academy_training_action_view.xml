@@ -19,7 +19,7 @@
                         <field name="session_count" widget="statinfo" string="Scheduled" />
                     </button>
                 </xpath>
-                <xpath expr="//page[@id='setup']" position="inside">
+                <xpath expr="//page[@id='setup']/group[@id='facilities']" position="before">
                     <group col="2" string="Timesheets">
                         <group><field name="allow_overlap" class="oe_field_allow_overlap" /></group>
                         <group><field name="groupwise_schedule" class="oe_field_groupwise_schedule" /></group>

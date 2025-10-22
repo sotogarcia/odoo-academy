@@ -43,6 +43,7 @@ class AcademyTrainingFramework(models.Model):
         help="Regulatory framework name",
         translate=True,
         copy=False,
+        tracking=True,
     )
 
     description = fields.Text(
@@ -68,6 +69,7 @@ class AcademyTrainingFramework(models.Model):
         default=True,
         help="Disable to archive without deleting.",
         copy=True,
+        tracking=True,
     )
 
     code = fields.Char(
@@ -79,6 +81,7 @@ class AcademyTrainingFramework(models.Model):
         help="Short, roughly unique code used in URLs/filters",
         translate=False,
         copy=False,
+        tracking=True,
     )
 
     issuing_authority_id = fields.Many2one(
@@ -94,6 +97,7 @@ class AcademyTrainingFramework(models.Model):
         ondelete="restrict",
         auto_join=False,
         copy=True,
+        tracking=True,
     )
 
     training_program_ids = fields.One2many(
@@ -155,6 +159,7 @@ class AcademyTrainingFramework(models.Model):
         default=False,
         help="Allows enrolment by module (modular delivery permitted)",
         copy=True,
+        tracking=True,
     )
 
     legal_code = fields.Char(
@@ -166,6 +171,7 @@ class AcademyTrainingFramework(models.Model):
         help="Short official identifier (e.g., 'LO 3/2022', 'RD 659/2023').",
         translate=False,
         copy=True,
+        tracking=True,
     )
 
     # -- Constraints ----------------------------------------------------------

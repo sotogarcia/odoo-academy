@@ -173,17 +173,6 @@ class AcademyTrainingAction(models.Model):
 
         return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
-    split_in_groups = fields.Boolean(
-        string="Is divisible",
-        required=False,
-        readonly=False,
-        index=True,
-        default=False,
-        help="If checked, this training action can be divided into smaller "
-        "groups or sessions (children records).",
-        copy=True,
-    )
-
     keep_synchronized = fields.Boolean(
         string="Synchronize from the parent program",
         required=False,
@@ -210,6 +199,7 @@ class AcademyTrainingAction(models.Model):
         size=1024,
         translate=True,
         copy=False,
+        tracking=True,
     )
 
     description = fields.Text(
@@ -231,6 +221,7 @@ class AcademyTrainingAction(models.Model):
         default=True,
         help="Disable to archive without deleting.",
         copy=True,
+        tracking=True,
     )
 
     sequence = fields.Integer(
@@ -253,6 +244,7 @@ class AcademyTrainingAction(models.Model):
         size=30,
         translate=False,
         copy=False,
+        tracking=True,
     )
 
     comment = fields.Html(
@@ -334,6 +326,7 @@ class AcademyTrainingAction(models.Model):
         ondelete="cascade",
         auto_join=False,
         copy=True,
+        tracking=True,
     )
 
     training_methodology_ids = fields.Many2many(
@@ -350,6 +343,7 @@ class AcademyTrainingAction(models.Model):
         domain=[],
         context={},
         copy=True,
+        tracking=True,
     )
 
     # -- Time interval fields and logic
@@ -363,6 +357,7 @@ class AcademyTrainingAction(models.Model):
         default=None,
         help="Start date of an event, without time for full day events",
         copy=True,
+        tracking=True,
     )
 
     date_stop = fields.Datetime(
@@ -373,6 +368,7 @@ class AcademyTrainingAction(models.Model):
         default=None,
         help="Stop date of an event, without time for full day events",
         copy=True,
+        tracking=True,
     )
 
     available_until = fields.Datetime(
@@ -606,6 +602,7 @@ class AcademyTrainingAction(models.Model):
         default=None,
         help="Maximum number of sign-ups allowed",
         copy=True,
+        tracking=True,
     )
 
     @api.onchange("seating")
@@ -622,6 +619,7 @@ class AcademyTrainingAction(models.Model):
         default=None,
         help="Upper bound of seats that may be admitted (>= Seating).",
         copy=True,
+        tracking=True,
     )
 
     @api.onchange("excess")
@@ -768,6 +766,7 @@ class AcademyTrainingAction(models.Model):
         inverse="_inverse_primary_teacher_id",
         store=True,
         copy=False,
+        tracking=True,
     )
 
     @api.depends(
@@ -1251,12 +1250,6 @@ class AcademyTrainingAction(models.Model):
 
     def copy(self, default=None):
         default = dict(default or {})
-
-        # **allowed**: self._prevent_copy_groups(default)
-
-        # child_ids
-        # action_line_ids
-        # teacher_assignment_ids
 
         if not default.get("name", False):
             name = self.name or _("New training action")

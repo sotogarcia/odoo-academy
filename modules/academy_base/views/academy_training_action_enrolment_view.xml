@@ -66,6 +66,8 @@
           <div class="w-100" id="academy-academy-training-action-enrolment-title">
             <field name="active" invisible="1"/>
             <field name="id" invisible="1"/>
+            <field name="available_action_ids" invisible="1" />
+            <field name="available_line_ids" invisible="1" />
 
             <label for="display_name" class="oe_edit_only"/>
             <h1>
@@ -121,12 +123,30 @@
 
               </group>
             </page>
+            <page string="Action lines" class="oe_page_action_lines" accesskey="A">
+              <group col="2">
+                <field name="action_line_ids" class="oe_field_action_line_ids"
+                  options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"
+                  domain="[('id', 'in', available_line_ids)]" readonly="full_enrolment"
+                  nolabel="1" colspan="2" context="{
+                    'list_view_ref': 'academy_base.view_academy_training_action_line_tree_m2m'
+                  }" />
+              </group>
+            </page>
             <page id="setup" string="Setup" class="oe_page_setup" accesskey="S">
-              <group col="4" string="Ownership" id="ownership" groups="record_ownership.record_ownership_proxy">
-                <field name="owner_id" class="oe_field_owner_id"
-                  options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
-                <field name="subrogate_id" class="oe_field_subrogate_id"
-                  options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
+              <group col="2">
+                  <field name="full_enrolment" class="oe_field_full_enrolment" />
+              </group>
+              <group string="Ownership" groups="record_ownership.record_ownership_proxy">
+                <group>
+                  <field name="owner_id" class="oe_field_owner_id"
+                    options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
+                </group>
+                <group>
+                  <field name="subrogate_id" class="oe_field_subrogate_id"
+                    domain="[('id', '&lt;&gt;', owner_id)]"
+                    options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
+                </group>
               </group>
             </page>
             <page string="Internal Notes" class="oe_page_internal_notes" accesskey="I"
@@ -153,38 +173,63 @@
     <field name="arch" type="xml">
       <kanban create="1" delete="1" edit="1">
         <field name="image_128"/>
-        <field name="display_name"/>
+        <field name="code"/>
         <field name="register"/>
         <field name="deregister"/>
         <field name="training_action_id"/>
+        <field name="parent_action_id" />
         <field name="student_id"/>
         <field name="color"/>
+
         <templates>
           <t t-name="card" class="flex-row">
             <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
-            <aside class="o_kanban_aside_full">
-              <field name="image_128" class="w-100" widget="image"
-                options="{'img_class': 'object-fit-contain w-100 h-100'}"/>
-            </aside>
-            <main class="ps-2 ps-md-0">
-              <h2 class="h4">
-                <field name="display_name" class="text-nowrap text-truncate"/>
-              </h2>
-              <ul class="list-unstyled">
-                <li class="text-nowrap text-truncate">
-                  <field name="training_action_id" class="oe_field_training_action_id"/>
-                </li>
-                <li class="text-nowrap text-truncate">
-                  <field name="student_id" class="oe_field_student_id"/>
-                </li>
-                <li class="text-nowrap text-truncate">
-                  <field name="lifespan" class="oe_field_lifespan"/>
-                </li>
-              </ul>
-            </main>
-            <footer>
-              <field name="activity_ids" widget="kanban_activity" class="ms-auto mt-auto"/>
-            </footer>
+
+              <aside class="o_kanban_aside_full">
+                <t t-if="record.image_128.raw_value">
+                  <field name="image_128" class="w-100" widget="image"
+                    options="{'img_class': 'w-100 h-auto p-2 align-top'}"/>
+                </t>
+                <t t-if="!record.image_128.raw_value">
+                  <t t-if="record.training_action_id.raw_value != record.parent_action_id.raw_value">
+                    <img src="/academy_base/static/src/img/training-group-128.png" class="w-100 h-auto p-2"
+                      alt="Training action" title="Training action without image" />
+                  </t>
+                  <t t-if="record.training_action_id.raw_value == record.parent_action_id.raw_value">
+                    <img src="/academy_base/static/src/img/training-action-128.png" class="w-100 h-auto p-2"
+                      alt="Training action" title="Training action without image" />
+                  </t>
+                </t>
+              </aside>
+
+            <div class="flex-fill d-flex flex-column justify-content-between overflow-hidden w-100 ps-2 ps-md-0">
+              <main class="d-flex flex-column justify-content-start align-items-start">
+                <h2 class="h4">
+                    <field name="code"/>
+                </h2>
+
+                <ul class="list-unstyled w-100 small my-0">
+                  <li class="d-flex flex-row justify-content-start lh-lg text-truncate" title="Training action/group">
+                   <field name="training_action_id" class="oe_field_training_action_id"/>
+                  </li>
+
+                  <li class="d-flex flex-row justify-content-start lh-lg text-truncate" title="Student">
+                      <field name="student_id" class="oe_field_student_id"/>
+                  </li>
+
+                  <li class="d-flex flex-row justify-content-start lh-lg text-truncate" title="Enrolment lifespan">
+                    <field name="lifespan" class="oe_field_lifespan"/>
+                  </li>
+                </ul>
+              </main>
+
+              <!-- footer: begin -->
+              <footer class="d-flex justify-content-end align-items-start mt-2">
+                <field name="activity_ids" widget="kanban_activity" class="my-0 py-0"/>
+              </footer>
+              <!-- footer: end -->
+
+            </div>
           </t>
         </templates>
 
@@ -297,6 +342,7 @@
       <list string="view_academy_training_action_enrolment_embed_tree" create="1" delete="1"
         edit="1">
         <field name="training_action_id" class="oe_field_training_action_id"/>
+        <field name="training_modality_id" class="oe_field_training_modality_id" />
         <field name="register" class="oe_field_register" widget="date" />
         <field name="deregister" class="oe_field_deregister" widget="date" />
       </list>
@@ -317,6 +363,7 @@
       <list string="view_academy_training_action_enrolment_edit_by_user_tree" create="1" delete="1"
         edit="1" editable="top">
         <field name="training_action_id" class="oe_field_training_action_id"/>
+        <field name="training_modality_id" class="oe_field_training_modality_id" />
         <field name="register" class="oe_field_register" />
         <field name="deregister" class="oe_field_deregister" />
       </list>
