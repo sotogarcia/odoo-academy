@@ -57,6 +57,9 @@
       <xpath expr="//kanban" position="attributes">
         <attribute name="string">academy_technical_staff_kanban</attribute>
       </xpath>
+      <xpath expr="//img[@id='default-avatar']" position="attributes">
+          <attribute name="src">/academy_base/static/src/img/technical-staff-128.png</attribute>
+      </xpath>
     </field>
   </record>
 

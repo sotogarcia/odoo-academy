@@ -6,6 +6,7 @@
 
 from odoo import models, fields, api
 from odoo.tools import single_email_re
+from odoo.tools.misc import file_path
 from odoo.tools.translate import _
 from odoo.exceptions import ValidationError, UserError
 from odoo.addons.phone_validation.tools.phone_validation import phone_format
@@ -13,9 +14,11 @@ from odoo.osv.expression import AND
 
 from ..utils.res_config import get_config_param
 from ..utils.helpers import is_debug_mode
+
+from base64 import b64encode
 from pytz import timezone, utc
 from datetime import datetime, time
-
+from collections.abc import Iterable
 
 from logging import getLogger
 
@@ -265,6 +268,35 @@ class AcademySupportStaff(models.Model):
         for record in self:
             record.vat_required = required
 
+    # -- Business fields -----------------------------------------------------
+
+    has_custom_avatar = fields.Boolean(
+        string="Has custom avatar",
+        required=False,
+        readonly=True,
+        index=False,
+        default=False,
+        help="True if this partner uses a custom avatar False otherwise.",
+        store=False,
+        compute="_compute_has_custom_avatar",
+    )
+
+    _default_avatar_b64 = None  # class-level cache
+
+    def _get_default_avatar_b64(self):
+        """Return the default avatar, cached at class level."""
+        if not type(self)._default_avatar_b64:
+            new_partner = self.env["res.partner"].new()
+            type(self)._default_avatar_b64 = new_partner.avatar_128
+
+        return type(self)._default_avatar_b64
+
+    def _compute_has_custom_avatar(self):
+        default_b64 = self._get_default_avatar_b64()
+        for rec in self:
+            avatar = rec.avatar_128 or b""
+            rec.has_custom_avatar = bool(avatar and avatar != default_b64)
+
     # -- Constraints ----------------------------------------------------------
 
     _sql_constraints = [
@@ -333,36 +365,9 @@ class AcademySupportStaff(models.Model):
     # -- Public exported methods ----------------------------------------
 
     def sanitize_phone_number(self):
-        msg = "Web scoring calculator: Invalid {} number {}. System says: {}"
+        self._sanitize_phone_number(self)
 
-        country = self.env.company.country_id
-        c_code = country.code if country else None
-        c_phone_code = country.phone_code if country else None
-
-        for record in self:
-            if record.phone:
-                try:
-                    phone = phone_format(
-                        record.phone,
-                        c_code,
-                        c_phone_code,
-                        force_format="INTERNATIONAL",
-                    )
-                    record.phone = phone
-                except Exception as ex:
-                    _logger.debug(msg.format("phone", record.phone, ex))
-
-            if record.mobile:
-                try:
-                    mobile = phone_format(
-                        record.mobile,
-                        c_code,
-                        c_phone_code,
-                        force_format="INTERNATIONAL",
-                    )
-                    record.mobile = mobile
-                except Exception as ex:
-                    _logger.debug(msg.format("mobile", record.mobile, ex))
+        return self
 
     def view_res_partner(self):
         self.ensure_one()
@@ -461,6 +466,8 @@ class AcademySupportStaff(models.Model):
         category = self.env.ref(category_xid, raise_if_not_found=False)
         country_codes = self._get_all_country_codes()
 
+        self._sanitize_phone_number(vals_list)
+
         for values in vals_list:
             self._ensure_natural_person(values)
             self._vat_prepend_country_code(values, country_codes)
@@ -469,21 +476,17 @@ class AcademySupportStaff(models.Model):
 
         result = super().create(vals_list)
 
-        if any(("phone" in v) or ("mobile" in v) for v in vals_list):
-            result.sanitize_phone_number()
-
         return result
 
     def write(self, values):
         """Overridden method 'write'"""
 
+        self._sanitize_phone_number(values)
+
         self._ensure_natural_person(values)
         self._vat_prepend_country_code(values)
 
         result = super().write(values)
-
-        if "phone" in values or "mobile" in values:
-            self.sanitize_phone_number()
 
         return result
 
@@ -665,6 +668,60 @@ class AcademySupportStaff(models.Model):
                 domain = []
 
         return domain
+
+    @api.model
+    def _sanitize_phone_number(self, targets):
+        msg = "Web scoring calculator: Invalid {} number {}. System says: {}"
+
+        def _custom_set(item, key, value):
+            item[key] = value
+
+        if not targets:
+            return
+
+        if not isinstance(targets, Iterable):
+            targets = [targets]
+
+        if isinstance(targets, (list, tuple)) and isinstance(targets[0], dict):
+            _get, _set = dict.get, _custom_set
+
+        elif isinstance(targets, models.Model):
+            _get, _set = getattr, setattr
+        else:
+            message = _("targets arguemnt must be a dict or recordset not %s")
+            raise ValidationError(message % type(targets))
+
+        company = (
+            self.env.company
+            or self.env.user.company
+            or self.env["res.company"].ref(
+                "base.main_company", raise_if_not_found=False
+            )
+        )
+
+        c_code, c_phone_code = None, None
+        if company and company.country_id:
+            country = company.country_id
+            if country:
+                c_code, c_phone_code = country.code, country.phone_code
+
+        phone_fields = ["phone", "mobile"]
+        for target in targets:
+            for phone_field in phone_fields:
+                phone_value = _get(target, phone_field, False)
+                if not phone_value:
+                    continue
+
+                try:
+                    phone_value = phone_format(
+                        phone_value,
+                        c_code,
+                        c_phone_code,
+                        force_format="INTERNATIONAL",
+                    )
+                    _set(target, phone_field, phone_value)
+                except Exception as ex:
+                    _logger.debug(msg.format(phone_field, phone_value, ex))
 
     # -- Signup sequence methods ----------------------------------------------
 

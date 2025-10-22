@@ -146,18 +146,6 @@
                         }" />
                     </group>
                   </page>
-<!--                   <page name="groups" string="Groups" class="oe_page_groups" accesskey="G" invisible="parent_id or context.get('default_parent_id', False) or not create_date">
-                    <group col="2">
-                      <field name="child_ids" class="oe_field_child_ids" nolabel="1" colspan="2"
-                        invisible="enrolment_ids"
-                        context="{
-                          'default_parent_id': id,
-                          'default_training_program_id': training_program_id,
-                          'default_training_modality_id': training_modality_id,
-                          'list_view_ref': 'academy_base.view_academy_training_action_group_embed_tree'
-                        }" />
-                    </group>
-                  </page> -->
                   <page id="data" string="Data" class="oe_page_data" accesskey="T">
                     <group string="Action details">
                       <group><field name="application_scope_id" class="od_field_application_scope"

@@ -211,60 +211,97 @@
     <field name="active" eval="True"/>
     <field name="arch" type="xml">
       <kanban sample="1">
-        <field name="avatar_128"/>
-        <field name="is_company"/>
-        <field name="active"/>
-        <field name="mobile"/>
-        <field name="phone"/>
+        <field name="avatar_128" />
+        <field name="is_company" />
+        <field name="parent_id" />
+        <field name="active" />
+        <field name="mobile" />
+        <field name="phone" />
+        <field name="email" />
+        <field name="vat" />
+        <field name="signup_code" />
+        <field name="call_number" />
+        <field name="avatar_128" />
+        <field name="has_custom_avatar" />
+
         <templates>
           <t t-name="card" class="flex-row">
             <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
 
             <aside class="o_kanban_aside_full">
-              <t t-if="!record.is_company.raw_value">
-                <div class="o_kanban_image_fill position-relative w-100">
-                  <field name="avatar_128" alt="Contact image" class="h-100" widget="image"
-                    options="{'img_class': 'object-fit-cover'}"/>
-                  <field t-if="record.parent_id.raw_value" name="parent_id"
-                    class="position-absolute bottom-0 end-0 w-25 bg-light" widget="image"
-                    options="{'preview_image': 'image_128', 'img_class': 'object-fit-contain'}"/>
-                </div>
+              <t t-if="record.avatar_128.raw_value and record.has_custom_avatar.raw_value">
+                <t t-if="!record.is_company.raw_value">
+                  <div class="o_kanban_image_fill position-relative w-100">
+                    <field name="avatar_128" alt="Contact image" class="h-100" widget="image"
+                      options="{'img_class': 'object-fit-cover'}"/>
+                    <field t-if="record.parent_id.raw_value" name="parent_id"
+                      class="position-absolute bottom-0 end-0 w-25 bg-light" widget="image"
+                      options="{'preview_image': 'image_128', 'img_class': 'object-fit-contain'}"/>
+                  </div>
+                </t>
+                <t t-else="">
+                  <field name="avatar_128" class="w-100" widget="image"
+                    options="{'img_class': 'object-fit-contain w-100 h-100'}"/>
+                </t>
               </t>
               <t t-else="">
-                <field name="avatar_128" class="w-100" widget="image"
-                  options="{'img_class': 'object-fit-contain w-100 h-100'}"/>
+                <img id="default-avatar" src="/academy_base/static/src/img/support-staff-128.png" class="w-100 h-auto p-2"
+                  alt="Student" title="Student without image" />
               </t>
             </aside>
 
-            <div class="flex-fill ps-2 ps-md-0">
+            <div class="flex-fill d-flex flex-column justify-content-between overflow-hidden w-100 ps-2 ps-md-0">
               <main class="d-flex flex-column justify-content-start align-items-start">
                 <h2 class="h4">
                     <field name="display_name"/>
                 </h2>
-                <field name="email" class="text-truncate"/>
-                <div class="flex justify-content-start">
-                  <t t-if="record.phone.raw_value">
-                    <span class="text-truncate" t-attf-title="record.phone.raw_value">
-                      <t t-esc="record.phone.raw_value"/>
-                    </span>
-                  </t>
-                  <t t-if="record.phone.raw_value and record.mobile.raw_value">
-                    <span> / </span>
-                  </t>
-                  <t t-if="record.mobile.raw_value">
-                    <span class="text-truncate" t-attf-title="record.mobile.raw_value">
-                      <t t-esc="record.mobile.raw_value"/>
-                    </span>
-                  </t>
-                </div>
+
+                <ul class="list-unstyled w-100 small my-0">
+                  <li class="d-flex flex-row justify-content-start lh-lg text-truncate">
+                    <t t-if="record.phone.raw_value or record.mobile.raw_value">
+                      <t t-if="record.mobile.raw_value">
+                        <a t-attf-href="'tel:' + record.mobile.raw_value" target="_self"
+                          t-attf-title="Call at {{ record.call_number.raw_value}}"
+                          class="text-truncate link-underline-opacity-0 text-reset">
+                          <t t-esc="record.mobile.raw_value" />
+                        </a>
+                      </t>
+                      <t t-if="record.phone.raw_value and record.mobile.raw_value">
+                        <span class="px-2">/</span>
+                      </t>
+                      <t t-if="record.phone.raw_value">
+                        <a t-attf-href="'tel:' + record.phone.raw_value" target="_self"
+                          t-attf-title="Call at {{ record.call_number.raw_value}}"
+                          class="text-truncate link-underline-opacity-0 text-reset">
+                          <t t-esc="record.phone.raw_value" />
+                        </a>
+                      </t>
+                    </t>
+                    <t t-else="">No phone</t>
+                  </li>
+
+                  <li class="d-flex flex-row justify-content-start lh-lg text-truncate" t-att-title="record.email.raw_value">
+                    <t t-if="record.email.raw_value">
+                      <a t-attf-href="'mailto:' + {{ record.email.raw_value }}" target="_self" class="text-truncate link-underline-opacity-0 text-reset">
+                        <t t-esc="record.email.raw_value" />
+                      </a>
+                    </t>
+                    <t t-else="">No email</t>
+                  </li>
+
+                </ul>
               </main>
 
+              <!-- footer: begin -->
               <footer class="d-flex justify-content-end align-items-start mt-2">
-                <field name="activity_ids" widget="kanban_activity" class="ms-auto mt-auto"/>
+                <field name="activity_ids" widget="kanban_activity" class="my-0 py-0"/>
               </footer>
+              <!-- footer: end -->
+
             </div>
           </t>
         </templates>
+
       </kanban>
     </field>
   </record>
