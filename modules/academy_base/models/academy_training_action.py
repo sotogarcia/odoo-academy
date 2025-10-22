@@ -569,7 +569,8 @@ class AcademyTrainingAction(models.Model):
 
     @api.depends("action_line_ids")
     def _compute_action_line_count(self):
-        counts = one2many_count(self, "action_line_ids")
+        domain = [("is_section", "=", False)]
+        counts = one2many_count(self, "action_line_ids", domain)
 
         for record in self:
             record.action_line_count = counts.get(record.id, 0)

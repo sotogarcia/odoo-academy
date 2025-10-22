@@ -72,7 +72,7 @@
                 widget="many2many_tags"/>
             </group>
             <group col="2" colspan="1" string="Main settings">
-              <field name="code" class="oe_field_code"/>
+              <field name="code" class="oe_field_code" required="not is_section" />
               <field name="hours" class="oe_field_hours"/>
               <field name="optional" class="oe_field_optional"/>
             </group>

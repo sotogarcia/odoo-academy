@@ -71,7 +71,7 @@ class AcademyTrainingProgramLine(models.Model):
 
     code = fields.Char(
         string="Code",
-        required=True,
+        required=False,
         readonly=False,
         index=False,
         default=None,
@@ -268,10 +268,21 @@ class AcademyTrainingProgramLine(models.Model):
         # ),
     ]
 
+    @api.constrains("code", "is_section")
+    def _check_code(self):
+        message = _("The code is mandatory for the training program lines.")
+
+        for record in self:
+            if not record.code and not record.is_section:
+                raise ValidationError(message)
+
     # -- Methods overrides ----------------------------------------------------
 
     @api.model_create_multi
     def create(self, values_list):
+        for values in values_list:
+            values.setdefault("code", uuid4().hex[:8])
+
         sanitize_code(values_list, "upper")
         return super().create(values_list)
 

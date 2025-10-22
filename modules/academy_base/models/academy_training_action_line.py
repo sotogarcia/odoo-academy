@@ -4,7 +4,7 @@
 #    __openerp__.py file at the root folder of this module.                   #
 ###############################################################################
 
-from typing import Required
+from typing import Required, ValuesView
 from odoo import models, fields, api
 from odoo.tools.translate import _
 from odoo.osv.expression import TRUE_DOMAIN, FALSE_DOMAIN
@@ -12,8 +12,9 @@ from odoo.tools.safe_eval import safe_eval
 from odoo.exceptions import ValidationError
 from ..utils.record_utils import ensure_recordset, get_active_records
 from ..utils.helpers import OPERATOR_MAP, one2many_count
-from logging import getLogger
 
+from uuid import uuid4
+from logging import getLogger
 
 _logger = getLogger(__name__)
 
@@ -241,6 +242,14 @@ class AcademyTrainingActionLine(models.Model):
         ),
     ]
 
+    @api.constrains("code", "is_section")
+    def _check_code(self):
+        message = _("The code is mandatory for the training program lines.")
+
+        for record in self:
+            if not record.code and not record.is_section:
+                raise ValidationError(message)
+
     # -- Copy method and auxiliaty methods ------------------------------------
 
     def copy(self, default=None):
@@ -256,6 +265,15 @@ class AcademyTrainingActionLine(models.Model):
             self._copy_teacher_assignments(default, action_id)
 
         return super().copy(default)
+
+    @api.model_create_multi
+    def create(self, values_list):
+        """Overridden method 'create'"""
+
+        for values in values_list:
+            values.setdefault("code", uuid4().hex[:8])
+
+        return super().create(values_list)
 
     def _ensure_new_training_action_on_copy(self, default):
         action_id = self.env.context.get("default_training_action_id")

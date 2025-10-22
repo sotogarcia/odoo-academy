@@ -262,7 +262,8 @@ class AcademyTrainingProgram(models.Model):
 
     @api.depends("program_line_ids")
     def _compute_program_line_count(self):
-        counts = one2many_count(self, "program_line_ids")
+        domain = [("is_section", "=", False)]
+        counts = one2many_count(self, "program_line_ids", domain)
 
         for record in self:
             record.program_line_count = counts.get(record.id, 0)
