@@ -44,7 +44,7 @@
 - [x] Reemplazar `_name_search` por `_search_display_name`.
 - [x] Importar `Registry` de `odoo.modules.registry`; usar `Registry(db_name)`.
 - [x] Considerar `self.env._('...')` en lugar de `_('...')`.
-- [x] Limpiar vistas: autoaÃ±adir campos invisibles en dominios/atributos.
+- [x] Limpiar vistas: autoañdir campos invisibles en dominios/atributos.
 - [x] Simplificar *chatter*: `<div class="oe_chatter">â€¦</div>` â†’ `<chatter />`.
 - [x] Reemplazar `_filter_access_rule*` por `_filter_access()`.
 - [x Reemplazar `_check_recursion()` por `_has_cycle()`.
@@ -121,114 +121,73 @@ attrs=["']\{["'](readonly|invisible|required)["']: *(\[[^\]]+\])\}["']
 \n\n</odoo>
 ```
 
+## Cosas que no se harán
 
-- [x] Error followers con training program al guardar
-- [x] AÃ±adir a estudiante bótón de matrículas.
-- [x] AÃ±adir a estudiante ficha de matrículas.
-- [x] AÃ±adir a estudiante idiomas.
-- [x] Autoetiquetar como estudiante sólo al crear.
+- [ ] Los campos training_module_id y training_unit_ids pasan a ser parent_id y child_ids
 - [ ] Corregir los Onchange de student
+- [ ] Quitar instalaciones de training action y poner facility.reservation
+- [ ] Comprobar widgets one2many_tags y many2many_tags
+- [ ] Encabezado con: nombre, code, parent
+- [ ] list-embed para los one2many y smart buttons
+- [ ] Description como HTML
+- [ ] Añadir ficha grupos a acciones
+- [ ] revisar los hooks
+- [ ] "depends": ["dms", "dms_field", "dms_attachment_link"]
+
+## Tareas completadas
+
+- [x] Añadir campo delivery_ids a las acciones.
+- [x] Error followers con training program al guardar
+- [x] Añdir a estudiante bótón de matrículas.
+- [x] Añdir a estudiante ficha de matrículas.
+- [x] Añdir a estudiante idiomas.
+- [x] Autoetiquetar como estudiante sólo al crear.
 - [x] Student: Name and surname
 - [x] Kanban de student
 - [x] Mostrar móvil o teléfono, el que tenga.
 - [x] Secuencia para las matrículas
 - [x] Botón ver actividades
-
+- [x] La modalidad en las matrículas debe ser única
 - [x] Errores y warnings del log
 - [x] Poner internal notes en una ficha separada tanto para student compara training action
-- [ ] En el enrolment los datos del alumno en una ficha y los de la acción en otra, el apartado admisión arriba de todo
-- [ ] Cómo llevar cuenta de si se imprimió el material
-- [ ] ¿Qué ocurre si, por fuera de student, se elige company?
-- [ ] No mostrar información de parent_id en student
+- [x] ¿Qué ocurre si, por fuera de student, se elige company?
+- [x] Cómo llevar cuenta de si se imprimió el material
+- [x] No mostrar información de parent_id en student
 - [x] Botón actividades en kanban y form
-- [ ] barcode
-- [ ] Corregir `activity`, cambiándolo por `program`
-- [ ] No se puede sustituir el programa de una acción formativa creada
-- [ ] No se puede sustituir la acción formativa en un grupo ya creado
-- [ ] Quitar instalaciones de training action y poner facility.reservation
-- [ ] Añadir vista kanban a enrolments
-- [ ] Añadir tareas NO formativas
+- [x] Corregir `activity`, cambiándolo por `program`
+- [x] No se puede sustituir el programa de una acción formativa creada
+- [x] No se puede sustituir la acción formativa en un grupo ya creado
+- [x] Añadir botón actividades en la parte superior derecha como en las facturas
+- [x] Modalidad en vistas kanban y list de training action
+- [x] Añadir internal notes
+- [x] Copiar Ownership de academy.training.framework 
+- [x] el campo ref no debe compartirse entre alumnos, profesores y staff
+- [x] Revisar las vistas embebidas
+- [x] Comprobar que se puede realizar un copy
+- [x] Comprobar tracking
+- [x] La vista pivot de matrículas debe mostrarlas agrupadas por acción y no por alumno
+- [x] sanitize_phone_number da error de límite de recursión excedido
+- [x] Retirar los contraint de token
+- [x] Añadir vista kanban a enrolments
+- [x] Si una acción tiene grupos no se pueden matricular en ella a alumnos, 
+- [x] si una acción tiene matrículas no se puede dividir en grupos
+- [x] Añadir botón "programa" a acciones referido a las líneas
+- [x] Añadir botón grupos a acciones
+- [x] Los campos hours y own hours del módulo debe fusionarse
+- [x] Mostrar líneas del programa o acción en la matrícula
+- [x] Nombres en los act_window retornados desde python
+- [x] Comportamiento de full_enrolment
+- [x] Revisar el modelo y vista de enrolment
+- [x] barcode
+
 - [ ] Sincronizar acciones formativas con grupos formativos
-- [ ] Añadir botón actividades en la parte superior derecha como en las facturas
-
-1 [ ] Acción de mantenimiento
-5 [x] Nombres en los act_window retornados desde python
-2 [ ] Revisar el modelo y vista de enrolment
-      [ ] No deja crear un enrolment nuevo en el menú matrículas
-      [ ] Opción por defecto matrícula completa (boolean)
-4 [ ] Revisar las vistas embebidas
-6 [ ] Comprobar que se puede realizar un copy
-1 [ ] Buscar todos los wizard para revisar
-3 [ ] Revisar el modelo y vista de training session
-7 [ ] Revisar informes y correos
-  [ ] Modalidad en vistas kanban y list de training action
-  [ ] La vista pivot de matrículas debe mostrarlas agrupadas por acción y no por alumno
-- [ ] Tareas NO docentes
+- [ ] Añadir tareas NO formativas
+- [ ] Acción de mantenimiento
+- [ ] Buscar todos los wizard para revisar
+- [ ] Revisar informes y correos
 
 
-- [ ] El campo hours del módulo debe desaparecer
-      Â· Si tiene unidades serÃ¡ de sólo lectura
-      Â· Si tiene unidades se calcularÃ¡ al guardar
-- [ ] Los campos training_module_id y training_unit_ids pasan a ser parent_id y child_ids
-- [ ] Description como HTML
-- [ ] InternaL notes a todo
-- [ ] Retirar los contraint de token
-
-- [ ] Comprobar widgets one2many_tags y many2many_tags
-- [ ] Añadir internal notes
-- [ ] Copiar Ownership de academy.training.framework 
-- [ ] Encabezado con: nombre, code, parent
-- [ ] list-embed para los one2many y smart buttons
-- [ ] el campo ref se comparte entre alumnos, profesores y staff
-- [ ] Si una acción tiene grupos no se pueden matricular en ella a alumnos, 
-- [ ] si una acción tiene matrículas no se puede dividir en grupos
-- [ ] mostrar líneas del programa o acción en la matrícula
-- [ ] La modalidad en las matrículas debe ser única
-- [ ] Añadir ficha grupos a acciones
-- [ ] Añadir botón programa a acciones
-- [ ] Añadir botón grupos a acciones
-- [ ] Añadir campo delivery_ids a las acciones.
-- [ ] revisar los hooks
-
-- [ ] "depends": ["dms", "dms_field", "dms_attachment_link"]
-
-## Solución a la matriculación por grupos
-
-Una matrícula tendrá un campo `training_action_id` que será su grupo y un campo
-`parent_action_id` que será la acción superior. Este segundo campo será igual a 
-`training_action_id.parent_id` en caso de ser un grupo o a `training_action_id`
-en caso de no existir grupos.
-
-El campo enrolment_ids 
-
-
-- academy.support.staff
-- academy_student
-- academy_teacher
-
-- academy_training_framework
-- academy_training_program
-- academy_training_program_line
-- academy_training_module
-
-- academy_training_action
-- academy_training_action_enrolment
-
-- academy_competency_unit
-- academy_educational_attainment
-- academy_application_scope
-- academy_training_methodology
-- academy_training_modality
-
-- academy_knowledge_area
-- academy_professional_area
-- academy_professional_category
-- academy_professional_family
-- academy_professional_field
-- academy_professional_qualification
-- academy_professional_sector
-- academy_qualification_level
-
+      
 
 
 ## Tarea de mantenimiento

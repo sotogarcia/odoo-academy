@@ -69,12 +69,19 @@
 
           <notebook>
             <page id="setup" string="Setup" class="oe_page_setup" accesskey="S">
+              <group string="Ownership" groups="record_ownership.record_ownership_proxy">
+                <group>
+                  <field name="owner_id" class="oe_field_owner_id"
+                    options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
+                </group>
+                <group>
+                  <field name="subrogate_id" class="oe_field_subrogate_id"
+                    domain="[('id', '&lt;&gt;', owner_id)]"
+                    options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
+                </group>
+              </group>
               <group col="4" string="Description">
                 <field name="description" class="oe_field_description" colspan="2" nolabel="1"/>
-              </group>
-              <group col="4" string="Ownership" id="ownership" groups="record_ownership.record_ownership_proxy">
-                <field name="owner_id" class="oe_field_owner_id"/>
-                <field name="subrogate_id" class="oe_field_subrogate_id"/>
               </group>
             </page>
           </notebook>
@@ -216,7 +223,7 @@
       </xpath>
       <xpath expr="//notebook/page" position="after">
         <page string="Training units" class="oe_page_training_units" accesskey="U">
-          <field name="training_unit_ids" class="oe_field_training_unit_ids"
+          <field name="training_unit_ids" class="oe_field_training_unit_ids" readonly="not id"
             context="{'form_view_ref':'academy_base.view_academy_training_module_unit_form', 'default_training_module_id': id}"
           />
         </page>

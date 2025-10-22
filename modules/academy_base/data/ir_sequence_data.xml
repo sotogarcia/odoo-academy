@@ -114,7 +114,19 @@
         <field name="name">Academy training module</field>
         <field name="active" eval="True"/>
         <field name="code">academy.training.module.sequence</field>
-        <field name="prefix">TM-</field>
+        <field name="prefix">MF-</field>
+        <field name="number_next" eval="1"/>
+        <field name="number_increment" eval="1"/>
+        <field name="padding" eval="5"/>
+        <field name="suffix"/>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="ir_sequence_academy_training_unit" model="ir.sequence">
+        <field name="name">Academy training unit</field>
+        <field name="active" eval="True"/>
+        <field name="code">academy.training.unit.sequence</field>
+        <field name="prefix">UF-</field>
         <field name="number_next" eval="1"/>
         <field name="number_increment" eval="1"/>
         <field name="padding" eval="5"/>

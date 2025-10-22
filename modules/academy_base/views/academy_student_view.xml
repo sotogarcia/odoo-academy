@@ -80,6 +80,24 @@
       <xpath expr="//kanban" position="attributes">
         <attribute name="string">academy_student_kanban</attribute>
       </xpath>
+      <xpath expr="//img[@id='default-avatar']" position="attributes">
+          <attribute name="src">/academy_base/static/src/img/student-128.png</attribute>
+      </xpath>
+
+      <xpath expr="//ul/li[last()]" position="after">
+        <li class="d-flex flex-row justify-content-start lh-lg text-truncate" t-att-title="record.vat.raw_value">
+          <strong class="pe-2">VAT:</strong>
+          <span t-if="record.vat.raw_value"><t t-esc="record.vat.raw_value" /></span>
+          <span t-else="">---</span>
+        </li>
+
+        <li class="d-flex flex-row justify-content-start lh-lg text-truncate" t-att-title="record.signup_code.raw_value">
+          <strong class="pe-2">Code:</strong>
+          <span t-if="record.signup_code.raw_value"><t t-esc="record.signup_code.raw_value" /></span>
+          <span t-else="">---</span>
+        </li>
+      </xpath>
+
     </field>
   </record>
 

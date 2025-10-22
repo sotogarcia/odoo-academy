@@ -72,7 +72,7 @@
                 widget="many2many_tags"/>
             </group>
             <group col="2" colspan="1" string="Main settings">
-              <field name="code" class="oe_field_code"/>
+              <field name="code" class="oe_field_code" required="not is_section" />
               <field name="hours" class="oe_field_hours"/>
               <field name="optional" class="oe_field_optional"/>
             </group>
@@ -80,14 +80,19 @@
 
           <notebook>
             <page id="setup" string="Setup" class="oe_page_setup" accesskey="S">
+              <group string="Ownership" groups="record_ownership.record_ownership_proxy">
+                <group>
+                  <field name="owner_id" class="oe_field_owner_id"
+                    options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
+                </group>
+                <group>
+                  <field name="subrogate_id" class="oe_field_subrogate_id"
+                    domain="[('id', '&lt;&gt;', owner_id)]"
+                    options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
+                </group>
+              </group>
               <group col="2" string="Description">
                 <field name="description" class="oe_field_description" nolabel="1" colspan="2"/>
-              </group>
-              <group col="4" string="Ownership" id="ownership" groups="record_ownership.record_ownership_proxy">
-                <field name="owner_id" class="oe_field_owner_id"
-                  options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
-                <field name="subrogate_id" class="oe_field_subrogate_id"
-                  options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
               </group>
             </page>
             <page string="Internal Notes" class="oe_page_internal_notes" accesskey="I"

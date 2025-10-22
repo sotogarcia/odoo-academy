@@ -206,6 +206,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         context={},
         ondelete="cascade",
         auto_join=False,
+        tracking=True,
     )
 
     material_status = fields.Selection(
@@ -220,6 +221,7 @@ class AcademyTrainingActionEnrolment(models.Model):
             ("delivered", "Material Delivered"),
             ("na", "Not Applicable / Digital"),
         ],
+        tracking=True,
     )
 
     full_enrolment = fields.Boolean(
@@ -227,9 +229,10 @@ class AcademyTrainingActionEnrolment(models.Model):
         required=False,
         readonly=False,
         index=True,
-        default=False,
+        default=True,
         help="If active, the student will be automatically enrolled in all "
         "modules of the training program.",
+        tracking=True,
     )
 
     # Student information
@@ -247,6 +250,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         context={},
         ondelete="cascade",
         auto_join=False,
+        tracking=True,
     )
 
     student_name = fields.Char(
@@ -299,6 +303,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         context={},
         ondelete="cascade",
         auto_join=False,
+        tracking=True,
     )
 
     @api.onchange("training_action_id")
@@ -372,6 +377,13 @@ class AcademyTrainingActionEnrolment(models.Model):
         string="Image 128",
         help="Training action image (128 px)",
         related="training_action_id.image_128",
+    )
+
+    available_line_ids = fields.One2many(
+        string="Available lines",
+        readonly=True,
+        help="Programme lines included in this enrolment",
+        related="training_action_id.action_line_ids",
     )
 
     # -- Time interval: fields and logic
@@ -460,10 +472,8 @@ class AcademyTrainingActionEnrolment(models.Model):
         infinity = datetime.max
 
         for record in self:
-            deregister = record.deregister or indefinity
-            action_date_stop = (
-                record.training_action_id.date_stop or indefinity
-            )
+            deregister = record.deregister or infinity
+            action_date_stop = record.training_action_id.date_stop or infinity
             record.available_until = min(deregister, action_date_stop)
 
     lifespan = fields.Char(
@@ -608,7 +618,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         now = fields.Datetime.now()
         for record in self:
             register = record.register
-            deregister = record.deregister or indefinity
+            deregister = record.deregister or infinity
 
             if register < now and deregister >= now:
                 record.color = 10

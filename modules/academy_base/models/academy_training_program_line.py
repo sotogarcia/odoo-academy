@@ -7,11 +7,12 @@
 from odoo import models, fields, api
 from odoo.tools.translate import _
 from odoo.tools.safe_eval import safe_eval
+from odoo.exceptions import ValidationError
 from ..utils.helpers import sanitize_code
 from odoo.osv.expression import TRUE_DOMAIN, FALSE_DOMAIN
 from ..utils.helpers import OPERATOR_MAP, many2many_count
 
-
+from uuid import uuid4
 from logging import getLogger
 
 
@@ -42,6 +43,8 @@ class AcademyTrainingProgramLine(models.Model):
         help="Name of the program line; usually the module or block title",
         size=1024,
         translate=True,
+        copy=True,
+        tracking=True,
     )
 
     description = fields.Text(
@@ -52,6 +55,7 @@ class AcademyTrainingProgramLine(models.Model):
         default=None,
         help="Detailed description of the line content, scope and objectives",
         translate=True,
+        copy=True,
     )
 
     active = fields.Boolean(
@@ -61,17 +65,21 @@ class AcademyTrainingProgramLine(models.Model):
         index=False,
         default=True,
         help="Disable to archive without deleting.",
+        copy=True,
+        tracking=True,
     )
 
     code = fields.Char(
         string="Code",
-        required=True,
+        required=False,
         readonly=False,
         index=False,
         default=None,
         help="Official or internal code for this program line",
         size=30,
         translate=False,
+        copy=False,
+        tracking=True,
     )
 
     sequence = fields.Integer(
@@ -81,6 +89,7 @@ class AcademyTrainingProgramLine(models.Model):
         index=False,
         default=0,
         help="Defines the order in which modules appear inside the program",
+        copy=True,
     )
 
     comment = fields.Html(
@@ -97,6 +106,7 @@ class AcademyTrainingProgramLine(models.Model):
         sanitize_attributes=False,
         strip_style=True,
         translate=False,
+        copy=False,
     )
 
     optional = fields.Boolean(
@@ -106,6 +116,8 @@ class AcademyTrainingProgramLine(models.Model):
         index=False,
         default=False,
         help="Mark if this line is optional/elective for the learner",
+        copy=True,
+        tracking=True,
     )
 
     hours = fields.Float(
@@ -116,6 +128,8 @@ class AcademyTrainingProgramLine(models.Model):
         default=0.0,
         digits=(16, 2),
         help="Nominal duration of the line in hours",
+        copy=True,
+        tracking=True,
     )
 
     training_program_id = fields.Many2one(
@@ -128,8 +142,10 @@ class AcademyTrainingProgramLine(models.Model):
         comodel_name="academy.training.program",
         domain=[],
         context={},
-        ondelete="restrict",
+        ondelete="cascade",
         auto_join=False,
+        copy=False,
+        tracking=True,
     )
 
     training_module_id = fields.Many2one(
@@ -144,6 +160,8 @@ class AcademyTrainingProgramLine(models.Model):
         context={},
         ondelete="restrict",
         auto_join=False,
+        copy=True,
+        tracking=True,
     )
 
     @api.onchange("training_module_id")
@@ -166,6 +184,7 @@ class AcademyTrainingProgramLine(models.Model):
         column2="competency_unit_id",
         domain=[],
         context={},
+        copy=True,
     )
 
     # -- Computed field: competency_unit_count --------------------------------
@@ -179,6 +198,7 @@ class AcademyTrainingProgramLine(models.Model):
         help=False,
         compute="_compute_competency_unit_count",
         search="_search_competency_unit_count",
+        copy=False,
     )
 
     @api.depends("competency_unit_ids")
@@ -211,6 +231,7 @@ class AcademyTrainingProgramLine(models.Model):
         index=True,
         default=False,
         help="If checked, this record is a visual section/separator",
+        copy=True,
     )
 
     @api.onchange("is_section")
@@ -247,16 +268,39 @@ class AcademyTrainingProgramLine(models.Model):
         # ),
     ]
 
+    @api.constrains("code", "is_section")
+    def _check_code(self):
+        message = _("The code is mandatory for the training program lines.")
+
+        for record in self:
+            if not record.code and not record.is_section:
+                raise ValidationError(message)
+
     # -- Methods overrides ----------------------------------------------------
 
     @api.model_create_multi
     def create(self, values_list):
+        for values in values_list:
+            values.setdefault("code", uuid4().hex[:8])
+
         sanitize_code(values_list, "upper")
         return super().create(values_list)
 
     def write(self, values):
         sanitize_code(values, "upper")
         return super().write(values)
+
+    def copy(self, default=None):
+        self.ensure_one()
+        default = dict(default or {})
+
+        default["code"] = uuid4().hex[:8]
+
+        # Ensure target action is set and it is different than original
+        if not default.get("training_program_id", False):
+            self._ensure_new_training_program_on_copy(default)
+
+        return super().copy(default)
 
     # -- Public methods -------------------------------------------------------
 
@@ -284,3 +328,33 @@ class AcademyTrainingProgramLine(models.Model):
         }
 
         return serialized
+
+    # -- Auxiliary methods ----------------------------------------------------
+
+    def _ensure_new_training_program_on_copy(self, default):
+        program_id = self.env.context.get("default_training_program_id")
+        if isinstance(program_id, models.BaseModel):
+            program_id = program_id.id
+
+        if not program_id:
+            raise ValidationError(
+                _(
+                    "A training program is required to duplicate this line. "
+                    "Provide it via context as 'default_training_program_id' "
+                    "or in defaults as 'training_program_id'."
+                )
+            )
+
+        # Prevent duplicating into the same training program
+        if (
+            self.training_program_id
+            and self.training_program_id.id == program_id
+        ):
+            raise ValidationError(
+                _(
+                    "Cannot duplicate into the same training program. "
+                    "Please choose a different target program."
+                )
+            )
+
+        default.setdefault("training_program_id", program_id)

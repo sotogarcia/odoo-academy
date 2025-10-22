@@ -85,7 +85,7 @@
           <notebook>
             <page string="Programs" class="oe_page_training_programs" accesskey="C">
               <field name="training_program_ids" class="oe_field_training_program_ids"
-                widget="many2many" context="{'default_training_framework_id': id}"
+                context="{'default_training_framework_id': id}" readonly="not id"
                 options="{'no_quick_create': True, 'no_create': False, 'no_open': False}"/>
             </page>
             <page id="setup" string="Setup" class="oe_page_setup" accesskey="S">

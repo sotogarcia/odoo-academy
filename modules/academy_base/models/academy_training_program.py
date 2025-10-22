@@ -49,6 +49,8 @@ class AcademyTrainingProgram(models.Model):
         help="Official name of the training program",
         size=1024,
         translate=True,
+        copy=False,
+        tracking=True,
     )
 
     description = fields.Text(
@@ -59,6 +61,7 @@ class AcademyTrainingProgram(models.Model):
         default=None,
         help="Detailed description of the Training Program",
         translate=True,
+        copy=True,
     )
 
     active = fields.Boolean(
@@ -68,6 +71,8 @@ class AcademyTrainingProgram(models.Model):
         index=False,
         default=True,
         help="Disable to archive without deleting",
+        copy=True,
+        tracking=True,
     )
 
     comment = fields.Html(
@@ -84,6 +89,7 @@ class AcademyTrainingProgram(models.Model):
         sanitize_attributes=False,
         strip_style=True,
         translate=False,
+        copy=False,
     )
 
     code = fields.Char(
@@ -95,6 +101,8 @@ class AcademyTrainingProgram(models.Model):
         help="Public code or short identifier for the program",
         size=30,
         translate=False,
+        copy=False,
+        tracking=True,
     )
 
     training_framework_id = fields.Many2one(
@@ -107,8 +115,10 @@ class AcademyTrainingProgram(models.Model):
         comodel_name="academy.training.framework",
         domain=[],
         context={},
-        ondelete="cascade",
+        ondelete="restrict",
         auto_join=False,
+        copy=True,
+        tracking=True,
     )
 
     professional_family_id = fields.Many2one(
@@ -121,8 +131,9 @@ class AcademyTrainingProgram(models.Model):
         comodel_name="academy.professional.family",
         domain=[],
         context={},
-        ondelete="cascade",
+        ondelete="set null",
         auto_join=False,
+        copy=True,
     )
 
     @api.onchange("professional_family_id")
@@ -139,8 +150,9 @@ class AcademyTrainingProgram(models.Model):
         comodel_name="academy.professional.area",
         domain=[],
         context={},
-        ondelete="cascade",
+        ondelete="set null",
         auto_join=False,
+        copy=True,
     )
 
     professional_field_id = fields.Many2one(
@@ -153,8 +165,9 @@ class AcademyTrainingProgram(models.Model):
         comodel_name="academy.professional.field",
         domain=[],
         context={},
-        ondelete="cascade",
+        ondelete="set null",
         auto_join=False,
+        copy=True,
     )
 
     @api.onchange("professional_field_id")
@@ -174,6 +187,7 @@ class AcademyTrainingProgram(models.Model):
         column2="professional_sector_id",
         domain=[],
         context={},
+        copy=True,
     )
 
     qualification_level_id = fields.Many2one(
@@ -186,8 +200,9 @@ class AcademyTrainingProgram(models.Model):
         comodel_name="academy.qualification.level",
         domain=[],
         context={},
-        ondelete="cascade",
+        ondelete="set null",
         auto_join=False,
+        copy=True,
     )
 
     attainment_id = fields.Many2one(
@@ -200,8 +215,9 @@ class AcademyTrainingProgram(models.Model):
         comodel_name="academy.educational.attainment",
         domain=[],
         context={},
-        ondelete="cascade",
+        ondelete="set null",
         auto_join=False,
+        copy=True,
     )
 
     general_competence = fields.Text(
@@ -212,6 +228,7 @@ class AcademyTrainingProgram(models.Model):
         default=None,
         help="Overall competence expected after completing the program",
         translate=True,
+        copy=True,
     )
 
     program_line_ids = fields.One2many(
@@ -226,6 +243,7 @@ class AcademyTrainingProgram(models.Model):
         domain=[],
         context={},
         auto_join=False,
+        copy=False,
     )
 
     # Computed field: program_line_count --------------------------------------
@@ -239,11 +257,13 @@ class AcademyTrainingProgram(models.Model):
         help="Computed number of program lines",
         compute="_compute_program_line_count",
         store=True,
+        copy=False,
     )
 
     @api.depends("program_line_ids")
     def _compute_program_line_count(self):
-        counts = one2many_count(self, "program_line_ids")
+        domain = [("is_section", "=", False)]
+        counts = one2many_count(self, "program_line_ids", domain)
 
         for record in self:
             record.program_line_count = counts.get(record.id, 0)
@@ -261,6 +281,7 @@ class AcademyTrainingProgram(models.Model):
         context={},
         auto_join=False,
         check_company=True,
+        copy=False,
     )
 
     # Computed field: training_action_count -----------------------------------
@@ -274,6 +295,7 @@ class AcademyTrainingProgram(models.Model):
         help="Computed number of training actions",
         compute="_compute_training_action_count",
         search="_search_training_action_count",
+        copy=False,
     )
 
     @api.depends("training_action_ids")
@@ -312,6 +334,8 @@ class AcademyTrainingProgram(models.Model):
         help="Total hours computed from linked modules",
         compute="_compute_hours",
         store=True,
+        copy=True,
+        tracking=True,
     )
 
     @api.depends("program_line_ids.training_module_id.hours")
@@ -374,7 +398,6 @@ class AcademyTrainingProgram(models.Model):
         act_wnd = self.env.ref(action_xid)
 
         context = self.env.context.copy()
-        print(safe_eval(act_wnd.context))
         context.update(safe_eval(act_wnd.context))
         context.update({"default_training_program_id": self.id})
 
@@ -410,3 +433,19 @@ class AcademyTrainingProgram(models.Model):
         result = parent.write(values)
 
         return result
+
+    def copy(self, default=None):
+        default = dict(default or {})
+
+        if not default.get("name", False):
+            name = self.name or _("New training program")
+            sufix = uuid4().hex[:8]
+            default["name"] = f"{name} ‒ {sufix}"
+
+        new_program = super().copy(default)
+
+        line_default = {"training_program_id": new_program.id}
+        for line in self.program_line_ids:
+            line.copy(default=line_default)
+
+        return new_program

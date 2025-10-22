@@ -8,14 +8,16 @@ all training module attributes and behavior.
 from odoo import models, fields, api
 from odoo.tools.translate import _
 from odoo.tools.safe_eval import safe_eval
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, UserError
 from odoo.osv.expression import TRUE_DOMAIN, FALSE_DOMAIN
 from ..utils.helpers import OPERATOR_MAP, one2many_count, many2many_count
 from ..utils.helpers import sanitize_code, default_code
 
+from uuid import uuid4
 from logging import getLogger
 
-CODE_SEQUENCE = "academy.training.module.sequence"
+MODULE_SEQUENCE = "academy.training.module.sequence"
+UNIT_SEQUENCE = "academy.training.unit.sequence"
 
 _logger = getLogger(__name__)
 
@@ -53,6 +55,8 @@ class AcademyTrainingModule(models.Model):
         help="Enter new name",
         size=1024,
         translate=True,
+        copy=False,
+        tracking=True,
     )
 
     description = fields.Text(
@@ -63,6 +67,7 @@ class AcademyTrainingModule(models.Model):
         default=None,
         help="Enter new description",
         translate=True,
+        copy=True,
     )
 
     active = fields.Boolean(
@@ -72,6 +77,8 @@ class AcademyTrainingModule(models.Model):
         index=False,
         default=True,
         help="Disable to archive without deleting.",
+        copy=True,
+        tracking=True,
     )
 
     training_module_id = fields.Many2one(
@@ -86,6 +93,8 @@ class AcademyTrainingModule(models.Model):
         context={},
         ondelete="cascade",
         auto_join=False,
+        copy=False,
+        tracking=True,
     )
 
     training_unit_ids = fields.One2many(
@@ -100,6 +109,7 @@ class AcademyTrainingModule(models.Model):
         domain=[],
         context={},
         auto_join=False,
+        copy=False,
     )
 
     parent_path = fields.Char(
@@ -109,6 +119,7 @@ class AcademyTrainingModule(models.Model):
         index=True,
         default=False,
         help="Technical path used to speed up 'child_of' domain lookups.",
+        copy=False,
     )
 
     code = fields.Char(
@@ -116,11 +127,19 @@ class AcademyTrainingModule(models.Model):
         required=True,
         readonly=False,
         index=False,
-        default=lambda self: default_code(self.env, CODE_SEQUENCE),
+        default=lambda self: self.default_code(),
         help="Enter module code",
         size=30,
         translate=False,
+        copy=False,
+        tracking=True,
     )
+
+    def default_code(self):
+        if self.env.context.get("default_training_module_id", False):
+            return default_code(self.env, UNIT_SEQUENCE)
+
+        return default_code(self.env, MODULE_SEQUENCE)
 
     hours = fields.Float(
         string="Hours",
@@ -130,6 +149,8 @@ class AcademyTrainingModule(models.Model):
         default=0.0,
         digits=(16, 2),
         help="Length in hours",
+        copy=True,
+        tracking=True,
     )
 
     sequence = fields.Integer(
@@ -139,6 +160,7 @@ class AcademyTrainingModule(models.Model):
         index=False,
         default=0,
         help="Choose the unit order",
+        copy=True,
     )
 
     program_line_ids = fields.One2many(
@@ -153,6 +175,7 @@ class AcademyTrainingModule(models.Model):
         domain=[],
         context={},
         auto_join=False,
+        copy=False,
     )
 
     program_line_count = fields.Integer(
@@ -164,6 +187,7 @@ class AcademyTrainingModule(models.Model):
         help=False,
         compute="_compute_program_line_count",
         search="_search_program_line_count",
+        copy=False,
     )
 
     @api.depends("program_line_ids")
@@ -200,6 +224,7 @@ class AcademyTrainingModule(models.Model):
         help="Show the number of training units in the training module",
         compute="_compute_training_unit_count",
         search="_search_training_unit_count",
+        copy=False,
     )
 
     @api.depends("training_unit_ids")
@@ -226,7 +251,7 @@ class AcademyTrainingModule(models.Model):
 
         return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
-    resolved_ids = fields.Many2many(
+    delivered_modules_ids = fields.Many2many(
         string="Deliverable modules",
         required=False,
         readonly=True,
@@ -237,16 +262,17 @@ class AcademyTrainingModule(models.Model):
             "If it has children, it points to its sub-modules."
         ),
         comodel_name="academy.training.module",
-        compute="_compute_resolved_ids",
+        compute="_compute_delivered_modules_ids",
+        copy=False,
     )
 
     @api.depends("training_unit_ids")
-    def _compute_resolved_ids(self):
+    def _compute_delivered_modules_ids(self):
         for record in self:
             if record.training_unit_ids:
-                record.resolved_ids = record.training_unit_ids
+                record.delivered_modules_ids = record.training_unit_ids
             else:
-                record.resolved_ids = record
+                record.delivered_modules_ids = record
 
     training_program_ids = fields.Many2many(
         string="Training programs",
@@ -261,6 +287,7 @@ class AcademyTrainingModule(models.Model):
         column2="training_program_id",
         domain=[],
         context={},
+        copy=False,
     )
 
     training_program_count = fields.Integer(
@@ -271,6 +298,7 @@ class AcademyTrainingModule(models.Model):
         default=0,
         help="Number of training programs using this training module",
         compute="_compute_training_program_count",
+        copy=False,
     )
 
     @api.depends("program_line_ids", "program_line_ids.training_module_id")
@@ -347,6 +375,27 @@ class AcademyTrainingModule(models.Model):
         self._update_parent_hours(parents=affected)
 
         return result
+
+    def copy(self, default=None):
+        default = dict(default or {})
+
+        self._prevent_copy_training_units(default)
+
+        if not default.get("name", False):
+            name = self.name or _("New training module")
+            sufix = uuid4().hex[:8]
+            default["name"] = f"{name} ‒ {sufix}"
+
+        new_module = super().copy(default)
+
+        unit_context = dict(default_training_module_id=new_module.id)
+        unit_default = {"training_module_id": new_module.id}
+        for unit in self.training_unit_ids:
+            # Allow choose the right sequence for training units/blocks
+            unit_ctx = unit.with_context(unit_context)
+            unit_ctx.copy(default=unit_default)
+
+        return new_module
 
     # -------------------------- PUBLIC METHODS -------------------------------
 
@@ -440,6 +489,13 @@ class AcademyTrainingModule(models.Model):
         return serialized
 
     # -------------------------- AUXILIARY METHODS ----------------------------
+
+    def _prevent_copy_training_units(self, default):
+        parent_id = self.training_module_id
+        new_parent_id = default.get("training_module_id", False)
+        if parent_id and (not new_parent_id or parent_id == new_parent_id):
+            m = _("Duplicating training units/blocks is strictly prohibited.")
+            raise UserError(m)
 
     def _get_id(self, model_or_id):
         """Returns a valid id or rises an error"""
