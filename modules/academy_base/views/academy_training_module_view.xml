@@ -216,7 +216,7 @@
       </xpath>
       <xpath expr="//notebook/page" position="after">
         <page string="Training units" class="oe_page_training_units" accesskey="U">
-          <field name="training_unit_ids" class="oe_field_training_unit_ids"
+          <field name="training_unit_ids" class="oe_field_training_unit_ids" readonly="not id"
             context="{'form_view_ref':'academy_base.view_academy_training_module_unit_form', 'default_training_module_id': id}"
           />
         </page>

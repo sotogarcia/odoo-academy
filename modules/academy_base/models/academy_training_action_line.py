@@ -9,6 +9,8 @@ from odoo import models, fields, api
 from odoo.tools.translate import _
 from odoo.osv.expression import TRUE_DOMAIN, FALSE_DOMAIN
 from odoo.tools.safe_eval import safe_eval
+from odoo.exceptions import ValidationError
+from ..utils.record_utils import ensure_recordset, get_active_records
 from ..utils.helpers import OPERATOR_MAP, one2many_count
 from logging import getLogger
 
@@ -45,6 +47,7 @@ class AcademyTrainingActionLine(models.Model):
         context={},
         ondelete="cascade",
         auto_join=False,
+        copy=True,
     )
 
     training_program_id = fields.Many2one(
@@ -53,6 +56,7 @@ class AcademyTrainingActionLine(models.Model):
         related="training_action_id.training_program_id",
         required=False,
         store=True,
+        copy=True,
     )
 
     # Override of program's field to rename the M2M relation table
@@ -69,6 +73,7 @@ class AcademyTrainingActionLine(models.Model):
         column2="competency_unit_id",
         domain=[],
         context={},
+        copy=True,
     )
 
     training_action_id = fields.Many2one(
@@ -83,6 +88,7 @@ class AcademyTrainingActionLine(models.Model):
         context={},
         ondelete="cascade",
         auto_join=False,
+        copy=False,
     )
 
     # -- Teacher assignment: fields and logic
@@ -100,6 +106,7 @@ class AcademyTrainingActionLine(models.Model):
         domain=[],
         context={},
         auto_join=False,
+        copy=False,
     )
 
     primary_teacher_id = fields.Many2one(
@@ -117,6 +124,7 @@ class AcademyTrainingActionLine(models.Model):
         compute="_compute_primary_teacher_id",
         inverse="_inverse_primary_teacher_id",
         store=True,
+        copy=False,
     )
 
     @api.depends(
@@ -188,6 +196,7 @@ class AcademyTrainingActionLine(models.Model):
         help=False,
         compute="_compute_teacher_assignment_count",
         search="_search_teacher_assignment_count",
+        copy=False,
     )
 
     @api.depends("teacher_assignment_ids")
@@ -219,7 +228,7 @@ class AcademyTrainingActionLine(models.Model):
 
     _sql_constraints = [
         (
-            "code_unique",
+            "code_unique",  # Same name as program to overload it
             "UNIQUE(code, training_action_id)",
             "Program line must be unique by training action",
         ),
@@ -229,6 +238,61 @@ class AcademyTrainingActionLine(models.Model):
             "Hours must be a non-negative number",
         ),
     ]
+
+    # -- Copy method and auxiliaty methods ------------------------------------
+
+    def copy(self, default=None):
+        self.ensure_one()
+        default = dict(default or {})
+
+        # Ensure target action is set and it is different than original
+        if not default.get("training_action_id", False):
+            self._ensure_new_training_action_on_copy(default)
+
+        action_id = default.get("training_action_id")
+        if "teacher_assignment_ids" not in default:
+            self._copy_teacher_assignments(default, action_id)
+
+        return super().copy(default)
+
+    def _ensure_new_training_action_on_copy(self, default):
+        action_id = self.env.context.get("default_training_action_id")
+        if isinstance(action_id, models.BaseModel):
+            action_id = action_id.id
+
+        if not action_id:
+            raise ValidationError(
+                _(
+                    "A training action is required to duplicate this line. "
+                    "Provide it via context as 'default_training_action_id' "
+                    "or in defaults as 'training_action_id'."
+                )
+            )
+
+        # Prevent duplicating into the same training action
+        if self.training_action_id and self.training_action_id.id == action_id:
+            raise ValidationError(
+                _(
+                    "Cannot duplicate into the same training action. "
+                    "Please choose a different target action."
+                )
+            )
+
+        default.setdefault("training_action_id", action_id)
+
+    def _copy_teacher_assignments(self, default, training_action_id):
+        if isinstance(training_action_id, models.BaseModel):
+            training_action_id = training_action_id.id
+
+        o2m_ops = [(5, 0, 0)]
+        for assign in self.teacher_assignment_ids:
+            values = {
+                "training_action_id": training_action_id,
+                "teacher_id": assign.teacher_id.id,
+            }
+            o2m_ops.append((0, 0, values))
+
+        default["teacher_assignment_ids"] = o2m_ops
 
     # -- Public methods
     # -------------------------------------------------------------------------
@@ -356,6 +420,10 @@ class AcademyTrainingActionLine(models.Model):
 
         # returns one dict per record, already handling Command objects
         source_values = program_lines.copy_data(defaults)
+
+        # Fill in with the non-copyable field values
+        for index in range(0, len(program_lines)):
+            source_values[index]["code"] = program_lines[index].code
 
         # Keep only keys that exist in the current model
         return [

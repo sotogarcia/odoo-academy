@@ -260,21 +260,13 @@
                   <li class="d-flex flex-row justify-content-start lh-lg text-truncate">
                     <t t-if="record.phone.raw_value or record.mobile.raw_value">
                       <t t-if="record.mobile.raw_value">
-                        <a t-attf-href="'tel:' + record.mobile.raw_value" target="_self"
-                          t-attf-title="Call at {{ record.call_number.raw_value}}"
-                          class="text-truncate link-underline-opacity-0 text-reset">
-                          <t t-esc="record.mobile.raw_value" />
-                        </a>
+                        <t t-esc="record.mobile.raw_value" />
                       </t>
                       <t t-if="record.phone.raw_value and record.mobile.raw_value">
                         <span class="px-2">/</span>
                       </t>
                       <t t-if="record.phone.raw_value">
-                        <a t-attf-href="'tel:' + record.phone.raw_value" target="_self"
-                          t-attf-title="Call at {{ record.call_number.raw_value}}"
-                          class="text-truncate link-underline-opacity-0 text-reset">
-                          <t t-esc="record.phone.raw_value" />
-                        </a>
+                        <t t-esc="record.phone.raw_value" />
                       </t>
                     </t>
                     <t t-else="">No phone</t>
@@ -282,9 +274,7 @@
 
                   <li class="d-flex flex-row justify-content-start lh-lg text-truncate" t-att-title="record.email.raw_value">
                     <t t-if="record.email.raw_value">
-                      <a t-attf-href="'mailto:' + {{ record.email.raw_value }}" target="_self" class="text-truncate link-underline-opacity-0 text-reset">
-                        <t t-esc="record.email.raw_value" />
-                      </a>
+                      <t t-esc="record.email.raw_value" />
                     </t>
                     <t t-else="">No email</t>
                   </li>

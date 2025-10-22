@@ -5,7 +5,8 @@
 ###############################################################################
 
 from odoo import models, fields, api
-from odoo.exceptions import ValidationError
+from odoo.tools.translate import _
+from odoo.exceptions import ValidationError, UserError
 from ..utils.sql_helpers import create_index
 
 from logging import getLogger
@@ -28,6 +29,11 @@ class AcademyTrainingActionAssignment(models.Model):
 
     _inherit = ["mail.thread"]
 
+    IMMUTABLE_FIELDS = [
+        "training_action_id",
+        "action_line_id",
+    ]
+
     training_action_id = fields.Many2one(
         string="Training action",
         required=True,
@@ -40,7 +46,6 @@ class AcademyTrainingActionAssignment(models.Model):
         context={},
         ondelete="cascade",
         auto_join=False,
-        tracking=True,
     )
 
     action_line_id = fields.Many2one(
@@ -55,7 +60,6 @@ class AcademyTrainingActionAssignment(models.Model):
         context={},
         ondelete="cascade",
         auto_join=False,
-        tracking=True,
     )
 
     teacher_id = fields.Many2one(
@@ -148,7 +152,11 @@ class AcademyTrainingActionAssignment(models.Model):
 
         # If a single line is being set for the batch and action is omitted,
         # complete it here (same action will apply to all records in self).
+        # This is for future,
         self._complete_training_action_from_single_line(values)
+
+        # Ensure immutability check sees any value completed above
+        self._prevent_change_immutable_fields(values)
 
         result = super().write(values)
 
@@ -157,8 +165,48 @@ class AcademyTrainingActionAssignment(models.Model):
 
         return result
 
+    def copy(self, default=None):
+        """
+        Overrides the standard copy method to prohibit record duplication.
+        Raises a UserError immediately upon attempt.
+        """
+        err = _("Duplicating records on this model is strictly prohibited.")
+        raise UserError(err)
+
     # -- Auxiliary methods
     # -------------------------------------------------------------------------
+
+    def _prevent_change_immutable_fields(self, vals):
+        """
+        Helper method to check if immutable fields are being modified.
+        It raises a UserError if a field is modified after its initial set.
+        """
+
+        error_message = _(
+            "The field '%(f)s' cannot be modified once it has been set."
+        )
+
+        fields_to_check = set(self.IMMUTABLE_FIELDS) & set(vals.keys())
+        if not fields_to_check:
+            return True
+
+        for record in self:
+            for field_name in fields_to_check:
+                new_value = vals[field_name]
+                if isinstance(new_value, models.BaseModel):
+                    new_value = new_value.id
+
+                current_value = (
+                    record[field_name].id if record[field_name] else False
+                )
+
+                if current_value and current_value != new_value:
+                    raise ValidationError(
+                        error_message
+                        % {"f": record._fields[field_name].string}
+                    )
+
+        return True
 
     def _forward_messages_to_the_training_item(self):
         """Move chatter to the most specific training thread available."""

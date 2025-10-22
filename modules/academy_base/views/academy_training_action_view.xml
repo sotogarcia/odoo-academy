@@ -140,7 +140,7 @@
                   <page string="Units" class="oe_page_lines" accesskey="L">
                     <group col="2">
                       <field name="action_line_ids" class="oe_field_action_line_ids" nolabel="1" colspan="2"
-                        context="{
+                        readonly="not id" context="{
                           'default_training_action_id': id,
                           'list_view_ref': 'academy_base.view_academy_training_action_line_tree_action_embed'
                         }" />

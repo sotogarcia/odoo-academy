@@ -156,8 +156,9 @@ attrs=["']\{["'](readonly|invisible|required)["']: *(\[[^\]]+\])\}["']
 2 [ ] Revisar el modelo y vista de enrolment
       [ ] No deja crear un enrolment nuevo en el menú matrículas
       [ ] Opción por defecto matrícula completa (boolean)
-4 [ ] Revisar las vistas embebidas
+4 [x] Revisar las vistas embebidas
 6 [ ] Comprobar que se puede realizar un copy
+  [ ] Comprobar tracking
 1 [ ] Buscar todos los wizard para revisar
 3 [ ] Revisar el modelo y vista de training session
 7 [ ] Revisar informes y correos

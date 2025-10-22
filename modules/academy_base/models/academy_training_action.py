@@ -6,13 +6,13 @@ all training action attributes and behavior.
 """
 
 
-from odoo.tools.translate import _, _lt
+from odoo.tools.translate import _
 from odoo.tools.misc import format_date
 
 # pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
 from odoo.tools.safe_eval import safe_eval
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, UserError
 from odoo.osv.expression import AND, OR, TRUE_DOMAIN, FALSE_DOMAIN
 from ..utils.helpers import OPERATOR_MAP, one2many_count, many2many_count
 from ..utils.sql_helpers import create_index
@@ -26,14 +26,16 @@ from ..utils.helpers import sanitize_code, default_code
 from logging import getLogger
 from pytz import utc
 from uuid import uuid4
-from psycopg2 import Error as PsqlError
 from enum import IntFlag, auto
-from datetime import datetime, date, time, timedelta
 
-TA_CODE_SEQUENCE = "academy.training.action.sequence"
-TAG_CODE_SEQUENCE = "academy.training.action.group.sequence"
+# from psycopg2 import Error as PsqlError
+# from datetime import datetime, date, time, timedelta
+
+_TA_CODE_SEQUENCE = "academy.training.action.sequence"
+_TAG_CODE_SEQUENCE = "academy.training.action.group.sequence"
 _INFINITY = fields.Datetime.to_datetime("9999-12-31 23:59:59")
 _PARENT_EXCLUDE = {"parent_id", "name", "child_ids"}
+_CTX_SKIP_PROGRAM = "skip_training_program_replication"
 
 
 _logger = getLogger(__name__)
@@ -86,6 +88,7 @@ class AcademyTrainingAction(models.Model):
         context={},
         ondelete="cascade",
         auto_join=False,
+        copy=True,
     )
 
     # -- Hierarchy: Fields and logic
@@ -131,7 +134,7 @@ class AcademyTrainingAction(models.Model):
         domain=[],
         context={},
         auto_join=False,
-        copy=True,
+        copy=False,
     )
 
     training_group_count = fields.Integer(
@@ -178,6 +181,7 @@ class AcademyTrainingAction(models.Model):
         default=False,
         help="If checked, this training action can be divided into smaller "
         "groups or sessions (children records).",
+        copy=True,
     )
 
     keep_synchronized = fields.Boolean(
@@ -190,6 +194,7 @@ class AcademyTrainingAction(models.Model):
             "If enabled, this child action will automatically keep its "
             "training program synchronized with the parent action's program."
         ),
+        copy=True,
     )
 
     # -- Entity fields
@@ -204,6 +209,7 @@ class AcademyTrainingAction(models.Model):
         help="Official name of the training action",
         size=1024,
         translate=True,
+        copy=False,
     )
 
     description = fields.Text(
@@ -214,6 +220,7 @@ class AcademyTrainingAction(models.Model):
         default=None,
         help="Detailed description of the Training Action",
         translate=True,
+        copy=True,
     )
 
     active = fields.Boolean(
@@ -223,6 +230,7 @@ class AcademyTrainingAction(models.Model):
         index=False,
         default=True,
         help="Disable to archive without deleting.",
+        copy=True,
     )
 
     sequence = fields.Integer(
@@ -232,6 +240,7 @@ class AcademyTrainingAction(models.Model):
         index=False,
         default=10,
         help="<Enrolment> priority for new students",
+        copy=False,
     )
 
     code = fields.Char(
@@ -440,6 +449,7 @@ class AcademyTrainingAction(models.Model):
         size=50,
         translate=False,
         compute="_compute_lifespan",
+        copy=False,
     )
 
     @api.depends("date_start", "date_stop")
@@ -872,6 +882,7 @@ class AcademyTrainingAction(models.Model):
         default=0,
         help=False,
         compute="_compute_color",
+        copy=False,
     )
 
     @api.depends("child_ids", "date_stop")
@@ -903,6 +914,7 @@ class AcademyTrainingAction(models.Model):
         context={},
         compute="_compute_delivered_action_ids",
         search="_search_delivered_action_ids",
+        copy=False,
     )
 
     @api.depends("parent_id", "child_ids")
@@ -945,6 +957,7 @@ class AcademyTrainingAction(models.Model):
         help=False,
         compute="_compute_student_count",
         search="_search_student_count",
+        copy=False,
     )
 
     @api.depends(
@@ -1071,7 +1084,6 @@ class AcademyTrainingAction(models.Model):
                         self.env._("Group starts before action start.")
                     )
 
-                print(g_stop, stop)
                 if g_stop > stop:
                     raise ValidationError(
                         self.env._("Group ends after action stop.")
@@ -1172,7 +1184,7 @@ class AcademyTrainingAction(models.Model):
                     )
                 )
 
-    # -- Defaults
+    # -- Overridden methods
     # -------------------------------------------------------------------------
 
     @api.model
@@ -1187,94 +1199,6 @@ class AcademyTrainingAction(models.Model):
             self._patch_defaults_on_parent(defaults)
 
         return defaults
-
-    @api.model
-    def _patch_defaults_on_parent(self, defaults):
-        defaults.setdefault("company_id", self.env.company.id)
-        defaults.setdefault("code", default_code(self.env, TA_CODE_SEQUENCE))
-        defaults.setdefault("date_start", self.default_start())
-        defaults.setdefault("seating", 20)
-        defaults.setdefault("excess", 20)
-
-    def _patch_defaults_on_child(self, defaults, fields_list):
-        self.ensure_one()
-
-        defaults.setdefault("code", default_code(self.env, TAG_CODE_SEQUENCE))
-
-        if "name" not in defaults:
-            group_name = self.first_available_group_name()
-            defaults["name"] = group_name
-
-        seating, excess = self.available_capacity()
-        if "seating" not in defaults:
-            defaults["seating"] = seating
-        if "excess" not in defaults or defaults.get("excess", 0) < seating:
-            defaults["excess"] = max(seating, excess)
-
-        parent_values = self.copy_data(default=None)[0] or {}
-        fields_list = fields_list or parent_values.keys()
-        for key, value in parent_values.items():
-            if key in _PARENT_EXCLUDE:
-                continue
-            if key in fields_list:
-                defaults.setdefault(key, value)
-
-    def _get_default_parent_training_action(self, values=None):
-        action_obj = self.env["academy.training.action"]
-
-        parent_id = (values or {}).get("parent_id")
-        if not parent_id:
-            parent_id = self.env.context.get("default_parent_id")
-
-        if parent_id:
-            return action_obj.with_context(active_test=False).browse(parent_id)
-
-        return action_obj.browse()
-
-    def first_available_group_name(self):
-        self.ensure_one()
-
-        parent = self.parent_id or self
-
-        action_name = parent.name or self.env._("New training action")
-        other_groups = parent.child_ids.filtered(lambda r: r != self)
-
-        if not other_groups:
-            return f"{action_name} ‒ A"
-
-        used_names = set(other_groups.mapped("name"))
-        for name in [f"{action_name} ‒ {chr(i)}" for i in range(65, 91)]:
-            if name not in used_names:
-                return name
-
-        return f"{action_name} ‒ {uuid4().hex[:6].upper()}"
-
-    def available_capacity(self):
-        self.ensure_one()
-
-        parent = self.parent_id or self
-        others = parent.child_ids.filtered(lambda r: r != self)
-
-        seating = sum((v or 0) for v in others.mapped("seating"))
-        excess = sum((v or 0) for v in others.mapped("excess"))
-
-        cap_s = max(0, (parent.seating or 0) - seating)
-        cap_e = max(cap_s, (parent.excess or 0) - excess)
-
-        return cap_s, cap_e
-
-    def default_start(self):
-        today = fields.Date.context_today(self)
-        tz_name = self.env.user.tz or self.env.company.partner_id.tz or "UTC"
-
-        return local_midnight_as_utc(
-            value=today,
-            from_tz=tz_name,
-            remove_tz=True,
-        )
-
-    # -- Overridden methods
-    # -------------------------------------------------------------------------
 
     def _auto_init(self):
         result = super()._auto_init()
@@ -1303,11 +1227,12 @@ class AcademyTrainingAction(models.Model):
 
         records = super().create(values_list)
 
-        to_sync = records.filtered(lambda r: not r.action_line_ids)
-        if to_sync:
-            to_sync.synchronize_from_program(
-                mode=SyncMode.ALL, add_optional=True
-            )
+        if not self.env.context.get(_CTX_SKIP_PROGRAM, False):
+            to_sync = records.filtered(lambda r: not r.action_line_ids)
+            if to_sync:
+                to_sync.synchronize_from_program(
+                    mode=SyncMode.ALL, add_optional=True
+                )
 
         records.update_enrolments()
 
@@ -1324,59 +1249,39 @@ class AcademyTrainingAction(models.Model):
 
         return result
 
-    @staticmethod
-    def _prevent_use_student_link(values_list):
-        if not values_list:
-            pass
-        elif isinstance(values_list, list):
-            for values in values_list:
-                if "student_ids" in values:
-                    print("Deleting student_ids", values["student_ids"])
-                    del values["student_ids"]
-        elif isinstance(values_list, dict) and "student_ids" in values_list:
-            print("Deleting student_ids", values["student_ids"])
-            del values_list["student_ids"]
+    def copy(self, default=None):
+        default = dict(default or {})
 
-    def _batch_read_parent_data(self, values_list):
-        """Return {parent_id: copy_data(parent)} for all parents in vals."""
-        parent_ids = {
-            vals.get("parent_id")
-            for vals in values_list
-            if vals.get("parent_id")
+        # **allowed**: self._prevent_copy_groups(default)
+
+        # child_ids
+        # action_line_ids
+        # teacher_assignment_ids
+
+        if not default.get("name", False):
+            name = self.name or _("New training action")
+            sufix = uuid4().hex[:8]
+            default["name"] = f"{name} ‒ {sufix}"
+
+        action_id = default.get("training_action_id") or self.id
+        if "teacher_assignment_ids" not in default:
+            self._copy_global_teacher_assignments(default, action_id)
+
+        self_ctx = self.with_context({_CTX_SKIP_PROGRAM: True})
+        new_action = super(AcademyTrainingAction, self_ctx).copy(default)
+
+        line_default = {
+            "training_action_id": new_action.id,
+            "training_program_id": new_action.training_program_id.id,
         }
+        for line in self.action_line_ids:
+            line.copy(default=line_default)
 
-        if not parent_ids:
-            return {}
+        group_default = dict(parent_id=new_action.id)
+        for training_group in self.child_ids:
+            training_group.copy(default=group_default)
 
-        parents = self.with_context(active_test=False).browse(list(parent_ids))
-        copied = parents.copy_data(default=None)
-
-        return {rec.id: data for rec, data in zip(parents, copied)}
-
-    def _fill_from_parent(self, values_list):
-        """Inherit parent's values (incl. O2M/M2M with copy=True)."""
-        if not values_list:
-            return
-
-        parent_data = self._batch_read_parent_data(values_list)
-        if not parent_data:
-            return
-
-        for values in values_list:
-            pid = values.get("parent_id")
-            if not pid:
-                continue
-            pvals = parent_data.get(pid, {})
-            for key, val in pvals.items():
-                if key in _PARENT_EXCLUDE:
-                    continue
-                values.setdefault(key, val)
-
-    def _parent_window(self, action):
-        """Return (start, stop_or_infinity) for the given action."""
-        start = action.date_start
-        stop = action.date_stop or _INFINITY
-        return start, stop
+        return new_action
 
     # --------------------------- PUBLIC METHODS ------------------------------
 
@@ -1823,3 +1728,168 @@ class AcademyTrainingAction(models.Model):
                 d for d in lines.mapped("create_date") if d
             ]
             record.lines_last_updated = max(dates) if dates else False
+
+    # -- Auxiliary methods
+    # -------------------------------------------------------------------------
+
+    def _prevent_copy_groups(self, default):
+        parent_id = self.training_module_id
+        new_parent_id = default.get("training_module_id", False)
+        if parent_id and (not new_parent_id or parent_id == new_parent_id):
+            m = _("Duplication of training groups is strictly prohibited.")
+            raise UserError(m)
+
+    def _copy_global_teacher_assignments(self, default, training_action_id):
+        if isinstance(training_action_id, models.BaseModel):
+            training_action_id = training_action_id.id
+
+        glogal_assignments = self.teacher_assignment_ids.filtered(
+            lambda r: not r.action_line_id
+        )
+
+        o2m_ops = [(5, 0, 0)]
+        for assign in glogal_assignments:
+            values = {
+                "training_action_id": training_action_id,
+                "teacher_id": assign.teacher_id.id,
+            }
+            o2m_ops.append((0, 0, values))
+
+        default["teacher_assignment_ids"] = o2m_ops
+
+    @staticmethod
+    def _prevent_use_student_link(values_list):
+        if not values_list:
+            pass
+        elif isinstance(values_list, list):
+            for values in values_list:
+                if "student_ids" in values:
+                    del values["student_ids"]
+        elif isinstance(values_list, dict) and "student_ids" in values_list:
+            del values_list["student_ids"]
+
+    def _batch_read_parent_data(self, values_list):
+        """Return {parent_id: copy_data(parent)} for all parents in vals."""
+        parent_ids = {
+            vals.get("parent_id")
+            for vals in values_list
+            if vals.get("parent_id")
+        }
+
+        if not parent_ids:
+            return {}
+
+        parents = self.with_context(active_test=False).browse(list(parent_ids))
+        copied = parents.copy_data(default=None)
+
+        return {rec.id: data for rec, data in zip(parents, copied)}
+
+    def _fill_from_parent(self, values_list):
+        """Inherit parent's values (incl. O2M/M2M with copy=True)."""
+        if not values_list:
+            return
+
+        parent_data = self._batch_read_parent_data(values_list)
+        if not parent_data:
+            return
+
+        for values in values_list:
+            pid = values.get("parent_id")
+            if not pid:
+                continue
+            pvals = parent_data.get(pid, {})
+            for key, val in pvals.items():
+                if key in _PARENT_EXCLUDE:
+                    continue
+                values.setdefault(key, val)
+
+    def _parent_window(self, action):
+        """Return (start, stop_or_infinity) for the given action."""
+        start = action.date_start
+        stop = action.date_stop or _INFINITY
+        return start, stop
+
+    @api.model
+    def _patch_defaults_on_parent(self, defaults):
+        defaults.setdefault("company_id", self.env.company.id)
+        defaults.setdefault("code", default_code(self.env, _TA_CODE_SEQUENCE))
+        defaults.setdefault("date_start", self.default_start())
+        defaults.setdefault("seating", 20)
+        defaults.setdefault("excess", 20)
+
+    def _patch_defaults_on_child(self, defaults, fields_list):
+        self.ensure_one()
+
+        defaults.setdefault("code", default_code(self.env, _TAG_CODE_SEQUENCE))
+
+        if "name" not in defaults:
+            group_name = self.first_available_group_name()
+            defaults["name"] = group_name
+
+        seating, excess = self.available_capacity()
+        if "seating" not in defaults:
+            defaults["seating"] = seating
+        if "excess" not in defaults or defaults.get("excess", 0) < seating:
+            defaults["excess"] = max(seating, excess)
+
+        parent_values = self.copy_data(default=None)[0] or {}
+        fields_list = fields_list or parent_values.keys()
+        for key, value in parent_values.items():
+            if key in _PARENT_EXCLUDE:
+                continue
+            if key in fields_list:
+                defaults.setdefault(key, value)
+
+    def _get_default_parent_training_action(self, values=None):
+        action_obj = self.env["academy.training.action"]
+
+        parent_id = (values or {}).get("parent_id")
+        if not parent_id:
+            parent_id = self.env.context.get("default_parent_id")
+
+        if parent_id:
+            return action_obj.with_context(active_test=False).browse(parent_id)
+
+        return action_obj.browse()
+
+    def first_available_group_name(self):
+        self.ensure_one()
+
+        parent = self.parent_id or self
+
+        action_name = parent.name or self.env._("New training action")
+        other_groups = parent.child_ids.filtered(lambda r: r != self)
+
+        if not other_groups:
+            return f"{action_name} ‒ A"
+
+        used_names = set(other_groups.mapped("name"))
+        for name in [f"{action_name} ‒ {chr(i)}" for i in range(65, 91)]:
+            if name not in used_names:
+                return name
+
+        return f"{action_name} ‒ {uuid4().hex[:6].upper()}"
+
+    def available_capacity(self):
+        self.ensure_one()
+
+        parent = self.parent_id or self
+        others = parent.child_ids.filtered(lambda r: r != self)
+
+        seating = sum((v or 0) for v in others.mapped("seating"))
+        excess = sum((v or 0) for v in others.mapped("excess"))
+
+        cap_s = max(0, (parent.seating or 0) - seating)
+        cap_e = max(cap_s, (parent.excess or 0) - excess)
+
+        return cap_s, cap_e
+
+    def default_start(self):
+        today = fields.Date.context_today(self)
+        tz_name = self.env.user.tz or self.env.company.partner_id.tz or "UTC"
+
+        return local_midnight_as_utc(
+            value=today,
+            from_tz=tz_name,
+            remove_tz=True,
+        )

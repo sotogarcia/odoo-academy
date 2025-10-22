@@ -61,7 +61,7 @@
       <xpath expr="//page[@id='setup']" position="after">
         <page string="Teaching" class="oe_page_teaching" accesskey="T">
           <field name="teacher_assignment_ids" class="oe_field_teacher_assignment_ids"
-            options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"
+            options="{'no_quick_create': True, 'no_create': True, 'no_open': False}" readonly="not id"
             context="{'default_training_action_id': training_action_id, 'default_action_line_id': id}" />
         </page>
       </xpath>

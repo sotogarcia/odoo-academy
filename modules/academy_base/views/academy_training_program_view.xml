@@ -92,10 +92,11 @@
 
           <notebook>
             <page string="Units" class="oe_page_lines" accesskey="L">
-              <field name="program_line_ids" class="oe_field_program_line_ids" context="{
-                              'list_view_ref': 'academy_base.view_academy_training_program_line_tree_program_embed',
-                              'default_training_program_id': id
-                            }"/>
+              <field name="program_line_ids" class="oe_field_program_line_ids"
+                readonly="not id" context="{
+                  'list_view_ref': 'academy_base.view_academy_training_program_line_tree_program_embed',
+                  'default_training_program_id': id
+                }"/>
             </page>
             <page string="Details" class="oe_page_details" accesskey="D">
 

@@ -11,6 +11,7 @@ from odoo.tools.safe_eval import safe_eval
 from ..utils.helpers import OPERATOR_MAP, one2many_count
 from ..utils.helpers import sanitize_code, default_code
 
+from uuid import uuid4
 from logging import getLogger
 
 
@@ -41,6 +42,7 @@ class AcademyTrainingFramework(models.Model):
         default=None,
         help="Regulatory framework name",
         translate=True,
+        copy=False,
     )
 
     description = fields.Text(
@@ -55,6 +57,7 @@ class AcademyTrainingFramework(models.Model):
             "enrolments."
         ),
         translate=True,
+        copy=True,
     )
 
     active = fields.Boolean(
@@ -64,6 +67,7 @@ class AcademyTrainingFramework(models.Model):
         index=False,
         default=True,
         help="Disable to archive without deleting.",
+        copy=True,
     )
 
     code = fields.Char(
@@ -74,6 +78,7 @@ class AcademyTrainingFramework(models.Model):
         default=lambda self: default_code(self.env, CODE_SEQUENCE),
         help="Short, roughly unique code used in URLs/filters",
         translate=False,
+        copy=False,
     )
 
     issuing_authority_id = fields.Many2one(
@@ -88,6 +93,7 @@ class AcademyTrainingFramework(models.Model):
         context={},
         ondelete="restrict",
         auto_join=False,
+        copy=True,
     )
 
     training_program_ids = fields.One2many(
@@ -102,6 +108,7 @@ class AcademyTrainingFramework(models.Model):
         domain=[],
         context={},
         auto_join=False,
+        copy=False,
     )
 
     training_program_count = fields.Integer(
@@ -113,6 +120,7 @@ class AcademyTrainingFramework(models.Model):
         help=False,
         compute="_compute_training_program_count",
         search="_search_training_program_count",
+        copy=False,
     )
 
     @api.depends("training_program_ids")
@@ -146,6 +154,7 @@ class AcademyTrainingFramework(models.Model):
         index=False,
         default=False,
         help="Allows enrolment by module (modular delivery permitted)",
+        copy=True,
     )
 
     legal_code = fields.Char(
@@ -156,6 +165,7 @@ class AcademyTrainingFramework(models.Model):
         default=None,
         help="Short official identifier (e.g., 'LO 3/2022', 'RD 659/2023').",
         translate=False,
+        copy=True,
     )
 
     # -- Constraints ----------------------------------------------------------
@@ -178,6 +188,16 @@ class AcademyTrainingFramework(models.Model):
     def write(self, values):
         sanitize_code(values, "upper")
         return super().write(values)
+
+    def copy(self, default=None):
+        default = dict(default or {})
+
+        if not default.get("name", False):
+            name = self.name or _("New training framework")
+            sufix = uuid4().hex[:8]
+            default["name"] = f"{name} ‒ {sufix}"
+
+        return super().copy(default)
 
     # -- Public methods -------------------------------------------------------
 
