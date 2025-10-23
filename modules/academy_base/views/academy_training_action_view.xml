@@ -74,7 +74,7 @@
                       <field name="teacher_assignment_count" widget="statinfo" string="Teachers" />
                   </button>
                   <button name="view_training_action_groups" type="object" class="oe_stat_button oe_read_only"
-                      icon="fa-clipboard" help="View training action groups" invisible="parent_id or enrolment_ids">
+                      icon="fa-users" help="View training action groups" invisible="parent_id or enrolment_ids">
                       <field name="training_group_count" widget="statinfo" string="Groups" />
                   </button>
                   <button name="view_action_lines" type="object" class="oe_stat_button oe_read_only"
@@ -270,7 +270,7 @@
                     </button>
                     <t t-if="record.training_group_count and record.training_group_count.raw_value">
                     <button name="view_training_action_groups" type="object" class="btn my-0 py-0" string="Training groups">
-                      <i class="fa fa-lg fa-clipboard me-2" aria-hidden="true" title="View training action groups"></i>
+                      <i class="fa fa-lg fa-users me-2" aria-hidden="true" title="View training action groups"></i>
                       <field name="training_group_count" class="oe_field_action_group_count" />
                     </button>
                     </t>

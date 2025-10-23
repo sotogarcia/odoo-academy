@@ -42,6 +42,15 @@
       <xpath expr="//form" position="attributes">
         <attribute name="string">academy_teacher_form</attribute>
       </xpath>
+
+      <xpath expr="//div[@name='button_box']" position="inside">
+        <button name="view_assignments" type="object"
+            class="oe_stat_button oe_read_only" icon="fa-clipboard"
+            help="View Teacher training action assignments">
+            <field name="assignment_count" widget="statinfo" string="Assignments"/>
+        </button>
+      </xpath>
+
     </field>
   </record>
 
@@ -60,6 +69,14 @@
       <xpath expr="//img[@id='default-avatar']" position="attributes">
           <attribute name="src">/academy_base/static/src/img/teacher-128.png</attribute>
       </xpath>
+
+      <xpath expr="//field[@name='activity_ids']" position="before">
+        <button name="view_assignments" type="object" class="btn my-0 py-0" string="Assignments">
+          <i class="fa fa-lg fa-clipboard me-2" aria-hidden="true" title="View Teacher training action assignments"></i>
+          <field name="assignment_count" class="oe_field_assignment_count" />
+        </button>
+      </xpath>
+
     </field>
   </record>
 

@@ -63,7 +63,7 @@
               <field name="program_line_count" widget="statinfo" string="No. of lines"/>
             </button>
             <button name="view_training_actions" type="object" class="oe_stat_button"
-              icon="fa-clipboard">
+              icon="fa-users">
               <field name="training_action_count" widget="statinfo" string="Actions"/>
             </button>
           </div>
@@ -224,7 +224,7 @@
                   <field name="program_line_count" class="oe_field_program_line_count" />
                 </button>
                 <button name="view_training_actions" type="object" class="btn my-0 py-0" string="Training actions">
-                  <i class="fa fa-lg fa-clipboard me-2" aria-hidden="true" title="View training actions"></i>
+                  <i class="fa fa-lg fa-users me-2" aria-hidden="true" title="View training actions"></i>
                   <field name="training_action_count" class="oe_field_training_action_count" />
                 </button>
 

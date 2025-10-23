@@ -98,6 +98,13 @@
         </li>
       </xpath>
 
+      <xpath expr="//field[@name='activity_ids']" position="before">
+        <button name="view_enrolments" type="object" class="btn my-0 py-0" string="Student enrolments">
+          <i class="fa fa-lg fa-sign-in me-2" aria-hidden="true" title="View student training action enrolments"></i>
+          <field name="enrolment_count" class="oe_field_enrolment_count" />
+        </button>
+      </xpath>
+
     </field>
   </record>
 
