@@ -235,7 +235,7 @@ class AcademyTrainingAction(models.Model):
     )
 
     code = fields.Char(
-        string="Internal code",
+        string="Code",
         required=True,
         readonly=False,
         index=False,

@@ -332,8 +332,8 @@ class AcademyTrainingActionEnrolment(models.Model):
     )
 
     action_code = fields.Char(
-        string="Internal code",
-        help="Internal code of the training action",
+        string="Code",
+        help="Code of the training action",
         related="training_action_id.code",
     )
 

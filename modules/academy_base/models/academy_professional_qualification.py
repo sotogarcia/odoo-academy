@@ -85,7 +85,7 @@ class AcademyProfessionalQualification(models.Model):
     )
 
     qualification_code = fields.Char(
-        string="Internal code",
+        string="Code",
         required=True,
         readonly=False,
         index=False,
