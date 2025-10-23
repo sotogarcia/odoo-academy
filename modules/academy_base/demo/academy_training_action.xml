@@ -12,7 +12,7 @@
         <field name="professional_category_id" ref="academy_base.academy_professional_category_administrative"/>
         <field name="training_program_id" ref="academy_base.academy_training_program_ADGD0308"/>
         <field name="code">AGE2020</field>
-        <field name="seating">5</field>
+        <field name="seats">5</field>
         <field name="excess">6</field>
         <field name="training_modality_id" ref="academy_training_modality_classroom" />
     </record>
@@ -27,7 +27,7 @@
         <field name="professional_category_id" ref="academy_base.academy_professional_category_administrative"/>
         <field name="training_program_id" ref="academy_base.academy_training_program_ms"/>
         <field name="code">AGE2002</field>
-        <field name="seating">15</field>
+        <field name="seats">15</field>
         <field name="excess">20</field>
         <field name="training_modality_id" ref="academy_training_modality_classroom" />
         <field name="company_id" ref="academy_base.res_company_my_academy"/>

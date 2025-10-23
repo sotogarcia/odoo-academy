@@ -2,7 +2,7 @@
 
 <odoo noupdate="0">
 
-  <!-- VIEWS: "Training group"
+  <!-- VIEWS: "Training support service"
 
       - Model·········: academy.training.action
       - _rec_name·····: name
@@ -10,12 +10,12 @@
       - Context·······: {}
       - Parent menu ··: academy_base.menu_academy_monitoring
       - View priority·: 16    Sequence····: 10
-      - Action help···: There are no training groups in catalog
+      - Action help···: There are no training support services in catalog
   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
   <!-- Tree view for "academy.training.action" -->
-  <record id="view_academy_training_action_group_tree" model="ir.ui.view">
-    <field name="name">view.academy.training.action.group.tree</field>
+  <record id="view_academy_training_support_service_tree" model="ir.ui.view">
+    <field name="name">view.academy.training.support.service.tree</field>
     <field name="model">academy.training.action</field>
     <field name="type">list</field>
     <field name="mode">primary</field>
@@ -24,23 +24,25 @@
     <field name="inherit_id" ref="academy_base.view_academy_training_action_tree"/>
     <field name="arch" type="xml">
       <xpath expr="//list" position="attributes">
-        <attribute name="string">academy_training_action_group_tree</attribute>
+        <attribute name="string">academy_training_support_service_tree</attribute>
       </xpath>
-      <xpath expr="//field[@name='training_program_id']" position="before">
-        <field name="parent_id" class="oe_field_parent_id" optional="show" />
-      </xpath>
-      <xpath expr="//field[@name='training_program_id']" position="attributes">
-          <attribute name="optional">hide</attribute>
-      </xpath>
+
+      <xpath expr="//field[@name='training_program_id']" position="replace" />
+      <xpath expr="//field[@name='training_modality_id']" position="replace" />
+      <xpath expr="//field[@name='training_methodology_ids']" position="replace" />
+      <xpath expr="//field[@name='professional_family_id']" position="replace" />
+      <xpath expr="//field[@name='qualification_level_id']" position="replace" />
+
       <xpath expr="//field[@name='rollup_enrolment_count']" position="replace">
         <field name="enrolment_count" class="oe_field_enrolment_count" optional="show"/>
       </xpath>
+
     </field>
   </record>
 
   <!-- Form view for "academy.training.action" -->
-  <record id="view_academy_training_action_group_form" model="ir.ui.view">
-    <field name="name">view.academy.training.action.group.form</field>
+  <record id="view_academy_training_support_service_form" model="ir.ui.view">
+    <field name="name">view.academy.training.support.service.</field>
     <field name="model">academy.training.action</field>
     <field name="type">form</field>
     <field name="mode">primary</field>
@@ -49,16 +51,26 @@
     <field name="inherit_id" ref="academy_base.view_academy_training_action_form"/>
     <field name="arch" type="xml">
       <xpath expr="//form" position="attributes">
-        <attribute name="string">academy_training_action_group_form</attribute>
+        <attribute name="string">academy_training_support_service_form</attribute>
       </xpath>
-      <xpath expr="//field[@name='training_program_id']" position="attributes">
-          <attribute name="invisible">1</attribute>
-      </xpath>
-      <xpath expr="//field[@name='parent_id']" position="attributes">
-        <attribute name="readonly">id</attribute>
-        <attribute name="invisible">False</attribute>
-      </xpath>
+
       <xpath expr="//button[@name='view_training_action_groups']" position="replace" />
+      <xpath expr="//button[@name='view_action_lines']" position="replace" />
+<!--       <xpath expr="//group[@id='base']" position="replace" />
+      <xpath expr="//group[@id='training']" position="replace" /> -->
+      <xpath expr="//page[@id='action-lines']" position="replace" />
+      <xpath expr="//group[@id='action-details']" position="replace" />
+      <xpath expr="//group[@id='program-details']" position="replace" />
+
+      <xpath expr="//field[@name='training_program_id']" position="attributes">
+        <attribute name="domain">[('program_type', '=', 'support')]</attribute>
+      </xpath>
+<!--
+      <xpath expr="//group[@id='dates']" position="before">
+        <group><field name="code" class="oe_field_code" /></group>
+        <group><field name="company_id" class="oe_field_company_id" /></group>
+      </xpath> -->
+
       <xpath expr="//button[@name='view_rollup_enrolments']" position="replace">
         <button name="view_enrolments" type="object"
             class="oe_stat_button oe_read_only" icon="fa-sign-in"
@@ -66,13 +78,14 @@
             <field name="enrolment_count" widget="statinfo" string="Enrolments"/>
         </button>
       </xpath>
+
     </field>
   </record>
 
 
   <!-- Kanban view for "academy.training.action" -->
-  <record id="view_academy_training_action_group_kanban" model="ir.ui.view">
-    <field name="name">view.academy.training.action.group.kanban</field>
+  <record id="view_academy_training_support_service_kanban" model="ir.ui.view">
+    <field name="name">view.academy.training.support.service.kanban</field>
     <field name="model">academy.training.action</field>
     <field name="type">kanban</field>
     <field name="mode">primary</field>
@@ -81,14 +94,23 @@
     <field name="inherit_id" ref="academy_base.view_academy_training_action_kanban"/>
     <field name="arch" type="xml">
       <xpath expr="//kanban" position="attributes">
-        <attribute name="string">academy_training_action_group_kanban</attribute>
+        <attribute name="string">academy_training_support_service_kanban</attribute>
         <attribute name="records_draggable">1</attribute>
         <attribute name="groups_draggable">1</attribute>
-        <attribute name="default_order">parent_id, sequence, name, date_start</attribute>
+        <attribute name="default_order">name, date_start</attribute>
         <attribute name="default_group_by" />
         <attribute name="group_create">0</attribute>
       </xpath>
+
+      <xpath expr="//img[@id='alternative-image']" position="attributes">
+        <attribute name="src">/academy_base/static/src/img/training-support-service-128.png</attribute>
+      </xpath>
+
       <xpath expr="//button[@name='view_training_action_groups']" position="replace" />
+
+      <xpath expr="//li[@id='training-modality-id']" position="replace" />
+      <xpath expr="//button[@name='view_action_lines']" position="replace" />
+
       <xpath expr="//field[@name='rollup_enrolment_count']" position="replace">
         <field name="enrolment_count" />
       </xpath>
@@ -98,12 +120,13 @@
           <field name="enrolment_count" class="oe_field_enrolment_count" />
         </button>
       </xpath>
+
     </field>
   </record>
 
   <!-- Search view for "academy.training.action" -->
-  <record id="view_academy_training_action_group_search" model="ir.ui.view">
-    <field name="name">view.academy.training.action.search</field>
+  <record id="view_academy_training_support_service_search" model="ir.ui.view">
+    <field name="name">view.academy.training.support.service.search</field>
     <field name="model">academy.training.action</field>
     <field name="type">search</field>
     <field name="mode">primary</field>
@@ -112,7 +135,7 @@
     <field name="inherit_id" ref="academy_base.view_academy_training_action_search"/>
     <field name="arch" type="xml">
       <xpath expr="//search" position="attributes">
-        <attribute name="string">academy_training_action_group_search</attribute>
+        <attribute name="string">academy_training_support_service_search</attribute>
       </xpath>
 
       <xpath expr="//filter[@name='with_enrolments']" position="replace">
@@ -127,38 +150,38 @@
   </record>
 
   <!-- Main window action for model.name -->
-  <record id="action_training_action_group_act_window" model="ir.actions.act_window">
+  <record id="action_training_support_service_act_window" model="ir.actions.act_window">
     <field name="type">ir.actions.act_window</field>
-    <field name="name">Training group</field>
+    <field name="name">Support services</field>
     <field name="res_model">academy.training.action</field>
     <field name="view_mode">kanban,list,form,activity</field>
-    <field name="path">academy-training-group</field>
+    <field name="path">academy-support-service</field>
     <field name="target">current</field>
-    <field name="domain">[("child_ids", "=", False), ('program_type', '=', 'training')]</field>
+    <field name="domain">[("child_ids", "=", False), ('program_type', '=', 'support')]</field>
     <field name="context">{'default_sequence': 10}</field>
     <field name="view_ids" eval="[(5, 0, 0),
-        (0, 0, {'view_mode': 'kanban', 'view_id': ref('academy_base.view_academy_training_action_group_kanban')}),
-        (0, 0, {'view_mode': 'list', 'view_id': ref('academy_base.view_academy_training_action_group_tree')}),
-        (0, 0, {'view_mode': 'form', 'view_id': ref('academy_base.view_academy_training_action_group_form')})]"/>
-    <field name="search_view_id" ref="view_academy_training_action_group_search" />
+        (0, 0, {'view_mode': 'kanban', 'view_id': ref('academy_base.view_academy_training_support_service_kanban')}),
+        (0, 0, {'view_mode': 'list', 'view_id': ref('academy_base.view_academy_training_support_service_tree')}),
+        (0, 0, {'view_mode': 'form', 'view_id': ref('academy_base.view_academy_training_support_service_form')})]"/>
+    <field name="search_view_id" ref="view_academy_training_support_service_search" />
     <field name="help" type="html">
         <p class="oe_view_nocontent_create">
-            Click to add new training group
+            Click to add new training support services
         </p><p>
-            There are no training groups in catalog
+            There are no training support services in catalog
         </p>
     </field>
   </record>
 
   <!-- Main menu for model.name -->
-  <record id="menu_training_group" model="ir.ui.menu" >
-      <field name="name">Training groups</field>
+  <record id="menu_training_support_service" model="ir.ui.menu" >
+      <field name="name">Support services</field>
       <field name="sequence" eval="10" />
-      <field name="action" ref="action_training_action_group_act_window" />
+      <field name="action" ref="action_training_support_service_act_window" />
       <field name="parent_id" ref="academy_base.menu_academy_monitoring" />
   </record>
 
-  <record id="view_academy_training_action_group_embed_tree" model="ir.ui.view">
+  <record id="view_academy_training_support_service_embed_tree" model="ir.ui.view">
     <field name="name">view.academy.training.action.editable.tree</field>
     <field name="model">academy.training.action</field>
     <field name="type">list</field>
@@ -167,7 +190,7 @@
     <field name="active" eval="True" />
     <field name="inherit_id" />
     <field name="arch" type="xml">
-      <list string="academy_training_action_group_editable_tree" create="0" delete="0" edit="0">
+      <list string="academy_training_support_service_editable_tree" create="0" delete="0" edit="0">
         <field name="parent_id" class="oe_field_parent_id" column_invisible="1" force_save="1" />
         <field name="training_program_id" class="oe_field_training_program_id" column_invisible="1" force_save="1" />
         <field name="training_modality_id" class="oe_field_training_modality_id" column_invisible="1" force_save="1" />

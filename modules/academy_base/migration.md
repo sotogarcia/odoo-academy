@@ -179,6 +179,7 @@ attrs=["']\{["'](readonly|invisible|required)["']: *(\[[^\]]+\])\}["']
 - [x] Comportamiento de full_enrolment
 - [x] Revisar el modelo y vista de enrolment
 - [x] barcode
+- [x] Impedir que los grupos creados desde fuera de la vista de la acción excedan la capacidad de la acción padre
 
 - [ ] Sincronizar acciones formativas con grupos formativos
 - [ ] Añadir tareas NO formativas

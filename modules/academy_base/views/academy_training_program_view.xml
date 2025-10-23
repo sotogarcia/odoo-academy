@@ -10,7 +10,7 @@
             - Context·······: {}
             - Parent menu ··: academy_base.menu_academy_catalog
             - View priority·: 16    Sequence····: 10
-            - Action help···: There are no training activities in catalog
+            - Action help···: There are no training programs in catalog
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
   <!-- List view for "academy.training.program" -->
@@ -63,7 +63,7 @@
               <field name="program_line_count" widget="statinfo" string="No. of lines"/>
             </button>
             <button name="view_training_actions" type="object" class="oe_stat_button"
-              icon="fa-clipboard">
+              icon="fa-users">
               <field name="training_action_count" widget="statinfo" string="Actions"/>
             </button>
           </div>
@@ -91,17 +91,17 @@
           </div>
 
           <notebook>
-            <page string="Units" class="oe_page_lines" accesskey="L">
+            <page id="program-lines" string="Program lines" class="oe_page_lines" accesskey="L">
               <field name="program_line_ids" class="oe_field_program_line_ids"
                 readonly="not id" context="{
                   'list_view_ref': 'academy_base.view_academy_training_program_line_tree_program_embed',
                   'default_training_program_id': id
                 }"/>
             </page>
-            <page string="Details" class="oe_page_details" accesskey="D">
+            <page id="details" string="Details" class="oe_page_details" accesskey="D">
 
               <group>
-                <group string="Classification">
+                <group id="classification" string="Classification">
                   <field name="professional_family_id" class="oe_field_professional_family_id"
                     string="Family"
                     options="{'no_quick_create': True, 'no_create': False, 'no_open': False}"/>
@@ -116,7 +116,7 @@
                     class="oe_field_professional_sector_ids" widget="many2many_tags"
                     string="Sectors"/>
                 </group>
-                <group string="Attainment">
+                <group id="attainment" string="Attainment">
                   <field name="attainment_id" class="oe_field_attainment_id" string="Required"/>
                   <field name="hours" class="oe_field_hours" widget="float_time" />
                   <field name="qualification_level_id" class="oe_field_qualification_level_id"
@@ -143,7 +143,7 @@
                 <field name="description" class="oe_field_description" colspan="2" nolabel="1"/>
               </group>
             </page>
-            <page string="Internal Notes" class="oe_page_internal_notes" accesskey="I"
+            <page id="internal-notes" string="Internal Notes" class="oe_page_internal_notes" accesskey="I"
               groups="base.group_user">
               <group col="2">
                 <field name="comment" class="oe_field_comment" nolabel="1" colspan="2" widget="html"
@@ -186,7 +186,7 @@
                   options="{'img_class': 'w-100 h-auto p-2 align-top'}"/>
               </t>
               <t t-if="!record.image_128.raw_value">
-                <img src="/academy_base/static/src/img/training-program-128.png" class="w-100 h-auto p-2"
+                <img id="alternative-image" src="/academy_base/static/src/img/training-program-128.png" class="w-100 h-auto p-2"
                   alt="Training program" title="Training program without image" />
               </t>
             </aside>
@@ -224,7 +224,7 @@
                   <field name="program_line_count" class="oe_field_program_line_count" />
                 </button>
                 <button name="view_training_actions" type="object" class="btn my-0 py-0" string="Training actions">
-                  <i class="fa fa-lg fa-clipboard me-2" aria-hidden="true" title="View training actions"></i>
+                  <i class="fa fa-lg fa-users me-2" aria-hidden="true" title="View training actions"></i>
                   <field name="training_action_count" class="oe_field_training_action_count" />
                 </button>
 
@@ -294,23 +294,23 @@
   <!-- Main window action for model.name -->
   <record id="action_academy_training_program_act_window" model="ir.actions.act_window">
     <field name="type">ir.actions.act_window</field>
-    <field name="name">Training activities</field>
+    <field name="name">Training programs</field>
     <field name="res_model">academy.training.program</field>
     <field name="view_mode">kanban,list,form,activity</field>
     <field name="path">academy-training-program</field>
     <field name="target">current</field>
-    <field name="domain">[]</field>
+    <field name="domain">[('program_type', '=', 'training')]</field>
     <field name="context">{}</field>
     <field name="search_view_id" ref="view_academy_training_program_search"/>
     <field name="help" type="html">
-      <p class="oe_view_nocontent_create"> Click to add new training activities </p>
-      <p> There are no training activities yet </p>
+      <p class="oe_view_nocontent_create">Click to add new training programs</p>
+      <p>There are no training programs in catalog</p>
     </field>
   </record>
 
   <!-- Main menu for model.name -->
   <record id="menu_academy_training_program" model="ir.ui.menu">
-    <field name="name">Training activities</field>
+    <field name="name">Training programs</field>
     <field name="sequence" eval="15"/>
     <field name="action" ref="action_academy_training_program_act_window"/>
     <field name="parent_id" ref="academy_base.menu_academy_catalog"/>

@@ -14,6 +14,7 @@ from odoo import models, fields, api
 from odoo.tools.safe_eval import safe_eval
 from odoo.exceptions import ValidationError, UserError
 from odoo.osv.expression import AND, OR, TRUE_DOMAIN, FALSE_DOMAIN
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DATETIME_FORMAT
 from ..utils.helpers import OPERATOR_MAP, one2many_count, many2many_count
 from ..utils.sql_helpers import create_index
 
@@ -69,7 +70,7 @@ class AcademyTrainingAction(models.Model):
 
     _rec_name = "name"
     order = "parent_id, sequence, name, date_start"
-    _rec_names_search = ["name", "code", "training_program_id", "parent_id"]
+    _rec_names_search = ["name", "code", "training_program_id"]
 
     # -- Company dependency: Fields and logic
     # -------------------------------------------------------------------------
@@ -235,7 +236,7 @@ class AcademyTrainingAction(models.Model):
     )
 
     code = fields.Char(
-        string="Internal code",
+        string="Code",
         required=True,
         readonly=False,
         index=False,
@@ -479,6 +480,13 @@ class AcademyTrainingAction(models.Model):
         copy=True,
     )
 
+    program_type = fields.Selection(
+        string="Program type",
+        related="training_program_id.program_type",
+        help="Select whether this is a standard training program or a ",
+        store=True,
+    )
+
     program_name = fields.Char(
         string="Name",
         related="training_program_id.name",
@@ -595,7 +603,7 @@ class AcademyTrainingAction(models.Model):
     # -- Capacity: fields and logic
     # -------------------------------------------------------------------------
 
-    seating = fields.Integer(
+    seats = fields.Integer(
         string="Seating",
         required=True,
         readonly=False,
@@ -606,11 +614,11 @@ class AcademyTrainingAction(models.Model):
         tracking=True,
     )
 
-    @api.onchange("seating")
-    def _onchange_seating(self):
+    @api.onchange("seats")
+    def _onchange_seats(self):
         for record in self:
-            if record.seating and record.seating > record.excess:
-                record.excess = record.seating
+            if record.seats and record.seats > record.excess:
+                record.excess = record.seats
 
     excess = fields.Integer(
         string="Excess",
@@ -626,8 +634,8 @@ class AcademyTrainingAction(models.Model):
     @api.onchange("excess")
     def _onchange_excess(self):
         for record in self:
-            if record.excess and record.excess < record.seating:
-                record.excess = record.seating
+            if record.excess and record.excess < record.seats:
+                record.excess = record.seats
 
     # -------------------------------------------------------------------------
 
@@ -1000,7 +1008,7 @@ class AcademyTrainingAction(models.Model):
         ),
         (
             "users_greater_or_equal_to_zero",
-            "CHECK(seating >= 0)",
+            "CHECK(seats >= 0)",
             "The number of users must be greater than or equal to zero",
         ),
     ]
@@ -1016,40 +1024,37 @@ class AcademyTrainingAction(models.Model):
 
     @api.constrains("enrolment_ids", "child_ids", "parent_id")
     def _check_enrolment_group_conflict(self):
+        case_1 = _(
+            "You cannot create or assign a training group under "
+            "an action that already has student enrolments.\n\n"
+            "Remove the enrolments from the parent action first."
+        )
+        case_2 = _(
+            "You cannot enrol students in a training action whose "
+            "parent already contains training groups.\n\n"
+            "Enrol them in one of the existing groups instead."
+        )
+        case_3 = _(
+            "A training action cannot have both direct student "
+            "enrolments and associated training groups.\n\n"
+            "Remove either the enrolments or the groups before "
+            "proceeding."
+        )
         for record in self:
             parent = record.parent_id or self.env["academy.training.action"]
 
             # --- Case 1: the parent already has enrolments → cannot add child
             if parent and parent.enrolment_ids:
-                raise ValidationError(
-                    _(
-                        "You cannot create or assign a training group under "
-                        "an action that already has student enrolments.\n\n"
-                        "Remove the enrolments from the parent action first."
-                    )
-                )
+                raise ValidationError(case_1)
 
             # --- Case 2: the parent already has child groups → cannot enrol
             if record.enrolment_ids and parent and parent.child_ids:
-                raise ValidationError(
-                    _(
-                        "You cannot enrol students in a training action whose "
-                        "parent already contains training groups.\n\n"
-                        "Enrol them in one of the existing groups instead."
-                    )
-                )
+                raise ValidationError(case_2)
 
             # --- Case 3: the record itself is a parent (top-level action)
             # It cannot have both enrolments and groups at the same time.
             if record.enrolment_ids and record.child_ids:
-                raise ValidationError(
-                    _(
-                        "A training action cannot have both direct student "
-                        "enrolments and associated training groups.\n\n"
-                        "Remove either the enrolments or the groups before "
-                        "proceeding."
-                    )
-                )
+                raise ValidationError(case_3)
 
     @api.constrains("parent_id")
     def _check_no_cycle(self):
@@ -1058,129 +1063,71 @@ class AcademyTrainingAction(models.Model):
         if self._has_cycle("parent_id"):
             raise ValidationError(message)
 
-    @api.constrains("date_start", "date_stop")
-    def _constrains_groups_inside_action_parent(self):
-        """Parent-level constraint.
+    @api.constrains("seats", "excess", "parent_id", "child_ids")
+    def _check_aggregated_capacity(self):
+        FIELDS_TO_CHECK = {
+            "seats": _("Total seats"),
+            "excess": _("Total excess"),
+        }
 
-        Evaluates on parent actions (not groups). Ensures every child group's
-        date window lies within the parent's [date_start, date_stop]. Triggered
-        when the parent's date_start/date_stop change.
-        """
-        for parent in self:
-            start, stop = self._parent_window(parent)
+        message = _(
+            "Capacity Overrun: The total sum of %s across all groups (%s) "
+            "exceeds the limit set on the main action (%s)."
+        )
 
-            # No window => nothing to validate
-            if not (start or parent.date_stop):
+        for record in self:
+            parent = record.parent_id or record
+            if not parent.seats and not parent.excess:
                 continue
 
-            # Fetch only children that could violate
-            kids = parent.child_ids.filtered(lambda g: g.date_start)
-            for g in kids:
-                g_start = g.date_start
-                g_stop = g.date_stop or _INFINITY
+            childs = parent.child_ids
+            if not childs:
+                continue
 
-                if start and g_start < start:
+            for field_name, field_label in FIELDS_TO_CHECK.items():
+                p_value = parent[field_name]
+                c_value = sum(childs.mapped(field_name))
+
+                if p_value < c_value:
                     raise ValidationError(
-                        self.env._("Group starts before action start.")
+                        message % (field_label, c_value, p_value)
                     )
 
-                if g_stop > stop:
-                    raise ValidationError(
-                        self.env._("Group ends after action stop.")
-                    )
+    @api.constrains("date_start", "date_stop", "parent_id", "child_ids")
+    def _check_aggregated_interval(self):
+        pattern_start = _(
+            "The group(s) start date ({child}) cannot be before the main "
+            "action's start date ({parent})."
+        )
+        pattern_stop = _(
+            "The group(s) end date ({child}) cannot be after the main "
+            "action's end date ({parent})."
+        )
 
-    @api.constrains("seating", "excess")
-    def _constrains_group_capacity_parent(self):
-        """Parent-level constraint.
-
-        Evaluates on parent actions (not groups). Ensures the sum of children's
-        seating/excess does not exceed the parent's seating/excess. Triggered
-        when the parent's seating/excess change.
-        """
-        Child = self.env["academy.training.action"]
-        for parent in self:
-            if not parent.child_ids:
+        for record in self:
+            parent = record.parent_id or record
+            childs = parent.child_ids
+            if not childs:
                 continue
 
-            # Aggregate with read_group (efficient on large sets)
-            data = Child.read_group(
-                domain=[("parent_id", "=", parent.id)],
-                fields=["seating:sum", "excess:sum"],
-                groupby=[],
-            )[0]
-            seat_sum = data.get("seating_sum") or 0
-            exc_sum = data.get("excess_sum") or 0
+            parent_start = parent.date_start
+            parent_stop = parent.date_stop or _INFINITY
 
-            if parent.seating is not None and seat_sum > parent.seating:
+            child_start = min(childs.mapped("date_start"))
+            if child_start < parent_start:
                 raise ValidationError(
-                    self.env._(
-                        "Sum of groups 'Seating' exceeds action 'Seating'."
-                    )
-                )
-            if parent.excess is not None and exc_sum > parent.excess:
-                raise ValidationError(
-                    self.env._(
-                        "Sum of groups 'Excess' exceeds action 'Excess'."
+                    pattern_start.format(
+                        child=child_start.strftime(DATETIME_FORMAT),
+                        parent=parent_start.strftime(DATETIME_FORMAT),
                     )
                 )
 
-    @api.constrains("date_start", "date_stop", "parent_id")
-    def _constrains_within_parent_child(self):
-        """Child-level constraint.
-
-        Evaluates on groups (children). Ensures this group's date window fits
-        within its parent's [date_start, date_stop]. Triggered when this
-        record's date_start/date_stop/parent_id change.
-        """
-        for group in self:
-            parent = group.parent_id
-            if not parent:
-                continue
-
-            p_start, p_stop = self._parent_window(parent)
-            if group.date_start and p_start and group.date_start < p_start:
+            child_stop = max(childs.mapped(lambda r: r.date_stop or _INFINITY))
+            if child_stop > parent_stop:
                 raise ValidationError(
-                    self.env._("Group starts before action start.")
-                )
-            g_stop = group.date_stop or _INFINITY
-            if g_stop > p_stop:
-                raise ValidationError(
-                    self.env._("Group ends after action stop.")
-                )
-
-    @api.constrains("seating", "excess", "parent_id")
-    def _constrains_capacity_child(self):
-        """Child-level constraint.
-
-        Evaluates on groups (children). After this group's change, ensures the
-        aggregated seating/excess under the same parent does not exceed the
-        parent's limits. Triggered when this record's seating/excess/parent_id
-        change.
-        """
-        Child = self.env["academy.training.action"]
-        for group in self:
-            parent = group.parent_id
-            if not parent:
-                continue
-
-            data = Child.read_group(
-                domain=[("parent_id", "=", parent.id)],
-                fields=["seating:sum", "excess:sum"],
-                groupby=[],
-            )[0]
-            seat_sum = data.get("seating_sum") or 0
-            exc_sum = data.get("excess_sum") or 0
-
-            if parent.seating is not None and seat_sum > parent.seating:
-                raise ValidationError(
-                    self.env._(
-                        "Sum of groups 'Seating' exceeds action 'Seating'."
-                    )
-                )
-            if parent.excess is not None and exc_sum > parent.excess:
-                raise ValidationError(
-                    self.env._(
-                        "Sum of groups 'Excess' exceeds action 'Excess'."
+                    pattern_stop.format(
+                        child=child_stop.strftime(DATETIME_FORMAT),
+                        parent=parent_stop.strftime(DATETIME_FORMAT),
                     )
                 )
 
@@ -1780,18 +1727,40 @@ class AcademyTrainingAction(models.Model):
 
     def _fill_from_parent(self, values_list):
         """Inherit parent's values (incl. O2M/M2M with copy=True)."""
-        if not values_list:
+        if not values_list or not isinstance(values_list, (list, tuple)):
             return
 
         parent_data = self._batch_read_parent_data(values_list)
         if not parent_data:
             return
 
+        parent_ids = {
+            values.get("parent_id")
+            for values in values_list
+            if values.get("parent_id")
+        }
+
+        parent_domain = [("id", "in", list(parent_ids))]
+        parent_context = dict(active_test=False)
+        parent_obj = self.env[self._name].with_context(parent_context)
+        parent_set = parent_obj.search(parent_domain)
+
+        program_by_parent = {
+            parent.id: parent.training_program_id.id
+            for parent in parent_set
+            if parent.training_program_id
+        }
+
         for values in values_list:
-            pid = values.get("parent_id")
-            if not pid:
+            parent_id = values.get("parent_id")
+            if not parent_id:
                 continue
-            pvals = parent_data.get(pid, {})
+
+            program_id = program_by_parent.get(parent_id)
+            if program_id:
+                values["training_program_id"] = program_id
+
+            pvals = parent_data.get(parent_id, {}) or {}
             for key, val in pvals.items():
                 if key in _PARENT_EXCLUDE:
                     continue
@@ -1808,7 +1777,7 @@ class AcademyTrainingAction(models.Model):
         defaults.setdefault("company_id", self.env.company.id)
         defaults.setdefault("code", default_code(self.env, _TA_CODE_SEQUENCE))
         defaults.setdefault("date_start", self.default_start())
-        defaults.setdefault("seating", 20)
+        defaults.setdefault("seats", 20)
         defaults.setdefault("excess", 20)
 
     def _patch_defaults_on_child(self, defaults, fields_list):
@@ -1820,11 +1789,11 @@ class AcademyTrainingAction(models.Model):
             group_name = self.first_available_group_name()
             defaults["name"] = group_name
 
-        seating, excess = self.available_capacity()
-        if "seating" not in defaults:
-            defaults["seating"] = seating
-        if "excess" not in defaults or defaults.get("excess", 0) < seating:
-            defaults["excess"] = max(seating, excess)
+        seats, excess = self.available_capacity()
+        if "seats" not in defaults:
+            defaults["seats"] = seats
+        if "seats" not in defaults or defaults.get("excess", 0) < seats:
+            defaults["excess"] = max(seats, excess)
 
         parent_values = self.copy_data(default=None)[0] or {}
         fields_list = fields_list or parent_values.keys()
@@ -1870,10 +1839,10 @@ class AcademyTrainingAction(models.Model):
         parent = self.parent_id or self
         others = parent.child_ids.filtered(lambda r: r != self)
 
-        seating = sum((v or 0) for v in others.mapped("seating"))
+        seats = sum((v or 0) for v in others.mapped("seats"))
         excess = sum((v or 0) for v in others.mapped("excess"))
 
-        cap_s = max(0, (parent.seating or 0) - seating)
+        cap_s = max(0, (parent.seats or 0) - seats)
         cap_e = max(cap_s, (parent.excess or 0) - excess)
 
         return cap_s, cap_e
