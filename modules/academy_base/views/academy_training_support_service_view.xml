@@ -199,7 +199,7 @@
         <field name="name" class="oe_field_name" />
         <field name="date_start" class="oe_field_date_start" />
         <field name="date_stop" class="oe_field_date_stop" />
-        <field name="seating" class="oe_field_seating" />
+        <field name="seats" class="oe_field_seats" />
         <field name="excess" class="oe_field_excess" />
         <field name="training_modality_id" class="oe_field_training_modality_id" />
       </list>

@@ -42,7 +42,7 @@
                 <field name="qualification_level_id" class="oe_field_qualification_level_id" optional="hide"
                   options="{'no_quick_create': True, 'no_create': True, 'no_open': False}" />
 
-                <field name="seating" class="oe_field_seating" optional="hide"/>
+                <field name="seats" class="oe_field_seats" optional="hide"/>
                 <field name="excess" class="oe_field_excess" optional="hide"/>
                 <field name="rollup_enrolment_count" class="oe_field_rollup_enrolment_count" optional="show"/>
 
@@ -111,7 +111,7 @@
                           readonly="context.get('default_training_program_id', False) or id"/>
                         <field name="parent_id" class="oe_field_parent_id"
                           options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"
-                          readonly="True" invisible="not parent_id and not context.get('default_parent_id', False)" />
+                          domain="[('parent_id', '=', False)]" readonly="True" invisible="True" />
                       </group>
                     </div>
                 </div>
@@ -131,7 +131,7 @@
                       <field name="date_stop" class="oe_field_end" />
                     </group>
                     <group string="Seats" id="seats">
-                      <field name="seating" class="oe_field_seating" />
+                      <field name="seats" class="oe_field_seats" />
                       <field name="excess" class="oe_field_excess" />
                     </group>
                   </group>
