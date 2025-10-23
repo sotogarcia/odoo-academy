@@ -1344,7 +1344,9 @@ msgstr "Formación"
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_module__code
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_program__code
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_program_line__code
-#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_competency_unit_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_competency_unit_tree
+#: model:ir.model.fields,field_description:academy_base.field_academy_professional_qualification__qualification_code
+#: model:ir.model.fields,field_description:academy_base.field_academy_training_action__code
+#: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment__action_code#: model_terms:ir.ui.view,arch_db:academy_base.view_academy_competency_unit_form model_terms:ir.ui.view,arch_db:academy_base.view_academy_competency_unit_tree
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_educational_attainment_search
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_qualification_level_search model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_search
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_framework_form
@@ -2298,7 +2300,7 @@ msgstr "Habilitar o deshabilitar la ejecución de esta tarea."
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action__date_stop
 msgid "End date"
-msgstr "Fecha final"
+msgstr "Finalización"
 
 #. module: academy_base
 #: model:ir.model.constraint,message:academy_base.constraint_academy_training_action_check_date_order
@@ -3560,13 +3562,6 @@ msgstr "Instrumentación tecnológica"
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_program_line_form
 msgid "Internal Notes"
 msgstr "Notas internas"
-
-#. module: academy_base
-#: model:ir.model.fields,field_description:academy_base.field_academy_professional_qualification__qualification_code
-#: model:ir.model.fields,field_description:academy_base.field_academy_training_action__code
-#: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment__action_code
-msgid "Internal code"
-msgstr "Código interno"
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment__action_code
@@ -6264,7 +6259,7 @@ msgstr "Fechas de inicio y fin en un rango formateado"
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action__date_start
 msgid "Start date"
-msgstr "Fecha de inicio"
+msgstr "Inicio"
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_action__date_start

@@ -46,7 +46,7 @@
                 <field name="excess" class="oe_field_excess" optional="hide"/>
                 <field name="rollup_enrolment_count" class="oe_field_rollup_enrolment_count" optional="show"/>
 
-                <field name="manager_id" class="oe_field_manager_id" string="Tutor" optional="show"
+                <field name="manager_id" class="oe_field_manager_id" string="Manager" optional="show"
                 />
             </list>
         </field>
@@ -117,19 +117,19 @@
 
                 <div class="row">
                   <group col="2" id="action">
-                    <group string="Base">
+                    <group string="Base" id="base">
                       <field name="code" class="oe_field_code" />
                       <field name="company_id" class="oe_field_company_id" />
                     </group>
-                    <group string="Training">
+                    <group string="Training" id="training">
                       <field name="training_methodology_ids" class="od_field_training_methodology" widget="many2many_tags" string="Methodology" title="Training methodology"/>
                       <field name="training_modality_id" class="od_field_training_modality" string="Modality" title="Training modality" />
                     </group>
-                    <group string="Dates">
+                    <group string="Dates" id="dates">
                       <field name="date_start" class="oe_field_start" />
                       <field name="date_stop" class="oe_field_end" />
                     </group>
-                    <group string="Seats">
+                    <group string="Seats" id="seats">
                       <field name="seating" class="oe_field_seating" />
                       <field name="excess" class="oe_field_excess" />
                     </group>
@@ -137,7 +137,7 @@
                 </div>
 
                 <notebook class="mt-3">
-                  <page string="Action lines" class="oe_page_lines" accesskey="L">
+                  <page id="action-lines" string="Action lines" class="oe_page_lines" accesskey="L">
                     <group col="2">
                       <field name="action_line_ids" class="oe_field_action_line_ids" nolabel="1" colspan="2"
                         readonly="not id" context="{
@@ -147,7 +147,7 @@
                     </group>
                   </page>
                   <page id="data" string="Data" class="oe_page_data" accesskey="T">
-                    <group string="Action details">
+                    <group id="action-details" string="Action details">
                       <group><field name="application_scope_id" class="od_field_application_scope"
                         options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"/></group>
                       <group><field name="knowledge_area_ids"
@@ -155,7 +155,7 @@
                       <group><field name="professional_category_id"
                         options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" class="od_field_professional_category" string="Category" title="Professional category"/></group>
                     </group>
-                    <group string="Program details">
+                    <group id="program-details" string="Program details">
                         <group><field name="professional_family_id"
                           options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" class="oe_field_professional_family_id" readonly="1"/></group>
                         <group><field name="professional_area_id"
@@ -164,7 +164,7 @@
                         <group><field name="qualification_level_id"
                           options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" class="oe_field_qualification_level_id" readonly="1"/></group>
                     </group>
-                    <group string="Description">
+                    <group id="description" string="Description">
                         <field name="description" class="oe_field_description" colspan="4" nolabel="1" />
                     </group>
                   </page>
@@ -243,18 +243,18 @@
                     </h2>
 
                     <ul class="list-unstyled w-100 small my-0">
-                      <li class="d-flex flex-row justify-content-start lh-lg text-truncate" title="Training action code">
+                      <li class="d-flex flex-row justify-content-start lh-lg text-truncate" id="code" title="Training action code">
                        <span t-if="record.code.raw_value">
                           <t t-esc="record.code.raw_value"/>
                         </span>
                         <span t-if="!record.code.raw_value">---</span>
                       </li>
 
-                      <li class="d-flex flex-row justify-content-start lh-lg text-truncate" title="Date range">
+                      <li class="d-flex flex-row justify-content-start lh-lg text-truncate" id="lifespan" title="Date range">
                           <field name="lifespan" class="oe_field_lifespan" />
                       </li>
 
-                      <li class="d-flex flex-row justify-content-start lh-lg text-truncate" title="Training modality">
+                      <li class="d-flex flex-row justify-content-start lh-lg text-truncate" id="training-modality-id" title="Training modality">
                         <strong class="pe-2">Modality:</strong>
                         <field name="training_modality_id" class="oe_field_training_modality_id" />
                       </li>
