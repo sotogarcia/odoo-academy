@@ -135,6 +135,7 @@ of reference catalogs and training structures across the platform.
         "views/academy_training_module_view.xml",
         "views/academy_competency_unit_view.xml",
         "views/academy_training_program_view.xml",
+        "views/academy_training_support_program_view.xml",
         "views/academy_training_action_view.xml",
         "views/academy_training_action_enrolment_view.xml",
         "views/academy_support_staff_view.xml",

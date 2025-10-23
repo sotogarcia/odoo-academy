@@ -26,28 +26,28 @@
                 <field name="code" class="oe_field_action_code" optional="show"/>
                 <field name="name" string="Name"/>
 
-                <field name="training_modality_id" class="oe_field_training_modality_id"
-                    optional="hide"/>
-                <field name="training_methodology_ids" class="oe_field_training_methodology_ids"
-                    optional="hide"/>
+                <field name="training_modality_id" class="oe_field_training_modality_id" optional="hide"
+                  options="{'no_quick_create': True, 'no_create': True, 'no_open': False}" />
+                <field name="training_methodology_ids" class="oe_field_training_methodology_ids" optional="hide"
+                  options="{'no_quick_create': True, 'no_create': True, 'no_open': False}" />
 
                 <field name="date_start" widget="date" class="oe_field_start"/>
                 <field name="date_stop" widget="date" class="oe_field_end"/>
 
                 <field name="code" class="oe_field_activity_code" optional="hide"/>
-                <field name="training_program_id" class="oe_field_training_program_id"
-                    optional="show"/>
-                <field name="professional_family_id" class="oe_field_professional_family_id"
-                    optional="hide"/>
-                <field name="qualification_level_id" class="oe_field_qualification_level_id"
-                    optional="hide"/>
+                <field name="training_program_id" class="oe_field_training_program_id" optional="show"
+                  options="{'no_quick_create': True, 'no_create': True, 'no_open': False}" />
+                <field name="professional_family_id" class="oe_field_professional_family_id" optional="hide"
+                  options="{'no_quick_create': True, 'no_create': True, 'no_open': False}" />
+                <field name="qualification_level_id" class="oe_field_qualification_level_id" optional="hide"
+                  options="{'no_quick_create': True, 'no_create': True, 'no_open': False}" />
 
                 <field name="seating" class="oe_field_seating" optional="hide"/>
                 <field name="excess" class="oe_field_excess" optional="hide"/>
                 <field name="rollup_enrolment_count" class="oe_field_rollup_enrolment_count" optional="show"/>
 
                 <field name="manager_id" class="oe_field_manager_id" string="Manager" optional="show"
-                />
+                  options="{'no_quick_create': True, 'no_create': True, 'no_open': False}" />
             </list>
         </field>
     </record>
@@ -107,6 +107,7 @@
                       <group>
                         <field name="training_program_id" class="oe_field_training_program_id"
                           options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"
+                          domain="[('program_type', '=', 'training')]"
                           readonly="context.get('default_training_program_id', False) or id"/>
                         <field name="parent_id" class="oe_field_parent_id"
                           options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"
@@ -230,7 +231,7 @@
                         alt="Training action" title="Training action without image" />
                     </t>
                     <t t-if="!record.parent_id.raw_value">
-                      <img src="/academy_base/static/src/img/training-action-128.png" class="w-100 h-auto p-2"
+                      <img id="alternative-image" src="/academy_base/static/src/img/training-action-128.png" class="w-100 h-auto p-2"
                         alt="Training action" title="Training action without image" />
                     </t>
                   </t>
@@ -347,7 +348,7 @@
       <field name="view_mode">kanban,list,form,activity</field>
       <field name="path">academy-training-action</field>
       <field name="target">current</field>
-      <field name="domain">[('parent_id', '=', False)]</field>
+      <field name="domain">[('parent_id', '=', False), ('program_type', '=', 'training')]</field>
       <field name="context">{}</field>
       <field name="search_view_id" ref="view_academy_training_action_search"/>
       <field name="help" type="html">

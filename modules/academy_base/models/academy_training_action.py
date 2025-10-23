@@ -479,6 +479,13 @@ class AcademyTrainingAction(models.Model):
         copy=True,
     )
 
+    program_type = fields.Selection(
+        string="Program type",
+        related="training_program_id.program_type",
+        help="Select whether this is a standard training program or a ",
+        store=True,
+    )
+
     program_name = fields.Char(
         string="Name",
         related="training_program_id.name",

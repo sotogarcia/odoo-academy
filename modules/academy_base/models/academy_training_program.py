@@ -9,7 +9,7 @@ all training program attributes and behavior.
 # pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
 from odoo.osv.expression import TRUE_DOMAIN, FALSE_DOMAIN
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 from ..utils.helpers import OPERATOR_MAP, one2many_count
 from ..utils.helpers import sanitize_code, default_code
 from odoo.tools.safe_eval import safe_eval
@@ -39,6 +39,8 @@ class AcademyTrainingProgram(models.Model):
     _rec_name = "name"
     _order = "name ASC"
     _rec_names_search = ["name", "code", "training_framework_id"]
+
+    _IMMUTABLE_FIELDS = ("program_type", "training_framework_id")
 
     name = fields.Char(
         string="Name",
@@ -104,6 +106,27 @@ class AcademyTrainingProgram(models.Model):
         copy=False,
         tracking=True,
     )
+
+    # Field program_type and onchange -----------------------------------------
+
+    program_type = fields.Selection(
+        string="Program type",
+        required=True,
+        readonly=True,
+        index=True,
+        default="training",
+        help="Select whether this is a standard training program or a "
+        "training support program.",
+        selection=[
+            ("training", "Training Program"),
+            ("support", "Training Support Program"),
+        ],
+    )
+
+    @api.onchange("program_type")
+    def _onchange_program_type_clear_lines(self):
+        if self.program_type == "support":
+            self.program_line_ids = [(5, 0, 0)]
 
     training_framework_id = fields.Many2one(
         string="Training framework",
@@ -355,6 +378,15 @@ class AcademyTrainingProgram(models.Model):
         ),
     ]
 
+    @api.constrains("program_type", "program_line_ids")
+    def _check_support_program_has_no_lines(self):
+        """A Training Support Program cannot have training lines."""
+        for rec in self:
+            if rec.program_type == "support" and rec.program_line_ids:
+                raise ValidationError(
+                    _("A Training Support Program cannot have training lines.")
+                )
+
     # ---------------------------- PUBLIC FIELDS ------------------------------
 
     def update_from_external(self, crud, fieldname, recordset):
@@ -427,14 +459,15 @@ class AcademyTrainingProgram(models.Model):
     def write(self, values):
         """Overridden method 'write'"""
         values = values or {}
+
+        self._avoid_writing_to_immutable_fields(values)
         sanitize_code(values, "upper")
 
-        parent = super(AcademyTrainingProgram, self)
-        result = parent.write(values)
-
-        return result
+        return super().write(values)
 
     def copy(self, default=None):
+        self.ensure_one()
+
         default = dict(default or {})
 
         if not default.get("name", False):
@@ -449,3 +482,31 @@ class AcademyTrainingProgram(models.Model):
             line.copy(default=line_default)
 
         return new_program
+
+    def _avoid_writing_to_immutable_field(self, values, field_name):
+        self.ensure_one()
+
+        field = self._fields[field_name]
+        new = values.get(field_name)
+        # Normalizar Many2one a ID para comparar
+        if field.type == "many2one":
+            old = self[field_name].id or False
+            if isinstance(new, models.BaseModel):
+                new = new.id
+        else:
+            old = self[field_name]
+        if new != old:
+            raise ValidationError(
+                _("Field '%s' cannot be modified after saving.") % field.string
+            )
+
+    def _avoid_writing_to_immutable_fields(self, values):
+        fields_to_check = set(values) & set(self._IMMUTABLE_FIELDS)
+        if fields_to_check:
+            for record in self:
+                for field_name in fields_to_check:
+                    record._avoid_writing_to_immutable_field(
+                        values, field_name
+                    )
+
+        return True

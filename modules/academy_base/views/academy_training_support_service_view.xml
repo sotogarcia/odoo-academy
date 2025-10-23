@@ -54,19 +54,22 @@
         <attribute name="string">academy_training_support_service_form</attribute>
       </xpath>
 
-      <xpath expr="//field[@name='training_program_id']" position="replace" />
       <xpath expr="//button[@name='view_training_action_groups']" position="replace" />
       <xpath expr="//button[@name='view_action_lines']" position="replace" />
-      <xpath expr="//group[@id='base']" position="replace" />
-      <xpath expr="//group[@id='training']" position="replace" />
+<!--       <xpath expr="//group[@id='base']" position="replace" />
+      <xpath expr="//group[@id='training']" position="replace" /> -->
       <xpath expr="//page[@id='action-lines']" position="replace" />
       <xpath expr="//group[@id='action-details']" position="replace" />
       <xpath expr="//group[@id='program-details']" position="replace" />
 
+      <xpath expr="//field[@name='training_program_id']" position="attributes">
+        <attribute name="domain">[('program_type', '=', 'support')]</attribute>
+      </xpath>
+<!--
       <xpath expr="//group[@id='dates']" position="before">
         <group><field name="code" class="oe_field_code" /></group>
         <group><field name="company_id" class="oe_field_company_id" /></group>
-      </xpath>
+      </xpath> -->
 
       <xpath expr="//button[@name='view_rollup_enrolments']" position="replace">
         <button name="view_enrolments" type="object"
@@ -98,6 +101,11 @@
         <attribute name="default_group_by" />
         <attribute name="group_create">0</attribute>
       </xpath>
+
+      <xpath expr="//img[@id='alternative-image']" position="attributes">
+        <attribute name="src">/academy_base/static/src/img/training-support-service-128.png</attribute>
+      </xpath>
+
       <xpath expr="//button[@name='view_training_action_groups']" position="replace" />
 
       <xpath expr="//li[@id='training-modality-id']" position="replace" />
@@ -149,7 +157,7 @@
     <field name="view_mode">kanban,list,form,activity</field>
     <field name="path">academy-support-service</field>
     <field name="target">current</field>
-    <field name="domain">[("child_ids", "=", False)]</field>
+    <field name="domain">[("child_ids", "=", False), ('program_type', '=', 'support')]</field>
     <field name="context">{'default_sequence': 10}</field>
     <field name="view_ids" eval="[(5, 0, 0),
         (0, 0, {'view_mode': 'kanban', 'view_id': ref('academy_base.view_academy_training_support_service_kanban')}),
@@ -158,7 +166,7 @@
     <field name="search_view_id" ref="view_academy_training_support_service_search" />
     <field name="help" type="html">
         <p class="oe_view_nocontent_create">
-            Click to add new training support service
+            Click to add new training support services
         </p><p>
             There are no training support services in catalog
         </p>

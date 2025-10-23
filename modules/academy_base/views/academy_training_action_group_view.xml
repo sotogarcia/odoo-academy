@@ -131,7 +131,7 @@
     <field name="view_mode">kanban,list,form,activity</field>
     <field name="path">academy-training-group</field>
     <field name="target">current</field>
-    <field name="domain">[("child_ids", "=", False)]</field>
+    <field name="domain">[("child_ids", "=", False), ('program_type', '=', 'training')]</field>
     <field name="context">{'default_sequence': 10}</field>
     <field name="view_ids" eval="[(5, 0, 0),
         (0, 0, {'view_mode': 'kanban', 'view_id': ref('academy_base.view_academy_training_action_group_kanban')}),
