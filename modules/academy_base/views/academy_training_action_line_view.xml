@@ -61,7 +61,7 @@
       <xpath expr="//page[@id='setup']" position="after">
         <page string="Teaching" class="oe_page_teaching" accesskey="T" invisible="is_section">
           <group col="2" string="Teachers">
-            <field name="teacher_assignment_ids" class="oe_field_teacher_assignment_ids"
+            <field name="teacher_assignment_ids" class="oe_field_teacher_assignment_ids" nolabel="1"
               options="{'no_quick_create': True, 'no_create': True, 'no_open': False}" readonly="not id"
               context="{'default_training_action_id': training_action_id, 'default_action_line_id': id}" />
           </group>
