@@ -55,23 +55,23 @@ class AcademyTimesheetSessionStateWizard(models.TransientModel):
         help="Total number of sessions",
     )
 
-    draft_count = fields.Integer(
+    draft_session_count = fields.Integer(
         string="In draft",
         required=True,
         readonly=True,
         index=False,
         default=0,
         help="Number of sessions in Draft state",
-        compute="_compute_draft_count",
+        compute="_compute_draft_session_count",
     )
 
     @api.depends("session_ids")
-    def _compute_draft_count(self):
+    def _compute_draft_session_count(self):
         for record in self:
             draft_session_set = record.session_ids.filtered(
                 lambda r: r.state == "draft"
             )
-            record.draft_count = len(draft_session_set)
+            record.draft_session_count = len(draft_session_set)
 
     ready_count = fields.Integer(
         string="In ready",

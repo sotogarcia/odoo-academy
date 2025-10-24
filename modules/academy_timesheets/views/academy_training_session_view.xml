@@ -73,7 +73,7 @@
                                 icon="fa-building-o" help="Show related facility reservations">
                                 <field name="reservation_count" widget="statinfo" string="Facilities" />
                             </button>
-                            <button name="view_invitation" type="object" class="oe_stat_button oe_read_only"
+                            <button name="view_invitations" type="object" class="oe_stat_button oe_read_only"
                                 icon="fa-users" help="Show related invitations">
                                 <field name="invitation_str" widget="statinfo" string="Invitations" />
                             </button>

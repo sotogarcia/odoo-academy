@@ -482,13 +482,13 @@ class AcademyTrainingSession(models.Model):
         store=False,
     )
 
-    @api.depends("invitation_ids", "invitation_ids.excluded")
+    @api.depends("invitation_ids", "invitation_ids.included")
     def _compute_invitation_str(self):
         counts = one2many_count(self, "invitation_ids")
 
         counts = one2many_count(self, "invitation_ids")
         included_counts = one2many_count(
-            self, "invitation_ids", [("excluded", "!=", True)]
+            self, "invitation_ids", [("included", "!=", True)]
         )
 
         for record in self:
@@ -1184,8 +1184,8 @@ class AcademyTrainingSession(models.Model):
         "date_stop",
         "training_action_id",
         "training_action_id.name",
-        "task_id",
-        "task_id.name",
+        # "task_id",
+        # "task_id.name",
     )
     @api.depends_context(
         "lang", "name_get_session_interval", "default_training_action_id"
@@ -1251,7 +1251,7 @@ class AcademyTrainingSession(models.Model):
 
         return serialized
 
-    def view_invitation(self):
+    def view_invitations(self):
         self.ensure_one()
 
         action_xid = "academy_timesheets.action_invitation_act_window"

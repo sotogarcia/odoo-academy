@@ -33,7 +33,7 @@ class AcademyTrainingInvitation(models.Model):
         translate=True,
     )
 
-    excluded = fields.Boolean(
+    included = fields.Boolean(
         string="Excluded",
         required=False,
         readonly=False,

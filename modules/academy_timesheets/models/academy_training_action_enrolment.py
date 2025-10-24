@@ -8,7 +8,8 @@ stores all training action enrolment attributes and behavior.
 from odoo import models, fields, api
 from odoo.tools.translate import _
 from odoo.tools.safe_eval import safe_eval
-from odoo.osv.expression import AND
+from odoo.osv.expression import AND, FALSE_DOMAIN, TRUE_DOMAIN
+from odoo.addons.academy_base.utils.helpers import OPERATOR_MAP, one2many_count
 
 from logging import getLogger
 
@@ -35,21 +36,46 @@ class AcademyTrainingActionEnrolment(models.Model):
         auto_join=False,
     )
 
+    # -- intivation_count: field and logic ------------------------------------
+
     invitation_count = fields.Integer(
         string="Invitation count",
         required=False,
         readonly=True,
         index=False,
         default=0,
-        help="Number of students have been invited to the enrolment",
+        help="Number of sessions to which the student has been invited",
         compute="_compute_invitation_count",
+        search="_search_invitation_count",
         store=False,
     )
 
     @api.depends("invitation_ids")
     def _compute_invitation_count(self):
+        counts = one2many_count(self, "invitation_ids")
+
         for record in self:
-            record.invitation_count = len(record.invitation_ids)
+            record.invitation_count = counts.get(record.id, 0)
+
+    @api.model
+    def _search_invitation_count(self, operator, value):
+        # Handle boolean-like searches Odoo may pass for required fields
+        if value is True:
+            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
+        if value is False:
+            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
+
+        cmp_func = OPERATOR_MAP.get(operator)
+        if not cmp_func:
+            return FALSE_DOMAIN  # unsupported operator
+
+        counts = one2many_count(self.search([]), "invitation_ids")
+        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
+
+        return [("id", "in", matched)] if matched else FALSE_DOMAIN
+
+    # -- Overriden methods
+    # -------------------------------------------------------------------------
 
     def write(self, values):
         """Overridden method 'write'"""
@@ -63,7 +89,10 @@ class AcademyTrainingActionEnrolment(models.Model):
 
         return result
 
-    def view_invitation(self):
+    # -- Public methods
+    # -------------------------------------------------------------------------
+
+    def view_invitations(self):
         self.ensure_one()
 
         action_xid = "academy_timesheets.action_invitation_act_window"
@@ -85,6 +114,9 @@ class AcademyTrainingActionEnrolment(models.Model):
         }
 
         return serialized
+
+    # -- Auxiliary methods
+    # -------------------------------------------------------------------------
 
     @staticmethod
     def _will_be_drastically_changed(values):
