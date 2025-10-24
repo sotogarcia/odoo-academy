@@ -9,7 +9,7 @@
         <field name="nextcall"
             eval="(DateTime.now().replace(hour=2, minute=0) + timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S')"/>
         <field name="model_id" ref="model_academy_training_action_enrolment"/>
-        <field name="code">model.remove_temporary_student_enrollments()</field>
+        <field name="code">model.remove_temporary_student_enrolments()</field>
         <field name="state">code</field>
     </record>
 

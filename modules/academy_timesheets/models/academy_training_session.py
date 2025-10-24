@@ -11,7 +11,11 @@ from odoo.tools.translate import _
 from odoo.osv.expression import AND, TRUE_DOMAIN, FALSE_DOMAIN
 from odoo.exceptions import UserError, MissingError
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT
-from odoo.addons.academy_base.utils.helpers import OPERATOR_MAP, one2many_count
+from odoo.addons.academy_base.utils.helpers import (
+    OPERATOR_MAP,
+    one2many_count,
+    many2many_count,
+)
 
 from datetime import timedelta, datetime, date, time
 import pytz
@@ -35,13 +39,13 @@ class AcademyTrainingSession(models.Model):
     _rec_name = "id"
     _order = "date_start ASC"
     _rec_names_search = [
-        "task_id",
-        "training_action_id" "action_line_id",
+        "training_action_id",
+        "action_line_id",
     ]
 
     _check_company_auto = True
 
-    # Entity fields
+    # -- Entity fields
     # -------------------------------------------------------------------------
 
     description = fields.Text(
@@ -75,58 +79,45 @@ class AcademyTrainingSession(models.Model):
         tracking=True,
     )
 
-    kind = fields.Selection(
-        string="Type",
-        required=True,
-        readonly=False,
-        index=True,
-        default="teach",
-        help=False,
-        selection=[("teach", "Teaching task"), ("task", "Non-teaching task")],
-    )
-
-    date_start = fields.Datetime(
-        string="Beginning",
-        required=True,
-        readonly=False,
-        index=True,
-        default=lambda self: self.now_o_clock(round_up=True),
-        help="Date/time of session start",
-        tracking=True,
-    )
-
-    @api.onchange("date_start")
-    def _onchange_date_start(self):
-        self._compute_duration()
-
-    date_stop = fields.Datetime(
-        string="Ending",
-        required=True,
-        readonly=False,
-        index=True,
-        default=lambda self: self.now_o_clock(offset_hours=1, round_up=True),
-        help="Date/time of session end",
-        tracking=True,
-    )
-
-    @api.onchange("date_stop")
-    def _onchange_date_stop(self):
-        self._compute_duration()
-
-    task_id = fields.Many2one(
-        string="Non-teaching task",
+    action_line_id = fields.Many2one(
+        string="Competency unit",
         required=False,
         readonly=False,
         index=True,
         default=None,
-        help="Non-teaching task",
-        comodel_name="academy.non.teaching.task",
+        help="Related program unit",
+        comodel_name="academy.training.action.line",
         domain=[],
         context={},
         ondelete="cascade",
         auto_join=False,
         tracking=True,
     )
+
+    validate = fields.Boolean(
+        string="Validate",
+        required=False,
+        readonly=False,
+        index=False,
+        default=True,
+        help="If checked, the event date range will be checked before saving",
+    )
+
+    program_type = fields.Selection(
+        string="Program type",
+        required=True,
+        readonly=False,
+        index=True,
+        default="training",
+        help=False,
+        selection=[
+            ("training", "Training Program"),
+            ("support", "Training Support Program"),
+        ],
+    )
+
+    # Training action information
+    # -------------------------------------------------------------------------
 
     training_action_id = fields.Many2one(
         string="Training action",
@@ -143,40 +134,31 @@ class AcademyTrainingSession(models.Model):
         tracking=True,
     )
 
-    # @api.onchange("training_action_id")
-    # def _onchange_training_action_id(self):
-    #     for record in self:
-    #         record.training_group_id = None
-    #         record.action_line_id = None
+    @api.onchange("training_action_id")
+    def _onchange_training_action_id(self):
+        for record in self:
+            record.action_line_id = None
 
-    # training_group_id = fields.Many2one(
-    #     string="Training group",
-    #     required=False,
-    #     readonly=False,
-    #     index=True,
-    #     default=None,
-    #     help=False,
-    #     comodel_name="academy.training.action.group",
-    #     domain=[],
-    #     context={},
-    #     ondelete="cascade",
-    #     auto_join=False,
-    # )
-
-    action_line_id = fields.Many2one(
-        string="Competency unit",
-        required=False,
-        readonly=False,
-        index=True,
-        default=None,
-        help="Related program unit",
-        comodel_name="academy.training.action.line",
-        domain=[],
-        context={},
-        ondelete="cascade",
-        auto_join=False,
-        tracking=True,
+    company_id = fields.Many2one(
+        string="Company",
+        help="The company this record belongs to",
+        related="training_action_id.company_id",
+        store=True,
     )
+
+    training_program_id = fields.Many2one(
+        string="Training program",
+        related="training_action_id.training_program_id",
+    )
+
+    allow_overlap = fields.Boolean(
+        string="Allow overlap",
+        related="training_action_id.allow_overlap",
+        store=True,
+    )
+
+    # Facility reservation information
+    # -------------------------------------------------------------------------
 
     reservation_ids = fields.One2many(
         string="Reservations",
@@ -192,102 +174,6 @@ class AcademyTrainingSession(models.Model):
         auto_join=False,
         tracking=True,
         copy=False,
-    )
-
-    teacher_assignment_ids = fields.One2many(
-        string="Teacher assignments",
-        required=True,
-        readonly=False,
-        index=True,
-        default=None,  # lambda self: self.default_teacher_assignment_ids(),
-        help=False,
-        comodel_name="academy.training.session.teacher.assignment",
-        inverse_name="session_id",
-        domain=[],
-        context={},
-        auto_join=False,
-        tracking=True,
-        copy=False,
-    )
-
-    invitation_ids = fields.One2many(
-        string="Invitation",
-        required=False,
-        readonly=False,
-        index=False,
-        default=None,
-        help="List of attendees for the session",
-        comodel_name="academy.training.session.invitation",
-        inverse_name="session_id",
-        domain=[],
-        context={},
-        auto_join=False,
-        tracking=True,
-        copy=False,
-    )
-
-    # Training action information
-    # -------------------------------------------------------------------------
-
-    company_id = fields.Many2one(
-        string="Company",
-        help="The company this record belongs to",
-        related="training_action_id.company_id",
-        store=True,
-    )
-
-    training_program_id = fields.Many2one(
-        string="Training program",
-        related="training_action_id.training_program_id",
-    )
-
-    groupwise_schedule = fields.Boolean(
-        string="Schedule by group",
-        readonly=True,
-        help="Enable to schedule sessions separately for each group",
-        related="training_action_id.groupwise_schedule",
-        store=True,
-    )
-
-    task_name = fields.Char(
-        string="Training / Task",
-        required=True,
-        readonly=True,
-        index=True,
-        default=None,
-        help=False,
-        size=1024,
-        translate=True,
-        compute="_compute_task_name",
-        store=True,
-    )
-
-    @api.depends("task_id", "training_action_id")
-    def _compute_task_name(self):
-        for record in self:
-            if record.task_id and record.task_id.name:
-                record.task_name = record.task_id.name
-            elif record.training_action_id and record.training_action_id.name:
-                record.task_name = record.training_action_id.name
-            else:
-                record.task_name = self.env._("New session")
-
-    # Facility reservation information
-    # -------------------------------------------------------------------------
-
-    facility_ids = fields.Many2manyView(
-        string="Facility",
-        required=False,
-        readonly=False,
-        index=False,
-        default=None,
-        help=False,
-        comodel_name="facility.facility",
-        relation="facility_reservation",
-        column1="session_id",
-        column2="facility_id",
-        domain=[],
-        context={},
     )
 
     reservation_count = fields.Integer(
@@ -324,6 +210,21 @@ class AcademyTrainingSession(models.Model):
         matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
 
         return [("id", "in", matched)] if matched else FALSE_DOMAIN
+
+    facility_ids = fields.Many2manyView(
+        string="Facility",
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help=False,
+        comodel_name="facility.facility",
+        relation="facility_reservation",
+        column1="session_id",
+        column2="facility_id",
+        domain=[],
+        context={},
+    )
 
     primary_facility_id = fields.Many2one(
         string="Primary facility",
@@ -384,8 +285,24 @@ class AcademyTrainingSession(models.Model):
         store=True,
     )
 
-    # Teacher information
+    # -- Teacher information
     # -------------------------------------------------------------------------
+
+    teacher_assignment_ids = fields.One2many(
+        string="Teacher assignments",
+        required=True,
+        readonly=False,
+        index=True,
+        default=None,  # lambda self: self.default_teacher_assignment_ids(),
+        help=False,
+        comodel_name="academy.training.session.teacher.assignment",
+        inverse_name="session_id",
+        domain=[],
+        context={},
+        auto_join=False,
+        tracking=True,
+        copy=False,
+    )
 
     teacher_ids = fields.Many2manyView(
         string="Teachers",
@@ -413,10 +330,29 @@ class AcademyTrainingSession(models.Model):
         compute="_compute_teacher_count",
     )
 
-    @api.depends("teacher_assignment_ids")
+    @api.depends("teacher_ids")
     def _compute_teacher_count(self):
+        counts = many2many_count(self, "teacher_ids")
+
         for record in self:
-            record.teacher_count = len(record.teacher_assignment_ids)
+            record.teacher_count = counts.get(record.id, 0)
+
+    @api.model
+    def _search_reservation_count(self, operator, value):
+        # Handle boolean-like searches Odoo may pass for required fields
+        if value is True:
+            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
+        if value is False:
+            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
+
+        cmp_func = OPERATOR_MAP.get(operator)
+        if not cmp_func:
+            return FALSE_DOMAIN  # unsupported operator
+
+        counts = many2many_count(self.search([]), "teacher_ids")
+        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
+
+        return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
     primary_teacher_id = fields.Many2one(
         string="Primary instructor",
@@ -470,8 +406,60 @@ class AcademyTrainingSession(models.Model):
             else:
                 session.primary_teacher_id = False
 
-    # Invitation information
+    # -- Invitation information
     # -------------------------------------------------------------------------
+
+    invitation_ids = fields.One2many(
+        string="Invitation",
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help="List of attendees for the session",
+        comodel_name="academy.training.session.invitation",
+        inverse_name="session_id",
+        domain=[],
+        context={},
+        auto_join=False,
+        tracking=True,
+        copy=False,
+    )
+
+    invitation_count = fields.Integer(
+        string="Invitation count",
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        help="Number of sessions to which the student has been invited",
+        compute="_compute_invitation_count",
+        search="_search_invitation_count",
+        store=False,
+    )
+
+    @api.depends("invitation_ids")
+    def _compute_invitation_count(self):
+        counts = one2many_count(self, "invitation_ids")
+
+        for record in self:
+            record.invitation_count = counts.get(record.id, 0)
+
+    @api.model
+    def _search_invitation_count(self, operator, value):
+        # Handle boolean-like searches Odoo may pass for required fields
+        if value is True:
+            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
+        if value is False:
+            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
+
+        cmp_func = OPERATOR_MAP.get(operator)
+        if not cmp_func:
+            return FALSE_DOMAIN  # unsupported operator
+
+        counts = one2many_count(self.search([]), "invitation_ids")
+        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
+
+        return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
     invitation_str = fields.Char(
         string="Invitation summary",
@@ -502,41 +490,8 @@ class AcademyTrainingSession(models.Model):
             included = included_counts.get(record.id, 0)
             record.invitation_str = f"{included} / {total}"
 
-    invitation_count = fields.Integer(
-        string="Invitation count",
-        required=False,
-        readonly=True,
-        index=False,
-        default=0,
-        help="Number of students have been invited to the session",
-        compute="_compute_invitation_count",
-        search="_search_invitation_count",
-        store=False,
-    )
-
-    @api.depends("invitation_ids")
-    def _compute_invitation_count(self):
-        counts = one2many_count(self, "invitation_ids")
-
-        for record in self:
-            record.invitation_count = counts.get(record.id, 0)
-
-    @api.model
-    def _search_invitation_count(self, operator, value):
-        # Handle boolean-like searches Odoo may pass for required fields
-        if value is True:
-            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
-        if value is False:
-            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
-
-        cmp_func = OPERATOR_MAP.get(operator)
-        if not cmp_func:
-            return FALSE_DOMAIN  # unsupported operator
-
-        counts = one2many_count(self.search([]), "invitation_ids")
-        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
-
-        return [("id", "in", matched)] if matched else FALSE_DOMAIN
+    # -- Enrolment information
+    # -------------------------------------------------------------------------
 
     enrolment_ids = fields.Many2manyView(
         string="Enrolments",
@@ -568,15 +523,36 @@ class AcademyTrainingSession(models.Model):
         context={},
     )
 
-    @staticmethod
-    def now_o_clock(offset_hours=0, round_up=False):
-        present = fields.datetime.now()
-        oclock = present.replace(minute=0, second=0, microsecond=0)
+    # -- Date interval information
+    # -------------------------------------------------------------------------
 
-        if round_up and (oclock < present):  # almost always
-            oclock += timedelta(hours=1)
+    date_start = fields.Datetime(
+        string="Beginning",
+        required=True,
+        readonly=False,
+        index=True,
+        default=lambda self: self.now_o_clock(round_up=True),
+        help="Date/time of session start",
+        tracking=True,
+    )
 
-        return oclock + timedelta(hours=offset_hours)
+    @api.onchange("date_start")
+    def _onchange_date_start(self):
+        self._compute_date_delay()
+
+    date_stop = fields.Datetime(
+        string="Ending",
+        required=True,
+        readonly=False,
+        index=True,
+        default=lambda self: self.now_o_clock(offset_hours=1, round_up=True),
+        help="Date/time of session end",
+        tracking=True,
+    )
+
+    @api.onchange("date_stop")
+    def _onchange_date_stop(self):
+        self._compute_date_delay()
 
     date_delay = fields.Float(
         string="Duration",
@@ -587,9 +563,15 @@ class AcademyTrainingSession(models.Model):
         digits=(16, 2),
         help="Time length of the training session",
         store=True,
-        compute="_compute_duration",
+        compute="_compute_date_delay",
         aggregator="sum",
     )
+
+    @api.depends("date_start", "date_stop")
+    def _compute_date_delay(self):
+        for record in self:
+            delay = record._time_interval(record.date_start, record.date_stop)
+            record.date_delay = delay
 
     @api.onchange("date_delay")
     def _onchange_duration(self):
@@ -597,33 +579,6 @@ class AcademyTrainingSession(models.Model):
             if record._origin.date_delay != record.date_delay:
                 span = record.date_delay * 3600.0
                 record.date_stop = record.date_start + timedelta(seconds=span)
-
-    @api.depends("date_start", "date_stop")
-    def _compute_duration(self):
-        for record in self:
-            delay = record._time_interval(record.date_start, record.date_stop)
-            record.date_delay = delay
-
-    def date_delay_str(self, span=None):
-        self.ensure_one()
-
-        if span is None:
-            span = self.date_delay or 0
-
-        hours = int(span)
-        pattern = "{h:02d} h"
-
-        span = span % 1
-        minutes = int(span * 60)
-        if minutes:
-            pattern += " {m:02d}'"
-
-        span = (span * 60) % 1
-        seconds = int(span * 60)
-        if seconds:
-            pattern += ' {s:02d}"'
-
-        return pattern.format(h=hours, m=minutes, s=seconds)
 
     interval_str = fields.Char(
         string="Interval",
@@ -648,14 +603,8 @@ class AcademyTrainingSession(models.Model):
 
             record.interval_str = "{} - {}".format(left, right)
 
-    validate = fields.Boolean(
-        string="Validate",
-        required=False,
-        readonly=False,
-        index=False,
-        default=True,
-        help="If checked, the event date range will be checked before saving",
-    )
+    # -- Business fields
+    # -------------------------------------------------------------------------
 
     lang = fields.Char(
         string="Language",
@@ -681,22 +630,18 @@ class AcademyTrainingSession(models.Model):
         for record in self:
             record.lang = user_id.lang
 
-    allow_overlap = fields.Boolean(
-        string="Allow overlap",
-        related="training_action_id.allow_overlap",
-        store=True,
-    )
+    # -- Constraints
+    # -------------------------------------------------------------------------
 
     _sql_constraints = [
         (
             "check_training_task",
             """
             CHECK(
-                (kind <> \'teach\') OR
+                (program_type <> \'training\') OR
                 (
                     training_action_id IS NOT NULL
                     AND action_line_id IS NOT NULL
-                    AND task_id IS NULL
                 )
             )
             """,
@@ -706,11 +651,9 @@ class AcademyTrainingSession(models.Model):
             "check_non_training_task",
             """
                 CHECK(
-                    (kind <> \'task\') OR
+                    (program_type <> \'support\') OR
                     (
-                        task_id IS NOT NULL
-                        AND training_action_id IS NULL
-                        AND action_line_id IS NULL
+                        action_line_id IS NULL
                     )
                 )
             """,
@@ -725,14 +668,6 @@ class AcademyTrainingSession(models.Model):
             -- Requires btree_gist""",
             "This event overlaps with another of the same training action",
         ),
-        # (
-        #     "no_mixed_action_group_null",
-        #     "EXCLUDE USING gist ("
-        #     "  training_action_id WITH =, "
-        #     "  (training_group_id IS NULL) WITH <>"
-        #     ") DEFERRABLE INITIALLY IMMEDIATE",
-        #     "Mixed sessions with and without group not allowed.",
-        # ),
         (
             "positive_interval",
             "CHECK(date_start < date_stop)",
@@ -740,37 +675,214 @@ class AcademyTrainingSession(models.Model):
         ),
     ]
 
-    def _track_subtype(self, init_values):
-        self.ensure_one()
+    # -- Overriden methods
+    # -------------------------------------------------------------------------
 
-        fields = [
-            "date_start",
-            "date_stop",
-            "active",
-            "state",
-            "training_action_id",
-            "task_id",
-            "action_line_id",
-            "primary_teacher_id",
-            "primary_facility_id",
-            "teacher_assignment_ids",
-            "reservation_ids",
-        ]
+    @api.depends(
+        "date_start",
+        "date_stop",
+        "training_action_id",
+        "training_action_id.name",
+    )
+    @api.depends_context(
+        "lang", "name_get_session_interval", "default_training_action_id"
+    )
+    def _compute_display_name(self):
+        for record in self:
+            if self.env.context.get("name_get_session_interval", False):
+                if record.date_start and record.date_stop:
+                    dt_start = fields.Datetime.context_timestamp(
+                        record, record.date_start
+                    )
+                    dt_stop = fields.Datetime.context_timestamp(
+                        record, record.date_stop
+                    )
+                    date_base = dt_start.strftime("%d-%m-%Y")
+                    time_start = dt_start.strftime("%H:%M")
+                    time_stop = dt_stop.strftime("%H:%M")
+                    name = f"{date_base} ({time_start} - {time_stop})"
+                else:
+                    name = self.env._("New session")
 
-        xid = "academy_timesheets.{}"
-        result = False
+            elif self.env.context.get("default_training_action_id", False):
+                if record.action_line_id:
+                    name = record.action_line_id.name
+                else:
+                    name = self.env._("New session")
+            else:
+                if record.training_action_id:
+                    name = record.training_action_id.name
+                else:
+                    name = self.env._("New session")
 
-        if self.state != "draft" and any(key in fields for key in init_values):
-            xid = xid.format("academy_timesheets_training_session_changed")
-            result = self.env.ref(xid)
-        elif init_values.get("state", False) == "ready":
-            xid = xid.format("academy_timesheets_training_session_draft")
-            result = self.env.ref(xid)
-        else:
+            record.display_name = name
+
+    @api.model_create_multi
+    def create(self, values_list):
+        tracking_disable_ctx = self.env.context.copy()
+        tracking_disable_ctx.update({"tracking_disable": True})
+
+        result = self.browse()
+
+        for values in values_list:
+            self_ctx = self.with_context(tracking_disable_ctx)
+            with self.env.cr.savepoint():
+                self_ctx._adjust_existing_facility_reservations(values)
+
             _super = super(AcademyTrainingSession, self)
-            result = _super._track_subtype(init_values)
+            result |= _super.create(values)
+
+            if "invitation_ids" not in values:
+                result.invite_all()
+
+            if "reservation_ids" in values:
+                reservation_values = {
+                    "date_start": result.date_start,
+                    "date_stop": result.date_stop,
+                    "name": result.training_action_id.name,
+                    "description": result.action_line_id.name,
+                }
+
+                result_ctx = result.with_context(tracking_disable_ctx)
+                result_ctx.reservation_ids.write(reservation_values)
 
         return result
+
+    def write(self, values):
+        tracking_disable_ctx = self.env.context.copy()
+        tracking_disable_ctx.update({"tracking_disable": True})
+        self_ctx = self.with_context(tracking_disable_ctx)
+
+        self._adjust_existing_facility_reservations(values)
+
+        if "action_line_id" in values and "invitation_ids" not in values:
+            values["invitation_ids"] = None
+
+        _super = super(AcademyTrainingSession, self)
+        result = _super.write(values)
+
+        if "action_line_id" in values and "invitation_ids" not in values:
+            self.invite_all()
+
+        if self.reservation_ids:
+            reservation_values = {}
+
+            if "date_start" in values:
+                reservation_values["date_start"] = values.get("date_start")
+            if "date_stop" in values:
+                reservation_values["date_stop"] = values.get("date_stop")
+
+            if reservation_values:
+                ctx = self.env.context.copy()
+                ctx.update(
+                    {
+                        "active_model": self._name,
+                        "active_ids": self.mapped("id"),
+                        "tracking_disable": True,
+                    }
+                )
+                self_ctx.reservation_ids.write(reservation_values)
+
+        # self._update_session_followers()
+
+        return result
+
+    @api.returns("self", lambda value: value.id)
+    def copy(self, default=None):
+        self.ensure_one()
+
+        default = dict(default or {})
+
+        ctx = dict(self.env.context, tracking_disable=True)
+        parent = super(AcademyTrainingSession, self.with_context(ctx))
+
+        if "date_start" not in default:
+            date_start = self.date_start + timedelta(days=7)
+            default["date_start"] = date_start.strftime("%Y-%m-%d %H:%M:%S")
+        else:
+            date_start = fields.Datetime.from_string(default["date_start"])
+
+        if "date_stop" not in default:
+            date_stop = self.date_stop + timedelta(days=7)
+            default["date_stop"] = date_stop.strftime("%Y-%m-%d %H:%M:%S")
+        else:
+            date_stop = fields.Datetime.from_string(default["date_stop"])
+
+        default["date_delay"] = self._time_interval(date_start, date_stop)
+
+        if "state" not in default:
+            default["state"] = "draft"
+
+        if "invitation_ids" not in default:
+            default["invitation_ids"] = []
+            for inv in self.invitation_ids:
+                values = {
+                    "enrolment_id": inv.enrolment_id.id,
+                    "student_id": inv.student_id.id,
+                    "present": False,
+                }
+                m2m_op = (0, 0, values)
+                default["invitation_ids"].append(m2m_op)
+
+        if "teacher_assignment_ids" not in default:
+            default["teacher_assignment_ids"] = []
+            for ta in self.teacher_assignment_ids:
+                values = {
+                    "teacher_id": ta.teacher_id.id,
+                    "sequence": ta.sequence,
+                }
+                m2m_op = (0, 0, values)
+                default["teacher_assignment_ids"].append(m2m_op)
+
+        if "reservation_ids" not in default:
+            default["reservation_ids"] = []
+            for rv in self.reservation_ids:
+                facility = rv.facility_id
+                values = {
+                    "facility_id": facility.id,
+                    "sequence": rv.sequence,
+                    "date_start": default["date_start"],
+                    "date_stop": default["date_stop"],
+                    "state": rv.state,
+                }
+                m2m_op = (0, 0, values)
+                default["reservation_ids"].append(m2m_op)
+
+        return parent.copy(default=default)
+
+    # -- Public methods
+    # -------------------------------------------------------------------------
+
+    @staticmethod
+    def now_o_clock(offset_hours=0, round_up=False):
+        present = fields.datetime.now()
+        oclock = present.replace(minute=0, second=0, microsecond=0)
+
+        if round_up and (oclock < present):  # almost always
+            oclock += timedelta(hours=1)
+
+        return oclock + timedelta(hours=offset_hours)
+
+    def date_delay_str(self, span=None):
+        self.ensure_one()
+
+        if span is None:
+            span = self.date_delay or 0
+
+        hours = int(span)
+        pattern = "{h:02d} h"
+
+        span = span % 1
+        minutes = int(span * 60)
+        if minutes:
+            pattern += " {m:02d}'"
+
+        span = (span * 60) % 1
+        seconds = int(span * 60)
+        if seconds:
+            pattern += ' {s:02d}"'
+
+        return pattern.format(h=hours, m=minutes, s=seconds)
 
     def get_tz(self):
         """Retrieve session timezone if available.
@@ -796,27 +908,6 @@ class AcademyTrainingSession(models.Model):
         tz = tz and tz[0] or "UTC"  # First value in list or 'UTC'
 
         return pytz.timezone(tz)
-
-    def _get_session_timezone(self, message):
-        """
-        Retrieve session timezone if available. It will be used to communicate
-        time changes to the teachers involved in the session. See: ``get_tz``
-
-        Args:
-            message (mail.message): The message object.
-
-        Returns:
-            pytz.timezone: Timezone instance or UTC if not found.
-        """
-
-        try:
-            session = self.env[message.model].browse(message.res_id)
-            return session.get_tz() if session else False
-
-        except Exception:
-            msg = self.env._("Session with id #{} not found")
-            _logger.error(msg.format(message.res_id))
-            return None
 
     @staticmethod
     def localized_dt(value, tz, show_tz=False):
@@ -858,371 +949,6 @@ class AcademyTrainingSession(models.Model):
             result = "{} ({})".format(result, _(tz.zone))
 
         return result
-
-    # def _notify_get_reply_to(
-    #     self, default=None, records=None, company=None, doc_names=None
-    # ):
-    #     """
-    #     Overwrite the reply-to address in email notifications.
-
-    #     For each Academy Training Session record, the reply-to address is set
-    #     to the email of the user responsible for the session (manager_id).
-
-    #     Args:
-    #         default (str, optional): Default reply-to address.
-    #         records (recordset, optional): The set of records for which the
-    #                                        reply-to address should be computed.
-    #         company (res.company, optional): The company in context.
-    #         doc_names (dict, optional): Dictionary with document names.
-
-    #     Returns:
-    #         dict: A mapping of record IDs to their reply-to addresses.
-    #     """
-
-    #     parent = super(AcademyTrainingSession, self)
-    #     result = parent._notify_get_reply_to(
-    #         default, records, company, doc_names
-    #     )
-
-    #     records = records or self
-    #     if not result or not isinstance(result, dict) or not records:
-    #         return result
-
-    #     partner_path = "manager_id.partner_id"
-    #     for record in records:
-    #         if record.id not in result:
-    #             continue
-
-    #         partner = record.mapped(partner_path)
-    #         if not partner or not partner.email_normalized:
-    #             continue
-
-    #         email = partner.email_normalized
-    #         if partner.name:
-    #             email = "{} <{}>".format(partner.name, email)
-
-    #         result[record.id] = email
-
-    #     return result
-
-    # @api.model
-    # def _notify_prepare_template_context(
-    #     self, message, msg_vals, model_description=False, mail_auto_delete=True
-    # ):
-    #     """
-    #     Adjust the date and time values in tracking values of notifications
-    #     to reflect the timezone of the session where the event is taking place.
-
-    #     This method customizes the context used for notification templates.
-    #     When a tracked field of type 'date' or 'datetime' changes, it modifies
-    #     the displayed value to show it in the session's timezone, ensuring
-    #     that email recipients see the correct localized time of the session.
-
-    #     Args:
-    #         message (Model): Mail message record containing tracking values
-    #         msg_vals (dict): Dictionary with the values for message creation
-    #         model_description (str, optional): Optional model description for
-    #                                            notifications
-    #         mail_auto_delete (bool, optional): Flag indicating whether to
-    #                                            auto-delete the mail
-
-    #     Returns:
-    #         dic: Updated template context with localized date and time values
-    #     """
-
-    #     parent = super(AcademyTrainingSession, self)
-    #     result = parent._notify_prepare_template_context(
-    #         message, msg_vals, model_description, mail_auto_delete
-    #     )
-
-    #     track_values = (result or {}).get("tracking_values", False)
-    #     if not track_values:
-    #         return result
-
-    #     track_set = message.mapped("tracking_value_ids").filtered(
-    #         lambda r: r.field_type in ("date", "datetime")
-    #     )
-    #     if not track_set:
-    #         return result
-
-    #     session_tz = self._get_session_timezone(message)
-    #     for idx, values in enumerate(track_values):
-    #         caption = values[0]
-
-    #         track = track_set.filtered(lambda r: r.field_desc == caption)
-    #         if not track:
-    #             continue
-
-    #         track = track[0]
-    #         old_value = self.localized_dt(track.old_value_datetime, session_tz)
-    #         new_value = self.localized_dt(
-    #             track.new_value_datetime, session_tz, show_tz=True
-    #         )
-
-    #         result["tracking_values"][idx] = (caption, old_value, new_value)
-
-    #     return result
-
-    # def _notify_record_by_email(
-    #     self,
-    #     message,
-    #     recipients_data,
-    #     msg_vals=False,
-    #     model_description=False,
-    #     mail_auto_delete=True,
-    #     check_existing=False,
-    #     force_send=True,
-    #     send_after_commit=True,
-    #     **kwargs
-    # ):
-    #     """
-    #     Override to set a custom email layout for notifications.
-
-    #     It also prevents emails from being sent notifying changes when there is
-    #     no record of the values that have been altered.
-
-    #     This method modifies the email layout for notifications related
-    #     to Academy Training Sessions. It sets the layout to
-    #     'academy_timesheets.academy_session_notification_email'.
-    #     """
-
-    #     # Allow to skipe email notifications using context
-    #     if self.env.context.get("skip_email_notification", False):
-    #         return True
-
-    #     # Prevents empty notifations will be sent by email
-    #     if not msg_vals or not message.tracking_value_ids:
-    #         return True
-
-    #     # Changes email template will be used send notifications
-    #     msg_vals[
-    #         "email_layout_xmlid"
-    #     ] = "academy_timesheets.academy_session_notification_email"
-
-    #     parent = super(AcademyTrainingSession, self)
-    #     return parent._notify_record_by_email(
-    #         message,
-    #         recipients_data,
-    #         msg_vals,
-    #         model_description,
-    #         mail_auto_delete,
-    #         check_existing,
-    #         force_send,
-    #         send_after_commit,
-    #         **kwargs
-    #     )
-
-    # def _notify_compute_recipients(self, message, msg_vals=None):
-    #     """
-    #     Override to include training session teachers as recipients.
-
-    #     This method ensures that all teachers related to the
-    #     Academy Training Session are included in the recipients list,
-    #     without duplicating if they are already followers.
-
-    #     Args:
-    #         message (mail.message): The message being sent.
-    #         msg_vals (dict, optional): Additional message values.
-
-    #     Returns:
-    #         dict: Computed recipient data with partners and channels.
-    #     """
-
-    #     parent = super(AcademyTrainingSession, self)
-    #     result = parent._notify_compute_recipients(message, msg_vals)
-
-    #     draft_subtype_id = (
-    #         "academy_timesheets." "academy_timesheets_training_session_draft"
-    #     )
-    #     changed_subtype_id = (
-    #         "academy_timesheets." "academy_timesheets_training_session_changed"
-    #     )
-    #     subtype_set = self.env.ref(draft_subtype_id) + self.env.ref(
-    #         changed_subtype_id
-    #     )
-
-    #     if message.subtype_id in subtype_set:
-    #         if result and "partners" in result:
-    #             follower_partner_ids = [
-    #                 item["id"] for item in result["partners"]
-    #             ]
-    #         else:
-    #             follower_partner_ids = []
-
-    #         for record in self:
-    #             teacher_users = record.mapped("teacher_ids.res_users_id")
-
-    #             for user in teacher_users:
-    #                 partner = user.partner_id
-
-    #                 if partner.id in follower_partner_ids:
-    #                     continue
-
-    #                 result["partners"].append(
-    #                     {
-    #                         "id": partner.id,
-    #                         "active": True,
-    #                         "share": False,
-    #                         "groups": user.groups_id.ids,
-    #                         "notif": "email",
-    #                         "type": "user",
-    #                     }
-    #                 )
-
-    #     return result
-
-    @staticmethod
-    def _time_interval(start, stop):
-        if start and stop:
-            difference = stop - start
-            value = max(difference.total_seconds(), 0)
-        else:
-            value = 0
-
-        return value / 3600.0
-
-    @api.model
-    def _read_help_to_fill_configuration(self):
-        config = self.env["ir.config_parameter"].sudo()
-        help_to_fill = config.get_param(
-            "academy_timesheets.help_to_fill", False
-        )
-        wait_to_fill = config.get_param(
-            "academy_timesheets.wait_to_fill", "0.0"
-        )
-
-        return help_to_fill, safe_eval(wait_to_fill)
-
-    @api.model
-    def _get_last_session(self, teacher_id, seconds):
-        now = fields.Datetime.now() - timedelta(seconds=seconds)
-        tformat = "%Y-%m-%d %H:%M:%S"
-
-        domain = [
-            "&",
-            ("primary_teacher_id", "=", teacher_id),
-            ("create_date", ">=", now.strftime(tformat)),
-        ]
-        session_obj = self.env["academy.training.session"]
-        return session_obj.search(domain, order="create_date DESC", limit=1)
-
-    @staticmethod
-    def _serialize_session(session):
-        tformat = "%Y-%m-%d %H:%M:%S"
-
-        values = {
-            "state": session.state,
-            "task_name": session.task_name,
-            "description": session.description,
-            "kind": session.kind,
-            "validate": session.validate,
-            "task_id": session.task_id.id,
-            "training_action_id": session.training_action_id.id,
-            "action_line_id": session.action_line_id.id,
-            "teacher_assignment_ids": [(5, 0, 0)],
-            "reservation_ids": [(5, 0, 0)],
-            "invitation_ids": [(5, 0, 0)],
-        }
-
-        for assign in session.teacher_assignment_ids:
-            m2m_op = (
-                0,
-                0,
-                {
-                    "teacher_id": assign.teacher_id.id,
-                    "sequence": assign.sequence,
-                },
-            )
-            values["teacher_assignment_ids"].append(m2m_op)
-
-        for reservation in session.reservation_ids:
-            m2m_op = (
-                0,
-                0,
-                {
-                    "date_start": reservation.date_start.strftime(tformat),
-                    "date_stop": reservation.date_stop.strftime(tformat),
-                    "sequence": reservation.sequence,
-                    "facility_id": reservation.facility_id.id,
-                    "owner_id": reservation.owner_id.id,
-                    "subrogate_id": reservation.subrogate_id.id,
-                    "state": reservation.state,
-                },
-            )
-            values["reservation_ids"].append(m2m_op)
-
-        for invitation in session.invitation_ids:
-            m2m_op = (
-                0,
-                0,
-                {
-                    "session_id": invitation.session_id.id,
-                    "enrolment_id": invitation.enrolment_id.id,
-                    "active": invitation.active,
-                },
-            )
-            values["invitation_ids"].append(m2m_op)
-
-        return values
-
-    @api.model
-    def default_get(self, field_list):
-        parent = super(AcademyTrainingSession, self)
-        values = parent.default_get(field_list)
-
-        help_to_fill, wait_to_fill = self._read_help_to_fill_configuration()
-        teacher_id = self.env.context.get("default_primary_teacher_id", False)
-
-        if help_to_fill and wait_to_fill > 0 and teacher_id:
-            session = self._get_last_session(teacher_id, wait_to_fill * 3600)
-            if session and session.task_id:
-                session_data = self._serialize_session(session)
-                values.update(session_data)
-
-        return values
-
-    @api.depends(
-        "date_start",
-        "date_stop",
-        "training_action_id",
-        "training_action_id.name",
-        # "task_id",
-        # "task_id.name",
-    )
-    @api.depends_context(
-        "lang", "name_get_session_interval", "default_training_action_id"
-    )
-    def _compute_display_name(self):
-        for record in self:
-            if self.env.context.get("name_get_session_interval", False):
-                if record.date_start and record.date_stop:
-                    dt_start = fields.Datetime.context_timestamp(
-                        record, record.date_start
-                    )
-                    dt_stop = fields.Datetime.context_timestamp(
-                        record, record.date_stop
-                    )
-                    date_base = dt_start.strftime("%d-%m-%Y")
-                    time_start = dt_start.strftime("%H:%M")
-                    time_stop = dt_stop.strftime("%H:%M")
-                    name = f"{date_base} ({time_start} - {time_stop})"
-                else:
-                    name = self.env._("New session")
-
-            elif self.env.context.get("default_training_action_id", False):
-                if record.action_line_id:
-                    name = record.action_line_id.name
-                else:
-                    name = self.env._("New session")
-            else:
-                if record.training_action_id:
-                    name = record.training_action_id.name
-                elif record.task_id:
-                    name = record.task_id.name
-                else:
-                    name = self.env._("New session")
-
-            record.display_name = name
 
     def view_timesheets(self):
         action_xid = (
@@ -1393,102 +1119,6 @@ class AcademyTrainingSession(models.Model):
 
             record.write({"invitation_ids": invitation_ops})
 
-    @api.model_create_multi
-    def create(self, values_list):
-        tracking_disable_ctx = self.env.context.copy()
-        tracking_disable_ctx.update({"tracking_disable": True})
-
-        result = self.browse()
-
-        for values in values_list:
-            self._update_task_name(values)
-
-            self_ctx = self.with_context(tracking_disable_ctx)
-            with self.env.cr.savepoint():
-                self_ctx._adjust_existing_facility_reservations(values)
-
-            if "kind" in values:
-                if values.get("kind", None) == "teach":
-                    values["task_id"] = None
-                else:
-                    values["training_action_id"] = None
-                    values["action_line_id"] = None
-
-            _super = super(AcademyTrainingSession, self)
-            result |= _super.create(values)
-
-            if "invitation_ids" not in values:
-                result.invite_all()
-
-            if "reservation_ids" in values:
-                reservation_values = {
-                    "date_start": result.date_start,
-                    "date_stop": result.date_stop,
-                    "name": result.training_action_id.name,
-                    "description": result.action_line_id.name,
-                }
-
-                result_ctx = result.with_context(tracking_disable_ctx)
-                result_ctx.reservation_ids.write(reservation_values)
-
-        return result
-
-    def write(self, values):
-        tracking_disable_ctx = self.env.context.copy()
-        tracking_disable_ctx.update({"tracking_disable": True})
-        self_ctx = self.with_context(tracking_disable_ctx)
-
-        self._update_task_name(values)
-        self._adjust_existing_facility_reservations(values)
-
-        if "kind" in values:
-            if values.get("kind", None) == "teach":
-                values["task_id"] = None
-            else:
-                values["training_action_id"] = None
-                values["action_line_id"] = None
-
-        if "action_line_id" in values and "invitation_ids" not in values:
-            values["invitation_ids"] = None
-
-        _super = super(AcademyTrainingSession, self)
-        result = _super.write(values)
-
-        if "action_line_id" in values and "invitation_ids" not in values:
-            self.invite_all()
-
-        if self.reservation_ids:
-            reservation_values = {}
-
-            if "date_start" in values:
-                reservation_values["date_start"] = values.get("date_start")
-            if "date_stop" in values:
-                reservation_values["date_stop"] = values.get("date_stop")
-
-            if reservation_values:
-                ctx = self.env.context.copy()
-                ctx.update(
-                    {
-                        "active_model": self._name,
-                        "active_ids": self.mapped("id"),
-                        "tracking_disable": True,
-                    }
-                )
-                self_ctx.reservation_ids.write(reservation_values)
-
-        # self._update_session_followers()
-
-        return result
-
-    # def _update_session_followers(self):
-    #     path = ('teacher_assignment_ids.teacher_id.res_users_id.'
-    #             'partner_id.id')
-
-    #     for record in self:
-    #         partner_ids = record.mapped(path)
-    #         if record.state == 'ready':
-    #             record.message_subscribe(partner_ids=partner_ids)
-
     def toggle_followers(self):
         path = "teacher_assignment_ids.teacher_id.res_users_id." "partner_id"
 
@@ -1532,110 +1162,12 @@ class AcademyTrainingSession(models.Model):
                 evalues = {"email_to": address}
                 send_mail(record.id, email_values=evalues, force_send=True)
 
-    @api.returns("self", lambda value: value.id)
-    def copy(self, default=None):
-        self.ensure_one()
-
-        default = dict(default or {})
-
-        ctx = dict(self.env.context, tracking_disable=True)
-        parent = super(AcademyTrainingSession, self.with_context(ctx))
-
-        if "date_start" not in default:
-            date_start = self.date_start + timedelta(days=7)
-            default["date_start"] = date_start.strftime("%Y-%m-%d %H:%M:%S")
-        else:
-            date_start = fields.Datetime.from_string(default["date_start"])
-
-        if "date_stop" not in default:
-            date_stop = self.date_stop + timedelta(days=7)
-            default["date_stop"] = date_stop.strftime("%Y-%m-%d %H:%M:%S")
-        else:
-            date_stop = fields.Datetime.from_string(default["date_stop"])
-
-        default["date_delay"] = self._time_interval(date_start, date_stop)
-
-        if "state" not in default:
-            default["state"] = "draft"
-
-        if "invitation_ids" not in default:
-            default["invitation_ids"] = []
-            for inv in self.invitation_ids:
-                values = {
-                    "enrolment_id": inv.enrolment_id.id,
-                    "student_id": inv.student_id.id,
-                    "present": False,
-                }
-                m2m_op = (0, 0, values)
-                default["invitation_ids"].append(m2m_op)
-
-        if "teacher_assignment_ids" not in default:
-            default["teacher_assignment_ids"] = []
-            for ta in self.teacher_assignment_ids:
-                values = {
-                    "teacher_id": ta.teacher_id.id,
-                    "sequence": ta.sequence,
-                }
-                m2m_op = (0, 0, values)
-                default["teacher_assignment_ids"].append(m2m_op)
-
-        if "reservation_ids" not in default:
-            default["reservation_ids"] = []
-            for rv in self.reservation_ids:
-                facility = rv.facility_id
-                values = {
-                    "facility_id": facility.id,
-                    "sequence": rv.sequence,
-                    "date_start": default["date_start"],
-                    "date_stop": default["date_stop"],
-                    "state": rv.state,
-                }
-                m2m_op = (0, 0, values)
-                default["reservation_ids"].append(m2m_op)
-
-        return parent.copy(default=default)
-
-    def _update_task_name(self, values):
-        action_id = self.env.context.get("default_training_action_id", False)
-        action_id = values.get("training_action_id", action_id)
-        if action_id:
-            action_obj = self.env["academy.training.action"]
-            action_set = action_obj.browse(action_id)
-            values["task_name"] = action_set.name
-
-        task_id = self.env.context.get("default_task_id", False)
-        task_id = values.get("task_id", task_id)
-        if task_id:
-            task_obj = self.env["academy.non.teaching.task"]
-            task_set = task_obj.browse(task_id)
-            values["task_name"] = task_set.name
-
     def copy_all(self, default=None):
         target_set = self.env["academy.training.session"]
         for record in self:
             target_set += record.copy(default)
 
         return target_set
-
-    @staticmethod
-    def _real_id(record_set, single=False):
-        """Return a list with no NewId's of a single no NewId"""
-
-        result = []
-
-        if record_set and single:
-            record_set.ensure_one()
-
-        for record in record_set:
-            if isinstance(record.id, models.NewId):
-                result.append(record._origin.id)
-            else:
-                result.append(record.id)
-
-        if single:
-            result = result[0] if len(result) == 1 else None
-
-        return result
 
     def toogle_state(self, force_to=None):
         for record in self:
@@ -1645,23 +1177,6 @@ class AcademyTrainingSession(models.Model):
                 record.state = "ready"
             else:  # Current state is ready
                 record.state = "draft"
-
-    def _compute_view_mapping(self):
-        view_names = [
-            "view_academy_training_session_calendar_teacher_readonly",
-            "view_academy_training_session_kanban_teacher_readonly",
-            "view_academy_training_session_tree_teacher_readonly",
-            "view_academy_training_session_form_teacher_readonly",
-        ]
-
-        view_mapping = []
-        for view_name in view_names:
-            xid = "academy_timesheets.{}".format(view_name)
-            view = self.env.ref(xid)
-            pair = (view.id, view.type)
-            view_mapping.append(pair)
-
-        return view_mapping
 
     @api.model
     def view_my_schedule(self):
@@ -1717,6 +1232,199 @@ class AcademyTrainingSession(models.Model):
             "target": "wizard_teachers",
             "url": "/academy_timesheets/redirect/teachers",
         }
+
+    # -- Auxiliary methods
+    # -------------------------------------------------------------------------
+
+    def _track_subtype(self, init_values):
+        self.ensure_one()
+
+        fields = [
+            "date_start",
+            "date_stop",
+            "active",
+            "state",
+            "training_action_id",
+            "action_line_id",
+            "primary_teacher_id",
+            "primary_facility_id",
+            "teacher_assignment_ids",
+            "reservation_ids",
+        ]
+
+        xid = "academy_timesheets.{}"
+        result = False
+
+        if self.state != "draft" and any(key in fields for key in init_values):
+            xid = xid.format("academy_timesheets_training_session_changed")
+            result = self.env.ref(xid)
+        elif init_values.get("state", False) == "ready":
+            xid = xid.format("academy_timesheets_training_session_draft")
+            result = self.env.ref(xid)
+        else:
+            _super = super(AcademyTrainingSession, self)
+            result = _super._track_subtype(init_values)
+
+        return result
+
+    def _get_session_timezone(self, message):
+        """
+        Retrieve session timezone if available. It will be used to communicate
+        time changes to the teachers involved in the session. See: ``get_tz``
+
+        Args:
+            message (mail.message): The message object.
+
+        Returns:
+            pytz.timezone: Timezone instance or UTC if not found.
+        """
+
+        try:
+            session = self.env[message.model].browse(message.res_id)
+            return session.get_tz() if session else False
+
+        except Exception:
+            msg = self.env._("Session with id #{} not found")
+            _logger.error(msg.format(message.res_id))
+            return None
+
+    @staticmethod
+    def _time_interval(start, stop):
+        if start and stop:
+            difference = stop - start
+            value = max(difference.total_seconds(), 0)
+        else:
+            value = 0
+
+        return value / 3600.0
+
+    @api.model
+    def _read_help_to_fill_configuration(self):
+        config = self.env["ir.config_parameter"].sudo()
+        help_to_fill = config.get_param(
+            "academy_timesheets.help_to_fill", False
+        )
+        wait_to_fill = config.get_param(
+            "academy_timesheets.wait_to_fill", "0.0"
+        )
+
+        return help_to_fill, safe_eval(wait_to_fill)
+
+    @api.model
+    def _get_last_session(self, teacher_id, seconds):
+        now = fields.Datetime.now() - timedelta(seconds=seconds)
+        tformat = "%Y-%m-%d %H:%M:%S"
+
+        domain = [
+            "&",
+            ("primary_teacher_id", "=", teacher_id),
+            ("create_date", ">=", now.strftime(tformat)),
+        ]
+        session_obj = self.env["academy.training.session"]
+        return session_obj.search(domain, order="create_date DESC", limit=1)
+
+    @staticmethod
+    def _serialize_session(session):
+        tformat = "%Y-%m-%d %H:%M:%S"
+
+        values = {
+            "state": session.state,
+            "description": session.description,
+            "program_type": session.program_type,
+            "validate": session.validate,
+            "training_action_id": session.training_action_id.id,
+            "action_line_id": session.action_line_id.id,
+            "teacher_assignment_ids": [(5, 0, 0)],
+            "reservation_ids": [(5, 0, 0)],
+            "invitation_ids": [(5, 0, 0)],
+        }
+
+        for assign in session.teacher_assignment_ids:
+            m2m_op = (
+                0,
+                0,
+                {
+                    "teacher_id": assign.teacher_id.id,
+                    "sequence": assign.sequence,
+                },
+            )
+            values["teacher_assignment_ids"].append(m2m_op)
+
+        for reservation in session.reservation_ids:
+            m2m_op = (
+                0,
+                0,
+                {
+                    "date_start": reservation.date_start.strftime(tformat),
+                    "date_stop": reservation.date_stop.strftime(tformat),
+                    "sequence": reservation.sequence,
+                    "facility_id": reservation.facility_id.id,
+                    "owner_id": reservation.owner_id.id,
+                    "subrogate_id": reservation.subrogate_id.id,
+                    "state": reservation.state,
+                },
+            )
+            values["reservation_ids"].append(m2m_op)
+
+        for invitation in session.invitation_ids:
+            m2m_op = (
+                0,
+                0,
+                {
+                    "session_id": invitation.session_id.id,
+                    "enrolment_id": invitation.enrolment_id.id,
+                    "active": invitation.active,
+                },
+            )
+            values["invitation_ids"].append(m2m_op)
+
+        return values
+
+    # def _update_session_followers(self):
+    #     path = ('teacher_assignment_ids.teacher_id.res_users_id.'
+    #             'partner_id.id')
+
+    #     for record in self:
+    #         partner_ids = record.mapped(path)
+    #         if record.state == 'ready':
+    #             record.message_subscribe(partner_ids=partner_ids)
+
+    @staticmethod
+    def _real_id(record_set, single=False):
+        """Return a list with no NewId's of a single no NewId"""
+
+        result = []
+
+        if record_set and single:
+            record_set.ensure_one()
+
+        for record in record_set:
+            if isinstance(record.id, models.NewId):
+                result.append(record._origin.id)
+            else:
+                result.append(record.id)
+
+        if single:
+            result = result[0] if len(result) == 1 else None
+
+        return result
+
+    def _compute_view_mapping(self):
+        view_names = [
+            "view_academy_training_session_calendar_teacher_readonly",
+            "view_academy_training_session_kanban_teacher_readonly",
+            "view_academy_training_session_tree_teacher_readonly",
+            "view_academy_training_session_form_teacher_readonly",
+        ]
+
+        view_mapping = []
+        for view_name in view_names:
+            xid = "academy_timesheets.{}".format(view_name)
+            view = self.env.ref(xid)
+            pair = (view.id, view.type)
+            view_mapping.append(pair)
+
+        return view_mapping
 
     # -------------------------------------------------------------------------
     # Method: _adjust_existing_facility_reservations

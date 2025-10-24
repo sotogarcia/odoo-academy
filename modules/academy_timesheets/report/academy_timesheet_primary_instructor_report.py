@@ -37,7 +37,7 @@ class AcademyTimesheetPrimrayInstructorReport(models.AbstractModel):
             "date": self.date_str(session.date_start),
             "interval": self.time_str(session),
             "training_action": training_action,
-            "task_name": session.task_name,
+            "display_name": session.display_name,
             "action_line_id": action_line_id,
             "facility": facility,
         }

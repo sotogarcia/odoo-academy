@@ -142,15 +142,6 @@ class AcademyTrainingAction(models.Model):
         ),
     )
 
-    groupwise_schedule = fields.Boolean(
-        string="Schedule by group",
-        required=False,
-        readonly=False,
-        index=False,
-        default=False,
-        help="Enable to schedule sessions separately for each group",
-    )
-
     # -- current_week_hours: field and logic ----------------------------------
 
     current_week_hours = fields.Float(

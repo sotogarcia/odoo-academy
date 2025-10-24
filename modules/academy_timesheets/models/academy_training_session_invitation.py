@@ -190,7 +190,7 @@ class AcademyTrainingInvitation(models.Model):
         string="Image 128", related="student_id.image_128"
     )
 
-    # -- SQL constraints
+    # -- Constraints
     # -------------------------------------------------------------------------
 
     _sql_constraints = [
