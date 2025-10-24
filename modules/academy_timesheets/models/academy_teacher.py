@@ -30,7 +30,7 @@ class AcademyTeacher(models.Model):
         default=None,
         help="Sessions that this professor will participate in",
         comodel_name="academy.training.session",
-        relation="academy_training_session_teacher_rel",
+        relation="academy_training_session_teacher_assignment",
         column1="teacher_id",
         column2="session_id",
         domain=[],

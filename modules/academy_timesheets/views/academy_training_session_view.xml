@@ -138,7 +138,7 @@
                                 <field name="teacher_assignment_ids" class="oe_field_teacher_assignment_ids"
                                     nolabel="1" context="{
                                         'default_session_id': id,
-                                        'tree_view_ref': 'academy_timesheets.view_academy_training_session_teacher_rel_tree'
+                                        'tree_view_ref': 'academy_timesheets.view_academy_training_session_teacher_assignment_tree'
                                     }" />
                                 <div class="btn-group" role="group" aria-label="Teachers">
                                     <button name="toggle_followers"

@@ -201,7 +201,7 @@ class AcademyTrainingSession(models.Model):
         index=True,
         default=None,  # lambda self: self.default_teacher_assignment_ids(),
         help=False,
-        comodel_name="academy.training.session.teacher.rel",
+        comodel_name="academy.training.session.teacher.assignment",
         inverse_name="session_id",
         domain=[],
         context={},
@@ -395,7 +395,7 @@ class AcademyTrainingSession(models.Model):
         default=None,
         help="Teachers who teach this training session",
         comodel_name="academy.teacher",
-        relation="academy_training_session_teacher_rel",
+        relation="academy_training_session_teacher_assignment",
         column1="session_id",
         column2="teacher_id",
         domain=[],
@@ -445,7 +445,9 @@ class AcademyTrainingSession(models.Model):
         for record in self:
             record.primary_teacher_id = False
 
-        assignment_obj = self.env["academy.training.session.teacher.rel"]
+        assignment_obj = self.env[
+            "academy.training.session.teacher.assignment"
+        ]
         assignments = assignment_obj.search(
             [
                 ("session_id", "in", self.ids),

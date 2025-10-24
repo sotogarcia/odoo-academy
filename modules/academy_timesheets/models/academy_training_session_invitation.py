@@ -33,39 +33,12 @@ class AcademyTrainingInvitation(models.Model):
         translate=True,
     )
 
-    included = fields.Boolean(
-        string="Excluded",
-        required=False,
-        readonly=False,
-        index=True,
-        default=False,
-        help="Enable when the student is NOT expected to attend this session.",
-    )
-
     state = fields.Selection(
         string="State",
         readonly=True,
         help="Current session status",
         related="session_id.state",
     )
-
-    session_id = fields.Many2one(
-        string="Session",
-        required=True,
-        readonly=False,
-        index=True,
-        default=None,
-        help="Related training session",
-        comodel_name="academy.training.session",
-        domain=[],
-        context={},
-        ondelete="cascade",
-        auto_join=False,
-    )
-
-    @api.onchange("session_id")
-    def _onchange_session_id(self):
-        self.present = False
 
     date_start = fields.Datetime(
         string="Beginning",
@@ -87,6 +60,45 @@ class AcademyTrainingInvitation(models.Model):
         help="Time length of the training session",
         related="session_id.date_delay",
     )
+
+    included = fields.Boolean(
+        string="Excluded",
+        required=False,
+        readonly=False,
+        index=True,
+        default=False,
+        help="Enable when the student is NOT expected to attend this session.",
+    )
+
+    present = fields.Boolean(
+        string="Present",
+        required=False,
+        readonly=False,
+        index=True,
+        default=False,
+        help="Check it only if the student is present",
+    )
+
+    # -- Session information
+    # -------------------------------------------------------------------------
+
+    session_id = fields.Many2one(
+        string="Session",
+        required=True,
+        readonly=False,
+        index=True,
+        default=None,
+        help="Related training session",
+        comodel_name="academy.training.session",
+        domain=[],
+        context={},
+        ondelete="cascade",
+        auto_join=False,
+    )
+
+    @api.onchange("session_id")
+    def _onchange_session_id(self):
+        self.present = False
 
     manager_id = fields.Many2one(
         string="Manager", readonly=True, related="session_id.manager_id"
@@ -123,6 +135,9 @@ class AcademyTrainingInvitation(models.Model):
         help="List of attendees for the session",
         related="session_id.invitation_ids",
     )
+
+    # -- Enrolment information
+    # -------------------------------------------------------------------------
 
     enrolment_id = fields.Many2one(
         string="Enrolment",
@@ -175,14 +190,8 @@ class AcademyTrainingInvitation(models.Model):
         string="Image 128", related="student_id.image_128"
     )
 
-    present = fields.Boolean(
-        string="Present",
-        required=False,
-        readonly=False,
-        index=True,
-        default=False,
-        help="Check it only if the student is present",
-    )
+    # -- SQL constraints
+    # -------------------------------------------------------------------------
 
     _sql_constraints = [
         (
@@ -195,7 +204,16 @@ class AcademyTrainingInvitation(models.Model):
             "UNIQUE(session_id, student_id)",
             "The student has already been invited to the session",
         ),
+        (
+            "present_implies_included",
+            "CHECK (present = FALSE OR included = TRUE)",
+            "The presence status cannot be set to True if the record is "
+            "not included.",
+        ),
     ]
+
+    # -- Overridden methods
+    # -------------------------------------------------------------------------
 
     @api.depends(
         "session_id",
@@ -219,6 +237,9 @@ class AcademyTrainingInvitation(models.Model):
                 name = "%s - %s" % (session, student)
 
             record.display_name = name
+
+    # -- Auxiliary methods
+    # -------------------------------------------------------------------------
 
     @staticmethod
     def _enrolment_domain(case):

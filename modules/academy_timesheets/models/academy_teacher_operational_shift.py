@@ -208,7 +208,7 @@ class AcademyTeacherOperationalShift(models.Model):
                 sess.write_date
             FROM
                 academy_training_session AS sess
-            INNER JOIN academy_training_session_teacher_rel AS rel
+            INNER JOIN academy_training_session_teacher_assignment AS rel
                 ON rel.session_id = sess.id
                 AND sess.active
                 AND sess.state = 'ready'
