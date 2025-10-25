@@ -657,7 +657,7 @@ class AcademyTrainingSession(models.Model):
                     )
                 )
             """,
-            "Non-teaching sessions must be linked to a task",
+            "Non-teaching sessions should not be linked to an program unit",
         ),
         (
             "unique_training_action_id",

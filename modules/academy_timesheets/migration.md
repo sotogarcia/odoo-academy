@@ -70,133 +70,22 @@
 - [ ] Revisar lista TODO 
        Â· x2many count fields
 
-## Datos demo
+
+## Todo
+
+- [ ] Tarea programada que invite a los nuevos matriculados.
+- [ ] Tarea programada que envíe cambios en los horarios.
+- [ ] Horario de alumnos, profesores y acciones formativas
+- [ ] Integrar con website_calendar
+- [ ] Corregir el problema del cambio de hora
+- [ ] Revisar los init_hook
+
+## Correos
+
+- [ ] Envío de horarios a estudiantes
+- [ ] Envío de horarios a profesores
+      - Todas las acciones formativas de todas las compañías
+- [ ] Envío de horarios a grupos!!
+- [ ] Notificación de cambios en el horario
 
 
-## Expresiones regulares
-
-```
-<field name="type">list</field>
---
-<field name="type">list</
-```
-
-```
-attrs=["']\{["'](readonly|invisible|required)["']: *(\[[^\]]+\])\}["']
---
-\1="\2"
-```
-
-```
-(readonly|invisible|required) *= *['"]\[\(['"]([^'"]+)['"] *, *['"]([^'"]+)['"] *, *(['"]?[^'"]+['"]?)\)\]['"]
-\1="\2 \3 \4"
-```
-
-```
-((readonly|invisible|required) *= *['"][^'"=]+=)([^=])
-\1=\3
-```
-
-```
-!=+
-!=
-```
-
-```
-<openerp>[\n\t ]*<data noupdate= ?"([[:digit:]]) ?">\n*
---
-<odoo nopudate="\1">\n\n
-```
-
-```
-[\n\t ]*^[ \t]*</data>[\t\n ]*</openerp>
----
-\n\n</odoo>
-```
-
-
-- [ ] Error followers con training program al guardar
-- [ ] AÃ±adir a estudiante bótón de matrículas.
-- [ ] AÃ±adir a estudiante ficha de matrículas.
-- [ ] AÃ±adir a estudiante idiomas.
-- [ ] Autoetiquetar como estudiante sólo al crear.
-- [ ] Corregir los Onchange de student
-- [ ] Student: Name and surname
-- [ ] Kanban de student
-- [ ] Mostrar móvil o teléfono, el que tenga.
-- [ ] Secuencia para las matrículas
-- [ ] Botón ver actividades
-
-- [ ] Errores y warnings del log
-- [ ] "depends": ["dms", "dms_field", "dms_attachment_link"]
-- [ ] Poner internal notes en una ficha separada tanto para student compara training action
-- [ ] En el enrolment los datos del alumno en una ficha y los de la acción en otra, el apartado admisión arriba de todo
-- [ ] Cómo llevar cuenta de si se imprimió el material
-- [ ] ¿Qué ocurre si, por fuera de student, se elige company?
-- [ ] No mostrar información de parent_id en student
-- [ ] Botón actividades en kanban y form
-- [ ] barcode
-
-
-
-- [ ] El campo hours del módulo debe desaparecer
-      Â· Si tiene unidades serÃ¡ de sólo lectura
-      Â· Si tiene unidades se calcularÃ¡ al guardar
-- [ ] Los campos training_module_id y training_unit_ids pasan a ser parent_id y child_ids
-- [ ] Description como HTML
-- [ ] Internat notes a todo
-- [ ] Retirar los contraint de token
-
-
-- [ ] Comprobar widgets one2many_tags y many2many_tags
-- [ ] Añadir internal notes
-- [ ] Copiar Ownership de academy.training.framework 
-- [ ] Encabezado con: nombre, code, parent
-- [ ] list-embed para los one2many y smart buttons
-- [ ] el campo ref se comparte entre alumnos, profesores y staff
-- [ ] Si una acción tiene grupos no se pueden matricular en ella a alumnos, 
-- [ ] si una acción tiene matrículas no se puede dividir en grupos
-- [ ] mostrar líneas del programa o acción en la matrícula
-- [ ] La modalidad en las matrículas debe ser única
-- [ ] Añadir ficha grupos a acciones
-- [ ] Añadir botón programa a acciones
-- [ ] Añadir botón grupos a acciones
-- [ ] Añadir campo delivery_ids a las acciones.
-
-
-## Solución a la matriculación por grupos
-
-Una matrícula tendrá un campo `training_action_id` que será su grupo y un campo
-`parent_action_id` que será la acción superior. Este segundo campo será igual a 
-`training_action_id.parent_id` en caso de ser un grupo o a `training_action_id`
-en caso de no existir grupos.
-
-El campo enrolment_ids 
-
-
-- academy.support.staff
-- academy_student
-- academy_teacher
-
-- academy_training_framework
-- academy_training_program
-- academy_training_program_line
-- academy_training_module
-
-- academy_training_action
-- academy_training_action_enrolment
-
-- academy_competency_unit
-- academy_educational_attainment
-- academy_application_scope
-- academy_training_methodology
-- academy_training_modality
-
-- academy_knowledge_area
-- academy_professional_area
-- academy_professional_category
-- academy_professional_family
-- academy_professional_field
-- academy_professional_qualification
-- academy_professional_sector
-- academy_qualification_level

@@ -8,7 +8,10 @@ from odoo import models, fields, api
 from odoo.tools.translate import _
 from odoo.tools.safe_eval import safe_eval
 from odoo.osv.expression import AND, FALSE_DOMAIN, TRUE_DOMAIN
-from odoo.addons.academy_base.utils.helpers import OPERATOR_MAP, one2many_count
+from odoo.addons.academy_base.utils.helpers import (
+    OPERATOR_MAP,
+    many2many_count,
+)
 
 from logging import getLogger
 from urllib.parse import urljoin
@@ -52,7 +55,7 @@ class AcademyTeacher(models.Model):
 
     @api.depends("session_ids")
     def _compute_session_count(self):
-        counts = one2many_count(self, "session_ids")
+        counts = many2many_count(self, "session_ids")
 
         for record in self:
             record.session_count = counts.get(record.id, 0)
@@ -69,7 +72,7 @@ class AcademyTeacher(models.Model):
         if not cmp_func:
             return FALSE_DOMAIN  # unsupported operator
 
-        counts = one2many_count(self.search([]), "session_ids")
+        counts = many2many_count(self.search([]), "session_ids")
         matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
 
         return [("id", "in", matched)] if matched else FALSE_DOMAIN

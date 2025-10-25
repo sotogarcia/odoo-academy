@@ -52,14 +52,14 @@ class AcademyTimesheetPrimrayInstructorReport(models.AbstractModel):
         full_weeks = self.env.context.get("full_weeks", True)
         full_weeks = data.get("full_weeks", full_weeks)
 
-        lang = self._get_lang()
+        lang = self.get_lang()
 
         teacher_obj = self.env["academy.teacher"]
 
         domain = [("id", "in", docids)]
         teacher_set = teacher_obj.search(domain)
 
-        in_date = self._in
+        in_date = self.date_in
         values = {}
 
         for teacher in teacher_set:
@@ -71,8 +71,8 @@ class AcademyTimesheetPrimrayInstructorReport(models.AbstractModel):
                 "weeks": {},
             }
 
-            for current in self._date_range(date_start, date_stop, full_weeks):
-                week = self._week_str(current)
+            for current in self.date_range(date_start, date_stop, full_weeks):
+                week = self.week_str(current)
                 sessions = teacher.session_ids.filtered(
                     lambda s: in_date(s, current) and s.state == "ready"
                 )
