@@ -8,9 +8,10 @@ from re import search
 from odoo import models, fields, api
 from odoo.tools.safe_eval import safe_eval
 from odoo.tools.translate import _
-from odoo.osv.expression import AND, TRUE_DOMAIN, FALSE_DOMAIN
+from odoo.osv.expression import AND, OR, TRUE_DOMAIN, FALSE_DOMAIN
 from odoo.exceptions import UserError, MissingError
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT
+from odoo.exceptions import ValidationError
 from odoo.addons.academy_base.utils.helpers import (
     OPERATOR_MAP,
     one2many_count,
@@ -18,9 +19,13 @@ from odoo.addons.academy_base.utils.helpers import (
 )
 
 from datetime import timedelta, datetime, date, time
+from dateutil.relativedelta import relativedelta
+from logging import getLogger
+import re
+import calendar
 import pytz
 
-from logging import getLogger
+_INTERVAL_RE = re.compile(r"^(day|week|month|year)(?:(?::(\d+))|([+-]\d+))?$")
 
 
 _logger = getLogger(__name__)
@@ -590,6 +595,7 @@ class AcademyTrainingSession(models.Model):
         size=24,
         translate=False,
         compute="_compute_interval_str",
+        search="_search_interval_str",
     )
 
     @api.depends("date_start", "date_stop")
@@ -602,6 +608,53 @@ class AcademyTrainingSession(models.Model):
             right = record.date_stop.strftime(tformat)
 
             record.interval_str = "{} - {}".format(left, right)
+
+    @api.model
+    def _search_interval_str(self, operator, value):
+        """
+        Translate period query into an overlap domain on
+        (date_start, date_stop).
+
+        Grammar (case-insensitive):
+          - day[+N|-N|:D]     → D=1..31 in current month
+          - week[+N|-N|:W]    → ISO week W in current year (Mon–Sun)
+          - month[+N|-N|:M]   → month M in current year (1..12)
+          - year[+N|-N|:YYYY] → absolute year
+
+        Returned domain selects records whose interval overlaps the
+        computed [start, end) window:
+            (date_start < end) AND (date_stop >= start)
+
+        Unsupported/empty values return a false domain.
+        """
+        if not value or not isinstance(value, str):
+            return FALSE_DOMAIN
+
+        unit, value_num, compute = self._search_interval_split_value(value)
+        if compute == "absolute":
+            start = self._search_interval_absolute_start(unit, value_num)
+        elif compute == "relative":
+            start = self._search_interval_relative_start(unit, value_num)
+        else:
+            return FALSE_DOMAIN
+
+        if not start:
+            return FALSE_DOMAIN
+
+        end = self._search_interval_stop(unit, start)
+        if not end:
+            return FALSE_DOMAIN
+
+        start_dt = datetime.combine(start, time.min)
+        end_dt = datetime.combine(end, time.min)
+
+        domain = [
+            "&",
+            ("date_start", "<", end_dt),
+            ("date_stop", ">=", start_dt),
+        ]
+
+        return domain
 
     # -- Business fields
     # -------------------------------------------------------------------------
@@ -674,6 +727,53 @@ class AcademyTrainingSession(models.Model):
             "Session cannot end before starting",
         ),
     ]
+
+    @api.constrains("trainint_action_id", "program_type")
+    def _check_trainint_action_id(self):
+        err_1 = _(
+            "Selected training element ('{}') doesn't match the chosen "
+            "program type ('{}')."
+        )
+        err_2 = _(
+            "Chosen training group ('{}') belongs to a training action ('{}') "
+            "that is not configured to be scheduled by groups."
+        )
+        err_3 = _(
+            "Chosen training action ('{}') is configured to be scheduled by "
+            "groups."
+        )
+
+        for record in self:
+            action = record.training_action_id
+            if not action:
+                continue
+
+            if action.program_type != record.program_type:
+                raise ValidationError(
+                    err_1.format(action.display_name, record.program_type)
+                )
+
+            is_child = bool(action.parent_id)
+            if is_child and not action.parent_id.groupwise_schedule:
+                raise ValidationError(err_2.format(action.display_name))
+            if not is_child and action.groupwise_schedule:
+                raise ValidationError(err_3.format(action.display_name))
+
+    @api.constrains("training_action_id", "action_line_id")
+    def _check_training_action_id(self):
+        pattern = _(
+            'Selected training action line ("{}") must belong to the selected '
+            'training action ("{}").'
+        )
+
+        for record in self:
+            action, line = record.training_action_id, record.action_line_id
+            if not action or not line:
+                continue
+            if line.training_action_id != action:
+                raise ValidationError(
+                    pattern.format(line.display_name, action.display_name)
+                )
 
     # -- Overriden methods
     # -------------------------------------------------------------------------
@@ -1742,3 +1842,88 @@ class AcademyTrainingSession(models.Model):
                     self._catch_from_ids(facility_stock, m2m_op[2], clear=True)
 
         return list(facility_stock)
+
+    # -------------------------------------------------------------------------
+    # Auxiliary methods: _search_interval_str
+    # -------------------------------------------------------------------------
+
+    @staticmethod
+    def _search_interval_split_value(value):
+        unit, num, compute = None, None, None
+        if not value or not isinstance(value, str):
+            return unit, num, compute
+
+        normalized_value = value.strip().lower()
+        regex_result = _INTERVAL_RE.match(normalized_value)
+        if not regex_result:
+            return unit, num, compute
+
+        unit, absolute_raw, relative_raw = regex_result.groups()
+        if absolute_raw is not None:
+            absolute = int(absolute_raw)
+            if absolute > 0:
+                num = absolute
+                compute = "absolute"
+        elif relative_raw is not None:
+            # Accept +0 / -0 as valid relative offset
+            num = int(relative_raw)
+            compute = "relative"
+        else:
+            # Unit without value then use: relative +0 offset
+            num = 0
+            compute = "relative"
+
+        return unit, num, compute
+
+    def _search_interval_absolute_start(self, unit, value_num):
+        start = None
+        date_base = fields.Date.context_today(self)  # date
+
+        if unit == "day":
+            _, mdays = calendar.monthrange(date_base.year, date_base.month)
+            if 1 <= value_num <= mdays:
+                start = date(date_base.year, date_base.month, value_num)
+        elif unit == "week":
+            try:
+                start = date.fromisocalendar(date_base.year, value_num, 1)
+            except ValueError:
+                pass
+        elif unit == "month":
+            if 1 <= value_num <= 12:
+                start = date(date_base.year, value_num, 1)
+        elif unit == "year":
+            start = date(value_num, 1, 1)
+
+        return start
+
+    def _search_interval_relative_start(self, unit, value_num):
+        start = None
+        date_base = fields.Date.context_today(self)  # date
+
+        if unit == "day":
+            start = date_base + timedelta(days=value_num)
+        elif unit == "week":
+            monday = date_base - timedelta(days=date_base.weekday())
+            start = monday + timedelta(days=7 * value_num)
+        elif unit == "month":
+            first = date_base.replace(day=1)
+            start = first + relativedelta(months=value_num)
+        elif unit == "year":
+            new_year = date_base.year + value_num
+            start = date(new_year, 1, 1)
+
+        return start
+
+    def _search_interval_stop(self, unit, start):
+        end = None
+
+        if unit == "day":
+            end = start + timedelta(days=1)
+        elif unit == "week":
+            end = start + timedelta(days=7)
+        elif unit == "month":
+            end = start + relativedelta(months=1)
+        elif unit == "year":
+            end = date(start.year + 1, 1, 1)
+
+        return end

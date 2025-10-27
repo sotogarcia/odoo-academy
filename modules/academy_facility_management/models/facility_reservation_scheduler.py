@@ -13,33 +13,33 @@ _logger = getLogger(__name__)
 
 
 class FacilityReservationScheduler(models.Model):
-    """ Extends facility reservation scheduler to allow to choose a training
-        action will be related with the created facility reservacions.
+    """Extends facility reservation scheduler to allow to choose a training
+    action will be related with the created facility reservacions.
     """
 
-    _name = 'facility.reservation.scheduler'
-    _inherit = 'facility.reservation.scheduler'
+    _name = "facility.reservation.scheduler"
+    _inherit = "facility.reservation.scheduler"
 
     training_action_id = fields.Many2one(
-        string='Training action',
+        string="Training action",
         required=False,
         readonly=False,
         index=True,
         default=None,
-        help='Training action for which the facility will be reserved',
-        comodel_name='academy.training.action',
+        help="Training action for which the facility will be reserved",
+        comodel_name="academy.training.action",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
-    @api.onchange('training_action_id')
+    @api.onchange("training_action_id")
     def _onchange_training_action_id(self):
-        self.name = self.training_action_id.action_name
+        self.name = self.training_action_id.name
 
     def _build_reservation_values(self):
-        """ Appends training action id to the values dictionary
+        """Appends training action id to the values dictionary
 
         Returns:
             dict: values dictionary will be used to create or update sessions

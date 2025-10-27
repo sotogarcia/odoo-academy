@@ -79,6 +79,15 @@
 - [ ] Integrar con website_calendar
 - [ ] Corregir el problema del cambio de hora
 - [ ] Revisar los init_hook
+- [ ] Sustituir `_render_qweb_html` y `_render_qweb_pdf` por `_render`.
+- [ ] Eliminar formulario rápido de la vista Kanban
+- [ ] Posibilidad de duplicados
+- [ ] full_enrolment al confirmar y no antes
+- [ ] full_enrolment configurable
+- [ ] tarea programable que mantenga el full_enrolment
+- [ ] asistente para clonar horario
+- [ ] Poder confirmar todas las sesiones
+- [ ] En el horario NO aparece el lunes
 
 ## Correos
 
@@ -89,3 +98,8 @@
 - [ ] Notificación de cambios en el horario
 
 
+## Pruebas
+
+- [ ] Programar con reserva de aula previa
+- [ ] Mover reserva -> cambia sessión
+- [x] Mover sessión -> cambia reserva

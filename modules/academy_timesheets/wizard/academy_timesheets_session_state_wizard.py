@@ -12,10 +12,10 @@ from logging import getLogger
 _logger = getLogger(__name__)
 
 
-class AcademyTimesheetSessionStateWizard(models.TransientModel):
+class AcademyTimesheetsSessionStateWizard(models.TransientModel):
     """Wizard to change the state to several sessions at the same time"""
 
-    _name = "academy.timesheet.session.state.wizard"
+    _name = "academy.timesheets.session.state.wizard"
     _description = "Academy timesheet session state wizard"
 
     _rec_name = "id"
@@ -29,7 +29,7 @@ class AcademyTimesheetSessionStateWizard(models.TransientModel):
         default=lambda self: self.default_session_ids(),
         help="Target sessions",
         comodel_name="academy.training.session",
-        relation="academy_timesheet_session_state_wizard_rel",
+        relation="academy_timesheets_session_state_wizard_rel",
         column1="wizard_id",
         column2="session_id",
         domain=[],
