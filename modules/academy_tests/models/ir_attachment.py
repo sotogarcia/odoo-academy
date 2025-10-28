@@ -12,31 +12,31 @@ _logger = getLogger(__name__)
 
 
 class IrAttachment(models.Model):
-    """ Appends owner_id field. This do not inherit from abstract model
+    """Appends owner_id field. This do not inherit from abstract model
     'academy.abstract.owner' because field value cant not be required or
     Odoo breaks with some other model operations.
     """
 
-    _name = 'ir.attachment'
+    _name = "ir.attachment"
     _inherit = [
-        'ir.attachment',
-        'ownership.mixin'
+        "ownership.mixin",
+        "ir.attachment",
     ]
 
     question_ids = fields.Many2many(
-        string='Questions',
+        string="Questions",
         required=False,
         readonly=True,
         index=True,
         default=None,
-        help='List of the questions which are using this attachment',
-        comodel_name='academy.tests.question',
-        relation='academy_tests_question_ir_attachment_rel',
-        column1='attachment_id',
-        column2='question_id',
+        help="List of the questions which are using this attachment",
+        comodel_name="academy.tests.question",
+        relation="academy_tests_question_ir_attachment_rel",
+        column1="attachment_id",
+        column2="question_id",
         domain=[],
         context={},
-        limit=None
+        limit=None,
     )
 
     @api.model_create_multi
@@ -49,13 +49,15 @@ class IrAttachment(models.Model):
         return _super.create(vals_list)
 
     def _has_been_called_from_question_import_wizard(self):
-        return self.env.context.get('import_wizard', False)
+        return self.env.context.get("import_wizard", False)
 
     def _required_question_import_wizard_values(self, vals_list):
         for vals in vals_list:
-            vals.update({
-                'res_model': False,
-                'res_field': False,
-                'res_id': None,
-                'public': True,
-            })
+            vals.update(
+                {
+                    "res_model": False,
+                    "res_field": False,
+                    "res_id": None,
+                    "public": True,
+                }
+            )

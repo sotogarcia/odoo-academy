@@ -62,10 +62,10 @@ class AcademyTrainingAction(models.Model):
     _description = "Academy training action"
 
     _inherit = [
-        "image.mixin",
-        "mail.thread",
-        "mail.activity.mixin",
         "ownership.mixin",
+        "mail.thread",
+        "image.mixin",
+        "mail.activity.mixin",
     ]
 
     _rec_name = "name"

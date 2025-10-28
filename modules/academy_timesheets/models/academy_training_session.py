@@ -39,7 +39,7 @@ class AcademyTrainingSession(models.Model):
     _name = "academy.training.session"
     _description = "Academy training session"
 
-    _inherit = ["mail.thread", "ownership.mixin"]
+    _inherit = ["ownership.mixin", "mail.thread"]
 
     _rec_name = "id"
     _order = "date_start ASC"
@@ -944,6 +944,8 @@ class AcademyTrainingSession(models.Model):
                     "date_start": default["date_start"],
                     "date_stop": default["date_stop"],
                     "state": rv.state,
+                    "owner_id": self.env.user.id,
+                    "subrogate_id": None,
                 }
                 m2m_op = (0, 0, values)
                 default["reservation_ids"].append(m2m_op)

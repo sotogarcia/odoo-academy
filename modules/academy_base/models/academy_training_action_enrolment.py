@@ -99,10 +99,10 @@ class AcademyTrainingActionEnrolment(models.Model):
     _rec_names_search = ["code", "training_action_id", "student_id"]
 
     _inherit = [
+        "ownership.mixin",
         "mail.thread",
         "mail.activity.mixin",
         "image.mixin",
-        "ownership.mixin",
     ]
 
     _check_company_auto = True

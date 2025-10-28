@@ -32,9 +32,9 @@ class AcademyTrainingModule(models.Model):
     _description = "Academy training module"
 
     _inherit = [
+        "ownership.mixin",
         "image.mixin",
         "mail.thread",
-        "ownership.mixin",
     ]
 
     _rec_name = "name"
