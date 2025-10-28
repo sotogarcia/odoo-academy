@@ -8,12 +8,12 @@ from odoo import models, fields, api
 from odoo.tools.translate import _
 from odoo.tools.safe_eval import safe_eval
 from odoo.osv.expression import FALSE_DOMAIN, TRUE_DOMAIN
-from odoo.osv.expression import TERM_OPERATORS_NEGATION
+from odoo.addons.academy_base.utils.helpers import OPERATOR_MAP, one2many_count
+from odoo.exceptions import ValidationError
 
 from pytz import timezone
 from datetime import datetime, time, timedelta
 from logging import getLogger
-
 
 _logger = getLogger(__name__)
 
@@ -38,6 +38,8 @@ class AcademyTrainingAction(models.Model):
         auto_join=False,
     )
 
+    # -- session_count: field and logic ---------------------------------------
+
     session_count = fields.Integer(
         string="Session count",
         required=False,
@@ -51,94 +53,82 @@ class AcademyTrainingAction(models.Model):
 
     @api.depends("session_ids")
     def _compute_session_count(self):
+        counts = one2many_count(self, "session_ids")
+
         for record in self:
-            record.session_count = len(record.session_ids)
+            record.session_count = counts.get(record.id, 0)
 
     @api.model
     def search_session_count(self, operator, value):
-        sql = """
-            SELECT
-                ata."id" AS training_action_id,
-                COUNT ( ats."id" ) :: INTEGER AS session_count
-            FROM
-                academy_training_action AS ata
-            LEFT JOIN academy_training_session AS ats
-                ON ats.training_action_id = ata."id" AND ats.active
-            GROUP BY
-                ata."id"
-            HAVING COUNT ( ats."id" ) :: INTEGER {operator} {value}
-        """
+        # Handle boolean-like searches Odoo may pass for required fields
+        if value is True:
+            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
+        if value is False:
+            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
 
-        # = True, <> True, = False, <> False
-        if value in [True, False]:
-            if value is True:
-                operator = TERM_OPERATORS_NEGATION[operator]
-            value = 0
+        cmp_func = OPERATOR_MAP.get(operator)
+        if not cmp_func:
+            return FALSE_DOMAIN  # unsupported operator
 
-        sql = sql.format(operator=operator, value=value)
-        self.env.cr.execute(sql)
-        results = self.env.cr.dictfetchall()
+        counts = one2many_count(self.search([]), "session_ids")
+        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
 
-        if results:
-            record_ids = [item["training_action_id"] for item in results]
-            domain = [("id", "in", record_ids)]
-        else:
-            domain = FALSE_DOMAIN
+        return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
-        return domain
+    # -------------------------------------------------------------------------
 
-    draft_count = fields.Integer(
+    draft_session_ids = fields.One2many(
+        string="Draft sessions",
+        required=False,
+        readonly=False,
+        index=True,
+        default=None,
+        help="All sessions in draft state for training action",
+        comodel_name="academy.training.session",
+        inverse_name="training_action_id",
+        domain=[("state", "=", "draft")],
+        context={},
+        auto_join=False,
+    )
+
+    # -- draft_session_count: field and logic ---------------------------------
+
+    draft_session_count = fields.Integer(
         string="Draft count",
         required=False,
         readonly=True,
         index=False,
         default=0,
         help="Number of sessions in draft state",
-        compute="_compute_draft_count",
-        search="search_draft_count",
+        compute="_compute_draft_session_count",
+        search="search_draft_session_count",
     )
 
-    @api.depends("session_ids")
-    def _compute_draft_count(self):
+    @api.depends("draft_session_ids")
+    def _compute_draft_session_count(self):
+        counts = one2many_count(self, "draft_session_ids")
+
         for record in self:
-            filtered_set = record.session_ids.filtered(
-                lambda x: x.state == "draft"
-            )
-            record.draft_count = len(filtered_set)
+            record.draft_session_count = counts.get(record.id, 0)
 
     @api.model
-    def search_draft_count(self, operator, value):
-        sql = """
-            SELECT
-                ata."id" AS training_action_id,
-                COUNT ( ats."id" ) :: INTEGER AS session_count
-            FROM
-                academy_training_action AS ata
-            LEFT JOIN academy_training_session AS ats
-                ON ats.training_action_id = ata."id"
-                AND ats.active AND ats."state" = 'draft'
-            GROUP BY
-                ata."id"
-            HAVING COUNT ( ats."id" ) :: INTEGER {operator} {value}
-        """
+    def search_draft_session_count(self, operator, value):
+        # Handle boolean-like searches Odoo may pass for required fields
+        if value is True:
+            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
+        if value is False:
+            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
 
-        # = True, <> True, = False, <> False
-        if value in [True, False]:
-            if value is True:
-                operator = TERM_OPERATORS_NEGATION[operator]
-            value = 0
+        cmp_func = OPERATOR_MAP.get(operator)
+        if not cmp_func:
+            return FALSE_DOMAIN  # unsupported operator
 
-        sql = sql.format(operator=operator, value=value)
-        self.env.cr.execute(sql)
-        results = self.env.cr.dictfetchall()
+        counts = one2many_count(self.search([]), "draft_session_ids")
+        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
 
-        if results:
-            record_ids = [item["training_action_id"] for item in results]
-            domain = [("id", "in", record_ids)]
-        else:
-            domain = FALSE_DOMAIN
+        return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
-        return domain
+    # -------------------------------------------------------------------------
 
     allow_overlap = fields.Boolean(
         string="Allow overlap",
@@ -157,9 +147,11 @@ class AcademyTrainingAction(models.Model):
         required=False,
         readonly=False,
         index=False,
-        default=False,
+        default=lambda self: self.parent_id.groupwise_schedule,
         help="Enable to schedule sessions separately for each group",
     )
+
+    # -- current_week_hours: field and logic ----------------------------------
 
     current_week_hours = fields.Float(
         string="Current week hours",
@@ -216,6 +208,76 @@ class AcademyTrainingAction(models.Model):
                 total_hours += duration.total_seconds() / 3600
 
             record.current_week_hours = total_hours
+
+    # -- Constraints
+    # -------------------------------------------------------------------------
+
+    @api.constrains("groupwise_schedule", "parent_id", "child_ids")
+    def _check_groupwise_schedule(self):
+        """
+        Validates the consistency and correctness of the 'groupwise_schedule'
+        setting across training actions and their groups.
+
+        The method checks the following constraints:
+        1. A training action (parent) that has no groups (children) cannot have
+           'groupwise_schedule' set to True, as there are no groups to schedule.
+        2. The value of 'groupwise_schedule' must be identical (consistent)
+            between a parent training action and all its direct groups
+            (children).
+        3. **If** scheduling is defined by group (groupwise_schedule = True),
+           the parent record (parent action) must not have direct sessions.
+           (Sessions must be on the groups/children).
+        4. **If** scheduling is defined by action (groupwise_schedule = False),
+           none of the immediate children (groups) can have sessions.
+           (Sessions must be on the parent action).
+        """
+        err_1 = _(
+            "A training action ('%s') without groups cannot have "
+            "'Schedule by group' enabled."
+        )
+        err_2 = _(
+            "The schedule for action ('%s') must be defined at the group "
+            "level, not the action level, because 'Schedule by group' is True."
+        )
+        err_3 = _(
+            "The schedule for action ('%s') must be defined at the action "
+            "level, not the group level, because 'Schedule by group' is False."
+        )
+
+        for record in self.with_context(active_test=False):
+            parent = record.parent_id or record
+            childs = parent.child_ids
+            groupwise = record.groupwise_schedule
+
+            if not childs and groupwise:
+                raise ValidationError(err_1 % record.display_name)
+
+            if not childs and not groupwise:
+                continue
+
+            if groupwise:
+                if record.session_ids:
+                    raise ValidationError(err_2 % record.display_name)
+            else:
+                if childs.filtered(lambda r: r.session_ids):
+                    raise ValidationError(err_3 % record.display_name)
+
+    # -- Public methods
+    # -------------------------------------------------------------------------
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        records = super().create(vals_list)
+        records._propagate_groupwise_and_overlap_sql(vals_list)
+        return records
+
+    def write(self, values):
+        result = super().write(values)
+        self._propagate_groupwise_and_overlap_sql(values)
+        return result
+
+    # -- Public methods
+    # -------------------------------------------------------------------------
 
     def view_timesheets(self):
         action_xid = (
@@ -311,16 +373,6 @@ class AcademyTrainingAction(models.Model):
 
         return target_set
 
-    def _updated_views(self, action, xid):
-        views = [list(view) for view in action.views]
-        view = self.env.ref(xid)
-
-        for index in range(0, len(views)):
-            if views[index][1] == view.type:
-                views[index][0] = view.id
-
-        return views
-
     def get_reference(self):
         """Required by clone wizard
 
@@ -331,3 +383,103 @@ class AcademyTrainingAction(models.Model):
         self.ensure_one()
 
         return "{},{}".format(self._name, self.id)
+
+    # -- Auxiliary methods
+    # -------------------------------------------------------------------------
+
+    def _updated_views(self, action, xid):
+        views = [list(view) for view in action.views]
+        view = self.env.ref(xid)
+
+        for index in range(0, len(views)):
+            if views[index][1] == view.type:
+                views[index][0] = view.id
+
+        return views
+
+    def _propagate_groupwise_and_overlap_sql(self, values_list):
+        """Synchronize children flags from parents using pure SQL.
+
+        Runs two SQL UPDATEs for the direct children of the affected parents
+        (records in ``self`` and/or their parents):
+          1) Set each child's ``groupwise_schedule`` to the parent's normalized
+             boolean: TRUE if parent is TRUE, otherwise FALSE.
+          2) If the parent has ``groupwise_schedule IS NOT TRUE``, copy the
+             parent's ``allow_overlap`` to the child.
+
+        Call this right after ``create()``/``write()`` with the same
+        ``values_list`` (dict or list of dicts). The method returns early if
+        neither ``groupwise_schedule`` nor ``allow_overlap`` is present in the
+        provided values.
+
+        Implementation notes:
+        - Uses ``flush_recordset()`` to persist recent changes before reading.
+        - Avoids ORM loops; relies on PostgreSQL CTEs and ``IS DISTINCT FROM``.
+        - Clears model caches at the end to prevent stale reads.
+
+        Args:
+            values_list (dict | list[dict]): Values passed to create/write.
+
+        Returns:
+            None
+        """
+        if not values_list:
+            return
+
+        if isinstance(values_list, dict):
+            values_list = [values_list]
+
+        field_1, field_2 = "groupwise_schedule", "allow_overlap"
+        if not any((field_1 in v) or (field_2 in v) for v in values_list):
+            return
+
+        self.flush_recordset(
+            ["groupwise_schedule", "allow_overlap", "parent_id"]
+        )
+
+        self = self.with_context(active_test=False)
+        parent_set = self | self.mapped("parent_id")
+        parent_set = parent_set.filtered(lambda r: r.child_ids)
+
+        parent_ids = parent_set.ids
+        if not parent_ids:
+            return
+
+        query = """
+            WITH pairs AS (
+                SELECT c."id" AS child_id,
+                   CASE WHEN p.groupwise_schedule IS TRUE
+                        THEN TRUE ELSE FALSE END AS target_val
+                FROM academy_training_action AS p
+                JOIN academy_training_action AS c
+                    ON c.parent_id = p."id"
+                WHERE p."id" = ANY(%s)
+            )
+            UPDATE academy_training_action AS child
+                SET groupwise_schedule = pairs.target_val
+            FROM pairs
+            WHERE child."id" = pairs.child_id
+                AND child.groupwise_schedule
+                IS DISTINCT FROM pairs.target_val;
+        """
+        self.env.cr.execute(query, [list(parent_ids)])
+
+        query = """
+            WITH pairs AS (
+                SELECT c."id" AS child_id,
+                       p.allow_overlap AS target_val
+                FROM academy_training_action AS p
+                JOIN academy_training_action AS c
+                  ON c.parent_id = p."id"
+                WHERE p."id" = ANY(%s)
+                  AND p.groupwise_schedule IS NOT TRUE
+            )
+            UPDATE academy_training_action AS child
+               SET allow_overlap = pairs.target_val
+              FROM pairs
+             WHERE child."id" = pairs.child_id
+               AND child.allow_overlap IS DISTINCT FROM pairs.target_val;
+        """
+        self.env.cr.execute(query, [list(parent_ids)])
+
+        self.env.registry[self._name].clear_caches()

@@ -7,7 +7,12 @@
 from odoo import models, fields, api
 from odoo.tools.translate import _
 from odoo.tools.safe_eval import safe_eval
-from odoo.osv.expression import TRUE_DOMAIN
+from odoo.osv.expression import FALSE_DOMAIN, TRUE_DOMAIN
+from odoo.addons.academy_base.utils.helpers import (
+    OPERATOR_MAP,
+    one2many_count,
+    many2many_count,
+)
 
 from logging import getLogger
 
@@ -35,38 +40,98 @@ class AcademyStudent(models.Model):
         context={},
     )
 
+    # -- session_count: field and logic ---------------------------------------
+
     session_count = fields.Integer(
-        string="Session count",
+        string="No. of sessions",
         required=False,
         readonly=True,
         index=False,
         default=0,
-        help="Number of related sessions",
+        help="Number of sessions on which the calculation has been made",
         compute="_compute_session_count",
+        search="search_session_count",
     )
 
     @api.depends("session_ids")
     def _compute_session_count(self):
+        counts = many2many_count(self, "session_ids")
+
         for record in self:
-            target = record.session_ids.filtered(
-                lambda x: x.date_stop >= fields.Datetime.now()
-            )
-            record.session_count = len(target)
+            record.session_count = counts.get(record.id, 0)
+
+    @api.model
+    def search_session_count(self, operator, value):
+        # Handle boolean-like searches Odoo may pass for required fields
+        if value is True:
+            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
+        if value is False:
+            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
+
+        cmp_func = OPERATOR_MAP.get(operator)
+        if not cmp_func:
+            return FALSE_DOMAIN  # unsupported operator
+
+        counts = many2many_count(self.search([]), "session_ids")
+        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
+
+        return [("id", "in", matched)] if matched else FALSE_DOMAIN
+
+    # -------------------------------------------------------------------------
 
     available_sessions_ids = fields.Many2manyView(
         string="Available sessions",
         required=False,
-        readonly=True,
+        readonly=False,
         index=True,
         default=None,
         help="Sessions to which this student can be invited",
         comodel_name="academy.training.session",
-        relation="academy_training_session_available_student_rel",
+        relation="academy_training_session_invitation",
         column1="student_id",
         column2="session_id",
-        domain=[],
+        domain=[],  # Todo: Esto no está bien y antes había una vista
         context={},
     )
+
+    # -- available_session_count: field and logic -----------------------------
+
+    available_session_count = fields.Integer(
+        string="No. of available sessions",
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        help="Number of sessions on which the calculation has been made",
+        compute="_compute_available_session_count",
+        search="search_available_session_count",
+    )
+
+    @api.depends("available_sessions_ids")
+    def _compute_available_session_count(self):
+        counts = many2many_count(self, "available_sessions_ids")
+
+        for record in self:
+            record.available_session_count = counts.get(record.id, 0)
+
+    @api.model
+    def search_available_session_count(self, operator, value):
+        # Handle boolean-like searches Odoo may pass for required fields
+        if value is True:
+            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
+        if value is False:
+            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
+
+        cmp_func = OPERATOR_MAP.get(operator)
+        if not cmp_func:
+            return FALSE_DOMAIN  # unsupported operator
+
+        counts = many2many_count(self.search([]), "available_sessions_ids")
+        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
+
+        return [("id", "in", matched)] if matched else FALSE_DOMAIN
+
+    # -------------------------------------------------------------------------
 
     invitation_ids = fields.One2many(
         string="Invitation",
@@ -82,6 +147,8 @@ class AcademyStudent(models.Model):
         auto_join=False,
     )
 
+    # -- intivation_count: field and logic ------------------------------------
+
     invitation_count = fields.Integer(
         string="Invitation count",
         required=False,
@@ -96,30 +163,32 @@ class AcademyStudent(models.Model):
 
     @api.depends("invitation_ids")
     def _compute_invitation_count(self):
+        counts = one2many_count(self, "invitation_ids")
+
         for record in self:
-            record.invitation_count = len(record.invitation_ids)
+            record.invitation_count = counts.get(record.id, 0)
 
     @api.model
     def _search_invitation_count(self, operator, value):
-        return TRUE_DOMAIN
+        # Handle boolean-like searches Odoo may pass for required fields
+        if value is True:
+            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
+        if value is False:
+            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
 
-    def _compute_view_mapping(self):
-        view_names = [
-            "view_academy_training_session_invitation_calendar",
-            "view_academy_training_session_invitation_tree",
-            "view_academy_training_session_invitation_form",
-        ]
+        cmp_func = OPERATOR_MAP.get(operator)
+        if not cmp_func:
+            return FALSE_DOMAIN  # unsupported operator
 
-        view_mapping = []
-        for view_name in view_names:
-            xid = "academy_timesheets.{}".format(view_name)
-            view = self.env.ref(xid)
-            pair = (view.id, view.type)
-            view_mapping.append(pair)
+        counts = one2many_count(self.search([]), "invitation_ids")
+        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
 
-        return view_mapping
+        return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
-    def view_invitation(self):
+    # -- Public methods
+    # -------------------------------------------------------------------------
+
+    def view_invitations(self):
         self.ensure_one()
 
         action_xid = "academy_timesheets.action_invitation_act_window"
@@ -147,3 +216,22 @@ class AcademyStudent(models.Model):
         }
 
         return serialized
+
+    # -- Auxliliary methods
+    # -------------------------------------------------------------------------
+
+    def _compute_view_mapping(self):
+        view_names = [
+            "view_academy_training_session_invitation_calendar",
+            "view_academy_training_session_invitation_tree",
+            "view_academy_training_session_invitation_form",
+        ]
+
+        view_mapping = []
+        for view_name in view_names:
+            xid = "academy_timesheets.{}".format(view_name)
+            view = self.env.ref(xid)
+            pair = (view.id, view.type)
+            view_mapping.append(pair)
+
+        return view_mapping

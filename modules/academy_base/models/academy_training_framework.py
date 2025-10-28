@@ -25,9 +25,9 @@ class AcademyTrainingFramework(models.Model):
     _description = "Academy training framework"
 
     _inherit = [
+        "ownership.mixin",
         "image.mixin",
         "mail.thread",
-        "ownership.mixin",
     ]
 
     _order = "name ASC"

@@ -172,7 +172,7 @@ msgid "Academy training session available student"
 msgstr ""
 
 #. module: academy_timesheets
-#: model:ir.model,name:academy_timesheets.model_academy_training_session_teacher_rel
+#: model:ir.model,name:academy_timesheets.model_academy_training_session_teacher_assignment
 msgid "Academy training session teacher rel"
 msgstr ""
 
@@ -282,7 +282,7 @@ msgstr "Conocimientos básicos del software de Microsoft"
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session__date_start
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_affinity__date_start
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_invitation__date_start
-#: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_teacher_rel__date_start
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_teacher_assignment__date_start
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_training_session_invitation_search
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_training_session_search
 msgid "Beginning"
@@ -522,7 +522,7 @@ msgstr "Crear próximas sesiones para un docente usando la misma información"
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_verification_wizard__create_uid
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session__create_uid
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_invitation__create_uid
-#: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_teacher_rel__create_uid
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_teacher_assignment__create_uid
 msgid "Created by"
 msgstr "Creado por"
 
@@ -537,7 +537,7 @@ msgstr "Creado por"
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_verification_wizard__create_date
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session__create_date
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_invitation__create_date
-#: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_teacher_rel__create_date
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_teacher_assignment__create_date
 msgid "Created on"
 msgstr "Creado en"
 
@@ -644,7 +644,7 @@ msgstr "Fecha a la que se estaban copiando las sesiones"
 #: model:ir.model.fields,help:academy_timesheets.field_academy_training_session__date_stop
 #: model:ir.model.fields,help:academy_timesheets.field_academy_training_session_affinity__date_stop
 #: model:ir.model.fields,help:academy_timesheets.field_academy_training_session_invitation__date_stop
-#: model:ir.model.fields,help:academy_timesheets.field_academy_training_session_teacher_rel__date_stop
+#: model:ir.model.fields,help:academy_timesheets.field_academy_training_session_teacher_assignment__date_stop
 msgid "Date/time of session end"
 msgstr "Fecha/hora de finalización de la sesión"
 
@@ -653,7 +653,7 @@ msgstr "Fecha/hora de finalización de la sesión"
 #: model:ir.model.fields,help:academy_timesheets.field_academy_training_session__date_start
 #: model:ir.model.fields,help:academy_timesheets.field_academy_training_session_affinity__date_start
 #: model:ir.model.fields,help:academy_timesheets.field_academy_training_session_invitation__date_start
-#: model:ir.model.fields,help:academy_timesheets.field_academy_training_session_teacher_rel__date_start
+#: model:ir.model.fields,help:academy_timesheets.field_academy_training_session_teacher_assignment__date_start
 msgid "Date/time of session start"
 msgstr "Fecha/hora de inicio de sesión"
 
@@ -698,7 +698,7 @@ msgstr "Desligar de la sessión"
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session__display_name
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_affinity__display_name
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_invitation__display_name
-#: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_teacher_rel__display_name
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_teacher_assignment__display_name
 #: model:ir.model.fields,field_description:academy_timesheets.field_report_academy_timesheets_view_academy_timesheet_primary_instructor_qweb__display_name
 #: model:ir.model.fields,field_description:academy_timesheets.field_report_academy_timesheets_view_academy_timesheet_student_qweb__display_name
 #: model:ir.model.fields,field_description:academy_timesheets.field_report_academy_timesheets_view_academy_timesheet_training_action_qweb__display_name
@@ -794,7 +794,7 @@ msgstr "Duración"
 #. module: academy_timesheets
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_affinity__email
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_invitation__email
-#: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_teacher_rel__email
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_teacher_assignment__email
 msgid "Email"
 msgstr ""
 
@@ -834,7 +834,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session__date_stop
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_affinity__date_stop
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_invitation__date_stop
-#: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_teacher_rel__date_stop
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_teacher_assignment__date_stop
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_training_session_invitation_search
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_training_session_search
 msgid "Ending"
@@ -1125,7 +1125,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session__id
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_affinity__id
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_invitation__id
-#: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_teacher_rel__id
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_teacher_assignment__id
 #: model:ir.model.fields,field_description:academy_timesheets.field_report_academy_timesheets_view_academy_timesheet_primary_instructor_qweb__id
 #: model:ir.model.fields,field_description:academy_timesheets.field_report_academy_timesheets_view_academy_timesheet_student_qweb__id
 #: model:ir.model.fields,field_description:academy_timesheets.field_report_academy_timesheets_view_academy_timesheet_training_action_qweb__id
@@ -1169,7 +1169,7 @@ msgstr "Si está marcada, algunos mensajes tienen un error de entrega."
 
 #. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_training_session__validate
-#: model:ir.model.fields,help:academy_timesheets.field_academy_training_session_teacher_rel__validate
+#: model:ir.model.fields,help:academy_timesheets.field_academy_training_session_teacher_assignment__validate
 msgid "If checked, the event date range will be checked before saving"
 msgstr ""
 "Si está marcado, el intervalo de fechas del evento se comprobará antes de "
@@ -1357,7 +1357,7 @@ msgstr "Última"
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session____last_update
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_affinity____last_update
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_invitation____last_update
-#: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_teacher_rel____last_update
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_teacher_assignment____last_update
 #: model:ir.model.fields,field_description:academy_timesheets.field_report_academy_timesheets_view_academy_timesheet_primary_instructor_qweb____last_update
 #: model:ir.model.fields,field_description:academy_timesheets.field_report_academy_timesheets_view_academy_timesheet_student_qweb____last_update
 #: model:ir.model.fields,field_description:academy_timesheets.field_report_academy_timesheets_view_academy_timesheet_training_action_qweb____last_update
@@ -1375,7 +1375,7 @@ msgstr "Última modificación el"
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_verification_wizard__write_uid
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session__write_uid
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_invitation__write_uid
-#: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_teacher_rel__write_uid
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_teacher_assignment__write_uid
 msgid "Last Updated by"
 msgstr "Última actualización por"
 
@@ -1390,7 +1390,7 @@ msgstr "Última actualización por"
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_verification_wizard__write_date
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session__write_date
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_invitation__write_date
-#: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_teacher_rel__write_date
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_teacher_assignment__write_date
 msgid "Last Updated on"
 msgstr "Ultima actualización en"
 
@@ -1774,7 +1774,7 @@ msgid "Numeric value for repeat interval"
 msgstr "Valor numérico para el intervalo de repetición"
 
 #. module: academy_timesheets
-#: model:ir.model.fields,help:academy_timesheets.field_academy_training_session_teacher_rel__sequence
+#: model:ir.model.fields,help:academy_timesheets.field_academy_training_session_teacher_assignment__sequence
 #: model:ir.model.fields,help:academy_timesheets.field_facility_reservation__sequence
 msgid "Order of importance of the teacher in the training session"
 msgstr "Orden de importancia del docente en la sesión de formación"
@@ -1818,7 +1818,7 @@ msgid "Person who assumes the obligations of the owner"
 msgstr "Persona que asume las obligaciones del titular"
 
 #. module: academy_timesheets
-#: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_teacher_rel__phone
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_teacher_assignment__phone
 msgid "Phone"
 msgstr "Teléfono"
 
@@ -1962,7 +1962,7 @@ msgid "Related student"
 msgstr "Estudiante relacionado"
 
 #. module: academy_timesheets
-#: model:ir.model.fields,help:academy_timesheets.field_academy_training_session_teacher_rel__teacher_id
+#: model:ir.model.fields,help:academy_timesheets.field_academy_training_session_teacher_assignment__teacher_id
 msgid "Related teacher"
 msgstr "Docente relacionada"
 
@@ -1981,7 +1981,7 @@ msgstr "Inscripción en acciones formativas relacionadas"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,help:academy_timesheets.field_academy_training_session_invitation__session_id
-#: model:ir.model.fields,help:academy_timesheets.field_academy_training_session_teacher_rel__session_id
+#: model:ir.model.fields,help:academy_timesheets.field_academy_training_session_teacher_assignment__session_id
 msgid "Related training session"
 msgstr "Sesión de formación relacionada"
 
@@ -2137,7 +2137,7 @@ msgstr "Enviar sesión por correo electrónico"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_clone_wizard_log__sequence
-#: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_teacher_rel__sequence
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_teacher_assignment__sequence
 #: model:ir.model.fields,field_description:academy_timesheets.field_facility_reservation__sequence
 msgid "Sequence"
 msgstr "Secuencia"
@@ -2146,7 +2146,7 @@ msgstr "Secuencia"
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_clone_wizard_log__session_id
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_affinity__session_id
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_invitation__session_id
-#: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_teacher_rel__session_id
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_teacher_assignment__session_id
 #: model:ir.model.fields,field_description:academy_timesheets.field_facility_reservation__session_id
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_training_session_affinity_form
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_training_session_invitation_form
@@ -2452,12 +2452,12 @@ msgid "Tax ID"
 msgstr "ID de impuesto"
 
 #. module: academy_timesheets
-#: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_teacher_rel__teacher_id
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_teacher_assignment__teacher_id
 #: model:ir.model.fields.selection,name:academy_timesheets.selection__academy_timesheets_clone_wizard_log__target_ref__academy_teacher
 #: model:ir.model.fields.selection,name:academy_timesheets.selection__academy_timesheets_download_wizard__target_ref__academy_teacher
 #: model:ir.model.fields.selection,name:academy_timesheets.selection__academy_timesheets_send_by_mail_wizard__active_model__academy_teacher
 #: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_tests_display_question_as_html
-#: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_training_session_teacher_rel_form
+#: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_training_session_teacher_assignment_form
 msgid "Teacher"
 msgstr "Docente"
 
@@ -2586,8 +2586,8 @@ msgid "The target model is not supported"
 msgstr "El modelo de destino no es compatible"
 
 #. module: academy_timesheets
-#: code:addons/academy_timesheets/models/academy_training_session_teacher_rel.py:0
-#: model:ir.model.constraint,message:academy_timesheets.constraint_academy_training_session_teacher_rel_UNIQUE_TEACHER_BY_SESSION
+#: code:addons/academy_timesheets/models/academy_training_session_teacher_assignment.py:0
+#: model:ir.model.constraint,message:academy_timesheets.constraint_academy_training_session_teacher_assignment_UNIQUE_TEACHER_BY_SESSION
 #, python-format
 msgid "The teacher had already been assigned to the session"
 msgstr "El docente ya había sido asignado a la sesión"
@@ -2626,8 +2626,8 @@ msgid "This event overlaps with another of the same training action action"
 msgstr "Este evento se solapa con otro de la misma acción formativa"
 
 #. module: academy_timesheets
-#: code:addons/academy_timesheets/models/academy_training_session_teacher_rel.py:0
-#: model:ir.model.constraint,message:academy_timesheets.constraint_academy_training_session_teacher_rel_unique_teacher_id
+#: code:addons/academy_timesheets/models/academy_training_session_teacher_assignment.py:0
+#: model:ir.model.constraint,message:academy_timesheets.constraint_academy_training_session_teacher_assignment_unique_teacher_id
 #, python-format
 msgid "This teacher is occupied by another training action"
 msgstr "Este docente está ocupado con otra acción formativa"
@@ -2866,7 +2866,7 @@ msgstr "Actualizar tareas no docentes"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session__validate
-#: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_teacher_rel__validate
+#: model:ir.model.fields,field_description:academy_timesheets.field_academy_training_session_teacher_assignment__validate
 msgid "Validate"
 msgstr "Validar"
 
@@ -3087,8 +3087,8 @@ msgid "iFrame Resizer can not be used with PDF files"
 msgstr "iFrame Resizer no se puede utilizar con archivos PDF"
 
 #. module: academy_timesheets
-#: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_training_session_teacher_rel_tree
-msgid "view_academy_training_session_teacher_rel_tree"
+#: model_terms:ir.ui.view,arch_db:academy_timesheets.view_academy_training_session_teacher_assignment_tree
+msgid "view_academy_training_session_teacher_assignment_tree"
 msgstr ""
 
 #. module: academy_timesheets

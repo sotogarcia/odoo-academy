@@ -44,18 +44,6 @@
               </div>
             </setting>
 
-            <setting string="Non-teaching tasks" help="Add, edit or remove non-teaching tasks.">
-              <div class="content-group mt8">
-                <button
-                    name="%(academy_timesheets.action_non_teaching_tasks_act_window)d"
-                    string="&#160;Update non-teaching tasks"
-                    type="action"
-                    class="oe_link"
-                    icon="fa-arrow-right"
-                />
-              </div>
-            </setting>
-
           </block>
           <!-- Settings block: end -->
 

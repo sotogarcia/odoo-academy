@@ -30,11 +30,11 @@
             <field name="active" eval="True" />
             <field name="inherit_id" ref="academy_base.view_academy_teacher_kanban" />
             <field name="arch" type="xml">
-                <xpath expr="//footer" position="inside">
+                <xpath expr="//field[1]" position="before">
                     <div class="btn-group" role="group" aria-label="Management">
                         <button name="view_sessions" type="object"
                             class="btn btn-sm btn-light oe_read_only" title="Show related sessions">
-                            <i class="fa fa-calendar d-inline-block mr-1" aria-hidden="false" title="Sessions"></i>
+                            <i class="fa fa-lg fa-clipboard me-2" aria-hidden="false" title="Sessions"></i>
                         </button>
                     </div>
                 </xpath>

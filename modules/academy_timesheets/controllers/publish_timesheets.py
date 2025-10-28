@@ -52,8 +52,12 @@ class PublishTimesheets(Controller):
             return request.not_found()
 
         uid = request.session.uid
+        user_obj = request.env["res.users"]
+        current_user = user_obj.browse(uid)
+
+        domain = [("partner_id", "=", current_user.partner_id.id)]
         teacher_obj = request.env["academy.teacher"]
-        teacher = teacher_obj.search([("res_users_id", "=", uid)], limit=1)
+        teacher = teacher_obj.search(domain, limit=1)
         if not teacher:
             return request.not_found()
 
@@ -180,14 +184,14 @@ class PublishTimesheets(Controller):
         }
 
         if doc_type == "html":
-            render_method_name = "render_qweb_html"
+            render_method_name = "_render_qweb_html"
         else:
-            render_method_name = "render_qweb_pdf"
+            render_method_name = "_render_qweb_pdf"
 
         report_obj = request.env.ref(report_xid).sudo()
         render_method = getattr(report_obj, render_method_name)
 
-        files = render_method([record.id], data=datas)
+        files = render_method(report_xid, [record.id], data=datas)
         content = files[0] if files and len(files[0]) else None
 
         if embed:

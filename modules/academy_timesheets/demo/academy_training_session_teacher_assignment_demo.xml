@@ -2,7 +2,7 @@
 
 <odoo noupdate="0">
 
-        <record id="academy_training_session_teacher_rel_demo" model="academy.training.session.teacher.rel">
+        <record id="academy_training_session_teacher_assignment_demo" model="academy.training.session.teacher.assignment">
             <field name="session_id" ref="academy_timesheets.academy_training_session_1" />
             <field name="teacher_id" ref="academy_base.academy_res_partner_demo_teacher_1" />
         </record>

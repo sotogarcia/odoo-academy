@@ -2,15 +2,15 @@
 
 <odoo noupdate="0">
 
-        <record id="view_academy_training_session_teacher_rel_tree" model="ir.ui.view">
+        <record id="view_academy_training_session_teacher_assignment_tree" model="ir.ui.view">
             <field name="name">Teachers conducting the training session</field>
-            <field name="model">academy.training.session.teacher.rel</field>
+            <field name="model">academy.training.session.teacher.assignment</field>
             <field name="type">list</field>
             <field name="mode">primary</field>
             <field name="priority" eval="32" />
             <field name="active" eval="True" />
             <field name="arch" type="xml">
-                <list string="view_academy_training_session_teacher_rel_tree" create="1" delete="1" edit="1" editable="bottom">
+                <list string="view_academy_training_session_teacher_assignment_tree" create="1" delete="1" edit="1" editable="bottom">
                     <field name="date_start" column_invisible="1" />
                     <field name="date_stop" column_invisible="1" />
                     <field name="session_id" column_invisible="1" />
@@ -22,9 +22,9 @@
             </field>
         </record>
 
-        <record id="view_academy_training_session_teacher_rel_form" model="ir.ui.view">
+        <record id="view_academy_training_session_teacher_assignment_form" model="ir.ui.view">
             <field name="name">Teacher conducting the training session</field>
-            <field name="model">academy.training.session.teacher.rel</field>
+            <field name="model">academy.training.session.teacher.assignment</field>
             <field name="type">form</field>
             <field name="mode">primary</field>
             <field name="priority" eval="16" />

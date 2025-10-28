@@ -373,9 +373,9 @@ class AcademyTimesheetsCloneWizard(models.TransientModel):
                         defaults = self._compute_new_interval(session, to_date)
 
                         self.env.cr.commit()
-                        session.copy(defaults)
+                        new_session = session.copy(defaults)
                         if self.autoinvite:
-                            session.invite_all()
+                            new_session.invite_all()
                         self.env.cr.commit()
 
                     except Exception as ex:

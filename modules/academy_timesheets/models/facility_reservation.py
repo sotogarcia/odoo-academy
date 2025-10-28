@@ -23,6 +23,15 @@ class FacilityReservation(models.Model):
     _name = "facility.reservation"
     _inherit = ["facility.reservation"]
 
+    sequence = fields.Integer(
+        string="Sequence",
+        required=True,
+        readonly=False,
+        index=True,
+        default=0,
+        help="Order of importance of the teacher in the training session",
+    )
+
     session_id = fields.Many2one(
         string="Session",
         required=False,
@@ -36,6 +45,8 @@ class FacilityReservation(models.Model):
         ondelete="cascade",
         auto_join=False,
     )
+
+    # -- Computed field: has_training_session ---------------------------------
 
     has_training_session = fields.Boolean(
         string="Has training session",
@@ -63,14 +74,8 @@ class FacilityReservation(models.Model):
 
         return [("session_id", operator, value)]
 
-    sequence = fields.Integer(
-        string="Sequence",
-        required=True,
-        readonly=False,
-        index=True,
-        default=0,
-        help="Order of importance of the teacher in the training session",
-    )
+    # -- Constraints
+    # -------------------------------------------------------------------------
 
     _sql_constraints = [
         (
@@ -84,6 +89,66 @@ class FacilityReservation(models.Model):
             "Reservation cannot finish before it starts",
         ),
     ]
+
+    def detach_from_training(self):
+        self.write({"session_id": None})
+
+    # -- Overridden methods
+    # -------------------------------------------------------------------------
+
+    @api.model_create_multi
+    def create(self, value_list):
+        """Overridden method 'create'"""
+        for values in value_list:
+            self._keep_in_sync_training_action(values)
+
+        parent = super(FacilityReservation, self)
+        result = parent.create(value_list)
+
+        return result
+
+    def write(self, values):
+        """Overridden method 'write'"""
+
+        self._keep_in_sync_training_action(values)
+
+        parent = super(FacilityReservation, self)
+        result = parent.write(values)
+
+        return result
+
+    # -- Auxiliary fields
+    # -------------------------------------------------------------------------
+
+    @api.model
+    def _keep_in_sync_training_action(self, values, keep_on_remove=False):
+        """
+        Synchronize the ``training_action_id`` field with the ``session_id``
+        field in the record.
+
+        When a ``session_id`` is provided in the values, this method updates
+        the ``training_action_id`` field to match the ``training_action_id`` of
+        the session. If the ``session_id`` is removed (or set to False), the
+        ``training_action_id`` is also cleared unless ``keep_on_remove`` is
+        True.
+
+        Args:
+            values (dict): A dictionary containing the fields to be updated.
+            keep_on_remove (bool, optional): If True, keeps the current
+                training_action_id when the session_id is removed. Defaults to
+                False.
+        """
+
+        if "session_id" in values:
+            session_id = values.get("session_id", False)
+
+            if session_id:
+                model_obj = self.env["academy.training.session"]
+                model_set = model_obj.browse(session_id)
+                values["training_action_id"] = model_set.training_action_id.id
+
+            elif not keep_on_remove:
+                values["training_action_id"] = None
 
     def _notify_record_by_email(
         self,
@@ -119,57 +184,3 @@ class FacilityReservation(models.Model):
             send_after_commit,
             **kwargs
         )
-
-    def detach_from_training(self):
-        self.write({"session_id": None})
-
-    @api.model_create_multi
-    def create(self, value_list):
-        """Overridden method 'create'"""
-        for values in value_list:
-            self._keep_in_sync_training_action(values)
-
-        parent = super(FacilityReservation, self)
-        result = parent.create(value_list)
-
-        return result
-
-    def write(self, values):
-        """Overridden method 'write'"""
-
-        self._keep_in_sync_training_action(values)
-
-        parent = super(FacilityReservation, self)
-        result = parent.write(values)
-
-        return result
-
-    @api.model
-    def _keep_in_sync_training_action(self, values, keep_on_remove=False):
-        """
-        Synchronize the ``training_action_id`` field with the ``session_id``
-        field in the record.
-
-        When a ``session_id`` is provided in the values, this method updates
-        the ``training_action_id`` field to match the ``training_action_id`` of
-        the session. If the ``session_id`` is removed (or set to False), the
-        ``training_action_id`` is also cleared unless ``keep_on_remove`` is
-        True.
-
-        Args:
-            values (dict): A dictionary containing the fields to be updated.
-            keep_on_remove (bool, optional): If True, keeps the current
-                training_action_id when the session_id is removed. Defaults to
-                False.
-        """
-
-        if "session_id" in values:
-            session_id = values.get("session_id", False)
-
-            if session_id:
-                model_obj = self.env["academy.training.session"]
-                model_set = model_obj.browse(session_id)
-                values["training_action_id"] = model_set.training_action_id.id
-
-            elif not keep_on_remove:
-                values["training_action_id"] = None

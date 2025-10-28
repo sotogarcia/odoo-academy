@@ -7,7 +7,11 @@
 from odoo import models, fields, api
 from odoo.tools.translate import _
 from odoo.tools.safe_eval import safe_eval
-from odoo.osv.expression import AND
+from odoo.osv.expression import AND, FALSE_DOMAIN, TRUE_DOMAIN
+from odoo.addons.academy_base.utils.helpers import (
+    OPERATOR_MAP,
+    many2many_count,
+)
 
 from logging import getLogger
 from urllib.parse import urljoin
@@ -29,30 +33,51 @@ class AcademyTeacher(models.Model):
         default=None,
         help="Sessions that this professor will participate in",
         comodel_name="academy.training.session",
-        relation="academy_training_session_teacher_rel",
+        relation="academy_training_session_teacher_assignment",
         column1="teacher_id",
         column2="session_id",
         domain=[],
         context={},
     )
 
+    # -- session_count: field and logic ---------------------------------------
+
     session_count = fields.Integer(
-        string="Session count",
+        string="No. of sessions",
         required=False,
         readonly=True,
         index=False,
         default=0,
-        help="Number of related sessions",
+        help="Number of sessions on which the calculation has been made",
         compute="_compute_session_count",
+        search="search_session_count",
     )
 
     @api.depends("session_ids")
     def _compute_session_count(self):
+        counts = many2many_count(self, "session_ids")
+
         for record in self:
-            target = record.session_ids.filtered(
-                lambda x: x.date_stop >= fields.Datetime.now()
-            )
-            record.session_count = len(target)
+            record.session_count = counts.get(record.id, 0)
+
+    @api.model
+    def search_session_count(self, operator, value):
+        # Handle boolean-like searches Odoo may pass for required fields
+        if value is True:
+            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
+        if value is False:
+            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
+
+        cmp_func = OPERATOR_MAP.get(operator)
+        if not cmp_func:
+            return FALSE_DOMAIN  # unsupported operator
+
+        counts = many2many_count(self.search([]), "session_ids")
+        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
+
+        return [("id", "in", matched)] if matched else FALSE_DOMAIN
+
+    # -- schedule_url: field and logic ----------------------------------------
 
     schedule_url = fields.Char(
         string="Schedule URL",
@@ -77,23 +102,8 @@ class AcademyTeacher(models.Model):
         for record in self:
             record.schedule_url = url
 
-    def _compute_view_mapping(self):
-        view_names = [
-            "view_academy_training_session_calendar_no_primary_instructor",
-            "view_academy_training_session_kanban",
-            "view_academy_training_session_tree",
-            "view_academy_training_session_pivot",
-            "view_academy_training_session_form",
-        ]
-
-        view_mapping = []
-        for view_name in view_names:
-            xid = "academy_timesheets.{}".format(view_name)
-            view = self.env.ref(xid)
-            pair = (view.id, view.type)
-            view_mapping.append(pair)
-
-        return view_mapping
+    # -- Public methods
+    # -------------------------------------------------------------------------
 
     def view_sessions(self, definitive=False, all_companies=True):
         """
@@ -153,17 +163,6 @@ class AcademyTeacher(models.Model):
 
         return serialized
 
-    def get_reference(self):
-        """Required by clone wizard
-
-        Returns:
-            str: model,id
-        """
-
-        self.ensure_one()
-
-        return "{},{}".format(self._name, self.id)
-
     def view_operational_shifts(self):
         self.ensure_one()
 
@@ -192,3 +191,35 @@ class AcademyTeacher(models.Model):
         }
 
         return serialized
+
+    def get_reference(self):
+        """Required by clone wizard
+
+        Returns:
+            str: model,id
+        """
+
+        self.ensure_one()
+
+        return "{},{}".format(self._name, self.id)
+
+    # -- Auxiliary methods
+    # -------------------------------------------------------------------------
+
+    def _compute_view_mapping(self):
+        view_names = [
+            "view_academy_training_session_calendar_no_primary_instructor",
+            "view_academy_training_session_kanban",
+            "view_academy_training_session_tree",
+            "view_academy_training_session_pivot",
+            "view_academy_training_session_form",
+        ]
+
+        view_mapping = []
+        for view_name in view_names:
+            xid = "academy_timesheets.{}".format(view_name)
+            view = self.env.ref(xid)
+            pair = (view.id, view.type)
+            view_mapping.append(pair)
+
+        return view_mapping

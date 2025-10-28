@@ -24,10 +24,10 @@ class AcademyTrainingProgramLine(models.Model):
     _description = "Academy training program line"
 
     _inherit = [
+        "ownership.mixin",
         "image.mixin",
         "mail.thread",
         "mail.activity.mixin",
-        "ownership.mixin",
     ]
 
     _rec_name = "name"

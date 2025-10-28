@@ -28,8 +28,8 @@ class AcademyTimesheetTrainingActionReport(models.AbstractModel):
     _description = "Academy timesheet training action report"
 
     def _read_record_values(self, session):
-        action_line_id = session.action_line_id.name
-        action_line_id = truncate_name(action_line_id, 64, 160)
+        action_line = session.action_line_id.name
+        action_line = truncate_name(action_line, 64, 160)
 
         facility = session.primary_facility_id.name
         teacher = session.primary_teacher_id.name
@@ -39,7 +39,7 @@ class AcademyTimesheetTrainingActionReport(models.AbstractModel):
             "id": session.id,
             "date": self.date_str(session.date_start),
             "interval": self.time_str(session),
-            "action_line_id": action_line_id,
+            "action_line": action_line,
             "facility": facility,
             "teacher": teacher,
         }
@@ -54,14 +54,14 @@ class AcademyTimesheetTrainingActionReport(models.AbstractModel):
         full_weeks = self.env.context.get("full_weeks", True)
         full_weeks = data.get("full_weeks", full_weeks)
 
-        lang = self._get_lang()
+        lang = self.get_lang()
 
         action_obj = self.env["academy.training.action"]
 
         domain = [("id", "in", docids)]
         action_set = action_obj.search(domain)
 
-        in_date = self._in
+        in_date = self.date_in
         values = {}
 
         for action in action_set:
@@ -73,8 +73,8 @@ class AcademyTimesheetTrainingActionReport(models.AbstractModel):
                 "weeks": {},
             }
 
-            for current in self._date_range(date_start, date_stop, full_weeks):
-                week = self._week_str(current)
+            for current in self.date_range(date_start, date_stop, full_weeks):
+                week = self.week_str(current)
                 sessions = action.session_ids.filtered(
                     lambda s: in_date(s, current) and s.state == "ready"
                 )

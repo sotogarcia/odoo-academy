@@ -5,7 +5,8 @@
 ###############################################################################
 
 from odoo import models, fields, api
-from odoo.osv.expression import TRUE_DOMAIN, FALSE_DOMAIN
+from odoo.osv.expression import FALSE_DOMAIN, TRUE_DOMAIN
+from odoo.addons.academy_base.utils.helpers import OPERATOR_MAP, one2many_count
 from odoo.osv.expression import TERM_OPERATORS_NEGATION
 from odoo.tools.safe_eval import safe_eval
 
@@ -34,6 +35,8 @@ class AcademyTrainingActionLine(models.Model):
         auto_join=False,
     )
 
+    # -- session_count: field and logic ---------------------------------------
+
     session_count = fields.Integer(
         string="Session count",
         required=False,
@@ -47,94 +50,83 @@ class AcademyTrainingActionLine(models.Model):
 
     @api.depends("session_ids")
     def _compute_session_count(self):
+        counts = one2many_count(self, "session_ids")
+
         for record in self:
-            record.session_count = len(record.session_ids)
+            record.session_count = counts.get(record.id, 0)
 
     @api.model
     def search_session_count(self, operator, value):
-        sql = """
-            SELECT
-                acu."id" AS action_line_id,
-                COUNT ( ats."id" ) :: INTEGER AS session_count
-            FROM
-                academy_training_action_line AS acu
-            LEFT JOIN academy_training_session AS ats
-                ON ats.action_line_id = acu."id" AND ats.active
-            GROUP BY
-                acu."id"
-            HAVING COUNT ( ats."id" ) :: INTEGER {operator} {value}
-        """
+        # Handle boolean-like searches Odoo may pass for required fields
+        if value is True:
+            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
+        if value is False:
+            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
 
-        # = True, <> True, = False, <> False
-        if value in [True, False]:
-            if value is True:
-                operator = TERM_OPERATORS_NEGATION[operator]
-            value = 0
+        cmp_func = OPERATOR_MAP.get(operator)
+        if not cmp_func:
+            return FALSE_DOMAIN  # unsupported operator
 
-        sql = sql.format(operator=operator, value=value)
-        self.env.cr.execute(sql)
-        results = self.env.cr.dictfetchall()
+        counts = one2many_count(self.search([]), "session_ids")
+        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
 
-        if results:
-            record_ids = [item["action_line_id"] for item in results]
-            domain = [("id", "in", record_ids)]
-        else:
-            domain = FALSE_DOMAIN
+        return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
-        return domain
+    # -------------------------------------------------------------------------
 
-    draft_count = fields.Integer(
+    draft_session_ids = fields.One2many(
+        string="Draft sessions",
+        required=False,
+        readonly=False,
+        index=True,
+        default=None,
+        help="All sessions in draft state for training action",
+        comodel_name="academy.training.session",
+        inverse_name="action_line_id",
+        domain=[("state", "=", "draft")],
+        context={},
+        auto_join=False,
+    )
+
+    # -- draft_session_count: field and logic ---------------------------------
+
+    draft_session_count = fields.Integer(
         string="Draft count",
         required=False,
         readonly=True,
         index=False,
         default=0,
         help="Number of sessions in draft state",
-        compute="_compute_timesheet_fields",
-        search="search_draft_count",
+        compute="_compute_draft_session_count",
+        search="search_draft_session_count",
     )
 
-    @api.depends("session_ids")
-    def _compute_draft_count(self):
+    @api.depends("draft_session_ids")
+    def _compute_draft_session_count(self):
+        counts = one2many_count(self, "draft_session_ids")
+
         for record in self:
-            filtered_set = record.session_ids.filtered(
-                lambda x: x.state == "draft"
-            )
-            record.draft_count = len(filtered_set)
+            record.draft_session_count = counts.get(record.id, 0)
 
     @api.model
-    def search_draft_count(self, operator, value):
-        sql = """
-            SELECT
-                acu."id" AS action_line_id,
-                COUNT ( ats."id" ) :: INTEGER AS session_count
-            FROM
-                academy_training_action_line AS acu
-            LEFT JOIN academy_training_session AS ats
-                ON ats.action_line_id = acu."id"
-                AND ats.active AND ats."state" = 'draft'
-            GROUP BY
-                acu."id"
-            HAVING COUNT ( ats."id" ) :: INTEGER {operator} {value}
-        """
+    def search_draft_session_count(self, operator, value):
+        # Handle boolean-like searches Odoo may pass for required fields
+        if value is True:
+            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
+        if value is False:
+            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
 
-        # = True, <> True, = False, <> False
-        if value in [True, False]:
-            if value is True:
-                operator = TERM_OPERATORS_NEGATION[operator]
-            value = 0
+        cmp_func = OPERATOR_MAP.get(operator)
+        if not cmp_func:
+            return FALSE_DOMAIN  # unsupported operator
 
-        sql = sql.format(operator=operator, value=value)
-        self.env.cr.execute(sql)
-        results = self.env.cr.dictfetchall()
+        counts = one2many_count(self.search([]), "draft_session_ids")
+        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
 
-        if results:
-            record_ids = [item["action_line_id"] for item in results]
-            domain = [("id", "in", record_ids)]
-        else:
-            domain = FALSE_DOMAIN
+        return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
-        return domain
+    # -- Public methods
+    # -------------------------------------------------------------------------
 
     def view_timesheets(self):
         action_xid = (

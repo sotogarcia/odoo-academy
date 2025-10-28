@@ -5,8 +5,6 @@
 ###############################################################################
 
 
-from . import academy_non_teaching_task
-
 from . import academy_training_session_invitation
 from . import academy_training_session
 
@@ -16,7 +14,7 @@ from . import academy_teacher
 from . import academy_training_action
 from . import academy_student
 
-from . import academy_training_session_teacher_rel
+from . import academy_training_session_teacher_assignment
 from . import facility_reservation
 from . import academy_training_action_enrolment
 

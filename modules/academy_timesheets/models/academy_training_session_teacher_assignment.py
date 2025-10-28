@@ -11,10 +11,10 @@ from logging import getLogger
 _logger = getLogger(__name__)
 
 
-class AcademyTrainingSessionTeacherRel(models.Model):
+class AcademyTrainingSessionTeacherAssignment(models.Model):
     """ """
 
-    _name = "academy.training.session.teacher.rel"
+    _name = "academy.training.session.teacher.assignment"
     _description = "Academy training session teacher rel"
 
     _rec_name = "id"
@@ -155,8 +155,7 @@ class AcademyTrainingSessionTeacherRel(models.Model):
     def create(self, value_list):
         """Overridden method 'create'"""
 
-        parent = super(AcademyTrainingSessionTeacherRel, self)
-        result = parent.create(value_list)
+        result = super().create(value_list)
 
         result._update_session_followers()
 
@@ -165,8 +164,7 @@ class AcademyTrainingSessionTeacherRel(models.Model):
     def write(self, values):
         """Overridden method 'write'"""
 
-        parent = super(AcademyTrainingSessionTeacherRel, self)
-        result = parent.write(values)
+        result = super().write(values)
 
         self._update_session_followers()
 

@@ -62,10 +62,10 @@ class AcademyTrainingAction(models.Model):
     _description = "Academy training action"
 
     _inherit = [
-        "image.mixin",
-        "mail.thread",
-        "mail.activity.mixin",
         "ownership.mixin",
+        "mail.thread",
+        "image.mixin",
+        "mail.activity.mixin",
     ]
 
     _rec_name = "name"
@@ -1040,6 +1040,8 @@ class AcademyTrainingAction(models.Model):
             "Remove either the enrolments or the groups before "
             "proceeding."
         )
+        case_4 = _("A support service cannot have child support services.")
+
         for record in self:
             parent = record.parent_id or self.env["academy.training.action"]
 
@@ -1055,6 +1057,10 @@ class AcademyTrainingAction(models.Model):
             # It cannot have both enrolments and groups at the same time.
             if record.enrolment_ids and record.child_ids:
                 raise ValidationError(case_3)
+
+            # --- Case 4: the record is not a training action and has children
+            if record.program_type == "support" and record.childs:
+                raise ValidationError(case_4)
 
     @api.constrains("parent_id")
     def _check_no_cycle(self):

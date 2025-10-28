@@ -12,10 +12,10 @@ from logging import getLogger
 _logger = getLogger(__name__)
 
 
-class AcademyTimesheetSessionStateWizard(models.TransientModel):
+class AcademyTimesheetsSessionStateWizard(models.TransientModel):
     """Wizard to change the state to several sessions at the same time"""
 
-    _name = "academy.timesheet.session.state.wizard"
+    _name = "academy.timesheets.session.state.wizard"
     _description = "Academy timesheet session state wizard"
 
     _rec_name = "id"
@@ -29,7 +29,7 @@ class AcademyTimesheetSessionStateWizard(models.TransientModel):
         default=lambda self: self.default_session_ids(),
         help="Target sessions",
         comodel_name="academy.training.session",
-        relation="academy_timesheet_session_state_wizard_rel",
+        relation="academy_timesheets_session_state_wizard_rel",
         column1="wizard_id",
         column2="session_id",
         domain=[],
@@ -55,23 +55,23 @@ class AcademyTimesheetSessionStateWizard(models.TransientModel):
         help="Total number of sessions",
     )
 
-    draft_count = fields.Integer(
+    draft_session_count = fields.Integer(
         string="In draft",
         required=True,
         readonly=True,
         index=False,
         default=0,
         help="Number of sessions in Draft state",
-        compute="_compute_draft_count",
+        compute="_compute_draft_session_count",
     )
 
     @api.depends("session_ids")
-    def _compute_draft_count(self):
+    def _compute_draft_session_count(self):
         for record in self:
             draft_session_set = record.session_ids.filtered(
                 lambda r: r.state == "draft"
             )
-            record.draft_count = len(draft_session_set)
+            record.draft_session_count = len(draft_session_set)
 
     ready_count = fields.Integer(
         string="In ready",
