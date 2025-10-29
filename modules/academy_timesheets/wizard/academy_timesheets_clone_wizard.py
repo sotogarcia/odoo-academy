@@ -309,30 +309,6 @@ class AcademyTimesheetsCloneWizard(models.TransientModel):
 
         return {"date_start": date_start, "date_stop": date_stop}
 
-    def NEW_perform_action(self):
-        self.ensure_one()
-        self._toogle_tracking()
-        clone_log = self._get_clone_log_instance()
-
-        from_start, from_stop = self._localized_source_interval()
-        to_start, to_stop = self._localized_destination_interval()
-
-        date_list = (from_start, from_stop, to_start, to_stop)
-        self.ensure_dates_not_overlapping(*date_list)
-
-    interval_type = fields.Selection
-    method = fields.Selection
-    from_start = fields.Date
-    from_stop = fields.Date
-    to_start = fields.Date
-    to_stop = fields.Date
-    model_id = fields.Many2one
-    record_count = fields.Integer
-    state = fields.Selection
-    autoinvite = fields.Boolean
-    show_logs = fields.Boolean
-    tracking_disable = fields.Boolean
-
     def perform_action(self):
         self.ensure_one()
 
