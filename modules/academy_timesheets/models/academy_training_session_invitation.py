@@ -61,15 +61,6 @@ class AcademyTrainingInvitation(models.Model):
         related="session_id.date_delay",
     )
 
-    included = fields.Boolean(
-        string="Excluded",
-        required=False,
-        readonly=False,
-        index=True,
-        default=False,
-        help="Enable when the student is NOT expected to attend this session.",
-    )
-
     present = fields.Boolean(
         string="Present",
         required=False,
@@ -203,12 +194,6 @@ class AcademyTrainingInvitation(models.Model):
             "unique_student_by_session",
             "UNIQUE(session_id, student_id)",
             "The student has already been invited to the session",
-        ),
-        (
-            "present_implies_included",
-            "CHECK (present = FALSE OR included = TRUE)",
-            "The presence status cannot be set to True if the record is "
-            "not included.",
         ),
     ]
 

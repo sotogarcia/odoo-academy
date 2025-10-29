@@ -477,22 +477,23 @@ class AcademyTrainingSession(models.Model):
         store=False,
     )
 
-    @api.depends("invitation_ids", "invitation_ids.included")
+    @api.depends("invitation_ids")
     def _compute_invitation_str(self):
         counts = one2many_count(self, "invitation_ids")
 
         counts = one2many_count(self, "invitation_ids")
-        included_counts = one2many_count(
-            self, "invitation_ids", [("included", "!=", True)]
-        )
+        # included_counts = one2many_count(
+        #     self, "invitation_ids", [("excluded", "!=", True)]
+        # )
 
         for record in self:
             if not record.id:
-                record.invitation_str = "0 / 0"
+                record.invitation_str = "? / 0"
                 continue
 
             total = counts.get(record.id, 0)
-            included = included_counts.get(record.id, 0)
+            # included = included_counts.get(record.id, 0)
+            included = "?"
             record.invitation_str = f"{included} / {total}"
 
     # -- Enrolment information

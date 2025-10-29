@@ -203,29 +203,3 @@ Un día tiene veinticuatro (24) horas y será por tanto este el número de
 ejecuciones diarias de la acción programada. Las diferentes tareas se pueden 
 ajustar de la siguiente manera.
 
-24 | 3     
- 8 | 2
- 4 | 2
- 2 | 2
- 1
-
-| Intvlo | Ejec. | Name     |
-| ------ | ----- | -------- |
-|   24   |   1   | freq_24  |            
-|   12   |   2   | freq_12  |                    
-|    8   |   3   | freq_8   |                        
-|    6   |   4   | freq_6   |    
-|    4   |   6   | freq_4   |    
-|    3   |   8   | freq_3   |    
-|    2   |  12   | freq_2   |    
-|    1   |  24   | freq_1   |            
-
-
-24
-12
- 8
- 6
- 4
- 3
- 2
- 1

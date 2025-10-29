@@ -28,7 +28,6 @@
                     <field name="action_line_id" class="oe_field_action_line_id" />
                     <field name="date_start" class="oe_field_date_start" />
                     <field name="date_stop" class="oe_field_date_stop" />
-                    <field name="included" class="oe_field_excluded" />
                     <field name="present" class="oe_field_present" />
                 </list>
             </field>
@@ -85,7 +84,6 @@
                             <field name="enrolment_id" class="oe_field_enrolment_id"
                                 domain="[('invitation_ids', '!=', invitation_ids)]" />
                             <field name="present" class="oe_field_present" />
-                            <field name="included" class="oe_field_excluded" />
                             <field name="vat" class="oe_field_vat" />
                             <field name="zip" class="oe_field_zip" />
                             <field name="mobile" class="oe_field_mobile" widget="phone" />

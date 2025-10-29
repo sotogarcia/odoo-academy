@@ -88,6 +88,7 @@
 - [ ] asistente para clonar horario
 - [ ] Poder confirmar todas las sesiones
 - [ ] En el horario NO aparece el lunes
+- [ ] corregir el campo calculado academy.training.session->invitation_str
 
 ## Correos
 
@@ -103,3 +104,18 @@
 - [ ] Programar con reserva de aula previa
 - [ ] Mover reserva -> cambia sessión
 - [x] Mover sessión -> cambia reserva
+
+
+## Clone wizard
+
+1. Self con estado `tracking_disable`
+2. Obtener los límites de los intervalos en UTC
+3. Comprobar si se solapan
+4. Obtener los objetivos:
+    - action.session_ids
+    - enrolment.session_ids
+    - student.session_ids
+    - teacher.session_ids
+    - company
+5. Separar por (zona horaria)
+6. Para cada zona horaria
