@@ -677,7 +677,7 @@ class AcademySupportStaff(models.Model):
         if not targets:
             return
 
-        if not isinstance(targets, Iterable):
+        if not isinstance(targets, Iterable) or isinstance(targets, dict):
             targets = [targets]
 
         if isinstance(targets, (list, tuple)) and isinstance(targets[0], dict):
@@ -691,8 +691,8 @@ class AcademySupportStaff(models.Model):
 
         company = (
             self.env.company
-            or self.env.user.company
-            or self.env["res.company"].ref(
+            or self.env.user.company_id
+            or self.env.ref(
                 "base.main_company", raise_if_not_found=False
             )
         )
