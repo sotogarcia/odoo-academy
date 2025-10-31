@@ -73,12 +73,12 @@
 
 ## Todo
 
+- [x] Revisar los init_hook
 - [ ] Tarea programada que invite a los nuevos matriculados.
 - [ ] Tarea programada que envíe cambios en los horarios.
 - [ ] Horario de alumnos, profesores y acciones formativas
 - [ ] Integrar con website_calendar
 - [ ] Corregir el problema del cambio de hora
-- [ ] Revisar los init_hook
 - [ ] Sustituir `_render_qweb_html` y `_render_qweb_pdf` por `_render`.
 - [ ] Eliminar formulario rápido de la vista Kanban
 - [ ] Posibilidad de duplicados

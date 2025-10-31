@@ -70,9 +70,9 @@ training actions and facilities.
         "facility_management",
         "record_ownership",
     ],
-    # 'pre_init_hook': 'pre_init_hook',
-    # 'post_init_hook': 'post_init_hook',
-    # 'uninstall_hook': 'uninstall_hook',
+    "pre_init_hook": "pre_init_hook",
+    "post_init_hook": "post_init_hook",
+    "uninstall_hook": "uninstall_hook",
     "data": [
         "views/academy_timesheets.xml",
         "data/ir_actions_server_data.xml",
