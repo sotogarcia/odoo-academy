@@ -23,80 +23,80 @@ class CivilServiceTrackerVacancyPosition(models.Model):
     or update to centralize communication.
     """
 
-    _name = 'civil.service.tracker.vacancy.position'
-    _description = u'Civil service tracker vacancy position'
+    _name = "civil.service.tracker.vacancy.position"
+    _description = "Civil service tracker vacancy position"
 
-    _table = 'cst_vacancy_position'
+    _table = "cst_vacancy_position"
 
-    _rec_name = 'name'
-    _order = 'name ASC'
+    _rec_name = "name"
+    _order = "name ASC"
 
-    _inherit = ['civil.service.tracker.thread.to.parent.mixin']
+    _inherit = ["civil.service.tracker.thread.to.parent.mixin"]
 
     name = fields.Char(
-        string='Position name',
+        string="Position name",
         required=True,
         readonly=False,
         index=True,
         default=None,
-        help='Name of the position offered (e.g. Administrative Assistant)',
+        help="Name of the position offered (e.g. Administrative Assistant)",
         translate=True,
-        track_visibility='always'
+        tracking=True,
     )
 
     description = fields.Text(
-        string='Description',
+        string="Description",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='Additional information about this position (optional)',
-        translate=True
+        help="Additional information about this position (optional)",
+        translate=True,
     )
 
     active = fields.Boolean(
-        string='Active',
+        string="Active",
         required=False,
         readonly=False,
         index=True,
         default=True,
-        help='Enable or disable this vacancy position without deleting it',
-        track_visibility='onchange'
+        help="Enable or disable this vacancy position without deleting it",
+        tracking=True,
     )
 
     sequence = fields.Integer(
-        string='Sequence',
+        string="Sequence",
         required=True,
         readonly=False,
         index=True,
         default=1,
-        help='Controls display order in the selection process',
-        track_visibility='onchange'
+        help="Controls display order in the selection process",
+        tracking=True,
     )
 
     vacancy_type_id = fields.Many2one(
-        string='Vacancy type',
+        string="Vacancy type",
         required=True,
         readonly=False,
         index=True,
         default=None,
-        help='Position category (e.g. Free Turn, Promotion)',
-        comodel_name='civil.service.tracker.vacancy.type',
+        help="Position category (e.g. Free Turn, Promotion)",
+        comodel_name="civil.service.tracker.vacancy.type",
         domain=[],
         context={},
-        ondelete='cascade',
+        ondelete="cascade",
         auto_join=False,
-        track_visibility='onchange'
+        tracking=True,
     )
 
-    @api.onchange('vacancy_type_id')
+    @api.onchange("vacancy_type_id")
     def _onchange_vacancy_type_id(self):
         if not self.vacancy_type_id:
             return
 
         new_name = self.vacancy_type_id.name
-        current_name = self.name or ''
-        previous_name = self._origin.name if self._origin else ''
+        current_name = self.name or ""
+        previous_name = self._origin.name if self._origin else ""
 
         # Si es nuevo (sin origen) y el nombre está vacío → asignar el nuevo.
         if not self._origin and not current_name:
@@ -107,28 +107,28 @@ class CivilServiceTrackerVacancyPosition(models.Model):
             self.name = new_name
 
     position_quantity = fields.Integer(
-        string='Number of positions',
+        string="Number of positions",
         required=True,
         readonly=False,
         index=True,
         default=0,
-        help='Total number of positions available for this type',
-        track_visibility='always'
+        help="Total number of positions available for this type",
+        tracking=True,
     )
 
     selection_process_id = fields.Many2one(
-        string='Selection process',
+        string="Selection process",
         required=True,
         readonly=False,
         index=True,
         default=None,
-        help='Selection process to which this vacancy position is linked',
-        comodel_name='civil.service.tracker.selection.process',
+        help="Selection process to which this vacancy position is linked",
+        comodel_name="civil.service.tracker.selection.process",
         domain=[],
         context={},
-        ondelete='cascade',
+        ondelete="cascade",
         auto_join=False,
-        track_visibility='onchange'
+        tracking=True,
     )
 
     # -------------------------------------------------------------------------
@@ -137,46 +137,45 @@ class CivilServiceTrackerVacancyPosition(models.Model):
 
     _sql_constraints = [
         (
-            'unique_vacancy_name_per_process',
-            'UNIQUE(selection_process_id, name)',
-            'Vacancy name must be unique per selection process.'
+            "unique_vacancy_name_per_process",
+            "UNIQUE(selection_process_id, name)",
+            "Vacancy name must be unique per selection process.",
         ),
+        # (
+        #     "check_name_min_length",
+        #     "CHECK(char_length(name) > 3)",
+        #     "The name must have more than 3 characters.",
+        # ),
         (
-            'check_name_min_length',
-            'CHECK(char_length(name) > 3)',
-            'The name must have more than 3 characters.'
+            "check_positive_quantity",
+            "CHECK(position_quantity > 0)",
+            "The number of positions must be greater than zero.",
         ),
-        (
-            'check_positive_quantity',
-            'CHECK(position_quantity > 0)',
-            'The number of positions must be greater than zero.'
-        )
     ]
 
     # -------------------------------------------------------------------------
     # OVERRIDDEN METHODS
     # -------------------------------------------------------------------------
-    
+
     def _get_tracking_parent(self):
         """
-        Returns the record that will act as the parent thread for chatter 
+        Returns the record that will act as the parent thread for chatter
         messages.
 
-        This method is used by the `civil.service.tracker.thread.to.parent.mixin` 
-        mixin to redirect messages from this model (typically a child record) 
-        to its logical parent, ensuring that all chatter activity is 
+        This method is used by the `civil.service.tracker.thread.to.parent.mixin`
+        mixin to redirect messages from this model (typically a child record)
+        to its logical parent, ensuring that all chatter activity is
         centralized.
 
-        In this case, messages posted on process events will appear in the 
-        thread of the linked selection process (`selection_process_id`), 
+        In this case, messages posted on process events will appear in the
+        thread of the linked selection process (`selection_process_id`),
         providing a unified communication log.
 
         Returns:
-            models.Model: The record to which the chatter thread should be 
+            models.Model: The record to which the chatter thread should be
             linked.
         """
         return self.selection_process_id
 
     def _get_tracking_prefix(self):
-        return _('Vacancies')
-
+        return _("Vacancies")

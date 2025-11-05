@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo noupdate="0">
 
-        <!-- VIEWS: "Civil services Event Type"
-        
+  <!-- VIEWS: "Civil services Event Type"
+
             - Model·········: civil.service.tracker.event.type
             - _rec_name·····: name
             - Domain········: []
@@ -13,153 +12,137 @@
             - View priority·: 16    Sequence····: 10
             - Action help···: No event types have been defined yet.
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-        
-        <!-- Tree view for "civil.service.tracker.event.type" -->
-        <record id="view_civil_service_tracker_event_type_tree" model="ir.ui.view">
-            <field name="name">view.civil.service.tracker.event.type.tree</field>
-            <field name="model">civil.service.tracker.event.type</field>
-            <field name="type">tree</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="16" />
-            <field name="active" eval="True" />
-            <field name="arch" type="xml">
-                <tree string="civil_service_tracker_event_type_tree" create="1" delete="1" edit="1">
-                    <field name="id" invisible="1"/>
-                    <field name="active" invisible="1"/>
 
-                    <field name="sequence" class="oe_field_sequence" widget="handle" />
-                    <field name="name" class="oe_field_name" />
-                    <field name="process_event_ids" class="oe_field_process_event_ids" optional="show" />
-                    <field name="related_field_id" class="oe_field_related_field_id" optional="show" />
-                    <field name="is_stage" class="oe_field_is_stage" optional="show" />
-                    <field name="all_day" class="oe_field_all_day" optional="show" />
-                    <field name="unique" class="oe_field_unique" optional="show" />
-                    <field name="fold" class="oe_field_fold" optional="show" />
-                    <field name="description" class="oe_field_description" optional="show" />
+  <!-- List view for "civil.service.tracker.event.type" -->
+  <record id="view_civil_service_tracker_event_type_tree" model="ir.ui.view">
+    <field name="name">view.civil.service.tracker.event.type.tree</field>
+    <field name="model">civil.service.tracker.event.type</field>
+    <field name="type">list</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16"/>
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <list string="civil_service_tracker_event_type_tree" create="1" delete="1" edit="1">
+        <field name="id" column_invisible="1"/>
+        <field name="active" column_invisible="1"/>
 
-                </tree>
-            </field>
-        </record>
-        
-        <!-- Form view for "civil.service.tracker.event.type" -->
-        <record id="view_civil_service_tracker_event_type_form" model="ir.ui.view">
-            <field name="name">view.civil.service.tracker.event.type.form</field>
-            <field name="model">civil.service.tracker.event.type</field>
-            <field name="type">form</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="16" />
-            <field name="active" eval="True" />
-            <field name="arch" type="xml">
-                <form string="civil_service_tracker_event_type_form" create="1" delete="1" edit="1">
-                    <sheet>
-                        <field name="id" invisible="1"/>
-                        <field name="active" invisible="1"/>
-                        
-                        <div class="oe_button_box" name="button_box">
-                            <button name="view_process_events" type="object" class="oe_stat_button oe_read_only" 
-                                icon="fa-icon" help="Show related process events">
-                                <field name="process_event_count" widget="statinfo" string="Events" />
-                            </button>
-                        </div>
+        <field name="sequence" class="oe_field_sequence" widget="handle"/>
+        <field name="name" class="oe_field_name"/>
+        <field name="process_event_ids" class="oe_field_process_event_ids" optional="show"/>
+        <field name="related_field_id" class="oe_field_related_field_id" optional="show"/>
+        <field name="is_stage" class="oe_field_is_stage" optional="show"/>
+        <field name="all_day" class="oe_field_all_day" optional="show"/>
+        <field name="unique" class="oe_field_unique" optional="show"/>
+        <field name="fold" class="oe_field_fold" optional="show"/>
+        <field name="description" class="oe_field_description" optional="show"/>
 
-                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+      </list>
+    </field>
+  </record>
 
-                        <div class="oe_title">
-                            <label for="name" class="oe_edit_only" />
-                            <h1>
-                                <field name="name" class="oe_field_name" />
-                            </h1>
-                        </div>
-                        
-                        <group col="4">
-                            <field name="is_stage" class="oe_field_is_stage" />
-                            <field name="fold" class="oe_field_fold" />
-                            <field name="unique" class="oe_field_unique" />
-                            <field name="all_day" class="oe_field_all_day" />
-                            <field name="related_field_id" class="oe_field_related_field_id" />
-                        </group>
-                        
-                        <group col="2" string="Description">
-                            <field name="description" class="oe_field_description" nolabel="1" />
-                        </group>
+  <!-- Form view for "civil.service.tracker.event.type" -->
+  <record id="view_civil_service_tracker_event_type_form" model="ir.ui.view">
+    <field name="name">view.civil.service.tracker.event.type.form</field>
+    <field name="model">civil.service.tracker.event.type</field>
+    <field name="type">form</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16"/>
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <form string="civil_service_tracker_event_type_form" create="1" delete="1" edit="1">
+        <sheet>
+          <field name="id" invisible="1"/>
+          <field name="active" invisible="1"/>
 
-                    </sheet>
+          <div class="oe_button_box" name="button_box">
+            <button name="view_process_events" type="object" class="oe_stat_button oe_read_only"
+              icon="fa-icon" help="Show related process events">
+              <field name="process_event_count" widget="statinfo" string="Events"/>
+            </button>
+          </div>
 
-                </form>
-            </field>
-        </record>
-        
-        <!-- Search view for "civil.service.tracker.event.type" -->
-        <record id="view_civil_service_tracker_event_type_search" model="ir.ui.view">
-            <field name="name">view.civil.service.tracker.event.type.search</field>
-            <field name="model">civil.service.tracker.event.type</field>
-            <field name="type">search</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="16" />
-            <field name="active" eval="True" />
-            <field name="arch" type="xml">
-                <search string="civil_service_tracker_event_type_search">
-                    <field name="name" />
-                    <field name="related_field_id" />
+          <widget name="web_ribbon" title="Archived" bg_color="bg-danger" invisible="active == True"/>
+
+          <div class="oe_title">
+            <label for="name" class="oe_edit_only"/>
+            <h1>
+              <field name="name" class="oe_field_name"/>
+            </h1>
+          </div>
+
+          <group col="4">
+            <field name="is_stage" class="oe_field_is_stage"/>
+            <field name="fold" class="oe_field_fold"/>
+            <field name="unique" class="oe_field_unique"/>
+            <field name="all_day" class="oe_field_all_day"/>
+            <field name="related_field_id" class="oe_field_related_field_id"/>
+          </group>
+
+          <group col="2" string="Description">
+            <field name="description" class="oe_field_description" nolabel="1"/>
+          </group>
+
+        </sheet>
+
+      </form>
+    </field>
+  </record>
+
+  <!-- Search view for "civil.service.tracker.event.type" -->
+  <record id="view_civil_service_tracker_event_type_search" model="ir.ui.view">
+    <field name="name">view.civil.service.tracker.event.type.search</field>
+    <field name="model">civil.service.tracker.event.type</field>
+    <field name="type">search</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16"/>
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <search string="civil_service_tracker_event_type_search">
+        <field name="name"/>
+        <field name="related_field_id"/>
 
 
-                    <separator  />
-                    <filter string="Is stage"
-                        name="filter_event_type_is_stage"
-                        domain="[('is_stage', '=', True)]"
-                        context="{}"
-                        help="" />
-                    <filter string="All day"
-                        name="filter_event_type_allow fold"
-                        domain="[('all_day', '=', True)]"
-                        context="{}"
-                        help="" />
-                    <filter string="Allow fold"
-                        name="filter_event_type_allow fold"
-                        domain="[('fold', '=', True)]"
-                        context="{}"
-                        help="" />
-                    <filter string="Is unique"
-                        name="filter_event_type_is_stage"
-                        domain="[('unique', '=', True)]"
-                        context="{}"
-                        help="" />
+        <separator/>
+        <filter string="Is stage" name="filter_event_type_is_stage"
+          domain="[('is_stage', '=', True)]" context="{}" help=""/>
+        <filter string="All day" name="filter_event_type_allow fold"
+          domain="[('all_day', '=', True)]" context="{}" help=""/>
+        <filter string="Allow fold" name="filter_event_type_allow fold"
+          domain="[('fold', '=', True)]" context="{}" help=""/>
+        <filter string="Is unique" name="filter_event_type_is_stage"
+          domain="[('unique', '=', True)]" context="{}" help=""/>
 
-                    <separator />
-                    <filter name="inactive" string="Archived" 
-                        domain="[('active','=',False)]"
-                        help="Filter to show records marked as inactive."/>
+        <separator/>
+        <filter name="inactive" string="Archived" domain="[('active','=',False)]"
+          help="Filter to show records marked as inactive."/>
 
-                </search>
-            </field>
-        </record>
-        
-        <!-- Main window action for model.name -->
-        <record id="action_civil_services_event_type_act_window" model="ir.actions.act_window">
-            <field name="type">ir.actions.act_window</field>
-            <field name="name">Event types</field>
-            <field name="res_model">civil.service.tracker.event.type</field>
-            <field name="view_mode">tree,form</field>
-            <field name="target">current</field>
-            <field name="domain">[]</field>
-            <field name="context">{}</field>
-            <field name="search_view_id" ref="view_civil_service_tracker_event_type_search" />
-            <field name="help" type="html">
-                <p class="oe_view_nocontent_create">
-                    Click to add new event types.
-                </p><p>
-                    No event types have been defined yet.
-                </p>
-            </field>
-        </record>
-        
-        <!-- Main menu for model.name -->
-        <record id="menu_civil_services_event_type" model="ir.ui.menu" >
-            <field name="name">Event Types</field>
-            <field name="sequence" eval="65" />
-            <field name="action" ref="action_civil_services_event_type_act_window" />
-            <field name="parent_id" ref="menu_civil_service_tracker_configuration" />
-        </record>
+      </search>
+    </field>
+  </record>
 
-    </data>
-</openerp>
+  <!-- Main window action for model.name -->
+  <record id="action_civil_services_event_type_act_window" model="ir.actions.act_window">
+    <field name="type">ir.actions.act_window</field>
+    <field name="name">Event types</field>
+    <field name="res_model">civil.service.tracker.event.type</field>
+    <field name="view_mode">list,form</field>
+    <field name="path">civil-service-event-type</field>
+    <field name="target">current</field>
+    <field name="domain">[]</field>
+    <field name="context">{}</field>
+    <field name="search_view_id" ref="view_civil_service_tracker_event_type_search"/>
+    <field name="help" type="html">
+      <p class="oe_view_nocontent_create"> Click to add new event types. </p>
+      <p> No event types have been defined yet. </p>
+    </field>
+  </record>
+
+  <!-- Main menu for model.name -->
+  <record id="menu_civil_services_event_type" model="ir.ui.menu">
+    <field name="name">Event Types</field>
+    <field name="sequence" eval="65"/>
+    <field name="action" ref="action_civil_services_event_type_act_window"/>
+    <field name="parent_id" ref="menu_civil_service_tracker_configuration"/>
+  </record>
+
+</odoo>

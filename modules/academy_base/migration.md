@@ -186,7 +186,8 @@ attrs=["']\{["'](readonly|invisible|required)["']: *(\[[^\]]+\])\}["']
 - [ ] Acción de mantenimiento
 - [ ] Buscar todos los wizard para revisar
 - [ ] Revisar informes y correos
-
+- [ ] Jefa de estudios por academia
+- [ ] Ordenar por nombre
 
       
 

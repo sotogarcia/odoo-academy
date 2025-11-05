@@ -1,293 +1,373 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo noupdate="0">
 
-        <!-- Ministerio para la Transición Ecológica y el Reto Demográfico -->
-        <record id="civil_service_tracker_issuing_authority_ess2801401g" model="civil.service.tracker.issuing.authority">
-            <field name="partner_id" ref="res_partner_ess2801401g"/>
-            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
-            <field name="description">Ministry responsible for ecological transition and demographic challenge policies.</field>
-        </record>
+  <!-- Ministerio para la Transición Ecológica y el Reto Demográfico -->
+  <record id="civil_service_tracker_issuing_authority_ess2801401g"
+    model="civil.service.tracker.issuing.authority">
+    <field name="partner_id" ref="res_partner_ess2801401g"/>
+    <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
+    <field name="description">Ministry responsible for ecological transition and demographic
+      challenge policies.</field>
+  </record>
 
-        <!-- Ministerio de cultura -->
-        <record id="civil_service_tracker_issuing_authority_ess2800239b" model="civil.service.tracker.issuing.authority">
-            <field name="partner_id" ref="res_partner_ess2800239b"/>
-            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
-            <field name="description">Ministry dedicated to preserving and promoting cultural heritage.</field>
-        </record>
+  <!-- Ministerio de cultura -->
+  <record id="civil_service_tracker_issuing_authority_ess2800239b"
+    model="civil.service.tracker.issuing.authority">
+    <field name="partner_id" ref="res_partner_ess2800239b"/>
+    <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
+    <field name="description">Ministry dedicated to preserving and promoting cultural
+      heritage.</field>
+  </record>
 
-        <!-- Ministerio de Vivienda y Agenda Urbana -->
-        <record id="civil_service_tracker_issuing_authority_ess2801506c" model="civil.service.tracker.issuing.authority">
-            <field name="partner_id" ref="res_partner_ess2801506c"/>
-            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
-            <field name="description">Ministry managing housing policies and urban planning strategies.</field>
-        </record>
+  <!-- Ministerio de Vivienda y Agenda Urbana -->
+  <record id="civil_service_tracker_issuing_authority_ess2801506c"
+    model="civil.service.tracker.issuing.authority">
+    <field name="partner_id" ref="res_partner_ess2801506c"/>
+    <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
+    <field name="description">Ministry managing housing policies and urban planning
+      strategies.</field>
+  </record>
 
-        <!-- Ministerio de Transportes y Movilidad Sostenible -->
-        <record id="civil_service_tracker_issuing_authority_ess2800569b" model="civil.service.tracker.issuing.authority">
-            <field name="partner_id" ref="res_partner_ess2800569b"/>
-            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
-            <field name="description">Ministry overseeing transportation systems and sustainable mobility policies.</field>
-        </record>
+  <!-- Ministerio de Transportes y Movilidad Sostenible -->
+  <record id="civil_service_tracker_issuing_authority_ess2800569b"
+    model="civil.service.tracker.issuing.authority">
+    <field name="partner_id" ref="res_partner_ess2800569b"/>
+    <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
+    <field name="description">Ministry overseeing transportation systems and sustainable mobility
+      policies.</field>
+  </record>
 
-        <!-- Ministerio de Transportes, Movilidad y Agenda Urbana -->
-        <record id="civil_service_tracker_issuing_authority_ess2817040e" model="civil.service.tracker.issuing.authority">
-            <field name="partner_id" ref="res_partner_ess2817040e"/>
-            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
-            <field name="description">Former ministry managing transport, mobility, and urban agenda programs.</field>
-        </record>
+  <!-- Ministerio de Transportes, Movilidad y Agenda Urbana -->
+  <record id="civil_service_tracker_issuing_authority_ess2817040e"
+    model="civil.service.tracker.issuing.authority">
+    <field name="partner_id" ref="res_partner_ess2817040e"/>
+    <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
+    <field name="description">Former ministry managing transport, mobility, and urban agenda
+      programs.</field>
+  </record>
 
-        <!-- Ministerio de Trabajo y Economía Social -->
-        <record id="civil_service_tracker_issuing_authority_ess2819001e" model="civil.service.tracker.issuing.authority">
-            <field name="partner_id" ref="res_partner_ess2819001e"/>
-            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
-            <field name="description">Ministry responsible for labor regulations and social economy policies.</field>
-        </record>
+  <!-- Ministerio de Trabajo y Economía Social -->
+  <record id="civil_service_tracker_issuing_authority_ess2819001e"
+    model="civil.service.tracker.issuing.authority">
+    <field name="partner_id" ref="res_partner_ess2819001e"/>
+    <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
+    <field name="description">Ministry responsible for labor regulations and social economy
+      policies.</field>
+  </record>
 
-        <!-- Ministerio de Sanidad -->
-        <record id="civil_service_tracker_issuing_authority_ess2827001e" model="civil.service.tracker.issuing.authority">
-            <field name="partner_id" ref="res_partner_ess2827001e"/>
-            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
-            <field name="description">Ministry overseeing public health services and health policy.</field>
-        </record>
+  <!-- Ministerio de Sanidad -->
+  <record id="civil_service_tracker_issuing_authority_ess2827001e"
+    model="civil.service.tracker.issuing.authority">
+    <field name="partner_id" ref="res_partner_ess2827001e"/>
+    <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
+    <field name="description">Ministry overseeing public health services and health policy.</field>
+  </record>
 
-        <!-- Ministerio de la Presidencia, Justicia y Relaciones con las Cortes -->
-        <record id="civil_service_tracker_issuing_authority_ess2811001c" model="civil.service.tracker.issuing.authority">
-            <field name="partner_id" ref="res_partner_ess2811001c"/>
-            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
-            <field name="description">Ministry coordinating presidency, justice, and parliamentary relations.</field>
-        </record>
+  <!-- Ministerio de la Presidencia, Justicia y Relaciones con las Cortes -->
+  <record id="civil_service_tracker_issuing_authority_ess2811001c"
+    model="civil.service.tracker.issuing.authority">
+    <field name="partner_id" ref="res_partner_ess2811001c"/>
+    <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
+    <field name="description">Ministry coordinating presidency, justice, and parliamentary
+      relations.</field>
+  </record>
 
-        <!-- Ministerio de Juventud e Infancia -->
-        <record id="civil_service_tracker_issuing_authority_ess2801503j" model="civil.service.tracker.issuing.authority">
-            <field name="partner_id" ref="res_partner_ess2801503j"/>
-            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
-            <field name="description">Ministry focused on policies for youth and childhood development.</field>
-        </record>
+  <!-- Ministerio de Juventud e Infancia -->
+  <record id="civil_service_tracker_issuing_authority_ess2801503j"
+    model="civil.service.tracker.issuing.authority">
+    <field name="partner_id" ref="res_partner_ess2801503j"/>
+    <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
+    <field name="description">Ministry focused on policies for youth and childhood
+      development.</field>
+  </record>
 
-        <!-- Ministerio de Industria y Turismo -->
-        <record id="civil_service_tracker_issuing_authority_ess2800214e" model="civil.service.tracker.issuing.authority">
-            <field name="partner_id" ref="res_partner_ess2800214e"/>
-            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
-            <field name="description">Ministry managing industrial development and tourism strategy.</field>
-        </record>
+  <!-- Ministerio de Industria y Turismo -->
+  <record id="civil_service_tracker_issuing_authority_ess2800214e"
+    model="civil.service.tracker.issuing.authority">
+    <field name="partner_id" ref="res_partner_ess2800214e"/>
+    <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
+    <field name="description">Ministry managing industrial development and tourism strategy.</field>
+  </record>
 
-        <!-- Ministerio de Igualdad -->
-        <record id="civil_service_tracker_issuing_authority_ess2800560a" model="civil.service.tracker.issuing.authority">
-            <field name="partner_id" ref="res_partner_ess2800560a"/>
-            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
-            <field name="description">Ministry advocating gender equality and anti-discrimination policies.</field>
-        </record>
+  <!-- Ministerio de Igualdad -->
+  <record id="civil_service_tracker_issuing_authority_ess2800560a"
+    model="civil.service.tracker.issuing.authority">
+    <field name="partner_id" ref="res_partner_ess2800560a"/>
+    <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
+    <field name="description">Ministry advocating gender equality and anti-discrimination
+      policies.</field>
+  </record>
 
-        <!-- Ministerio de Educación, Formación Profesional y Deportes -->
-        <record id="civil_service_tracker_issuing_authority_ess2812001f" model="civil.service.tracker.issuing.authority">
-            <field name="partner_id" ref="res_partner_ess2812001f"/>
-            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
-            <field name="description">Ministry in charge of education, vocational training, and sports policy.</field>
-        </record>
+  <!-- Ministerio de Educación, Formación Profesional y Deportes -->
+  <record id="civil_service_tracker_issuing_authority_ess2812001f"
+    model="civil.service.tracker.issuing.authority">
+    <field name="partner_id" ref="res_partner_ess2812001f"/>
+    <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
+    <field name="description">Ministry in charge of education, vocational training, and sports
+      policy.</field>
+  </record>
 
-        <!-- Ministerio de Economía, Comercio y Empresa -->
-        <record id="civil_service_tracker_issuing_authority_ess2801391j" model="civil.service.tracker.issuing.authority">
-            <field name="partner_id" ref="res_partner_ess2801391j"/>
-            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
-            <field name="description">Ministry promoting economic growth, trade, and entrepreneurship.</field>
-        </record>
+  <!-- Ministerio de Economía, Comercio y Empresa -->
+  <record id="civil_service_tracker_issuing_authority_ess2801391j"
+    model="civil.service.tracker.issuing.authority">
+    <field name="partner_id" ref="res_partner_ess2801391j"/>
+    <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
+    <field name="description">Ministry promoting economic growth, trade, and
+      entrepreneurship.</field>
+  </record>
 
-        <!-- Ministerio de Derechos Sociales, Consumo y Agenda 2030 -->
-        <record id="civil_service_tracker_issuing_authority_ess2801444g" model="civil.service.tracker.issuing.authority">
-            <field name="partner_id" ref="res_partner_ess2801444g"/>
-            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
-            <field name="description">Ministry coordinating social rights, consumer affairs, and 2030 agenda.</field>
-        </record>
+  <!-- Ministerio de Derechos Sociales, Consumo y Agenda 2030 -->
+  <record id="civil_service_tracker_issuing_authority_ess2801444g"
+    model="civil.service.tracker.issuing.authority">
+    <field name="partner_id" ref="res_partner_ess2801444g"/>
+    <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
+    <field name="description">Ministry coordinating social rights, consumer affairs, and 2030
+      agenda.</field>
+  </record>
 
-        <!-- Ministerio de Agricultura, Pesca y Alimentación -->
-        <record id="civil_service_tracker_issuing_authority_ess2821001a" model="civil.service.tracker.issuing.authority">
-            <field name="partner_id" ref="res_partner_ess2821001a"/>
-            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
-            <field name="description">Ministry responsible for agricultural, fisheries, and food policy.</field>
-        </record>
+  <!-- Ministerio de Agricultura, Pesca y Alimentación -->
+  <record id="civil_service_tracker_issuing_authority_ess2821001a"
+    model="civil.service.tracker.issuing.authority">
+    <field name="partner_id" ref="res_partner_ess2821001a"/>
+    <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
+    <field name="description">Ministry responsible for agricultural, fisheries, and food
+      policy.</field>
+  </record>
 
-        <!-- Ministerio de Asuntos Exteriores, Unión Europea y Cooperación -->
-        <record id="civil_service_tracker_issuing_authority_ess2812001b" model="civil.service.tracker.issuing.authority">
-            <field name="partner_id" ref="res_partner_ess2812001b"/>
-            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
-            <field name="description">Ministry handling foreign affairs, European Union, and international cooperation.</field>
-        </record>
+  <!-- Ministerio de Asuntos Exteriores, Unión Europea y Cooperación -->
+  <record id="civil_service_tracker_issuing_authority_ess2812001b"
+    model="civil.service.tracker.issuing.authority">
+    <field name="partner_id" ref="res_partner_ess2812001b"/>
+    <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
+    <field name="description">Ministry handling foreign affairs, European Union, and international
+      cooperation.</field>
+  </record>
 
-        <!-- Ministerio de Ciencia, Innovación y Universidades -->
-        <record id="civil_service_tracker_issuing_authority_ess2801395a" model="civil.service.tracker.issuing.authority">
-            <field name="partner_id" ref="res_partner_ess2801395a"/>
-            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
-            <field name="description">Ministry promoting scientific research, innovation, and university education.</field>
-        </record>
+  <!-- Ministerio de Ciencia, Innovación y Universidades -->
+  <record id="civil_service_tracker_issuing_authority_ess2801395a"
+    model="civil.service.tracker.issuing.authority">
+    <field name="partner_id" ref="res_partner_ess2801395a"/>
+    <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
+    <field name="description">Ministry promoting scientific research, innovation, and university
+      education.</field>
+  </record>
 
-        <!-- Ministerio de Defensa -->
-        <record id="civil_service_tracker_issuing_authority_ess2830001j" model="civil.service.tracker.issuing.authority">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_ess2830001j"/>
-            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state" />
-            <field name="description">Spanish Ministry of Defence, responsible for national defense and military operations.</field>
-        </record>
+  <!-- Ministerio de Defensa -->
+  <record id="civil_service_tracker_issuing_authority_ess2830001j"
+    model="civil.service.tracker.issuing.authority">
+    <field name="partner_id" ref="civil_service_tracker.res_partner_ess2830001j"/>
+    <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
+    <field name="description">Spanish Ministry of Defence, responsible for national defense and
+      military operations.</field>
+  </record>
 
-        <!-- Ministerio de Hacienda y Función Pública -->
-        <record id="civil_service_tracker_issuing_authority_ess2826001f" model="civil.service.tracker.issuing.authority">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_ess2826001f"/>
-            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state" />
-            <field name="description">Ministry of Finance and Civil Service, managing public funds and civil service operations.</field>
-        </record>
+  <!-- Ministerio de Hacienda y Función Pública -->
+  <record id="civil_service_tracker_issuing_authority_ess2826001f"
+    model="civil.service.tracker.issuing.authority">
+    <field name="partner_id" ref="civil_service_tracker.res_partner_ess2826001f"/>
+    <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
+    <field name="description">Ministry of Finance and Civil Service, managing public funds and civil
+      service operations.</field>
+  </record>
 
-        <!-- Ministerio de Inclusión, Seguridad Social y Migraciones -->
-        <record id="civil_service_tracker_issuing_authority_ess2801449f" model="civil.service.tracker.issuing.authority">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_ess2801449f"/>
-            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state" />
-            <field name="description">Ministry overseeing social security, inclusion, and migration policies.</field>
-        </record>
+  <!-- Ministerio de Inclusión, Seguridad Social y Migraciones -->
+  <record id="civil_service_tracker_issuing_authority_ess2801449f"
+    model="civil.service.tracker.issuing.authority">
+    <field name="partner_id" ref="civil_service_tracker.res_partner_ess2801449f"/>
+    <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
+    <field name="description">Ministry overseeing social security, inclusion, and migration
+      policies.</field>
+  </record>
 
-        <!-- Ministerio de Justicia -->
-        <record id="civil_service_tracker_issuing_authority_ess2813001a" model="civil.service.tracker.issuing.authority">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_ess2813001a"/>
-            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state" />
-            <field name="description">Ministry responsible for the administration of justice and legal affairs.</field>
-        </record>
+  <!-- Ministerio de Justicia -->
+  <record id="civil_service_tracker_issuing_authority_ess2813001a"
+    model="civil.service.tracker.issuing.authority">
+    <field name="partner_id" ref="civil_service_tracker.res_partner_ess2813001a"/>
+    <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
+    <field name="description">Ministry responsible for the administration of justice and legal
+      affairs.</field>
+  </record>
 
-        <!-- Ministerio de Política Territorial y Función Pública -->
-        <record id="civil_service_tracker_issuing_authority_ess2833002e" model="civil.service.tracker.issuing.authority">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_ess2833002e"/>
-            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state" />
-            <field name="description">Ministry coordinating territorial administration and public service reforms.</field>
-        </record>
+  <!-- Ministerio de Política Territorial y Función Pública -->
+  <record id="civil_service_tracker_issuing_authority_ess2833002e"
+    model="civil.service.tracker.issuing.authority">
+    <field name="partner_id" ref="civil_service_tracker.res_partner_ess2833002e"/>
+    <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
+    <field name="description">Ministry coordinating territorial administration and public service
+      reforms.</field>
+  </record>
 
-        <!-- Ministerio del Interior -->
-        <record id="civil_service_tracker_issuing_authority_ess2816001h" model="civil.service.tracker.issuing.authority">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_ess2816001h"/>
-            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state" />
-            <field name="description">Ministry handling internal affairs, public safety, and civil protection.</field>
-        </record>
+  <!-- Ministerio del Interior -->
+  <record id="civil_service_tracker_issuing_authority_ess2816001h"
+    model="civil.service.tracker.issuing.authority">
+    <field name="partner_id" ref="civil_service_tracker.res_partner_ess2816001h"/>
+    <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
+    <field name="description">Ministry handling internal affairs, public safety, and civil
+      protection.</field>
+  </record>
 
-        <!-- Ministerio para la Transformación Digital y de la Función Pública -->
-        <record id="civil_service_tracker_issuing_authority_ess2801502b" model="civil.service.tracker.issuing.authority">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_ess2801502b"/>
-            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state" />
-            <field name="description">Ministry leading Spain's digital transformation and managing issuing authority reforms.</field>
-        </record>
+  <!-- Ministerio para la Transformación Digital y de la Función Pública -->
+  <record id="civil_service_tracker_issuing_authority_ess2801502b"
+    model="civil.service.tracker.issuing.authority">
+    <field name="partner_id" ref="civil_service_tracker.res_partner_ess2801502b"/>
+    <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
+    <field name="description">Ministry leading Spain's digital transformation and managing issuing
+      authority reforms.</field>
+  </record>
 
-        <!-- Xunta de Galicia -->
-        <record id="civil_service_tracker_issuing_authority_ess1511001h" model="civil.service.tracker.issuing.authority">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_ess1511001h" />
-            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_autonomous" />
-            <field name="administrative_region_id" ref="civil_service_tracker.region_galicia" />
-            <field name="description">Autonomous government of Galicia, responsible for regional administration and public services.</field>
-        </record>
+  <!-- Xunta de Galicia -->
+  <record id="civil_service_tracker_issuing_authority_ess1511001h"
+    model="civil.service.tracker.issuing.authority">
+    <field name="partner_id" ref="civil_service_tracker.res_partner_ess1511001h"/>
+    <field name="administration_scope_id"
+      ref="civil_service_tracker_administration_scope_autonomous"/>
+    <field name="administrative_region_id" ref="civil_service_tracker.region_galicia"/>
+    <field name="description">Autonomous government of Galicia, responsible for regional
+      administration and public services.</field>
+  </record>
 
-        <!-- Comunidad de Madrid -->
-        <record id="civil_service_tracker_issuing_authority_ess7800001e" model="civil.service.tracker.issuing.authority">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_ess7800001e" />
-            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_autonomous" />
-            <field name="administrative_region_id" ref="civil_service_tracker.region_madrid" />
-            <field name="description">Autonomous government of Madrid, managing the region's public institutions and services.</field>
-        </record>
+  <!-- Comunidad de Madrid -->
+  <record id="civil_service_tracker_issuing_authority_ess7800001e"
+    model="civil.service.tracker.issuing.authority">
+    <field name="partner_id" ref="civil_service_tracker.res_partner_ess7800001e"/>
+    <field name="administration_scope_id"
+      ref="civil_service_tracker_administration_scope_autonomous"/>
+    <field name="administrative_region_id" ref="civil_service_tracker.region_madrid"/>
+    <field name="description">Autonomous government of Madrid, managing the region's public
+      institutions and services.</field>
+  </record>
 
-        <!-- Junta de Andalucía -->
-        <record id="civil_service_tracker_issuing_authority_ess4111001f" model="civil.service.tracker.issuing.authority">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_ess4111001f" />
-            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_autonomous" />
-            <field name="administrative_region_id" ref="civil_service_tracker.region_andalusia" />
-            <field name="description">Regional government of Andalusia, in charge of issuing authority within the autonomous community.</field>
-        </record>
+  <!-- Junta de Andalucía -->
+  <record id="civil_service_tracker_issuing_authority_ess4111001f"
+    model="civil.service.tracker.issuing.authority">
+    <field name="partner_id" ref="civil_service_tracker.res_partner_ess4111001f"/>
+    <field name="administration_scope_id"
+      ref="civil_service_tracker_administration_scope_autonomous"/>
+    <field name="administrative_region_id" ref="civil_service_tracker.region_andalusia"/>
+    <field name="description">Regional government of Andalusia, in charge of issuing authority
+      within the autonomous community.</field>
+  </record>
 
-        <!-- Concello de Pontevedra -->
-        <record id="civil_service_tracker_issuing_authority_esp3603800h" model="civil.service.tracker.issuing.authority">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_esp3603800h" />
-            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_local" />
-            <field name="description">Municipal government of Pontevedra, responsible for urban management and citizen services.</field>
-        </record>
+  <!-- Concello de Pontevedra -->
+  <record id="civil_service_tracker_issuing_authority_esp3603800h"
+    model="civil.service.tracker.issuing.authority">
+    <field name="partner_id" ref="civil_service_tracker.res_partner_esp3603800h"/>
+    <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_local"/>
+    <field name="description">Municipal government of Pontevedra, responsible for urban management
+      and citizen services.</field>
+  </record>
 
-        <!-- Concello de Vigo -->
-        <record id="civil_service_tracker_issuing_authority_esp3605700h" model="civil.service.tracker.issuing.authority">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_esp3605700h" />
-            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_local" />
-            <field name="description">Local council of Vigo, Galicia’s largest city by population, managing local administration.</field>
-        </record>
+  <!-- Concello de Vigo -->
+  <record id="civil_service_tracker_issuing_authority_esp3605700h"
+    model="civil.service.tracker.issuing.authority">
+    <field name="partner_id" ref="civil_service_tracker.res_partner_esp3605700h"/>
+    <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_local"/>
+    <field name="description">Local council of Vigo, Galicia’s largest city by population, managing
+      local administration.</field>
+  </record>
 
-        <!-- Deputación de Pontevedra -->
-        <record id="civil_service_tracker_issuing_authority_esp3600000h" model="civil.service.tracker.issuing.authority">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_esp3600000h" />
-            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_local" />
-            <field name="description">Provincial council of Pontevedra, supporting municipalities and coordinating provincial services.</field>
-        </record>
+  <!-- Deputación de Pontevedra -->
+  <record id="civil_service_tracker_issuing_authority_esp3600000h"
+    model="civil.service.tracker.issuing.authority">
+    <field name="partner_id" ref="civil_service_tracker.res_partner_esp3600000h"/>
+    <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_local"/>
+    <field name="description">Provincial council of Pontevedra, supporting municipalities and
+      coordinating provincial services.</field>
+  </record>
 
-        <!-- Concello de San Sadurniño -->
-        <record id="civil_service_tracker_issuing_authority_esq1507700a" model="civil.service.tracker.issuing.authority">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_esq1507700a" />
-            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_local" />
-            <field name="description">Rural local council in Galicia, responsible for municipal services in the municipality of San Sadurniño.</field>
-        </record>
+  <!-- Concello de San Sadurniño -->
+  <record id="civil_service_tracker_issuing_authority_esq1507700a"
+    model="civil.service.tracker.issuing.authority">
+    <field name="partner_id" ref="civil_service_tracker.res_partner_esq1507700a"/>
+    <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_local"/>
+    <field name="description">Rural local council in Galicia, responsible for municipal services in
+      the municipality of San Sadurniño.</field>
+  </record>
 
-        <!-- Ayuntamiento de Madrid -->
-        <record id="civil_service_tracker_issuing_authority_esp2807900b" model="civil.service.tracker.issuing.authority">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_esp2807900b" />
-            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_local" />
-            <field name="description">City council of Madrid, responsible for managing municipal services in Spain's capital.</field>
-        </record>
+  <!-- Ayuntamiento de Madrid -->
+  <record id="civil_service_tracker_issuing_authority_esp2807900b"
+    model="civil.service.tracker.issuing.authority">
+    <field name="partner_id" ref="civil_service_tracker.res_partner_esp2807900b"/>
+    <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_local"/>
+    <field name="description">City council of Madrid, responsible for managing municipal services in
+      Spain's capital.</field>
+  </record>
 
 
-        <!-- Universidade da Coruña -->
-        <record id="civil_service_tracker_issuing_authority_esq6550005j" model="civil.service.tracker.issuing.authority">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_esq6550005j" />
-            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_autonomous" />
-            <field name="administrative_region_id" ref="civil_service_tracker.region_galicia" />
-            <field name="description">Public university located in A Coruña, offering a broad range of academic programs and research initiatives.</field>
-        </record>
+  <!-- Universidade da Coruña -->
+  <record id="civil_service_tracker_issuing_authority_esq6550005j"
+    model="civil.service.tracker.issuing.authority">
+    <field name="partner_id" ref="civil_service_tracker.res_partner_esq6550005j"/>
+    <field name="administration_scope_id"
+      ref="civil_service_tracker_administration_scope_autonomous"/>
+    <field name="administrative_region_id" ref="civil_service_tracker.region_galicia"/>
+    <field name="description">Public university located in A Coruña, offering a broad range of
+      academic programs and research initiatives.</field>
+  </record>
 
-        <!-- Universidade de Vigo -->
-        <record id="civil_service_tracker_issuing_authority_esq8650002b" model="civil.service.tracker.issuing.authority">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_esq8650002b" />
-            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_autonomous" />
-            <field name="administrative_region_id" ref="civil_service_tracker.region_galicia" />
-            <field name="description">Public university in Galicia, focused on innovation, technology, and international collaboration.</field>
-        </record>
+  <!-- Universidade de Vigo -->
+  <record id="civil_service_tracker_issuing_authority_esq8650002b"
+    model="civil.service.tracker.issuing.authority">
+    <field name="partner_id" ref="civil_service_tracker.res_partner_esq8650002b"/>
+    <field name="administration_scope_id"
+      ref="civil_service_tracker_administration_scope_autonomous"/>
+    <field name="administrative_region_id" ref="civil_service_tracker.region_galicia"/>
+    <field name="description">Public university in Galicia, focused on innovation, technology, and
+      international collaboration.</field>
+  </record>
 
-        <!-- ADIF (Administrador de Infraestructuras Ferroviarias) -->
-        <record id="civil_service_tracker_issuing_authority_esq2801660h" model="civil.service.tracker.issuing.authority">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_esq2801660h" />
-            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state" />
-            <field name="description">Public company managing rail infrastructure throughout Spain.</field>
-        </record>
+  <!-- ADIF (Administrador de Infraestructuras Ferroviarias) -->
+  <record id="civil_service_tracker_issuing_authority_esq2801660h"
+    model="civil.service.tracker.issuing.authority">
+    <field name="partner_id" ref="civil_service_tracker.res_partner_esq2801660h"/>
+    <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
+    <field name="description">Public company managing rail infrastructure throughout Spain.</field>
+  </record>
 
-        <!-- Sociedad Estatal Correos y Telégrafos, S.A. -->
-        <record id="civil_service_tracker_issuing_authority_esa83052407" model="civil.service.tracker.issuing.authority">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_esa83052407" />
-            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state" />
-            <field name="description">Public postal service operator of Spain, offering nationwide logistics and communications services.</field>
-        </record>
+  <!-- Sociedad Estatal Correos y Telégrafos, S.A. -->
+  <record id="civil_service_tracker_issuing_authority_esa83052407"
+    model="civil.service.tracker.issuing.authority">
+    <field name="partner_id" ref="civil_service_tracker.res_partner_esa83052407"/>
+    <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
+    <field name="description">Public postal service operator of Spain, offering nationwide logistics
+      and communications services.</field>
+  </record>
 
-        <!-- Renfe Operadora -->
-        <record id="civil_service_tracker_issuing_authority_esq2801659j" model="civil.service.tracker.issuing.authority">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_esq2801659j" />
-            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state" />
-            <field name="description">Public railway operator responsible for passenger and freight transport in Spain.</field>
-        </record>
+  <!-- Renfe Operadora -->
+  <record id="civil_service_tracker_issuing_authority_esq2801659j"
+    model="civil.service.tracker.issuing.authority">
+    <field name="partner_id" ref="civil_service_tracker.res_partner_esq2801659j"/>
+    <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
+    <field name="description">Public railway operator responsible for passenger and freight
+      transport in Spain.</field>
+  </record>
 
-        <!-- Agencia Estatal de Administración Tributaria -->
-        <record id="civil_service_tracker_issuing_authority_esq2826000h" model="civil.service.tracker.issuing.authority">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_esq2826000h"/>
-            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state" />
-            <field name="description">Spanish Tax Agency, responsible for managing and collecting national taxes.</field>
-        </record>
+  <!-- Agencia Estatal de Administración Tributaria -->
+  <record id="civil_service_tracker_issuing_authority_esq2826000h"
+    model="civil.service.tracker.issuing.authority">
+    <field name="partner_id" ref="civil_service_tracker.res_partner_esq2826000h"/>
+    <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
+    <field name="description">Spanish Tax Agency, responsible for managing and collecting national
+      taxes.</field>
+  </record>
 
-        <!-- Dirección General de la Guardia Civil -->
-        <record id="civil_service_tracker_issuing_authority_ess2816003d" model="civil.service.tracker.issuing.authority">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_ess2816003d"/>
-            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state" />
-            <field name="description">Law enforcement agency under the Ministry of the Interior, responsible for policing rural areas and borders.</field>
-        </record>
+  <!-- Dirección General de la Guardia Civil -->
+  <record id="civil_service_tracker_issuing_authority_ess2816003d"
+    model="civil.service.tracker.issuing.authority">
+    <field name="partner_id" ref="civil_service_tracker.res_partner_ess2816003d"/>
+    <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
+    <field name="description">Law enforcement agency under the Ministry of the Interior, responsible
+      for policing rural areas and borders.</field>
+  </record>
 
-        <!-- Dirección General de la Policía -->
-        <record id="civil_service_tracker_issuing_authority_ess2816015h" model="civil.service.tracker.issuing.authority">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_ess2816015h"/>
-            <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state" />
-            <field name="description">Spanish national police force, handling urban policing and criminal investigations.</field>
-        </record>
+  <!-- Dirección General de la Policía -->
+  <record id="civil_service_tracker_issuing_authority_ess2816015h"
+    model="civil.service.tracker.issuing.authority">
+    <field name="partner_id" ref="civil_service_tracker.res_partner_ess2816015h"/>
+    <field name="administration_scope_id" ref="civil_service_tracker_administration_scope_state"/>
+    <field name="description">Spanish national police force, handling urban policing and criminal
+      investigations.</field>
+  </record>
 
-    </data>
-</openerp>
+</odoo>

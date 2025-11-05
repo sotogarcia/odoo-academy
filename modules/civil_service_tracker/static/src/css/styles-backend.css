@@ -29,11 +29,12 @@ div.o_field_one2many.oe_field_employment_group_ids td.o_boolean_toggle_cell {
     display: none!important;
 }
 
-/* view_civil_service_tracker_quick_offer_wizard_wizard 
-   @see: quick_offer_form_patch.js
-   ------------------------------------------------------------------------- */
 
-div[role="dialog"].quick-offer-modal > .modal-dialog {
+/* view_civil_service_tracker_quick_offer_wizard_wizard (V13 legacy)
+   ------------------------------------------------------------------------- */
+/*.o_dialog:has(.quick_offer_wizard),
+.modal:has(.quick_offer_wizard) {
   width: 1200px!important;
   max-width: 95%!important;
 }
+*/

@@ -1,154 +1,172 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
-
-        <record id="civil_service_tracker_employment_group_a1" model="civil.service.tracker.employment.group">
-            <field name="sequence" eval="1" />
-            <field name="name">A1</field>
-            <field name="description">Group A1 includes positions requiring university degrees and high-level responsibilities.</field>
-            <field name="employment_scheme_id" ref="employment_scheme_civil_servant_state" />
-        </record>
-
-        <record id="civil_service_tracker_employment_group_a2" model="civil.service.tracker.employment.group">
-            <field name="sequence" eval="2" />
-            <field name="name">A2</field>
-            <field name="description">Group A2 includes technical positions requiring university-level qualifications.</field>
-            <field name="employment_scheme_id" ref="employment_scheme_civil_servant_state" />
-        </record>
-
-        <record id="civil_service_tracker_employment_group_b" model="civil.service.tracker.employment.group">
-            <field name="sequence" eval="3" />
-            <field name="name">B</field>
-            <field name="description">Group B is composed of specialized staff with vocational training qualifications.</field>
-            <field name="employment_scheme_id" ref="employment_scheme_civil_servant_state" />
-        </record>
-
-        <record id="civil_service_tracker_employment_group_c1" model="civil.service.tracker.employment.group">
-            <field name="sequence" eval="4" />
-            <field name="name">C1</field>
-            <field name="description">Group C1 includes administrative support roles requiring secondary education degrees.</field>
-            <field name="employment_scheme_id" ref="employment_scheme_civil_servant_state" />
-        </record>
-
-        <record id="civil_service_tracker_employment_group_c2" model="civil.service.tracker.employment.group">
-            <field name="sequence" eval="5" />
-            <field name="name">C2</field>
-            <field name="description">Group C2 involves basic administrative and operational duties with compulsory secondary education.</field>
-            <field name="employment_scheme_id" ref="employment_scheme_civil_servant_state" />
-        </record>
-
-        <record id="civil_service_tracker_employment_group_ap" model="civil.service.tracker.employment.group">
-            <field name="sequence" eval="6" />
-            <field name="name">AP</field>
-            <field name="description">Group AP includes support roles that do not require academic qualifications, typically involving auxiliary, maintenance, or service-oriented duties.</field>
-            <field name="employment_scheme_id" ref="employment_scheme_civil_servant_state" />
-        </record>
-        
-        <record id="civil_service_tracker_employment_group_g1" model="civil.service.tracker.employment.group">
-            <field name="sequence" eval="1" />
-            <field name="name">Grupo I</field>
-            <field name="description">Includes positions requiring university degrees or equivalent qualifications.</field>
-            <field name="employment_scheme_id" ref="employment_scheme_labor_state" />
-        </record>
-
-        <record id="civil_service_tracker_employment_group_g2" model="civil.service.tracker.employment.group">
-            <field name="sequence" eval="2" />
-            <field name="name">Grupo II</field>
-            <field name="description">Covers technical and administrative roles requiring higher vocational training.</field>
-            <field name="employment_scheme_id" ref="employment_scheme_labor_state" />
-        </record>
-
-        <record id="civil_service_tracker_employment_group_g3" model="civil.service.tracker.employment.group">
-            <field name="sequence" eval="3" />
-            <field name="name">Grupo III</field>
-            <field name="description">Includes intermediate administrative or support roles with secondary education requirements.</field>
-            <field name="employment_scheme_id" ref="employment_scheme_labor_state" />
-        </record>
-
-        <record id="civil_service_tracker_employment_group_g4" model="civil.service.tracker.employment.group">
-            <field name="sequence" eval="4" />
-            <field name="name">Grupo IV</field>
-            <field name="description">Involves basic administrative or service support duties with minimal academic requirements.</field>
-            <field name="employment_scheme_id" ref="employment_scheme_labor_state" />
-        </record>
-
-        <record id="civil_service_tracker_employment_group_g5" model="civil.service.tracker.employment.group">
-            <field name="sequence" eval="5" />
-            <field name="name">Grupo V</field>
-            <field name="description">Covers auxiliary and maintenance tasks with no formal qualification requirements.</field>
-            <field name="employment_scheme_id" ref="employment_scheme_labor_state" />
-        </record>.
-
-        <record id="civil_service_tracker_employment_group_gc_officer" model="civil.service.tracker.employment.group">
-            <field name="sequence" eval="1" />
-            <field name="name">Officer</field>
-            <field name="description">Commanding ranks from Lieutenant to Colonel, requiring university-level education.</field>
-            <field name="employment_scheme_id" ref="employment_scheme_civil_guard" />
-        </record>
-
-        <record id="civil_service_tracker_employment_group_gc_noncommissioned" model="civil.service.tracker.employment.group">
-            <field name="sequence" eval="2" />
-            <field name="name">Non-commissioned Officer</field>
-            <field name="description">Intermediate ranks from Sergeant to Warrant Officer, typically accessed through internal promotion.</field>
-            <field name="employment_scheme_id" ref="employment_scheme_civil_guard" />
-        </record>
-
-        <record id="civil_service_tracker_employment_group_gc_corporals_guards" model="civil.service.tracker.employment.group">
-            <field name="sequence" eval="3" />
-            <field name="name">Corporals and Guards</field>
-            <field name="description">Basic operational personnel responsible for general service and public safety duties.</field>
-            <field name="employment_scheme_id" ref="employment_scheme_civil_guard" />
-        </record>
-
-        <record id="civil_service_tracker_employment_group_gc_reserve_scale" model="civil.service.tracker.employment.group">
-            <field name="sequence" eval="4" />
-            <field name="name">Reserve Scale</field>
-            <field name="description">Scale for personnel in reserve status, with limited or administrative duties.</field>
-            <field name="employment_scheme_id" ref="employment_scheme_civil_guard" />
-        </record>
-
-        <record id="civil_service_tracker_employment_group_np_executive_scale" model="civil.service.tracker.employment.group">
-            <field name="sequence" eval="1" />
-            <field name="name">Executive Scale</field>
-            <field name="description">Includes ranks such as Inspector and Chief Inspector. Requires university education and internal promotion.</field>
-            <field name="employment_scheme_id" ref="employment_scheme_police" />
-        </record>
-
-        <record id="civil_service_tracker_employment_group_np_superior_scale" model="civil.service.tracker.employment.group">
-            <field name="sequence" eval="2" />
-            <field name="name">Superior Scale</field>
-            <field name="description">High-ranking officers such as Commissioner and Chief Commissioner. Accessed via internal promotion or special selection.</field>
-            <field name="employment_scheme_id" ref="employment_scheme_police" />
-        </record>
-
-        <record id="civil_service_tracker_employment_group_np_basic_scale" model="civil.service.tracker.employment.group">
-            <field name="sequence" eval="3" />
-            <field name="name">Basic Scale</field>
-            <field name="description">Entry-level ranks including Police Officer and Corporal. Accessed through public competitive exams.</field>
-            <field name="employment_scheme_id" ref="employment_scheme_police" />
-        </record>
-
-        <record id="civil_service_tracker_employment_group_military_officers" model="civil.service.tracker.employment.group">
-            <field name="sequence" eval="1" />
-            <field name="name">Officers</field>
-            <field name="description">Military personnel with command and leadership roles. Includes ranks like Lieutenant, Captain, and Colonel.</field>
-            <field name="employment_scheme_id" ref="employment_scheme_military" />
-        </record>
-
-        <record id="civil_service_tracker_employment_group_military_noncommissioned" model="civil.service.tracker.employment.group">
-            <field name="sequence" eval="2" />
-            <field name="name">Non-Commissioned Officers</field>
-            <field name="description">Intermediate military personnel, such as Sergeant or Warrant Officer, with supervisory duties.</field>
-            <field name="employment_scheme_id" ref="employment_scheme_military" />
-        </record>
-
-        <record id="civil_service_tracker_employment_group_military_troops" model="civil.service.tracker.employment.group">
-            <field name="sequence" eval="3" />
-            <field name="name">Troops and Sailors</field>
-            <field name="description">Basic military personnel. Includes soldiers and seamen who perform operational and support tasks.</field>
-            <field name="employment_scheme_id" ref="employment_scheme_military" />
-        </record>
-
-    </data>
-</openerp>
+<odoo noupdate="0">
+  <record id="civil_service_tracker_employment_group_a1"
+    model="civil.service.tracker.employment.group">
+    <field name="sequence" eval="1"/>
+    <field name="name">A1</field>
+    <field name="description">Group A1 includes positions requiring university degrees and
+      high-level responsibilities.</field>
+    <field name="employment_scheme_id" ref="employment_scheme_civil_servant_state"/>
+  </record>
+  <record id="civil_service_tracker_employment_group_a2"
+    model="civil.service.tracker.employment.group">
+    <field name="sequence" eval="2"/>
+    <field name="name">A2</field>
+    <field name="description">Group A2 includes technical positions requiring university-level
+      qualifications.</field>
+    <field name="employment_scheme_id" ref="employment_scheme_civil_servant_state"/>
+  </record>
+  <record id="civil_service_tracker_employment_group_b"
+    model="civil.service.tracker.employment.group">
+    <field name="sequence" eval="3"/>
+    <field name="name">B</field>
+    <field name="description">Group B is composed of specialized staff with vocational training
+      qualifications.</field>
+    <field name="employment_scheme_id" ref="employment_scheme_civil_servant_state"/>
+  </record>
+  <record id="civil_service_tracker_employment_group_c1"
+    model="civil.service.tracker.employment.group">
+    <field name="sequence" eval="4"/>
+    <field name="name">C1</field>
+    <field name="description">Group C1 includes administrative support roles requiring secondary
+      education degrees.</field>
+    <field name="employment_scheme_id" ref="employment_scheme_civil_servant_state"/>
+  </record>
+  <record id="civil_service_tracker_employment_group_c2"
+    model="civil.service.tracker.employment.group">
+    <field name="sequence" eval="5"/>
+    <field name="name">C2</field>
+    <field name="description">Group C2 involves basic administrative and operational duties with
+      compulsory secondary education.</field>
+    <field name="employment_scheme_id" ref="employment_scheme_civil_servant_state"/>
+  </record>
+  <record id="civil_service_tracker_employment_group_ap"
+    model="civil.service.tracker.employment.group">
+    <field name="sequence" eval="6"/>
+    <field name="name">AP</field>
+    <field name="description">Group AP includes support roles that do not require academic
+      qualifications, typically involving auxiliary, maintenance, or service-oriented
+      duties.</field>
+    <field name="employment_scheme_id" ref="employment_scheme_civil_servant_state"/>
+  </record>
+  <record id="civil_service_tracker_employment_group_g1"
+    model="civil.service.tracker.employment.group">
+    <field name="sequence" eval="1"/>
+    <field name="name">Grupo I</field>
+    <field name="description">Includes positions requiring university degrees or equivalent
+      qualifications.</field>
+    <field name="employment_scheme_id" ref="employment_scheme_labor_state"/>
+  </record>
+  <record id="civil_service_tracker_employment_group_g2"
+    model="civil.service.tracker.employment.group">
+    <field name="sequence" eval="2"/>
+    <field name="name">Grupo II</field>
+    <field name="description">Covers technical and administrative roles requiring higher vocational
+      training.</field>
+    <field name="employment_scheme_id" ref="employment_scheme_labor_state"/>
+  </record>
+  <record id="civil_service_tracker_employment_group_g3"
+    model="civil.service.tracker.employment.group">
+    <field name="sequence" eval="3"/>
+    <field name="name">Grupo III</field>
+    <field name="description">Includes intermediate administrative or support roles with secondary
+      education requirements.</field>
+    <field name="employment_scheme_id" ref="employment_scheme_labor_state"/>
+  </record>
+  <record id="civil_service_tracker_employment_group_g4"
+    model="civil.service.tracker.employment.group">
+    <field name="sequence" eval="4"/>
+    <field name="name">Grupo IV</field>
+    <field name="description">Involves basic administrative or service support duties with minimal
+      academic requirements.</field>
+    <field name="employment_scheme_id" ref="employment_scheme_labor_state"/>
+  </record>
+  <record id="civil_service_tracker_employment_group_g5"
+    model="civil.service.tracker.employment.group">
+    <field name="sequence" eval="5"/>
+    <field name="name">Grupo V</field>
+    <field name="description">Covers auxiliary and maintenance tasks with no formal qualification
+      requirements.</field>
+    <field name="employment_scheme_id" ref="employment_scheme_labor_state"/>
+  </record>. <record id="civil_service_tracker_employment_group_gc_officer"
+    model="civil.service.tracker.employment.group">
+    <field name="sequence" eval="1"/>
+    <field name="name">Officer</field>
+    <field name="description">Commanding ranks from Lieutenant to Colonel, requiring
+      university-level education.</field>
+    <field name="employment_scheme_id" ref="employment_scheme_civil_guard"/>
+  </record>
+  <record id="civil_service_tracker_employment_group_gc_noncommissioned"
+    model="civil.service.tracker.employment.group">
+    <field name="sequence" eval="2"/>
+    <field name="name">Non-commissioned Officer</field>
+    <field name="description">Intermediate ranks from Sergeant to Warrant Officer, typically
+      accessed through internal promotion.</field>
+    <field name="employment_scheme_id" ref="employment_scheme_civil_guard"/>
+  </record>
+  <record id="civil_service_tracker_employment_group_gc_corporals_guards"
+    model="civil.service.tracker.employment.group">
+    <field name="sequence" eval="3"/>
+    <field name="name">Corporals and Guards</field>
+    <field name="description">Basic operational personnel responsible for general service and public
+      safety duties.</field>
+    <field name="employment_scheme_id" ref="employment_scheme_civil_guard"/>
+  </record>
+  <record id="civil_service_tracker_employment_group_gc_reserve_scale"
+    model="civil.service.tracker.employment.group">
+    <field name="sequence" eval="4"/>
+    <field name="name">Reserve Scale</field>
+    <field name="description">Scale for personnel in reserve status, with limited or administrative
+      duties.</field>
+    <field name="employment_scheme_id" ref="employment_scheme_civil_guard"/>
+  </record>
+  <record id="civil_service_tracker_employment_group_np_executive_scale"
+    model="civil.service.tracker.employment.group">
+    <field name="sequence" eval="1"/>
+    <field name="name">Executive Scale</field>
+    <field name="description">Includes ranks such as Inspector and Chief Inspector. Requires
+      university education and internal promotion.</field>
+    <field name="employment_scheme_id" ref="employment_scheme_police"/>
+  </record>
+  <record id="civil_service_tracker_employment_group_np_superior_scale"
+    model="civil.service.tracker.employment.group">
+    <field name="sequence" eval="2"/>
+    <field name="name">Superior Scale</field>
+    <field name="description">High-ranking officers such as Commissioner and Chief Commissioner.
+      Accessed via internal promotion or special selection.</field>
+    <field name="employment_scheme_id" ref="employment_scheme_police"/>
+  </record>
+  <record id="civil_service_tracker_employment_group_np_basic_scale"
+    model="civil.service.tracker.employment.group">
+    <field name="sequence" eval="3"/>
+    <field name="name">Basic Scale</field>
+    <field name="description">Entry-level ranks including Police Officer and Corporal. Accessed
+      through public competitive exams.</field>
+    <field name="employment_scheme_id" ref="employment_scheme_police"/>
+  </record>
+  <record id="civil_service_tracker_employment_group_military_officers"
+    model="civil.service.tracker.employment.group">
+    <field name="sequence" eval="1"/>
+    <field name="name">Officers</field>
+    <field name="description">Military personnel with command and leadership roles. Includes ranks
+      like Lieutenant, Captain, and Colonel.</field>
+    <field name="employment_scheme_id" ref="employment_scheme_military"/>
+  </record>
+  <record id="civil_service_tracker_employment_group_military_noncommissioned"
+    model="civil.service.tracker.employment.group">
+    <field name="sequence" eval="2"/>
+    <field name="name">Non-Commissioned Officers</field>
+    <field name="description">Intermediate military personnel, such as Sergeant or Warrant Officer,
+      with supervisory duties.</field>
+    <field name="employment_scheme_id" ref="employment_scheme_military"/>
+  </record>
+  <record id="civil_service_tracker_employment_group_military_troops"
+    model="civil.service.tracker.employment.group">
+    <field name="sequence" eval="3"/>
+    <field name="name">Troops and Sailors</field>
+    <field name="description">Basic military personnel. Includes soldiers and seamen who perform
+      operational and support tasks.</field>
+    <field name="employment_scheme_id" ref="employment_scheme_military"/>
+  </record>
+</odoo>

@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo noupdate="0">
 
-        <record id="selection_method_contest" model="civil.service.tracker.selection.method">
-            <field name="name">Merit-based contest</field>
-            <field name="description">Selection based on the evaluation of merits presented by the candidates.</field>
-        </record>
+  <record id="selection_method_contest" model="civil.service.tracker.selection.method">
+    <field name="name">Merit-based contest</field>
+    <field name="description">Selection based on the evaluation of merits presented by the
+      candidates.</field>
+  </record>
 
-        <record id="selection_method_exam" model="civil.service.tracker.selection.method">
-            <field name="name">Examination</field>
-            <field name="description">Selection through one or more theoretical or practical tests.</field>
-        </record>
+  <record id="selection_method_exam" model="civil.service.tracker.selection.method">
+    <field name="name">Examination</field>
+    <field name="description">Selection through one or more theoretical or practical tests.</field>
+  </record>
 
-        <record id="selection_method_exam_and_contest" model="civil.service.tracker.selection.method">
-            <field name="name">Exam and merit-based contest</field>
-            <field name="description">Combined method including exams and evaluation of merits.</field>
-        </record>
+  <record id="selection_method_exam_and_contest" model="civil.service.tracker.selection.method">
+    <field name="name">Exam and merit-based contest</field>
+    <field name="description">Combined method including exams and evaluation of merits.</field>
+  </record>
 
-    </data>
-</openerp>
+</odoo>

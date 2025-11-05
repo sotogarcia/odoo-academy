@@ -8,6 +8,7 @@ from odoo import models, fields, api
 from odoo.tools.translate import _
 from odoo.osv.expression import AND, OR, FALSE_DOMAIN
 from odoo.exceptions import ValidationError
+from odoo.tools.misc import str2bool
 
 from logging import getLogger
 from uuid import uuid4
@@ -45,6 +46,8 @@ class CivilServiceTrackerSelectionProcess(models.Model):
         "mail.activity.mixin",
     ]
 
+    _rec_names_search = ["name", "short_name"]
+
     name = fields.Char(
         string="Process name",
         required=True,
@@ -53,7 +56,7 @@ class CivilServiceTrackerSelectionProcess(models.Model):
         default=None,
         help="Name or identifier of the selection process",
         translate=True,
-        track_visibility="always",
+        tracking=True,
         copy=False,
     )
 
@@ -65,7 +68,7 @@ class CivilServiceTrackerSelectionProcess(models.Model):
         default=None,
         help='Commonly used or internal short name, e.g., "C1 del Estado".',
         translate=True,
-        track_visibility="onchange",
+        tracking=True,
         copy=False,
     )
 
@@ -86,7 +89,7 @@ class CivilServiceTrackerSelectionProcess(models.Model):
         index=True,
         default=True,
         help="Enable or disable this selection process",
-        track_visibility="onchange",
+        tracking=True,
     )
 
     token = fields.Char(
@@ -98,7 +101,7 @@ class CivilServiceTrackerSelectionProcess(models.Model):
         help="Unique token used to track this public offer",
         translate=False,
         copy=False,
-        track_visibility="always",
+        tracking=True,
     )
 
     contract_type_id = fields.Many2one(
@@ -113,7 +116,7 @@ class CivilServiceTrackerSelectionProcess(models.Model):
         context={},
         ondelete="cascade",
         auto_join=False,
-        track_visibility="onchange",
+        tracking=True,
     )
 
     # - Field: access_type_id (onchange)
@@ -131,7 +134,7 @@ class CivilServiceTrackerSelectionProcess(models.Model):
         context={},
         ondelete="cascade",
         auto_join=False,
-        track_visibility="onchange",
+        tracking=True,
     )
 
     def default_access_type_id(self):
@@ -155,15 +158,8 @@ class CivilServiceTrackerSelectionProcess(models.Model):
         context={},
         ondelete="cascade",
         auto_join=False,
-        track_visibility="onchange",
+        tracking=True,
     )
-
-    @api.onchange("employment_group_id")
-    def _onchange_employment_group_id(self):
-        self.service_position_id = None
-
-        domain = self._compute_service_position_domain()
-        return {"domain": {"service_position_id": domain}}
 
     # - Field: selection_method_id (onchange)
     # ------------------------------------------------------------------------
@@ -180,7 +176,7 @@ class CivilServiceTrackerSelectionProcess(models.Model):
         context={},
         ondelete="cascade",
         auto_join=False,
-        track_visibility="onchange",
+        tracking=True,
     )
 
     def default_selection_method(self):
@@ -204,7 +200,7 @@ class CivilServiceTrackerSelectionProcess(models.Model):
         context={},
         ondelete="cascade",
         auto_join=False,
-        track_visibility="onchange",
+        tracking=True,
     )
 
     @api.onchange("service_position_id")
@@ -233,7 +229,7 @@ class CivilServiceTrackerSelectionProcess(models.Model):
         context={},
         ondelete="cascade",
         auto_join=False,
-        track_visibility="always",
+        tracking=True,
     )
 
     @api.onchange("public_offer_id")
@@ -262,7 +258,7 @@ class CivilServiceTrackerSelectionProcess(models.Model):
         help="Date of the offer’s official approval.",
         related="public_offer_id.offer_date",
         store=True,
-        track_visibility="onchange",
+        tracking=True,
         copy=False,
     )
 
@@ -276,7 +272,7 @@ class CivilServiceTrackerSelectionProcess(models.Model):
         translate=False,
         related="public_offer_id.offer_year",
         store=True,
-        track_visibility="onchange",
+        tracking=True,
         copy=False,
     )
 
@@ -287,7 +283,7 @@ class CivilServiceTrackerSelectionProcess(models.Model):
         index=False,
         default=lambda self: fields.Date.today() + relativedelta(years=1),
         help="Recommended deadline for preparation",
-        track_visibility="onchange",
+        tracking=True,
         copy=False,
     )
 
@@ -301,27 +297,18 @@ class CivilServiceTrackerSelectionProcess(models.Model):
         help="Administration responsible for managing this selection process",
         related="public_offer_id.public_administration_id",
         store=True,
-        track_visibility="onchange",
+        tracking=True,
         copy=False,
     )
 
-    @api.onchange("public_administration_id")
-    def _onchange_public_administration_id(self):
-        position_domain = self._compute_service_position_domain()
-
-        group_path = "employment_scheme_ids.employment_group_ids"
-        group_set = self.public_administration_id.mapped(group_path)
-        if group_set:
-            group_domain = [("id", "in", group_set.ids)]
-        else:
-            group_domain = FALSE_DOMAIN
-
-        return {
-            "domain": {
-                "service_position_id": position_domain,
-                "employment_group_id": group_domain,
-            }
-        }
+    available_employment_group_ids = fields.One2many(
+        string="Available groups",
+        readonly=True,
+        related=(
+            "public_administration_id."
+            "employment_scheme_ids.employment_group_ids"
+        ),
+    )
 
     # ------------------------------------------------------------------------
 
@@ -332,7 +319,7 @@ class CivilServiceTrackerSelectionProcess(models.Model):
         help="Authority that issued or published this selection process",
         related="public_offer_id.issuing_authority_id",
         store=True,
-        track_visibility="onchange",
+        tracking=True,
         copy=False,
     )
 
@@ -348,7 +335,6 @@ class CivilServiceTrackerSelectionProcess(models.Model):
         domain=[],
         context={},
         auto_join=False,
-        limit=None,
         copy=False,
     )
 
@@ -364,7 +350,6 @@ class CivilServiceTrackerSelectionProcess(models.Model):
         domain=[],
         context={},
         auto_join=False,
-        limit=None,
         copy=False,
     )
 
@@ -403,7 +388,7 @@ class CivilServiceTrackerSelectionProcess(models.Model):
         ondelete="set null",
         auto_join=False,
         group_expand="_group_expand_stage_id",
-        track_visibility="onchange",
+        tracking=True,
         copy=False,
     )
 
@@ -451,7 +436,7 @@ class CivilServiceTrackerSelectionProcess(models.Model):
         index=True,
         default=None,
         help="Date the process was officially announced.",
-        track_visibility="onchange",
+        tracking=True,
         copy=False,
     )
 
@@ -462,7 +447,7 @@ class CivilServiceTrackerSelectionProcess(models.Model):
         index=True,
         default=None,
         help="Date of final resolution or appointment.",
-        track_visibility="onchange",
+        tracking=True,
         copy=False,
     )
 
@@ -532,7 +517,7 @@ class CivilServiceTrackerSelectionProcess(models.Model):
         index=True,
         default=0.0,
         help="Minimum expected or planned salary",
-        track_visibility="onchange",
+        tracking=True,
     )
 
     salary_max = fields.Monetary(
@@ -542,7 +527,7 @@ class CivilServiceTrackerSelectionProcess(models.Model):
         index=True,
         default=0.0,
         help="Maximum expected or planned salary",
-        track_visibility="onchange",
+        tracking=True,
     )
 
     currency_id = fields.Many2one(
@@ -557,7 +542,7 @@ class CivilServiceTrackerSelectionProcess(models.Model):
         context={},
         ondelete="cascade",
         auto_join=False,
-        track_visibility="onchange",
+        tracking=True,
     )
 
     annual_payments = fields.Integer(
@@ -570,7 +555,7 @@ class CivilServiceTrackerSelectionProcess(models.Model):
             "Number of salary payments per year, including extra payments "
             "if any"
         ),
-        track_visibility="onchange",
+        tracking=True,
     )
 
     access_requirements = fields.Html(
@@ -626,7 +611,6 @@ class CivilServiceTrackerSelectionProcess(models.Model):
         column2="attachment_id",
         domain=[],
         context={},
-        limit=None,
     )
 
     process_infographics_ids = fields.Many2many(
@@ -642,7 +626,6 @@ class CivilServiceTrackerSelectionProcess(models.Model):
         column2="attachment_id",
         domain=[],
         context={},
-        limit=None,
         copy=False,
     )
 
@@ -683,7 +666,6 @@ class CivilServiceTrackerSelectionProcess(models.Model):
         column2="attachment_id",
         domain=[],
         context={},
-        limit=None,
         copy=False,
     )
 
@@ -722,7 +704,6 @@ class CivilServiceTrackerSelectionProcess(models.Model):
         column2="attachment_id",
         domain=[],
         context={},
-        limit=None,
         copy=False,
     )
 
@@ -763,7 +744,6 @@ class CivilServiceTrackerSelectionProcess(models.Model):
         column2="attachment_id",
         domain=[],
         context={},
-        limit=None,
         copy=False,
     )
 
@@ -802,7 +782,6 @@ class CivilServiceTrackerSelectionProcess(models.Model):
         column2="attachment_id",
         domain=[],
         context={},
-        limit=None,
         copy=False,
     )
 
@@ -838,7 +817,7 @@ class CivilServiceTrackerSelectionProcess(models.Model):
         translate=False,
         compute="_compute_dossier_summary",
         store=True,
-        track_visibility="onchange",
+        tracking=True,
         copy=False,
     )
 
@@ -884,7 +863,6 @@ class CivilServiceTrackerSelectionProcess(models.Model):
         column2="attachment_id",
         domain=[],
         context={},
-        limit=None,
         compute="_compute_aggregated_attachment_ids",
         copy=False,
     )
@@ -997,21 +975,21 @@ class CivilServiceTrackerSelectionProcess(models.Model):
             "UNIQUE(name)",
             "The name of the selection process must be unique.",
         ),
-        (
-            "check_name_min_length",
-            "CHECK(char_length(name) > 3)",
-            "The name must have more than 3 characters.",
-        ),
+        # (
+        #     "check_name_min_length",
+        #     "CHECK(char_length(name) > 3)",
+        #     "The name must have more than 3 characters.",
+        # ),
         (
             "unique_selection_process_short_name",
             "UNIQUE(short_name)",
             "The short name of the selection process must be unique.",
         ),
-        (
-            "check_short_name_min_length",
-            "CHECK(char_length(name) > 3)",
-            "The short name must have more than 3 characters.",
-        ),
+        # (
+        #     "check_short_name_min_length",
+        #     "CHECK(char_length(name) > 3)",
+        #     "The short name must have more than 3 characters.",
+        # ),
         (
             "unique_selection_process_token",
             "UNIQUE(token)",
@@ -1028,6 +1006,34 @@ class CivilServiceTrackerSelectionProcess(models.Model):
             "Salary values must be greater than or equal to zero",
         ),
     ]
+
+    @api.constrains("public_administration_id", "employment_group_id")
+    def _check_employment_group_consistency(self):
+        """Employment Group must be allowed by the chosen Public
+        Administration. Fail-fast with per-admin lazy cache."""
+
+        records = self.filtered(
+            lambda r: r.public_administration_id and r.employment_group_id
+        )
+        if not records:
+            return
+
+        group_path = "employment_scheme_ids.employment_group_ids"
+        allowed_by_admin = {}
+
+        for record in records:
+            admin = record.public_administration_id
+            allowed = allowed_by_admin.get(admin.id)
+            if allowed is None:
+                allowed = set(admin.mapped(group_path).ids)
+                allowed_by_admin[admin.id] = allowed
+
+            if record.employment_group_id.id not in allowed:
+                message = _(
+                    "The selected Employment Group is not allowed by the "
+                    "chosen Public Administration."
+                )
+                raise ValidationError(message)
 
     @api.constrains(
         "service_position_id",
@@ -1063,49 +1069,34 @@ class CivilServiceTrackerSelectionProcess(models.Model):
     # OVERWRITTEN METHODS
     # -------------------------------------------------------------------------
 
-    def name_get(self):
+    @api.depends("short_name", "name")
+    @api.depends_context("lang")
+    def _compute_display_name(self):
         config = self.env["ir.config_parameter"].sudo()
         param_name = "civil_service_tracker.display_process_short_name"
 
-        raw_value = config.get_param(param_name)
-        use_short = self._to_bool(raw_value)
+        raw_value = config.get_param(param_name, default="False")
+        use_short = str2bool(raw_value)
 
-        result = []
         for record in self:
             if use_short and record.short_name:
-                name = record.short_name
+                record.display_name = record.short_name
             else:
-                name = record.name
-            result.append((record.id, name))
+                record.display_name = record.name
 
-        return result
-
-    @api.model
-    def name_search(self, name="", args=None, operator="ilike", limit=100):
-        """
-        Overrides the default name_search to allow matching by both 'name'
-        and 'short_name' fields in global search.
-        """
-        args = args or []
-
-        domain = [
-            "|",
-            ("name", operator, name),
-            ("short_name", operator, name),
-        ]
-
-        return self.search(domain + args, limit=limit).name_get()
-
-    @api.model
-    def create(self, values):
+    @api.model_create_multi
+    def create(self, values_list):
         """Overridden method 'create'"""
-        self.ensure_process_name(values)
+
+        for values in values_list:
+            self.ensure_process_name(values)
 
         parent = super(CivilServiceTrackerSelectionProcess, self)
-        result = parent.create(values)
+        result = parent.create(values_list)
 
-        if "public_offer_id" in values:
-            result.synchronize_offer_approval_event()
+        targets = result.filtered(lambda record: record.public_offer_id)
+        if targets:
+            targets.synchronize_offer_approval_event()
 
         return result
 
@@ -1236,20 +1227,6 @@ class CivilServiceTrackerSelectionProcess(models.Model):
             domains.append(domain)
 
         return domains
-
-    def _compute_service_position_domain(self):
-        administration = self.public_administration_id
-        if not administration:
-            return FALSE_DOMAIN
-
-        group = self.employment_group_id
-        if not group:
-            return FALSE_DOMAIN
-
-        return [
-            ("public_administration_id", "=", administration.id),
-            ("employment_group_id", "=", group.id),
-        ]
 
     def _match_field(self, target_record, field_name):
         self_value = getattr(self, field_name)

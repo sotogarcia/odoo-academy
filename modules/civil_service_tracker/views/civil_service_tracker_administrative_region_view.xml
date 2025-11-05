@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo noupdate="0">
 
-        <!-- VIEWS: "Civil services Administrative Region"
-        
+  <!-- VIEWS: "Civil services Administrative Region"
+
             - Model·········: civil.service.tracker.administrative.region
             - _rec_name·····: name
             - Domain········: []
@@ -13,149 +12,141 @@
             - View priority·: 16    Sequence····: 10
             - Action help···: No administrative regions have been defined yet.
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-        
-        <!-- Tree view for "civil.service.tracker.administrative.region" -->
-        <record id="view_civil_service_tracker_administrative_region_tree" model="ir.ui.view">
-            <field name="name">view.civil.service.tracker.administrative.region.tree</field>
-            <field name="model">civil.service.tracker.administrative.region</field>
-            <field name="type">tree</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="16" />
-            <field name="active" eval="True" />
-            <field name="arch" type="xml">
-                <tree string="civil_service_tracker_administrative_region_tree" create="1" delete="1" edit="1">
-                    <field name="id" invisible="1"/>
-                    <field name="active" invisible="1"/>
 
-                    <field name="name" class="oe_field_name" />
-                    <field name="state_ids" class="oe_field_state_ids"
-                        options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
-                    <field name="country_id" class="oe_field_country_id"
-                        options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
-                    <field name="description" class="oe_field_description" />
-                        
-                </tree>
-            </field>
-        </record>
-        
-        <!-- Form view for "civil.service.tracker.administrative.region" -->
-        <record id="view_civil_service_tracker_administrative_region_form" model="ir.ui.view">
-            <field name="name">view.civil.service.tracker.administrative.region.form</field>
-            <field name="model">civil.service.tracker.administrative.region</field>
-            <field name="type">form</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="16" />
-            <field name="active" eval="True" />
-            <field name="arch" type="xml">
-                <form string="civil_service_tracker_administrative_region_form" create="1" delete="1" edit="1">
-                    <sheet>
-                        <field name="id" invisible="1"/>
-                        <field name="active" invisible="1"/>
-                        
-                        <div class="oe_button_box" name="button_box" />
+  <!-- List view for "civil.service.tracker.administrative.region" -->
+  <record id="view_civil_service_tracker_administrative_region_tree" model="ir.ui.view">
+    <field name="name">view.civil.service.tracker.administrative.region.tree</field>
+    <field name="model">civil.service.tracker.administrative.region</field>
+    <field name="type">list</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16"/>
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <list string="civil_service_tracker_administrative_region_tree" create="1" delete="1" edit="1">
+        <field name="id" column_invisible="1"/>
+        <field name="active" column_invisible="1"/>
 
-                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+        <field name="name" class="oe_field_name"/>
+        <field name="state_ids" class="oe_field_state_ids"
+          options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"/>
+        <field name="country_id" class="oe_field_country_id"
+          options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"/>
+        <field name="description" class="oe_field_description"/>
 
-                        <div class="oe_title">
-                            <label for="name" class="oe_edit_only" />
-                            <h1>
-                                <field name="name" class="oe_field_name" />
-                            </h1>
-                        </div>
+      </list>
+    </field>
+  </record>
 
-                        <group col="2">
-                            <field name="country_id" class="oe_field_country_id"
-                                options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
-                            <field name="description" class="oe_field_description" />
-                        </group>
+  <!-- Form view for "civil.service.tracker.administrative.region" -->
+  <record id="view_civil_service_tracker_administrative_region_form" model="ir.ui.view">
+    <field name="name">view.civil.service.tracker.administrative.region.form</field>
+    <field name="model">civil.service.tracker.administrative.region</field>
+    <field name="type">form</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16"/>
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <form string="civil_service_tracker_administrative_region_form" create="1" delete="1" edit="1">
+        <sheet>
+          <field name="id" invisible="1"/>
+          <field name="active" invisible="1"/>
 
-                        <group col="2" class="w-100" string="States">
-                            <field name="state_ids" class="oe_field_state_ids" nolabel="1"
-                                context="{
+          <div class="oe_button_box" name="button_box"/>
+
+          <widget name="web_ribbon" title="Archived" bg_color="bg-danger" invisible="active == True"/>
+
+          <div class="oe_title">
+            <label for="name" class="oe_edit_only"/>
+            <h1>
+              <field name="name" class="oe_field_name"/>
+            </h1>
+          </div>
+
+          <group col="2">
+            <field name="country_id" class="oe_field_country_id"
+              options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"/>
+            <field name="description" class="oe_field_description"/>
+          </group>
+
+          <group col="2" class="w-100" string="States">
+            <field name="state_ids" class="oe_field_state_ids" nolabel="1" context="{
                                     'default_country_id': country_id, 'default_administrative_region_id': id,
-                                    'tree_view_ref': 'civil_service_tracker.view_country_state_tree_on_public_administration'
+                                    'list_view_ref': 'civil_service_tracker.view_country_state_tree_on_public_administration'
                                 }"
-                                options="{'no_quick_create': True, 'no_create': True, 'no_open': False}" />
-                        </group>
+              options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
+          </group>
 
-                    </sheet>
-                </form>
-            </field>
-        </record>
-        
-        <!-- Search view for "civil.service.tracker.administrative.region" -->
-        <record id="view_civil_service_tracker_administrative_region_search" model="ir.ui.view">
-            <field name="name">view.civil.service.tracker.administrative.region.search</field>
-            <field name="model">civil.service.tracker.administrative.region</field>
-            <field name="type">search</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="16" />
-            <field name="active" eval="True" />
-            <field name="arch" type="xml">
-                <search string="civil_service_tracker_administrative_region_search">
-                    <field name="name" />
-                    <field name="state_ids" />
-                    <field name="country_id" />
+        </sheet>
+      </form>
+    </field>
+  </record>
 
-                    <separator />
-                    <filter string="By country"
-                        name="group_by_ccountry_id"
-                        domain="[]"
-                        context="{'group_by': 'country_id'}"
-                        help="" />
+  <!-- Search view for "civil.service.tracker.administrative.region" -->
+  <record id="view_civil_service_tracker_administrative_region_search" model="ir.ui.view">
+    <field name="name">view.civil.service.tracker.administrative.region.search</field>
+    <field name="model">civil.service.tracker.administrative.region</field>
+    <field name="type">search</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16"/>
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <search string="civil_service_tracker_administrative_region_search">
+        <field name="name"/>
+        <field name="state_ids"/>
+        <field name="country_id"/>
 
-                    <separator />
-                    <filter name="inactive" string="Archived" 
-                        domain="[('active','=',False)]"
-                        help="Filter to show records marked as inactive."/>
-                </search>
-            </field>
-        </record>
-        
-        <!-- Main window action for model.name -->
-        <record id="action_civil_services_administrative_region_act_window" model="ir.actions.act_window">
-            <field name="type">ir.actions.act_window</field>
-            <field name="name">Administrative Regions</field>
-            <field name="res_model">civil.service.tracker.administrative.region</field>
-            <field name="view_mode">tree,form</field>
-            <field name="target">current</field>
-            <field name="domain">[]</field>
-            <field name="context">{}</field>
-            <field name="search_view_id" ref="view_civil_service_tracker_administrative_region_search" />
-            <field name="help" type="html">
-                <p class="oe_view_nocontent_create">
-                    Click to add new administrative regions.
-                </p><p>
-                    No administrative regions have been defined yet.
-                </p>
-            </field>
-        </record>
-        
-        <!-- Main menu for model.name -->
-        <record id="menu_civil_services_administrative_region" model="ir.ui.menu" >
-            <field name="name">Administrative Regions</field>
-            <field name="sequence" eval="10" />
-            <field name="action" ref="action_civil_services_administrative_region_act_window" />
-            <field name="parent_id" ref="menu_civil_service_tracker_configuration" />
-        </record>
+        <separator/>
+        <filter string="By country" name="group_by_ccountry_id" domain="[]"
+          context="{'group_by': 'country_id'}" help=""/>
+
+        <separator/>
+        <filter name="inactive" string="Archived" domain="[('active','=',False)]"
+          help="Filter to show records marked as inactive."/>
+      </search>
+    </field>
+  </record>
+
+  <!-- Main window action for model.name -->
+  <record id="action_civil_services_administrative_region_act_window" model="ir.actions.act_window">
+    <field name="type">ir.actions.act_window</field>
+    <field name="name">Administrative Regions</field>
+    <field name="res_model">civil.service.tracker.administrative.region</field>
+    <field name="view_mode">list,form</field>
+    <field name="path">civil-service-administrative-region</field>
+    <field name="target">current</field>
+    <field name="domain">[]</field>
+    <field name="context">{}</field>
+    <field name="search_view_id" ref="view_civil_service_tracker_administrative_region_search"/>
+    <field name="help" type="html">
+      <p class="oe_view_nocontent_create"> Click to add new administrative regions. </p>
+      <p> No administrative regions have been defined yet. </p>
+    </field>
+  </record>
+
+  <!-- Main menu for model.name -->
+  <record id="menu_civil_services_administrative_region" model="ir.ui.menu">
+    <field name="name">Administrative Regions</field>
+    <field name="sequence" eval="10"/>
+    <field name="action" ref="action_civil_services_administrative_region_act_window"/>
+    <field name="parent_id" ref="menu_civil_service_tracker_configuration"/>
+  </record>
 
 
-        <!-- ================== Particular Views Section ================== -->
-        
-        <record id="view_country_state_tree_on_public_administration" model="ir.ui.view">
-            <field name="name">view.country.state.tree.on.public.administration</field>
-            <field name="model">res.country.state</field>
-            <field name="type">tree</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="99" />
-            <field name="active" eval="True" />
-            <field name="inherit_id" ref="base.view_country_state_tree" />
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='country_id']" position="attributes">
-                    <attribute name="invisible">1</attribute>
-                </xpath>
-            </field>
-        </record>
+  <!-- ================== Particular Views Section ================== -->
 
-    </data>
-</openerp>
+  <record id="view_country_state_tree_on_public_administration" model="ir.ui.view">
+    <field name="name">view.country.state.tree.on.public.administration</field>
+    <field name="model">res.country.state</field>
+    <field name="type">list</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="99"/>
+    <field name="active" eval="True"/>
+    <field name="inherit_id" ref="base.view_country_state_tree"/>
+    <field name="arch" type="xml">
+      <xpath expr="//field[@name='country_id']" position="attributes">
+        <attribute name="invisible">1</attribute>
+      </xpath>
+    </field>
+  </record>
+
+</odoo>

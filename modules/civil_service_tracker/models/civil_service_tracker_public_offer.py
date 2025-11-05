@@ -9,6 +9,7 @@ from odoo.tools.translate import _
 from uuid import uuid4
 from odoo.exceptions import ValidationError
 from odoo.tools import safe_eval
+from odoo.tools.misc import str2bool
 
 from validators import url as is_a_valid_url
 from logging import getLogger
@@ -28,116 +29,118 @@ class CivilServiceTrackerPublicOffer(models.Model):
     and a unique token for tracking.
     """
 
-    _name = 'civil.service.tracker.public.offer'
-    _description = u'Civil service tracker public offer'
+    _name = "civil.service.tracker.public.offer"
+    _description = "Civil service tracker public offer"
 
-    _table = 'cst_public_offer'
+    _table = "cst_public_offer"
 
-    _rec_name = 'name'
-    _order = 'name ASC'
+    _rec_name = "name"
+    _order = "name ASC"
 
-    _inherit = ['mail.thread', 'image.mixin']
+    _inherit = ["mail.thread", "image.mixin"]
+
+    _rec_names_search = ["name", "short_name"]
 
     name = fields.Char(
-        string='Offer name',
+        string="Offer name",
         required=True,
         readonly=False,
         index=True,
         default=None,
-        help='Name of the public employment offer (e.g. 2024 General OEP)',
+        help="Name of the public employment offer (e.g. 2024 General OEP)",
         translate=True,
-        track_visibility='always',
-        copy=False
+        tracking=True,
+        copy=False,
     )
 
     short_name = fields.Char(
-        string='Short name',
+        string="Short name",
         required=False,
         readonly=False,
         index=True,
         default=None,
         help='Commonly used or internal short name, e.g., "AGE 2019".',
         translate=True,
-        track_visibility='onchange',
-        copy=False
+        tracking=True,
+        copy=False,
     )
 
     description = fields.Text(
-        string='Description',
+        string="Description",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='Additional context or summary of the public offer (optional)',
-        translate=True
+        help="Additional context or summary of the public offer (optional)",
+        translate=True,
     )
 
     active = fields.Boolean(
-        string='Active',
+        string="Active",
         required=False,
         readonly=False,
         index=True,
         default=True,
-        help='Enable or disable this public offer without deleting it',
-        track_visibility='onchange'
+        help="Enable or disable this public offer without deleting it",
+        tracking=True,
     )
 
     token = fields.Char(
-        string='Token',
+        string="Token",
         required=True,
         readonly=True,
         index=True,
         default=lambda self: str(uuid4()),
-        help='Unique token used to identify and track this public offer',
+        help="Unique token used to identify and track this public offer",
         translate=False,
         copy=False,
-        track_visibility='always'
+        tracking=True,
     )
-    
+
     offer_date = fields.Date(
-        string='Offer date',
+        string="Offer date",
         required=False,
         readonly=False,
         index=True,
         default=fields.Date.today(),
-        help='Official date when the offer was approved or published',
-        track_visibility='onchange',
-        copy=False
+        help="Official date when the offer was approved or published",
+        tracking=True,
+        copy=False,
     )
 
     offer_year = fields.Char(
-        string='Offer year',
+        string="Offer year",
         required=True,
         readonly=False,
         index=True,
         default=lambda self: str(fields.Date.today().year),
-        help='Year or years to which the offer applies (YYYY, YYYY,...)',
+        help="Year or years to which the offer applies (YYYY, YYYY,...)",
         translate=False,
-        track_visibility='onchange',
-        copy=False
+        tracking=True,
+        copy=False,
     )
 
     # - Field: public_administration_id (onchange)
     # ------------------------------------------------------------------------
 
     public_administration_id = fields.Many2one(
-        string='Public administration',
+        string="Public administration",
         required=True,
         readonly=False,
         index=True,
         default=None,
-        help='Administration responsible for managing this public offer',
-        comodel_name='civil.service.tracker.public.administration',
+        help="Administration responsible for managing this public offer",
+        comodel_name="civil.service.tracker.public.administration",
         domain=[],
         context={},
-        ondelete='cascade',
+        ondelete="cascade",
         auto_join=False,
-        track_visibility='onchange'
+        tracking=True,
     )
 
-    @api.onchange('public_administration_id')
+    @api.onchange("public_administration_id")
     def _onchange_public_administration_id(self):
-        authority_obj = self.env['civil.service.tracker.issuing.authority']
+        authority_obj = self.env["civil.service.tracker.issuing.authority"]
 
         for record in self:
             if not record.public_administration_id:
@@ -154,7 +157,7 @@ class CivilServiceTrackerPublicOffer(models.Model):
             # Automatic change issuing authority
             if not record.issuing_authority_id:
                 partner_id = record.public_administration_id.partner_id.id
-                authority_domain = [('partner_id', '=', partner_id)]
+                authority_domain = [("partner_id", "=", partner_id)]
                 authority_set = authority_obj.search(authority_domain)
                 if len(authority_set) == 1:
                     record.issuing_authority_id = authority_set
@@ -162,155 +165,159 @@ class CivilServiceTrackerPublicOffer(models.Model):
     # ------------------------------------------------------------------------
 
     administration_type_id = fields.Many2one(
-        string='Administration type',
+        string="Administration type",
         readonly=True,
         index=True,
-        comodel_name='civil.service.tracker.administration.type',
+        comodel_name="civil.service.tracker.administration.type",
         help="Specific classification of the administration (e.g. AGE, AEAT).",
-        related='public_administration_id.administration_type_id',
+        related="public_administration_id.administration_type_id",
         store=True,
-        copy=False
+        copy=False,
     )
 
     administration_scope_id = fields.Many2one(
-        string='Administration scope',
+        string="Administration scope",
         readonly=True,
         index=True,
         help="Scope of the administration (e.g. state, regional, local).",
-        related=('public_administration_id.administration_type_id.'
-                 'administration_scope_id'),
+        related=(
+            "public_administration_id.administration_type_id."
+            "administration_scope_id"
+        ),
         store=True,
-        copy=False
+        copy=False,
     )
 
     administrative_region_id = fields.Many2one(
-        string='Administrative region',
+        string="Administrative region",
         readonly=True,
         index=True,
         help=False,
-        comodel_name='civil.service.tracker.administrative.region',
-        related=('public_administration_id.administrative_region_id'),
+        comodel_name="civil.service.tracker.administrative.region",
+        related=("public_administration_id.administrative_region_id"),
         store=True,
-        track_visibility='onchange'
+        tracking=True,
     )
 
     issuing_authority_id = fields.Many2one(
-        string='Issuing authority',
+        string="Issuing authority",
         required=True,
         readonly=False,
         index=True,
         default=None,
-        help='Authority that issued or published this public offer',
-        comodel_name='civil.service.tracker.issuing.authority',
+        help="Authority that issued or published this public offer",
+        comodel_name="civil.service.tracker.issuing.authority",
         domain=[],
         context={},
-        ondelete='cascade',
+        ondelete="cascade",
         auto_join=False,
-        track_visibility='onchange'
+        tracking=True,
     )
 
-    @api.onchange('issuing_authority_id')
+    @api.onchange("issuing_authority_id")
     def _onchange_issuing_authority_id(self):
-        admin_obj = self.env['civil.service.tracker.public.administration']
+        admin_obj = self.env["civil.service.tracker.public.administration"]
 
         for record in self:
-
             # Automatic change public administration
             if not record.public_administration_id:
                 partner_id = record.issuing_authority_id.partner_id.id
-                domain = [('partner_id', '=', partner_id)]
+                domain = [("partner_id", "=", partner_id)]
                 administration_set = admin_obj.search(domain)
                 if len(administration_set) == 1:
                     record.public_administration_id = administration_set
 
     delegated_authority_id = fields.Many2one(
-        string='Delegated authority',
+        string="Delegated authority",
         required=False,
         readonly=False,
         index=True,
         default=None,
-        help='Delegated or proposing entity (e.g. Secretaría de Estado)',
-        comodel_name='res.partner',
-        domain=[('is_company', '=', True)],
+        help="Delegated or proposing entity (e.g. Secretaría de Estado)",
+        comodel_name="res.partner",
+        domain=[("is_company", "=", True)],
         context={},
-        ondelete='set null',
+        ondelete="set null",
         auto_join=False,
-        track_visibility='onchange'
+        tracking=True,
     )
 
     selection_process_ids = fields.One2many(
-        string='Selection processes',
+        string="Selection processes",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='List of selection processes included in this public offer',
-        comodel_name='civil.service.tracker.selection.process',
-        inverse_name='public_offer_id',
+        help="List of selection processes included in this public offer",
+        comodel_name="civil.service.tracker.selection.process",
+        inverse_name="public_offer_id",
         domain=[],
         context={},
         auto_join=False,
-        limit=None,
-        copy=False
+        copy=False,
     )
 
     public_process_count = fields.Integer(
-        string='Process count',
+        string="Process count",
         required=True,
         readonly=True,
         index=False,
         default=0,
-        help='Total number of selection processes in this public offer',
-        compute='_compute_public_process_count',
-        copy=False
+        help="Total number of selection processes in this public offer",
+        compute="_compute_public_process_count",
+        copy=False,
     )
 
-    @api.depends('selection_process_ids')
+    @api.depends("selection_process_ids")
     def _compute_public_process_count(self):
         for record in self:
             record.public_process_count = len(record.selection_process_ids)
 
     bulletin_board_url = fields.Char(
-        string='Bulletin board URL',
+        string="Bulletin board URL",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='Link to the bulletin board or notice publication',
+        help="Link to the bulletin board or notice publication",
         translate=False,
-        track_visibility='onchange'
+        tracking=True,
     )
 
     official_journal_url = fields.Char(
-        string='Official journal URL',
+        string="Official journal URL",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='Link to the official journal or legal source of publication',
+        help="Link to the official journal or legal source of publication",
         translate=False,
-        track_visibility='onchange',
-        copy=False
+        tracking=True,
+        copy=False,
     )
 
     # - Field: position_total (computed + search)
     # ------------------------------------------------------------------------
 
     position_total = fields.Integer(
-        string='Total positions',
+        string="Total positions",
         required=True,
         readonly=True,
         index=False,
         default=0,
-        help='Total number of positions across all vacancy types',
-        compute='_compute_position_total',
-        search='_search_position_total',
-        copy=False
+        help="Total number of positions across all vacancy types",
+        compute="_compute_position_total",
+        search="_search_position_total",
+        copy=False,
     )
 
-    @api.depends('selection_process_ids.vacancy_position_ids.position_quantity')
+    @api.depends(
+        "selection_process_ids.vacancy_position_ids.position_quantity"
+    )
     def _compute_position_total(self):
-        map_path = 'selection_process_ids.vacancy_position_ids.position_quantity'
+        map_path = (
+            "selection_process_ids.vacancy_position_ids.position_quantity"
+        )
         for record in self:
             quantities = record.mapped(map_path)
             record.position_total = sum(quantities)
@@ -324,21 +331,21 @@ class CivilServiceTrackerPublicOffer(models.Model):
         - For ('!=', False) → returns offers with at least one position.
         - Otherwise, filters offers by the sum of all position quantities.
         """
-        if operator in ('=', '!=') and not value:
-            agg = 'COUNT(vp.id)'
-            operator = '>' if operator == '=' else '='
+        if operator in ("=", "!=") and not value:
+            agg = "COUNT(vp.id)"
+            operator = ">" if operator == "=" else "="
             value = 0
         else:
-            agg = 'COALESCE(SUM(vp.position_quantity), 0)'
+            agg = "COALESCE(SUM(vp.position_quantity), 0)"
 
         query = f"""
             SELECT
               po.id
             FROM
               cst_public_offer AS po
-            LEFT JOIN cst_selection_process AS sp 
+            LEFT JOIN cst_selection_process AS sp
                 ON po.id = sp.public_offer_id
-            LEFT JOIN cst_vacancy_position AS vp 
+            LEFT JOIN cst_vacancy_position AS vp
                 ON sp.id = vp.selection_process_id
             GROUP BY
               po.id
@@ -349,7 +356,7 @@ class CivilServiceTrackerPublicOffer(models.Model):
         self._cr.execute(query, (value,))
         matching_ids = [row[0] for row in self._cr.fetchall()]
 
-        return [('id', 'in', matching_ids)]
+        return [("id", "in", matching_ids)]
 
     # -------------------------------------------------------------------------
     # CONSTRAINTS
@@ -357,45 +364,45 @@ class CivilServiceTrackerPublicOffer(models.Model):
 
     _sql_constraints = [
         (
-            'unique_public_offer_name',
-            'UNIQUE(name)',
-            'The name of the public offer must be unique.'
+            "unique_public_offer_name",
+            "UNIQUE(name)",
+            "The name of the public offer must be unique.",
+        ),
+        # (
+        #     "check_name_min_length",
+        #     "CHECK(char_length(name) > 3)",
+        #     "The name must have more than 3 characters.",
+        # ),
+        (
+            "unique_public_offer_short_name",
+            "UNIQUE(short_name)",
+            "The short name of the public offer must be unique.",
+        ),
+        # (
+        #     "check_short_name_min_length",
+        #     "CHECK(char_length(name) > 3)",
+        #     "The short name must have more than 3 characters.",
+        # ),
+        (
+            "unique_public_offer_token",
+            "UNIQUE(token)",
+            "The token must be unique.",
         ),
         (
-            'check_name_min_length',
-            'CHECK(char_length(name) > 3)',
-            'The name must have more than 3 characters.'
-        ),
-        (
-            'unique_public_offer_short_name',
-            'UNIQUE(short_name)',
-            'The short name of the public offer must be unique.'
-        ),
-        (
-            'check_short_name_min_length',
-            'CHECK(char_length(name) > 3)',
-            'The short name must have more than 3 characters.'
-        ),
-        (
-            'unique_public_offer_token',
-            'UNIQUE(token)',
-            'The token must be unique.'
-        ),
-        (
-            'issuing_and_delegated_must_differ',
-            '''CHECK(
+            "issuing_and_delegated_must_differ",
+            """CHECK(
                 issuing_authority_id IS DISTINCT FROM delegated_authority_id
-            )''',
-            'The delegated authority must differ from the issuing authority.'
+            )""",
+            "The delegated authority must differ from the issuing authority.",
         ),
         (
-            'valid_year_list',
+            "valid_year_list",
             "CHECK (offer_year IS NULL OR offer_year ~ '^\\s*\\d{4}\\s*(,\\s*\\d{4}\\s*)*$')",
-            "Only four-digit years, separated by commas, are allowed."
-        )
+            "Only four-digit years, separated by commas, are allowed.",
+        ),
     ]
 
-    @api.constrains('bulletin_board_url')
+    @api.constrains("bulletin_board_url")
     def _check_bulletin_board_url(self):
         message_pattern = _("Invalid bulletin board URL: %s")
 
@@ -404,7 +411,7 @@ class CivilServiceTrackerPublicOffer(models.Model):
             if url and not is_a_valid_url(url):
                 raise ValidationError(message_pattern % url)
 
-    @api.constrains('official_journal_url')
+    @api.constrains("official_journal_url")
     def _check_official_journal_url(self):
         message_pattern = _("Invalid official journal URL: %s")
 
@@ -416,52 +423,37 @@ class CivilServiceTrackerPublicOffer(models.Model):
     # -------------------------------------------------------------------------
     # OVERWRITTEN METHODS
     # -------------------------------------------------------------------------
-    
-    def name_get(self):
-        config = self.env['ir.config_parameter'].sudo()
-        param_name = 'civil_service_tracker.display_process_short_name'
 
-        raw_value = config.get_param(param_name)
-        use_short = self._to_bool(raw_value)
+    @api.depends("short_name", "name")
+    @api.depends_context("lang")
+    def _compute_display_name(self):
+        config = self.env["ir.config_parameter"].sudo()
+        param_name = "civil_service_tracker.display_process_short_name"
 
-        result = []
+        raw_value = config.get_param(param_name, default="False")
+        use_short = str2bool(raw_value)
+
         for record in self:
             if use_short and record.short_name:
-                name = record.short_name
+                record.display_name = record.short_name
             else:
-                name = record.name
-            result.append((record.id, name))
-
-        return result
-
-    @api.model
-    def name_search(self, name='', args=None, operator='ilike', limit=100):
-        """
-        Overrides the default name_search to allow matching by both 'name'
-        and 'short_name' fields in global search.
-        """
-        args = args or []
-
-        domain = ['|',
-                  ('name', operator, name),
-                  ('short_name', operator, name)]
-
-        return self.search(domain + args, limit=limit).name_get()
+                record.display_name = record.name
 
     @api.model
     def fields_view_get(
-        self, view_id=None, view_type='form', toolbar=False, submenu=False
+        self, view_id=None, view_type="form", toolbar=False, submenu=False
     ):
-
         parent = super(CivilServiceTrackerPublicOffer, self)
 
         result = parent.fields_view_get(
-            view_id=view_id, view_type=view_type, 
-            toolbar=toolbar, submenu=submenu
+            view_id=view_id,
+            view_type=view_type,
+            toolbar=toolbar,
+            submenu=submenu,
         )
 
-        if view_type == 'search':
-            arch = etree.fromstring(result['arch'])
+        if view_type == "search":
+            arch = etree.fromstring(result["arch"])
             current_year = fields.Date.today().year
 
             placeholder = arch.xpath("//group[@string='__YEAR_FILTERS__']")
@@ -470,79 +462,79 @@ class CivilServiceTrackerPublicOffer(models.Model):
                 grp = placeholder[0]
 
                 for label, yr in [
-                    (_('Previous year'), current_year - 1),
-                    (_('Current year'),  current_year),
-                    (_('Next year'),     current_year + 1),
+                    (_("Previous year"), current_year - 1),
+                    (_("Current year"), current_year),
+                    (_("Next year"), current_year + 1),
                 ]:
-                    flt = etree.Element('filter', {
-                        'string': label,
-                        'name':   f'filter_offer_year_{yr}',
-                        'domain': f"[('offer_year','=',{yr})]"
-                    })
+                    flt = etree.Element(
+                        "filter",
+                        {
+                            "string": label,
+                            "name": f"filter_offer_year_{yr}",
+                            "domain": f"[('offer_year','=',{yr})]",
+                        },
+                    )
                     grp.append(flt)
 
-                grp.set('string', '')
+                grp.set("string", "")
 
-            result['arch'] = etree.tostring(arch, encoding='unicode')
+            result["arch"] = etree.tostring(arch, encoding="unicode")
 
         return result
 
-    @api.model
-    def create(self, values):
-        """ Overridden method 'create'
-        """
+    @api.model_create_multi
+    def create(self, values_list):
+        """Overridden method 'create'"""
 
-        self._normalize_years_string(values)
-        self._ensure_offer_name(values)
-    
+        for values in values_list:
+            self._normalize_years_string(values)
+            self._ensure_offer_name(values)
+
         parent = super(CivilServiceTrackerPublicOffer, self)
-        result = parent.create(values)
-    
+        result = parent.create(values_list)
+
         return result
 
     def write(self, values):
-        """ Overridden method 'write'
-        """
+        """Overridden method 'write'"""
 
         self._normalize_years_string(values)
-    
+
         parent = super(CivilServiceTrackerPublicOffer, self)
         result = parent.write(values)
-    
-        return result
-    
-    
 
-    @api.returns('self', lambda value: value.id)
+        return result
+
+    @api.returns("self", lambda value: value.id)
     def copy(self, default=None):
-        """ Prevents new record of the inherited (_inherits) model will be
+        """Prevents new record of the inherited (_inherits) model will be
         created
         """
 
         uuid = str(uuid4())[-12:]
         context = self.env.context
 
-        new_name = context.get('default_name', False)
+        new_name = context.get("default_name", False)
         if not new_name:
-            new_name = f'{self.name} - {uuid}'
-        
+            new_name = f"{self.name} - {uuid}"
+
         default = dict(default or {})
-        default.update({'name': new_name})
+        default.update({"name": new_name})
 
         parent = super(CivilServiceTrackerPublicOffer, self)
         result = parent.copy(default)
 
         for process in self.selection_process_ids:
             ctx = context.copy()
-            ctx.update({'default_name': f'{process.name} - {uuid}'})
-            process.with_context(ctx).copy({'public_offer_id': result.id})
+            ctx.update({"default_name": f"{process.name} - {uuid}"})
+            process.with_context(ctx).copy({"public_offer_id": result.id})
 
         return result
-    
+
     # -------------------------------------------------------------------------
     # AUXILIARY METHODS
     # -------------------------------------------------------------------------
-    
+
     @staticmethod
     def _to_bool(value):
         if isinstance(value, bool):
@@ -551,70 +543,72 @@ class CivilServiceTrackerPublicOffer(models.Model):
         if value is None:
             return False
 
-        return str(value).strip().lower() in ('1', 'true', 'yes', 'on')
+        return str(value).strip().lower() in ("1", "true", "yes", "on")
 
     @staticmethod
     def _normalize_years_string(values):
         """Clean and normalize a comma-separated list of years."""
-        raw_value = values.get('offer_year')
+        raw_value = values.get("offer_year")
         if not raw_value:
             return
 
-        year_list = raw_value.split(',')
+        year_list = raw_value.split(",")
         years = [year.strip() for year in year_list if year.strip()]
 
         if years:
-            values['offer_year'] = ','.join(years).strip()
+            values["offer_year"] = ",".join(years).strip()
 
     def _ensure_offer_name(self, values):
         values = values or {}
 
-        name = values.get('name', None)
+        name = values.get("name", None)
         if name:
             return
-    
-        admon_id = values.get('public_administration_id', None)
-        admon_obj = self.env['civil.service.tracker.public.administration']
+
+        admon_id = values.get("public_administration_id", None)
+        admon_obj = self.env["civil.service.tracker.public.administration"]
         admon = admon_obj.browse(admon_id)
         if not admon:
             return
-        
-        offer_year = values.get('offer_year', None)
+
+        offer_year = values.get("offer_year", None)
         if not offer_year:
             return
 
-        values['name'] = f'{admon.name}, {offer_year}'
+        values["name"] = f"{admon.name}, {offer_year}"
 
         if admon.short_name:
-            values['short_name'] = f'{admon.short_name}, {offer_year}'
+            values["short_name"] = f"{admon.short_name}, {offer_year}"
 
     # -------------------------------------------------------------------------
     # PUBLIC METHODS
     # -------------------------------------------------------------------------
-    
+
     def view_selection_process(self):
         self.ensure_one()
-    
-        action_xid = ('civil_service_tracker.'
-                      'action_civil_services_selection_process_act_window')
+
+        action_xid = (
+            "civil_service_tracker."
+            "action_civil_services_selection_process_act_window"
+        )
         act_wnd = self.env.ref(action_xid)
-    
+
         context = self.env.context.copy()
         context.update(safe_eval(act_wnd.context))
-        context.update({'default_public_offer_id': self.id})
-    
-        domain = [('public_offer_id', '=', self.id)]
-    
+        context.update({"default_public_offer_id": self.id})
+
+        domain = [("public_offer_id", "=", self.id)]
+
         serialized = {
-            'type': 'ir.actions.act_window',
-            'res_model': act_wnd.res_model,
-            'target': 'current',
-            'name': act_wnd.name,
-            'view_mode': act_wnd.view_mode,
-            'domain': domain,
-            'context': context,
-            'search_view_id': act_wnd.search_view_id.id,
-            'help': act_wnd.help
+            "type": "ir.actions.act_window",
+            "res_model": act_wnd.res_model,
+            "target": "current",
+            "name": act_wnd.name,
+            "view_mode": act_wnd.view_mode,
+            "domain": domain,
+            "context": context,
+            "search_view_id": act_wnd.search_view_id.id,
+            "help": act_wnd.help,
         }
-    
+
         return serialized

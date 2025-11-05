@@ -1,460 +1,468 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo noupdate="0">
 
-        <!-- Public Administration
+  <!-- Public Administration
              ·················································································· -->
 
-        <record id="ir_exports_civil_service_tracker_res_partner_basic" model="ir.exports">
-            <field name="name">Civil Sevice Export – Basic Fields</field>
-            <field name="resource">res.partner</field>
-        </record>
+  <record id="ir_exports_civil_service_tracker_res_partner_basic" model="ir.exports">
+    <field name="name">Civil Sevice Export – Basic Fields</field>
+    <field name="resource">res.partner</field>
+  </record>
 
-        <!-- Líneas de exportación asociadas -->
-        <record id="civil_service_tracker_res_partner_name" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_res_partner_basic"/>
-            <field name="name">name</field>
-        </record>
+  <!-- Líneas de exportación asociadas -->
+  <record id="civil_service_tracker_res_partner_name" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_res_partner_basic"/>
+    <field name="name">name</field>
+  </record>
 
-        <record id="civil_service_tracker_res_partner_vat" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_res_partner_basic"/>
-            <field name="name">vat</field>
-        </record>
+  <record id="civil_service_tracker_res_partner_vat" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_res_partner_basic"/>
+    <field name="name">vat</field>
+  </record>
 
-        <record id="civil_service_tracker_res_partner_email" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_res_partner_basic"/>
-            <field name="name">email</field>
-        </record>
+  <record id="civil_service_tracker_res_partner_email" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_res_partner_basic"/>
+    <field name="name">email</field>
+  </record>
 
-        <record id="civil_service_tracker_res_partner_phone" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_res_partner_basic"/>
-            <field name="name">phone</field>
-        </record>
+  <record id="civil_service_tracker_res_partner_phone" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_res_partner_basic"/>
+    <field name="name">phone</field>
+  </record>
 
-        <record id="civil_service_tracker_res_partner_mobile" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_res_partner_basic"/>
-            <field name="name">mobile</field>
-        </record>
+  <record id="civil_service_tracker_res_partner_mobile" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_res_partner_basic"/>
+    <field name="name">mobile</field>
+  </record>
 
-        <record id="civil_service_tracker_res_partner_website" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_res_partner_basic"/>
-            <field name="name">website</field>
-        </record>
+  <record id="civil_service_tracker_res_partner_website" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_res_partner_basic"/>
+    <field name="name">website</field>
+  </record>
 
-        <record id="civil_service_tracker_res_partner_active" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_res_partner_basic"/>
-            <field name="name">active</field>
-        </record>
+  <record id="civil_service_tracker_res_partner_active" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_res_partner_basic"/>
+    <field name="name">active</field>
+  </record>
 
-        <record id="civil_service_tracker_res_partner_is_company" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_res_partner_basic"/>
-            <field name="name">is_company</field>
-        </record>
+  <record id="civil_service_tracker_res_partner_is_company" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_res_partner_basic"/>
+    <field name="name">is_company</field>
+  </record>
 
-        <record id="civil_service_tracker_res_partner_company_type" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_res_partner_basic"/>
-            <field name="name">company_type</field>
-        </record>
+  <record id="civil_service_tracker_res_partner_company_type" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_res_partner_basic"/>
+    <field name="name">company_type</field>
+  </record>
 
-        <record id="civil_service_tracker_res_partner_type" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_res_partner_basic"/>
-            <field name="name">type</field>
-        </record>
+  <record id="civil_service_tracker_res_partner_type" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_res_partner_basic"/>
+    <field name="name">type</field>
+  </record>
 
-        <record id="civil_service_tracker_res_partner_employee" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_res_partner_basic"/>
-            <field name="name">employee</field>
-        </record>
+  <record id="civil_service_tracker_res_partner_employee" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_res_partner_basic"/>
+    <field name="name">employee</field>
+  </record>
 
-        <record id="civil_service_tracker_res_partner_street" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_res_partner_basic"/>
-            <field name="name">street</field>
-        </record>
+  <record id="civil_service_tracker_res_partner_street" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_res_partner_basic"/>
+    <field name="name">street</field>
+  </record>
 
-        <record id="civil_service_tracker_res_partner_zip" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_res_partner_basic"/>
-            <field name="name">zip</field>
-        </record>
+  <record id="civil_service_tracker_res_partner_zip" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_res_partner_basic"/>
+    <field name="name">zip</field>
+  </record>
 
-        <record id="civil_service_tracker_res_partner_city" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_res_partner_basic"/>
-            <field name="name">city</field>
-        </record>
+  <record id="civil_service_tracker_res_partner_city" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_res_partner_basic"/>
+    <field name="name">city</field>
+  </record>
 
-        <record id="civil_service_tracker_res_partner_state_id" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_res_partner_basic"/>
-            <field name="name">state_id/id</field>
-        </record>
+  <record id="civil_service_tracker_res_partner_state_id" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_res_partner_basic"/>
+    <field name="name">state_id/id</field>
+  </record>
 
-        <record id="civil_service_tracker_res_partner_country_id" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_res_partner_basic"/>
-            <field name="name">country_id/id</field>
-        </record>
+  <record id="civil_service_tracker_res_partner_country_id" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_res_partner_basic"/>
+    <field name="name">country_id/id</field>
+  </record>
 
-        <record id="civil_service_tracker_res_partner_category_id" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_res_partner_basic"/>
-            <field name="name">category_id/id</field>
-        </record>
+  <record id="civil_service_tracker_res_partner_category_id" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_res_partner_basic"/>
+    <field name="name">category_id/id</field>
+  </record>
 
-        <record id="civil_service_tracker_res_partner_tz" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_res_partner_basic"/>
-            <field name="name">tz</field>
-        </record>
+  <record id="civil_service_tracker_res_partner_tz" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_res_partner_basic"/>
+    <field name="name">tz</field>
+  </record>
 
 
-        <!-- Public Administration
+  <!-- Public Administration
              ·················································································· -->
 
-        <record id="ir_exports_civil_service_tracker_public_administration_basic" model="ir.exports">
-            <field name="name">Public Administration Export – Basic Fields</field>
-            <field name="resource">civil.service.tracker.public.administration</field>
-        </record>
+  <record id="ir_exports_civil_service_tracker_public_administration_basic" model="ir.exports">
+    <field name="name">Public Administration Export – Basic Fields</field>
+    <field name="resource">civil.service.tracker.public.administration</field>
+  </record>
 
-        <!-- Líneas de exportación asociadas -->
-        <record id="civil_service_tracker_public_administration_name" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_public_administration_basic"/>
-            <field name="name">name</field>
-        </record>
+  <!-- Líneas de exportación asociadas -->
+  <record id="civil_service_tracker_public_administration_name" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_public_administration_basic"/>
+    <field name="name">name</field>
+  </record>
 
-        <record id="civil_service_tracker_public_administration_vat" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_public_administration_basic"/>
-            <field name="name">vat</field>
-        </record>
+  <record id="civil_service_tracker_public_administration_vat" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_public_administration_basic"/>
+    <field name="name">vat</field>
+  </record>
 
-        <record id="civil_service_tracker_public_administration_email" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_public_administration_basic"/>
-            <field name="name">email</field>
-        </record>
+  <record id="civil_service_tracker_public_administration_email" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_public_administration_basic"/>
+    <field name="name">email</field>
+  </record>
 
-        <record id="civil_service_tracker_public_administration_phone" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_public_administration_basic"/>
-            <field name="name">phone</field>
-        </record>
+  <record id="civil_service_tracker_public_administration_phone" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_public_administration_basic"/>
+    <field name="name">phone</field>
+  </record>
 
-        <record id="civil_service_tracker_public_administration_mobile" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_public_administration_basic"/>
-            <field name="name">mobile</field>
-        </record>
+  <record id="civil_service_tracker_public_administration_mobile" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_public_administration_basic"/>
+    <field name="name">mobile</field>
+  </record>
 
-        <record id="civil_service_tracker_public_administration_website" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_public_administration_basic"/>
-            <field name="name">website</field>
-        </record>
+  <record id="civil_service_tracker_public_administration_website" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_public_administration_basic"/>
+    <field name="name">website</field>
+  </record>
 
-        <record id="civil_service_tracker_public_administration_active" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_public_administration_basic"/>
-            <field name="name">active</field>
-        </record>
+  <record id="civil_service_tracker_public_administration_active" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_public_administration_basic"/>
+    <field name="name">active</field>
+  </record>
 
-        <record id="civil_service_tracker_public_administration_is_company" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_public_administration_basic"/>
-            <field name="name">is_company</field>
-        </record>
+  <record id="civil_service_tracker_public_administration_is_company" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_public_administration_basic"/>
+    <field name="name">is_company</field>
+  </record>
 
-        <record id="civil_service_tracker_public_administration_company_type" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_public_administration_basic"/>
-            <field name="name">company_type</field>
-        </record>
+  <record id="civil_service_tracker_public_administration_company_type" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_public_administration_basic"/>
+    <field name="name">company_type</field>
+  </record>
 
-        <record id="civil_service_tracker_public_administration_type" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_public_administration_basic"/>
-            <field name="name">type</field>
-        </record>
+  <record id="civil_service_tracker_public_administration_type" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_public_administration_basic"/>
+    <field name="name">type</field>
+  </record>
 
-        <record id="civil_service_tracker_public_administration_employee" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_public_administration_basic"/>
-            <field name="name">employee</field>
-        </record>
+  <record id="civil_service_tracker_public_administration_employee" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_public_administration_basic"/>
+    <field name="name">employee</field>
+  </record>
 
-        <record id="civil_service_tracker_public_administration_street" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_public_administration_basic"/>
-            <field name="name">street</field>
-        </record>
+  <record id="civil_service_tracker_public_administration_street" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_public_administration_basic"/>
+    <field name="name">street</field>
+  </record>
 
-        <record id="civil_service_tracker_public_administration_zip" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_public_administration_basic"/>
-            <field name="name">zip</field>
-        </record>
+  <record id="civil_service_tracker_public_administration_zip" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_public_administration_basic"/>
+    <field name="name">zip</field>
+  </record>
 
-        <record id="civil_service_tracker_public_administration_city" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_public_administration_basic"/>
-            <field name="name">city</field>
-        </record>
+  <record id="civil_service_tracker_public_administration_city" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_public_administration_basic"/>
+    <field name="name">city</field>
+  </record>
 
-        <record id="civil_service_tracker_public_administration_state_id" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_public_administration_basic"/>
-            <field name="name">state_id/id</field>
-        </record>
+  <record id="civil_service_tracker_public_administration_state_id" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_public_administration_basic"/>
+    <field name="name">state_id/id</field>
+  </record>
 
-        <record id="civil_service_tracker_public_administration_country_id" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_public_administration_basic"/>
-            <field name="name">country_id/id</field>
-        </record>
+  <record id="civil_service_tracker_public_administration_country_id" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_public_administration_basic"/>
+    <field name="name">country_id/id</field>
+  </record>
 
-        <record id="civil_service_tracker_public_administration_category_id" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_public_administration_basic"/>
-            <field name="name">category_id/id</field>
-        </record>
+  <record id="civil_service_tracker_public_administration_category_id" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_public_administration_basic"/>
+    <field name="name">category_id/id</field>
+  </record>
 
-        <record id="civil_service_tracker_public_administration_tz" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_public_administration_basic"/>
-            <field name="name">tz</field>
-        </record>
+  <record id="civil_service_tracker_public_administration_tz" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_public_administration_basic"/>
+    <field name="name">tz</field>
+  </record>
 
-        <record id="civil_service_tracker_public_administration_administration_type_id" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_public_administration_basic"/>
-            <field name="name">administration_type_id/id</field>
-        </record>
+  <record id="civil_service_tracker_public_administration_administration_type_id"
+    model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_public_administration_basic"/>
+    <field name="name">administration_type_id/id</field>
+  </record>
 
-        <record id="civil_service_tracker_public_administration_description" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_public_administration_basic"/>
-            <field name="name">description</field>
-        </record>
+  <record id="civil_service_tracker_public_administration_description" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_public_administration_basic"/>
+    <field name="name">description</field>
+  </record>
 
 
-        <!-- Public Administration / From partner
+  <!-- Public Administration / From partner
              ·················································································· -->
 
-        <record id="ir_exports_civil_service_tracker_public_administration_from_partner" model="ir.exports">
-            <field name="name">Public Administration Export – From Partner</field>
-            <field name="resource">civil.service.tracker.public.administration</field>
-        </record>
+  <record id="ir_exports_civil_service_tracker_public_administration_from_partner"
+    model="ir.exports">
+    <field name="name">Public Administration Export – From Partner</field>
+    <field name="resource">civil.service.tracker.public.administration</field>
+  </record>
 
-        <record id="civil_service_tracker_public_administration_from_partner_partner_id" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_public_administration_from_partner"/>
-            <field name="name">partner_id/id</field>
-        </record>
+  <record id="civil_service_tracker_public_administration_from_partner_partner_id"
+    model="ir.exports.line">
+    <field name="export_id"
+      ref="ir_exports_civil_service_tracker_public_administration_from_partner"/>
+    <field name="name">partner_id/id</field>
+  </record>
 
-        <record id="civil_service_tracker_public_administration_from_partner_administration_type_id" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_public_administration_from_partner"/>
-            <field name="name">administration_type_id/id</field>
-        </record>
+  <record id="civil_service_tracker_public_administration_from_partner_administration_type_id"
+    model="ir.exports.line">
+    <field name="export_id"
+      ref="ir_exports_civil_service_tracker_public_administration_from_partner"/>
+    <field name="name">administration_type_id/id</field>
+  </record>
 
-        <record id="civil_service_tracker_public_administration_from_partner_description" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_public_administration_from_partner"/>
-            <field name="name">description</field>
-        </record>
+  <record id="civil_service_tracker_public_administration_from_partner_description"
+    model="ir.exports.line">
+    <field name="export_id"
+      ref="ir_exports_civil_service_tracker_public_administration_from_partner"/>
+    <field name="name">description</field>
+  </record>
 
-        <!-- Issuing Authority
+  <!-- Issuing Authority
              ·················································································· -->
 
-        <record id="ir_exports_civil_service_tracker_issuing_authority_basic" model="ir.exports">
-            <field name="name">Issuing Authority Export – Basic Fields</field>
-            <field name="resource">civil.service.tracker.issuing.authority</field>
-        </record>
+  <record id="ir_exports_civil_service_tracker_issuing_authority_basic" model="ir.exports">
+    <field name="name">Issuing Authority Export – Basic Fields</field>
+    <field name="resource">civil.service.tracker.issuing.authority</field>
+  </record>
 
-        <!-- Líneas de exportación asociadas -->
-        <record id="civil_service_tracker_issuing_authority_name" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_issuing_authority_basic"/>
-            <field name="name">name</field>
-        </record>
+  <!-- Líneas de exportación asociadas -->
+  <record id="civil_service_tracker_issuing_authority_name" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_issuing_authority_basic"/>
+    <field name="name">name</field>
+  </record>
 
-        <record id="civil_service_tracker_issuing_authority_vat" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_issuing_authority_basic"/>
-            <field name="name">vat</field>
-        </record>
+  <record id="civil_service_tracker_issuing_authority_vat" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_issuing_authority_basic"/>
+    <field name="name">vat</field>
+  </record>
 
-        <record id="civil_service_tracker_issuing_authority_email" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_issuing_authority_basic"/>
-            <field name="name">email</field>
-        </record>
+  <record id="civil_service_tracker_issuing_authority_email" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_issuing_authority_basic"/>
+    <field name="name">email</field>
+  </record>
 
-        <record id="civil_service_tracker_issuing_authority_phone" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_issuing_authority_basic"/>
-            <field name="name">phone</field>
-        </record>
+  <record id="civil_service_tracker_issuing_authority_phone" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_issuing_authority_basic"/>
+    <field name="name">phone</field>
+  </record>
 
-        <record id="civil_service_tracker_issuing_authority_mobile" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_issuing_authority_basic"/>
-            <field name="name">mobile</field>
-        </record>
+  <record id="civil_service_tracker_issuing_authority_mobile" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_issuing_authority_basic"/>
+    <field name="name">mobile</field>
+  </record>
 
-        <record id="civil_service_tracker_issuing_authority_website" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_issuing_authority_basic"/>
-            <field name="name">website</field>
-        </record>
+  <record id="civil_service_tracker_issuing_authority_website" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_issuing_authority_basic"/>
+    <field name="name">website</field>
+  </record>
 
-        <record id="civil_service_tracker_issuing_authority_active" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_issuing_authority_basic"/>
-            <field name="name">active</field>
-        </record>
+  <record id="civil_service_tracker_issuing_authority_active" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_issuing_authority_basic"/>
+    <field name="name">active</field>
+  </record>
 
-        <record id="civil_service_tracker_issuing_authority_is_company" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_issuing_authority_basic"/>
-            <field name="name">is_company</field>
-        </record>
+  <record id="civil_service_tracker_issuing_authority_is_company" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_issuing_authority_basic"/>
+    <field name="name">is_company</field>
+  </record>
 
-        <record id="civil_service_tracker_issuing_authority_company_type" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_issuing_authority_basic"/>
-            <field name="name">company_type</field>
-        </record>
+  <record id="civil_service_tracker_issuing_authority_company_type" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_issuing_authority_basic"/>
+    <field name="name">company_type</field>
+  </record>
 
-        <record id="civil_service_tracker_issuing_authority_type" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_issuing_authority_basic"/>
-            <field name="name">type</field>
-        </record>
+  <record id="civil_service_tracker_issuing_authority_type" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_issuing_authority_basic"/>
+    <field name="name">type</field>
+  </record>
 
-        <record id="civil_service_tracker_issuing_authority_employee" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_issuing_authority_basic"/>
-            <field name="name">employee</field>
-        </record>
+  <record id="civil_service_tracker_issuing_authority_employee" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_issuing_authority_basic"/>
+    <field name="name">employee</field>
+  </record>
 
-        <record id="civil_service_tracker_issuing_authority_street" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_issuing_authority_basic"/>
-            <field name="name">street</field>
-        </record>
+  <record id="civil_service_tracker_issuing_authority_street" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_issuing_authority_basic"/>
+    <field name="name">street</field>
+  </record>
 
-        <record id="civil_service_tracker_issuing_authority_zip" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_issuing_authority_basic"/>
-            <field name="name">zip</field>
-        </record>
+  <record id="civil_service_tracker_issuing_authority_zip" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_issuing_authority_basic"/>
+    <field name="name">zip</field>
+  </record>
 
-        <record id="civil_service_tracker_issuing_authority_city" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_issuing_authority_basic"/>
-            <field name="name">city</field>
-        </record>
+  <record id="civil_service_tracker_issuing_authority_city" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_issuing_authority_basic"/>
+    <field name="name">city</field>
+  </record>
 
-        <record id="civil_service_tracker_issuing_authority_state_id" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_issuing_authority_basic"/>
-            <field name="name">state_id/id</field>
-        </record>
+  <record id="civil_service_tracker_issuing_authority_state_id" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_issuing_authority_basic"/>
+    <field name="name">state_id/id</field>
+  </record>
 
-        <record id="civil_service_tracker_issuing_authority_country_id" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_issuing_authority_basic"/>
-            <field name="name">country_id/id</field>
-        </record>
+  <record id="civil_service_tracker_issuing_authority_country_id" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_issuing_authority_basic"/>
+    <field name="name">country_id/id</field>
+  </record>
 
-        <record id="civil_service_tracker_issuing_authority_category_id" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_issuing_authority_basic"/>
-            <field name="name">category_id/id</field>
-        </record>
+  <record id="civil_service_tracker_issuing_authority_category_id" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_issuing_authority_basic"/>
+    <field name="name">category_id/id</field>
+  </record>
 
-        <record id="civil_service_tracker_issuing_authority_tz" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_issuing_authority_basic"/>
-            <field name="name">tz</field>
-        </record>
+  <record id="civil_service_tracker_issuing_authority_tz" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_issuing_authority_basic"/>
+    <field name="name">tz</field>
+  </record>
 
-        <record id="civil_service_tracker_issuing_authority_description" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_issuing_authority_basic"/>
-            <field name="name">description</field>
-        </record>
+  <record id="civil_service_tracker_issuing_authority_description" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_issuing_authority_basic"/>
+    <field name="name">description</field>
+  </record>
 
 
-        <!-- Public Administration / From partner
+  <!-- Public Administration / From partner
              ·················································································· -->
 
-        <record id="ir_exports_civil_service_tracker_issuing_authority_from_partner" model="ir.exports">
-            <field name="name">Issuing Authority Export – From Partner</field>
-            <field name="resource">civil.service.tracker.issuing.authority</field>
-        </record>
+  <record id="ir_exports_civil_service_tracker_issuing_authority_from_partner" model="ir.exports">
+    <field name="name">Issuing Authority Export – From Partner</field>
+    <field name="resource">civil.service.tracker.issuing.authority</field>
+  </record>
 
-        <record id="civil_service_tracker_issuing_authority_from_partner_partner_id" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_issuing_authority_from_partner"/>
-            <field name="name">partner_id/id</field>
-        </record>
+  <record id="civil_service_tracker_issuing_authority_from_partner_partner_id"
+    model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_issuing_authority_from_partner"/>
+    <field name="name">partner_id/id</field>
+  </record>
 
-        <record id="civil_service_tracker_issuing_authority_from_partner_description" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_issuing_authority_from_partner"/>
-            <field name="name">description</field>
-        </record>
+  <record id="civil_service_tracker_issuing_authority_from_partner_description"
+    model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_issuing_authority_from_partner"/>
+    <field name="name">description</field>
+  </record>
 
-        <!-- Selection process
+  <!-- Selection process
              ·················································································· -->
 
-        <record id="ir_exports_civil_service_tracker_selection_process_basic" model="ir.exports">
-            <field name="name">Civil Sevice Export – Basic Fields</field>
-            <field name="resource">civil.service.tracker.selection.process</field>
-        </record>
+  <record id="ir_exports_civil_service_tracker_selection_process_basic" model="ir.exports">
+    <field name="name">Civil Sevice Export – Basic Fields</field>
+    <field name="resource">civil.service.tracker.selection.process</field>
+  </record>
 
-        <!-- Líneas de exportación asociadas -->
-        <record id="civil_service_tracker_selection_process_name" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_selection_process_basic"/>
-            <field name="name">name</field>
-        </record>
+  <!-- Líneas de exportación asociadas -->
+  <record id="civil_service_tracker_selection_process_name" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_selection_process_basic"/>
+    <field name="name">name</field>
+  </record>
 
-        <record id="civil_service_tracker_selection_process_public_offer_id" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_selection_process_basic"/>
-            <field name="name">public_offer_id</field>
-        </record>
+  <record id="civil_service_tracker_selection_process_public_offer_id" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_selection_process_basic"/>
+    <field name="name">public_offer_id</field>
+  </record>
 
-        <record id="civil_service_tracker_selection_process_employment_group_id" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_selection_process_basic"/>
-            <field name="name">employment_group_id</field>
-        </record>
+  <record id="civil_service_tracker_selection_process_employment_group_id" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_selection_process_basic"/>
+    <field name="name">employment_group_id</field>
+  </record>
 
-        <record id="civil_service_tracker_selection_process_service_position_id" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_selection_process_basic"/>
-            <field name="name">service_position_id</field>
-        </record>
+  <record id="civil_service_tracker_selection_process_service_position_id" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_selection_process_basic"/>
+    <field name="name">service_position_id</field>
+  </record>
 
-        <record id="civil_service_tracker_selection_process_contract_type_id" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_selection_process_basic"/>
-            <field name="name">contract_type_id</field>
-        </record>
+  <record id="civil_service_tracker_selection_process_contract_type_id" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_selection_process_basic"/>
+    <field name="name">contract_type_id</field>
+  </record>
 
-        <record id="civil_service_tracker_selection_process_access_type_id" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_selection_process_basic"/>
-            <field name="name">access_type_id</field>
-        </record>
-     <!-- Selection process
+  <record id="civil_service_tracker_selection_process_access_type_id" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_selection_process_basic"/>
+    <field name="name">access_type_id</field>
+  </record>
+  <!-- Selection process
              ·················································································· -->
 
-        <record id="ir_exports_civil_service_tracker_process_event_basic" model="ir.exports">
-            <field name="name">Civil Sevice Export – Basic Fields (URLs only)</field>
-            <field name="resource">civil.service.tracker.process.event</field>
-        </record>
+  <record id="ir_exports_civil_service_tracker_process_event_basic" model="ir.exports">
+    <field name="name">Civil Sevice Export – Basic Fields (URLs only)</field>
+    <field name="resource">civil.service.tracker.process.event</field>
+  </record>
 
-        <!-- Líneas de exportación asociadas -->
-        <record id="civil_service_tracker_process_event_name" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_process_event_basic"/>
-            <field name="name">name</field>
-        </record>
+  <!-- Líneas de exportación asociadas -->
+  <record id="civil_service_tracker_process_event_name" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_process_event_basic"/>
+    <field name="name">name</field>
+  </record>
 
-        <record id="civil_service_tracker_process_event_selection_process_id" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_process_event_basic"/>
-            <field name="name">selection_process_id</field>
-        </record>
+  <record id="civil_service_tracker_process_event_selection_process_id" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_process_event_basic"/>
+    <field name="name">selection_process_id</field>
+  </record>
 
-        <record id="civil_service_tracker_process_event_event_type_id" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_process_event_basic"/>
-            <field name="name">event_type_id</field>
-        </record>
+  <record id="civil_service_tracker_process_event_event_type_id" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_process_event_basic"/>
+    <field name="name">event_type_id</field>
+  </record>
 
-        <record id="civil_service_tracker_process_event_event_date" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_process_event_basic"/>
-            <field name="name">event_date</field>
-        </record>
+  <record id="civil_service_tracker_process_event_event_date" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_process_event_basic"/>
+    <field name="name">event_date</field>
+  </record>
 
-        <record id="civil_service_tracker_process_event_all_day" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_process_event_basic"/>
-            <field name="name">all_day</field>
-        </record>
+  <record id="civil_service_tracker_process_event_all_day" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_process_event_basic"/>
+    <field name="name">all_day</field>
+  </record>
 
-        <record id="civil_service_tracker_process_event_issuer_partner_id" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_process_event_basic"/>
-            <field name="name">issuer_partner_id</field>
-        </record>
+  <record id="civil_service_tracker_process_event_issuer_partner_id" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_process_event_basic"/>
+    <field name="name">issuer_partner_id</field>
+  </record>
 
-        <record id="civil_service_tracker_process_event_description" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_process_event_basic"/>
-            <field name="name">description</field>
-        </record>
+  <record id="civil_service_tracker_process_event_description" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_process_event_basic"/>
+    <field name="name">description</field>
+  </record>
 
-        <record id="civil_service_tracker_process_event_attachment_id_name" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_process_event_basic"/>
-            <field name="name">attachment_id/name</field>
-        </record>
+  <record id="civil_service_tracker_process_event_attachment_id_name" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_process_event_basic"/>
+    <field name="name">attachment_id/name</field>
+  </record>
 
-        <record id="civil_service_tracker_process_event_attachment_id_type" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_process_event_basic"/>
-            <field name="name">attachment_id/type</field>
-        </record>
+  <record id="civil_service_tracker_process_event_attachment_id_type" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_process_event_basic"/>
+    <field name="name">attachment_id/type</field>
+  </record>
 
-        <record id="civil_service_tracker_process_event_attachment_id_url" model="ir.exports.line">
-            <field name="export_id" ref="ir_exports_civil_service_tracker_process_event_basic"/>
-            <field name="name">attachment_id/url</field>
-        </record>
+  <record id="civil_service_tracker_process_event_attachment_id_url" model="ir.exports.line">
+    <field name="export_id" ref="ir_exports_civil_service_tracker_process_event_basic"/>
+    <field name="name">attachment_id/url</field>
+  </record>
 
-    </data>
-</openerp>
+</odoo>

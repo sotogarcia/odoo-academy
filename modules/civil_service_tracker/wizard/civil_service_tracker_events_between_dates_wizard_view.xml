@@ -1,105 +1,102 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo noupdate="0">
 
-        <record id="view_civil_service_tracker_events_between_dates_wizard_wizard" model="ir.ui.view">
-            <field name="name">Notify events between dates</field>
-            <field name="model">civil.service.tracker.events.between.dates.wizard</field>
-            <field name="type">form</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="16" />
-            <field name="active" eval="True" />
-            <field name="arch" type="xml">
-                <form string="Notify events between dates" create="1" delete="1" edit="1">
-                    <field name="can_choose_sender" invisible="1" />
-                    <header>
-                        <field name="state" widget="statusbar" clickable="1" />
+  <record id="view_civil_service_tracker_events_between_dates_wizard_wizard" model="ir.ui.view">
+    <field name="name">Notify events between dates</field>
+    <field name="model">civil.service.tracker.events.between.dates.wizard</field>
+    <field name="type">form</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16"/>
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <form string="Notify events between dates" create="1" delete="1" edit="1">
+        <field name="can_choose_sender" invisible="1"/>
+        <header>
+          <field name="state" widget="statusbar" clickable="1"/>
 
-                        <button name="perform_action"
-                                class="btn btn-primary"
-                                string="Notify"
-                                type="object"
-                                default_focus="0"
-                                icon="fa-play"
-                                help="Notify events between dates"
-                                states="step3" />
-                    </header>
-        
-                    <group col="4" states="step1">
-                        <field name="date_type" class="oe_field_date_type" />
-                        <field name="tz_name" class="oe_field_tz_name" />
-                        
-                        <field name="date_start" class="oe_field_date_start" />
-                        <field name="date_stop" class="oe_field_date_stop" />
+          <button name="perform_action" class="btn btn-primary" string="Notify" type="object"
+            default_focus="0" icon="fa-play" help="Notify events between dates"
+            invisible="state != 'step3'"/>
+        </header>
 
-                        <separator colspan="4" />
+        <group col="4" invisible="state != 'step1'">
+          <field name="date_type" class="oe_field_date_type"/>
+          <field name="tz_name" class="oe_field_tz_name"/>
 
-                        <field name="sender_type" class="oe_field_sender_type" force_save="1"
-                            attrs="{'readonly': [('can_choose_sender', '=', False)]}" />
-                        <field name="company_id" class="oe_field_company_id" force_save="1"
-                            options="{'no_quick_create': True, 'no_create': True, 'no_open': False}" />
-                        
-                        <field name="sender_id" class="oe_field_sender_id" force_save="1"
-                            options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"
-                            attrs="{'readonly': [('can_choose_sender', '=', False)]}" />
-                        <field name="sender_email" class="oe_field_sender_email" force_save="1"
-                            attrs="{'readonly': ['|', ('sender_type', '&lt;&gt;', 'sender_email'), ('can_choose_sender', '=', False)]}" />
+          <field name="date_start" class="oe_field_date_start"/>
+          <field name="date_stop" class="oe_field_date_stop"/>
 
-                        <field name="reply_to" class="oe_field_reply_to"
-                            groups="civil_service_tracker.group_civil_service_tracker_technician"/>
-                        <field name="reply_to_email" class="oe_field_reply_to_email"
-                            attrs="{'readonly': [('reply_to', '=', False)], 'required': [('reply_to', '&lt;&gt;', False)]}"
-                            groups="civil_service_tracker.group_civil_service_tracker_technician"/>
+          <separator colspan="4"/>
 
-                        <separator colspan="4" />
-                        <field name="partner_category_ids" class="oe_field_partner_category_ids" 
-                            colspan="4" widget="many2many_tags" string="Recipients"
-                            options="{'no_quick_create': True, 'no_create': True, 'no_open': False}" />
+          <field name="sender_type" class="oe_field_sender_type" force_save="1"
+            readonly="can_choose_sender == False"/>
+          <field name="company_id" class="oe_field_company_id" force_save="1"
+            options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
 
-                    </group>
+          <field name="sender_id" class="oe_field_sender_id" force_save="1"
+            domain="[('company_ids', '=', company_id)]"
+            options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"
+            readonly="can_choose_sender == False"/>
+          <field name="sender_email" class="oe_field_sender_email" force_save="1"
+            readonly="['|', ('sender_type', '&lt;&gt;', 'sender_email'), ('can_choose_sender', '=', False)]"/>
 
-                    <group col="2" string="Events" class="w-100 mt-0" states="step2">
-                        <field name="process_event_ids" class="oe_field_process_event_ids w-100" colspan="2" nolabel="1" 
-                            options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"
-                            context="{
-                                'tree_view_ref': 'civil_service_tracker.view_civil_service_tracker_process_event_tree_on_process',
+          <field name="reply_to" class="oe_field_reply_to"
+            groups="civil_service_tracker.group_civil_service_tracker_technician"/>
+          <field name="reply_to_email" class="oe_field_reply_to_email"
+            readonly="reply_to==False" required="reply_to!=False"
+            groups="civil_service_tracker.group_civil_service_tracker_technician"/>
+
+          <separator colspan="4"/>
+          <field name="partner_category_ids" class="oe_field_partner_category_ids" colspan="4"
+            widget="many2many_tags" string="Recipients"
+            options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
+
+        </group>
+
+        <group col="2" string="Events" class="w-100 mt-0" invisible="state != 'step2'">
+          <field name="process_event_ids" class="oe_field_process_event_ids w-100" colspan="2"
+            nolabel="1" options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"
+            context="{
+                                'list_view_ref': 'civil_service_tracker.view_civil_service_tracker_process_event_tree_on_process',
                                 'form_view_ref': 'civil_service_tracker.view_civil_service_tracker_process_event_form_on_process'
-                            }" />
-                    </group>
+                            }"/>
+        </group>
 
-                    <group col="2" class="w-100" states="step3">
-                        <field name="subject" class="oe_field_subject" />
-                    </group>
-                    <group col="2" string="Recipients" class="w-100" states="step3">
-                        <field name="recipient_ids" class="oe_field_recipient_ids w-100" colspan="2" nolabel="1" 
-                            options="{'no_quick_create': True, 'no_create': True, 'no_open': False}" />
-                    </group>
+        <group col="2" class="w-100" invisible="state != 'step3'">
+          <field name="subject" class="oe_field_subject"/>
+        </group>
+        <group col="2" string="Recipients" class="w-100" invisible="state != 'step3'">
+          <field name="recipient_ids" class="oe_field_recipient_ids w-100" colspan="2" nolabel="1"
+            options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
+        </group>
 
-                    <footer />
-        
-                </form>
-            </field>
-        </record>
-        
-        <record id="action_civil_service_tracker_events_between_dates_wizard_wizard_act_window" model="ir.actions.act_window">
-            <field name="type">ir.actions.act_window</field>
-            <field name="name">Notify events between dates</field>
-            <field name="res_model">civil.service.tracker.events.between.dates.wizard</field>
-            <field name="view_mode">form</field>
-            <field name="target">new</field>
-            <field name="domain">[]</field>
-            <field name="context">{}</field>
-        </record>
-        
-        <!-- Main menu for model.name -->
-        <record id="menu_civil_service_tracker_events_between_dates_wizard_wizard" model="ir.ui.menu" >
-            <field name="name">Notify events</field>
-            <field name="sequence" eval="20" />
-            <field name="action" ref="action_civil_service_tracker_events_between_dates_wizard_wizard_act_window" />
-            <field name="parent_id" ref="civil_service_tracker.menu_civil_service_tracker_tools" />
-            <field name="groups_id" eval="[(4, ref('civil_service_tracker.group_civil_service_tracker_operator'))]"/>
-        </record>
+        <footer/>
 
-    </data>
-</openerp>
+      </form>
+    </field>
+  </record>
+
+  <record id="action_civil_service_tracker_events_between_dates_wizard_wizard_act_window"
+    model="ir.actions.act_window">
+    <field name="type">ir.actions.act_window</field>
+    <field name="name">Notify events between dates</field>
+    <field name="res_model">civil.service.tracker.events.between.dates.wizard</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+    <field name="domain">[]</field>
+    <field name="context">{}</field>
+  </record>
+
+  <!-- Main menu for model.name -->
+  <record id="menu_civil_service_tracker_events_between_dates_wizard_wizard" model="ir.ui.menu">
+    <field name="name">Notify events</field>
+    <field name="sequence" eval="20"/>
+    <field name="action"
+      ref="action_civil_service_tracker_events_between_dates_wizard_wizard_act_window"/>
+    <field name="parent_id" ref="civil_service_tracker.menu_civil_service_tracker_tools"/>
+    <field name="groups_id"
+      eval="[(4, ref('civil_service_tracker.group_civil_service_tracker_operator'))]"/>
+  </record>
+
+</odoo>

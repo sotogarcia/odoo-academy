@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo noupdate="0">
 
-        <record id="civil_service_tracker_access_type_free_access" model="civil.service.tracker.access.type">
-            <field name="name">Free access</field>
-            <field name="description">Open to any eligible citizen</field>
-        </record>
+  <record id="civil_service_tracker_access_type_free_access"
+    model="civil.service.tracker.access.type">
+    <field name="name">Free access</field>
+    <field name="description">Open to any eligible citizen</field>
+  </record>
 
-        <record id="civil_service_tracker_access_type_internal_promotion" model="civil.service.tracker.access.type">
-            <field name="name">Internal promotion</field>
-            <field name="description">Reserved for current public employees</field>
-        </record>
+  <record id="civil_service_tracker_access_type_internal_promotion"
+    model="civil.service.tracker.access.type">
+    <field name="name">Internal promotion</field>
+    <field name="description">Reserved for current public employees</field>
+  </record>
 
-    </data>
-</openerp>
+</odoo>

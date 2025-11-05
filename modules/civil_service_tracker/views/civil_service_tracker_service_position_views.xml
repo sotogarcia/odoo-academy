@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo noupdate="0">
 
-        <!-- VIEWS: "Civil services Service Position"
-        
+  <!-- VIEWS: "Civil services Service Position"
+
             - Model·········: civil.service.tracker.service.position
             - _rec_name·····: name
             - Domain········: []
@@ -13,169 +12,164 @@
             - View priority·: 16    Sequence····: 10
             - Action help···: No service position have been defined yet.
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-        
-        <!-- Tree view for "civil.service.tracker.service.position" -->
-        <record id="view_civil_service_tracker_service_position_tree" model="ir.ui.view">
-            <field name="name">view.civil.service.tracker.service.position.tree</field>
-            <field name="model">civil.service.tracker.service.position</field>
-            <field name="type">tree</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="16" />
-            <field name="active" eval="True" />
-            <field name="arch" type="xml">
-                <tree string="civil_service_tracker_service_position_tree" create="1" delete="1" edit="1">
-                    <field name="id" invisible="1"/>
-                    <field name="active" invisible="1"/>
 
-                    <field name="position_label" class="oe_field_position_label" string="Label" />
-                    <field name="name" class="oe_field_name" />
-                    <field name="short_name" class="oe_field_short_name" optional="hide" />
-                    <field name="employment_group_id" class="oe_field_employment_group_id" />
-                    <field name="public_administration_id" class="oe_field_public_administration_id" />
-                    <field name="description" class="oe_field_description" optional="hide" />
+  <!-- List view for "civil.service.tracker.service.position" -->
+  <record id="view_civil_service_tracker_service_position_tree" model="ir.ui.view">
+    <field name="name">view.civil.service.tracker.service.position.tree</field>
+    <field name="model">civil.service.tracker.service.position</field>
+    <field name="type">list</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16"/>
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <list string="civil_service_tracker_service_position_tree" create="1" delete="1" edit="1">
+        <field name="id" column_invisible="1"/>
+        <field name="active" column_invisible="1"/>
+        <field name="available_employment_group_ids" column_invisible="1"/>
 
-                </tree>
-            </field>
-        </record>
-        
-        <!-- Form view for "civil.service.tracker.service.position" -->
-        <record id="view_civil_service_tracker_service_position_form" model="ir.ui.view">
-            <field name="name">view.civil.service.tracker.service.position.form</field>
-            <field name="model">civil.service.tracker.service.position</field>
-            <field name="type">form</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="16" />
-            <field name="active" eval="True" />
-            <field name="arch" type="xml">
-                <form string="civil_service_tracker_service_position_form" create="1" delete="1" edit="1">
-                    <sheet>
-                        <field name="id" invisible="1"/>
-                        <field name="active" invisible="1"/>
-                        
-                        <div class="oe_button_box" name="button_box" />
-                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+        <field name="position_label" class="oe_field_position_label" string="Label"/>
+        <field name="name" class="oe_field_name"/>
+        <field name="short_name" class="oe_field_short_name" optional="hide"/>
+        <field name="employment_group_id" class="oe_field_employment_group_id"
+          domain="[('id', 'in', available_employment_group_ids)]"/>
+        <field name="public_administration_id" class="oe_field_public_administration_id"/>
+        <field name="description" class="oe_field_description" optional="hide"/>
 
-                        <div class="oe_title">
-                            <label for="name" class="oe_edit_only" />
-                            <h1>
-                                <field name="name" class="oe_field_name" />
-                            </h1>
-                        </div>
+      </list>
+    </field>
+  </record>
 
-                        <group col="4" class="mt-4">
-                            <field name="public_administration_id" class="oe_field_public_administration_id"
-                                options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"
-                                readonly="context.get('default_public_administration_id', False)" force_save="1" />
-                            <separator colspan="2" />
+  <!-- Form view for "civil.service.tracker.service.position" -->
+  <record id="view_civil_service_tracker_service_position_form" model="ir.ui.view">
+    <field name="name">view.civil.service.tracker.service.position.form</field>
+    <field name="model">civil.service.tracker.service.position</field>
+    <field name="type">form</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16"/>
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <form string="civil_service_tracker_service_position_form" create="1" delete="1" edit="1">
+        <sheet>
+          <field name="id" invisible="1"/>
+          <field name="active" invisible="1"/>
 
-                            <field name="employment_group_id" class="oe_field_employment_group_id"
-                                options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"
-                                attrs="{'readonly': [('public_administration_id', '=', False)]}" />
-                            <field name="position_label" class="oe_field_position_label" />
+          <div class="oe_button_box" name="button_box"/>
+          <widget name="web_ribbon" title="Archived" bg_color="bg-danger" invisible="active == True"/>
 
-                            <field name="contract_type_id" class="oe_field_contract_type_id"
-                                options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"/>
-                            <field name="short_name" class="oe_field_short_name" />
-                            <separator colspan="4" />
-                            <field name="description" class="oe_field_description" colspan="4" />
-                        </group>
+          <div class="oe_title">
+            <label for="name" class="oe_edit_only"/>
+            <h1>
+              <field name="name" class="oe_field_name"/>
+            </h1>
+          </div>
 
-                    </sheet>
-                </form>
-            </field>
-        </record>
-        
-        <!-- Search view for "civil.service.tracker.service.position" -->
-        <record id="view_civil_service_tracker_service_position_search" model="ir.ui.view">
-            <field name="name">view.civil.service.tracker.service.position.search</field>
-            <field name="model">civil.service.tracker.service.position</field>
-            <field name="type">search</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="16" />
-            <field name="active" eval="True" />
-            <field name="arch" type="xml">
-                <search string="civil_service_tracker_service_position_search">
-                    <field name="name" />
-                    <field name="employment_group_id" />
-                    <field name="public_administration_id" />
-                    <field name="position_label" />
+          <group col="4" class="mt-4">
+            <field name="public_administration_id" class="oe_field_public_administration_id"
+              options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"
+              readonly="context.get('default_public_administration_id', False)" force_save="1"/>
+            <separator colspan="2"/>
 
-                    <separator />
-                    <filter string="Group by employment group"
-                            name="group_by_employment_group_id"
-                            domain="[]"
-                            context="{'group_by': 'employment_group_id'}"
-                            help="Groups selection processes by assigned employment group." />
+            <field name="employment_group_id" class="oe_field_employment_group_id"
+              domain="[('id', 'in', available_employment_group_ids)]"
+              options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"
+              readonly="public_administration_id == False"/>
+            <field name="position_label" class="oe_field_position_label"/>
 
-                    <filter string="Group by public administration"
-                            name="group_by_public_administration_id"
-                            domain="[]"
-                            context="{'group_by': 'public_administration_id'}"
-                            help="Groups selection processes by assigned employment group." />
+            <field name="contract_type_id" class="oe_field_contract_type_id"
+              options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"/>
+            <field name="short_name" class="oe_field_short_name"/>
+            <separator colspan="4"/>
+            <field name="description" class="oe_field_description" colspan="4"/>
+          </group>
 
-                    <separator />
-                    <filter name="inactive" string="Archived" 
-                        domain="[('active','=',False)]"
-                        help="Filter to show records marked as inactive."/>
-                </search>
-            </field>
-        </record>
-        
-        <!-- Main window action for model.name -->
-        <record id="action_civil_services_service_position_act_window" model="ir.actions.act_window">
-            <field name="type">ir.actions.act_window</field>
-            <field name="name">Service position</field>
-            <field name="res_model">civil.service.tracker.service.position</field>
-            <field name="view_mode">tree,form</field>
-            <field name="target">current</field>
-            <field name="domain">[]</field>
-            <field name="context">{}</field>
-            <field name="search_view_id" ref="view_civil_service_tracker_service_position_search" />
-            <field name="help" type="html">
-                <p class="oe_view_nocontent_create">
-                    Click to add new service position.
-                </p><p>
-                    No service positions have been defined yet.
-                </p>
-            </field>
-        </record>
-        
-        <!-- Main menu for model.name -->
-        <record id="menu_civil_services_service_position" model="ir.ui.menu" >
-            <field name="name">List of service positions</field>
-            <field name="sequence" eval="35" />
-            <field name="action" ref="action_civil_services_service_position_act_window" />
-            <field name="parent_id" ref="menu_civil_service_tracker_catalog" />
-        </record>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <!-- Search view for "civil.service.tracker.service.position" -->
+  <record id="view_civil_service_tracker_service_position_search" model="ir.ui.view">
+    <field name="name">view.civil.service.tracker.service.position.search</field>
+    <field name="model">civil.service.tracker.service.position</field>
+    <field name="type">search</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16"/>
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <search string="civil_service_tracker_service_position_search">
+        <field name="name"/>
+        <field name="employment_group_id"/>
+        <field name="public_administration_id"/>
+        <field name="position_label"/>
+
+        <separator/>
+        <filter string="Group by employment group" name="group_by_employment_group_id" domain="[]"
+          context="{'group_by': 'employment_group_id'}"
+          help="Groups selection processes by assigned employment group."/>
+
+        <filter string="Group by public administration" name="group_by_public_administration_id"
+          domain="[]" context="{'group_by': 'public_administration_id'}"
+          help="Groups selection processes by assigned employment group."/>
+
+        <separator/>
+        <filter name="inactive" string="Archived" domain="[('active','=',False)]"
+          help="Filter to show records marked as inactive."/>
+      </search>
+    </field>
+  </record>
+
+  <!-- Main window action for model.name -->
+  <record id="action_civil_services_service_position_act_window" model="ir.actions.act_window">
+    <field name="type">ir.actions.act_window</field>
+    <field name="name">Service position</field>
+    <field name="res_model">civil.service.tracker.service.position</field>
+    <field name="view_mode">list,form</field>
+    <field name="path">civil-service-service-position</field>
+    <field name="target">current</field>
+    <field name="domain">[]</field>
+    <field name="context">{}</field>
+    <field name="search_view_id" ref="view_civil_service_tracker_service_position_search"/>
+    <field name="help" type="html">
+      <p class="oe_view_nocontent_create"> Click to add new service position. </p>
+      <p> No service positions have been defined yet. </p>
+    </field>
+  </record>
+
+  <!-- Main menu for model.name -->
+  <record id="menu_civil_services_service_position" model="ir.ui.menu">
+    <field name="name">List of service positions</field>
+    <field name="sequence" eval="35"/>
+    <field name="action" ref="action_civil_services_service_position_act_window"/>
+    <field name="parent_id" ref="menu_civil_service_tracker_catalog"/>
+  </record>
 
 
-        <!-- ================== Particular Views Section ================== -->
+  <!-- ================== Particular Views Section ================== -->
 
-        <record id="view_civil_service_tracker_service_position_tree_on_group" model="ir.ui.view">
-            <field name="name">view.civil.service.tracker.service.position.tree.on.group</field>
-            <field name="model">civil.service.tracker.service.position</field>
-            <field name="type">tree</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="16" />
-            <field name="active" eval="True" />
-            <field name="inherit_id" ref="view_civil_service_tracker_service_position_tree" />
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='employment_group_id']" position="replace" />
-            </field>
-        </record>
-        
-        <record id="view_civil_service_tracker_service_position_form_on_group" model="ir.ui.view">
-            <field name="name">view.civil.service.tracker.service.position.form.on.group</field>
-            <field name="model">civil.service.tracker.service.position</field>
-            <field name="type">form</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="16" />
-            <field name="active" eval="True" />
-            <field name="inherit_id" ref="view_civil_service_tracker_service_position_form" />
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='employment_group_id']" position="replace" />
-            </field>
-        </record>
+  <record id="view_civil_service_tracker_service_position_tree_on_group" model="ir.ui.view">
+    <field name="name">view.civil.service.tracker.service.position.tree.on.group</field>
+    <field name="model">civil.service.tracker.service.position</field>
+    <field name="type">list</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16"/>
+    <field name="active" eval="True"/>
+    <field name="inherit_id" ref="view_civil_service_tracker_service_position_tree"/>
+    <field name="arch" type="xml">
+      <xpath expr="//field[@name='employment_group_id']" position="replace"/>
+    </field>
+  </record>
 
-    </data>
-</openerp>
+  <record id="view_civil_service_tracker_service_position_form_on_group" model="ir.ui.view">
+    <field name="name">view.civil.service.tracker.service.position.form.on.group</field>
+    <field name="model">civil.service.tracker.service.position</field>
+    <field name="type">form</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16"/>
+    <field name="active" eval="True"/>
+    <field name="inherit_id" ref="view_civil_service_tracker_service_position_form"/>
+    <field name="arch" type="xml">
+      <xpath expr="//field[@name='employment_group_id']" position="replace"/>
+    </field>
+  </record>
+
+</odoo>

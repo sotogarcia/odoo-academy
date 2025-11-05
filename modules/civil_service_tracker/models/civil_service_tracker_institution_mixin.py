@@ -7,6 +7,8 @@
 from odoo import models, fields, api
 from odoo.tools.translate import _
 from odoo.tools import safe_eval
+from odoo.tools.misc import str2bool
+
 
 from logging import getLogger
 from uuid import uuid4
@@ -16,92 +18,95 @@ _logger = getLogger(__name__)
 
 
 class CivilServiceTrackerInstitutionMixin(models.AbstractModel):
+    _name = "civil.service.tracker.institution.mixin"
+    _description = "Civil service tracker institution mixin"
 
-    _name = 'civil.service.tracker.institution.mixin'
-    _description = u'Civil service tracker institution mixin'
+    _table = "cst_institution_mixin"
 
-    _table = 'cst_institution_mixin'
+    _inherit = ["mail.thread"]
 
-    _inherit = ['mail.thread']
+    _inherits = {"res.partner": "partner_id"}
 
-    _inherits = {'res.partner': 'partner_id'}
+    _rec_names_search = ["name", "short_name"]
 
     partner_id = fields.Many2one(
-        string='Partner',
+        string="Partner",
         required=True,
         readonly=False,
         index=True,
         default=None,
         help=False,
-        comodel_name='res.partner',
+        comodel_name="res.partner",
         domain=[],
         context={},
-        ondelete='cascade',
+        ondelete="cascade",
         auto_join=False,
-        copy=False
+        copy=False,
     )
 
     creation_mode = fields.Selection(
-        string='Creation mode',
+        string="Creation mode",
         required=True,
         readonly=False,
         index=False,
-        default='new',
-        help=('Choose whether to create a new administration from scratch or '
-              'link it to an existing partner.'),
+        default="new",
+        help=(
+            "Choose whether to create a new administration from scratch or "
+            "link it to an existing partner."
+        ),
         selection=[
-            ('new', 'Create new from scratch'),
-            ('link', 'Link to an existing partner'),
-        ]
+            ("new", "Create new from scratch"),
+            ("link", "Link to an existing partner"),
+        ],
     )
 
     short_name = fields.Char(
-        string='Short name',
+        string="Short name",
         required=False,
         readonly=False,
         index=True,
         default=None,
         help='Commonly used or internal abbreviation, e.g., "AGE".',
         translate=True,
-        copy=False
+        copy=False,
     )
-    
+
     token = fields.Char(
-        string='Token',
+        string="Token",
         required=True,
         readonly=True,
         index=True,
         default=lambda self: str(uuid4()),
-        help='Unique token used to identify this record.',
+        help="Unique token used to identify this record.",
         translate=False,
         copy=False,
-        track_visibility='always'
+        tracking=True,
     )
 
     administrative_region_id = fields.Many2one(
-        string='Administrative region',
+        string="Administrative region",
         required=False,
         readonly=False,
         index=True,
         default=None,
         help=False,
-        comodel_name='civil.service.tracker.administrative.region',
+        comodel_name="civil.service.tracker.administrative.region",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
     description = fields.Text(
-        string='Description',
+        string="Description",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='Optional description providing additional context',
-        translate=True
+        help="Optional description providing additional context",
+        translate=True,
     )
- 
+
     # -------------------------------------------------------------------------
     # OVERWRITTEN METHODS
     # -------------------------------------------------------------------------
@@ -109,78 +114,78 @@ class CivilServiceTrackerInstitutionMixin(models.AbstractModel):
     @api.model
     def default_get(self, fields):
         defaults = super().default_get(fields)
-        
-        defaults['company_type'] = 'company'
-        defaults['is_company'] = True
+
+        defaults["company_type"] = "company"
+        defaults["is_company"] = True
 
         company = self.env.user.company_id
         if company and company.country_id:
-            defaults['country_id'] = company.country_id.id
+            defaults["country_id"] = company.country_id.id
 
         return defaults
 
-    def name_get(self):
-        config = self.env['ir.config_parameter'].sudo()
-        param_name = 'civil_service_tracker.display_process_short_name'
+    @api.depends("short_name", "name")
+    @api.depends_context("lang")
+    def _compute_display_name(self):
+        config = self.env["ir.config_parameter"].sudo()
+        param_name = "civil_service_tracker.display_process_short_name"
 
-        raw_value = config.get_param(param_name)
-        use_short = self._to_bool(raw_value)
+        raw_value = config.get_param(param_name, default="False")
+        use_short = str2bool(raw_value)
 
-        result = []
         for record in self:
             if use_short and record.short_name:
-                name = record.short_name
+                record.display_name = record.short_name
             else:
-                name = record.name
-            result.append((record.id, name))
-
-        return result
+                record.display_name = record.name
 
     @api.model
-    def name_search(self, name='', args=None, operator='ilike', limit=100):
+    def name_search(self, name="", args=None, operator="ilike", limit=100):
         """Allows matching by both 'name' and 'short_name' when performing
         global search."""
-        
+
         args = args or []
 
-        domain = ['|',
-                  ('name', operator, name),
-                  ('short_name', operator, name)]
+        domain = [
+            "|",
+            ("name", operator, name),
+            ("short_name", operator, name),
+        ]
 
         return self.search(domain + args, limit=limit).name_get()
 
     # -------------------------------------------------------------------------
     # PUBLIC METHODS
     # -------------------------------------------------------------------------
- 
+
     def view_partners(self):
-        action_xid = 'contacts.action_contacts'
+        action_xid = "contacts.action_contacts"
         act_wnd = self.env.ref(action_xid)
-    
+
         context = self.env.context.copy()
         if act_wnd.context:
             context.update(safe_eval(act_wnd.context))
 
-        domain = [('id', 'in', self.mapped('partner_id').ids)]
-    
+        domain = [("id", "in", self.mapped("partner_id").ids)]
+
         serialized = {
-            'type': 'ir.actions.act_window',
-            'res_model': act_wnd.res_model,
-            'target': 'current',
-            'name': act_wnd.name,
-            'view_mode': act_wnd.view_mode,
-            'domain': domain,
-            'context': context,
-            'search_view_id': act_wnd.search_view_id.id,
-            'help': act_wnd.help
+            "type": "ir.actions.act_window",
+            "res_model": act_wnd.res_model,
+            "target": "current",
+            "name": act_wnd.name,
+            "view_mode": act_wnd.view_mode,
+            "domain": domain,
+            "context": context,
+            "search_view_id": act_wnd.search_view_id.id,
+            "help": act_wnd.help,
         }
-    
+
         return serialized
 
     # -------------------------------------------------------------------------
     # AUXILIARY METHODS
     # -------------------------------------------------------------------------
-    
+
     @staticmethod
     def _to_bool(value):
         if isinstance(value, bool):
@@ -189,7 +194,7 @@ class CivilServiceTrackerInstitutionMixin(models.AbstractModel):
         if value is None:
             return False
 
-        return str(value).strip().lower() in ('1', 'true', 'yes', 'on')
+        return str(value).strip().lower() in ("1", "true", "yes", "on")
 
     def convert_to(self, model, serialize_method):
         Entity = self.env[model]
@@ -201,12 +206,12 @@ class CivilServiceTrackerInstitutionMixin(models.AbstractModel):
 
             # Check if target entity already exists
             partner_id = record.partner_id.id
-            domain = [('partner_id', '=', partner_id)]
+            domain = [("partner_id", "=", partner_id)]
             entity = Entity.search(domain, limit=1)
 
-            if entity: # If exists add it to the result set
+            if entity:  # If exists add it to the result set
                 entity_set |= entity
-            
+
             else:  # If not exists create it and add it to the result set
                 values = serialize_method(record)
                 entity_set |= Entity.create(values)
@@ -219,27 +224,67 @@ class CivilServiceTrackerInstitutionMixin(models.AbstractModel):
 
         act_wnd = self.env.ref(act_wnd_xid, raise_if_not_found=False)
         if not act_wnd:
-            raise ValueError(f'Action window {act_wnd_xid} not found.')
+            raise ValueError(f"Action window {act_wnd_xid} not found.")
 
         view_mode = act_wnd.view_mode
         if isinstance(view_mode, str):
-            view_mode = view_mode.split(',')
-        view_mode = [mode for mode in view_mode if mode != 'form']
-        view_mode.insert(0, 'form')
+            view_mode = view_mode.split(",")
+        view_mode = [mode for mode in view_mode if mode != "form"]
+        view_mode.insert(0, "form")
 
         context = safe_eval(act_wnd.context) if act_wnd.context else {}
         domain = safe_eval(act_wnd.domain) if act_wnd.domain else []
 
         return {
-            'type': 'ir.actions.act_window',
-            'res_model': act_wnd.res_model,
-            'target': 'new',
-            'name': act_wnd.name,
-            'view_mode': ','.join(view_mode),
-            'domain': domain,
-            'context': context,
-            'search_view_id': act_wnd.search_view_id.id,
-            'help': act_wnd.help,
-            'res_id': entity.id
+            "type": "ir.actions.act_window",
+            "res_model": act_wnd.res_model,
+            "target": "new",
+            "name": act_wnd.name,
+            "view_mode": ",".join(view_mode),
+            "domain": domain,
+            "context": context,
+            "search_view_id": act_wnd.search_view_id.id,
+            "help": act_wnd.help,
+            "res_id": entity.id,
         }
 
+    # -------------------------------------------------------------------------
+    # PARTNER METHOD WRAPPERS
+    # -------------------------------------------------------------------------
+
+    def update_address(self, vals):
+        return self.partner_id.update_address(vals)
+
+    def create_company(self):
+        return self.partner_id.create_company()
+
+    def open_commercial_entity(self):
+        return self.partner_id.open_commercial_entity()
+
+    @api.model
+    @api.returns("self", lambda value: value.id)
+    def find_or_create(self, email, assert_valid_email=False):
+        return self.partner_id.find_or_create(email, assert_valid_email)
+
+    def address_get(self, adr_pref=None):
+        return self.partner_id.address_get(adr_pref)
+
+    @api.model
+    def view_header_get(self, view_id, view_type):
+        return self.partner_id.view_header_get(view_id, view_type)
+
+    @api.model
+    def get_import_templates(self):
+        return self.partner_id.get_import_templates()
+
+    def mail_action_blacklist_remove(self):
+        return {
+            "name": _(
+                "Are you sure you want to unblacklist this email address?"
+            ),
+            "type": "ir.actions.act_window",
+            "view_mode": "form",
+            "res_model": "mail.blacklist.remove",
+            "target": "new",
+            "context": {"dialog_size": "medium"},
+        }

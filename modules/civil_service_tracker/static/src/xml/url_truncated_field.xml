@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+  <t t-name="civil_service_tracker.UrlTruncatedField" owl="1">
+    <t t-if="props.readonly">
+      <a class="o_field_url_truncated"
+         t-att-href="props.value || '#'"
+         t-att-title="props.value || ''"
+         target="_blank"
+         rel="noopener noreferrer">
+        <t t-esc="props.value or ''"/>
+      </a>
+    </t>
+    <t t-else="">
+      <CharField t-props="props"/>
+    </t>
+  </t>
+</templates>

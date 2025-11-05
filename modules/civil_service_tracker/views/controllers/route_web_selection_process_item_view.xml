@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo noupdate="0">
 
 <template id="route_web_selection_process_item" name="Controller template: Selection Process">
   <t t-call="website.layout">
@@ -21,7 +20,7 @@
             – <t t-esc="process.public_offer_id.offer_date" />
         </t>
       </p>
-      
+
       <p class="mt-4 mb-3">
         On this page, you will find all relevant information about the selection process for the Administrative Corps of the Andalusian Regional Government, including the requirements, stages of the process, official published documentation, and details of the public employment offer under which this call is issued
       </p>
@@ -68,7 +67,7 @@
 
       <!-- process-details: begin -->
       <section class="card my-5" id="process-details" role="region" aria-labelledby="process-details-heading">
-        
+
         <header class="card-header">
           <h2 id="process-details-heading" class="h4 my-0">Process details</h2>
         </header>
@@ -133,7 +132,7 @@
         <header class="card-header">
           <h2 id="description-heading" class="h4 my-0">Description</h2>
         </header>
-        
+
         <div class="card-body">
 
           <t t-if="description">
@@ -164,7 +163,7 @@
           <div class="row">
             <div class="text-center text-md-left my-2 col-md-4 col-xl-2"><strong>Bulletin board:</strong></div>
             <div class="text-center text-md-left my-2 col-md-8 col-xl-10 text-truncate">
-              
+
               <!-- t-if -->
               <t t-if="process.public_offer_id.bulletin_board_url">
               <a class="link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
@@ -181,7 +180,7 @@
           <div class="row">
             <div class="text-center text-md-left my-2 col-md-4 col-xl-2"><strong>Official journal:</strong></div>
             <div class="text-center text-md-left my-2 col-md-8 col-xl-10 text-truncate">
-              
+
               <!-- t-if -->
               <t t-if="process.public_offer_id.official_journal_url">
               <a class="link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
@@ -294,7 +293,7 @@
           <div class="row">
             <div class="text-center text-md-left my-2 col-md-4 col-xl-2"><strong>Bulletin board:</strong></div>
             <div class="text-center text-md-left my-2 col-md-8 col-xl-10 text-truncate">
-              
+
               <!-- t-if -->
               <t t-if="offer.bulletin_board_url">
               <a class="link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
@@ -454,12 +453,11 @@
 
 
   </section>
-  
+
 </div>
 <!-- HTML content:end -->    
 
   </t>
 </template>
 
-    </data>
-</openerp>
+</odoo>

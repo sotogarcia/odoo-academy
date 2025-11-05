@@ -1,85 +1,84 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo noupdate="0">
 
-        <record id="action_view_public_administration_partners" model="ir.actions.server">
-            <field name="type">ir.actions.server</field>
-            <field name="name">View partners</field>
-            <field name="state">code</field>
-            <field name="model_id" ref="model_civil_service_tracker_public_administration" />
-            <field name="sequence" eval="5" />
-            <field name="code">action = records.view_partners()</field>
-            <field name="binding_model_id" ref="model_civil_service_tracker_public_administration" />
-            <field name="binding_view_types">list,form</field>
-        </record>
+  <record id="action_view_public_administration_partners" model="ir.actions.server">
+    <field name="type">ir.actions.server</field>
+    <field name="name">View partners</field>
+    <field name="state">code</field>
+    <field name="model_id" ref="model_civil_service_tracker_public_administration"/>
+    <field name="sequence" eval="5"/>
+    <field name="code">action = records.view_partners()</field>
+    <field name="binding_model_id" ref="model_civil_service_tracker_public_administration"/>
+    <field name="binding_view_types">list,form</field>
+  </record>
 
-        <record id="action_view_issuing_authority_partners" model="ir.actions.server">
-            <field name="type">ir.actions.server</field>
-            <field name="name">View partners</field>
-            <field name="state">code</field>
-            <field name="model_id" ref="model_civil_service_tracker_issuing_authority" />
-            <field name="sequence" eval="5" />
-            <field name="code">action = records.view_partners()</field>
-            <field name="binding_model_id" ref="model_civil_service_tracker_issuing_authority" />
-            <field name="binding_view_types">list,form</field>
-        </record>
+  <record id="action_view_issuing_authority_partners" model="ir.actions.server">
+    <field name="type">ir.actions.server</field>
+    <field name="name">View partners</field>
+    <field name="state">code</field>
+    <field name="model_id" ref="model_civil_service_tracker_issuing_authority"/>
+    <field name="sequence" eval="5"/>
+    <field name="code">action = records.view_partners()</field>
+    <field name="binding_model_id" ref="model_civil_service_tracker_issuing_authority"/>
+    <field name="binding_view_types">list,form</field>
+  </record>
 
-        <record id="action_selection_process_refresh_event_information" model="ir.actions.server">
-            <field name="type">ir.actions.server</field>
-            <field name="name">Refresh event information</field>
-            <field name="state">code</field>
-            <field name="model_id" ref="model_civil_service_tracker_selection_process" />
-            <field name="sequence" eval="5" />
-            <field name="code">records.refresh_event_information()</field>
-            <field name="binding_model_id" ref="model_civil_service_tracker_selection_process" />
-            <field name="binding_view_types">list,form</field>
-        </record>
+  <record id="action_selection_process_refresh_event_information" model="ir.actions.server">
+    <field name="type">ir.actions.server</field>
+    <field name="name">Refresh event information</field>
+    <field name="state">code</field>
+    <field name="model_id" ref="model_civil_service_tracker_selection_process"/>
+    <field name="sequence" eval="5"/>
+    <field name="code">records.refresh_event_information()</field>
+    <field name="binding_model_id" ref="model_civil_service_tracker_selection_process"/>
+    <field name="binding_view_types">list,form</field>
+  </record>
 
-        <record id="action_selection_process_refresh_dossier_summary" model="ir.actions.server">
-            <field name="type">ir.actions.server</field>
-            <field name="name">Refresh dossier summary</field>
-            <field name="state">code</field>
-            <field name="model_id" ref="model_civil_service_tracker_selection_process" />
-            <field name="sequence" eval="5" />
-            <field name="code">records.refresh_dossier_summary()</field>
-            <field name="binding_model_id" ref="model_civil_service_tracker_selection_process" />
-            <field name="binding_view_types">list,form</field>
-            <field name="groups_id" eval="[(4, ref('civil_service_tracker.group_civil_service_tracker_dossier_editor'))]"/>
-        </record>
+  <record id="action_selection_process_refresh_dossier_summary" model="ir.actions.server">
+    <field name="type">ir.actions.server</field>
+    <field name="name">Refresh dossier summary</field>
+    <field name="state">code</field>
+    <field name="model_id" ref="model_civil_service_tracker_selection_process"/>
+    <field name="sequence" eval="5"/>
+    <field name="code">records.refresh_dossier_summary()</field>
+    <field name="binding_model_id" ref="model_civil_service_tracker_selection_process"/>
+    <field name="binding_view_types">list,form</field>
+    <field name="groups_id"
+      eval="[(4, ref('civil_service_tracker.group_civil_service_tracker_dossier_editor'))]"/>
+  </record>
 
-        <record id="action_view_selection_process_details" model="ir.actions.server">
-            <field name="type">ir.actions.server</field>
-            <field name="name">Process details</field>
-            <field name="state">code</field>
-            <field name="model_id" ref="model_civil_service_tracker_selection_process" />
-            <field name="sequence" eval="5" />
-            <field name="code">action = records.action_view_selection_process_details()</field>
-            <field name="binding_model_id" ref="model_civil_service_tracker_selection_process" />
-            <field name="binding_view_types">form</field>
-        </record>
+  <record id="action_view_selection_process_details" model="ir.actions.server">
+    <field name="type">ir.actions.server</field>
+    <field name="name">Process details</field>
+    <field name="state">code</field>
+    <field name="model_id" ref="model_civil_service_tracker_selection_process"/>
+    <field name="sequence" eval="5"/>
+    <field name="code">action = records.action_view_selection_process_details()</field>
+    <field name="binding_model_id" ref="model_civil_service_tracker_selection_process"/>
+    <field name="binding_view_types">form</field>
+  </record>
 
-        <record id="action_convert_to_issuing_authority" model="ir.actions.server">
-            <field name="type">ir.actions.server</field>
-            <field name="name">Use as issuing authority</field>
-            <field name="state">code</field>
-            <field name="model_id" ref="model_civil_service_tracker_public_administration" />
-            <field name="sequence" eval="5" />
-            <field name="code">action = records.convert_to_issuing_authority()</field>
-            <field name="binding_model_id" ref="model_civil_service_tracker_public_administration" />
-            <field name="binding_view_types">form</field>
-        </record>
+  <record id="action_convert_to_issuing_authority" model="ir.actions.server">
+    <field name="type">ir.actions.server</field>
+    <field name="name">Use as issuing authority</field>
+    <field name="state">code</field>
+    <field name="model_id" ref="model_civil_service_tracker_public_administration"/>
+    <field name="sequence" eval="5"/>
+    <field name="code">action = records.convert_to_issuing_authority()</field>
+    <field name="binding_model_id" ref="model_civil_service_tracker_public_administration"/>
+    <field name="binding_view_types">form</field>
+  </record>
 
-        <record id="action_convert_to_public_administration" model="ir.actions.server">
-            <field name="type">ir.actions.server</field>
-            <field name="name">Use as public administration</field>
-            <field name="state">code</field>
-            <field name="model_id" ref="model_civil_service_tracker_issuing_authority" />
-            <field name="sequence" eval="5" />
-            <field name="code">action = records.convert_to_public_administration()</field>
-            <field name="binding_model_id" ref="model_civil_service_tracker_issuing_authority" />
-            <field name="binding_view_types">form</field>
-        </record>
+  <record id="action_convert_to_public_administration" model="ir.actions.server">
+    <field name="type">ir.actions.server</field>
+    <field name="name">Use as public administration</field>
+    <field name="state">code</field>
+    <field name="model_id" ref="model_civil_service_tracker_issuing_authority"/>
+    <field name="sequence" eval="5"/>
+    <field name="code">action = records.convert_to_public_administration()</field>
+    <field name="binding_model_id" ref="model_civil_service_tracker_issuing_authority"/>
+    <field name="binding_view_types">form</field>
+  </record>
 
-    </data>
-</openerp>
+</odoo>

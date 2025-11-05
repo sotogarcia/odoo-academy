@@ -1,48 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo noupdate="0">
 
-        <record id="access_ir_attachment_civil_service_consultant" model="ir.model.access">
-            <field name="name">ir.attachment access for consultant</field>
-            <field name="model_id" ref="base.model_ir_attachment"/>
-            <field name="group_id" ref="civil_service_tracker.group_civil_service_tracker_consultant"/>
-            <field name="perm_read" eval="1"/>
-            <field name="perm_write" eval="0"/>
-            <field name="perm_create" eval="0"/>
-            <field name="perm_unlink" eval="0"/>
-        </record>
+  <record id="access_ir_attachment_civil_service_consultant" model="ir.model.access">
+    <field name="name">ir.attachment access for consultant</field>
+    <field name="model_id" ref="base.model_ir_attachment"/>
+    <field name="group_id" ref="civil_service_tracker.group_civil_service_tracker_consultant"/>
+    <field name="perm_read" eval="1"/>
+    <field name="perm_write" eval="0"/>
+    <field name="perm_create" eval="0"/>
+    <field name="perm_unlink" eval="0"/>
+  </record>
 
-    <record id="access_ir_attachment_civil_service_operator" model="ir.model.access">
-        <field name="name">ir.attachment access for operator</field>
-        <field name="model_id" ref="base.model_ir_attachment"/>
-        <field name="group_id" ref="civil_service_tracker.group_civil_service_tracker_operator"/>
-        <field name="perm_read" eval="1"/>
-        <field name="perm_write" eval="1"/>
-        <field name="perm_create" eval="1"/>
-        <field name="perm_unlink" eval="1"/>
-    </record>
+  <record id="access_ir_attachment_civil_service_operator" model="ir.model.access">
+    <field name="name">ir.attachment access for operator</field>
+    <field name="model_id" ref="base.model_ir_attachment"/>
+    <field name="group_id" ref="civil_service_tracker.group_civil_service_tracker_operator"/>
+    <field name="perm_read" eval="1"/>
+    <field name="perm_write" eval="1"/>
+    <field name="perm_create" eval="1"/>
+    <field name="perm_unlink" eval="1"/>
+  </record>
 
-    <record id="access_ir_attachment_civil_service_technician" model="ir.model.access">
-        <field name="name">ir.attachment access for technician</field>
-        <field name="model_id" ref="base.model_ir_attachment"/>
-        <field name="group_id" ref="civil_service_tracker.group_civil_service_tracker_technician"/>
-        <field name="perm_read" eval="1"/>
-        <field name="perm_write" eval="1"/>
-        <field name="perm_create" eval="1"/>
-        <field name="perm_unlink" eval="1"/>
-    </record>
+  <record id="access_ir_attachment_civil_service_technician" model="ir.model.access">
+    <field name="name">ir.attachment access for technician</field>
+    <field name="model_id" ref="base.model_ir_attachment"/>
+    <field name="group_id" ref="civil_service_tracker.group_civil_service_tracker_technician"/>
+    <field name="perm_read" eval="1"/>
+    <field name="perm_write" eval="1"/>
+    <field name="perm_create" eval="1"/>
+    <field name="perm_unlink" eval="1"/>
+  </record>
 
-    <record id="access_ir_attachment_civil_service_admin" model="ir.model.access">
-        <field name="name">ir.attachment access for admin</field>
-        <field name="model_id" ref="base.model_ir_attachment"/>
-        <field name="group_id" ref="civil_service_tracker.group_civil_service_tracker_admin"/>
-        <field name="perm_read" eval="1"/>
-        <field name="perm_write" eval="1"/>
-        <field name="perm_create" eval="1"/>
-        <field name="perm_unlink" eval="1"/>
-    </record>
+  <record id="access_ir_attachment_civil_service_admin" model="ir.model.access">
+    <field name="name">ir.attachment access for admin</field>
+    <field name="model_id" ref="base.model_ir_attachment"/>
+    <field name="group_id" ref="civil_service_tracker.group_civil_service_tracker_admin"/>
+    <field name="perm_read" eval="1"/>
+    <field name="perm_write" eval="1"/>
+    <field name="perm_create" eval="1"/>
+    <field name="perm_unlink" eval="1"/>
+  </record>
 
-
-    </data>
-</openerp>
+</odoo>

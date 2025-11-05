@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo noupdate="0">
 
-        <record id="view_ir_attachment_tree" model="ir.ui.view">
-            <field name="name">Public process attachements</field>
-            <field name="model">ir.attachment</field>
-            <field name="type">tree</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="999" />
-            <field name="active" eval="True" />
-            <field name="arch" type="xml">
-                <tree string="Process attachements" create="1" delete="1" edit="1">
-                    <field name="name" class="oe_field_name" />
-                    <field name="company_id" class="oe_field_company_id" />
-                    <field name="category_ids" class="oe_field_category_ids" />
-                    <field name="type" class="oe_field_type" />
-                    <field name="mimetype" class="oe_field_mimetype" />
-                    <field name="effective_url" class="oe_field_effective_url oe_read_only" widget="url_truncated" />
-                </tree>
-            </field>
-        </record>
+  <record id="view_ir_attachment_tree" model="ir.ui.view">
+    <field name="name">Public process attachements</field>
+    <field name="model">ir.attachment</field>
+    <field name="type">list</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="999"/>
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <list string="Process attachements" create="1" delete="1" edit="1">
+        <field name="name" class="oe_field_name"/>
+        <field name="company_id" class="oe_field_company_id"/>
+        <field name="category_ids" class="oe_field_category_ids"/>
+        <field name="type" class="oe_field_type"/>
+        <field name="mimetype" class="oe_field_mimetype"/>
+        <field name="effective_url" class="oe_field_effective_url oe_read_only"
+          widget="url_truncated"/>
+      </list>
+    </field>
+  </record>
 
-    </data>
-</openerp>
+</odoo>

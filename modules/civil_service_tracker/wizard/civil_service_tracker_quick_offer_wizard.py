@@ -15,146 +15,136 @@ _logger = getLogger(__name__)
 
 
 class CivilServiceTrackerOfferQuickOfferWizard(models.TransientModel):
+    _name = "civil.service.tracker.quick.offer.wizard"
+    _description = "Civil service tracker offer batch creation wizard"
 
-    _name = 'civil.service.tracker.quick.offer.wizard'
-    _description = u'Civil service tracker offer batch creation wizard'
+    _table = "cst_quick_offer_wizard"
 
-    _table = 'cst_quick_offer_wizard'
-
-    _rec_name = 'id'
-    _order = 'id DESC'
+    _rec_name = "id"
+    _order = "id DESC"
 
     state = fields.Selection(
-        string='Wizard step',
+        string="Wizard step",
         required=True,
         readonly=False,
         index=False,
-        default='step1',
-        help=('Internal step of the wizard. Controls which inputs are shown '
-              'at each stage.'),
+        default="step1",
+        help=(
+            "Internal step of the wizard. Controls which inputs are shown "
+            "at each stage."
+        ),
         selection=[
-            ('step1', 'Step 1'), 
-            ('step2', 'Step 2'),
-            ('step3', 'Step 3')
-        ]
+            ("step1", "Step 1"),
+            ("step2", "Step 2"),
+            ("step3", "Step 3"),
+        ],
     )
 
-    @api.onchange('state')
+    @api.onchange("state")
     def _onchange_state(self):
-        if self.state == 'step3':
+        if self.state == "step3":
             self.wizard_line_ids = self._build_wizard_line_commands()
 
     public_administration_id = fields.Many2one(
-        string='Public administration',
+        string="Public administration",
         required=True,
         readonly=False,
         index=True,
         default=None,
-        help=('Public administration responsible for this offer '
-              '(e.g. AGE, Xunta, etc.)'),
-        comodel_name='civil.service.tracker.public.administration',
+        help=(
+            "Public administration responsible for this offer "
+            "(e.g. AGE, Xunta, etc.)"
+        ),
+        comodel_name="civil.service.tracker.public.administration",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
-    @api.onchange('public_administration_id')
+    @api.onchange("public_administration_id")
     def _onchange_public_administration_id(self):
-        offer_domain = self._compute_public_offer_domain()
         position_domain = self._compute_service_position_domain()
-        
+
         # Automatic change issuing authority
-        authority_obj = self.env['civil.service.tracker.issuing.authority']
+        authority_obj = self.env["civil.service.tracker.issuing.authority"]
         if self.public_administration_id and not self.issuing_authority_id:
             partner_id = self.public_administration_id.partner_id.id
-            authority_domain = [('partner_id', '=', partner_id)]
+            authority_domain = [("partner_id", "=", partner_id)]
             authority_set = authority_obj.search(authority_domain)
             if len(authority_set) == 1:
                 self.issuing_authority_id = authority_set
 
         # Automatic select service position
-        position_obj = self.env['civil.service.tracker.service.position']
+        position_obj = self.env["civil.service.tracker.service.position"]
         self.service_position_ids = position_obj.search(position_domain)
 
-        return {
-            'domain': {
-                'public_offer_id': offer_domain,
-                'service_position_ids': position_domain
-            }
-        }
-
     offer_year = fields.Char(
-        string='Offer year(s)',
+        string="Offer year(s)",
         required=True,
         readonly=False,
         index=True,
         default=lambda self: str(fields.Date.today().year),
-        help=('Year or years to which the offer applies, in the format YYYY '
-              'or YYYY,YYYY,... (e.g. 2024 or 2024,2025)'),
-        translate=False
+        help=(
+            "Year or years to which the offer applies, in the format YYYY "
+            "or YYYY,YYYY,... (e.g. 2024 or 2024,2025)"
+        ),
+        translate=False,
     )
 
-    @api.onchange('offer_year')
-    def _onchange_offer_year(self):
-        domain = self._compute_public_offer_domain()
-        return {
-            'domain': {
-                'public_offer_id': domain
-            }
-        }
-
     issuing_authority_id = fields.Many2one(
-        string='Issuing authority',
+        string="Issuing authority",
         required=True,
         readonly=False,
         index=True,
         default=None,
-        help='Authority that issued or published this public offer',
-        comodel_name='civil.service.tracker.issuing.authority',
+        help="Authority that issued or published this public offer",
+        comodel_name="civil.service.tracker.issuing.authority",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
-    @api.onchange('issuing_authority_id')
+    @api.onchange("issuing_authority_id")
     def _onchange_issuing_authority_id(self):
-        admin_obj = self.env['civil.service.tracker.public.administration']
+        admin_obj = self.env["civil.service.tracker.public.administration"]
 
         # Automatic change public administration
         if self.issuing_authority_id and not self.public_administration_id:
             partner_id = self.issuing_authority_id.partner_id.id
-            domain = [('partner_id', '=', partner_id)]
+            domain = [("partner_id", "=", partner_id)]
             administration_set = admin_obj.search(domain)
             if len(administration_set) == 1:
                 self.public_administration_id = administration_set
 
     offer_date = fields.Date(
-        string='Offer date',
+        string="Offer date",
         required=False,
         readonly=False,
         index=True,
         default=fields.Date.today(),
-        help='Date when the public offer was officially approved or published.'
+        help="Date when the public offer was officially approved or published.",
     )
-    
+
     public_offer_id = fields.Many2one(
-        string='Public offer',
+        string="Public offer",
         required=False,
         readonly=False,
         index=True,
         default=None,
-        help=('Public offer used as a reference for this batch of selection '
-              'processes.'),
-        comodel_name='civil.service.tracker.public.offer',
+        help=(
+            "Public offer used as a reference for this batch of selection "
+            "processes."
+        ),
+        comodel_name="civil.service.tracker.public.offer",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
-    @api.onchange('public_offer_id')
+    @api.onchange("public_offer_id")
     def _onchange_public_offer_id(self):
         for record in self:
             offer = record.public_offer_id
@@ -167,164 +157,162 @@ class CivilServiceTrackerOfferQuickOfferWizard(models.TransientModel):
             record.official_journal_url = offer.official_journal_url
 
     public_offer_count = fields.Integer(
-        string='Available offers',
+        string="Available offers",
         # required=True,
         readonly=True,
         index=False,
         default=0,
-        help='Total number of available public offers',
-        compute='_compute_public_offer_count'
-    )  
+        help="Total number of available public offers",
+        compute="_compute_public_offer_count",
+    )
 
-    @api.depends('public_administration_id', 'offer_year')
+    @api.depends("public_administration_id", "offer_year")
     def _compute_public_offer_count(self):
-        PublicOffer = self.env['civil.service.tracker.public.offer']
+        PublicOffer = self.env["civil.service.tracker.public.offer"]
 
         for record in self:
             domain = record._compute_public_offer_domain()
             record.public_offer_count = PublicOffer.search_count(domain)
 
     bulletin_board_url = fields.Char(
-        string='Bulletin board URL',
+        string="Bulletin board URL",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='Link to the bulletin board or notice publication',
-        translate=False
+        help="Link to the bulletin board or notice publication",
+        translate=False,
     )
 
     official_journal_url = fields.Char(
-        string='Official journal URL',
+        string="Official journal URL",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='Link to the official journal or legal source of publication',
-        translate=False
+        help="Link to the official journal or legal source of publication",
+        translate=False,
     )
-    
+
     contract_type_ids = fields.Many2many(
-        string='Contract type',
+        string="Contract type",
         required=True,
         readonly=False,
         index=False,
         default=lambda self: self.default_contract_type_ids(),
-        help='Contract types applicable to this offer (e.g. career, interim)',
-        comodel_name='civil.service.tracker.contract.type',
-        relation='cst_quick_offer_wizard_contract_type_rel',
-        column1='wizard_id',
-        column2='contract_type_id',
+        help="Contract types applicable to this offer (e.g. career, interim)",
+        comodel_name="civil.service.tracker.contract.type",
+        relation="cst_quick_offer_wizard_contract_type_rel",
+        column1="wizard_id",
+        column2="contract_type_id",
         domain=[],
         context={},
-        limit=None
     )
 
     def default_contract_type_ids(self):
-        external_name = 'civil_service_tracker_contract_type_career'
-        external_id = f'civil_service_tracker.{external_name}'
+        external_name = "civil_service_tracker_contract_type_career"
+        external_id = f"civil_service_tracker.{external_name}"
         return self.env.ref(external_id, raise_if_not_found=False)
-    
+
     access_type_ids = fields.Many2many(
-        string='Access type',
+        string="Access type",
         required=True,
         readonly=False,
         index=False,
         default=lambda self: self.default_access_type_ids(),
-        help=('Access types to be included (e.g. free access, internal '
-              'promotion)'),
-        comodel_name='civil.service.tracker.access.type',
-        relation='cst_quick_offer_wizard_access_type_rel',
-        column1='wizard_id',
-        column2='access_type_id',
+        help=(
+            "Access types to be included (e.g. free access, internal "
+            "promotion)"
+        ),
+        comodel_name="civil.service.tracker.access.type",
+        relation="cst_quick_offer_wizard_access_type_rel",
+        column1="wizard_id",
+        column2="access_type_id",
         domain=[],
         context={},
-        limit=None
     )
 
     def default_access_type_ids(self):
-        external_name = 'civil_service_tracker_access_type_free_access'
-        external_id = f'civil_service_tracker.{external_name}'
+        external_name = "civil_service_tracker_access_type_free_access"
+        external_id = f"civil_service_tracker.{external_name}"
         return self.env.ref(external_id, raise_if_not_found=False)
-    
+
     selection_method_ids = fields.Many2many(
-        string='Selection method',
+        string="Selection method",
         required=True,
         readonly=False,
         index=False,
         default=lambda self: self.default_selection_method_ids(),
-        help='Selection methods applicable (e.g. exam, merit-based)',
-        comodel_name='civil.service.tracker.selection.method',
-        relation='cst_quick_offer_wizard_selection_method_rel',
-        column1='wizard_id',
-        column2='selection_method_id',
+        help="Selection methods applicable (e.g. exam, merit-based)",
+        comodel_name="civil.service.tracker.selection.method",
+        relation="cst_quick_offer_wizard_selection_method_rel",
+        column1="wizard_id",
+        column2="selection_method_id",
         domain=[],
         context={},
-        limit=None
     )
 
     def default_selection_method_ids(self):
-        external_name = 'selection_method_exam'
-        external_id = f'civil_service_tracker.{external_name}'
+        external_name = "selection_method_exam"
+        external_id = f"civil_service_tracker.{external_name}"
         return self.env.ref(external_id, raise_if_not_found=False)
-        
+
     vacancy_type_ids = fields.Many2many(
-        string='Vacancy type',
+        string="Vacancy type",
         required=True,
         readonly=False,
         index=False,
         default=lambda self: self.default_vacancy_type_ids(),
-        help='Vacancy types included in the offer (e.g. general, disability)',
-        comodel_name='civil.service.tracker.vacancy.type',
-        relation='cst_quick_offer_wizard_vacancy_type_rel',
-        column1='wizard_id',
-        column2='vacancy_type_id',
+        help="Vacancy types included in the offer (e.g. general, disability)",
+        comodel_name="civil.service.tracker.vacancy.type",
+        relation="cst_quick_offer_wizard_vacancy_type_rel",
+        column1="wizard_id",
+        column2="vacancy_type_id",
         domain=[],
         context={},
-        limit=None
     )
 
     def default_vacancy_type_ids(self):
-        external_name = 'civil_service_tracker_vacancy_type_general'
-        external_id = f'civil_service_tracker.{external_name}'
+        external_name = "civil_service_tracker_vacancy_type_general"
+        external_id = f"civil_service_tracker.{external_name}"
         general = self.env.ref(external_id, raise_if_not_found=False)
-        
-        external_name = 'civil_service_tracker_vacancy_type_disabilities'
-        external_id = f'civil_service_tracker.{external_name}'
+
+        external_name = "civil_service_tracker_vacancy_type_disabilities"
+        external_id = f"civil_service_tracker.{external_name}"
         disabilities = self.env.ref(external_id, raise_if_not_found=False)
 
         return general | disabilities
 
     service_position_ids = fields.Many2many(
-        string='Service positions',
+        string="Service positions",
         required=True,
         readonly=False,
         index=False,
         default=None,
-        help=('Available service positions related to the selected '
-              'administration'),
-        comodel_name='civil.service.tracker.service.position',
-        relation='cst_quick_offer_wizard_service_position_rel',
-        column1='wizard_id',
-        column2='service_position_id',
+        help=(
+            "Available service positions related to the selected "
+            "administration"
+        ),
+        comodel_name="civil.service.tracker.service.position",
+        relation="cst_quick_offer_wizard_service_position_rel",
+        column1="wizard_id",
+        column2="service_position_id",
         domain=[],
         context={},
-        limit=None
     )
 
     wizard_line_ids = fields.One2many(
-        string='Generated lines',
+        string="Generated lines",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='Lines automatically generated from selected filters',
-        comodel_name='civil.service.tracker.quick.offer.wizard.line',
-        inverse_name='wizard_id',
+        help="Lines automatically generated from selected filters",
+        comodel_name="civil.service.tracker.quick.offer.wizard.line",
+        inverse_name="wizard_id",
         domain=[],
         context={},
         auto_join=False,
-        limit=None
     )
 
     # -------------------------------------------------------------------------
@@ -333,42 +321,39 @@ class CivilServiceTrackerOfferQuickOfferWizard(models.TransientModel):
 
     _sql_constraints = [
         (
-            'valid_year_list',
+            "valid_year_list",
             "CHECK (offer_year IS NULL OR offer_year ~ '^\\s*\\d{4}\\s*(,\\s*\\d{4}\\s*)*$')",
-            "Only four-digit years, separated by commas, are allowed."
+            "Only four-digit years, separated by commas, are allowed.",
         )
     ]
 
     @api.constrains(
-        'contract_type_ids', 'access_type_ids', 
-        'selection_method_ids', 'vacancy_type_ids', 
-        'service_position_ids', 'wizard_line_ids'
+        "contract_type_ids",
+        "access_type_ids",
+        "selection_method_ids",
+        "vacancy_type_ids",
+        "service_position_ids",
+        "wizard_line_ids",
     )
     def _check_required_collections(self):
         required_fields = [
             (
-                'contract_type_ids', 
-                _('At least one contract type is required.')
+                "contract_type_ids",
+                _("At least one contract type is required."),
+            ),
+            ("access_type_ids", _("At least one access type is required.")),
+            (
+                "selection_method_ids",
+                _("At least one selection method is required."),
+            ),
+            ("vacancy_type_ids", _("At least one vacancy type is required.")),
+            (
+                "service_position_ids",
+                _("At least one service position is required."),
             ),
             (
-                'access_type_ids', 
-                _('At least one access type is required.')
-            ),
-            (
-                'selection_method_ids', 
-                _('At least one selection method is required.')
-            ),
-            (
-                'vacancy_type_ids', 
-                _('At least one vacancy type is required.')
-            ),
-            (
-                'service_position_ids', 
-                _('At least one service position is required.')
-            ),
-            (
-                'wizard_line_ids', 
-                _('At least one wizard line must be created.')
+                "wizard_line_ids",
+                _("At least one wizard line must be created."),
             ),
         ]
         for record in self:
@@ -390,15 +375,15 @@ class CivilServiceTrackerOfferQuickOfferWizard(models.TransientModel):
         to compute `public_offer_count`).
         """
         domain = []
-        
+
         administration = self.public_administration_id
         if administration:
-            leaf = ('public_administration_id', '=', administration.id)
+            leaf = ("public_administration_id", "=", administration.id)
             domain.append(leaf)
 
         offer_year = self.offer_year
         if offer_year:
-            leaf = ('offer_year', '=', offer_year)
+            leaf = ("offer_year", "=", offer_year)
             domain.append(leaf)
 
         return domain
@@ -412,10 +397,10 @@ class CivilServiceTrackerOfferQuickOfferWizard(models.TransientModel):
         to auto-populate `service_position_ids`.
         """
         domain = FALSE_DOMAIN
-        
+
         if self.public_administration_id:
             admin_id = self.public_administration_id.id
-            domain = [('public_administration_id', '=', admin_id)]
+            domain = [("public_administration_id", "=", admin_id)]
 
         return domain
 
@@ -428,16 +413,21 @@ class CivilServiceTrackerOfferQuickOfferWizard(models.TransientModel):
         Used by `_build_wizard_line_commands()` to generate wizard lines.
         """
         commands = [(5, 0, 0)]
-        if self.state == 'step3':
-            for position, access, selection, contract, vacancy in \
-                self._iter_wizard_line_combinations():
+        if self.state == "step3":
+            for (
+                position,
+                access,
+                selection,
+                contract,
+                vacancy,
+            ) in self._iter_wizard_line_combinations():
                 values = {
-                    'service_position_id': position._origin.id,
-                    'access_type_id': access._origin.id,
-                    'selection_method_id': selection._origin.id,
-                    'contract_type_id': contract._origin.id,
-                    'vacancy_type_id': vacancy._origin.id,
-                    'position_quantity': 0,
+                    "service_position_id": position._origin.id,
+                    "access_type_id": access._origin.id,
+                    "selection_method_id": selection._origin.id,
+                    "contract_type_id": contract._origin.id,
+                    "vacancy_type_id": vacancy._origin.id,
+                    "position_quantity": 0,
                 }
                 commands.append((0, 0, values))
 
@@ -470,9 +460,9 @@ class CivilServiceTrackerOfferQuickOfferWizard(models.TransientModel):
         for record in self:
             record._perform_action()
 
-        process_model = 'civil.service.tracker.selection.process'
-        if self.env.context.get('active_model') == process_model:
-            return {'type': 'ir.actions.client', 'tag': 'reload'}
+        process_model = "civil.service.tracker.selection.process"
+        if self.env.context.get("active_model") == process_model:
+            return {"type": "ir.actions.client", "tag": "reload"}
 
     def _perform_action(self):
         """
@@ -480,24 +470,27 @@ class CivilServiceTrackerOfferQuickOfferWizard(models.TransientModel):
         their associated vacancy records for the current wizard record.
         Intended to be called internally from `perform_action`.
         """
-        Process = self.env['civil.service.tracker.selection.process']
-        Vacancy = self.env['civil.service.tracker.vacancy.position']
+        Process = self.env["civil.service.tracker.selection.process"]
+        Vacancy = self.env["civil.service.tracker.vacancy.position"]
 
         self.ensure_one()
 
-        public_offer = \
-            self.public_offer_id or self._create_public_offer()
+        public_offer = self.public_offer_id or self._create_public_offer()
 
-        for position, contract, access, method, lines in \
-            self._iter_valid_combinations():
+        for (
+            position,
+            contract,
+            access,
+            method,
+            lines,
+        ) in self._iter_valid_combinations():
             values = {
-                'public_offer_id': public_offer._origin.id,
-                'employment_group_id': \
-                    position.employment_group_id._origin.id,
-                'service_position_id': position._origin.id,
-                'contract_type_id': contract._origin.id,
-                'access_type_id': access._origin.id,
-                'selection_method_id': method._origin.id
+                "public_offer_id": public_offer._origin.id,
+                "employment_group_id": position.employment_group_id._origin.id,
+                "service_position_id": position._origin.id,
+                "contract_type_id": contract._origin.id,
+                "access_type_id": access._origin.id,
+                "selection_method_id": method._origin.id,
             }
             Process.ensure_process_name(values)
             process = Process.create(values)
@@ -505,17 +498,19 @@ class CivilServiceTrackerOfferQuickOfferWizard(models.TransientModel):
             grouped_by_vacancy_type = self._group_by_vacancy_type(lines)
             for vacancy_type, vlines in grouped_by_vacancy_type.items():
                 for line in vlines:
-                    Vacancy.create({
-                        'selection_process_id': process._origin.id,
-                        'vacancy_type_id': vacancy_type._origin.id,
-                        'position_quantity': line.position_quantity,
-                        'name': vacancy_type.name
-                    })
+                    Vacancy.create(
+                        {
+                            "selection_process_id": process._origin.id,
+                            "vacancy_type_id": vacancy_type._origin.id,
+                            "position_quantity": line.position_quantity,
+                            "name": vacancy_type.name,
+                        }
+                    )
 
     def _create_public_offer(self):
         self.ensure_one()
 
-        public_offer_obj = self.env['civil.service.tracker.public.offer']
+        public_offer_obj = self.env["civil.service.tracker.public.offer"]
 
         if self.public_administration_id:
             administration_id = self.public_administration_id._origin.id
@@ -528,12 +523,12 @@ class CivilServiceTrackerOfferQuickOfferWizard(models.TransientModel):
             authority_id = None
 
         values = {
-            'public_administration_id': administration_id,
-            'offer_year': self.offer_year,
-            'issuing_authority_id': authority_id,
-            'offer_date': self.offer_date,
-            'bulletin_board_url': self.bulletin_board_url,
-            'official_journal_url': self.official_journal_url,
+            "public_administration_id": administration_id,
+            "offer_year": self.offer_year,
+            "issuing_authority_id": authority_id,
+            "offer_date": self.offer_date,
+            "bulletin_board_url": self.bulletin_board_url,
+            "official_journal_url": self.official_journal_url,
         }
 
         public_offer = public_offer_obj.create(values)
@@ -556,19 +551,19 @@ class CivilServiceTrackerOfferQuickOfferWizard(models.TransientModel):
                 line.service_position_id._origin.id,
                 line.contract_type_id._origin.id,
                 line.access_type_id._origin.id,
-                line.selection_method_id._origin.id
+                line.selection_method_id._origin.id,
             )
             if key in seen:
                 continue
             seen.add(key)
 
             # Filter again to ensure all lines in the group are valid
-            lines = self.wizard_line_ids.filtered(lambda l:
-                l.service_position_id._origin.id == key[0] and
-                l.contract_type_id._origin.id == key[1] and
-                l.access_type_id._origin.id == key[2] and
-                l.selection_method_id._origin.id == key[3] and
-                l.position_quantity > 0
+            lines = self.wizard_line_ids.filtered(
+                lambda l: l.service_position_id._origin.id == key[0]
+                and l.contract_type_id._origin.id == key[1]
+                and l.access_type_id._origin.id == key[2]
+                and l.selection_method_id._origin.id == key[3]
+                and l.position_quantity > 0
             )
             if lines:
                 yield (
@@ -576,7 +571,7 @@ class CivilServiceTrackerOfferQuickOfferWizard(models.TransientModel):
                     lines[0].contract_type_id,
                     lines[0].access_type_id,
                     lines[0].selection_method_id,
-                    lines
+                    lines,
                 )
 
     def _group_by_vacancy_type(self, lines):
@@ -591,4 +586,3 @@ class CivilServiceTrackerOfferQuickOfferWizard(models.TransientModel):
             grouped.setdefault(vt, []).append(line)
 
         return grouped
-

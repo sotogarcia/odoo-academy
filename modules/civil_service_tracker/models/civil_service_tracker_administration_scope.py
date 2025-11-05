@@ -13,79 +13,76 @@ _logger = getLogger(__name__)
 
 
 class CivilServiceTrackerAdministrationScope(models.Model):
+    _name = "civil.service.tracker.administration.scope"
+    _description = "Civil service tracker administration scope"
 
-    _name = 'civil.service.tracker.administration.scope'
-    _description = u'Civil service tracker administration scope'
+    _table = "cst_administration_scope"
 
-    _table = 'cst_administration_scope'
-
-    _rec_name = 'name'
-    _order = 'name ASC'
+    _rec_name = "name"
+    _order = "name ASC"
 
     name = fields.Char(
-        string='Name',
+        string="Name",
         required=True,
         readonly=False,
         index=True,
         default=None,
         help=False,
-        translate='Name of the scope (e.g., State, Region, Local)'
+        translate="Name of the scope (e.g., State, Region, Local)",
     )
 
     description = fields.Text(
-        string='Description',
+        string="Description",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='Optional description providing additional context',
-        translate=True
+        help="Optional description providing additional context",
+        translate=True,
     )
 
     active = fields.Boolean(
-        string='Active',
+        string="Active",
         required=False,
         readonly=False,
         index=False,
         default=True,
-        help='Indicates whether this administrative scope is currently active'
+        help="Indicates whether this administrative scope is currently active",
     )
 
     region_required = fields.Boolean(
-        string='Region required',
+        string="Region required",
         required=False,
         readonly=False,
         index=True,
         default=False,
-        help=False
+        help=False,
     )
 
     administration_type_ids = fields.One2many(
-        string='Administration types',
+        string="Administration types",
         required=False,
         readonly=False,
         index=False,
         default=None,
         help=False,
-        comodel_name='civil.service.tracker.administration.type',
-        inverse_name='administration_scope_id',
+        comodel_name="civil.service.tracker.administration.type",
+        inverse_name="administration_scope_id",
         domain=[],
         context={},
         auto_join=False,
-        limit=None
     )
 
     public_administration_ids = fields.One2many(
-        string='Public administrations',
+        string="Public administrations",
         required=False,
         readonly=False,
         index=False,
         default=None,
         help=False,
-        comodel_name='civil.service.tracker.public.administration',
-        inverse_name='administration_scope_id',
+        comodel_name="civil.service.tracker.public.administration",
+        inverse_name="administration_scope_id",
         domain=[],
         context={},
         auto_join=False,
-        limit=None
     )

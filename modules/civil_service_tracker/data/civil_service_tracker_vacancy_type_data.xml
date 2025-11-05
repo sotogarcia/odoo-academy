@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo noupdate="0">
 
-        <record id="civil_service_tracker_vacancy_type_general" model="civil.service.tracker.vacancy.type">
-            <field name="name">General</field>
-            <field name="description">Vacancy open to all applicants who meet the basic eligibility requirements.</field>
-        </record>
+  <record id="civil_service_tracker_vacancy_type_general" model="civil.service.tracker.vacancy.type">
+    <field name="name">General</field>
+    <field name="description">Vacancy open to all applicants who meet the basic eligibility
+      requirements.</field>
+  </record>
 
-        <record id="civil_service_tracker_vacancy_type_disabilities" model="civil.service.tracker.vacancy.type">
-            <field name="name">Disabilities</field>
-            <field name="description">Vacancy reserved for applicants with recognized disabilities, in accordance with applicable legislation.</field>
-        </record>
+  <record id="civil_service_tracker_vacancy_type_disabilities"
+    model="civil.service.tracker.vacancy.type">
+    <field name="name">Disabilities</field>
+    <field name="description">Vacancy reserved for applicants with recognized disabilities, in
+      accordance with applicable legislation.</field>
+  </record>
 
-    </data>
-</openerp>
+</odoo>

@@ -1,0 +1,8 @@
+.o_field_url_truncated {
+  max-width: 300px;
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}

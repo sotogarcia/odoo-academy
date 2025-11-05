@@ -4,7 +4,7 @@
 #    Odoo, Open Source Management Solution
 #
 #    Copyright (c) All rights reserved:
-#        (c) 2015
+#        (c) Jorge Soto Garcia 2025
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -23,13 +23,13 @@
 {
     "name": "Civil Service Tracker",
     "summary": "Module for managing public sector exams",
-    "version": "1.0",
+    "version": "18.0.1.0.0",
     "description": """
 Civil Service Tracker
 =====================
 
-This module provides a structured system to track and manage public sector job 
-offers, selection processes, and administrative classifications in Spain, 
+This module provides a structured system to track and manage public sector job
+offers, selection processes, and administrative classifications in Spain,
 including scopes, authorities, corps, and positions.
     """,
     "author": "Jorge Soto Garcia",
@@ -40,8 +40,10 @@ including scopes, authorities, corps, and positions.
     "license": "AGPL-3",
     "depends": [
         "base",
+        "web",
         "mail",
         "record_ownership",
+        "attachment_category",
         "attachment_effective_url",
     ],
     "external_dependencies": {
@@ -112,15 +114,22 @@ including scopes, authorities, corps, and positions.
         "views/controllers/route_web_selection_process_item_view.xml",
     ],
     "demo": [],
-    "js": [
-        "/civil_service_tracker/static/src/js/civil-service-widget.js",
-        "/civil_service_tracker/static/src/js/url_truncated_widget.js",
-        "/civil_service_tracker/static/src/js/header_view_buttons.js",
-        "/civil_service_tracker/static/src/js/quick_offer_form_patch.js",
-    ],
-    "css": ["/civil_service_tracker/static/src/css/styles-backend.css"],
-    "qweb": ["static/src/xml/header_view_buttons.xml"],
+    "js": [],
+    "assets": {
+        "web.assets_backend": [
+            "civil_service_tracker/static/src/css/styles-backend.css",
+            "civil_service_tracker/static/src/js/civil-service-widget.esm.js",
+            "civil_service_tracker/static/src/js/url_truncated_field.esm.js",
+            "civil_service_tracker/static/src/css/url_truncated_field.css",
+        ],
+        "web.assets_qweb": [
+            "civil_service_tracker/static/src/xml/url_truncated_field.xml",
+        ],
+    },
     "images": [],
     "test": [],
     "installable": True,
 }
+
+# "qweb": ["static/src/xml/header_view_buttons.xml"],
+# "civil_service_tracker/static/src/js/header_view_buttons.esm.js",

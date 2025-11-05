@@ -15,113 +15,110 @@ _logger = getLogger(__name__)
 
 
 class CivilServiceTrackerEmploymentGroup(models.Model):
+    _name = "civil.service.tracker.employment.group"
+    _description = "Civil service tracker employment group"
 
-    _name = 'civil.service.tracker.employment.group'
-    _description = u'Civil service tracker employment group'
+    _table = "cst_employment_group"
 
-    _table = 'cst_employment_group'
-
-    _rec_name = 'name'
-    _order = 'employment_scheme_id ASC, sequence ASC, name ASC'
+    _rec_name = "name"
+    _order = "employment_scheme_id ASC, sequence ASC, name ASC"
 
     name = fields.Char(
-        string='Name',
+        string="Name",
         required=True,
         readonly=False,
         index=True,
         default=None,
-        help='Group or sublevel of employment (e.g. A1, C2, Group IV)',
-        translate=True
+        help="Group or sublevel of employment (e.g. A1, C2, Group IV)",
+        translate=True,
     )
 
     description = fields.Text(
-        string='Description',
+        string="Description",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='Optional description providing additional context',
-        translate=True
+        help="Optional description providing additional context",
+        translate=True,
     )
 
     active = fields.Boolean(
-        string='Active',
+        string="Active",
         required=False,
         readonly=False,
         index=False,
         default=True,
-        help='Indicates whether this administrative scope is currently active'
+        help="Indicates whether this administrative scope is currently active",
     )
 
     sequence = fields.Integer(
-        string='Sequence',
+        string="Sequence",
         required=False,
         readonly=False,
         index=True,
         default=0,
-        help='Defines display order; lower values indicate higher importance'
+        help="Defines display order; lower values indicate higher importance",
     )
 
     employment_scheme_id = fields.Many2one(
-        string='Employment scheme',
+        string="Employment scheme",
         required=True,
         readonly=False,
         index=True,
         default=None,
-        help='Scheme or system that defines the general employment framework',
-        comodel_name='civil.service.tracker.employment.scheme',
+        help="Scheme or system that defines the general employment framework",
+        comodel_name="civil.service.tracker.employment.scheme",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
     service_position_ids = fields.One2many(
-        string='Service position',
+        string="Service position",
         required=False,
         readonly=False,
         index=True,
         default=None,
-        help='Service position associated with this employment group',
-        comodel_name='civil.service.tracker.service.position',
-        inverse_name='employment_group_id',
+        help="Service position associated with this employment group",
+        comodel_name="civil.service.tracker.service.position",
+        inverse_name="employment_group_id",
         domain=[],
         context={},
         auto_join=False,
-        limit=None
     )
 
     service_position_count = fields.Integer(
-        string='Service position count',
+        string="Service position count",
         required=True,
         readonly=True,
         index=False,
         default=0,
-        help='Number of service position assigned to this employment group',
-        compute='_compute_service_position_count'
+        help="Number of service position assigned to this employment group",
+        compute="_compute_service_position_count",
     )
 
-    @api.depends('service_position_ids')
+    @api.depends("service_position_ids")
     def _compute_service_position_count(self):
         for record in self:
             record.service_position_count = len(record.service_position_ids)
 
-    @api.depends('service_position_ids')
+    @api.depends("service_position_ids")
     def _compute_service_position_count(self):
         for record in self:
             record.service_position_count = len(record.service_position_ids)
 
-    def name_get(self):
-        result = []
-        
+    @api.depends("name", "employment_scheme_id", "employment_scheme_id.name")
+    @api.depends_context("lang")
+    def _compute_display_name(self):
         for record in self:
-            name_parts = [record.name]
-            
-            if record.employment_scheme_id:
-                name_parts.insert(0, record.employment_scheme_id.name)
-            
-            name = ' - '.join(name_parts)
-            
-            result.append((record.id, name))
-        
-        return result
+            if record.name:
+                name_parts = [record.name]
+
+                if record.employment_scheme_id:
+                    name_parts.insert(0, record.employment_scheme_id.name)
+
+                record.display_name = " - ".join(name_parts)
+            else:
+                record.display_name = self.env._("New employment group")

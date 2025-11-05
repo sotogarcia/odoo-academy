@@ -4,8 +4,8 @@
 #    __openerp__.py file at the root folder of this module.                   #
 ###############################################################################
 
-from openerp.http import route, request, Controller
-from openerp.tools.translate import _
+from odoo.http import route, request, Controller
+from odoo.tools.translate import _
 from odoo.osv.expression import FALSE_DOMAIN
 
 from logging import getLogger
@@ -17,14 +17,13 @@ _logger = getLogger(__name__)
 
 
 class BasePublicController(Controller):
-
     @classmethod
     def _make_token_domain(cls, token):
         if token and cls._is_valid_token(token):
-            domain = [('token', '=', token)]
-            _logger.debug(f'Process info requested with token: {token}')
+            domain = [("token", "=", token)]
+            _logger.debug(f"Process info requested with token: {token}")
         else:
-            _logger.warning(f'Invalid process token: {token}')
+            _logger.warning(f"Invalid process token: {token}")
             domain = FALSE_DOMAIN
 
         return domain
@@ -36,7 +35,6 @@ class BasePublicController(Controller):
             return str(val) == token.lower()
         except ValueError:
             return False
-
 
     @staticmethod
     def _get_current_user():
@@ -52,13 +50,13 @@ class BasePublicController(Controller):
     def secure_absolute_url(relative_url):
         """
         Safely builds an absolute URL from a relative path using the current host URL.
-        
+
         If an exception occurs, returns '#'.
         """
-        url = '#'
+        url = "#"
 
         try:
-            base_url = request.httprequest.host_url 
+            base_url = request.httprequest.host_url
             url = urljoin(base_url, relative_path)
         except Exception as ex:
             _logger.exception(ex)

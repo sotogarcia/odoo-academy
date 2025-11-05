@@ -1,1187 +1,1183 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo noupdate="0">
+
+  <record id="res_partner_category_civil_service" model="res.partner.category">
+    <field name="name">Civil service</field>
+  </record>
 
 
-        <record id="res_partner_category_civil_service" model="res.partner.category">
-            <field name="name">Civil service</field>
-        </record>
-
-
-        <!-- Unión Europea
+  <!-- Unión Europea
         ··································································· -->
-        <record id="res_partner_european_commission" model="res.partner">
-            <field name="name">European Commission</field>
-            <field name="vat" />
-            <field name="email">europamanagement@ec.europa.eu</field>
-            <field name="phone">+32 2 299 11 11</field>
-            <field name="mobile" />
-            <field name="website">https://commission.europa.eu</field>
-            <field name="active" eval="True" />
-            <field name="is_company" eval="True" />
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False" />
-            <field name="street">Rue de la Loi / Wetstraat 170</field>
-            <field name="zip">1049</field>
-            <field name="city">Brussels</field>
-            <field name="state_id" />
-            <field name="country_id" ref="base.be" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service'), 0)]" />
-            <field name="tz">Europe/Brussels</field>
-        </record>
+  <record id="res_partner_european_commission" model="res.partner">
+    <field name="name">European Commission</field>
+    <field name="vat"/>
+    <field name="email">europamanagement@ec.europa.eu</field>
+    <field name="phone">+32 2 299 11 11</field>
+    <field name="mobile"/>
+    <field name="website">https://commission.europa.eu</field>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street">Rue de la Loi / Wetstraat 170</field>
+    <field name="zip">1049</field>
+    <field name="city">Brussels</field>
+    <field name="state_id"/>
+    <field name="country_id" ref="base.be"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service'), 0)]"/>
+    <field name="tz">Europe/Brussels</field>
+  </record>
 
 
-        <!-- Estado
+  <!-- Estado
         ··································································· -->
 
-        <record id="res_partner_ess2833011f" model="res.partner">
-            <field name="vat">ESS2833011F</field>
-            <field name="name">Administración General del Estado (AGE)</field>
-            <field name="email">informacion.administrativa@correo.gob.es</field>
-            <field name="phone">+34 912 732 464</field>
-            <field name="mobile" />
-            <field name="website">https://administracion.gob.es</field>
-            <field name="active" eval="True" />
-            <field name="is_company" eval="True" />
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False" />
-            <field name="street">Calle María de Molina, 50</field>
-            <field name="street2">Oficina de Información y Atención General</field>
-            <field name="zip">28006</field>
-            <field name="city">Madrid</field>
-            <field name="state_id" ref="base.state_es_m" />
-            <field name="country_id" ref="base.es" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]" />
-            <field name="tz">Europe/Madrid</field>
-        </record>
+  <record id="res_partner_ess2833011f" model="res.partner">
+    <field name="vat">ESS2833011F</field>
+    <field name="name">Administración General del Estado (AGE)</field>
+    <field name="email">informacion.administrativa@correo.gob.es</field>
+    <field name="phone">+34 912 732 464</field>
+    <field name="mobile"/>
+    <field name="website">https://administracion.gob.es</field>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street">Calle María de Molina, 50</field>
+    <field name="street2">Oficina de Información y Atención General</field>
+    <field name="zip">28006</field>
+    <field name="city">Madrid</field>
+    <field name="state_id" ref="base.state_es_m"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]"/>
+    <field name="tz">Europe/Madrid</field>
+  </record>
 
-        <record id="res_partner_ess2801401g" model="res.partner">
-            <field name="vat">ESS2801401G</field>
-            <field name="name">Ministerio para la Transición Ecológica y el Reto Demográfico</field>
-            <field name="email">bzn-juntaymesamiteco@miteco.es</field>
-            <field name="phone">+34 915 976 225</field>
-            <field name="mobile" />
-            <field name="website">https://www.miteco.gob.es</field>
-            <field name="active" eval="True" />
-            <field name="is_company" eval="True" />
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False" />
-            <field name="street">Plaza de San Juan de la Cruz, s/n</field>
-            <field name="zip">28003</field>
-            <field name="city">Madrid</field>
-            <field name="state_id" ref="base.state_es_m" />
-            <field name="country_id" ref="base.es" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service'))]" />
-            <field name="tz">Europe/Madrid</field>
-        </record>
+  <record id="res_partner_ess2801401g" model="res.partner">
+    <field name="vat">ESS2801401G</field>
+    <field name="name">Ministerio para la Transición Ecológica y el Reto Demográfico</field>
+    <field name="email">bzn-juntaymesamiteco@miteco.es</field>
+    <field name="phone">+34 915 976 225</field>
+    <field name="mobile"/>
+    <field name="website">https://www.miteco.gob.es</field>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street">Plaza de San Juan de la Cruz, s/n</field>
+    <field name="zip">28003</field>
+    <field name="city">Madrid</field>
+    <field name="state_id" ref="base.state_es_m"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service'))]"/>
+    <field name="tz">Europe/Madrid</field>
+  </record>
 
-        <record id="res_partner_ess2800239b" model="res.partner">
-            <field name="vat">ESS2800239B</field>
-            <field name="name">Ministerio de Cultura</field>
-            <field name="email">informacion.giec@cultura.gob.es</field>
-            <field name="phone">+34 917 017 000</field>
-            <field name="mobile" />
-            <field name="website">https://www.cultura.gob.es/</field>
-            <field name="active" eval="True" />
-            <field name="is_company" eval="True" />
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False" />
-            <field name="street">Plaza del Rey 1</field>
-            <field name="zip">28004</field>
-            <field name="city">Madrid</field>
-            <field name="state_id" ref="base.state_es_m" />
-            <field name="country_id" ref="base.es" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service'))]" />
-            <field name="tz">Europe/Madrid</field>
-        </record>
+  <record id="res_partner_ess2800239b" model="res.partner">
+    <field name="vat">ESS2800239B</field>
+    <field name="name">Ministerio de Cultura</field>
+    <field name="email">informacion.giec@cultura.gob.es</field>
+    <field name="phone">+34 917 017 000</field>
+    <field name="mobile"/>
+    <field name="website">https://www.cultura.gob.es/</field>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street">Plaza del Rey 1</field>
+    <field name="zip">28004</field>
+    <field name="city">Madrid</field>
+    <field name="state_id" ref="base.state_es_m"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service'))]"/>
+    <field name="tz">Europe/Madrid</field>
+  </record>
 
-        <record id="res_partner_ess2801506c" model="res.partner">
-            <field name="vat">ESS2801506C</field>
-            <field name="name">Ministerio de Vivienda y Agenda Urbana</field>
-            <field name="email">sg.contratacion-ag@mivau.gob.es</field>
-            <field name="phone">+34 913 286 491</field>
-            <field name="mobile" />
-            <field name="website">https://www.mivau.gob.es</field>
-            <field name="active" eval="True" />
-            <field name="is_company" eval="True" />
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False" />
-            <field name="street">Paseo de la Castellana, 67</field>
-            <field name="zip">28046</field>
-            <field name="city">Madrid</field>
-            <field name="state_id" ref="base.state_es_m" />
-            <field name="country_id" ref="base.es" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service'))]" />
-            <field name="tz">Europe/Madrid</field>
-        </record>
+  <record id="res_partner_ess2801506c" model="res.partner">
+    <field name="vat">ESS2801506C</field>
+    <field name="name">Ministerio de Vivienda y Agenda Urbana</field>
+    <field name="email">sg.contratacion-ag@mivau.gob.es</field>
+    <field name="phone">+34 913 286 491</field>
+    <field name="mobile"/>
+    <field name="website">https://www.mivau.gob.es</field>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street">Paseo de la Castellana, 67</field>
+    <field name="zip">28046</field>
+    <field name="city">Madrid</field>
+    <field name="state_id" ref="base.state_es_m"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service'))]"/>
+    <field name="tz">Europe/Madrid</field>
+  </record>
 
-        <record id="res_partner_ess2800569b" model="res.partner">
-            <field name="vat">ESS2800569B</field>
-            <field name="name">Ministerio de Transportes y Movilidad Sostenible</field>
-            <field name="email">portal.gsestado@transportes.gob.es</field>
-            <field name="phone">+34 915 978 787</field>
-            <field name="mobile" />
-            <field name="website">https://www.transportes.gob.es</field>
-            <field name="active" eval="True" />
-            <field name="is_company" eval="True" />
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False" />
-            <field name="street">Paseo de la Castellana, 67</field>
-            <field name="zip">28046</field>
-            <field name="city">Madrid</field>
-            <field name="state_id" ref="base.state_es_m" />
-            <field name="country_id" ref="base.es" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service'))]" />
-            <field name="tz">Europe/Madrid</field>
-        </record>
+  <record id="res_partner_ess2800569b" model="res.partner">
+    <field name="vat">ESS2800569B</field>
+    <field name="name">Ministerio de Transportes y Movilidad Sostenible</field>
+    <field name="email">portal.gsestado@transportes.gob.es</field>
+    <field name="phone">+34 915 978 787</field>
+    <field name="mobile"/>
+    <field name="website">https://www.transportes.gob.es</field>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street">Paseo de la Castellana, 67</field>
+    <field name="zip">28046</field>
+    <field name="city">Madrid</field>
+    <field name="state_id" ref="base.state_es_m"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service'))]"/>
+    <field name="tz">Europe/Madrid</field>
+  </record>
 
-        <record id="res_partner_ess2817040e" model="res.partner">
-            <field name="vat">ESS2817040E</field>
-            <field name="name">Ministerio de Transportes, Movilidad y Agenda Urbana</field>
-            <field name="email">atencionciudadano@fomento.es</field>
-            <field name="phone">+34 915 977 000</field>
-            <field name="mobile" />
-            <field name="website">https://www.mitma.gob.es</field>
-            <field name="active" eval="True" />
-            <field name="is_company" eval="True" />
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False" />
-            <field name="street">Paseo de la Castellana, 67</field>
-            <field name="zip">28046</field>
-            <field name="city">Madrid</field>
-            <field name="state_id" ref="base.state_es_m" />
-            <field name="country_id" ref="base.es" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service'))]" />
-            <field name="tz">Europe/Madrid</field>
-        </record>
+  <record id="res_partner_ess2817040e" model="res.partner">
+    <field name="vat">ESS2817040E</field>
+    <field name="name">Ministerio de Transportes, Movilidad y Agenda Urbana</field>
+    <field name="email">atencionciudadano@fomento.es</field>
+    <field name="phone">+34 915 977 000</field>
+    <field name="mobile"/>
+    <field name="website">https://www.mitma.gob.es</field>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street">Paseo de la Castellana, 67</field>
+    <field name="zip">28046</field>
+    <field name="city">Madrid</field>
+    <field name="state_id" ref="base.state_es_m"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service'))]"/>
+    <field name="tz">Europe/Madrid</field>
+  </record>
 
-        <record id="res_partner_ess2819001e" model="res.partner">
-            <field name="vat">ESS2819001E</field>
-            <field name="name">Ministerio de Trabajo y Economía Social</field>
-            <field name="email">portal@mites.gob.es</field>
-            <field name="phone">+34 913 630 000</field>
-            <field name="mobile" />
-            <field name="website">https://www.mites.gob.es</field>
-            <field name="active" eval="True" />
-            <field name="is_company" eval="True" />
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False" />
-            <field name="street">Paseo de la Castellana, 63</field>
-            <field name="zip">28071</field>
-            <field name="city">Madrid</field>
-            <field name="state_id" ref="base.state_es_m" />
-            <field name="country_id" ref="base.es" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service'))]" />
-            <field name="tz">Europe/Madrid</field>
-        </record>
+  <record id="res_partner_ess2819001e" model="res.partner">
+    <field name="vat">ESS2819001E</field>
+    <field name="name">Ministerio de Trabajo y Economía Social</field>
+    <field name="email">portal@mites.gob.es</field>
+    <field name="phone">+34 913 630 000</field>
+    <field name="mobile"/>
+    <field name="website">https://www.mites.gob.es</field>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street">Paseo de la Castellana, 63</field>
+    <field name="zip">28071</field>
+    <field name="city">Madrid</field>
+    <field name="state_id" ref="base.state_es_m"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service'))]"/>
+    <field name="tz">Europe/Madrid</field>
+  </record>
 
-        <record id="res_partner_ess2827001e" model="res.partner">
-            <field name="vat">ESS2827001E</field>
-            <field name="name">Ministerio de Sanidad</field>
-            <field name="email">oiac@oiac.sanidad.gob.es</field>
-            <field name="phone">+34 915 961 089</field>
-            <field name="mobile" />
-            <field name="website">https://www.sanidad.gob.es</field>
-            <field name="active" eval="True" />
-            <field name="is_company" eval="True" />
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False" />
-            <field name="street">Paseo del Prado, 18-20</field>
-            <field name="zip">28014</field>
-            <field name="city">Madrid</field>
-            <field name="state_id" ref="base.state_es_m" />
-            <field name="country_id" ref="base.es" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service'))]" />
-            <field name="tz">Europe/Madrid</field>
-        </record>
+  <record id="res_partner_ess2827001e" model="res.partner">
+    <field name="vat">ESS2827001E</field>
+    <field name="name">Ministerio de Sanidad</field>
+    <field name="email">oiac@oiac.sanidad.gob.es</field>
+    <field name="phone">+34 915 961 089</field>
+    <field name="mobile"/>
+    <field name="website">https://www.sanidad.gob.es</field>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street">Paseo del Prado, 18-20</field>
+    <field name="zip">28014</field>
+    <field name="city">Madrid</field>
+    <field name="state_id" ref="base.state_es_m"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service'))]"/>
+    <field name="tz">Europe/Madrid</field>
+  </record>
 
-        <record id="res_partner_ess2811001c" model="res.partner">
-            <field name="vat">ESS2811001C</field>
-            <field name="name">Ministerio de la Presidencia, Justicia y Relaciones con las Cortes</field>
-            <field name="email">bzcontratacion@mpr.es</field>
-            <field name="phone">+34 913 353 178</field>
-            <field name="mobile" />
-            <field name="website">https://www.mpr.gob.es</field>
-            <field name="active" eval="True" />
-            <field name="is_company" eval="True" />
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False" />
-            <field name="street">Avenida Puerta de Hierro, s/n</field>
-            <field name="zip">28071</field>
-            <field name="city">Madrid</field>
-            <field name="state_id" ref="base.state_es_m" />
-            <field name="country_id" ref="base.es" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service'))]" />
-            <field name="tz">Europe/Madrid</field>
-        </record>
+  <record id="res_partner_ess2811001c" model="res.partner">
+    <field name="vat">ESS2811001C</field>
+    <field name="name">Ministerio de la Presidencia, Justicia y Relaciones con las Cortes</field>
+    <field name="email">bzcontratacion@mpr.es</field>
+    <field name="phone">+34 913 353 178</field>
+    <field name="mobile"/>
+    <field name="website">https://www.mpr.gob.es</field>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street">Avenida Puerta de Hierro, s/n</field>
+    <field name="zip">28071</field>
+    <field name="city">Madrid</field>
+    <field name="state_id" ref="base.state_es_m"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service'))]"/>
+    <field name="tz">Europe/Madrid</field>
+  </record>
 
-        <record id="res_partner_ess2801503j" model="res.partner">
-            <field name="vat">ESS2801503J</field>
-            <field name="name">Ministerio de Juventud e Infancia</field>
-            <field name="email">inspeccionservicios@juventudeinfancia.gob.es</field>
-            <field name="phone">+34 915 961 000</field>
-            <field name="mobile" />
-            <field name="website">https://www.juventudeinfancia.gob.es</field>
-            <field name="active" eval="True" />
-            <field name="is_company" eval="True" />
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False" />
-            <field name="street">Calle del Marqués del Riscal, 16</field>
-            <field name="zip">28010</field>
-            <field name="city">Madrid</field>
-            <field name="state_id" ref="base.state_es_m" />
-            <field name="country_id" ref="base.es" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service'))]" />
-            <field name="tz">Europe/Madrid</field>
-        </record>
+  <record id="res_partner_ess2801503j" model="res.partner">
+    <field name="vat">ESS2801503J</field>
+    <field name="name">Ministerio de Juventud e Infancia</field>
+    <field name="email">inspeccionservicios@juventudeinfancia.gob.es</field>
+    <field name="phone">+34 915 961 000</field>
+    <field name="mobile"/>
+    <field name="website">https://www.juventudeinfancia.gob.es</field>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street">Calle del Marqués del Riscal, 16</field>
+    <field name="zip">28010</field>
+    <field name="city">Madrid</field>
+    <field name="state_id" ref="base.state_es_m"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service'))]"/>
+    <field name="tz">Europe/Madrid</field>
+  </record>
 
-        <record id="res_partner_ess2800214e" model="res.partner">
-            <field name="vat">ESS2800214E</field>
-            <field name="name">Ministerio de Industria y Turismo</field>
-            <field name="email">informacionweb@minetur.es</field>
-            <field name="phone">+34 913 494 640</field>
-            <field name="mobile" />
-            <field name="website">https://www.mintur.gob.es</field>
-            <field name="active" eval="True" />
-            <field name="is_company" eval="True" />
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False" />
-            <field name="street">Paseo de la Castellana, 160</field>
-            <field name="zip">28046</field>
-            <field name="city">Madrid</field>
-            <field name="state_id" ref="base.state_es_m" />
-            <field name="country_id" ref="base.es" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service'))]" />
-            <field name="tz">Europe/Madrid</field>
-        </record>
+  <record id="res_partner_ess2800214e" model="res.partner">
+    <field name="vat">ESS2800214E</field>
+    <field name="name">Ministerio de Industria y Turismo</field>
+    <field name="email">informacionweb@minetur.es</field>
+    <field name="phone">+34 913 494 640</field>
+    <field name="mobile"/>
+    <field name="website">https://www.mintur.gob.es</field>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street">Paseo de la Castellana, 160</field>
+    <field name="zip">28046</field>
+    <field name="city">Madrid</field>
+    <field name="state_id" ref="base.state_es_m"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service'))]"/>
+    <field name="tz">Europe/Madrid</field>
+  </record>
 
-        <record id="res_partner_ess2800560a" model="res.partner">
-            <field name="vat">ESS2800560A</field>
-            <field name="name">Ministerio de Igualdad</field>
-            <field name="email">contratacion@migualdad.es</field>
-            <field name="phone">+34 915 243 220</field>
-            <field name="mobile" />
-            <field name="website">https://www.igualdad.gob.es</field>
-            <field name="active" eval="True" />
-            <field name="is_company" eval="True" />
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False" />
-            <field name="street">Calle Alcalá, 37</field>
-            <field name="zip">28071</field>
-            <field name="city">Madrid</field>
-            <field name="state_id" ref="base.state_es_m" />
-            <field name="country_id" ref="base.es" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service'))]" />
-            <field name="tz">Europe/Madrid</field>
-        </record>
+  <record id="res_partner_ess2800560a" model="res.partner">
+    <field name="vat">ESS2800560A</field>
+    <field name="name">Ministerio de Igualdad</field>
+    <field name="email">contratacion@migualdad.es</field>
+    <field name="phone">+34 915 243 220</field>
+    <field name="mobile"/>
+    <field name="website">https://www.igualdad.gob.es</field>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street">Calle Alcalá, 37</field>
+    <field name="zip">28071</field>
+    <field name="city">Madrid</field>
+    <field name="state_id" ref="base.state_es_m"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service'))]"/>
+    <field name="tz">Europe/Madrid</field>
+  </record>
 
-        <record id="res_partner_ess2812001f" model="res.partner">
-            <field name="vat">ESS2818001F</field>
-            <field name="name">Ministerio de Educación, Formación Profesional y Deportes</field>
-            <field name="email">informacion@educacion.gob.es</field>
-            <field name="phone">+34 060</field>
-            <field name="mobile" />
-            <field name="website">https://www.educacionfpydeportes.gob.es</field>
-            <field name="active" eval="True" />
-            <field name="is_company" eval="True" />
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False" />
-            <field name="street">Calle Alcalá, 34</field>
-            <field name="zip">28014</field>
-            <field name="city">Madrid</field>
-            <field name="state_id" ref="base.state_es_m" />
-            <field name="country_id" ref="base.es" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service'))]" />
-            <field name="tz">Europe/Madrid</field>
-        </record>
+  <record id="res_partner_ess2812001f" model="res.partner">
+    <field name="vat">ESS2818001F</field>
+    <field name="name">Ministerio de Educación, Formación Profesional y Deportes</field>
+    <field name="email">informacion@educacion.gob.es</field>
+    <field name="phone">+34 060</field>
+    <field name="mobile"/>
+    <field name="website">https://www.educacionfpydeportes.gob.es</field>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street">Calle Alcalá, 34</field>
+    <field name="zip">28014</field>
+    <field name="city">Madrid</field>
+    <field name="state_id" ref="base.state_es_m"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service'))]"/>
+    <field name="tz">Europe/Madrid</field>
+  </record>
 
-        <record id="res_partner_ess2801391j" model="res.partner">
-            <field name="vat">ESS2801391J</field>
-            <field name="name">Ministerio de Economía, Comercio y Empresa</field>
-            <field name="email">fmaniega@economia.gob.es</field>
-            <field name="phone">+34 916 037 675</field>
-            <field name="mobile" />
-            <field name="website">https://portal.mineco.gob.es</field>
-            <field name="active" eval="True" />
-            <field name="is_company" eval="True" />
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False" />
-            <field name="street">Paseo de la Castellana, 162</field>
-            <field name="zip">28046</field>
-            <field name="city">Madrid</field>
-            <field name="state_id" ref="base.state_es_m" />
-            <field name="country_id" ref="base.es" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service'))]" />
-            <field name="tz">Europe/Madrid</field>
-        </record>
+  <record id="res_partner_ess2801391j" model="res.partner">
+    <field name="vat">ESS2801391J</field>
+    <field name="name">Ministerio de Economía, Comercio y Empresa</field>
+    <field name="email">fmaniega@economia.gob.es</field>
+    <field name="phone">+34 916 037 675</field>
+    <field name="mobile"/>
+    <field name="website">https://portal.mineco.gob.es</field>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street">Paseo de la Castellana, 162</field>
+    <field name="zip">28046</field>
+    <field name="city">Madrid</field>
+    <field name="state_id" ref="base.state_es_m"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service'))]"/>
+    <field name="tz">Europe/Madrid</field>
+  </record>
 
-        <record id="res_partner_ess2801444g" model="res.partner">
-            <field name="vat">ESS2801444G</field>
-            <field name="name">Ministerio de Derechos Sociales, Consumo y Agenda 2030</field>
-            <field name="email">sede_electronica@mdsociales2030.gob.es</field>
-            <field name="phone">+34 915 961 000</field>
-            <field name="mobile" />
-            <field name="website">https://www.mdsocialesa2030.gob.es</field>
-            <field name="active" eval="True" />
-            <field name="is_company" eval="True" />
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False" />
-            <field name="street">Paseo del Prado, 18-20</field>
-            <field name="zip">28014</field>
-            <field name="city">Madrid</field>
-            <field name="state_id" ref="base.state_es_m" />
-            <field name="country_id" ref="base.es" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service'))]" />
-            <field name="tz">Europe/Madrid</field>
-        </record>
+  <record id="res_partner_ess2801444g" model="res.partner">
+    <field name="vat">ESS2801444G</field>
+    <field name="name">Ministerio de Derechos Sociales, Consumo y Agenda 2030</field>
+    <field name="email">sede_electronica@mdsociales2030.gob.es</field>
+    <field name="phone">+34 915 961 000</field>
+    <field name="mobile"/>
+    <field name="website">https://www.mdsocialesa2030.gob.es</field>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street">Paseo del Prado, 18-20</field>
+    <field name="zip">28014</field>
+    <field name="city">Madrid</field>
+    <field name="state_id" ref="base.state_es_m"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service'))]"/>
+    <field name="tz">Europe/Madrid</field>
+  </record>
 
-        <!-- Ministerio de Agricultura, Pesca y Alimentación -->
-        <record id="res_partner_ess2821001a" model="res.partner">
-            <field name="vat">ESS2821001A</field>
-            <field name="name">Ministerio de Agricultura, Pesca y Alimentación</field>
-            <field name="email">sdministro@mapama.es</field>
-            <field name="phone">+34 913 475 600</field>
-            <field name="mobile" />
-            <field name="website">https://www.mapa.gob.es</field>
-            <field name="active" eval="True" />
-            <field name="is_company" eval="True" />
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False" />
-            <field name="street">Paseo de la Infanta Isabel, 1</field>
-            <field name="zip">28014</field>
-            <field name="city">Madrid</field>
-            <field name="state_id" ref="base.state_es_m" />
-            <field name="country_id" ref="base.es" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service'))]" />
-            <field name="tz">Europe/Madrid</field>
-        </record>
+  <!-- Ministerio de Agricultura, Pesca y Alimentación -->
+  <record id="res_partner_ess2821001a" model="res.partner">
+    <field name="vat">ESS2821001A</field>
+    <field name="name">Ministerio de Agricultura, Pesca y Alimentación</field>
+    <field name="email">sdministro@mapama.es</field>
+    <field name="phone">+34 913 475 600</field>
+    <field name="mobile"/>
+    <field name="website">https://www.mapa.gob.es</field>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street">Paseo de la Infanta Isabel, 1</field>
+    <field name="zip">28014</field>
+    <field name="city">Madrid</field>
+    <field name="state_id" ref="base.state_es_m"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service'))]"/>
+    <field name="tz">Europe/Madrid</field>
+  </record>
 
-        <!-- Ministerio de Asuntos Exteriores, Unión Europea y Cooperación -->
-        <record id="res_partner_ess2812001b" model="res.partner">
-            <field name="vat">ESS2812001B</field>
-            <field name="name">Ministerio de Asuntos Exteriores, Unión Europea y Cooperación</field>
-            <field name="email">informae@maec.es</field>
-            <field name="phone">+34 913 799 700</field>
-            <field name="mobile" />
-            <field name="website">https://www.exteriores.gob.es</field>
-            <field name="active" eval="True" />
-            <field name="is_company" eval="True" />
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False" />
-            <field name="street">Plaza del Marqués de Salamanca, 8</field>
-            <field name="zip">28006</field>
-            <field name="city">Madrid</field>
-            <field name="state_id" ref="base.state_es_m" />
-            <field name="country_id" ref="base.es" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service'))]" />
-            <field name="tz">Europe/Madrid</field>
-        </record>
+  <!-- Ministerio de Asuntos Exteriores, Unión Europea y Cooperación -->
+  <record id="res_partner_ess2812001b" model="res.partner">
+    <field name="vat">ESS2812001B</field>
+    <field name="name">Ministerio de Asuntos Exteriores, Unión Europea y Cooperación</field>
+    <field name="email">informae@maec.es</field>
+    <field name="phone">+34 913 799 700</field>
+    <field name="mobile"/>
+    <field name="website">https://www.exteriores.gob.es</field>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street">Plaza del Marqués de Salamanca, 8</field>
+    <field name="zip">28006</field>
+    <field name="city">Madrid</field>
+    <field name="state_id" ref="base.state_es_m"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service'))]"/>
+    <field name="tz">Europe/Madrid</field>
+  </record>
 
-        <!-- Ministerio de Ciencia, Innovación y Universidades -->
-        <record id="res_partner_ess2801395a" model="res.partner">
-            <field name="vat">ESS2801395A</field>
-            <field name="name">Ministerio de Ciencia, Innovación y Universidades</field>
-            <field name="email">informacion@ciencia.gob.es</field>
-            <field name="phone">+34 060</field>
-            <field name="mobile" />
-            <field name="website">https://www.ciencia.gob.es</field>
-            <field name="active" eval="True" />
-            <field name="is_company" eval="True" />
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False" />
-            <field name="street">Paseo de la Castellana, 162</field>
-            <field name="zip">28046</field>
-            <field name="city">Madrid</field>
-            <field name="state_id" ref="base.state_es_m" />
-            <field name="country_id" ref="base.es" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service'))]" />
-            <field name="tz">Europe/Madrid</field>
-        </record>
+  <!-- Ministerio de Ciencia, Innovación y Universidades -->
+  <record id="res_partner_ess2801395a" model="res.partner">
+    <field name="vat">ESS2801395A</field>
+    <field name="name">Ministerio de Ciencia, Innovación y Universidades</field>
+    <field name="email">informacion@ciencia.gob.es</field>
+    <field name="phone">+34 060</field>
+    <field name="mobile"/>
+    <field name="website">https://www.ciencia.gob.es</field>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street">Paseo de la Castellana, 162</field>
+    <field name="zip">28046</field>
+    <field name="city">Madrid</field>
+    <field name="state_id" ref="base.state_es_m"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service'))]"/>
+    <field name="tz">Europe/Madrid</field>
+  </record>
 
-        <record id="res_partner_esq2826000h" model="res.partner">
-            <field name="vat">ESQ2826000H</field>
-            <field name="email">agenciatributaria@correo.aeat.es</field>
-            <field name="active" eval="True" />
-            <field name="zip">28020</field>
-            <field name="street">Calle Infanta Mercedes, 37</field>
-            <field name="city">Madrid</field>
-            <field name="employee" eval="False" />
-            <field name="is_company" eval="True" />
-            <field name="state_id" ref="base.state_es_m" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]" />
-            <field name="mobile" />
-            <field name="phone">+34 915 548 770</field>
-            <field name="name">Agencia Estatal de Administración Tributaria (AEAT)</field>
-            <field name="country_id" ref="base.es" />
-            <field name="website">http://www.agenciatributaria.es</field>
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="tz">Europe/Madrid</field>
-            <field name="parent_id" ref="res_partner_ess2833011f" />
-        </record>
+  <record id="res_partner_esq2826000h" model="res.partner">
+    <field name="vat">ESQ2826000H</field>
+    <field name="email">agenciatributaria@correo.aeat.es</field>
+    <field name="active" eval="True"/>
+    <field name="zip">28020</field>
+    <field name="street">Calle Infanta Mercedes, 37</field>
+    <field name="city">Madrid</field>
+    <field name="employee" eval="False"/>
+    <field name="is_company" eval="True"/>
+    <field name="state_id" ref="base.state_es_m"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]"/>
+    <field name="mobile"/>
+    <field name="phone">+34 915 548 770</field>
+    <field name="name">Agencia Estatal de Administración Tributaria (AEAT)</field>
+    <field name="country_id" ref="base.es"/>
+    <field name="website">http://www.agenciatributaria.es</field>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="tz">Europe/Madrid</field>
+    <field name="parent_id" ref="res_partner_ess2833011f"/>
+  </record>
 
-        <record id="res_partner_ess2816003d" model="res.partner">
-            <field name="vat">ESS2816003D</field>
-            <field name="name">Dirección General de la Guardia Civil</field>
-            <field name="email">prensa@mjusticia.es</field>
-            <field name="phone">+34 915 146 001</field>
-            <field name="mobile" />
-            <field name="website">https://www.guardiacivil.es</field>
-            <field name="active" eval="True" />
-            <field name="is_company" eval="True" />
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False" />
-            <field name="street">Calle Guzmán el Bueno, 110</field>
-            <field name="zip">28003</field>
-            <field name="city">Madrid</field>
-            <field name="state_id" ref="base.state_es_m" />
-            <field name="country_id" ref="base.es" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]" />
-            <field name="tz">Europe/Madrid</field>
-            <field name="parent_id" ref="res_partner_ess2833011f" />
-        </record>
+  <record id="res_partner_ess2816003d" model="res.partner">
+    <field name="vat">ESS2816003D</field>
+    <field name="name">Dirección General de la Guardia Civil</field>
+    <field name="email">prensa@mjusticia.es</field>
+    <field name="phone">+34 915 146 001</field>
+    <field name="mobile"/>
+    <field name="website">https://www.guardiacivil.es</field>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street">Calle Guzmán el Bueno, 110</field>
+    <field name="zip">28003</field>
+    <field name="city">Madrid</field>
+    <field name="state_id" ref="base.state_es_m"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]"/>
+    <field name="tz">Europe/Madrid</field>
+    <field name="parent_id" ref="res_partner_ess2833011f"/>
+  </record>
 
-        <record id="res_partner_ess2816015h" model="res.partner">
-            <field name="vat">ESS2816015H</field>
-            <field name="name">Dirección General de la Policía</field>
-            <field name="email">webdgp@policia.es</field>
-            <field name="phone">+34 915 828 061</field>
-            <field name="mobile" />
-            <field name="website">https://www.policia.es</field>
-            <field name="active" eval="True" />
-            <field name="is_company" eval="True" />
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False" />
-            <field name="street">Calle Julián González Segador, s/n</field>
-            <field name="zip">28043</field>
-            <field name="city">Madrid</field>
-            <field name="state_id" ref="base.state_es_m" />
-            <field name="country_id" ref="base.es" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]" />
-            <field name="tz">Europe/Madrid</field>
-            <field name="parent_id" ref="res_partner_ess2833011f" />
-        </record>
+  <record id="res_partner_ess2816015h" model="res.partner">
+    <field name="vat">ESS2816015H</field>
+    <field name="name">Dirección General de la Policía</field>
+    <field name="email">webdgp@policia.es</field>
+    <field name="phone">+34 915 828 061</field>
+    <field name="mobile"/>
+    <field name="website">https://www.policia.es</field>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street">Calle Julián González Segador, s/n</field>
+    <field name="zip">28043</field>
+    <field name="city">Madrid</field>
+    <field name="state_id" ref="base.state_es_m"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]"/>
+    <field name="tz">Europe/Madrid</field>
+    <field name="parent_id" ref="res_partner_ess2833011f"/>
+  </record>
 
-        <record id="res_partner_ess2830001j" model="res.partner">
-            <field name="vat">ESS2830001J</field>
-            <field name="name">Ministerio de Defensa</field>
-            <field name="email">sdgcontratacion@oc.mde.es</field>
-            <field name="phone">+34 917 703 235</field>
-            <field name="mobile" />
-            <field name="website">https://www.defensa.gob.es</field>
-            <field name="active" eval="True" />
-            <field name="is_company" eval="True" />
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False" />
-            <field name="street">Paseo de la Castellana, 109</field>
-            <field name="zip">28071</field>
-            <field name="city">Madrid</field>
-            <field name="state_id" ref="base.state_es_m" />
-            <field name="country_id" ref="base.es" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]" />
-            <field name="tz">Europe/Madrid</field>
-        </record>
+  <record id="res_partner_ess2830001j" model="res.partner">
+    <field name="vat">ESS2830001J</field>
+    <field name="name">Ministerio de Defensa</field>
+    <field name="email">sdgcontratacion@oc.mde.es</field>
+    <field name="phone">+34 917 703 235</field>
+    <field name="mobile"/>
+    <field name="website">https://www.defensa.gob.es</field>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street">Paseo de la Castellana, 109</field>
+    <field name="zip">28071</field>
+    <field name="city">Madrid</field>
+    <field name="state_id" ref="base.state_es_m"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]"/>
+    <field name="tz">Europe/Madrid</field>
+  </record>
 
-        <record id="res_partner_ess2826001f" model="res.partner">
-            <field name="vat">ESS2826001F</field>
-            <field name="name">Ministerio de Hacienda</field>
-            <field name="email">informacion.alcala@minhac.es</field>
-            <field name="phone">+34 915 958 000</field>
-            <field name="mobile" />
-            <field name="website">https://www.hacienda.gob.es</field>
-            <field name="active" eval="True" />
-            <field name="is_company" eval="True" />
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False" />
-            <field name="street">Calle de Alcalá, 5</field>
-            <field name="zip">28014</field>
-            <field name="city">Madrid</field>
-            <field name="state_id" ref="base.state_es_m" />
-            <field name="country_id" ref="base.es" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]" />
-            <field name="tz">Europe/Madrid</field>
-        </record>
+  <record id="res_partner_ess2826001f" model="res.partner">
+    <field name="vat">ESS2826001F</field>
+    <field name="name">Ministerio de Hacienda</field>
+    <field name="email">informacion.alcala@minhac.es</field>
+    <field name="phone">+34 915 958 000</field>
+    <field name="mobile"/>
+    <field name="website">https://www.hacienda.gob.es</field>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street">Calle de Alcalá, 5</field>
+    <field name="zip">28014</field>
+    <field name="city">Madrid</field>
+    <field name="state_id" ref="base.state_es_m"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]"/>
+    <field name="tz">Europe/Madrid</field>
+  </record>
 
-        <record id="res_partner_ess2801449f" model="res.partner">
-            <field name="vat">ESS2801449F</field>
-            <field name="name">Ministerio de Inclusión, Seguridad Social y Migraciones</field>
-            <field name="email">portal@inclusion.gob.es</field>
-            <field name="phone">+34 913 637 670</field>
-            <field name="mobile" />
-            <field name="website">https://www.inclusion.gob.es</field>
-            <field name="active" eval="True" />
-            <field name="is_company" eval="True" />
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False" />
-            <field name="street">Calle José Abascal, 39</field>
-            <field name="zip">28003</field>
-            <field name="city">Madrid</field>
-            <field name="state_id" ref="base.state_es_m" />
-            <field name="country_id" ref="base.es" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]" />
-            <field name="tz">Europe/Madrid</field>
-        </record>
+  <record id="res_partner_ess2801449f" model="res.partner">
+    <field name="vat">ESS2801449F</field>
+    <field name="name">Ministerio de Inclusión, Seguridad Social y Migraciones</field>
+    <field name="email">portal@inclusion.gob.es</field>
+    <field name="phone">+34 913 637 670</field>
+    <field name="mobile"/>
+    <field name="website">https://www.inclusion.gob.es</field>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street">Calle José Abascal, 39</field>
+    <field name="zip">28003</field>
+    <field name="city">Madrid</field>
+    <field name="state_id" ref="base.state_es_m"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]"/>
+    <field name="tz">Europe/Madrid</field>
+  </record>
 
-        <record id="res_partner_ess2813001a" model="res.partner">
-            <field name="vat">ESS2813001A</field>
-            <field name="name">Ministerio de Justicia</field>
-            <field name="email">prensa@mjusticia.es</field>
-            <field name="phone">+34 902 007 214</field>
-            <field name="mobile" />
-            <field name="website">https://www.mjusticia.gob.es</field>
-            <field name="active" eval="True" />
-            <field name="is_company" eval="True" />
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False" />
-            <field name="street">Calle San Bernardo, 45</field>
-            <field name="zip">28015</field>
-            <field name="city">Madrid</field>
-            <field name="state_id" ref="base.state_es_m" />
-            <field name="country_id" ref="base.es" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]" />
-            <field name="tz">Europe/Madrid</field>
-        </record>
+  <record id="res_partner_ess2813001a" model="res.partner">
+    <field name="vat">ESS2813001A</field>
+    <field name="name">Ministerio de Justicia</field>
+    <field name="email">prensa@mjusticia.es</field>
+    <field name="phone">+34 902 007 214</field>
+    <field name="mobile"/>
+    <field name="website">https://www.mjusticia.gob.es</field>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street">Calle San Bernardo, 45</field>
+    <field name="zip">28015</field>
+    <field name="city">Madrid</field>
+    <field name="state_id" ref="base.state_es_m"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]"/>
+    <field name="tz">Europe/Madrid</field>
+  </record>
 
-        <record id="res_partner_ess2833002e" model="res.partner">
-            <field name="vat">ESS2833002E</field>
-            <field name="name">Ministerio de Política Territorial y Memoria Democrática</field>
-            <field name="email">informacion@mpt.gob.es</field>
-            <field name="phone">+34 915 907 000</field>
-            <field name="mobile" />
-            <field name="website">https://www.mpt.gob.es</field>
-            <field name="active" eval="True" />
-            <field name="is_company" eval="True" />
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False" />
-            <field name="street">Paseo de la Castellana, 3</field>
-            <field name="zip">28046</field>
-            <field name="city">Madrid</field>
-            <field name="state_id" ref="base.state_es_m" />
-            <field name="country_id" ref="base.es" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]" />
-            <field name="tz">Europe/Madrid</field>
-        </record>
+  <record id="res_partner_ess2833002e" model="res.partner">
+    <field name="vat">ESS2833002E</field>
+    <field name="name">Ministerio de Política Territorial y Memoria Democrática</field>
+    <field name="email">informacion@mpt.gob.es</field>
+    <field name="phone">+34 915 907 000</field>
+    <field name="mobile"/>
+    <field name="website">https://www.mpt.gob.es</field>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street">Paseo de la Castellana, 3</field>
+    <field name="zip">28046</field>
+    <field name="city">Madrid</field>
+    <field name="state_id" ref="base.state_es_m"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]"/>
+    <field name="tz">Europe/Madrid</field>
+  </record>
 
-        <record id="res_partner_ess2816001h" model="res.partner">
-            <field name="vat">ESS2816001H</field>
-            <field name="name">Ministerio del Interior</field>
-            <field name="email">informacion@interior.gob.es</field>
-            <field name="phone">+34 915 371 000</field>
-            <field name="mobile" />
-            <field name="website">https://www.interior.gob.es</field>
-            <field name="active" eval="True" />
-            <field name="is_company" eval="True" />
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False" />
-            <field name="street">Calle Amador de los Ríos, 7</field>
-            <field name="zip">28010</field>
-            <field name="city">Madrid</field>
-            <field name="state_id" ref="base.state_es_m" />
-            <field name="country_id" ref="base.es" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]" />
-            <field name="tz">Europe/Madrid</field>
-        </record>
+  <record id="res_partner_ess2816001h" model="res.partner">
+    <field name="vat">ESS2816001H</field>
+    <field name="name">Ministerio del Interior</field>
+    <field name="email">informacion@interior.gob.es</field>
+    <field name="phone">+34 915 371 000</field>
+    <field name="mobile"/>
+    <field name="website">https://www.interior.gob.es</field>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street">Calle Amador de los Ríos, 7</field>
+    <field name="zip">28010</field>
+    <field name="city">Madrid</field>
+    <field name="state_id" ref="base.state_es_m"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]"/>
+    <field name="tz">Europe/Madrid</field>
+  </record>
 
-        <record id="res_partner_ess2801502b" model="res.partner">
-            <field name="vat">ESS2801502B</field>
-            <field name="name">Ministerio para la Transformación Digital y de la Función Pública</field>
-            <field name="email">portales@digital.gob.es</field>
-            <field name="phone">+34 910 780 924</field>
-            <field name="mobile" />
-            <field name="website">https://www.digital.gob.es</field>
-            <field name="active" eval="True" />
-            <field name="is_company" eval="True" />
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False" />
-            <field name="street">Calle del Mármol, 2 – Parque Empresarial Río 55</field>
-            <field name="zip">28005</field>
-            <field name="city">Madrid</field>
-            <field name="state_id" ref="base.state_es_m" />
-            <field name="country_id" ref="base.es" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]" />
-            <field name="tz">Europe/Madrid</field>
-        </record>
+  <record id="res_partner_ess2801502b" model="res.partner">
+    <field name="vat">ESS2801502B</field>
+    <field name="name">Ministerio para la Transformación Digital y de la Función Pública</field>
+    <field name="email">portales@digital.gob.es</field>
+    <field name="phone">+34 910 780 924</field>
+    <field name="mobile"/>
+    <field name="website">https://www.digital.gob.es</field>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street">Calle del Mármol, 2 – Parque Empresarial Río 55</field>
+    <field name="zip">28005</field>
+    <field name="city">Madrid</field>
+    <field name="state_id" ref="base.state_es_m"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]"/>
+    <field name="tz">Europe/Madrid</field>
+  </record>
 
 
-        <!-- Galicia 
+  <!-- Galicia 
         ··································································· -->
 
-        <record id="res_partner_ess1511001h" model="res.partner">
-            <field name="vat">ESS1511001H</field>
-            <field name="email">012@xunta.gal</field>
-            <field name="active" eval="True" />
-            <field name="zip">15704</field>
-            <field name="street">Edificio Administrativo San Caetano</field>
-            <field name="street2">Rúa de San Caetano, s/n</field>
-            <field name="city">Santiago de Compostela</field>
-            <field name="employee" eval="False" />
-            <field name="is_company" eval="True" />
-            <field name="state_id" ref="base.state_es_c" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]" />
-            <field name="mobile"></field>
-            <field name="phone">+34 981 900 643</field>
-            <field name="name">Xunta de Galicia</field>
-            <field name="country_id" ref="base.es" />
-            <field name="website"></field>
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="tz">Europe/Madrid</field>
-        </record>
+  <record id="res_partner_ess1511001h" model="res.partner">
+    <field name="vat">ESS1511001H</field>
+    <field name="email">012@xunta.gal</field>
+    <field name="active" eval="True"/>
+    <field name="zip">15704</field>
+    <field name="street">Edificio Administrativo San Caetano</field>
+    <field name="street2">Rúa de San Caetano, s/n</field>
+    <field name="city">Santiago de Compostela</field>
+    <field name="employee" eval="False"/>
+    <field name="is_company" eval="True"/>
+    <field name="state_id" ref="base.state_es_c"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]"/>
+    <field name="mobile"/>
+    <field name="phone">+34 981 900 643</field>
+    <field name="name">Xunta de Galicia</field>
+    <field name="country_id" ref="base.es"/>
+    <field name="website"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="tz">Europe/Madrid</field>
+  </record>
 
-        <record id="res_partner_admin_galician_general_administration" model="res.partner">
-            <field name="vat" />
-            <field name="email" />
-            <field name="active" eval="True" />
-            <field name="is_company" eval="True" />
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False" />
-            <field name="street" />
-            <field name="street2" />
-            <field name="zip" />
-            <field name="city" />
-            <field name="state_id" ref="base.state_es_m" />
-            <field name="country_id" ref="base.es" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]" />
-            <field name="phone" />
-            <field name="mobile" />
-            <field name="name">Administración General de la Comunidad Autónoma de Galicia</field>
-            <field name="website" />
-            <field name="tz">Europe/Madrid</field>
-            <field name="parent_id" ref="res_partner_ess1511001h" />
-        </record>
+  <record id="res_partner_admin_galician_general_administration" model="res.partner">
+    <field name="vat"/>
+    <field name="email"/>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street"/>
+    <field name="street2"/>
+    <field name="zip"/>
+    <field name="city"/>
+    <field name="state_id" ref="base.state_es_m"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]"/>
+    <field name="phone"/>
+    <field name="mobile"/>
+    <field name="name">Administración General de la Comunidad Autónoma de Galicia</field>
+    <field name="website"/>
+    <field name="tz">Europe/Madrid</field>
+    <field name="parent_id" ref="res_partner_ess1511001h"/>
+  </record>
 
-        <record id="res_partner_esp3603800h" model="res.partner">
-            <field name="vat">ESP3603800H</field>
-            <field name="name">Concello de Pontevedra</field>
-            <field name="email">contacto@pontevedra.gal</field>
-            <field name="phone">+34 986 804 300</field>
-            <field name="mobile" />
-            <field name="website">https://www.pontevedra.gal</field>
-            <field name="active" eval="True" />
-            <field name="is_company" eval="True" />
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False" />
-            <field name="street">Rúa Michelena, 30</field>
-            <field name="zip">36071</field>
-            <field name="city">Pontevedra</field>
-            <field name="state_id" ref="base.state_es_po" />
-            <field name="country_id" ref="base.es" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]" />
-            <field name="tz">Europe/Madrid</field>
-        </record>
+  <record id="res_partner_esp3603800h" model="res.partner">
+    <field name="vat">ESP3603800H</field>
+    <field name="name">Concello de Pontevedra</field>
+    <field name="email">contacto@pontevedra.gal</field>
+    <field name="phone">+34 986 804 300</field>
+    <field name="mobile"/>
+    <field name="website">https://www.pontevedra.gal</field>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street">Rúa Michelena, 30</field>
+    <field name="zip">36071</field>
+    <field name="city">Pontevedra</field>
+    <field name="state_id" ref="base.state_es_po"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]"/>
+    <field name="tz">Europe/Madrid</field>
+  </record>
 
-        <record id="res_partner_esp3605700h" model="res.partner">
-            <field name="vat">ESP3605700H</field>
-            <field name="name">Concello de Vigo</field>
-            <field name="email">010@vigo.org</field>
-            <field name="phone">+34 986 810 100</field>
-            <field name="mobile" />
-            <field name="website">https://hoxe.vigo.org</field>
-            <field name="active" eval="True" />
-            <field name="is_company" eval="True" />
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False" />
-            <field name="street">Praza do Rei, 1</field>
-            <field name="zip">36202</field>
-            <field name="city">Vigo</field>
-            <field name="state_id" ref="base.state_es_po" />
-            <field name="country_id" ref="base.es" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]" />
-            <field name="tz">Europe/Madrid</field>
-        </record>
+  <record id="res_partner_esp3605700h" model="res.partner">
+    <field name="vat">ESP3605700H</field>
+    <field name="name">Concello de Vigo</field>
+    <field name="email">010@vigo.org</field>
+    <field name="phone">+34 986 810 100</field>
+    <field name="mobile"/>
+    <field name="website">https://hoxe.vigo.org</field>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street">Praza do Rei, 1</field>
+    <field name="zip">36202</field>
+    <field name="city">Vigo</field>
+    <field name="state_id" ref="base.state_es_po"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]"/>
+    <field name="tz">Europe/Madrid</field>
+  </record>
 
-        <record id="res_partner_esp3600000h" model="res.partner">
-            <field name="vat">ESP3600000H</field>
-            <field name="email">info@depo.gal</field>
-            <field name="active" eval="True" />
-            <field name="zip">36071</field>
-            <field name="street">Avenida Montero Ríos, S/N</field>
-            <field name="city">Pontevedra</field>
-            <field name="employee" eval="False" />
-            <field name="is_company" eval="True" />
-            <field name="state_id" ref="base.state_es_po" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]" />
-            <field name="mobile"></field>
-            <field name="phone">+34 986 804 100</field>
-            <field name="name">Diputación de Pontevedra</field>
-            <field name="country_id" ref="base.es" />
-            <field name="website">https://www.depo.gal/es/</field>
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="tz">Europe/Madrid</field>
-        </record>
+  <record id="res_partner_esp3600000h" model="res.partner">
+    <field name="vat">ESP3600000H</field>
+    <field name="email">info@depo.gal</field>
+    <field name="active" eval="True"/>
+    <field name="zip">36071</field>
+    <field name="street">Avenida Montero Ríos, S/N</field>
+    <field name="city">Pontevedra</field>
+    <field name="employee" eval="False"/>
+    <field name="is_company" eval="True"/>
+    <field name="state_id" ref="base.state_es_po"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]"/>
+    <field name="mobile"/>
+    <field name="phone">+34 986 804 100</field>
+    <field name="name">Diputación de Pontevedra</field>
+    <field name="country_id" ref="base.es"/>
+    <field name="website">https://www.depo.gal/es/</field>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="tz">Europe/Madrid</field>
+  </record>
 
-        <record id="res_partner_esq6550006h" model="res.partner">
-            <field name="vat">ESQ6550006H</field>
-            <field name="name">Servizo Galego de Saúde (SERGAS)</field>
-            <field name="email">xerencia.sergas@sergas.es</field>
-            <field name="phone">+34 902 077 333</field>
-            <field name="mobile" />
-            <field name="website">https://www.sergas.gal</field>
-            <field name="active" eval="True" />
-            <field name="is_company" eval="True" />
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False" />
-            <field name="street">Edificio Administrativo San Lázaro</field>
-            <field name="street2">Rúa San Lázaro, s/n</field>
-            <field name="zip">15703</field>
-            <field name="city">Santiago de Compostela</field>
-            <field name="state_id" ref="base.state_es_c" />
-            <field name="country_id" ref="base.es" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]" />
-            <field name="tz">Europe/Madrid</field>
-        </record>
+  <record id="res_partner_esq6550006h" model="res.partner">
+    <field name="vat">ESQ6550006H</field>
+    <field name="name">Servizo Galego de Saúde (SERGAS)</field>
+    <field name="email">xerencia.sergas@sergas.es</field>
+    <field name="phone">+34 902 077 333</field>
+    <field name="mobile"/>
+    <field name="website">https://www.sergas.gal</field>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street">Edificio Administrativo San Lázaro</field>
+    <field name="street2">Rúa San Lázaro, s/n</field>
+    <field name="zip">15703</field>
+    <field name="city">Santiago de Compostela</field>
+    <field name="state_id" ref="base.state_es_c"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]"/>
+    <field name="tz">Europe/Madrid</field>
+  </record>
 
-        <record id="res_partner_esq1507700a" model="res.partner">
-            <field name="vat">ESQ1507700A</field>
-            <field name="name">Concello de San Sadurniño</field>
-            <field name="email">correo@sansadurnino.gal</field>
-            <field name="phone">+34 981 490 027</field>
-            <field name="mobile" />
-            <field name="website">https://www.sansadurnino.gal</field>
-            <field name="active" eval="True" />
-            <field name="is_company" eval="True" />
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False" />
-            <field name="street">Lugar do Casal, 16</field>
-            <field name="street2" />
-            <field name="zip">15560</field>
-            <field name="city">San Sadurniño</field>
-            <field name="state_id" ref="base.state_es_c" />
-            <field name="country_id" ref="base.es" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]" />
-            <field name="tz">Europe/Madrid</field>
-        </record>
+  <record id="res_partner_esq1507700a" model="res.partner">
+    <field name="vat">ESQ1507700A</field>
+    <field name="name">Concello de San Sadurniño</field>
+    <field name="email">correo@sansadurnino.gal</field>
+    <field name="phone">+34 981 490 027</field>
+    <field name="mobile"/>
+    <field name="website">https://www.sansadurnino.gal</field>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street">Lugar do Casal, 16</field>
+    <field name="street2"/>
+    <field name="zip">15560</field>
+    <field name="city">San Sadurniño</field>
+    <field name="state_id" ref="base.state_es_c"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]"/>
+    <field name="tz">Europe/Madrid</field>
+  </record>
 
 
-        <!-- Madrid
+  <!-- Madrid
         ··································································· -->
-        <record id="res_partner_esp2807900b" model="res.partner">
-            <field name="vat">ESP2807900B</field>
-            <field name="name">Ayuntamiento de Madrid</field>
-            <field name="email">prensa@madrid.es</field>
-            <field name="phone">+34 914 800 010</field>
-            <field name="mobile" />
-            <field name="website">https://www.madrid.es</field>
-            <field name="active" eval="True" />
-            <field name="is_company" eval="True" />
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False" />
-            <field name="street">Calle Montalbán, 1</field>
-            <field name="zip">28014</field>
-            <field name="city">Madrid</field>
-            <field name="state_id" ref="base.state_es_m" />
-            <field name="country_id" ref="base.es" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]" />
-            <field name="tz">Europe/Madrid</field>
-        </record>
+  <record id="res_partner_esp2807900b" model="res.partner">
+    <field name="vat">ESP2807900B</field>
+    <field name="name">Ayuntamiento de Madrid</field>
+    <field name="email">prensa@madrid.es</field>
+    <field name="phone">+34 914 800 010</field>
+    <field name="mobile"/>
+    <field name="website">https://www.madrid.es</field>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street">Calle Montalbán, 1</field>
+    <field name="zip">28014</field>
+    <field name="city">Madrid</field>
+    <field name="state_id" ref="base.state_es_m"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]"/>
+    <field name="tz">Europe/Madrid</field>
+  </record>
 
-        <record id="res_partner_ess7800001e" model="res.partner">
-            <field name="vat">ESS7800001E</field>
-            <field name="name">Comunidad de Madrid</field>
-            <field name="email">atencionalciudadano@012.madrid.org</field>
-            <field name="phone">+34 915 316 638</field>
-            <field name="mobile" />
-            <field name="website">https://www.comunidad.madrid</field>
-            <field name="active" eval="True" />
-            <field name="is_company" eval="True" />
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False" />
-            <field name="street">Plaza Puerta del Sol, 7</field>
-            <field name="zip">28013</field>
-            <field name="city">Madrid</field>
-            <field name="state_id" ref="base.state_es_m" />
-            <field name="country_id" ref="base.es" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]" />
-            <field name="tz">Europe/Madrid</field>
-        </record>
-        
-        <!-- Andalucía
+  <record id="res_partner_ess7800001e" model="res.partner">
+    <field name="vat">ESS7800001E</field>
+    <field name="name">Comunidad de Madrid</field>
+    <field name="email">atencionalciudadano@012.madrid.org</field>
+    <field name="phone">+34 915 316 638</field>
+    <field name="mobile"/>
+    <field name="website">https://www.comunidad.madrid</field>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street">Plaza Puerta del Sol, 7</field>
+    <field name="zip">28013</field>
+    <field name="city">Madrid</field>
+    <field name="state_id" ref="base.state_es_m"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]"/>
+    <field name="tz">Europe/Madrid</field>
+  </record>
+
+  <!-- Andalucía
         ··································································· -->
-        <record id="res_partner_ess4111001f" model="res.partner">
-            <field name="vat">ESS4111001F</field>
-            <field name="name">Junta de Andalucía</field>
-            <field name="email">informacion@juntadeandalucia.es</field>
-            <field name="phone">+34 955 062 627</field>
-            <field name="mobile" />
-            <field name="website">https://www.juntadeandalucia.es</field>
-            <field name="active" eval="True" />
-            <field name="is_company" eval="True" />
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False" />
-            <field name="street">Avenida de Roma, s/n (Palacio de San Telmo)</field>
-            <field name="zip">41013</field>
-            <field name="city">Sevilla</field>
-            <field name="state_id" ref="base.state_es_se" />
-            <field name="country_id" ref="base.es" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]" />
-            <field name="tz">Europe/Madrid</field>
-        </record>
+  <record id="res_partner_ess4111001f" model="res.partner">
+    <field name="vat">ESS4111001F</field>
+    <field name="name">Junta de Andalucía</field>
+    <field name="email">informacion@juntadeandalucia.es</field>
+    <field name="phone">+34 955 062 627</field>
+    <field name="mobile"/>
+    <field name="website">https://www.juntadeandalucia.es</field>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street">Avenida de Roma, s/n (Palacio de San Telmo)</field>
+    <field name="zip">41013</field>
+    <field name="city">Sevilla</field>
+    <field name="state_id" ref="base.state_es_se"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]"/>
+    <field name="tz">Europe/Madrid</field>
+  </record>
 
-        
-        <!-- Universidades
+
+  <!-- Universidades
         ··································································· -->
-        <record id="res_partner_esq1518001a" model="res.partner">
-            <field name="vat">ESQ1518001A</field>
-            <field name="name">Universidade de Santiago de Compostela (USC)</field>
-            <field name="email">rector@usc.es</field>
-            <field name="phone">+34 881 811 000</field>
-            <field name="mobile" />
-            <field name="website">https://www.usc.gal</field>
-            <field name="active" eval="True" />
-            <field name="is_company" eval="True" />
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False" />
-            <field name="street">Praza do Obradoiro, s/n</field>
-            <field name="street2" />
-            <field name="zip">15782</field>
-            <field name="city">Santiago de Compostela</field>
-            <field name="state_id" ref="base.state_es_c" />
-            <field name="country_id" ref="base.es" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]" />
-            <field name="tz">Europe/Madrid</field>
-        </record>
+  <record id="res_partner_esq1518001a" model="res.partner">
+    <field name="vat">ESQ1518001A</field>
+    <field name="name">Universidade de Santiago de Compostela (USC)</field>
+    <field name="email">rector@usc.es</field>
+    <field name="phone">+34 881 811 000</field>
+    <field name="mobile"/>
+    <field name="website">https://www.usc.gal</field>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street">Praza do Obradoiro, s/n</field>
+    <field name="street2"/>
+    <field name="zip">15782</field>
+    <field name="city">Santiago de Compostela</field>
+    <field name="state_id" ref="base.state_es_c"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]"/>
+    <field name="tz">Europe/Madrid</field>
+  </record>
 
-        <record id="res_partner_esq6550005j" model="res.partner">
-            <field name="vat">ESQ6550005J</field>
-            <field name="name">Universidade da Coruña (UDC)</field>
-            <field name="email">info@udc.gal</field>
-            <field name="phone">+34 981 167 000</field>
-            <field name="mobile" />
-            <field name="website">https://www.udc.gal</field>
-            <field name="active" eval="True" />
-            <field name="is_company" eval="True" />
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False" />
-            <field name="street">Calle de la Maestranza, 9</field>
-            <field name="zip">15001</field>
-            <field name="city">A Coruña</field>
-            <field name="state_id" ref="base.state_es_c" />
-            <field name="country_id" ref="base.es" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]" />
-            <field name="tz">Europe/Madrid</field>
-        </record>
+  <record id="res_partner_esq6550005j" model="res.partner">
+    <field name="vat">ESQ6550005J</field>
+    <field name="name">Universidade da Coruña (UDC)</field>
+    <field name="email">info@udc.gal</field>
+    <field name="phone">+34 981 167 000</field>
+    <field name="mobile"/>
+    <field name="website">https://www.udc.gal</field>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street">Calle de la Maestranza, 9</field>
+    <field name="zip">15001</field>
+    <field name="city">A Coruña</field>
+    <field name="state_id" ref="base.state_es_c"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]"/>
+    <field name="tz">Europe/Madrid</field>
+  </record>
 
-        <record id="res_partner_esq8650002b" model="res.partner">
-            <field name="vat">ESQ8650002B</field>
-            <field name="name">Universidade de Vigo (UVigo)</field>
-            <field name="email">informacion@uvigo.es</field>
-            <field name="phone">+34 986 812 000</field>
-            <field name="mobile" />
-            <field name="website">https://www.uvigo.gal</field>
-            <field name="active" eval="True" />
-            <field name="is_company" eval="True" />
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False" />
-            <field name="street">Circunvalación ao Campus Universitario</field>
-            <field name="zip">36310</field>
-            <field name="city">Vigo</field>
-            <field name="state_id" ref="base.state_es_po" />
-            <field name="country_id" ref="base.es" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]" />
-            <field name="tz">Europe/Madrid</field>
-        </record>
+  <record id="res_partner_esq8650002b" model="res.partner">
+    <field name="vat">ESQ8650002B</field>
+    <field name="name">Universidade de Vigo (UVigo)</field>
+    <field name="email">informacion@uvigo.es</field>
+    <field name="phone">+34 986 812 000</field>
+    <field name="mobile"/>
+    <field name="website">https://www.uvigo.gal</field>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street">Circunvalación ao Campus Universitario</field>
+    <field name="zip">36310</field>
+    <field name="city">Vigo</field>
+    <field name="state_id" ref="base.state_es_po"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]"/>
+    <field name="tz">Europe/Madrid</field>
+  </record>
 
 
-        <!-- Empresas
+  <!-- Empresas
         ··································································· -->
 
-        <record id="res_partner_esq2801660h" model="res.partner">
-            <field name="vat">ESQ2801660H</field>
-            <field name="name">Entidad Pública Empresarial Administrador de Infraestructuras Ferroviarias (ADIF)</field>
-            <field name="email">comunicacionweb@adif.es</field>
-            <field name="phone">+34 917 744 874</field>
-            <field name="mobile" />
-            <field name="website">https://www.adif.es</field>
-            <field name="active" eval="True" />
-            <field name="is_company" eval="True" />
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False" />
-            <field name="street">Calle Sor Ángela de la Cruz, 3</field>
-            <field name="zip">28020</field>
-            <field name="city">Madrid</field>
-            <field name="state_id" ref="base.state_es_m" />
-            <field name="country_id" ref="base.es" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]" />
-            <field name="tz">Europe/Madrid</field>
-        </record>
+  <record id="res_partner_esq2801660h" model="res.partner">
+    <field name="vat">ESQ2801660H</field>
+    <field name="name">Entidad Pública Empresarial Administrador de Infraestructuras Ferroviarias
+      (ADIF)</field>
+    <field name="email">comunicacionweb@adif.es</field>
+    <field name="phone">+34 917 744 874</field>
+    <field name="mobile"/>
+    <field name="website">https://www.adif.es</field>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street">Calle Sor Ángela de la Cruz, 3</field>
+    <field name="zip">28020</field>
+    <field name="city">Madrid</field>
+    <field name="state_id" ref="base.state_es_m"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]"/>
+    <field name="tz">Europe/Madrid</field>
+  </record>
 
-        <record id="res_partner_esa83052407" model="res.partner">
-            <field name="vat">ESA83052407</field>
-            <field name="email">atencion.cliente@correos.com</field>
-            <field name="active" eval="True" />
-            <field name="zip">28070</field>
-            <field name="street">Vía Dublín, 7</field>
-            <field name="street2">(Campo de las Naciones)</field>
-            <field name="city">Madrid</field>
-            <field name="employee" eval="False" />
-            <field name="is_company" eval="True" />
-            <field name="state_id" ref="base.state_es_m" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]" />
-            <field name="mobile" />
-            <field name="phone">+34 900 400 004</field>
-            <field name="name">Sociedad Estatal Correos y Telégrafos, S.A.</field>
-            <field name="country_id" ref="base.es" />
-            <field name="website">https://www.correos.es</field>
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="tz">Europe/Madrid</field>
-        </record>
+  <record id="res_partner_esa83052407" model="res.partner">
+    <field name="vat">ESA83052407</field>
+    <field name="email">atencion.cliente@correos.com</field>
+    <field name="active" eval="True"/>
+    <field name="zip">28070</field>
+    <field name="street">Vía Dublín, 7</field>
+    <field name="street2">(Campo de las Naciones)</field>
+    <field name="city">Madrid</field>
+    <field name="employee" eval="False"/>
+    <field name="is_company" eval="True"/>
+    <field name="state_id" ref="base.state_es_m"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]"/>
+    <field name="mobile"/>
+    <field name="phone">+34 900 400 004</field>
+    <field name="name">Sociedad Estatal Correos y Telégrafos, S.A.</field>
+    <field name="country_id" ref="base.es"/>
+    <field name="website">https://www.correos.es</field>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="tz">Europe/Madrid</field>
+  </record>
 
-        <record id="res_partner_esq2801659j" model="res.partner">
-            <field name="vat">Q2801659J</field>
-            <field name="name">Renfe Operadora</field>
-            <field name="email">comunicacion@renfe.es</field>
-            <field name="phone">+34 912 180 180</field>
-            <field name="mobile" />
-            <field name="website">https://www.renfe.com</field>
-            <field name="active" eval="True" />
-            <field name="is_company" eval="True" />
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False" />
-            <field name="street">Avenida de Pío XII, 110</field>
-            <field name="street2" />
-            <field name="zip">28036</field>
-            <field name="city">Madrid</field>
-            <field name="state_id" ref="base.state_es_m" />
-            <field name="country_id" ref="base.es" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]" />
-            <field name="tz">Europe/Madrid</field>
-        </record>
-
-
-        <!-- Administraciones sin CIF -->
-
-        <record id="res_partner_administracion_justicia" model="res.partner">
-            <field name="vat"></field>
-            <field name="email"></field>
-            <field name="active" eval="True" />
-            <field name="zip"></field>
-            <field name="street"></field>
-            <field name="street2"></field>
-            <field name="city">Madrid</field>
-            <field name="employee" eval="False" />
-            <field name="is_company" eval="True" />
-            <field name="state_id" ref="base.state_es_m" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]" />
-            <field name="mobile" />
-            <field name="phone" />
-            <field name="name">Administración de Justicia</field>
-            <field name="country_id" ref="base.es" />
-            <field name="website" />
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="tz">Europe/Madrid</field>
-        </record>
-
-        <record id="res_partner_admin_seguridad_social" model="res.partner">
-            <field name="vat" />
-            <field name="email" />
-            <field name="active" eval="True" />
-            <field name="is_company" eval="True" />
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False" />
-            <field name="street" />
-            <field name="street2" />
-            <field name="zip" />
-            <field name="city" />
-            <field name="state_id" ref="base.state_es_m" />
-            <field name="country_id" ref="base.es" />
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]" />
-            <field name="phone" />
-            <field name="mobile" />
-            <field name="name">Administración de la Seguridad Social</field>
-            <field name="website" />
-            <field name="tz">Europe/Madrid</field>
-        </record>
-
-        <!-- Administración de la Seguridad Social -->
-        <record id="res_partner_admin_seguridad_social" model="res.partner">
-            <field name="vat"/>
-            <field name="email"/>
-            <field name="active" eval="True"/>
-            <field name="is_company" eval="True"/>
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False"/>
-            <field name="street"/>
-            <field name="street2"/>
-            <field name="zip"/>
-            <field name="city"/>
-            <field name="state_id" ref="base.state_es_m"/>
-            <field name="country_id" ref="base.es"/>
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]"/>
-            <field name="phone"/>
-            <field name="mobile"/>
-            <field name="name">Administración de la Seguridad Social</field>
-            <field name="website"/>
-            <field name="tz">Europe/Madrid</field>
-        </record>
-
-        <!-- Administración de Justicia -->
-        <record id="res_partner_admin_justicia" model="res.partner">
-            <field name="vat"/>
-            <field name="email"/>
-            <field name="active" eval="True"/>
-            <field name="is_company" eval="True"/>
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False"/>
-            <field name="street"/>
-            <field name="street2"/>
-            <field name="zip"/>
-            <field name="city"/>
-            <field name="state_id" ref="base.state_es_m"/>
-            <field name="country_id" ref="base.es"/>
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]"/>
-            <field name="phone"/>
-            <field name="mobile"/>
-            <field name="name">Administración de Justicia</field>
-            <field name="website"/>
-            <field name="tz">Europe/Madrid</field>
-        </record>
+  <record id="res_partner_esq2801659j" model="res.partner">
+    <field name="vat">Q2801659J</field>
+    <field name="name">Renfe Operadora</field>
+    <field name="email">comunicacion@renfe.es</field>
+    <field name="phone">+34 912 180 180</field>
+    <field name="mobile"/>
+    <field name="website">https://www.renfe.com</field>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street">Avenida de Pío XII, 110</field>
+    <field name="street2"/>
+    <field name="zip">28036</field>
+    <field name="city">Madrid</field>
+    <field name="state_id" ref="base.state_es_m"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]"/>
+    <field name="tz">Europe/Madrid</field>
+  </record>
 
 
-        <!-- Fuerzas Armadas -->
-        <record id="res_partner_armed_forces" model="res.partner">
-            <field name="vat"/>
-            <field name="email"/>
-            <field name="active" eval="True"/>
-            <field name="is_company" eval="True"/>
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False"/>
-            <field name="street">P.º de la Castellana, 109</field>
-            <field name="street2"/>
-            <field name="zip">28071</field>
-            <field name="city"/>
-            <field name="state_id" ref="base.state_es_m"/>
-            <field name="country_id" ref="base.es"/>
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]"/>
-            <field name="phone">+34 91 308 97 98</field>
-            <field name="mobile"/>
-            <field name="name">Fuerzas Armadas</field>
-            <field name="website">https://reclutamiento.defensa.gob.es/</field>
-            <field name="tz">Europe/Madrid</field>
-            <field name="parent_id" ref="res_partner_ess2833011f" />
-        </record>
+  <!-- Administraciones sin CIF -->
 
-        <!-- Administración General de la Comunidad Autónoma de Madrid -->
-        <record id="res_partner_admin_general_cam" model="res.partner">
-            <field name="vat"/>
-            <field name="email"/>
-            <field name="active" eval="True"/>
-            <field name="is_company" eval="True"/>
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False"/>
-            <field name="street"/>
-            <field name="street2"/>
-            <field name="zip"/>
-            <field name="city"/>
-            <field name="state_id" ref="base.state_es_m"/>
-            <field name="country_id" ref="base.es"/>
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]"/>
-            <field name="phone"/>
-            <field name="mobile"/>
-            <field name="name">Administración General de la Comunidad Autónoma de Madrid</field>
-            <field name="website"/>
-            <field name="tz">Europe/Madrid</field>
-            <field name="parent_id" ref="res_partner_ess7800001e" />
-        </record>
+  <record id="res_partner_administracion_justicia" model="res.partner">
+    <field name="vat"/>
+    <field name="email"/>
+    <field name="active" eval="True"/>
+    <field name="zip"/>
+    <field name="street"/>
+    <field name="street2"/>
+    <field name="city">Madrid</field>
+    <field name="employee" eval="False"/>
+    <field name="is_company" eval="True"/>
+    <field name="state_id" ref="base.state_es_m"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]"/>
+    <field name="mobile"/>
+    <field name="phone"/>
+    <field name="name">Administración de Justicia</field>
+    <field name="country_id" ref="base.es"/>
+    <field name="website"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="tz">Europe/Madrid</field>
+  </record>
 
-        <!-- Administración General de la Junta de Andalucía -->
-        <record id="res_partner_admin_general_junta_andalucia" model="res.partner">
-            <field name="vat"/>
-            <field name="email"/>
-            <field name="active" eval="True"/>
-            <field name="is_company" eval="True"/>
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False"/>
-            <field name="street"/>
-            <field name="street2"/>
-            <field name="zip"/>
-            <field name="city"/>
-            <field name="state_id" ref="base.state_es_se"/>
-            <field name="country_id" ref="base.es"/>
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]"/>
-            <field name="phone"/>
-            <field name="mobile"/>
-            <field name="name">Administración General de la Junta de Andalucía</field>
-            <field name="website"/>
-            <field name="tz">Europe/Madrid</field>
-            <field name="parent_id" ref="res_partner_ess4111001f" />
-        </record>
+  <record id="res_partner_admin_seguridad_social" model="res.partner">
+    <field name="vat"/>
+    <field name="email"/>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street"/>
+    <field name="street2"/>
+    <field name="zip"/>
+    <field name="city"/>
+    <field name="state_id" ref="base.state_es_m"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]"/>
+    <field name="phone"/>
+    <field name="mobile"/>
+    <field name="name">Administración de la Seguridad Social</field>
+    <field name="website"/>
+    <field name="tz">Europe/Madrid</field>
+  </record>
 
-        <!-- Instituciones Penitenciarias -->
-        <record id="res_partner_admin_penitenciarias" model="res.partner">
-            <field name="name">Instituciones Penitenciarias</field>
-            <field name="is_company" eval="True"/>
-            <field name="company_type">company</field>
-            <field name="type">contact</field>
-            <field name="employee" eval="False"/>
-            <field name="active" eval="True"/>
-            <field name="street">Calle Alcalá, 38-40</field>
-            <field name="zip">28014</field>
-            <field name="city">Madrid</field>
-            <field name="state_id" ref="base.state_es_m"/>
-            <field name="country_id" ref="base.es"/>
-            <field name="phone">+34915242100</field>
-            <field name="email">informacion@prisiones.es</field>
-            <field name="website">https://www.institucionpenitenciaria.es</field>
-            <field name="tz">Europe/Madrid</field>
-            <field name="vat"/>
-            <field name="street2"/>
-            <field name="mobile"/>
-            <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]"/>
-            <field name="parent_id" ref="res_partner_ess2833011f" />
-        </record>
+  <!-- Administración de la Seguridad Social -->
+  <record id="res_partner_admin_seguridad_social" model="res.partner">
+    <field name="vat"/>
+    <field name="email"/>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street"/>
+    <field name="street2"/>
+    <field name="zip"/>
+    <field name="city"/>
+    <field name="state_id" ref="base.state_es_m"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]"/>
+    <field name="phone"/>
+    <field name="mobile"/>
+    <field name="name">Administración de la Seguridad Social</field>
+    <field name="website"/>
+    <field name="tz">Europe/Madrid</field>
+  </record>
+
+  <!-- Administración de Justicia -->
+  <record id="res_partner_admin_justicia" model="res.partner">
+    <field name="vat"/>
+    <field name="email"/>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street"/>
+    <field name="street2"/>
+    <field name="zip"/>
+    <field name="city"/>
+    <field name="state_id" ref="base.state_es_m"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]"/>
+    <field name="phone"/>
+    <field name="mobile"/>
+    <field name="name">Administración de Justicia</field>
+    <field name="website"/>
+    <field name="tz">Europe/Madrid</field>
+  </record>
 
 
-    </data>
-</openerp>
+  <!-- Fuerzas Armadas -->
+  <record id="res_partner_armed_forces" model="res.partner">
+    <field name="vat"/>
+    <field name="email"/>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street">P.º de la Castellana, 109</field>
+    <field name="street2"/>
+    <field name="zip">28071</field>
+    <field name="city"/>
+    <field name="state_id" ref="base.state_es_m"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]"/>
+    <field name="phone">+34 91 308 97 98</field>
+    <field name="mobile"/>
+    <field name="name">Fuerzas Armadas</field>
+    <field name="website">https://reclutamiento.defensa.gob.es/</field>
+    <field name="tz">Europe/Madrid</field>
+    <field name="parent_id" ref="res_partner_ess2833011f"/>
+  </record>
 
+  <!-- Administración General de la Comunidad Autónoma de Madrid -->
+  <record id="res_partner_admin_general_cam" model="res.partner">
+    <field name="vat"/>
+    <field name="email"/>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street"/>
+    <field name="street2"/>
+    <field name="zip"/>
+    <field name="city"/>
+    <field name="state_id" ref="base.state_es_m"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]"/>
+    <field name="phone"/>
+    <field name="mobile"/>
+    <field name="name">Administración General de la Comunidad Autónoma de Madrid</field>
+    <field name="website"/>
+    <field name="tz">Europe/Madrid</field>
+    <field name="parent_id" ref="res_partner_ess7800001e"/>
+  </record>
+
+  <!-- Administración General de la Junta de Andalucía -->
+  <record id="res_partner_admin_general_junta_andalucia" model="res.partner">
+    <field name="vat"/>
+    <field name="email"/>
+    <field name="active" eval="True"/>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="street"/>
+    <field name="street2"/>
+    <field name="zip"/>
+    <field name="city"/>
+    <field name="state_id" ref="base.state_es_se"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]"/>
+    <field name="phone"/>
+    <field name="mobile"/>
+    <field name="name">Administración General de la Junta de Andalucía</field>
+    <field name="website"/>
+    <field name="tz">Europe/Madrid</field>
+    <field name="parent_id" ref="res_partner_ess4111001f"/>
+  </record>
+
+  <!-- Instituciones Penitenciarias -->
+  <record id="res_partner_admin_penitenciarias" model="res.partner">
+    <field name="name">Instituciones Penitenciarias</field>
+    <field name="is_company" eval="True"/>
+    <field name="company_type">company</field>
+    <field name="type">contact</field>
+    <field name="employee" eval="False"/>
+    <field name="active" eval="True"/>
+    <field name="street">Calle Alcalá, 38-40</field>
+    <field name="zip">28014</field>
+    <field name="city">Madrid</field>
+    <field name="state_id" ref="base.state_es_m"/>
+    <field name="country_id" ref="base.es"/>
+    <field name="phone">+34915242100</field>
+    <field name="email">informacion@prisiones.es</field>
+    <field name="website">https://www.institucionpenitenciaria.es</field>
+    <field name="tz">Europe/Madrid</field>
+    <field name="vat"/>
+    <field name="street2"/>
+    <field name="mobile"/>
+    <field name="category_id" eval="[(4, ref('res_partner_category_civil_service', 0))]"/>
+    <field name="parent_id" ref="res_partner_ess2833011f"/>
+  </record>
+
+</odoo>

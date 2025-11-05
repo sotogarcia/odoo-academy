@@ -1,204 +1,222 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo noupdate="0">
 
-        <record id="mail_template_civil_service_tracker_events_between_dates_wizard" model="mail.template">
-            <field name="name">Civil service tracker - Events Between Dates</field>
-            <field name="subject">${object.subject | safe}</field>
-            <field name="email_from">${object.get_email_from() |safe}</field>
-            <field name="email_to" eval="False"/>
-            <field name="email_cc" eval="False"/>
-            <field name="reply_to">${object.get_reply_to() | safe}</field>
-            <field name="user_signature" eval="False"/>
-            <field name="lang">${object.company_id.lang or user.company_id.lang}</field>
-            <field name="auto_delete" eval="True"/>
-            <field name="model_id" ref="civil_service_tracker.model_civil_service_tracker_events_between_dates_wizard"/>
-            <field name="attachment_ids" eval="False"/>
-            <field name="body_html"><![CDATA[
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Notify process events between dates</title>
-</head>
-<body>
+  <record id="mail_template_civil_service_tracker_events_between_dates_wizard" model="mail.template">
+    <field name="name">Civil service tracker - Events Between Dates</field>
+    <field name="subject">{{ object.subject }}</field>
+    <field name="email_from">{{ object.get_email_from() }}</field>
+    <field name="email_to" eval="False"/>
+    <field name="email_cc" eval="False"/>
+    <field name="reply_to">{{ object.get_reply_to() }}</field>
+    <field name="lang">{{ object.company_id.lang or user.company_id.lang }}</field>
+    <field name="auto_delete" eval="True"/>
+    <field name="model_id" ref="civil_service_tracker.model_civil_service_tracker_events_between_dates_wizard"/>
+    <field name="attachment_ids" eval="False"/>
+    <field name="body_html" type="html">
+      <div>
+        <t t-set="base_url" t-value="ctx.get('base_url') or object.env['ir.config_parameter'].sudo().get_param('web.base.url')" />
+        <t t-set="recipient" t-value="ctx.get('recipient')" />
 
-<table border="0" cellpadding="0" cellspacing="0" style="padding-top:16px;background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;">
-  <tbody>
-    <tr>
-      <td align="center">
-        <table border="0" cellpadding="0" cellspacing="0" width="960" style="padding:16px;background-color: white; color: #454748; border-collapse:separate;">
-          <tbody>
-            <!-- HEADER -->
-            <tr>
-              <td align="center" style="min-width:590px; width: 960px; max-width: 100%">
-                <table border="0" cellpadding="0" cellspacing="0" width="960" style="min-width:590px; width: 960px; max-width: 100%; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
-                  <tbody>
-                    <tr>
-                      <td valign="middle">
-                        <span style="font-size:10px;">Subject</span>
-                        <br>
-                        <span style="font-size:20px;font-weight: bold;"> Selection Process Events </span>
-                      </td>
-                      <td valign="middle" align="right">
-                        <img src="/logo.png?company=${object.company_id.id}" style="padding:0px;margin: 0px; height: auto; width: 80px;" alt="${object.company_id.name}">
-                      </td>
-                    </tr>
-                    <tr>
-                      <td colspan="2" style="text-align:center;">
-                        <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;">
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </td>
-            </tr>
-            <!-- CONTENT -->
-            <tr>
-              <td align="center" style="min-width:590px; width: 960px; max-width: 100%;">
-                <table border="0" cellpadding="0" cellspacing="0" width="960" style="min-width:590px; width: 960px; max-width: 100%; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
-                  <tbody>
-                    <tr>
-                      <td valign="top" style="font-size:13px;">
-                        <p style="line-height: 150%; margin-bottom: 12px;">Hello ${ctx['recipient'].name}, </p>
-
-                        <p style="line-height: 150%; margin-bottom: 12px; text-align: justify;">
-                          I’m reaching out to inform you about the events recorded in the selection 
-                          processes we are monitoring. This message includes ${object.compute_subject().lower()}.
-                        </p>
-
-                        <p style="line-height: 150%; margin-bottom: 12px;">Below is the complete list:</p>
-
-% for admin, processes in ctx['grouped_events'].items():
-  <h2 style="border-bottom: 2px solid rgb(240,96,80); padding-bottom: 3px; margin-top: 18px; margin-bottom: 12px; font-size: 16px;">
-    <a style="text-decoration: none; color: rgb(240,96,80);" target="_blank" href="${base_url | safe}/web#id=${admin.id}&model=civil.service.tracker.public.administration" title="${ admin.name or '' }" aria-label="${ admin.name or '' }">
-      ${admin.name or '' }
-    </a>
-  </h2>
-  <p style="line-height: 150%; margin-bottom: 0px; text-align: justify;">
-    The following events are related to selection processes for access to public service positions under the jurisdiction of <strong>${ admin.name or '' }</strong>.
-  </p>    
-
-  % for process, events in processes.items():
-  <table border="1" cellspacing="0" cellpadding="1" style="border-collapse: collapse; border: 0px none transparent; margin-bottom: 12px; width: 100%;">
-    <thead>
-      <tr>
-        <th style="vertical-align: top; text-align: left; padding: 6px 0px; border: 0px none transparent;" colspan="5">
-          <h3 style="margin: 6px 0px 3px 0px; padding: 0px; font-size: 14px;">
-            <a style="text-decoration: none; color: rgb(66,133,244);" target="_blank" href="${base_url | safe }/web#id=${process.id}&model=civil.service.tracker.selection.process" title="${ process.name or '' }" aria-label="${ process.name or '' }">
-              ${ process.name or '' }
-            </a>
-          </h3>
-        </th>
-      </tr>
-      <tr>
-        <th style="line-height: 125%; vertical-align: top; background-color: #EFEFEF; text-align: left; padding: 6px 12px; border: 1px solid #CCC;">Event</th>
-        <th style="line-height: 125%; vertical-align: top; background-color: #EFEFEF; text-align: center; padding: 6px 12px; border: 1px solid #CCC;">Date</th>
-        <th style="line-height: 125%; vertical-align: top; background-color: #EFEFEF; text-align: left; padding: 6px 12px; border: 1px solid #CCC;">Type</th>
-        <th style="line-height: 125%; vertical-align: top; background-color: #EFEFEF; text-align: left; padding: 6px 12px; border: 1px solid #CCC;">Description</th>
-        <th style="line-height: 125%; vertical-align: top; background-color: #EFEFEF; text-align: center; padding: 6px 12px; border: 1px solid #CCC;">Doc.</th>
-      </tr>
-    </thead>
-    <tbody>
-      % for event in events:
-      <tr>
-        <td style="line-height: 125%; vertical-align: top; text-align: left; padding: 6px 12px; border: 1px solid #CCC; white-space: nowrap;">
-          <a style="text-decoration: none; color: inherit;" target="_blank" href="${base_url | safe}/web#id=${event.id}&model=civil.service.tracker.process.event" title="${ event.name or '' }" aria-label="${ event.name or '' }">
-            ${ event.name or '' }
-          </a>
-        </td>
-        <td style="line-height: 125%; vertical-align: top; text-align: center; padding: 6px 12px; border: 1px solid #CCC; white-space: nowrap;">${ event.event_date.strftime('%x %X') }</td>
-        <td style="line-height: 125%; vertical-align: top; text-align: left; padding: 6px 12px; border: 1px solid #CCC; white-space: nowrap;">${ event.event_type_id.name or '' }</td>
-        <td style="line-height: 125%; vertical-align: top; text-align: left; padding: 6px 12px; border: 1px solid #CCC;">${ event.description or '' }</td>
-        <td style="line-height: 125%; vertical-align: top; text-align: center; padding: 6px 12px; border: 1px solid #CCC;">
-          % if event.attachment_id.type == 'binary':
-          <a style="vertical-align: top; text-decoration: none; color: #336699; white-space: nowrap;" target="_blank" href="${base_url | safe}${ event.attachment_url }" download="download" title="Download attachment" aria-label="Download attachment">
-            Open
-          </a>
-          % elif event.attachment_id.type == 'url':
-          <a style="vertical-align: top; text-decoration: none; color: #336699; white-space: nowrap;" target="_blank" href="${ event.attachment_url }" title="Open external document" aria-label="Open external document">
-            Link
-          </a>
-          % endif
-        </td>
-      </tr>
-      % endfor
-    </tbody>
-  </table>
-  % endfor 
-% endfor 
-
-                        <p style="line-height: 150%; margin-top: 18px; margin-bottom: 12px; text-align: justify;">
-                          If you need more information about any of the events, you can click the 
-                          corresponding links to directly access the selection process record or 
-                          the specific event you wish to review.
-                        </p>
-
-                        <p style="line-height: 150%; margin-bottom: 12px;">Best regards,</p>
-
-                        <p style="line-height: 150%; margin-bottom: 12px;"><b>${user.signature | safe}</b></p>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style="text-align:center;">
-                        <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;">
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </td>
-            </tr>
-            <!-- FOOTER -->
-            <tr>
-              <td align="center" style="min-width:590px; width: 960px; max-width: 100%;">
-                <table border="0" cellpadding="0" cellspacing="0" width="960" style="min-width:590px; width: 960px; max-width: 100%; background-color: white; font-size: 11px; padding: 0px 8px 0px 8px; border-collapse:separate;">
-                  <tbody>
-                    <tr>
-                      <td valign="middle" align="left"> ${object.company_id.name} </td>
-                    </tr>
-                    <tr>
-                      <td valign="middle" align="left" style="opacity:0.7;"> 
-                        ${object.company_id.phone}
-                        % if object.company_id.email:
-                          | <a href="mailto:${object.company_id.email}" style="color: #454748;">${object.company_id.email}</a>
-                        % endif
-                        % if object.company_id.website:
-                          | <a href="${object.company_id.website}" style="color: #454748;">${object.company_id.website}</a>
-                        % endif
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </td>
-    </tr>
-    <!-- POWERED BY -->
-    <tr>
-      <td align="center" style="min-width:590px; width: 960px; max-width: 100%;">
-        <table border="0" cellpadding="0" cellspacing="0" width="960" style="min-width:590px; width: 960px; max-width: 100%; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;">
+        <table border="0" cellpadding="0" cellspacing="0" style="padding-top:16px;background-color:#F1F1F1;font-family:Verdana, Arial,sans-serif; color:#454748;width:100%; border-collapse:separate;">
           <tbody>
             <tr>
-              <td style="text-align:center;font-size: 13px;">
-                This message is for informational purposes only. No reply is required.
+              <td align="center">
+                <table border="0" cellpadding="0" cellspacing="0" width="960" style="padding:16px;background-color:white; color:#454748; border-collapse:separate;">
+                  <tbody>
+                    <!-- HEADER -->
+                    <tr>
+                      <td align="center" style="min-width:590px; width:960px; max-width:100%">
+                        <table border="0" cellpadding="0" cellspacing="0" width="960" style="min-width:590px; width:960px; max-width:100%; background-color:white; padding:0 8px; border-collapse:separate;">
+                          <tbody>
+                            <tr>
+                              <td valign="middle">
+                                <span style="font-size:10px;">Subject</span>
+                                <br/>
+                                <span style="font-size:20px;font-weight:bold;"> Selection Process Events </span>
+                              </td>
+                              <td valign="middle" align="right">
+                                <img t-att-src="('%s/logo.png?company=%s' % (base_url, object.company_id.id))" style="padding:0;margin:0; height:auto; width:80px;" t-att-alt="object.company_id.name"/>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td colspan="2" style="text-align:center;">
+                                <hr width="100%" style="background-color:#CCC;border:none; clear:both;display:block;font-size:0; min-height:1px;line-height:0; margin:16px 0;"/>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr>
+                    <!-- CONTENT -->
+                    <tr>
+                      <td align="center" style="min-width:590px; width:960px; max-width:100%;">
+                        <table border="0" cellpadding="0" cellspacing="0" width="960" style="min-width:590px; width:960px; max-width:100%; background-color:white; padding:0 8px; border-collapse:separate;">
+                          <tbody>
+                            <tr>
+                              <td valign="top" style="font-size:13px;">
+                                <p style="line-height:150%; margin-bottom:12px;"> Hello <t t-out="recipient and recipient.name or ''"/> , </p>
+                                <p style="line-height:150%; margin-bottom:12px; text-align:justify;">
+                                  I’m reaching out to inform you about the events recorded in the
+                                  selection processes we are monitoring. This message includes
+                                  <t t-out="object.compute_subject().lower()"/>.
+                                </p>
+                                <p style="line-height:150%; margin-bottom:12px;">
+                                  Below is the complete list:
+                                </p>
+                                <!-- grouped_events: dict {admin: {process: [events]}} -->
+                                <t t-foreach="(ctx.get('grouped_events') or {}) .items()" t-as="grp1">
+                                  <t t-set="admin" t-value="grp1[0]"/>
+                                  <t t-set="processes" t-value="grp1[1]"/>
+                                  <h2 style="border-bottom:2px solid rgb(240,96,80); padding-bottom:3px; margin-top:18px; margin-bottom:12px; font-size:16px;">
+                                    <a style="text-decoration:none; color:rgb(240,96,80);" target="_blank" t-att-href="('%s/web#id=%s&amp;model=' 'civil.service.tracker.public.administration') % (base_url, admin.id)"
+                                      t-att-title="admin.name or ''" t-att-aria-label="admin.name or ''">
+                                      <t t-out="admin.name or ''"/>
+                                    </a>
+                                  </h2>
+                                  <p style="line-height:150%; margin-bottom:0; text-align:justify;">
+                                    The following events are related to selection processes for
+                                    access to public service positions under the jurisdiction of
+                                    <strong><t t-out="admin.name or ''"/></strong>.
+                                  </p>
+                                  <t t-foreach="(processes or {}).items()" t-as="grp2">
+                                    <t t-set="process" t-value="grp2[0]"/>
+                                    <t t-set="events" t-value="grp2[1]"/>
+                                    <table border="1" cellspacing="0" cellpadding="1" style="border-collapse:collapse; border:0 none transparent; margin-bottom:12px; width:100%;">
+                                      <thead>
+                                        <tr>
+                                          <th colspan="5" style="vertical-align:top; text-align:left; padding:6px 0; border:0 none transparent;">
+                                            <h3 style="margin:6px 0 3px 0; padding:0; font-size:14px;">
+                                              <a style="text-decoration:none; color:rgb(66,133,244);" target="_blank"
+                                                t-att-href="('%s/web#id=%s&amp;model=' 'civil.service.tracker.selection.process') % (base_url, process.id)"
+                                                t-att-title="process.name or ''"
+                                                t-att-aria-label="process.name or ''">
+                                                <t t-out="process.name or ''"/>
+                                              </a>
+                                            </h3>
+                                          </th>
+                                        </tr>
+                                        <tr>
+                                          <th style="line-height:125%; vertical-align:top; background-color:#EFEFEF; text-align:left; padding:6px 12px; border:1px solid #CCC;">Event</th>
+                                          <th style="line-height:125%; vertical-align:top; background-color:#EFEFEF; text-align:center; padding:6px 12px; border:1px solid #CCC;">Date</th>
+                                          <th style="line-height:125%; vertical-align:top; background-color:#EFEFEF; text-align:left; padding:6px 12px; border:1px solid #CCC;">Type</th>
+                                          <th style="line-height:125%; vertical-align:top; background-color:#EFEFEF; text-align:left; padding:6px 12px; border:1px solid #CCC;">Description</th>
+                                          <th style="line-height:125%; vertical-align:top; background-color:#EFEFEF; text-align:center; padding:6px 12px; border:1px solid #CCC;">Doc.</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        <t t-foreach="events" t-as="event">
+                                          <tr>
+                                            <td style="line-height:125%; vertical-align:top; text-align:left; padding:6px 12px; border:1px solid #CCC; white-space:nowrap;">
+                                              <a style="text-decoration:none; color:inherit;" target="_blank"
+                                                t-att-href="('%s/web#id=%s&amp;model=' 'civil.service.tracker.process.event') % (base_url, event.id)"
+                                                t-att-title="event.name or ''"
+                                                t-att-aria-label="event.name or ''">
+                                                <t t-out="event.name or ''"/>
+                                              </a>
+                                            </td>
+                                            <td style="line-height:125%; vertical-align:top; text-align:center; padding:6px 12px; border:1px solid #CCC; white-space:nowrap;">
+                                              <t t-out="format_datetime( event.event_date)"/>
+                                            </td>
+                                            <td style="line-height:125%; vertical-align:top; text-align:left; padding:6px 12px; border:1px solid #CCC; white-space:nowrap;">
+                                              <t t-out="event.event_type_id and event.event_type_id.name or ''" />
+                                            </td>
+                                            <td style="line-height:125%; vertical-align:top; text-align:left; padding:6px 12px; border:1px solid #CCC;">
+                                              <t t-out="event.description or ''"/>
+                                            </td>
+                                            <td style="line-height:125%; vertical-align:top; text-align:center; padding:6px 12px; border:1px solid #CCC;">
+                                              <t t-if="event.attachment_id">
+                                                <t t-if="event.attachment_id.type == 'binary'">
+                                                  <a style="vertical-align:top; text-decoration:none; color:#336699; white-space:nowrap;"
+                                                  target="_blank" download="download"
+                                                  t-att-href="base_url + (event.attachment_url or '')"
+                                                  title="Download attachment"
+                                                  aria-label="Download attachment">Open</a>
+                                                </t>
+                                                <t t-elif="event.attachment_id.type == 'url'">
+                                                  <a style="vertical-align:top; text-decoration:none; color:#336699; white-space:nowrap;"
+                                                  target="_blank" t-att-href="event.attachment_url"
+                                                  title="Open external document"
+                                                  aria-label="Open external document"> Link </a>
+                                                </t>
+                                              </t>
+                                            </td>
+                                          </tr>
+                                        </t>
+                                      </tbody>
+                                    </table>
+                                  </t>
+                                </t>
+                                <p style="line-height:150%; margin-top:18px; margin-bottom:12px; text-align:justify;">
+                                  If you need more information about any of the events, you can
+                                  click the corresponding links to directly access the selection
+                                  process record or the specific event you wish to review.
+                                </p>
+                                <p style="line-height:150%; margin-bottom:12px;">Best regards,</p>
+                                <div style="line-height:150%; margin-bottom:12px;">
+                                  <t t-raw="user.signature"/>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td style="text-align:center;">
+                                <hr width="100%" style="background-color:#CCC;border:none; clear:both;display:block;font-size:0; min-height:1px;line-height:0; margin:16px 0;" />
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr>
+                    <!-- FOOTER -->
+                    <tr>
+                      <td align="center" style="min-width:590px; width:960px; max-width:100%;">
+                        <table border="0" cellpadding="0" cellspacing="0" width="960" style="min-width:590px; width:960px; max-width:100%; background-color:white; font-size:11px; padding:0 8px; border-collapse:separate;">
+                          <tbody>
+                            <tr>
+                              <td valign="middle" align="left">
+                                <t t-out="object.company_id.name"/>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td valign="middle" align="left" style="opacity:.7;">
+                                <t t-out="object.company_id.phone or ''"/>
+                                <t t-if="object.company_id.email"> | <a t-att-href="'mailto:%s' % object.company_id.email" style="color:#454748;">
+                                    <t t-out="object.company_id.email"/>
+                                  </a>
+                                </t>
+                                <t t-if="object.company_id.website"> | <a t-att-href="object.company_id.website" style="color:#454748;">
+                                    <t t-out="object.company_id.website"/>
+                                  </a>
+                                </t>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </td>
             </tr>
+            <!-- POWERED BY -->
+            <tr>
+              <td align="center" style="min-width:590px; width:960px; max-width:100%;">
+                <table border="0" cellpadding="0" cellspacing="0" width="960" style="min-width:590px; width:960px; max-width:100%; background-color:#F1F1F1; color:#454748; padding:8px; border-collapse:separate;">
+                  <tbody>
+                    <tr>
+                      <td style="text-align:center;font-size:13px;">
+                        This message is for informational purposes only. No reply is required.
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+
           </tbody>
         </table>
-      </td>
-    </tr>
-  </tbody>
-</table>
+      </div>
+    </field>
+  </record>
 
-</body>
-</html>
-
-            ]]></field>
-        </record>
-
-    </data>
-</openerp>
+</odoo>

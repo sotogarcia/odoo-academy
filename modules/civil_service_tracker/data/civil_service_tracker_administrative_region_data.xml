@@ -1,102 +1,100 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo noupdate="0">
 
-        <record id="region_andalusia" model="civil.service.tracker.administrative.region">
-            <field name="name">Andalusia</field>
-            <field name="country_id" ref="base.es"/>
-        </record>
+  <record id="region_andalusia" model="civil.service.tracker.administrative.region">
+    <field name="name">Andalusia</field>
+    <field name="country_id" ref="base.es"/>
+  </record>
 
-        <record id="region_aragon" model="civil.service.tracker.administrative.region">
-            <field name="name">Aragon</field>
-            <field name="country_id" ref="base.es"/>
-        </record>
+  <record id="region_aragon" model="civil.service.tracker.administrative.region">
+    <field name="name">Aragon</field>
+    <field name="country_id" ref="base.es"/>
+  </record>
 
-        <record id="region_asturias" model="civil.service.tracker.administrative.region">
-            <field name="name">Asturias</field>
-            <field name="country_id" ref="base.es"/>
-        </record>
+  <record id="region_asturias" model="civil.service.tracker.administrative.region">
+    <field name="name">Asturias</field>
+    <field name="country_id" ref="base.es"/>
+  </record>
 
-        <record id="region_balearic_islands" model="civil.service.tracker.administrative.region">
-            <field name="name">Balearic Islands</field>
-            <field name="country_id" ref="base.es"/>
-        </record>
+  <record id="region_balearic_islands" model="civil.service.tracker.administrative.region">
+    <field name="name">Balearic Islands</field>
+    <field name="country_id" ref="base.es"/>
+  </record>
 
-        <record id="region_basque_country" model="civil.service.tracker.administrative.region">
-            <field name="name">Basque Country</field>
-            <field name="country_id" ref="base.es"/>
-        </record>
+  <record id="region_basque_country" model="civil.service.tracker.administrative.region">
+    <field name="name">Basque Country</field>
+    <field name="country_id" ref="base.es"/>
+  </record>
 
-        <record id="region_canterbury" model="civil.service.tracker.administrative.region">
-            <field name="name">Cantabria</field>
-            <field name="country_id" ref="base.es"/>
-        </record>
+  <record id="region_canterbury" model="civil.service.tracker.administrative.region">
+    <field name="name">Cantabria</field>
+    <field name="country_id" ref="base.es"/>
+  </record>
 
-        <record id="region_castile_and_leon" model="civil.service.tracker.administrative.region">
-            <field name="name">Castile and León</field>
-            <field name="country_id" ref="base.es"/>
-        </record>
+  <record id="region_castile_and_leon" model="civil.service.tracker.administrative.region">
+    <field name="name">Castile and León</field>
+    <field name="country_id" ref="base.es"/>
+  </record>
 
-        <record id="region_castile_la_mancha" model="civil.service.tracker.administrative.region">
-            <field name="name">Castile-La Mancha</field>
-            <field name="country_id" ref="base.es"/>
-        </record>
+  <record id="region_castile_la_mancha" model="civil.service.tracker.administrative.region">
+    <field name="name">Castile-La Mancha</field>
+    <field name="country_id" ref="base.es"/>
+  </record>
 
-        <record id="region_catalonia" model="civil.service.tracker.administrative.region">
-            <field name="name">Catalonia</field>
-            <field name="country_id" ref="base.es"/>
-        </record>
+  <record id="region_catalonia" model="civil.service.tracker.administrative.region">
+    <field name="name">Catalonia</field>
+    <field name="country_id" ref="base.es"/>
+  </record>
 
-        <record id="region_extremadura" model="civil.service.tracker.administrative.region">
-            <field name="name">Extremadura</field>
-            <field name="country_id" ref="base.es"/>
-        </record>
+  <record id="region_extremadura" model="civil.service.tracker.administrative.region">
+    <field name="name">Extremadura</field>
+    <field name="country_id" ref="base.es"/>
+  </record>
 
-        <record id="region_galicia" model="civil.service.tracker.administrative.region">
-            <field name="name">Galicia</field>
-            <field name="country_id" ref="base.es"/>
-        </record>
+  <record id="region_galicia" model="civil.service.tracker.administrative.region">
+    <field name="name">Galicia</field>
+    <field name="country_id" ref="base.es"/>
+  </record>
 
-        <record id="region_la_rioja" model="civil.service.tracker.administrative.region">
-            <field name="name">La Rioja</field>
-            <field name="country_id" ref="base.es"/>
-        </record>
+  <record id="region_la_rioja" model="civil.service.tracker.administrative.region">
+    <field name="name">La Rioja</field>
+    <field name="country_id" ref="base.es"/>
+  </record>
 
-        <record id="region_madrid" model="civil.service.tracker.administrative.region">
-            <field name="name">Madrid</field>
-            <field name="country_id" ref="base.es"/>
-        </record>
+  <record id="region_madrid" model="civil.service.tracker.administrative.region">
+    <field name="name">Madrid</field>
+    <field name="country_id" ref="base.es"/>
+  </record>
 
-        <record id="region_murcia" model="civil.service.tracker.administrative.region">
-            <field name="name">Murcia</field>
-            <field name="country_id" ref="base.es"/>
-        </record>
+  <record id="region_murcia" model="civil.service.tracker.administrative.region">
+    <field name="name">Murcia</field>
+    <field name="country_id" ref="base.es"/>
+  </record>
 
-        <record id="region_navarre" model="civil.service.tracker.administrative.region">
-            <field name="name">Navarre</field>
-            <field name="country_id" ref="base.es"/>
-        </record>
+  <record id="region_navarre" model="civil.service.tracker.administrative.region">
+    <field name="name">Navarre</field>
+    <field name="country_id" ref="base.es"/>
+  </record>
 
-        <record id="region_valencian_community" model="civil.service.tracker.administrative.region">
-            <field name="name">Valencian Community</field>
-            <field name="country_id" ref="base.es"/>
-        </record>
+  <record id="region_valencian_community" model="civil.service.tracker.administrative.region">
+    <field name="name">Valencian Community</field>
+    <field name="country_id" ref="base.es"/>
+  </record>
 
-        <record id="region_canary_islands" model="civil.service.tracker.administrative.region">
-            <field name="name">Canary Islands</field>
-            <field name="country_id" ref="base.es"/>
-        </record>
+  <record id="region_canary_islands" model="civil.service.tracker.administrative.region">
+    <field name="name">Canary Islands</field>
+    <field name="country_id" ref="base.es"/>
+  </record>
 
-        <record id="region_ceuta" model="civil.service.tracker.administrative.region">
-            <field name="name">Ceuta</field>
-            <field name="country_id" ref="base.es"/>
-        </record>
+  <record id="region_ceuta" model="civil.service.tracker.administrative.region">
+    <field name="name">Ceuta</field>
+    <field name="country_id" ref="base.es"/>
+  </record>
 
-        <record id="region_melilla" model="civil.service.tracker.administrative.region">
-            <field name="name">Melilla</field>
-            <field name="country_id" ref="base.es"/>
-        </record>
+  <record id="region_melilla" model="civil.service.tracker.administrative.region">
+    <field name="name">Melilla</field>
+    <field name="country_id" ref="base.es"/>
+  </record>
 
-    </data>
-</openerp>
+</odoo>

@@ -1,181 +1,183 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo noupdate="0">
 
-
-        <!-- Unsequenced event types 
+  <!-- Unsequenced event types 
         ··································································· -->
-        <record id="cst_event_type_announcement" model="civil.service.tracker.event.type">
-            <field name="name">General announcement</field>
-            <field name="description">Notices related to the process, including delays or committee changes</field>
-            <field name="all_day" eval="1" />
-            <field name="active" eval="1" />
-        </record>
+  <record id="cst_event_type_announcement" model="civil.service.tracker.event.type">
+    <field name="name">General announcement</field>
+    <field name="description">Notices related to the process, including delays or committee
+      changes</field>
+    <field name="all_day" eval="1"/>
+    <field name="active" eval="1"/>
+  </record>
 
-        <record id="cst_event_type_documentation" model="civil.service.tracker.event.type">
-            <field name="name">Documentation delivery</field>
-            <field name="description">Deadline or requirement to submit additional documents</field>
-            <field name="all_day" eval="1" />
-            <field name="active" eval="1" />
-        </record>
+  <record id="cst_event_type_documentation" model="civil.service.tracker.event.type">
+    <field name="name">Documentation delivery</field>
+    <field name="description">Deadline or requirement to submit additional documents</field>
+    <field name="all_day" eval="1"/>
+    <field name="active" eval="1"/>
+  </record>
 
-        <record id="cst_event_type_other" model="civil.service.tracker.event.type">
-            <field name="name">Other events</field>
-            <field name="description">Unclassified events related to the selection process</field>
-            <field name="all_day" eval="1" />
-            <field name="active" eval="1" />
-        </record>
+  <record id="cst_event_type_other" model="civil.service.tracker.event.type">
+    <field name="name">Other events</field>
+    <field name="description">Unclassified events related to the selection process</field>
+    <field name="all_day" eval="1"/>
+    <field name="active" eval="1"/>
+  </record>
 
 
-        <!-- Sequenced event types 
+  <!-- Sequenced event types 
         ··································································· -->
 
-        <record id="cst_event_type_forecast" model="civil.service.tracker.event.type">
-            <field name="name">Supply forecast</field>
-            <field name="description">Preliminary announcement prior to official offer approval</field>
-            <field name="all_day" eval="1" />
-            <field name="active" eval="1" />
-            <field name="is_stage" eval="1" />
-            <field name="unique" eval="1" />
-            <field name="sequence">10</field>
-        </record>
+  <record id="cst_event_type_forecast" model="civil.service.tracker.event.type">
+    <field name="name">Supply forecast</field>
+    <field name="description">Preliminary announcement prior to official offer approval</field>
+    <field name="all_day" eval="1"/>
+    <field name="active" eval="1"/>
+    <field name="is_stage" eval="1"/>
+    <field name="unique" eval="1"/>
+    <field name="sequence">10</field>
+  </record>
 
-        <record id="cst_event_type_offer_approval" model="civil.service.tracker.event.type">
-            <field name="name">Offer approval</field>
-            <field name="description">Official approval of the public job offer</field>
-            <field name="all_day" eval="1" />
-            <field name="active" eval="1" />
-            <field name="sequence">15</field>
-            <field name="is_stage" eval="1" />
-            <field name="unique" eval="1" />
-            <field name="related_field_id" eval="ref('field_civil_service_tracker_selection_process__offer_date')"/>
-        </record>
+  <record id="cst_event_type_offer_approval" model="civil.service.tracker.event.type">
+    <field name="name">Offer approval</field>
+    <field name="description">Official approval of the public job offer</field>
+    <field name="all_day" eval="1"/>
+    <field name="active" eval="1"/>
+    <field name="sequence">15</field>
+    <field name="is_stage" eval="1"/>
+    <field name="unique" eval="1"/>
+    <field name="related_field_id"
+      eval="ref('field_civil_service_tracker_selection_process__offer_date')"/>
+  </record>
 
-        <record id="cst_event_type_offer_publication" model="civil.service.tracker.event.type">
-            <field name="name">Official publication</field>
-            <field name="description">Offer published in the official journal</field>
-            <field name="all_day" eval="1" />
-            <field name="active" eval="1" />
-            <field name="unique" eval="1" />
-            <field name="sequence">20</field>
-        </record>
+  <record id="cst_event_type_offer_publication" model="civil.service.tracker.event.type">
+    <field name="name">Official publication</field>
+    <field name="description">Offer published in the official journal</field>
+    <field name="all_day" eval="1"/>
+    <field name="active" eval="1"/>
+    <field name="unique" eval="1"/>
+    <field name="sequence">20</field>
+  </record>
 
-        <record id="cst_event_type_other_journals" model="civil.service.tracker.event.type">
-            <field name="name">Other publications</field>
-            <field name="description">Offer published in non-official journals</field>
-            <field name="all_day" eval="1" />
-            <field name="active" eval="1" />
-            <field name="sequence">25</field>
-        </record>
+  <record id="cst_event_type_other_journals" model="civil.service.tracker.event.type">
+    <field name="name">Other publications</field>
+    <field name="description">Offer published in non-official journals</field>
+    <field name="all_day" eval="1"/>
+    <field name="active" eval="1"/>
+    <field name="sequence">25</field>
+  </record>
 
-        <record id="cst_event_type_call" model="civil.service.tracker.event.type">
-            <field name="name">Call</field>
-            <field name="description">Call resolution publication</field>
-            <field name="all_day" eval="1" />
-            <field name="active" eval="1" />
-            <field name="sequence">30</field>
-            <field name="is_stage" eval="1" />
-            <field name="unique" eval="1" />
-            <field name="related_field_id" eval="ref('field_civil_service_tracker_selection_process__call_date')"/>
-        </record>
+  <record id="cst_event_type_call" model="civil.service.tracker.event.type">
+    <field name="name">Call</field>
+    <field name="description">Call resolution publication</field>
+    <field name="all_day" eval="1"/>
+    <field name="active" eval="1"/>
+    <field name="sequence">30</field>
+    <field name="is_stage" eval="1"/>
+    <field name="unique" eval="1"/>
+    <field name="related_field_id"
+      eval="ref('field_civil_service_tracker_selection_process__call_date')"/>
+  </record>
 
-        <record id="cst_event_type_application_deadline" model="civil.service.tracker.event.type">
-            <field name="name">Application deadline</field>
-            <field name="description">Deadline for application submission</field>
-            <field name="all_day" eval="1" />
-            <field name="active" eval="1" />
-            <field name="sequence">35</field>
-        </record>
+  <record id="cst_event_type_application_deadline" model="civil.service.tracker.event.type">
+    <field name="name">Application deadline</field>
+    <field name="description">Deadline for application submission</field>
+    <field name="all_day" eval="1"/>
+    <field name="active" eval="1"/>
+    <field name="sequence">35</field>
+  </record>
 
-        <record id="cst_event_type_provisional_admission" model="civil.service.tracker.event.type">
-            <field name="name">Provisional admission</field>
-            <field name="description">Publication of provisional list of admitted/excluded applicants</field>
-            <field name="all_day" eval="1" />
-            <field name="active" eval="1" />
-            <field name="sequence">40</field>
-        </record>
+  <record id="cst_event_type_provisional_admission" model="civil.service.tracker.event.type">
+    <field name="name">Provisional admission</field>
+    <field name="description">Publication of provisional list of admitted/excluded
+      applicants</field>
+    <field name="all_day" eval="1"/>
+    <field name="active" eval="1"/>
+    <field name="sequence">40</field>
+  </record>
 
-        <record id="cst_event_type_final_admission" model="civil.service.tracker.event.type">
-            <field name="name">Final admission</field>
-            <field name="description">Final list of admitted applicants</field>
-            <field name="all_day" eval="1" />
-            <field name="active" eval="1" />
-            <field name="sequence">45</field>
-        </record>
+  <record id="cst_event_type_final_admission" model="civil.service.tracker.event.type">
+    <field name="name">Final admission</field>
+    <field name="description">Final list of admitted applicants</field>
+    <field name="all_day" eval="1"/>
+    <field name="active" eval="1"/>
+    <field name="sequence">45</field>
+  </record>
 
-        <record id="cst_event_type_committee" model="civil.service.tracker.event.type">
-            <field name="name">Committee appointment</field>
-            <field name="description">Appointment of the examining board</field>
-            <field name="all_day" eval="1" />
-            <field name="active" eval="1" />
-            <field name="sequence">50</field>
-        </record>
+  <record id="cst_event_type_committee" model="civil.service.tracker.event.type">
+    <field name="name">Committee appointment</field>
+    <field name="description">Appointment of the examining board</field>
+    <field name="all_day" eval="1"/>
+    <field name="active" eval="1"/>
+    <field name="sequence">50</field>
+  </record>
 
-        <record id="cst_event_type_exam_announcement" model="civil.service.tracker.event.type">
-            <field name="name">Exam announcement</field>
-            <field name="description">Publication of the date and place of the first exam</field>
-            <field name="all_day" eval="1" />
-            <field name="active" eval="1" />
-            <field name="sequence">55</field>
-            <field name="is_stage" eval="1" />
-        </record>
+  <record id="cst_event_type_exam_announcement" model="civil.service.tracker.event.type">
+    <field name="name">Exam announcement</field>
+    <field name="description">Publication of the date and place of the first exam</field>
+    <field name="all_day" eval="1"/>
+    <field name="active" eval="1"/>
+    <field name="sequence">55</field>
+    <field name="is_stage" eval="1"/>
+  </record>
 
-        <record id="cst_event_type_exam" model="civil.service.tracker.event.type">
-            <field name="name">Exam</field>
-            <field name="description">First exam takes place (not necessarily all day)</field>
-            <field name="all_day" eval="0" />
-            <field name="active" eval="1" />
-            <field name="sequence">60</field>
-        </record>
+  <record id="cst_event_type_exam" model="civil.service.tracker.event.type">
+    <field name="name">Exam</field>
+    <field name="description">First exam takes place (not necessarily all day)</field>
+    <field name="all_day" eval="0"/>
+    <field name="active" eval="1"/>
+    <field name="sequence">60</field>
+  </record>
 
-        <record id="cst_event_type_results_provisional" model="civil.service.tracker.event.type">
-            <field name="name">Provisional results</field>
-            <field name="description">Publication of provisional exam results</field>
-            <field name="all_day" eval="1" />
-            <field name="active" eval="1" />
-            <field name="sequence">65</field>
-        </record>
+  <record id="cst_event_type_results_provisional" model="civil.service.tracker.event.type">
+    <field name="name">Provisional results</field>
+    <field name="description">Publication of provisional exam results</field>
+    <field name="all_day" eval="1"/>
+    <field name="active" eval="1"/>
+    <field name="sequence">65</field>
+  </record>
 
-        <record id="cst_event_type_results_final" model="civil.service.tracker.event.type">
-            <field name="name">Final results</field>
-            <field name="description">Publication of final exam results</field>
-            <field name="all_day" eval="1" />
-            <field name="active" eval="1" />
-            <field name="sequence">70</field>
-            <field name="is_stage" eval="1" />
-            <field name="unique" eval="1" />
-        </record>
+  <record id="cst_event_type_results_final" model="civil.service.tracker.event.type">
+    <field name="name">Final results</field>
+    <field name="description">Publication of final exam results</field>
+    <field name="all_day" eval="1"/>
+    <field name="active" eval="1"/>
+    <field name="sequence">70</field>
+    <field name="is_stage" eval="1"/>
+    <field name="unique" eval="1"/>
+  </record>
 
-        <record id="cst_event_type_nomination_proposal" model="civil.service.tracker.event.type">
-            <field name="name">Nomination proposal</field>
-            <field name="description">Proposal of appointment or position assignment</field>
-            <field name="all_day" eval="1" />
-            <field name="active" eval="1" />
-            <field name="sequence">75</field>
-        </record>
+  <record id="cst_event_type_nomination_proposal" model="civil.service.tracker.event.type">
+    <field name="name">Nomination proposal</field>
+    <field name="description">Proposal of appointment or position assignment</field>
+    <field name="all_day" eval="1"/>
+    <field name="active" eval="1"/>
+    <field name="sequence">75</field>
+  </record>
 
-        <record id="cst_event_type_final_resolution" model="civil.service.tracker.event.type">
-            <field name="name">Final resolution</field>
-            <field name="description">Publication of the final decision</field>
-            <field name="all_day" eval="1" />
-            <field name="active" eval="1" />
-            <field name="sequence">80</field>
-            <field name="is_stage" eval="1" />
-            <field name="fold" eval="1" />
-            <field name="unique" eval="1" />
-            <field name="related_field_id" eval="ref('field_civil_service_tracker_selection_process__resolution_date')"/>
-        </record>
+  <record id="cst_event_type_final_resolution" model="civil.service.tracker.event.type">
+    <field name="name">Final resolution</field>
+    <field name="description">Publication of the final decision</field>
+    <field name="all_day" eval="1"/>
+    <field name="active" eval="1"/>
+    <field name="sequence">80</field>
+    <field name="is_stage" eval="1"/>
+    <field name="fold" eval="1"/>
+    <field name="unique" eval="1"/>
+    <field name="related_field_id"
+      eval="ref('field_civil_service_tracker_selection_process__resolution_date')"/>
+  </record>
 
-        <record id="cst_event_type_appointment" model="civil.service.tracker.event.type">
-            <field name="name">Appointment</field>
-            <field name="description">Official appointment or entry into duty</field>
-            <field name="all_day" eval="1" />
-            <field name="active" eval="1" />
-            <field name="sequence">85</field>
-            <field name="unique" eval="1" />
-            <field name="fold" eval="1" />
-        </record>
+  <record id="cst_event_type_appointment" model="civil.service.tracker.event.type">
+    <field name="name">Appointment</field>
+    <field name="description">Official appointment or entry into duty</field>
+    <field name="all_day" eval="1"/>
+    <field name="active" eval="1"/>
+    <field name="sequence">85</field>
+    <field name="unique" eval="1"/>
+    <field name="fold" eval="1"/>
+  </record>
 
-    </data>
-</openerp>
+</odoo>

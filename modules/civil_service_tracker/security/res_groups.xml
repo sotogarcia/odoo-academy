@@ -1,57 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo noupdate="0">
 
-        <record id="module_category_civil_service_tracker" model="ir.module.category">
-            <field name="name">Civil Service Tracker</field>
-            <field name="sequence" eval="25" />
-            <field name="visible" eval="True" />
-            <field name="description">Module for tracking public service recruitment processes and catalogues</field>
-        </record>
+  <record id="module_category_civil_service_tracker" model="ir.module.category">
+    <field name="name">Civil Service Tracker</field>
+    <field name="sequence" eval="25"/>
+    <field name="visible" eval="True"/>
+    <field name="description">Module for tracking public service recruitment processes and
+      catalogues</field>
+  </record>
 
-        <record id="group_civil_service_tracker_consultant" model="res.groups">
-            <field name="name">Consultant</field>
-            <field name="comment">Can view catalogues and follow recruitment processes</field>
-            <field name="category_id" ref="civil_service_tracker.module_category_civil_service_tracker"/>
-            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
-        </record>
+  <record id="group_civil_service_tracker_consultant" model="res.groups">
+    <field name="name">Consultant</field>
+    <field name="comment">Can view catalogues and follow recruitment processes</field>
+    <field name="category_id" ref="civil_service_tracker.module_category_civil_service_tracker"/>
+    <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+  </record>
 
-        <record id="group_civil_service_tracker_operator" model="res.groups">
-            <field name="name">Operator</field>
-            <field name="comment">Can manage recruitment processes and their stages</field>
-            <field name="category_id" ref="civil_service_tracker.module_category_civil_service_tracker"/>
-            <field name="implied_ids" eval="[(4, ref('civil_service_tracker.group_civil_service_tracker_consultant'))]"/>
-        </record>
+  <record id="group_civil_service_tracker_operator" model="res.groups">
+    <field name="name">Operator</field>
+    <field name="comment">Can manage recruitment processes and their stages</field>
+    <field name="category_id" ref="civil_service_tracker.module_category_civil_service_tracker"/>
+    <field name="implied_ids"
+      eval="[(4, ref('civil_service_tracker.group_civil_service_tracker_consultant'))]"/>
+  </record>
 
-        <record id="group_civil_service_tracker_technician" model="res.groups">
-            <field name="name">Technician</field>
-            <field name="comment">Can edit catalogues and recruitment processes</field>
-            <field name="category_id" ref="civil_service_tracker.module_category_civil_service_tracker"/>
-            <field name="implied_ids" eval="[
-                (4, ref('civil_service_tracker.group_civil_service_tracker_consultant')),
-                (4, ref('civil_service_tracker.group_civil_service_tracker_operator'))
-            ]"/>
-        </record>
+  <record id="group_civil_service_tracker_technician" model="res.groups">
+    <field name="name">Technician</field>
+    <field name="comment">Can edit catalogues and recruitment processes</field>
+    <field name="category_id" ref="civil_service_tracker.module_category_civil_service_tracker"/>
+    <field name="implied_ids" eval="[
+        (4, ref('civil_service_tracker.group_civil_service_tracker_consultant')),
+        (4, ref('civil_service_tracker.group_civil_service_tracker_operator'))
+    ]"/>
+  </record>
 
-        <record id="group_civil_service_tracker_admin" model="res.groups">
-            <field name="name">Administrator</field>
-            <field name="comment">Full access to catalogues, configurations and processes</field>
-            <field name="category_id" ref="civil_service_tracker.module_category_civil_service_tracker"/>
-            <field name="implied_ids" eval="[
-                (4, ref('civil_service_tracker.group_civil_service_tracker_consultant')),
-                (4, ref('civil_service_tracker.group_civil_service_tracker_operator')),
-                (4, ref('civil_service_tracker.group_civil_service_tracker_technician'))
-            ]"/>
-            <field name="users" eval="[(4, ref('base.user_admin'))]" />
-        </record>
+  <record id="group_civil_service_tracker_admin" model="res.groups">
+    <field name="name">Administrator</field>
+    <field name="comment">Full access to catalogues, configurations and processes</field>
+    <field name="category_id" ref="civil_service_tracker.module_category_civil_service_tracker"/>
+    <field name="implied_ids" eval="[
+        (4, ref('civil_service_tracker.group_civil_service_tracker_consultant')),
+        (4, ref('civil_service_tracker.group_civil_service_tracker_operator')),
+        (4, ref('civil_service_tracker.group_civil_service_tracker_technician'))
+    ]"/>
+    <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+  </record>
 
-        <record id="group_civil_service_tracker_dossier_editor" model="res.groups">
-            <field name="name">Civil Service Tracker Dossier Editor</field>
-            <field name="comment">Can access and edit dossier-specific fields in recruitment processes.</field>
-            <field name="category_id" ref="base.module_category_usability"/>
-            <field name="implied_ids" eval="[(4, ref('civil_service_tracker.group_civil_service_tracker_technician'))]"/>
-        </record>
+  <record id="group_civil_service_tracker_dossier_editor" model="res.groups">
+    <field name="name">Civil Service Tracker Dossier Editor</field>
+    <field name="comment">Can access and edit dossier-specific fields in recruitment
+      processes.</field>
+    <field name="category_id" ref="base.module_category_usability"/>
+    <field name="implied_ids"
+      eval="[(4, ref('civil_service_tracker.group_civil_service_tracker_technician'))]"/>
+  </record>
 
-    </data> 
-</openerp>
+</odoo>

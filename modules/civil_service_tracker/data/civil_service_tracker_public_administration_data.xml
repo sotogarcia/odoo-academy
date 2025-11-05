@@ -1,173 +1,238 @@
 <odoo>
-    <data noupdate="0">
+  <data noupdate="0">
 
-        <!-- Administración general del estado -->
-        <record id="civil_service_tracker_public_administration_ess2833011f" model="civil.service.tracker.public.administration">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_ess2833011f" />
-            <field name="administration_type_id" ref="civil_service_tracker_administration_type_age" />
-            <field name="description">Central government of Spain, responsible for nationwide public administration and services.</field>
-        </record>
+    <!-- Administración general del estado -->
+    <record id="civil_service_tracker_public_administration_ess2833011f"
+      model="civil.service.tracker.public.administration">
+      <field name="partner_id" ref="civil_service_tracker.res_partner_ess2833011f"/>
+      <field name="administration_type_id" ref="civil_service_tracker_administration_type_age"/>
+      <field name="description">Central government of Spain, responsible for nationwide public
+        administration and services.</field>
+    </record>
 
-        <!-- Administración de la Seguridad Social -->
-        <record id="civil_service_tracker_public_administration_social_security" model="civil.service.tracker.public.administration">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_admin_seguridad_social" />
-            <field name="administration_type_id" ref="civil_service_tracker_administration_type_social_security" />
-            <field name="description">National Social Security Administration, managing pensions, benefits, and social protection across Spain.</field>
-        </record>
+    <!-- Administración de la Seguridad Social -->
+    <record id="civil_service_tracker_public_administration_social_security"
+      model="civil.service.tracker.public.administration">
+      <field name="partner_id" ref="civil_service_tracker.res_partner_admin_seguridad_social"/>
+      <field name="administration_type_id"
+        ref="civil_service_tracker_administration_type_social_security"/>
+      <field name="description">National Social Security Administration, managing pensions,
+        benefits, and social protection across Spain.</field>
+    </record>
 
-        <!-- Administración de Justicia -->
-        <record id="civil_service_tracker_public_administration_justice" model="civil.service.tracker.public.administration">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_admin_justicia" />
-            <field name="administration_type_id" ref="civil_service_tracker_administration_type_state_justice" />
-            <field name="description">Judicial Administration of the State, ensuring the delivery of justice across national courts and tribunals.</field>
-        </record>
+    <!-- Administración de Justicia -->
+    <record id="civil_service_tracker_public_administration_justice"
+      model="civil.service.tracker.public.administration">
+      <field name="partner_id" ref="civil_service_tracker.res_partner_admin_justicia"/>
+      <field name="administration_type_id"
+        ref="civil_service_tracker_administration_type_state_justice"/>
+      <field name="description">Judicial Administration of the State, ensuring the delivery of
+        justice across national courts and tribunals.</field>
+    </record>
 
-        <!-- Agencia Estatal de Administración Tributaria -->
-        <record id="civil_service_tracker_public_administration_esq2826000h" model="civil.service.tracker.public.administration">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_esq2826000h"/>
-            <field name="administration_type_id" ref="civil_service_tracker_administration_type_age" />
-            <field name="description">Spanish Tax Agency, responsible for managing and collecting national taxes.</field>
-        </record>
+    <!-- Agencia Estatal de Administración Tributaria -->
+    <record id="civil_service_tracker_public_administration_esq2826000h"
+      model="civil.service.tracker.public.administration">
+      <field name="partner_id" ref="civil_service_tracker.res_partner_esq2826000h"/>
+      <field name="administration_type_id" ref="civil_service_tracker_administration_type_age"/>
+      <field name="description">Spanish Tax Agency, responsible for managing and collecting national
+        taxes.</field>
+    </record>
 
-        <!-- Dirección General de la Guardia Civil -->
-        <record id="civil_service_tracker_public_administration_ess2816003d" model="civil.service.tracker.public.administration">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_ess2816003d"/>
-            <field name="administration_type_id" ref="civil_service_tracker_administration_type_age" />
-            <field name="description">Law enforcement agency under the Ministry of the Interior, responsible for policing rural areas and borders.</field>
-        </record>
+    <!-- Dirección General de la Guardia Civil -->
+    <record id="civil_service_tracker_public_administration_ess2816003d"
+      model="civil.service.tracker.public.administration">
+      <field name="partner_id" ref="civil_service_tracker.res_partner_ess2816003d"/>
+      <field name="administration_type_id" ref="civil_service_tracker_administration_type_age"/>
+      <field name="description">Law enforcement agency under the Ministry of the Interior,
+        responsible for policing rural areas and borders.</field>
+    </record>
 
-        <!-- Dirección General de la Policía -->
-        <record id="civil_service_tracker_public_administration_ess2816015h" model="civil.service.tracker.public.administration">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_ess2816015h"/>
-            <field name="administration_type_id" ref="civil_service_tracker_administration_type_age" />
-            <field name="description">Spanish national police force, handling urban policing and criminal investigations.</field>
-        </record>
-        
-        <!-- Fuerzas Armadas -->
-        <record id="civil_service_tracker_public_administration_armed_forces" model="civil.service.tracker.public.administration">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_armed_forces" />
-            <field name="administration_type_id" ref="civil_service_tracker_administration_type_age" />
-            <field name="description">Spanish Armed Forces, under the Ministry of Defence, responsible for national defence and military operations.</field>
-        </record>
-        
-        <!-- Instituciones Penitenciarias -->
-        <record id="civil_service_tracker_public_administration_penitentiary" model="civil.service.tracker.public.administration">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_admin_penitenciarias" />
-            <field name="administration_type_id" ref="civil_service_tracker_administration_type_age" />
-            <field name="description">Spanish Penitentiary Administration, responsible for prison management, rehabilitation, and reintegration policies under the Ministry of the Interior.</field>
-        </record>
+    <!-- Dirección General de la Policía -->
+    <record id="civil_service_tracker_public_administration_ess2816015h"
+      model="civil.service.tracker.public.administration">
+      <field name="partner_id" ref="civil_service_tracker.res_partner_ess2816015h"/>
+      <field name="administration_type_id" ref="civil_service_tracker_administration_type_age"/>
+      <field name="description">Spanish national police force, handling urban policing and criminal
+        investigations.</field>
+    </record>
 
-        <!-- Administración General de la Comunidad Autónoma de Galicia -->
-        <record id="civil_service_tracker_public_administration_galicia_general" model="civil.service.tracker.public.administration">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_admin_galician_general_administration" />
-            <field name="administration_type_id" ref="civil_service_tracker_administration_type_autonomous_general" />
-            <field name="administrative_region_id" ref="civil_service_tracker.region_galicia" />
-            <field name="description">Autonomous government of Galicia, responsible for regional public administration and services.</field>
-        </record>
+    <!-- Fuerzas Armadas -->
+    <record id="civil_service_tracker_public_administration_armed_forces"
+      model="civil.service.tracker.public.administration">
+      <field name="partner_id" ref="civil_service_tracker.res_partner_armed_forces"/>
+      <field name="administration_type_id" ref="civil_service_tracker_administration_type_age"/>
+      <field name="description">Spanish Armed Forces, under the Ministry of Defence, responsible for
+        national defence and military operations.</field>
+    </record>
 
-        <!-- Administración General de la Comunidad Autónoma de Madrid -->
-        <record id="civil_service_tracker_public_administration_madrid_general" model="civil.service.tracker.public.administration">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_admin_general_cam" />
-            <field name="administration_type_id" ref="civil_service_tracker_administration_type_autonomous_general" />
-            <field name="administrative_region_id" ref="civil_service_tracker.region_madrid" />
-            <field name="description">Autonomous government of Madrid, responsible for regional public administration and services.</field>
-        </record>
+    <!-- Instituciones Penitenciarias -->
+    <record id="civil_service_tracker_public_administration_penitentiary"
+      model="civil.service.tracker.public.administration">
+      <field name="partner_id" ref="civil_service_tracker.res_partner_admin_penitenciarias"/>
+      <field name="administration_type_id" ref="civil_service_tracker_administration_type_age"/>
+      <field name="description">Spanish Penitentiary Administration, responsible for prison
+        management, rehabilitation, and reintegration policies under the Ministry of the
+        Interior.</field>
+    </record>
 
-        <!-- Administración General de la Comunidad Autónoma de Andalucía -->
-        <record id="civil_service_tracker_public_administration_andalusia_general" model="civil.service.tracker.public.administration">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_admin_general_junta_andalucia" />
-            <field name="administration_type_id" ref="civil_service_tracker_administration_type_autonomous_general" />
-            <field name="administrative_region_id" ref="civil_service_tracker.region_andalusia" />
-            <field name="description">Autonomous government of Andalusia, responsible for regional public administration and services.</field>
-        </record>
+    <!-- Administración General de la Comunidad Autónoma de Galicia -->
+    <record id="civil_service_tracker_public_administration_galicia_general"
+      model="civil.service.tracker.public.administration">
+      <field name="partner_id"
+        ref="civil_service_tracker.res_partner_admin_galician_general_administration"/>
+      <field name="administration_type_id"
+        ref="civil_service_tracker_administration_type_autonomous_general"/>
+      <field name="administrative_region_id" ref="civil_service_tracker.region_galicia"/>
+      <field name="description">Autonomous government of Galicia, responsible for regional public
+        administration and services.</field>
+    </record>
 
-        <!-- Concello de Pontevedra -->
-        <record id="civil_service_tracker_public_administration_esp3603800h" model="civil.service.tracker.public.administration">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_esp3603800h" />
-            <field name="administration_type_id" ref="civil_service_tracker_administration_type_local_entities" />
-            <field name="description">Municipal government of Pontevedra, responsible for urban management and citizen services.</field>
-        </record>
+    <!-- Administración General de la Comunidad Autónoma de Madrid -->
+    <record id="civil_service_tracker_public_administration_madrid_general"
+      model="civil.service.tracker.public.administration">
+      <field name="partner_id" ref="civil_service_tracker.res_partner_admin_general_cam"/>
+      <field name="administration_type_id"
+        ref="civil_service_tracker_administration_type_autonomous_general"/>
+      <field name="administrative_region_id" ref="civil_service_tracker.region_madrid"/>
+      <field name="description">Autonomous government of Madrid, responsible for regional public
+        administration and services.</field>
+    </record>
 
-        <!-- Concello de Vigo -->
-        <record id="civil_service_tracker_public_administration_esp3605700h" model="civil.service.tracker.public.administration">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_esp3605700h" />
-            <field name="administration_type_id" ref="civil_service_tracker_administration_type_local_entities" />
-            <field name="description">Local council of Vigo, Galicia’s largest city by population, managing local administration.</field>
-        </record>
+    <!-- Administración General de la Comunidad Autónoma de Andalucía -->
+    <record id="civil_service_tracker_public_administration_andalusia_general"
+      model="civil.service.tracker.public.administration">
+      <field name="partner_id" ref="civil_service_tracker.res_partner_admin_general_junta_andalucia"/>
+      <field name="administration_type_id"
+        ref="civil_service_tracker_administration_type_autonomous_general"/>
+      <field name="administrative_region_id" ref="civil_service_tracker.region_andalusia"/>
+      <field name="description">Autonomous government of Andalusia, responsible for regional public
+        administration and services.</field>
+    </record>
 
-        <!-- Deputación de Pontevedra -->
-        <record id="civil_service_tracker_public_administration_esp3600000h" model="civil.service.tracker.public.administration">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_esp3600000h" />
-            <field name="administration_type_id" ref="civil_service_tracker_administration_type_local_entities" />
-            <field name="description">Provincial council of Pontevedra, supporting municipalities and coordinating provincial services.</field>
-        </record>
+    <!-- Concello de Pontevedra -->
+    <record id="civil_service_tracker_public_administration_esp3603800h"
+      model="civil.service.tracker.public.administration">
+      <field name="partner_id" ref="civil_service_tracker.res_partner_esp3603800h"/>
+      <field name="administration_type_id"
+        ref="civil_service_tracker_administration_type_local_entities"/>
+      <field name="description">Municipal government of Pontevedra, responsible for urban management
+        and citizen services.</field>
+    </record>
 
-        <!-- Servizo Galego de Saúde (Sergas) -->
-        <record id="civil_service_tracker_public_administration_esq6550006h" model="civil.service.tracker.public.administration">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_esq6550006h" />
-            <field name="administration_type_id" ref="civil_service_tracker_administration_type_autonomous_other" />
-            <field name="administrative_region_id" ref="civil_service_tracker.region_galicia" />
-            <field name="description">Public health service of Galicia, providing healthcare to the Galician population.</field>
-        </record>
+    <!-- Concello de Vigo -->
+    <record id="civil_service_tracker_public_administration_esp3605700h"
+      model="civil.service.tracker.public.administration">
+      <field name="partner_id" ref="civil_service_tracker.res_partner_esp3605700h"/>
+      <field name="administration_type_id"
+        ref="civil_service_tracker_administration_type_local_entities"/>
+      <field name="description">Local council of Vigo, Galicia’s largest city by population,
+        managing local administration.</field>
+    </record>
 
-        <!-- Concello de San Sadurniño -->
-        <record id="civil_service_tracker_public_administration_esq1507700a" model="civil.service.tracker.public.administration">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_esq1507700a" />
-            <field name="administration_type_id" ref="civil_service_tracker_administration_type_local_entities" />
-            <field name="description">Rural local council in Galicia, responsible for municipal services in the municipality of San Sadurniño.</field>
-        </record>
+    <!-- Deputación de Pontevedra -->
+    <record id="civil_service_tracker_public_administration_esp3600000h"
+      model="civil.service.tracker.public.administration">
+      <field name="partner_id" ref="civil_service_tracker.res_partner_esp3600000h"/>
+      <field name="administration_type_id"
+        ref="civil_service_tracker_administration_type_local_entities"/>
+      <field name="description">Provincial council of Pontevedra, supporting municipalities and
+        coordinating provincial services.</field>
+    </record>
 
-        <!-- Ayuntamiento de Madrid -->
-        <record id="civil_service_tracker_public_administration_esp2807900b" model="civil.service.tracker.public.administration">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_esp2807900b" />
-            <field name="administration_type_id" ref="civil_service_tracker_administration_type_local_entities" />
-            <field name="description">City council of Madrid, responsible for managing municipal services in Spain's capital.</field>
-        </record>
+    <!-- Servizo Galego de Saúde (Sergas) -->
+    <record id="civil_service_tracker_public_administration_esq6550006h"
+      model="civil.service.tracker.public.administration">
+      <field name="partner_id" ref="civil_service_tracker.res_partner_esq6550006h"/>
+      <field name="administration_type_id"
+        ref="civil_service_tracker_administration_type_autonomous_other"/>
+      <field name="administrative_region_id" ref="civil_service_tracker.region_galicia"/>
+      <field name="description">Public health service of Galicia, providing healthcare to the
+        Galician population.</field>
+    </record>
 
-        <!-- Universidade de Santiago de Compostela -->
-        <record id="civil_service_tracker_public_administration_esq1518001a" model="civil.service.tracker.public.administration">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_esq1518001a" />
-            <field name="administration_type_id" ref="civil_service_tracker_administration_type_autonomous_universities" />
-            <field name="administrative_region_id" ref="civil_service_tracker.region_galicia" />
-            <field name="description">Public university based in Santiago de Compostela, known for its historical and academic excellence.</field>
-        </record>
+    <!-- Concello de San Sadurniño -->
+    <record id="civil_service_tracker_public_administration_esq1507700a"
+      model="civil.service.tracker.public.administration">
+      <field name="partner_id" ref="civil_service_tracker.res_partner_esq1507700a"/>
+      <field name="administration_type_id"
+        ref="civil_service_tracker_administration_type_local_entities"/>
+      <field name="description">Rural local council in Galicia, responsible for municipal services
+        in the municipality of San Sadurniño.</field>
+    </record>
 
-        <!-- Universidade da Coruña -->
-        <record id="civil_service_tracker_public_administration_esq6550005j" model="civil.service.tracker.public.administration">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_esq6550005j" />
-            <field name="administration_type_id" ref="civil_service_tracker_administration_type_autonomous_universities" />
-            <field name="administrative_region_id" ref="civil_service_tracker.region_galicia" />
-            <field name="description">Public university located in A Coruña, offering a broad range of academic programs and research initiatives.</field>
-        </record>
+    <!-- Ayuntamiento de Madrid -->
+    <record id="civil_service_tracker_public_administration_esp2807900b"
+      model="civil.service.tracker.public.administration">
+      <field name="partner_id" ref="civil_service_tracker.res_partner_esp2807900b"/>
+      <field name="administration_type_id"
+        ref="civil_service_tracker_administration_type_local_entities"/>
+      <field name="description">City council of Madrid, responsible for managing municipal services
+        in Spain's capital.</field>
+    </record>
 
-        <!-- Universidade de Vigo -->
-        <record id="civil_service_tracker_public_administration_esq8650002b" model="civil.service.tracker.public.administration">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_esq8650002b" />
-            <field name="administration_type_id" ref="civil_service_tracker_administration_type_autonomous_universities" />
-            <field name="administrative_region_id" ref="civil_service_tracker.region_galicia" />
-            <field name="description">Public university in Galicia, focused on innovation, technology, and international collaboration.</field>
-        </record>
+    <!-- Universidade de Santiago de Compostela -->
+    <record id="civil_service_tracker_public_administration_esq1518001a"
+      model="civil.service.tracker.public.administration">
+      <field name="partner_id" ref="civil_service_tracker.res_partner_esq1518001a"/>
+      <field name="administration_type_id"
+        ref="civil_service_tracker_administration_type_autonomous_universities"/>
+      <field name="administrative_region_id" ref="civil_service_tracker.region_galicia"/>
+      <field name="description">Public university based in Santiago de Compostela, known for its
+        historical and academic excellence.</field>
+    </record>
 
-        <!-- ADIF (Administrador de Infraestructuras Ferroviarias) -->
-        <record id="civil_service_tracker_public_administration_esq2801660h" model="civil.service.tracker.public.administration">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_esq2801660h" />
-            <field name="administration_type_id" ref="civil_service_tracker_administration_type_state_public_companies" />
-            <field name="description">Public company managing rail infrastructure throughout Spain.</field>
-        </record>
+    <!-- Universidade da Coruña -->
+    <record id="civil_service_tracker_public_administration_esq6550005j"
+      model="civil.service.tracker.public.administration">
+      <field name="partner_id" ref="civil_service_tracker.res_partner_esq6550005j"/>
+      <field name="administration_type_id"
+        ref="civil_service_tracker_administration_type_autonomous_universities"/>
+      <field name="administrative_region_id" ref="civil_service_tracker.region_galicia"/>
+      <field name="description">Public university located in A Coruña, offering a broad range of
+        academic programs and research initiatives.</field>
+    </record>
 
-        <!-- Sociedad Estatal Correos y Telégrafos, S.A. -->
-        <record id="civil_service_tracker_public_administration_esa83052407" model="civil.service.tracker.public.administration">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_esa83052407" />
-            <field name="administration_type_id" ref="civil_service_tracker_administration_type_state_public_companies" />
-            <field name="description">Public postal service operator of Spain, offering nationwide logistics and communications services.</field>
-        </record>
+    <!-- Universidade de Vigo -->
+    <record id="civil_service_tracker_public_administration_esq8650002b"
+      model="civil.service.tracker.public.administration">
+      <field name="partner_id" ref="civil_service_tracker.res_partner_esq8650002b"/>
+      <field name="administration_type_id"
+        ref="civil_service_tracker_administration_type_autonomous_universities"/>
+      <field name="administrative_region_id" ref="civil_service_tracker.region_galicia"/>
+      <field name="description">Public university in Galicia, focused on innovation, technology, and
+        international collaboration.</field>
+    </record>
 
-        <!-- Renfe Operadora -->
-        <record id="civil_service_tracker_public_administration_esq2801659j" model="civil.service.tracker.public.administration">
-            <field name="partner_id" ref="civil_service_tracker.res_partner_esq2801659j" />
-            <field name="administration_type_id" ref="civil_service_tracker_administration_type_state_public_companies" />
-            <field name="description">Public railway operator responsible for passenger and freight transport in Spain.</field>
-        </record>
+    <!-- ADIF (Administrador de Infraestructuras Ferroviarias) -->
+    <record id="civil_service_tracker_public_administration_esq2801660h"
+      model="civil.service.tracker.public.administration">
+      <field name="partner_id" ref="civil_service_tracker.res_partner_esq2801660h"/>
+      <field name="administration_type_id"
+        ref="civil_service_tracker_administration_type_state_public_companies"/>
+      <field name="description">Public company managing rail infrastructure throughout
+        Spain.</field>
+    </record>
 
-    </data>
+    <!-- Sociedad Estatal Correos y Telégrafos, S.A. -->
+    <record id="civil_service_tracker_public_administration_esa83052407"
+      model="civil.service.tracker.public.administration">
+      <field name="partner_id" ref="civil_service_tracker.res_partner_esa83052407"/>
+      <field name="administration_type_id"
+        ref="civil_service_tracker_administration_type_state_public_companies"/>
+      <field name="description">Public postal service operator of Spain, offering nationwide
+        logistics and communications services.</field>
+    </record>
+
+    <!-- Renfe Operadora -->
+    <record id="civil_service_tracker_public_administration_esq2801659j"
+      model="civil.service.tracker.public.administration">
+      <field name="partner_id" ref="civil_service_tracker.res_partner_esq2801659j"/>
+      <field name="administration_type_id"
+        ref="civil_service_tracker_administration_type_state_public_companies"/>
+      <field name="description">Public railway operator responsible for passenger and freight
+        transport in Spain.</field>
+    </record>
+
+  </data>
 </odoo>

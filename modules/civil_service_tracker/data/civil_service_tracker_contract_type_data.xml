@@ -1,32 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo noupdate="0">
 
-        <record id="civil_service_tracker_contract_type_career" model="civil.service.tracker.contract.type">
-            <field name="name">Career civil servant</field>
-            <field name="description">Permanent public employee with a statutory relationship</field>
-        </record>
+  <record id="civil_service_tracker_contract_type_career"
+    model="civil.service.tracker.contract.type">
+    <field name="name">Career civil servant</field>
+    <field name="description">Permanent public employee with a statutory relationship</field>
+  </record>
 
-        <record id="civil_service_tracker_contract_type_labor" model="civil.service.tracker.contract.type">
-            <field name="name">Labor employee</field>
-            <field name="description">Employee with an ordinary labor contract</field>
-        </record>
+  <record id="civil_service_tracker_contract_type_labor" model="civil.service.tracker.contract.type">
+    <field name="name">Labor employee</field>
+    <field name="description">Employee with an ordinary labor contract</field>
+  </record>
 
-        <record id="civil_service_tracker_contract_type_statutory" model="civil.service.tracker.contract.type">
-            <field name="name">Statutory staff</field>
-            <field name="description">Personnel subject to special statutory regulation (e.g. healthcare)</field>
-        </record>
+  <record id="civil_service_tracker_contract_type_statutory"
+    model="civil.service.tracker.contract.type">
+    <field name="name">Statutory staff</field>
+    <field name="description">Personnel subject to special statutory regulation (e.g.
+      healthcare)</field>
+  </record>
 
-        <record id="civil_service_tracker_contract_type_interim" model="civil.service.tracker.contract.type">
-            <field name="name">Interim civil servant</field>
-            <field name="description">Temporary civil servant covering vacancies or temporary needs</field>
-        </record>
+  <record id="civil_service_tracker_contract_type_interim"
+    model="civil.service.tracker.contract.type">
+    <field name="name">Interim civil servant</field>
+    <field name="description">Temporary civil servant covering vacancies or temporary needs</field>
+  </record>
 
-        <record id="civil_service_tracker_contract_type_temp_labor" model="civil.service.tracker.contract.type">
-            <field name="name">Temporary labor</field>
-            <field name="description">Temporary employee under a labor contract</field>
-        </record>
+  <record id="civil_service_tracker_contract_type_temp_labor"
+    model="civil.service.tracker.contract.type">
+    <field name="name">Temporary labor</field>
+    <field name="description">Temporary employee under a labor contract</field>
+  </record>
 
-    </data>
-</openerp>
+</odoo>

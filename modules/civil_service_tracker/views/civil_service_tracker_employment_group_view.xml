@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<openerp>
-    <data noupdate="0">
+<odoo noupdate="0">
 
-        <!-- VIEWS: "Civil services Employment Group"
-        
+  <!-- VIEWS: "Civil services Employment Group"
+
             - Model·········: civil.service.tracker.employment.group
             - _rec_name·····: name
             - Domain········: []
@@ -13,151 +12,144 @@
             - View priority·: 16    Sequence····: 10
             - Action help···: No employment groups have been defined yet.
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-        
-        <!-- Tree view for "civil.service.tracker.employment.group" -->
-        <record id="view_civil_service_tracker_employment_group_tree" model="ir.ui.view">
-            <field name="name">view.civil.service.tracker.employment.group.tree</field>
-            <field name="model">civil.service.tracker.employment.group</field>
-            <field name="type">tree</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="16" />
-            <field name="active" eval="True" />
-            <field name="arch" type="xml">
-                <tree string="civil_service_tracker_employment_group_tree" create="1" delete="1" edit="1">
-                    <field name="id" invisible="1"/>
-                    <field name="active" invisible="1"/>
 
-                    <field name="sequence" class="oe_field_sequence" widget="handle" />
-                    <field name="name" class="oe_field_name" />
-                    <field name="service_position_ids" class="oe_field_service_position_ids" />
-                    <field name="description" class="oe_field_description" />
-                        
-                </tree>
-            </field>
-        </record>
-        
-        <!-- Form view for "civil.service.tracker.employment.group" -->
-        <record id="view_civil_service_tracker_employment_group_form" model="ir.ui.view">
-            <field name="name">view.civil.service.tracker.employment.group.form</field>
-            <field name="model">civil.service.tracker.employment.group</field>
-            <field name="type">form</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="16" />
-            <field name="active" eval="True" />
-            <field name="arch" type="xml">
-                <form string="civil_service_tracker_employment_group_form" create="1" delete="1" edit="1">
-                    <sheet>
-                        <field name="id" invisible="1"/>
-                        <field name="active" invisible="1"/>
-                        
-                        <div class="oe_button_box" name="button_box" />
-                        
-                        <div class="oe_button_box" name="button_box" />
-                        <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+  <!-- List view for "civil.service.tracker.employment.group" -->
+  <record id="view_civil_service_tracker_employment_group_tree" model="ir.ui.view">
+    <field name="name">view.civil.service.tracker.employment.group.tree</field>
+    <field name="model">civil.service.tracker.employment.group</field>
+    <field name="type">list</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16"/>
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <list string="civil_service_tracker_employment_group_tree" create="1" delete="1" edit="1">
+        <field name="id" column_invisible="1"/>
+        <field name="active" column_invisible="1"/>
 
-                        <div class="oe_title">
-                            <label for="name" class="oe_edit_only" />
-                            <h1>
-                                <field name="name" class="oe_field_name" />
-                            </h1>
-                        </div>
+        <field name="sequence" class="oe_field_sequence" widget="handle"/>
+        <field name="name" class="oe_field_name"/>
+        <field name="service_position_ids" class="oe_field_service_position_ids"/>
+        <field name="description" class="oe_field_description"/>
 
-                        <group col="2" string="Description">
-                            <field name="description" class="oe_field_description" nolabel="1" />
-                        </group>
+      </list>
+    </field>
+  </record>
 
-                        <group col="2" string="Position">
-                            <field name="service_position_ids" class="oe_field_public_service_position_ids"
-                                nolabel="1" context="{
+  <!-- Form view for "civil.service.tracker.employment.group" -->
+  <record id="view_civil_service_tracker_employment_group_form" model="ir.ui.view">
+    <field name="name">view.civil.service.tracker.employment.group.form</field>
+    <field name="model">civil.service.tracker.employment.group</field>
+    <field name="type">form</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16"/>
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <form string="civil_service_tracker_employment_group_form" create="1" delete="1" edit="1">
+        <sheet>
+          <field name="id" invisible="1"/>
+          <field name="active" invisible="1"/>
+
+          <div class="oe_button_box" name="button_box"/>
+
+          <div class="oe_button_box" name="button_box"/>
+          <widget name="web_ribbon" title="Archived" bg_color="bg-danger" invisible="active == True"/>
+
+          <div class="oe_title">
+            <label for="name" class="oe_edit_only"/>
+            <h1>
+              <field name="name" class="oe_field_name"/>
+            </h1>
+          </div>
+
+          <group col="2" string="Description">
+            <field name="description" class="oe_field_description" nolabel="1"/>
+          </group>
+
+          <group col="2" string="Position">
+            <field name="service_position_ids" class="oe_field_public_service_position_ids"
+              nolabel="1" context="{
                                     'default_employment_group_id': id,
-                                    'tree_view_ref': 'civil_service_tracker.view_civil_service_tracker_service_position_tree_on_group',
+                                    'list_view_ref': 'civil_service_tracker.view_civil_service_tracker_service_position_tree_on_group',
                                     'form_view_ref': 'civil_service_tracker.view_civil_service_tracker_service_position_form_on_group'
                                 }
-                            " />
-                        </group>
+                            "/>
+          </group>
 
-                    </sheet>
-                </form>
-            </field>
-        </record>
-        
-        <!-- Search view for "civil.service.tracker.employment.group" -->
-        <record id="view_civil_service_tracker_employment_group_search" model="ir.ui.view">
-            <field name="name">view.civil.service.tracker.employment.group.search</field>
-            <field name="model">civil.service.tracker.employment.group</field>
-            <field name="type">search</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="16" />
-            <field name="active" eval="True" />
-            <field name="arch" type="xml">
-                <search string="civil_service_tracker_employment_group_search">
-                    <field name="name" />
-                    <field name="employment_scheme_id" />
-                    <field name="service_position_ids" />
+        </sheet>
+      </form>
+    </field>
+  </record>
 
-                    <filter string="By scheme"
-                        name="civil_service_tracker_employment_group_by_schema"
-                        domain="[]"
-                        context="{'group_by': 'employment_scheme_id'}"
-                        help="Group by scheme" />
+  <!-- Search view for "civil.service.tracker.employment.group" -->
+  <record id="view_civil_service_tracker_employment_group_search" model="ir.ui.view">
+    <field name="name">view.civil.service.tracker.employment.group.search</field>
+    <field name="model">civil.service.tracker.employment.group</field>
+    <field name="type">search</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16"/>
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <search string="civil_service_tracker_employment_group_search">
+        <field name="name"/>
+        <field name="employment_scheme_id"/>
+        <field name="service_position_ids"/>
 
-                    <filter name="inactive" string="Archived" 
-                        domain="[('active','=',False)]"
-                        help="Filter to show records marked as inactive."/>
-                </search>
-            </field>
-        </record>
-        
-        <!-- Main window action for model.name -->
-        <record id="action_civil_services_employment_group_act_window" model="ir.actions.act_window">
-            <field name="type">ir.actions.act_window</field>
-            <field name="name">Employment groups</field>
-            <field name="res_model">civil.service.tracker.employment.group</field>
-            <field name="view_mode">tree,form</field>
-            <field name="target">current</field>
-            <field name="domain">[]</field>
-            <field name="context">{}</field>
-            <field name="search_view_id" ref="view_civil_service_tracker_employment_group_search" />
-            <field name="help" type="html">
-                <p class="oe_view_nocontent_create">
-                    Click to add new employment groups.
-                </p><p>
-                    No employment groups have been defined yet.
-                </p>
-            </field>
-        </record>
-        
-        <!-- Main menu for model.name -->
-        <record id="menu_civil_services_employment_group" model="ir.ui.menu" >
-            <field name="name">Employment Groups</field>
-            <field name="sequence" eval="30" />
-            <field name="action" ref="action_civil_services_employment_group_act_window" />
-            <field name="parent_id" ref="menu_civil_service_tracker_configuration" />
-        </record>
+        <filter string="By scheme" name="civil_service_tracker_employment_group_by_schema"
+          domain="[]" context="{'group_by': 'employment_scheme_id'}" help="Group by scheme"/>
+
+        <filter name="inactive" string="Archived" domain="[('active','=',False)]"
+          help="Filter to show records marked as inactive."/>
+      </search>
+    </field>
+  </record>
+
+  <!-- Main window action for model.name -->
+  <record id="action_civil_services_employment_group_act_window" model="ir.actions.act_window">
+    <field name="type">ir.actions.act_window</field>
+    <field name="name">Employment groups</field>
+    <field name="res_model">civil.service.tracker.employment.group</field>
+    <field name="view_mode">list,form</field>
+    <field name="path">civil-service-employment-group</field>
+    <field name="target">current</field>
+    <field name="domain">[]</field>
+    <field name="context">{}</field>
+    <field name="search_view_id" ref="view_civil_service_tracker_employment_group_search"/>
+    <field name="help" type="html">
+      <p class="oe_view_nocontent_create"> Click to add new employment groups. </p>
+      <p> No employment groups have been defined yet. </p>
+    </field>
+  </record>
+
+  <!-- Main menu for model.name -->
+  <record id="menu_civil_services_employment_group" model="ir.ui.menu">
+    <field name="name">Employment Groups</field>
+    <field name="sequence" eval="30"/>
+    <field name="action" ref="action_civil_services_employment_group_act_window"/>
+    <field name="parent_id" ref="menu_civil_service_tracker_configuration"/>
+  </record>
 
 
-        <!-- ================== Particular Views Section ================== -->
+  <!-- ================== Particular Views Section ================== -->
 
-        <record id="view_civil_service_tracker_employment_group_tree_on_schema" model="ir.ui.view">
-            <field name="name">view.civil.service.tracker.employment.group.tree.on.schema</field>
-            <field name="model">civil.service.tracker.employment.group</field>
-            <field name="type">tree</field>
-            <field name="mode">primary</field>
-            <field name="priority" eval="24" />
-            <field name="active" eval="True" />
-            <field name="inherit_id" ref="view_civil_service_tracker_employment_group_tree" />
-            <field name="arch" type="xml">
-                <xpath expr="//tree" position="attributes">
-                    <attribute name="create">1</attribute>
-                    <attribute name="delete">1</attribute>
-                    <attribute name="edit">1</attribute>
-                    <attribute name="editable">bottom</attribute>
-                </xpath>
-                <xpath expr="//field[last()]" position="after">
-                    <field name="active" class="oe_field_active text-center" widget="boolean_toggle" />
-                </xpath>
-            </field>
-        </record>
+  <record id="view_civil_service_tracker_employment_group_tree_on_schema" model="ir.ui.view">
+    <field name="name">view.civil.service.tracker.employment.group.tree.on.schema</field>
+    <field name="model">civil.service.tracker.employment.group</field>
+    <field name="type">list</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="24"/>
+    <field name="active" eval="True"/>
+    <field name="inherit_id" ref="view_civil_service_tracker_employment_group_tree"/>
+    <field name="arch" type="xml">
+      <xpath expr="//list" position="attributes">
+        <attribute name="create">1</attribute>
+        <attribute name="delete">1</attribute>
+        <attribute name="edit">1</attribute>
+        <attribute name="editable">bottom</attribute>
+      </xpath>
+      <xpath expr="//field[last()]" position="after">
+        <field name="active" class="oe_field_active text-center" widget="boolean_toggle"/>
+      </xpath>
+    </field>
+  </record>
 
-    </data>
-</openerp>
+</odoo>
