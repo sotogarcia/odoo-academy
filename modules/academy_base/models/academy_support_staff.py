@@ -42,7 +42,6 @@ class AcademySupportStaff(models.Model):
     _rec_names_search = [
         "complete_name",
         "email",
-        "signup_code",
         "vat",
         "company_registry",
     ]
@@ -59,27 +58,6 @@ class AcademySupportStaff(models.Model):
         context={},
         ondelete="cascade",
         auto_join=False,
-    )
-
-    signup_code = fields.Char(
-        string="Sign-up code",
-        required=True,
-        readonly=False,
-        index=True,
-        default=lambda self: self._next_signup_code(self.env.company.id),
-        help="Unique code assigned when the student signs up at the centre.",
-        size=50,
-        translate=False,
-    )
-
-    signup_date = fields.Datetime(
-        string="Sign-up date",
-        required=True,
-        readonly=False,
-        index=False,
-        default=lambda self: fields.Datetime.now(),
-        help="Date when the student signed up at the centre.",
-        tracking=True,
     )
 
     birthday = fields.Date(
@@ -470,7 +448,6 @@ class AcademySupportStaff(models.Model):
             self._ensure_natural_person(values)
             self._vat_prepend_country_code(values, country_codes)
             self._force_category(values, category)
-            self._ensure_signup_data(values)
 
         result = super().create(vals_list)
 
@@ -692,9 +669,7 @@ class AcademySupportStaff(models.Model):
         company = (
             self.env.company
             or self.env.user.company_id
-            or self.env.ref(
-                "base.main_company", raise_if_not_found=False
-            )
+            or self.env.ref("base.main_company", raise_if_not_found=False)
         )
 
         c_code, c_phone_code = None, None
@@ -721,67 +696,6 @@ class AcademySupportStaff(models.Model):
                 except Exception as ex:
                     _logger.debug(msg.format(phone_field, phone_value, ex))
 
-    # -- Signup sequence methods ----------------------------------------------
-
-    @api.model
-    def _ensure_signup_date(self, vals_list):
-        today = fields.Date.context_today(self)
-        for values in vals_list:
-            if not values.get("signup_date"):
-                values["signup_date"] = today
-
-    @api.model
-    def _next_signup_code(self, company_id):
-        """Return next sign-up code using company-specific sequence,
-        falling back to a known default XMLID."""
-        sequence_obj = self.env["ir.sequence"].with_company(company_id)
-
-        # 1) Try company-specific sequence (same code, bound to company)
-        signup_code = self._get_relevant_signup_sequence_code()
-        sequence_domain = [
-            ("code", "=", signup_code),
-            ("company_id", "=", company_id),
-        ]
-        sequence = sequence_obj.search(sequence_domain, limit=1)
-        if sequence:
-            return sequence.with_company(company_id).next_by_id()
-
-        # 2) Explicit fallback to the known default sequence XMLID
-        sequence_xid = self._get_relevant_signup_sequence_external_id()
-        fallback = self.env.ref(sequence_xid, raise_if_not_found=False)
-        if fallback:
-            return fallback.with_company(company_id).next_by_id()
-
-        # 3) Last resort: let Odoo try any global sequence with that code
-        code = sequence_obj.next_by_code(signup_code)
-        if code:
-            _logger.warning(
-                "Using global sequence by code for company_id=%s", company_id
-            )
-            return code
-
-        raise UserError(
-            _(
-                "Missing sequence for partner sign-up. "
-                "Create a company-specific sequence with code %(code)s "
-                "or define the fallback %(xid)s."
-            )
-            % {
-                "code": signup_code,
-                "xid": sequence_xid,
-            }
-        )
-
-    @api.model
-    def _ensure_signup_data(self, values):
-        if not values.get("signup_code"):
-            company_id = values.get("company_id") or self.env.company.id
-            values["signup_code"] = self._next_signup_code(company_id)
-            values["barcode"] = values["signup_code"]
-
-        if not values.get("signup_date", False):
-            values["signup_date"] = fields.Date.context_today(self)
-
     def _get_partner_with_context(self):
         partner_set = self.mapped("partner_id")
 
@@ -800,11 +714,3 @@ class AcademySupportStaff(models.Model):
     @api.model
     def _get_relevant_category_external_id(self):
         return "academy_base.res_partner_category_support_staff"
-
-    @api.model
-    def _get_relevant_signup_sequence_code(self):
-        return "academy.support.staff.signup.sequence"
-
-    @api.model
-    def _get_relevant_signup_sequence_external_id(self):
-        return "academy_base.ir_sequence_academy_support_staff_signup"

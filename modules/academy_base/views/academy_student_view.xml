@@ -23,6 +23,10 @@
     <field name="active" eval="True"/>
     <field name="inherit_id" ref="academy_base.view_academy_support_staff_tree"/>
     <field name="arch" type="xml">
+      <xpath expr="//field[@name='vat']" position="before">
+        <field name="signup_code" class="oe_field_signup_code" string="Sign-up code" readonly="1"/>
+        <field name="signup_date" class="oe_field_signup_date" widget="date" />
+      </xpath>
       <xpath expr="//list" position="attributes">
         <attribute name="string">academy_student_tree</attribute>
       </xpath>
@@ -65,6 +69,19 @@
             context="{'list_view_ref': 'academy_base.view_academy_training_action_enrolment_tree_embed'}" />
         </page>
       </xpath>
+
+      <xpath expr="//group[@id='page-details-main']" position="inside">
+        <group colspan="4">
+          <field name="signup_code" class="oe_field_signup_code" string="Sign-up code"
+            readonly="1"/>
+        </group>
+        <group colspan="4">
+          <field name="signup_date" class="oe_field_signup_date" />
+        </group>
+        <group colspan="4">
+          <field name="create_date" class="oe_field_create_date" />
+        </group>
+      </xpath>
     </field>
   </record>
 
@@ -82,6 +99,9 @@
       </xpath>
       <xpath expr="//img[@id='default-avatar']" position="attributes">
           <attribute name="src">/academy_base/static/src/img/student-128.png</attribute>
+      </xpath>
+      <xpath expr="//field[@name='vat']" position="before">
+        <field name="signup_code" />
       </xpath>
 
       <xpath expr="//ul/li[last()]" position="after">
@@ -121,6 +141,11 @@
     <field name="arch" type="xml">
       <xpath expr="//search" position="attributes">
         <attribute name="string">academy_student_search</attribute>
+      </xpath>
+
+      <xpath expr="//field[@name='name']" position="replace">
+        <field name="name"
+          filter_domain="['|', '|', '|', '|', ('complete_name', 'ilike', self), ('signup_code', 'ilike', self), ('email', 'ilike', self), ('vat', 'ilike', self), ('company_registry', 'ilike', self)]"/>
       </xpath>
 
       <xpath expr="//field[@name='id']" position="after">

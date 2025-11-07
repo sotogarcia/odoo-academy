@@ -23,8 +23,6 @@
     <field name="active" eval="True"/>
     <field name="arch" type="xml">
       <list string="academy_support_staff_tree" create="1" delete="1" edit="1">
-        <field name="signup_code" class="oe_field_signup_code" string="Sign-up code" readonly="1"/>
-        <field name="signup_date" class="oe_field_signup_date" widget="date" />
         <field name="vat" class="oe_field_vat" optional="show"/>
         <field name="title" class="oe_field_title" optional="hide"/>
         <field name="name" class="oe_field_name" optional="show"/>
@@ -138,23 +136,13 @@
           </group>
 
           <notebook colspan="4" class="mt-4">
-            <page string="Details" class="oe_page_Academics" accesskey="D">
-              <group col="12" class="mt-2">
-                <group colspan="4">
-                  <field name="signup_code" class="oe_field_signup_code" string="Sign-up code"
-                    readonly="1"/>
-                </group>
-                <group colspan="4">
-                  <field name="signup_date" class="oe_field_signup_date" />
-                </group>
-                <group colspan="4">
-                  <field name="create_date" class="oe_field_create_date" string="Created at" />
-                </group>
+            <page id="page-details" string="Details" class="oe_page_Academics" accesskey="D">
+              <group col="12" class="mt-2" id="page-details-main">
                 <group colspan="6">
                   <field name="attainment_id" class="oe_field_attainment_id" string="Attainment"
                     options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"/>
                 </group>
-                <group colspan="6">
+                <group colspan="6" id="page-details-extra">
                   <field name="cefrl_ids" class="oe_field_cefrl_ids"
                     options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"
                     widget="many2many_tags" context="{'m2m_tags_display_name': 'code'}"/>
@@ -219,7 +207,6 @@
         <field name="phone" />
         <field name="email" />
         <field name="vat" />
-        <field name="signup_code" />
         <field name="call_number" />
         <field name="avatar_128" />
         <field name="has_custom_avatar" />
@@ -308,7 +295,7 @@
     <field name="arch" type="xml">
       <search string="academy_support_staff_search">
         <field name="name"
-          filter_domain="['|', '|', '|', '|', ('complete_name', 'ilike', self), ('signup_code', 'ilike', self), ('email', 'ilike', self), ('vat', 'ilike', self), ('company_registry', 'ilike', self)]"/>
+          filter_domain="['|', '|', '|', '|', ('complete_name', 'ilike', self), ('email', 'ilike', self), ('vat', 'ilike', self), ('company_registry', 'ilike', self)]"/>
         <field name="phone"
           filter_domain="['|', ('phone', 'ilike', self), ('mobile', 'ilike', self)]"/>
         <field name="email"/>

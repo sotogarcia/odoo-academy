@@ -30,7 +30,6 @@ class AcademyTeacher(models.Model):
     _rec_names_search = [
         "complete_name",
         "email",
-        "signup_code",
         "vat",
         "company_registry",
     ]
@@ -40,11 +39,3 @@ class AcademyTeacher(models.Model):
     @api.model
     def _get_relevant_category_external_id(self):
         return "academy_base.res_partner_category_technical_staff"
-
-    @api.model
-    def _get_relevant_signup_sequence_code(self):
-        return "academy.technical.staff.signup.sequence"
-
-    @api.model
-    def _get_relevant_signup_sequence_external_id(self):
-        return "academy_base.ir_sequence_academy_technical_staff_signup"
