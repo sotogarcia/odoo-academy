@@ -700,6 +700,57 @@ class AcademyTrainingActionEnrolment(models.Model):
             if action and action.child_ids:
                 raise ValidationError(message)
 
+    @api.constrains("student_id", "company_id")
+    def _check_student_has_signup_in_company(self):
+        """Ensure each (student, company) pair in this batch has a signup row.
+
+        Efficient, batched validation:
+        - Collect required (student_id, company_id) pairs in one pass.
+        - Fetch existing signup pairs with a single grouped query.
+        - If any required pair is missing, raise a single ValidationError.
+        """
+
+        # 1) Collect all required pairs (student, company)
+        student_ids, company_ids, required_pairs = set(), set(), set()
+        for record in self:
+            student_id = record.student_id.id
+            company_id = record.company_id.id
+            if student_id and company_id:
+                student_ids.add(student_id)
+                company_ids.add(company_id)
+                required_pairs.add((student_id, company_id))
+
+        if not required_pairs:
+            return
+
+        # 2) Fetch existing signup pairs (single grouped query)
+        signup_obj = self.env["academy.student.signup"].sudo()
+        domain = [
+            ("student_id", "in", list(student_ids)),
+            ("company_id", "in", list(company_ids)),
+        ]
+        rows = signup_obj.read_group(
+            domain=domain,
+            fields=["id:count"],
+            groupby=["student_id", "company_id"],
+            lazy=False,
+        )
+
+        # 3) Verify that all required pairs exist
+        found_pairs = {(r["student_id"][0], r["company_id"][0]) for r in rows}
+        missing_pairs = required_pairs - found_pairs
+        if not missing_pairs:
+            return
+
+        # 4) Some pairs are missing → raise a validation error
+        raise ValidationError(
+            self.env._(
+                "Student must be signed up in the enrolment company. "
+                "Missing %(n)s pair(s)."
+            )
+            % {"n": len(missing_pairs)}
+        )
+
     # Overridden methods
     # -------------------------------------------------------------------------
 

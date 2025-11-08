@@ -14,42 +14,6 @@
         <field name="company_id" eval="False"/>
     </record>
 
-    <record id="ir_sequence_academy_teacher_signup" model="ir.sequence">
-        <field name="name">Academy teacher sign-up sequence</field>
-        <field name="active" eval="True"/>
-        <field name="code">academy.teacher.signup.sequence</field>
-        <field name="prefix">TEACH-</field>
-        <field name="number_next" eval="1"/>
-        <field name="number_increment" eval="1"/>
-        <field name="padding" eval="5"/>
-        <field name="suffix"/>
-        <field name="company_id" eval="False"/>
-    </record>
-
-    <record id="ir_sequence_academy_support_staff_signup" model="ir.sequence">
-        <field name="name">Academy support staff sign-up sequence</field>
-        <field name="active" eval="True"/>
-        <field name="code">academy.support.staff.signup.sequence</field>
-        <field name="prefix">PAS-</field>
-        <field name="number_next" eval="1"/>
-        <field name="number_increment" eval="1"/>
-        <field name="padding" eval="5"/>
-        <field name="suffix"/>
-        <field name="company_id" eval="False"/>
-    </record>
-
-    <record id="ir_sequence_academy_technical_staff_signup" model="ir.sequence">
-        <field name="name">Academy technical staff sign-up sequence</field>
-        <field name="active" eval="True"/>
-        <field name="code">academy.technical.staff.signup.sequence</field>
-        <field name="prefix">TECH-</field>
-        <field name="number_next" eval="1"/>
-        <field name="number_increment" eval="1"/>
-        <field name="padding" eval="5"/>
-        <field name="suffix"/>
-        <field name="company_id" eval="False"/>
-    </record>
-
     <record id="ir_sequence_academy_training_framework" model="ir.sequence">
         <field name="name">Academy training framework</field>
         <field name="active" eval="True"/>

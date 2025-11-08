@@ -7,7 +7,7 @@ all student attributes and behavior.
 
 from odoo import models, fields, api
 from odoo.tools.translate import _
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 from odoo.tools.safe_eval import safe_eval
 from odoo.osv.expression import OR
 from odoo.osv.expression import AND, TRUE_DOMAIN, FALSE_DOMAIN

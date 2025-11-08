@@ -6,7 +6,7 @@
 
 from odoo import models, fields, api
 from odoo.tools.translate import _
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 
 from logging import getLogger
 
@@ -150,6 +150,60 @@ class AcademyStudentSignup(models.Model):
         if not values.get("signup_date", False):
             values["signup_date"] = fields.Datetime.now()
 
+    def _assert_no_enrolments_before_unlink(self):
+        """Raise ValidationError if any (student, company) pair has enrolments.
+
+        Efficient batch check:
+        - Single pass to collect required (student_id, company_id) pairs.
+        - One grouped query to enrolments to find existing pairs.
+        - If any required pair exists in enrolments, raise ValidationError.
+        """
+
+        # 1) Collect all required pairs (student, company)
+        student_ids, company_ids, required_pairs = set(), set(), set()
+        for signup in self:
+            student_id = signup.student_id.id
+            company_id = signup.company_id.id
+            if student_id and company_id:
+                student_ids.add(student_id)
+                company_ids.add(company_id)
+                required_pairs.add((student_id, company_id))
+
+        if not required_pairs:
+            return
+
+        # 2) Fetch existing enrolment pairs (single grouped query)
+        enrol_model = (
+            self.env["academy.training.action.enrolment"]
+            .with_context(active_test=False)
+            .sudo()
+        )
+        rows = enrol_model.read_group(
+            domain=[
+                ("student_id", "in", list(student_ids)),
+                ("company_id", "in", list(company_ids)),
+            ],
+            fields=["id:count"],
+            groupby=["student_id", "company_id"],
+            lazy=False,
+        )
+        existing_pairs = {
+            (row["student_id"][0], row["company_id"][0]) for row in rows
+        }
+
+        # 3) If any of the pairs to be deleted have enrolments, block them.
+        blocking_pairs = required_pairs & existing_pairs
+        if blocking_pairs:
+            message = self.env._(
+                "Cannot remove sign-up records because there are enrolments "
+                "for at least one student/company in this batch."
+            )
+
+            raise ValidationError(message)
+
+    # -- Overriden methods
+    # -------------------------------------------------------------------------
+
     @api.model_create_multi
     def create(self, values_list):
         """Overridden method 'create'"""
@@ -160,3 +214,8 @@ class AcademyStudentSignup(models.Model):
         result = super().create(values_list)
 
         return result
+
+    def unlink(self):
+        self._assert_no_enrolments_before_unlink()
+
+        return super().unlink()
