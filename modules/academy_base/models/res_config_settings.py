@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ###############################################################################
 #    License, author and contributors information in:                         #
-#    __openerp__.py file at the root folder of this module.                   #
+#    __manifest__.py file at the root folder of this module.                  #
 ###############################################################################
 
 from odoo import models, fields, api
@@ -22,30 +22,16 @@ class ResConfigSettings(models.TransientModel):
         string="Head of Studies",
         required=True,
         readonly=False,
-        index=False,
-        default=lambda self: self.env.ref("base.user_admin"),
         help="User responsible for academic oversight within the platform.",
-        comodel_name="res.users",
-        domain=[],
-        context={},
-        ondelete="cascade",
-        auto_join=False,
-        config_parameter="academy_base.head_of_studies_id",
+        related="company_id.head_of_studies_id",
     )
 
     erp_manager_id = fields.Many2one(
         string="ERP Manager",
         required=True,
         readonly=False,
-        index=False,
-        default=lambda self: self.env.ref("base.user_admin"),
         help="User responsible for functional supervision of the ERP system.",
-        comodel_name="res.users",
-        domain=[],
-        context={},
-        ondelete="cascade",
-        auto_join=False,
-        config_parameter="academy_base.erp_manager_id",
+        related="company_id.erp_manager_id",
     )
 
     partner_email_required = fields.Selection(
@@ -53,7 +39,7 @@ class ResConfigSettings(models.TransientModel):
         required=True,
         readonly=False,
         index=False,
-        default="never",
+        default="except_debug",
         help=(
             "Control when email address is mandatory: never, always, or "
             "except when developer mode is active."
@@ -71,7 +57,7 @@ class ResConfigSettings(models.TransientModel):
         required=True,
         readonly=False,
         index=False,
-        default="never",
+        default="except_debug",
         help=(
             "Control when VAT number is mandatory: never, always, or "
             "except when developer mode is active."

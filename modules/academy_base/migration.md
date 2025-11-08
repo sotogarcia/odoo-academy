@@ -188,8 +188,8 @@ attrs=["']\{["'](readonly|invisible|required)["']: *(\[[^\]]+\])\}["']
 - [ ] Revisar informes y correos
 - [ ] Jefa de estudios por academia
 - [ ] Ordenar por nombre
-- [ ] No se puede inscribir (enrolment) a un alumno sin signup code
-- [ ] No se puede revocar el signup code a alumnos sin matrícula
+- [x] No se puede inscribir (enrolment) a un alumno sin signup code
+- [x] No se puede revocar el signup code a alumnos sin matrícula
       
 
 
