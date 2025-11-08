@@ -18,6 +18,13 @@
         <field name="domain_force">[('company_id', 'in', company_ids)]</field>
     </record>
 
+    <record id="ir_rule_restricted_student_signup_multi_company" model="ir.rule">
+        <field name="name">Restricted Student Sign-Up: multi-company</field>
+        <field name="model_id" ref="academy_base.model_academy_student_signup"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
     <!-- No one can write/delete THIS specific cron
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <record id="ir_rule_block_edit_academy_maintenance_cron" model="ir.rule">

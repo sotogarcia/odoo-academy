@@ -5,7 +5,7 @@
 ###############################################################################
 
 from odoo import models
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 from odoo.tools.translate import _
 from odoo.osv.expression import TRUE_DOMAIN, FALSE_DOMAIN
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT
@@ -306,3 +306,60 @@ def ensure_recordset(env, targets, model):
         target_set = target_set.browse(targets)
 
     return target_set
+
+
+def ensure_id(target):
+    """Coerce a recordset or id-like value to a single integer id.
+
+    If `target` is an Odoo recordset, ensure it contains exactly one record
+    and return its `id`. Otherwise, return `target` unchanged.
+
+    Args:
+        target (models.Model | int | Any): Recordset or id-like value.
+
+    Returns:
+        int | Any: The record id if a recordset was passed; otherwise the
+        original value.
+
+    Raises:
+        ValueError: If `target` is a multi-record recordset (raised by
+        `ensure_one()`).
+    """
+    if isinstance(target, models.Model):
+        target.ensure_one()
+        return target.id
+
+    return target
+
+
+def ensure_ids(targets, raise_if_empty=True):
+    """Coerce a recordset or id(s) into a list of integer ids.
+
+    Behavior:
+    - Recordset  -> `recordset.ids`
+    - Single int -> `[int]`
+    - Other      -> returned as-is (e.g., an existing list/tuple of ids)
+
+    Args:
+        targets (models.Model | int | list[int] | tuple[int] | None):
+            Source to convert.
+        raise_if_empty (bool): If True and `targets` is falsy, raise
+            `ValidationError`.
+
+    Returns:
+        list[int] | Any: List of ids when conversion applies; otherwise the
+        original value.
+
+    Raises:
+        ValidationError: When `raise_if_empty` is True and `targets` is falsy.
+    """
+    if raise_if_empty and not targets:
+        raise ValidationError("List of IDs or recordset is expected")
+
+    if isinstance(targets, models.Model):
+        return targets.ids
+
+    if isinstance(targets, int):
+        return [targets]
+
+    return targets

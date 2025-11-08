@@ -13,6 +13,7 @@ from odoo.osv.expression import OR
 from odoo.osv.expression import AND, TRUE_DOMAIN, FALSE_DOMAIN
 
 from operator import eq, ne, gt, ge, lt, le
+from ..utils.record_utils import ensure_id, ensure_ids
 from ..utils.record_utils import create_domain_for_ids
 from ..utils.record_utils import create_domain_for_interval
 from ..utils.record_utils import INCLUDE_ARCHIVED_DOMAIN, ARCHIVED_DOMAIN
@@ -26,7 +27,7 @@ _logger = getLogger(__name__)
 
 
 class AcademyStudent(models.Model):
-    """A student is a partner who can be enroled on training actions"""
+    """A student is a partner who can be enrolled on training actions"""
 
     _name = "academy.student"
     _description = "Academy student"
@@ -58,27 +59,6 @@ class AcademyStudent(models.Model):
         domain=[],
         context={},
         auto_join=False,
-    )
-
-    signup_code = fields.Char(
-        string="Sign-up code",
-        required=True,
-        readonly=False,
-        index=True,
-        default=lambda self: self._next_signup_code(self.env.company.id),
-        help="Unique code assigned when the student signs up at the centre.",
-        size=50,
-        translate=False,
-    )
-
-    signup_date = fields.Datetime(
-        string="Sign-up date",
-        required=True,
-        readonly=False,
-        index=False,
-        default=lambda self: fields.Datetime.now(),
-        help="Date when the student signed up at the centre.",
-        tracking=True,
     )
 
     # -- Computed field: enrolment_count --------------------------------------
@@ -146,8 +126,9 @@ class AcademyStudent(models.Model):
         readonly=True,
         index=True,
         default=None,
-        help="End date of the most recent enrolment; 9999-12-31 if open.",
+        help="End date of the most recent enrolment (empty if still open).",
         compute="_compute_last_deregister",
+        search="_search_last_deregister",
     )
 
     @api.depends(
@@ -206,16 +187,16 @@ class AcademyStudent(models.Model):
             .sudo()
         )
 
-        # Group by student_id and get the latest deregister date per company
+        # Group by student_id and get the latest available_until per company
         rows = enrolment_obj.read_group(
             domain=[("company_id", "=", self.env.company.id)],
-            fields=["deregister:max"],
+            fields=["available_until:max"],
             groupby=["student_id"],
             lazy=False,
         )
 
-        # Build dict: {student_id: last_deregister}
-        last_out = {r["student_id"][0]: r.get("deregister") for r in rows}
+        # Build dict: {student_id: last_available_until}
+        last_out = {r["student_id"][0]: r.get("available_until") for r in rows}
 
         # Map Odoo operators to Python comparison functions
         pycmp = {
@@ -234,8 +215,14 @@ class AcademyStudent(models.Model):
             # Return empty domain for unsupported operators
             return [("id", "in", [])]
 
+        # Normalize search value to datetime if needed
+        try:
+            value_dt = fields.Datetime.to_datetime(value)
+        except Exception:
+            value_dt = value
+
         matched_ids = [
-            sid for sid, dt in last_out.items() if dt and compare(dt, value)
+            sid for sid, dt in last_out.items() if dt and compare(dt, value_dt)
         ]
 
         return [("id", "in", matched_ids)]
@@ -311,21 +298,147 @@ class AcademyStudent(models.Model):
             else:
                 record.enrolment_str = "{} / {}".format(current, total)
 
+    # -- Sign-up proxy
+    # -------------------------------------------------------------------------
+
+    signup_ids = fields.One2many(
+        string="Per-company sign-up data",
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help=False,
+        comodel_name="academy.student.signup",
+        inverse_name="student_id",
+        domain=[],
+        context={},
+        auto_join=False,
+        copy=False,
+    )
+
+    signup_code = fields.Char(
+        string="Sign-up code",
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help="Unique code assigned when the student signs up at the centre.",
+        size=50,
+        translate=False,
+        compute="_compute_signup_company_values",
+        inverse="_inverse_signup_company_values",
+        search="_search_signup_code",
+    )
+
+    @api.model
+    def _search_signup_code(self, operator, value):
+        company_ids = self.env.context.get("allowed_company_ids") or [
+            self.env.company.id
+        ]
+        return [
+            "&",
+            ("signup_ids.company_id", "in", company_ids),
+            ("signup_ids.signup_code", operator, value),
+        ]
+
+    signup_date = fields.Datetime(
+        string="Sign-up date",
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help="Date and time when the student signed up at the centre.",
+        compute="_compute_signup_company_values",
+        inverse="_inverse_signup_company_values",
+        search="_search_signup_date",
+    )
+
+    def _inverse_signup_company_values(self):
+        signup_obj = self.env["academy.student.signup"]
+        company_id = self.env.company.id
+
+        signup_indexed = self._load_indexed_signups()
+
+        for student in self:
+            student_id = student.id
+            signup = signup_indexed.get(student_id, False)
+
+            values = {}
+            if "signup_code" in student._fields:
+                values["signup_code"] = student.signup_code or False
+            if "signup_date" in student._fields:
+                signup_date = student.signup_date or fields.Datetime.now()
+                values["signup_date"] = signup_date
+
+            if signup:
+                signup.write(
+                    {k: v for k, v in values.items() if v is not False}
+                )
+            else:
+                if not values.get("signup_code"):
+                    signup_code = signup_obj._next_signup_code(company_id)
+                    values["signup_code"] = signup_code
+                values.update(student_id=student.id, company_id=company_id)
+                signup_obj.create(values)
+
+    @api.model
+    def _search_signup_date(self, operator, value):
+        company_ids = self.env.context.get("allowed_company_ids") or [
+            self.env.company.id
+        ]
+        return [
+            "&",
+            ("signup_ids.company_id", "in", company_ids),
+            ("signup_ids.signup_date", operator, value),
+        ]
+
+    @api.depends(
+        "signup_ids.signup_code",
+        "signup_ids.signup_date",
+        "signup_ids.company_id",
+    )
+    def _compute_signup_company_values(self):
+        signup_indexed = self._load_indexed_signups()
+        for student in self:
+            student_id = student.id
+            signup = signup_indexed.get(student_id, False)
+            student.signup_code = signup.signup_code if signup else False
+            student.signup_date = signup.signup_date if signup else False
+
     # -- Methods overrides -------------------------------------------
 
     @api.model
     def _get_relevant_category_external_id(self):
         return "academy_base.res_partner_category_student"
 
-    @api.model
-    def _get_relevant_signup_sequence_code(self):
-        return "academy.student.signup.sequence"
+    @api.model_create_multi
+    def create(self, values_list):
+        """Ensure every new student gets a sign-up row for the active company.
+        Inject proxy defaults so their inverse creates `academy.student.signup`
+        unless an inline signup_ids for the active company is already provided.
+        """
+        signup_obj = self.env["academy.student.signup"]
+        company_id = self.env.company.id
+        now = fields.Datetime.now()
 
-    @api.model
-    def _get_relevant_signup_sequence_external_id(self):
-        return "academy_base.ir_sequence_academy_student_signup"
+        for values in values_list:
+            has_inline = any(
+                isinstance(cmd, (list, tuple))
+                and len(cmd) >= 3
+                and cmd[0] == 0
+                and (cmd[2] or {}).get("company_id") == company_id
+                for cmd in values.get("signup_ids", [])
+            )
+            if not has_inline:
+                values.setdefault(
+                    "signup_code", signup_obj._next_signup_code(company_id)
+                )
+                values.setdefault("signup_date", now)
 
-    # -- Public methods -------------------------------------------------------
+        return super().create(values_list)
+
+    # -- Public methods
+    # -------------------------------------------------------------------------
 
     def view_enrolments(self):
         self.ensure_one()
@@ -401,74 +514,168 @@ class AcademyStudent(models.Model):
 
         return student_set
 
-    # -- Signup sequence methods ----------------------------------------------
+    def perform_signup(self, companies=None):
+        """Upsert per-company sign-up for each student in `self` and the
+        target company/companies.
 
-    @api.model
-    def _ensure_signup_date(self, vals_list):
-        today = fields.Date.context_today(self)
-        for values in vals_list:
-            if not values.get("signup_date"):
-                values["signup_date"] = today
+        - Creates `academy.student.signup` for each target company if missing,
+          generating `signup_code` via the auxiliary model's sequence and using
+          current datetime for `signup_date`.
+        - If a row already exists, updates it only with non-empty proxy values
+          present on the student (`signup_code`, `signup_date`).
+        - Returns the `academy.student.signup` recordset for these students
+          and the target company/companies.
+        """
+        self = self.exists()
 
-    @api.model
-    def _next_signup_code(self, company_id):
-        """Return next sign-up code using company-specific sequence,
-        falling back to a known default XMLID."""
-        sequence_obj = self.env["ir.sequence"].with_company(company_id)
+        signup_obj = self.env["academy.student.signup"]
+        company_ids = self._normalize_companies_argument(companies)
+        now = fields.Datetime.now()
 
-        # 1) Try company-specific sequence (same code, bound to company)
-        signup_code = self._get_relevant_signup_sequence_code()
-        sequence_domain = [
-            ("code", "=", signup_code),
-            ("company_id", "=", company_id),
+        if not self or not company_ids:
+            return signup_obj.browse()
+
+        # Existing sign-ups for target companies, indexed by (student_id, company_id)
+        signup_indexed = self._load_indexed_signups(companies=company_ids)
+
+        to_create = []
+        to_update = []
+
+        for student in self:
+            for company_id in company_ids:
+                existing = signup_indexed.get((student.id, company_id))
+                values = self._signup_values(
+                    student, company_id, now, existing
+                )
+                if not existing:
+                    to_create.append(values)
+                elif values:
+                    to_update.append((existing, values))
+
+        if to_create:
+            signup_obj.create(to_create)
+
+        for record, values in to_update:
+            record.write(values)
+
+        # Return final set for these students and target companies
+        domain = [
+            ("student_id", "in", self.ids),
+            ("company_id", "in", company_ids),
         ]
-        sequence = sequence_obj.search(sequence_domain, limit=1)
-        if sequence:
-            return sequence.with_company(company_id).next_by_id()
 
-        # 2) Explicit fallback to the known default sequence XMLID
-        sequence_xid = self._get_relevant_signup_sequence_external_id()
-        fallback = self.env.ref(sequence_xid, raise_if_not_found=False)
-        if fallback:
-            return fallback.with_company(company_id).next_by_id()
+        return signup_obj.search(domain)
 
-        # 3) Last resort: let Odoo try any global sequence with that code
-        code = sequence_obj.next_by_code(signup_code)
-        if code:
-            _logger.warning(
-                "Using global sequence by code for company_id=%s", company_id
-            )
-            return code
+    def revoke_signup(self, companies=None):
+        """Delete per-company sign-up rows for each student in `self`.
 
-        raise UserError(
-            _(
-                "Missing sequence for partner sign-up. "
-                "Create a company-specific sequence with code %(code)s "
-                "or define the fallback %(xid)s."
-            )
-            % {
-                "code": signup_code,
-                "xid": sequence_xid,
-            }
-        )
+        If `companies` is not provided, the method removes only the row(s) for
+        the active company. Otherwise, it removes rows for the specified
+        company/companies.
+
+        Args:
+            companies (res.company | int | Iterable[int | res.company] | None):
+                Target companies to revoke sign-up data from. When None, only
+                the active company is used.
+
+        Returns:
+            int: Number of `academy.student.signup` rows deleted.
+        """
+        self = self.exists()
+        if not self:
+            return 0
+
+        signup_obj = self.env["academy.student.signup"]
+        company_ids = self._normalize_companies_argument(companies)
+        if not company_ids:
+            return 0
+
+        domain = [
+            ("student_id", "in", self.ids),
+            ("company_id", "in", company_ids),
+        ]
+        to_delete = signup_obj.search(domain)
+        count = len(to_delete)
+        if count:
+            to_delete.unlink()
+        return count
+
+    # -- Auxiliary methods
+    # -------------------------------------------------------------------------
+
+    def _load_indexed_signups(self, companies=None):
+        company_ids = self._normalize_companies_argument(companies)
+        student_ids = self.ids
+
+        if not company_ids or not student_ids:
+            return {}
+
+        signup_domain = [
+            ("company_id", "in", company_ids),
+            ("student_id", "in", student_ids),
+        ]
+        signup_obj = self.env["academy.student.signup"]
+        signup_set = signup_obj.search(signup_domain)
+
+        # Backward compatible shape:
+        # - single company  -> {student_id: signup}
+        # - multiple        -> {(student_id, company_id): signup}
+        if len(company_ids) == 1:
+            return {s.student_id.id: s for s in signup_set if s.id}
+
+        return {
+            (s.student_id.id, s.company_id.id): s for s in signup_set if s.id
+        }
 
     @api.model
-    def _ensure_signup_data(self, values):
-        if not values.get("signup_code"):
-            company_id = values.get("company_id") or self.env.company.id
-            values["signup_code"] = self._next_signup_code(company_id)
-            values["barcode"] = values["signup_code"]
+    def _signup_values(self, student, company, now, existing):
+        signup_obj = self.env["academy.student.signup"]
 
-        if not values.get("signup_date", False):
-            values["signup_date"] = fields.Date.context_today(self)
+        student_id = ensure_id(student)
+        company_id = ensure_id(company)
 
-    @api.model_create_multi
-    def create(self, values_list):
-        """Overridden method 'create'"""
+        signup_code = student.signup_code
+        if not signup_code:
+            signup_code = signup_obj._next_signup_code(company_id)
 
-        for values in values_list:
-            self._ensure_signup_data(values)
+        signup_date = student.signup_date or now
 
-        result = super().create(values_list)
+        if existing:
+            values = {}
 
-        return result
+            if (
+                student.signup_code
+                and student.signup_code != existing.signup_code
+            ):
+                values["signup_code"] = student.signup_code
+            if (
+                student.signup_date
+                and student.signup_date != existing.signup_date
+            ):
+                values["signup_date"] = student.signup_date
+            if not existing.signup_date and "signup_date" not in values:
+                values["signup_date"] = now
+        else:
+            values = {
+                "student_id": student_id,
+                "company_id": company_id,
+                "signup_code": signup_code,
+                "signup_date": signup_date,
+            }
+
+        return values
+
+    @api.model
+    def _normalize_companies_argument(self, companies):
+        # Normalize companies -> list of ids
+        if companies is None:
+            company_ids = [self.env.company.id]
+        elif isinstance(companies, (list, tuple, set)):
+            company_ids = [ensure_id(c) for c in companies]
+        else:
+            company_ids = ensure_ids(companies, raise_if_empty=False) or []
+
+        # Clean up and deduplicate
+        company_ids = list({cid for cid in company_ids if cid})
+
+        return company_ids

@@ -111,6 +111,7 @@ of reference catalogs and training structures across the platform.
         "security/academy_technical_staff.xml",
         "security/academy_teacher.xml",
         "security/academy_student.xml",
+        "security/academy_student_signup.xml",
         "security/academy_training_program_line.xml",
         "security/academy_training_action_line.xml",
         "security/academy_training_teacher_assignment.xml",
