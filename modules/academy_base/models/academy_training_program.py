@@ -12,6 +12,7 @@ from odoo.osv.expression import TRUE_DOMAIN, FALSE_DOMAIN
 from odoo.exceptions import UserError, ValidationError
 from ..utils.helpers import OPERATOR_MAP, one2many_count
 from ..utils.helpers import sanitize_code, default_code
+from ..utils.record_utils import are_different
 from odoo.tools.safe_eval import safe_eval
 from odoo.tools.translate import _
 
@@ -510,3 +511,211 @@ class AcademyTrainingProgram(models.Model):
                     )
 
         return True
+
+    # -- Method: _synchronize_training_actions and auxiliary logic
+    # -------------------------------------------------------------------------
+
+    def _synchronize_training_actions(self, **kwargs):
+        kwargs = kwargs or {}
+
+        # 1) Parse kwargs and set defaults
+        optional = kwargs.get("optional", True)
+        remove_mismatches = kwargs.get("remove_mismatches", True)
+        synchronize_groups = kwargs.get("synchronize_groups", True)
+        target_set = self._sta_get_target_set(**kwargs)
+        self_ctx = self._sta_with_active_test(**kwargs)
+
+        # 2) Find training actions for these programs
+        action_set = self_ctx._sta_get_actions(target_set, synchronize_groups)
+        grouped_act_set = self_ctx._sta_group_by_program(action_set)
+
+        # 3) Fetch program lines; index action lines by program line
+        shared_keys = self_ctx._sta_get_shared_keys()
+        prog_line_set = self_ctx.mapped("program_line_ids")
+        act_line_set = action_set.mapped("action_line_ids")
+        grouped_act_lines = self_ctx._sta_group_by_program_line(act_line_set)
+
+        # 4) For each program line, sync related action lines
+        act_line_obj = self_ctx.env["academy.training.action.line"]
+        empty_act_line = act_line_obj.browse()
+        creation_value_list = []
+        for prog_line in prog_line_set:
+            values = self_ctx._sta_read_source_values(prog_line, shared_keys)
+
+            # 5) Update existing lines (even if optional)
+            act_line_set = grouped_act_lines.get(prog_line.id, empty_act_line)
+            self_ctx._sta_update_lines(
+                act_line_set, prog_line, values, shared_keys
+            )
+
+            # 6) Skip creation for optional lines (optional=False)
+            if prog_line.optional and not optional:
+                continue
+
+            # 7.a) Compute missing actions and build create values
+            create_over_set = self_ctx._sta_compute_create_over(
+                prog_line, grouped_act_set, act_line_set
+            )
+            values_list = self_ctx._sta_create_lines(create_over_set, values)
+            if values_list:
+                creation_value_list.extend(values_list)
+
+        # 7.b) Create missing lines (bulk)
+        if creation_value_list:
+            act_line_obj.create(creation_value_list)
+
+        # 8) Remove action lines without a matching program line
+        act_line_set = action_set.mapped("action_line_ids")  # After upsert
+        self_ctx._sta_unlink(prog_line_set, act_line_set, remove_mismatches)
+
+    def _sta_get_target_set(self, **kwargs):
+        value = kwargs.get("target_set", False)
+        action_obj = self.env["academy.training.action"]
+
+        if not value:
+            target_set = action_obj.browse()
+        elif isinstance(value, models.Model):
+            if value._name == "academy.training.action":
+                target_set = value
+            else:
+                action_obj.browse()
+        elif isinstance(value, int):
+            target_set = action_obj.browse(value)
+        elif isinstance(value, (list, tuple)):
+            ids = [v for v in value if isinstance(v, int)]
+            target_set = action_obj.browse(ids) if ids else action_obj.browse()
+        else:
+            target_set = action_obj.browse()
+
+        return target_set
+
+    def _sta_with_active_test(self, **kwargs):
+        if "active_test" in kwargs:
+            active_test = bool(kwargs.get("active_test"))
+            self_ctx = self.with_context(active_test=active_test)
+        else:
+            self_ctx = self
+
+        return self_ctx
+
+    def _sta_get_actions(self, target_set, synchronize_groups):
+        program_ids = self.ids
+
+        action_domain = [("training_program_id", "in", program_ids)]
+        if not synchronize_groups:
+            parent_leaf = ("parent_id", "=", False)
+            action_domain.append(parent_leaf)
+
+        if target_set:
+            target_leaf = ("id", "in", target_set.ids)
+            action_domain.append(target_leaf)
+
+        action_obj = self.env["academy.training.action"]
+        action_set = action_obj.search(action_domain)
+
+        return action_set
+
+    @staticmethod
+    def _sta_group_by_program(action_set):
+        grouped_by_program = {}
+
+        for action in action_set:
+            program_id = action.training_program_id.id
+            if not program_id:
+                continue
+
+            if program_id not in grouped_by_program:
+                grouped_by_program[program_id] = action
+            else:
+                grouped_by_program[program_id] |= action
+
+        return grouped_by_program
+
+    @staticmethod
+    def _sta_group_by_program_line(action_line_set):
+        grouped_by_program = {}
+
+        for action_line in action_line_set:
+            prog_line_id = action_line.program_line_id.id
+            if not prog_line_id:
+                continue
+
+            if prog_line_id not in grouped_by_program:
+                grouped_by_program[prog_line_id] = action_line
+            else:
+                grouped_by_program[prog_line_id] |= action_line
+
+        return grouped_by_program
+
+    @staticmethod
+    def _sta_unlink(prog_lines, act_lines, remove_mismatches):
+        if not remove_mismatches:
+            return
+
+        prog_line_ids = prog_lines.ids
+        to_unlink = act_lines.filtered(
+            lambda line: not line.program_line_id
+            or line.program_line_id.id not in prog_line_ids
+        )
+
+        to_unlink.unlink()
+
+    def _sta_get_shared_keys(self):
+        prog_line_obj = self.env["academy.training.program.line"]
+        shared_keys = set(prog_line_obj._fields)
+
+        act_line_obj = self.env["academy.training.action.line"]
+        shared_keys &= set(act_line_obj._fields)
+
+        shared_keys.discard("comment")
+
+        return shared_keys
+
+    @staticmethod
+    def _sta_read_source_values(program_line, shared_keys):
+        raw = {k: program_line[k] for k in shared_keys}
+        values = program_line._convert_to_write(raw)
+
+        values["program_line_id"] = program_line.id
+
+        return values
+
+    @api.model
+    def _sta_compute_create_over(
+        self, program_line, grouped_actions, updated_action_lines
+    ):
+        program_id = program_line.training_program_id.id
+        related_action_set = grouped_actions.get(
+            program_id, self.env["academy.training.action"].browse()
+        )
+
+        updated_action_set = updated_action_lines.mapped("training_action_id")
+
+        return related_action_set - updated_action_set
+
+    def _sta_update_lines(self, act_line_set, prog_line, values, shared_keys):
+        def _compare(line):
+            return are_different(
+                line, prog_line, fields=shared_keys, deep_o2m=False
+            )
+
+        if act_line_set:
+            to_update = act_line_set.filtered(lambda line: _compare(line))
+            if to_update:
+                vals2write = dict(values)
+
+                # Blindaje: nunca mover líneas entre acciones en updates
+                vals2write.pop("training_action_id", None)
+                to_update.write(vals2write)
+
+    @staticmethod
+    def _sta_create_lines(create_over_set, base_values):
+        values = dict(base_values)
+        creation_value_list = []
+
+        for action in create_over_set:
+            creation_values = values.copy()
+            creation_values["training_action_id"] = action.id
+            creation_value_list.append(creation_values)
+
+        return creation_value_list

@@ -363,3 +363,183 @@ def ensure_ids(targets, raise_if_empty=True):
         return [targets]
 
     return targets
+
+
+def are_different(source, target, fields=None, deep_o2m=False):
+    """
+    Boolean wrapper around `compare_records`.
+
+    Delegates all comparison semantics to `compare_records` and returns True
+    if there are differences, False otherwise.
+
+    Args:
+        source (odoo.models.Model): First record (single record).
+        target (odoo.models.Model): Second record (single record).
+        fields (Iterable[str] | None): Optional subset of field names to compare.
+        deep_o2m (bool | str | Callable): See `compare_records`.
+
+    Returns:
+        bool: True if differences exist; False otherwise.
+    """
+    result = compare_records(source, target, fields=fields, deep_o2m=deep_o2m)
+    return bool(result)
+
+
+def compare_records(source, target, fields=None, deep_o2m=False):
+    """
+    Compare two Odoo records using ORM semantics and return a diffs dict.
+
+    Semantics:
+      - Uses `record._convert_to_write()` so Many2one become **ids**
+        and X2Many become **fields.Command** lists.
+      - Many2many are compared as **sets of IDs** (order-insensitive).
+      - One2many handling:
+          * deep_o2m == False       → O2M fields are **skipped**.
+          * deep_o2m in (True, "ids") → compare **sets of child IDs**.
+          * deep_o2m in {str, callable(rec)->hashable} → match children by that
+            **key** and compare their shallow payload (no deep diff of children).
+      - Only compares fields present on **both** models and considered
+        “write-meaningful”: stored fields; computed fields only if they define
+        an inverse method.
+
+    Args:
+        source (odoo.models.Model): First record (ensure_one).
+        target (odoo.models.Model): Second record (ensure_one).
+        fields (Iterable[str] | None): Optional subset of field names to compare.
+        deep_o2m (bool | str | Callable): O2M comparison mode as above.
+
+    Returns:
+        dict: Diffs by field.
+            - Simple/M2O/M2M → {field: (left_value, right_value)}
+            - O2M-by-key     → {field: {
+                                   "added": set,
+                                   "removed": set,
+                                   "changed": {key: subdiff}
+                               }}
+    """
+    source.ensure_one()
+    target.ensure_one()
+
+    # Intersection of field names present on both models
+    common_fields = set(source._fields) & set(target._fields)
+    if fields is not None:
+        common_fields &= set(fields)
+
+    # Keep only "write-meaningful" stored fields
+    def _is_write_meaningful(field):
+        # Stored fields; accept computed only if they have inverse
+        return getattr(field, "store", False) and (
+            not getattr(field, "compute", None)
+            or getattr(field, "inverse", None)
+        )
+
+    field_names = []
+    for name in sorted(common_fields):
+        field = source._fields[name]
+        if field.type == "one2many":
+            if deep_o2m:
+                field_names.append(name)
+        else:
+            if _is_write_meaningful(field):
+                field_names.append(name)
+
+    # Convert both sides to write-format once
+    left_write = source._convert_to_write({k: source[k] for k in field_names})
+    right_write = target._convert_to_write({k: target[k] for k in field_names})
+
+    diffs = {}
+    for name in field_names:
+        field = source._fields[name]
+        left_value = left_write.get(name)
+        right_value = right_write.get(name)
+
+        if field.type == "many2one":
+            # Already ids in write-format; direct compare is fine
+            if left_value != right_value:
+                diffs[name] = (left_value, right_value)
+
+        elif field.type == "many2many":
+            # Compare sets of ids (ignore order / command shapes)
+            left_ids = (
+                normalize_m2m(left_value)
+                if isinstance(left_value, (list, tuple))
+                else set(source[name].ids)
+            )
+            right_ids = (
+                normalize_m2m(right_value)
+                if isinstance(right_value, (list, tuple))
+                else set(target[name].ids)
+            )
+            if left_ids != right_ids:
+                diffs[name] = (left_ids, right_ids)
+
+        elif field.type == "one2many":
+            if not deep_o2m:
+                continue  # skip O2M entirely
+
+            # Mode A: by ids
+            if deep_o2m is True or deep_o2m == "ids":
+                source_ids = set(source[name].ids)
+                target_ids = set(target[name].ids)
+                if source_ids != target_ids:
+                    diffs[name] = (source_ids, target_ids)
+
+            else:
+                # Mode B: by key (deep_o2m is str key or callable(rec)->hashable)
+                key_getter = (
+                    (lambda r: getattr(r, deep_o2m))
+                    if isinstance(deep_o2m, str)
+                    else deep_o2m
+                )
+                source_by_key = {key_getter(rec): rec for rec in source[name]}
+                target_by_key = {key_getter(rec): rec for rec in target[name]}
+
+                added = set(target_by_key) - set(source_by_key)
+                removed = set(source_by_key) - set(target_by_key)
+                changed = {}
+
+                for child_key in set(source_by_key) & set(target_by_key):
+                    subdiff = compare_records(
+                        source_by_key[child_key],
+                        target_by_key[child_key],
+                        fields=None,
+                        deep_o2m=False,
+                    )
+                    if subdiff:
+                        changed[child_key] = subdiff
+
+                if added or removed or changed:
+                    diffs[name] = {
+                        "added": added,
+                        "removed": removed,
+                        "changed": changed,
+                    }
+
+        else:
+            # Simple types (char, int, float, boolean, selection, date/datetime, etc.)
+            if left_value != right_value:
+                diffs[name] = (left_value, right_value)
+
+    return diffs
+
+
+def normalize_m2m(commands):
+    """
+    Reduce a sequence of Many2many commands to the resulting set of IDs.
+    Supports 6 (set), 4 (link/add), 3 (unlink/remove), 5 (clear).
+    Accepts numeric tuples or fields.Command tuples (IntEnum-compatible).
+    """
+    ids = set()
+    for cmd in commands or []:
+        if not isinstance(cmd, (list, tuple)) or not cmd:
+            continue
+        op = int(cmd[0]) if hasattr(cmd[0], "__int__") else cmd[0]
+        if op == 6 and len(cmd) >= 3:
+            ids = set(cmd[2] or [])
+        elif op == 4 and len(cmd) >= 2:
+            ids.add(cmd[1])
+        elif op == 3 and len(cmd) >= 2:
+            ids.discard(cmd[1])
+        elif op == 5:
+            ids = set()
+    return ids

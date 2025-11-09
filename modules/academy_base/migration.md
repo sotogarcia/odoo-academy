@@ -182,11 +182,11 @@ attrs=["']\{["'](readonly|invisible|required)["']: *(\[[^\]]+\])\}["']
 - [x] Impedir que los grupos creados desde fuera de la vista de la acción excedan la capacidad de la acción padre
 
 - [ ] Sincronizar acciones formativas con grupos formativos
-- [ ] Añadir tareas NO formativas
+- [x] Añadir tareas NO formativas
 - [ ] Acción de mantenimiento
 - [ ] Buscar todos los wizard para revisar
 - [ ] Revisar informes y correos
-- [ ] Jefa de estudios por academia
+- [x] Jefa de estudios por academia
 - [ ] Ordenar por nombre
 - [x] No se puede inscribir (enrolment) a un alumno sin signup code
 - [x] No se puede revocar el signup code a alumnos sin matrícula

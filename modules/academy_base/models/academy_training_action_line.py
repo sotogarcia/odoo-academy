@@ -33,7 +33,7 @@ class AcademyTrainingActionLine(models.Model):
     _inherit = ["academy.training.program.line"]
 
     _rec_name = "name"
-    _order = "sequence ASC"
+    _order = "sequence ASC, name"
     _rec_names_search = ["name", "code"]
 
     program_line_id = fields.Many2one(

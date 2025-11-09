@@ -69,7 +69,7 @@ class AcademyTrainingAction(models.Model):
     ]
 
     _rec_name = "name"
-    order = "parent_id, sequence, name, date_start"
+    _order = "parent_path, sequence, name, id"
     _rec_names_search = ["name", "code", "training_program_id"]
 
     # -- Company dependency: Fields and logic
@@ -136,6 +136,7 @@ class AcademyTrainingAction(models.Model):
         context={},
         auto_join=False,
         copy=False,
+        order="sequence, name",
     )
 
     training_group_count = fields.Integer(

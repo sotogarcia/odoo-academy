@@ -22,7 +22,7 @@
         <field name="priority" eval="16"/>
         <field name="active" eval="True"/>
         <field name="arch" type="xml">
-            <list string="academy_training_action_tree" create="1" delete="1" edit="1">
+            <list string="academy_training_action_tree" default_order="name, id desc" create="1" delete="1" edit="1">
                 <field name="code" class="oe_field_action_code" optional="show"/>
                 <field name="name" string="Name"/>
 
@@ -382,7 +382,7 @@
         <field name="priority" eval="99"/>
         <field name="active" eval="True"/>
         <field name="arch" type="xml">
-            <list string="Quick edit" create="0" delete="0" edit="1" editable="bottom">
+            <list string="Quick edit" default_order="name, id desc" create="0" delete="0" edit="1" editable="bottom">
                 <field name="name" class="oe_field_action_name"/>
                 <field name="code" class="oe_field_action_code" />
                 <field name="owner_id" class="oe_field_owner_id"/>
