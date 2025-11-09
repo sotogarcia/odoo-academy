@@ -12,7 +12,7 @@ from odoo.osv.expression import TRUE_DOMAIN, FALSE_DOMAIN
 from odoo.exceptions import UserError, ValidationError
 from ..utils.helpers import OPERATOR_MAP, one2many_count
 from ..utils.helpers import sanitize_code, default_code
-from ..utils.record_utils import are_different
+from ..utils.record_utils import are_different_to_write
 from odoo.tools.safe_eval import safe_eval
 from odoo.tools.translate import _
 
@@ -512,10 +512,10 @@ class AcademyTrainingProgram(models.Model):
 
         return True
 
-    # -- Method: _synchronize_training_actions and auxiliary logic
+    # -- Method: synchronize_training_actions and auxiliary logic
     # -------------------------------------------------------------------------
 
-    def _synchronize_training_actions(self, **kwargs):
+    def synchronize_training_actions(self, **kwargs):
         kwargs = kwargs or {}
 
         # 1) Parse kwargs and set defaults
@@ -544,9 +544,7 @@ class AcademyTrainingProgram(models.Model):
 
             # 5) Update existing lines (even if optional)
             act_line_set = grouped_act_lines.get(prog_line.id, empty_act_line)
-            self_ctx._sta_update_lines(
-                act_line_set, prog_line, values, shared_keys
-            )
+            self_ctx._sta_update_lines(act_line_set, values, shared_keys)
 
             # 6) Skip creation for optional lines (optional=False)
             if prog_line.optional and not optional:
@@ -578,7 +576,7 @@ class AcademyTrainingProgram(models.Model):
             if value._name == "academy.training.action":
                 target_set = value
             else:
-                action_obj.browse()
+                target_set = action_obj.browse()
         elif isinstance(value, int):
             target_set = action_obj.browse(value)
         elif isinstance(value, (list, tuple)):
@@ -669,6 +667,9 @@ class AcademyTrainingProgram(models.Model):
 
         shared_keys.discard("comment")
 
+        mail_thread_obj = self.env["mail.thread"]
+        shared_keys -= set(mail_thread_obj._fields)
+
         return shared_keys
 
     @staticmethod
@@ -693,20 +694,24 @@ class AcademyTrainingProgram(models.Model):
 
         return related_action_set - updated_action_set
 
-    def _sta_update_lines(self, act_line_set, prog_line, values, shared_keys):
-        def _compare(line):
-            return are_different(
-                line, prog_line, fields=shared_keys, deep_o2m=False
+    def _sta_update_lines(self, act_line_set, values, shared_keys):
+        """Actualiza únicamente las líneas cuyo estado difiere de `values`
+        (write-dict).
+        """
+        if not act_line_set:
+            return
+
+        needs_update = act_line_set.filtered(
+            lambda line: are_different_to_write(
+                line, values, fields=shared_keys
             )
+        )
 
-        if act_line_set:
-            to_update = act_line_set.filtered(lambda line: _compare(line))
-            if to_update:
-                vals2write = dict(values)
-
-                # Blindaje: nunca mover líneas entre acciones en updates
-                vals2write.pop("training_action_id", None)
-                to_update.write(vals2write)
+        if needs_update:
+            vals2write = dict(values)
+            # Blindaje: nunca mover líneas entre acciones en updates
+            vals2write.pop("training_action_id", None)
+            needs_update.write(vals2write)
 
     @staticmethod
     def _sta_create_lines(create_over_set, base_values):

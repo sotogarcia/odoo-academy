@@ -136,7 +136,6 @@ class AcademyTrainingAction(models.Model):
         context={},
         auto_join=False,
         copy=False,
-        order="sequence, name",
     )
 
     training_group_count = fields.Integer(

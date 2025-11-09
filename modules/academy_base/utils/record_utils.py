@@ -365,9 +365,28 @@ def ensure_ids(targets, raise_if_empty=True):
     return targets
 
 
-# ---------------------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------------------
+# *****************************************************************************
+# Record comparison utilities (ORM-aware + write-format helpers)
+# Purpose:
+#   Provide low-noise, fast comparisons between Odoo records and/or
+#   write-format payloads, respecting ORM semantics for m2o/m2m and optional
+#   shallow o2m.
+# Semantics:
+#   - Scalars & Many2one: compared via normalized write values (ids/False).
+#   - Many2many: compared as sets of IDs (order-insensitive).
+#   - One2many: OFF by default; when enabled, compare by child IDs or pair by
+#     a user-provided key (str/callable) and perform shallow comparison.
+# Inputs (kwargs where applicable):
+#   - fields: iterable of field names to consider.
+#   - deep_o2m: False | True/"ids" | str/callable(record)->hashable.
+#   - early_exit: stop at first detected difference (hot paths).
+# Outputs:
+#   - Diff maps (per field) or booleans via lightweight wrappers. No side
+#    effects.
+# Notes:
+#   - O2M are not "stored" fields; `_is_write_meaningful` is intentionally
+#     bypassed for O2M whenever `deep_o2m` is enabled.
+# *****************************************************************************
 
 
 def _normalize_m2m(commands):
@@ -429,12 +448,79 @@ def _is_write_meaningful(field):
     )
 
 
+def _ensure_fields_argument(**kwargs):
+    fields = kwargs.get("fields", [])
+
+    if not fields:
+        message = "{}: 'fields' is required and cannot be empty"
+        raise ValueError(message.format("compare_write_values"))
+
+    elif not isinstance(fields, (list, tuple)):
+        fields = [fields]
+
+    return fields
+
+
+def _split_fields_for_compare(source, target, fields, deep_o2m):
+    """
+    Return (scalar_fields, o2m_fields) after intersecting models, excluding
+    non write-meaningful fields, and including O2M only if deep_o2m is truthy.
+    """
+    fsrc, ftgt = source._fields, target._fields
+    names = (
+        (set(fsrc) & set(ftgt))
+        if fields is None
+        else [n for n in fields if n in fsrc and n in ftgt]
+    )
+    scalars, o2ms = [], []
+    for name in sorted(names) if fields is None else names:
+        field = fsrc[name]
+        if not _is_write_meaningful(field):
+            continue
+        if field.type == "one2many":
+            if deep_o2m:
+                o2ms.append(name)
+        else:
+            scalars.append(name)
+
+    return scalars, o2ms
+
+
+def _build_o2m_key_getter(deep_o2m):
+    """Return a callable record -> hashable key for O2M pairing."""
+    if isinstance(deep_o2m, str):
+
+        def key(rec):
+            v = getattr(rec, deep_o2m, None)
+            if hasattr(v, "ids"):  # recordset key
+                v = tuple(v.ids)
+            elif isinstance(v, (list, tuple, set)):
+                v = tuple(v)
+            return v
+
+        return key
+
+    if callable(deep_o2m):
+
+        def key(rec):
+            v = deep_o2m(rec)
+            if hasattr(v, "ids"):
+                v = tuple(v.ids)
+            elif isinstance(v, (list, tuple, set)):
+                v = tuple(v)
+            return v
+
+        return key
+
+    raise TypeError("deep_o2m must be True/'ids' or a str/callable key")
+
+
 # ---------------------------------------------------------------------------
-# Core comparator: write-format vs write-format
+# Core comparator: compare_write_values
 # ---------------------------------------------------------------------------
 
 
-def compare_write_values(left_write, right_write, *, fields):
+def compare_write_values(left_write, right_write, **kwargs):
     """
     Compare two write-format dicts **without** model metadata and return a
     diff map.
@@ -462,9 +548,8 @@ def compare_write_values(left_write, right_write, *, fields):
     dict
         A mapping of differences: ``{field: (left_value, right_value)}``.
     """
-    if not fields:
-        message = "{}: 'fields' is required and cannot be empty"
-        raise ValueError(message.format("compare_write_values"))
+    early_exit = kwargs.get("early_exit", False)
+    fields = _ensure_fields_argument(**kwargs)
 
     names = list(dict.fromkeys(fields))  # stable order, no duplicates
     diffs = {}
@@ -479,70 +564,125 @@ def compare_write_values(left_write, right_write, *, fields):
         if left_ids is not None and right_ids is not None:
             if left_ids != right_ids:
                 diffs[name] = (left_ids, right_ids)
-            continue  # already compared as M2M
+                if early_exit:
+                    return diffs
+            continue  # equal M2M → next field
 
         # For the rest (including M2O and simple types), compare directly
         if left_value != right_value:
             diffs[name] = (left_value, right_value)
+            if early_exit:
+                return diffs
 
     return diffs
 
 
 # ---------------------------------------------------------------------------
-# Wrappers: records → write-format
+# Wrapper: records → record
 # ---------------------------------------------------------------------------
 
 
-def compare_records(source, target, fields=None, deep_o2m=False):
+def compare_records(source, target, **kwargs):
     """
-    Convert both records to write-format and delegate to compare_write_values.
-    Model metadata is only used here to choose field names; comparison is
-    metadata-free. Note: One2many is always excluded from the comparison.
+    Compare two records:
+      - Scalars (no O2M): via write-format + `compare_write_values`.
+      - O2M (optional):
+          * deep_o2m in (True, "ids"): compare by child id sets.
+          * deep_o2m is str/callable: pair children by that key and
+          shallow-compare them.
     """
     source.ensure_one()
     target.ensure_one()
 
-    # Campos por defecto: intersección y "razonables"
-    if fields is None:
-        common_fields = set(source._fields) & set(target._fields)
-        field_names = []
-        for name in sorted(common_fields):
-            field = source._fields[name]
-            # Exclude O2M; keep only write-meaningful fields (helper)
-            if field.type != "one2many" and _is_write_meaningful(field):
-                field_names.append(name)
-    else:
-        # Respect caller's list but still exclude O2M and non write-meaningful
-        field_names = []
-        for name in fields:
-            if name in source._fields and name in target._fields:
-                field = source._fields[name]
-                if field.type != "one2many" and _is_write_meaningful(field):
-                    field_names.append(name)
+    fields = kwargs.get("fields")
+    deep_o2m = kwargs.get("deep_o2m", False)
+    early_exit = kwargs.get("early_exit", False)
 
-    # Nothing to compare → no diffs
-    if not field_names:
+    scalar_fields, o2m_fields = _split_fields_for_compare(
+        source, target, fields, deep_o2m
+    )
+    if not scalar_fields and not o2m_fields:
         return {}
 
-    left_write = source._convert_to_write({n: source[n] for n in field_names})
-    right_write = target._convert_to_write({n: target[n] for n in field_names})
+    diffs = {}
 
-    return compare_write_values(left_write, right_write, fields=field_names)
+    # 1) Scalars: metadata-free core
+    if scalar_fields:
+        left = source._convert_to_write({n: source[n] for n in scalar_fields})
+        right = target._convert_to_write({n: target[n] for n in scalar_fields})
+        diffs = compare_write_values(
+            left, right, fields=scalar_fields, early_exit=early_exit
+        )
+        if early_exit and diffs:
+            return diffs
+
+    # 2) O2M: by ids or by key
+    if not o2m_fields:
+        return diffs
+
+    if deep_o2m is True or deep_o2m == "ids":
+        for name in o2m_fields:
+            a, b = set(source[name].ids), set(target[name].ids)
+            if a != b:
+                diffs[name] = (a, b)
+                if early_exit:
+                    return diffs
+        return diffs
+
+    key = _build_o2m_key_getter(deep_o2m)
+    for name in o2m_fields:
+        L = {k: r for r in source[name] if (k := key(r)) is not None}
+        R = {k: r for r in target[name] if (k := key(r)) is not None}
+
+        added, removed = set(R) - set(L), set(L) - set(R)
+        if added or removed:
+            diffs[name] = {"added": added, "removed": removed, "changed": {}}
+            if early_exit:
+                return diffs
+
+        changed = {}
+        for k in set(L) & set(R):
+            sub = compare_records(
+                L[k], R[k], fields=None, deep_o2m=False, early_exit=early_exit
+            )
+            if sub:
+                if early_exit:
+                    bucket = diffs.get(
+                        name, {"added": set(), "removed": set(), "changed": {}}
+                    )
+                    bucket["changed"][k] = sub
+                    diffs[name] = bucket
+                    return diffs
+                changed[k] = sub
+
+        if changed:
+            bucket = diffs.get(
+                name, {"added": set(), "removed": set(), "changed": {}}
+            )
+            bucket["changed"].update(changed)
+            diffs[name] = bucket
+
+    return diffs
 
 
-def compare_record_to_write(
-    record, desired_write, fields=None, deep_o2m=False
-):
+# ---------------------------------------------------------------------------
+# Wrapper: record → write-format
+# ---------------------------------------------------------------------------
+
+
+def compare_record_to_write(record, desired_write, **kwargs):
     """
-    Compare a single Odoo record against a write-format dict and return a diff map.
+    Compare a single Odoo record against a write-format dict and return a diff
+    map.
 
     Notes
     -----
     - The record side is converted via ``_convert_to_write``.
-    - Delegates the actual comparison to ``compare_write_values`` (metadata-free).
-    - One2many fields are excluded by design; Many2many are compared as sets of IDs
-      when the value shape looks like M2M (command ops in {6,5,4,3} or a list of ints).
-    - ``deep_o2m`` is kept for signature parity and is ignored here.
+    - Delegates the actual comparison to ``compare_write_values``
+      (metadata-free).
+    - One2many fields are excluded by design; Many2many are compared as sets
+      of IDs when the value shape looks like M2M (command ops in {6,5,4,3} or
+      a list of ints).
 
     Parameters
     ----------
@@ -553,8 +693,6 @@ def compare_record_to_write(
     fields : Iterable[str] | None
         Optional subset of field names. If None, uses the intersection of
         ``desired_write.keys()`` and the model fields.
-    deep_o2m : bool
-        Ignored. Present only for API parity.
 
     Returns
     -------
@@ -562,13 +700,18 @@ def compare_record_to_write(
         A mapping of differences: ``{field: (left_value, right_value)}``.
         Returns an empty dict if there is nothing to compare.
     """
+
+    fields = kwargs.get("fields", None)
+    early_exit = kwargs.get("early_exit", False)
+
     record.ensure_one()
 
     if not isinstance(desired_write, dict):
         message = "{}: 'desired_write' must be a dict"
         raise TypeError(message.format("compare_record_to_write"))
 
-    # Candidate field names (preserve caller / desired_write order where applicable)
+    # Candidate field names (preserve caller / desired_write order where
+    # applicable)
     if fields is None:
         candidates = [k for k in desired_write.keys() if k in record._fields]
     else:
@@ -588,28 +731,53 @@ def compare_record_to_write(
         return {}
 
     current_write = record._convert_to_write({n: record[n] for n in names})
-    return compare_write_values(current_write, desired_write, fields=names)
+
+    args = dict(fields=names, deep_o2m=False, early_exit=early_exit)
+    return compare_write_values(current_write, desired_write, **args)
 
 
-# ---------------------------------------------------------------------------
-# Boolean wrappers
-# ---------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+# Boolean wrappers: record → record
+# -----------------------------------------------------------------------------
 
 
 def are_different(source, target, fields=None, deep_o2m=False):
     """Boolean wrapper around `compare_records`."""
     return bool(
-        compare_records(source, target, fields=fields, deep_o2m=deep_o2m)
+        compare_records(
+            source, target, fields=fields, deep_o2m=deep_o2m, early_exit=True
+        )
     )
 
 
-def are_different_to_write(record, desired_write, fields=None, deep_o2m=False):
-    """Boolean wrapper around `compare_record_to_write`.
+# -----------------------------------------------------------------------------
+# Boolean wrappers: record → write-format
+# -----------------------------------------------------------------------------
 
-    Note: `deep_o2m` is ignored in the write-dict path; kept for API parity.
+
+def are_different_to_write(record, desired_write, fields=None):
+    """
+    Boolean wrapper around `compare_record_to_write`.
+
+    Notes:
+      - `deep_o2m` is ignored in the write-dict path (kept only for API
+      parity).
+      - Uses early-exit: returns True on the first detected difference.
+
+    Args:
+        record (Model): record to compare (ensure_one).
+        desired_write (dict): precomputed write-format dict (from
+        _convert_to_write).
+        fields (Iterable[str] | None): optional subset to compare.
+
+    Returns:
+        bool: True if there are differences; False otherwise.
     """
     return bool(
         compare_record_to_write(
-            record, desired_write, fields=fields, deep_o2m=deep_o2m
+            record,
+            desired_write,
+            fields=fields,
+            early_exit=True,
         )
     )
