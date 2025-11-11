@@ -9,10 +9,9 @@ all training program attributes and behavior.
 # pylint: disable=locally-disabled, E0401
 from odoo import models, fields, api
 from odoo.osv.expression import TRUE_DOMAIN, FALSE_DOMAIN
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import ValidationError
 from ..utils.helpers import OPERATOR_MAP, one2many_count
 from ..utils.helpers import sanitize_code, default_code
-from ..utils.record_utils import are_different_to_write
 from odoo.tools.safe_eval import safe_eval
 from odoo.tools.translate import _
 
@@ -516,55 +515,121 @@ class AcademyTrainingProgram(models.Model):
     # -------------------------------------------------------------------------
 
     def synchronize_training_actions(self, **kwargs):
+        """
+        Synchronize training program lines into their related training actions.
+
+        This routine overwrites existing action lines to mirror program lines,
+        creates missing ones, optionally removes orphans, and posts one short
+        note in the chatter of each affected training action.
+
+        Workflow
+        --------
+        1) Scope target actions for these programs (optionally only top-level).
+        2) Compute shared fields to sync (chatter/technical fields excluded).
+        3) For each program line:
+           - Build a write-format dict from the program line.
+           - Overwrite all matching action lines (tracking disabled).
+           - If allowed, stage create-values for missing lines.
+        4) Bulk-create missing action lines (tracking disabled).
+        5) Optionally unlink action lines with no matching program line.
+        6) Post a single sync note per affected training action.
+
+        Parameters (kwargs)
+        -------------------
+        optional : bool, default True
+            If False, skip creation of optional lines; existing ones are still
+            overwritten.
+        remove_mismatches : bool, default True
+            If True, delete action lines whose program_line_id is empty or
+            outside the current program.
+        synchronize_groups : bool, default True
+            If False, limit scope to root actions only (parent_id = False). If
+            True, include all actions (roots and children).
+        target_set : recordset | int | Iterable[int], optional
+            Further restrict actions to process. Accepts an action recordset, a
+            single ID, or a list/tuple of IDs.
+
+        Side effects
+        ------------
+        - Writes/creates on academy.training.action.line (tracking disabled).
+        - May unlink academy.training.action.line records.
+        - Posts a note (subtype mail.mt_note) on each affected action.
+
+        Notes
+        -----
+        - Overwrite-first design: no per-field delta check.
+        - No defensive de-duplication on create; uniqueness errors surface so
+          data issues can be fixed.
+
+        Returns
+        -------
+        recordset
+            academy.training.action.line records that were created or
+            overwritten.
+        """
         kwargs = kwargs or {}
+
+        _logger.info(
+            "Synchronization started: training programs → training actions."
+        )
 
         # 1) Parse kwargs and set defaults
         optional = kwargs.get("optional", True)
         remove_mismatches = kwargs.get("remove_mismatches", True)
         synchronize_groups = kwargs.get("synchronize_groups", True)
         target_set = self._sta_get_target_set(**kwargs)
-        self_ctx = self._sta_with_active_test(**kwargs)
 
         # 2) Find training actions for these programs
-        action_set = self_ctx._sta_get_actions(target_set, synchronize_groups)
-        grouped_act_set = self_ctx._sta_group_by_program(action_set)
+        action_set = self._sta_get_actions(target_set, synchronize_groups)
+        grouped_act_set = self._sta_group_by_program(action_set)
 
         # 3) Fetch program lines; index action lines by program line
-        shared_keys = self_ctx._sta_get_shared_keys()
-        prog_line_set = self_ctx.mapped("program_line_ids")
+        shared_keys = self._sta_get_shared_keys()
+        prog_line_set = self.mapped("program_line_ids")
         act_line_set = action_set.mapped("action_line_ids")
-        grouped_act_lines = self_ctx._sta_group_by_program_line(act_line_set)
+        grouped_act_lines = self._sta_group_by_program_line(act_line_set)
 
         # 4) For each program line, sync related action lines
-        act_line_obj = self_ctx.env["academy.training.action.line"]
+        act_line_obj = self.env["academy.training.action.line"]
         empty_act_line = act_line_obj.browse()
+        result_set = act_line_obj.browse()
         creation_value_list = []
         for prog_line in prog_line_set:
-            values = self_ctx._sta_read_source_values(prog_line, shared_keys)
+            values = self._sta_read_source_values(prog_line, shared_keys)
 
             # 5) Update existing lines (even if optional)
-            act_line_set = grouped_act_lines.get(prog_line.id, empty_act_line)
-            self_ctx._sta_update_lines(act_line_set, values, shared_keys)
+            update_set = grouped_act_lines.get(prog_line.id, empty_act_line)
+            result_set |= self._sta_update_lines(
+                update_set, values, shared_keys
+            )
 
             # 6) Skip creation for optional lines (optional=False)
             if prog_line.optional and not optional:
                 continue
 
             # 7.a) Compute missing actions and build create values
-            create_over_set = self_ctx._sta_compute_create_over(
-                prog_line, grouped_act_set, act_line_set
+            create_over_set = self._sta_compute_create_over(
+                prog_line, grouped_act_set, update_set
             )
-            values_list = self_ctx._sta_create_lines(create_over_set, values)
+            values_list = self._sta_create_values(create_over_set, values)
             if values_list:
                 creation_value_list.extend(values_list)
 
         # 7.b) Create missing lines (bulk)
-        if creation_value_list:
-            act_line_obj.create(creation_value_list)
+        result_set |= self._sta_create_lines(creation_value_list)
 
         # 8) Remove action lines without a matching program line
         act_line_set = action_set.mapped("action_line_ids")  # After upsert
-        self_ctx._sta_unlink(prog_line_set, act_line_set, remove_mismatches)
+        self._sta_unlink(prog_line_set, act_line_set, remove_mismatches)
+
+        # 9) Chatter note on all lines touched (created or overwritten)
+        self._notify_synchronization(result_set)
+
+        _logger.info(
+            "Synchronization finished: training programs → training actions."
+        )
+
+        return result_set
 
     def _sta_get_target_set(self, **kwargs):
         value = kwargs.get("target_set", False)
@@ -587,41 +652,53 @@ class AcademyTrainingProgram(models.Model):
 
         return target_set
 
-    def _sta_with_active_test(self, **kwargs):
-        if "active_test" in kwargs:
-            active_test = bool(kwargs.get("active_test"))
-            self_ctx = self.with_context(active_test=active_test)
-        else:
-            self_ctx = self
-
-        return self_ctx
-
     def _sta_get_actions(self, target_set, synchronize_groups):
-        program_ids = self.ids
+        """
+        Return the training actions to synchronize.
 
-        action_domain = [("training_program_id", "in", program_ids)]
-        if not synchronize_groups:
-            parent_leaf = ("parent_id", "=", False)
-            action_domain.append(parent_leaf)
-
-        if target_set:
-            target_leaf = ("id", "in", target_set.ids)
-            action_domain.append(target_leaf)
-
+        Selection rules:
+          - self & target_set → intersection.
+          - only self         → actions of those programs.
+          - only target_set   → exactly those actions.
+          - neither           → empty recordset.
+        """
         action_obj = self.env["academy.training.action"]
-        action_set = action_obj.search(action_domain)
 
-        return action_set
+        if not self and not target_set:
+            actions = action_obj.browse()
+        else:
+            domain = []
+
+            if self:
+                self_leaf = ("training_program_id", "in", self.ids)
+                domain.append(self_leaf)
+
+            if target_set:
+                target_leaf = ("id", "in", target_set.ids)
+                domain.append(target_leaf)
+
+            if not synchronize_groups:
+                parent_leaf = ("parent_id", "=", False)
+                domain.append(parent_leaf)
+
+            actions = action_obj.search(domain)
+
+        _logger.debug(
+            "Synchronization scope: %d training action(s) selected.",
+            len(actions),
+        )
+
+        return actions
 
     @staticmethod
     def _sta_group_by_program(action_set):
         grouped_by_program = {}
 
         for action in action_set:
-            program_id = action.training_program_id.id
-            if not program_id:
+            program = action.training_program_id
+            if not program:
                 continue
-
+            program_id = program.id
             if program_id not in grouped_by_program:
                 grouped_by_program[program_id] = action
             else:
@@ -656,7 +733,14 @@ class AcademyTrainingProgram(models.Model):
             or line.program_line_id.id not in prog_line_ids
         )
 
-        to_unlink.unlink()
+        _logger.debug(
+            "Synchronization cleanup: will remove %d unmatched action "
+            "line(s).",
+            len(to_unlink),
+        )
+
+        if to_unlink:
+            to_unlink.unlink()
 
     def _sta_get_shared_keys(self):
         prog_line_obj = self.env["academy.training.program.line"]
@@ -669,6 +753,11 @@ class AcademyTrainingProgram(models.Model):
 
         mail_thread_obj = self.env["mail.thread"]
         shared_keys -= set(mail_thread_obj._fields)
+
+        _logger.debug(
+            "Synchronization fields: %s",
+            ", ".join(sorted(map(str, shared_keys))),
+        )
 
         return shared_keys
 
@@ -699,22 +788,23 @@ class AcademyTrainingProgram(models.Model):
         (write-dict).
         """
         if not act_line_set:
-            return
+            return act_line_set
 
-        needs_update = act_line_set.filtered(
-            lambda line: are_different_to_write(
-                line, values, fields=shared_keys
-            )
+        _logger.debug(
+            "Synchronization updates: %d action line(s) will be overwritten.",
+            len(act_line_set),
         )
+        vals2write = dict(values)
+        # Blindaje: nunca mover líneas entre acciones en updates
+        vals2write.pop("training_action_id", None)
+        # Reducir ruido de chatter/seguimiento
+        context = dict(tracking_disable=True, mail_create_nosubscribe=True)
+        act_line_set.with_context(context).write(vals2write)
 
-        if needs_update:
-            vals2write = dict(values)
-            # Blindaje: nunca mover líneas entre acciones en updates
-            vals2write.pop("training_action_id", None)
-            needs_update.write(vals2write)
+        return act_line_set
 
     @staticmethod
-    def _sta_create_lines(create_over_set, base_values):
+    def _sta_create_values(create_over_set, base_values):
         values = dict(base_values)
         creation_value_list = []
 
@@ -724,3 +814,56 @@ class AcademyTrainingProgram(models.Model):
             creation_value_list.append(creation_values)
 
         return creation_value_list
+
+    def _sta_create_lines(self, creation_value_list):
+        _logger.debug(
+            "Synchronization inserts: %d action line(s) will be created.",
+            len(creation_value_list),
+        )
+
+        act_line_obj = self.env["academy.training.action.line"]
+        if creation_value_list:
+            context = dict(tracking_disable=True, mail_create_nosubscribe=True)
+            act_line_ctx = act_line_obj.with_context(context)
+            result_set = act_line_ctx.create(creation_value_list)
+        else:
+            result_set = act_line_obj.browse()
+
+        return result_set
+
+    @api.model
+    def _notify_synchronization(self, result_set):
+        """Post one short sync note on each affected training action."""
+        action_obj = self.env["academy.training.action"]
+        if not result_set:
+            return action_obj.browse()
+
+        action_set = result_set.mapped("training_action_id")
+        if not action_set:
+            return action_obj.browse()
+
+        # Silenciar tracking/seguidores/notificaciones por email
+        ctx = {
+            "tracking_disable": True,
+            "mail_notrack": True,
+            "mail_create_nosubscribe": True,
+            "mail_post_autofollow": False,
+            "mail_notify_force_send": False,
+        }
+        body = self.env._(
+            "Synchronization: this training action was synchronized from "
+            "its training program."
+        )
+
+        for action in action_set.with_context(**ctx):
+            action.message_post(
+                body=body,
+                message_type="comment",
+                subtype_xmlid="mail.mt_note",
+            )
+
+        _logger.debug(
+            "Synchronization chatter: posted sync note on %d action(s).",
+            len(action_set),
+        )
+        return action_set

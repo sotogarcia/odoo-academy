@@ -79,7 +79,7 @@
                   </button>
                   <button name="view_action_lines" type="object" class="oe_stat_button oe_read_only"
                       icon="fa-cubes" help="View detailed curriculum">
-                      <field name="action_line_count" widget="statinfo" string="No. of lines" />
+                      <field name="action_line_count" widget="statinfo" string="Lines" />
                   </button>
                   <button name="view_rollup_enrolments" type="object"
                       class="oe_stat_button oe_read_only" icon="fa-sign-in"

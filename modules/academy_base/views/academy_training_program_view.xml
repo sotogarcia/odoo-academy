@@ -60,7 +60,7 @@
           <div class="oe_button_box" name="button_box">
             <button name="view_training_program_lines" type="object" class="oe_stat_button"
               icon="fa-cubes" title="View detailed program">
-              <field name="program_line_count" widget="statinfo" string="No. of lines"/>
+              <field name="program_line_count" widget="statinfo" string="Lines"/>
             </button>
             <button name="view_training_actions" type="object" class="oe_stat_button"
               icon="fa-clipboard">

@@ -1862,3 +1862,389 @@ class AcademyTrainingAction(models.Model):
             from_tz=tz_name,
             remove_tz=True,
         )
+
+    # -- Method: synchronize_training_groups and auxiliary logic
+    # -------------------------------------------------------------------------
+
+    def synchronize_training_groups(self, **kwargs):
+        kwargs = kwargs or {}
+
+        _logger.info("Synchronization started: parent action → child actions.")
+
+        # 1) Parse kwargs and set defaults
+        optional = kwargs.get("optional", True)
+        remove_mismatches = kwargs.get("remove_mismatches", True)
+        target_set = self._stg_get_target_set(**kwargs)
+
+        # 2) Find child actions, align program with parent and group by parent
+        children_set = self._stg_get_children(target_set)
+        grp_child_set = self._stg_align_children_programs(children_set)
+
+        # 3) Fetch program lines; index child lines by parent snapshot line
+        shared_keys = self._stg_get_shared_keys()
+        parent_line_set = self.mapped("action_line_ids")
+        child_line_set = children_set.mapped("action_line_ids")
+        by_parent_line = self._stg_group_child_lines(child_line_set)
+
+        # 4) For each program line, sync related action lines
+        act_line_obj = self.env["academy.training.action.line"]
+        empty_act_line = act_line_obj.browse()
+        result_set = act_line_obj.browse()
+        creation_value_list = []
+        for parent_line in parent_line_set:
+            values = self._stg_read_source_values(parent_line, shared_keys)
+
+            # 5) Update existing lines (even if optional)
+            update_set = by_parent_line.get(parent_line.id, empty_act_line)
+            if update_set:
+                result_set |= self._stg_update_lines(
+                    update_set, values, shared_keys
+                )
+
+            # 6) Skip creation for optional lines (optional=False)
+            if parent_line.optional and not optional:
+                continue
+
+            # 7.a) Compute missing actions and build create values
+            create_over_set = self._stg_compute_create_over(
+                parent_line, grp_child_set, update_set
+            )
+            values_list = self._stg_create_values(create_over_set, values)
+            if values_list:
+                creation_value_list.extend(values_list)
+
+        # 7.b) Create missing lines (bulk)
+        result_set |= self._stg_create_lines(creation_value_list)
+
+        # 8) Remove action lines without a matching program line
+        self._stg_unlink(parent_line_set, child_line_set, remove_mismatches)
+
+        # 9) Chatter note on all lines touched (created or overwritten)
+        self._notify_synchronization(result_set)
+
+        _logger.info(
+            "Synchronization finished: parent action → child actions."
+        )
+
+        return result_set
+
+    def _stg_get_target_set(self, **kwargs):
+        value = kwargs.get("target_set", False)
+        action_obj = self.env["academy.training.action"]
+
+        if not value:
+            target_set = action_obj.browse()
+        elif isinstance(value, models.Model):
+            if value._name == "academy.training.action":
+                target_set = value
+            else:
+                target_set = action_obj.browse()
+        elif isinstance(value, int):
+            target_set = action_obj.browse(value)
+        elif isinstance(value, (list, tuple)):
+            ids = [v for v in value if isinstance(v, int)]
+            target_set = action_obj.browse(ids) if ids else action_obj.browse()
+        else:
+            target_set = action_obj.browse()
+
+        result_set = target_set.filtered(lambda rec: rec.parent_id)
+
+        return result_set
+
+    def _stg_get_children(self, target_set):
+        """
+        Return the training actions to synchronize.
+
+        Selection rules:
+          - self & target_set → self.child_ids ∩ target_set.
+          - only self         → self.child_ids.
+          - only target_set   → target_set (sólo las que son hijas).
+          - neither           → empty recordset.
+        """
+        action_obj = self.env["academy.training.action"]
+
+        if not self and not target_set:
+            child_actions = action_obj.browse()
+        else:
+            domain = []
+
+            if self:
+                self_leaf = ("parent_id", "in", self.ids)
+                domain.append(self_leaf)
+
+            if target_set:
+                target_leaf = [
+                    ("id", "in", target_set.ids),
+                    ("parent_id", "!=", False),
+                ]
+                domain.extend(target_leaf)
+
+            child_actions = action_obj.search(domain)
+
+        _logger.debug(
+            "Synchronization scope: %d training action(s) selected.",
+            len(child_actions),
+        )
+
+        return child_actions
+
+    @staticmethod
+    def _stg_align_children_programs(children_set):
+        """Align each child's training_program_id to its parent's program and
+        group then by parent training action.
+
+        Return:
+            dict: all the child trainnig actions grouped by parent action like
+                  this `{parent_id: academy.training.action(...)}`.
+        """
+        grouped_by_parent = {}
+        mismatched_groups = {}
+
+        for child in children_set:
+            parent = child.parent_id
+            if not parent:
+                continue
+
+            # Group record by parent action
+            parent_id = parent.id
+            if parent_id not in grouped_by_parent:
+                grouped_by_parent[parent_id] = child
+            else:
+                grouped_by_parent[parent_id] |= child
+
+            # Set record to be updated with the parent program
+            child_program_id = child.training_program_id.id or 0
+            parent_program_id = parent.training_program_id.id or 0
+            if child_program_id != parent_program_id:
+                if parent_program_id not in mismatched_groups:
+                    mismatched_groups[parent_program_id] = child
+                else:
+                    mismatched_groups[parent_program_id] |= child
+
+        # Set training program from parent
+        if mismatched_groups:
+            ctx = dict(tracking_disable=True, mail_create_nosubscribe=True)
+
+            for program_id, child_actions in mismatched_groups.items():
+                child_actions = child_actions.with_context(ctx)
+                new_program_id = program_id or False  # 0 => False
+                child_actions.write({"training_program_id": new_program_id})
+
+        return grouped_by_parent
+
+    @staticmethod
+    def _stg_group_child_lines(child_line_set):
+        grouped_by_parent_line = {}
+
+        action_line_obj = child_line_set.env["academy.training.action.line"]
+        empty_record = action_line_obj.browse()
+        parent_lines = child_line_set.mapped("parent_id.action_line_ids")
+
+        for child_line in child_line_set:
+            parent_id = child_line.parent_id.id
+            prog_line_id = child_line.program_line_id.id
+            code = child_line.code
+
+            parent_line = empty_record
+            if prog_line_id:
+                parent_line = parent_lines.filtered(
+                    lambda pl: pl.training_action_id.id == parent_id
+                    and pl.program_line_id.id == prog_line_id
+                )
+            elif code:
+                parent_line = parent_lines.filtered(
+                    lambda pl: pl.training_action_id.id == parent_id
+                    and (not pl.program_line_id and pl.code == code)
+                )
+
+            if not parent_line:
+                continue
+
+            parent_line = parent_line[:1]
+            parent_line_id = parent_line.id
+            if parent_line_id not in grouped_by_parent_line:
+                grouped_by_parent_line[parent_line_id] = child_line
+            else:
+                grouped_by_parent_line[parent_line_id] |= child_line
+
+        return grouped_by_parent_line
+
+    @staticmethod
+    def _stg_unlink(parent_lines, child_lines, remove_mismatches):
+        """Remove child lines with no matching parent snapshot line.
+
+        Match rules:
+          - If child has program_line_id, match by
+            (parent_action_id, program_line_id).
+          - Else match by (parent_action_id, code) where parent line
+            has no program_line_id and shares the same code.
+        """
+        if not remove_mismatches:
+            return
+
+        # Build allowed keys from parent snapshot lines (per parent_id)
+        allowed_map = {}
+        for pl in parent_lines:
+            parent_id = pl.training_action_id.id
+            row = allowed_map.get(parent_id)
+            if not row:
+                row = {"prog_ids": set(), "codes": set()}
+                allowed_map[parent_id] = row
+
+            if pl.program_line_id:
+                row["prog_ids"].add(pl.program_line_id.id)
+            elif pl.code:
+                row["codes"].add(pl.code)
+
+        def _has_match(line):
+            parent = line.training_action_id.parent_id
+            parent_id = parent.id if parent else None
+            if not parent_id:
+                return False
+
+            allowed_row = allowed_map.get(parent_id)
+            if not allowed_row:
+                return False
+
+            if line.program_line_id:
+                return line.program_line_id.id in allowed_row["prog_ids"]
+            if line.code:
+                return line.code in allowed_row["codes"]
+
+            return False
+
+        to_unlink = child_lines.filtered(lambda line: not _has_match(line))
+
+        _logger.debug(
+            "Synchronization cleanup: will remove %d unmatched child "
+            "action line(s).",
+            len(to_unlink),
+        )
+
+        if to_unlink:
+            to_unlink.unlink()
+
+    def _stg_get_shared_keys(self):
+        # Exclude chatter/technical and fields never copied
+        act_line_obj = self.env["academy.training.action.line"]
+        shared_keys = set(act_line_obj._fields)
+
+        mail_thread_obj = self.env["mail.thread"]
+        shared_keys -= set(mail_thread_obj._fields)
+
+        shared_keys -= {
+            "id",
+            "display_name",
+            "__last_update",
+            "create_uid",
+            "create_date",
+            "write_uid",
+            "write_date",
+            "training_action_id",
+            "primary_teacher_id",
+        }
+        # Do not propagate free-text comments wholesale (optional)
+        shared_keys.discard("comment")
+
+        return shared_keys
+
+    @staticmethod
+    def _stg_read_source_values(parent_line, shared_keys):
+        raw = {k: parent_line[k] for k in shared_keys}
+        values = parent_line._convert_to_write(raw)
+
+        return values
+
+    @api.model
+    def _stg_compute_create_over(self, parent_line, children_set, update_set):
+        parent_id = parent_line.training_action_id.id
+        related_action_set = children_set.get(
+            parent_id, self.env["academy.training.action"].browse()
+        )
+
+        updated_action_set = update_set.mapped("training_action_id")
+
+        return related_action_set - updated_action_set
+
+    def _stg_update_lines(self, child_line_set, values, shared_keys):
+        """Overwrite child lines with the given write-dict values."""
+        if not child_line_set:
+            return child_line_set
+
+        _logger.debug(
+            "Synchronization updates: %d action line(s) will be overwritten.",
+            len(child_line_set),
+        )
+        vals2write = dict(values)
+        # Blindaje: nunca mover líneas entre acciones en updates
+        vals2write.pop("training_action_id", None)
+        # Reducir ruido de chatter/seguimiento
+        ctx = dict(tracking_disable=True, mail_create_nosubscribe=True)
+        child_line_set.with_context(ctx).write(vals2write)
+
+        return child_line_set
+
+    @staticmethod
+    def _stg_create_values(create_over_set, base_values):
+        values = dict(base_values)
+        creation_value_list = []
+
+        for action in create_over_set:
+            creation_values = values.copy()
+            creation_values["training_action_id"] = action.id
+            creation_value_list.append(creation_values)
+
+        return creation_value_list
+
+    def _stg_create_lines(self, creation_value_list):
+        _logger.debug(
+            "Synchronization inserts: %d action line(s) will be created.",
+            len(creation_value_list),
+        )
+
+        act_line_obj = self.env["academy.training.action.line"]
+        if creation_value_list:
+            context = dict(tracking_disable=True, mail_create_nosubscribe=True)
+            act_line_ctx = act_line_obj.with_context(context)
+            result_set = act_line_ctx.create(creation_value_list)
+        else:
+            result_set = act_line_obj.browse()
+
+        return result_set
+
+    @api.model
+    def _notify_synchronization(self, result_set):
+        """Post one short sync note on each affected training action."""
+        action_obj = self.env["academy.training.action"]
+        if not result_set:
+            return action_obj.browse()
+
+        action_set = result_set.mapped("training_action_id")
+        if not action_set:
+            return action_obj.browse()
+
+        # Silenciar tracking/seguidores/notificaciones por email
+        ctx = {
+            "tracking_disable": True,
+            "mail_notrack": True,
+            "mail_create_nosubscribe": True,
+            "mail_post_autofollow": False,
+            "mail_notify_force_send": False,
+        }
+        body = self.env._(
+            "Synchronization: this training action was synchronized from "
+            "its parent action."
+        )
+
+        for action in action_set.with_context(**ctx):
+            action.message_post(
+                body=body,
+                message_type="comment",
+                subtype_xmlid="mail.mt_note",
+            )
+
+        _logger.debug(
+            "Synchronization chatter: posted sync note on %d action(s).",
+            len(action_set),
+        )
+        return action_set
