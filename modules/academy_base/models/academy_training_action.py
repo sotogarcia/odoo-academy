@@ -1882,7 +1882,8 @@ class AcademyTrainingAction(models.Model):
 
         # 3) Fetch program lines; index child lines by parent snapshot line
         shared_keys = self._stg_get_shared_keys()
-        parent_line_set = self.mapped("action_line_ids")
+        parent_set = self or children_set.mapped("parent_id")
+        parent_line_set = parent_set.mapped("action_line_ids")
         child_line_set = children_set.mapped("action_line_ids")
         by_parent_line = self._stg_group_child_lines(child_line_set)
 

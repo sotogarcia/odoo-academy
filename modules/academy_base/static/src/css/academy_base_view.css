@@ -28,3 +28,35 @@
     background-color: #EEE!important;
     font-weight: bold;
 }
+
+
+/* Force definition list into a two-column grid:
+ * - All dt -> column 1
+ * - All dd -> column 2
+ * - Equal column widths, robust wrapping
+ */
+.dl-grid-two-cols {
+  display: grid;
+  grid-template-columns: max-content 1fr; /* term width, rest for defs */
+  column-gap: 0.75rem;
+  row-gap: 0.25rem;
+  margin: 0;
+}
+
+.dl-grid-two-cols dt,
+.dl-grid-two-cols dd {
+  margin: 0;
+  padding: 0.125rem 0;
+}
+
+.dl-grid-two-cols dt {
+  grid-column: 1;
+  font-weight: 600;
+  white-space: normal; /* allow wrapping if needed */
+}
+
+.dl-grid-two-cols dd {
+  grid-column: 2;
+  min-width: 0;            /* let the 2nd column shrink if needed */
+  overflow-wrap: anywhere;  /* prevent overflow on long text */
+}

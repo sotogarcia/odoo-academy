@@ -585,7 +585,8 @@ class AcademyTrainingProgram(models.Model):
 
         # 3) Fetch program lines; index action lines by program line
         shared_keys = self._sta_get_shared_keys()
-        prog_line_set = self.mapped("program_line_ids")
+        program_set = self or action_set.mapped("training_program_id")
+        prog_line_set = program_set.mapped("program_line_ids")
         act_line_set = action_set.mapped("action_line_ids")
         grouped_act_lines = self._sta_group_by_program_line(act_line_set)
 
@@ -682,6 +683,7 @@ class AcademyTrainingProgram(models.Model):
                 domain.append(parent_leaf)
 
             actions = action_obj.search(domain)
+            print(actions)
 
         _logger.debug(
             "Synchronization scope: %d training action(s) selected.",
