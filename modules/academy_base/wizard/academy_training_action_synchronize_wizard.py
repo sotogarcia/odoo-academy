@@ -346,7 +346,6 @@ class AcademyTrainingActionSynchronizeWizard(models.TransientModel):
         creation_value_list = []
         for parent_line in parent_line_set:
             values = self._stg_read_source_values(parent_line, shared_keys)
-            values["needs_synchronization"] = False
 
             # 5) Update existing lines (optionally only changed ones)
             full_line_set = by_parent_line.get(parent_line.id, empty_act_line)

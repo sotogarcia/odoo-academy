@@ -341,7 +341,6 @@ class AcademyTrainingProgramSynchronizeWizard(models.TransientModel):
         creation_value_list = []
         for prog_line in prog_line_set:
             values = self._sta_read_source_values(prog_line, shared_keys)
-            values["needs_synchronization"] = False
 
             # 5) Update existing lines (optionally only changed ones)
             full_line_set = grouped_act_lines.get(prog_line.id, empty_act_line)

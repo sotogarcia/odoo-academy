@@ -1619,19 +1619,63 @@ class AcademyTrainingAction(models.Model):
             "Training action synchronization: %d action(s) will be processed.",
             len(action_set),
         )
-        result = action_set.synchronize(
+        result_set = action_set.synchronize(
             optional=True,
             remove_mismatches=True,
             changes_only=True,
         )
 
         _logger.info(
+            "Training action synchronization: resetting flags on "
+            "program and action lines."
+        )
+        self._reset_needs_synchronization_attribute(action_set, result_set)
+
+        _logger.info(
             "Training action synchronization task finished: %d line(s) "
             "synchronized.",
-            len(result),
+            len(result_set),
         )
 
-        return result
+        return result_set
+
+    def _reset_needs_synchronization_attribute(self, action_set, result_set):
+        """Reset needs_synchronization flags for lines and programs in scope."""
+        if not action_set:
+            return
+
+        values = {"needs_synchronization": False}
+
+        program_ids = []
+        action_line_domains = [[("needs_synchronization", "=", True)]]
+        if action_set:
+            domain = [("training_action_id", "in", action_set.ids)]
+            action_line_domains.append(domain)
+            program_ids = action_set.mapped("training_program_id").ids
+
+        if result_set:
+            domain = [("id", "in", result_set.ids)]
+            action_line_domains.append(domain)
+
+        action_line_obj = self.env["academy.training.action.line"]
+        action_line_obj = action_line_obj.with_context(active_test=False)
+        action_line_domain = AND(action_line_domains)
+        action_line_set = action_line_obj.search(action_line_domain)
+        if action_line_set:
+            action_line_set.write(values)
+
+        if not program_ids:
+            return
+
+        program_line_domain = [
+            ("needs_synchronization", "=", True),
+            ("training_program_id", "in", program_ids),
+        ]
+        program_line_obj = self.env["academy.training.program.line"]
+        program_line_obj = program_line_obj.with_context(active_test=False)
+        program_line_set = program_line_obj.search(program_line_domain)
+        if program_line_set:
+            program_line_set.write(values)
 
     # -- Auxiliary methods
     # -------------------------------------------------------------------------
