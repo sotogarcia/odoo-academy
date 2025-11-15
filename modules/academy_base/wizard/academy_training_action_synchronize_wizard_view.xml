@@ -2,54 +2,74 @@
 
 <odoo noupdate="0">
 
-  <record id="view_academy_training_action_synchronize_wizard_wizard" model="ir.ui.view">
-      <field name="name">Synchronize program</field>
-      <field name="model">academy.training.action.synchronize.wizard</field>
-      <field name="type">form</field>
-      <field name="mode">primary</field>
-      <field name="priority" eval="16" />
-      <field name="active" eval="True" />
-      <field name="arch" type="xml">
-          <form string="Facility reporting wizard" create="1" delete="1" edit="1">
+  <record id="view_academy_training_action_synchronize_wizard" model="ir.ui.view">
+    <field name="name">Synchronize groups</field>
+    <field name="model">academy.training.action.synchronize.wizard</field>
+    <field name="type">form</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16" />
+    <field name="active" eval="True" />
+    <field name="arch" type="xml">
+      <form string="Synchronize groups" create="1" delete="1" edit="1">
 
-              <field name="training_action_ids" invisible="1" />
+        <field name="parent_action_ids" class="oe_field_parent_action_ids" invisible="1" />
+          <field name="child_action_ids" class="oe_field_child_action_ids" invisible="1" />
 
-              <group col="2" class="mt-3">
-                <group col="2" string="Append">
-                  <field name="create_new" class="oe_field_create_new" />
-                  <field name="include_optional" class="oe_field_include_optional" />
-                </group>
-                <group col="2" string="Existing">
-                  <field name="update_existing" class="oe_field_update_existing" />
-                  <field name="remove_obsolete" class="oe_field_remove_obsolete" />
-                </group>
-              </group>
+        <group col="2">
 
-              <footer>
-                <button name="perform_action"
-                        string="Change"
-                        type="object"
-                        class="btn-primary">
-                  <attribute name="confirm">Are you sure you want to apply the changes?</attribute>
-                  <attribute name="help">Apply changes</attribute>
-                </button>
-              </footer>
+          <group col="2" string="Restrictions">
+            <field name="parent_action_count" class="oe_field_parent_action_count" />
+            <field name="child_action_count" class="oe_field_child_action_count" />
+          </group>
 
-          </form>
-      </field>
+          <group col="2" string="Options">
+            <field name="remove_mismatches" class="oe_field_remove_mismatches" />
+            <field name="optional" class="oe_field_optional" />
+          </group>
+
+        </group>
+
+        <div class="alert alert-info" role="alert">
+          <h5>Restriction rules</h5>
+          <dl class="dl-grid-two-cols">
+            <dt>Actions &amp; Groups</dt>
+            <dd>Intersection of groups from the selected actions and the
+                chosen groups.</dd>
+
+            <dt>Only programs</dt>
+            <dd>All groups from the selected actions.</dd>
+
+            <dt>Only actions</dt>
+            <dd>Exactly the chosen groups.</dd>
+
+            <dt>Neither</dt>
+            <dd>No groups will be selected.</dd>
+          </dl>
+        </div>
+
+        <footer>
+          <button name="perform_action"
+                    string="Synchronize"
+                    class="btn-primary"
+                    type="object"
+                    default_focus="0"
+                    icon="fa-refresh"
+                    confirm="Proceed with synchronization?" />
+          <button string="Cancel" class="btn-secondary" special="cancel"/>
+        </footer>
+
+      </form>
+    </field>
   </record>
 
-  <record id="action_academy_training_action_synchronize_wizard_wizard_act_window" model="ir.actions.act_window">
+  <record id="action_academy_training_action_synchronize_wizard_act_window" model="ir.actions.act_window">
       <field name="type">ir.actions.act_window</field>
-      <field name="name">Synchronize program</field>
+      <field name="name">Synchronize from parent</field>
       <field name="res_model">academy.training.action.synchronize.wizard</field>
       <field name="view_mode">form</field>
       <field name="target">new</field>
       <field name="domain">[]</field>
       <field name="context">{}</field>
-      <field name="binding_model_id" ref="academy_base.model_academy_training_action"/>
-      <field name="binding_type">action</field>
-      <field name="binding_view_types">list,form</field>
   </record>
 
 </odoo>

@@ -6871,8 +6871,8 @@ msgstr "Sincronizar %s acciones"
 
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action__keep_synchronized
-msgid "Synchronize from the parent program"
-msgstr "Sincronizar desde el programa superior"
+msgid "Synchronize program"
+msgstr "Sincronizar programa"
 
 #. module: academy_base
 #: model:ir.actions.act_window,name:academy_base.action_academy_training_action_synchronize_wizard_wizard_act_window

@@ -11,10 +11,10 @@
       <field name="active" eval="True"/>
   </record>
 
-  <record id="academy_maintenance_training_action_group_sync_task" model="academy.maintenance.task">
+  <record id="academy_maintenance_training_action_synchronize_task" model="academy.maintenance.task">
       <field name="sequence" eval="10"/>
       <field name="model_id" ref="academy_base.model_academy_training_action"/>
-      <field name="method">training_action_group_sync_task</field>
+      <field name="method">training_action_synchronize_task</field>
       <field name="frequency">freq_8</field>
       <field name="offset" eval="7"/>
       <field name="active" eval="True"/>

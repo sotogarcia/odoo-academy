@@ -10,7 +10,6 @@ from odoo.tools.translate import _
 from odoo.osv.expression import TRUE_DOMAIN, FALSE_DOMAIN
 from odoo.tools.safe_eval import safe_eval
 from odoo.exceptions import ValidationError
-from ..utils.record_utils import ensure_recordset, get_active_records
 from ..utils.helpers import OPERATOR_MAP, one2many_count
 
 from uuid import uuid4
@@ -35,6 +34,20 @@ class AcademyTrainingActionLine(models.Model):
     _rec_name = "name"
     _order = "sequence ASC, name"
     _rec_names_search = ["name", "code"]
+
+    _SYNCHRONIZE_FIELDS = (
+        "name",
+        "sequence",
+        "description",
+        "active",
+        "code",
+        "optional",
+        "hours",
+        "training_program_id",
+        "training_module_id",
+        "competency_unit_ids",
+        "is_section",
+    )
 
     program_line_id = fields.Many2one(
         string="Program line",
@@ -226,6 +239,16 @@ class AcademyTrainingActionLine(models.Model):
 
         return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
+    needs_synchronization = fields.Boolean(
+        string="Para sincronizar",
+        required=False,
+        readonly=True,
+        index=True,
+        default=True,
+        help="True if the line has changed since the last time it was "
+        "sychronized.",
+    )
+
     # -- Constraints
     # -------------------------------------------------------------------------
 
@@ -275,6 +298,16 @@ class AcademyTrainingActionLine(models.Model):
 
         return super().create(values_list)
 
+    def write(self, values):
+        """Overridden method 'write'"""
+
+        if any(key in self._SYNCHRONIZE_FIELDS for key in values.keys()):
+            values["needs_synchronization"] = True
+
+        result = super().write(values)
+
+        return result
+
     def _ensure_new_training_action_on_copy(self, default):
         action_id = self.env.context.get("default_training_action_id")
         if isinstance(action_id, models.BaseModel):
@@ -316,73 +349,6 @@ class AcademyTrainingActionLine(models.Model):
 
     # -- Public methods
     # -------------------------------------------------------------------------
-
-    def update_from_program_line(self):
-        """
-        Update the current action lines using data from their related
-        program lines.
-
-        For each record, field values are copied from its linked
-        `program_line_id` through `_read_program_line()`. The result
-        is then written back to the current record, keeping both
-        models consistent.
-
-        Returns:
-            bool: True if at least one record was updated or if no
-                  update was needed; False otherwise.
-        """
-        result = True
-
-        for record in self:
-            program_line = record.program_line_id
-            if not program_line:
-                continue
-
-            values = self._read_program_line(program_line)[0]
-            values.update(
-                {
-                    "training_action_id": record.training_action_id.id,
-                    "program_line_id": program_line.id,
-                    "comment": None,
-                }
-            )
-
-            result = result or record.write(values)
-
-        return result
-
-    @api.model
-    def create_from_program_line(self, training_action, program_lines):
-        """
-        Create new training action lines based on the given program lines.
-
-        Args:
-            training_action (record):
-                The training action that will own the created lines.
-            program_lines (recordset):
-                Program lines whose data will be copied into action lines.
-
-        Returns:
-            recordset: Newly created action line records, or an empty
-                       recordset if nothing was created.
-        """
-        training_action.ensure_one()
-
-        values_list = []
-        for program_line in program_lines:
-            # _read_program_line expects a recordset, even if single
-            values = self._read_program_line(program_line)[0]
-            values.update(
-                {
-                    "training_action_id": training_action.id,
-                    "program_line_id": program_line.id,
-                    "comment": None,
-                }
-            )
-            values_list.append(values)
-
-        # Bulk create for efficiency; return empty recordset if none
-        return self.create(values_list) if values_list else self.browse()
 
     def view_teacher_assignments(self):
         self.ensure_one()

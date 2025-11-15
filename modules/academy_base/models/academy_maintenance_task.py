@@ -211,9 +211,9 @@ class AcademyMaintenanceTask(models.Model):
 
     @api.model
     def _search_tasks_for_hour(self, hour_slot):
-        """
-        Return a recordset of tasks matching the given hour slot.
-        Applies domain, active flag, order and optional limit.
+        """Return tasks matching the given hour slot.
+
+        Applies the active flag and sequence-based ordering.
         """
         domain = [("active", "=", True)]
         tasks = self.search(domain, order="sequence ASC, id ASC")
@@ -285,5 +285,14 @@ class AcademyMaintenanceTask(models.Model):
                         _logger.exception(_MSG_FAILED, md_name, mt_name)
                         new_cr.rollback()
 
-                    finally:
-                        new_cr.close()
+    def execute_right_now(self):
+        """Execute the configured maintenance task immediately."""
+        self.ensure_one()
+
+        model_name = self.model_id.model
+        method_name = self.method
+
+        target_model = self.env[model_name].sudo()
+        method_to_execute = getattr(target_model, method_name)
+
+        method_to_execute()

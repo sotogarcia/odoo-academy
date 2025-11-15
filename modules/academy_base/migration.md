@@ -60,7 +60,7 @@
 ## Otros
 
 - [x] retirar `_` de los textos de los `_sql_constraints`.
-- [ ] revisar las vistas de los objetos derivados de res.partner
+- [x] revisar las vistas de los objetos derivados de res.partner
 
 ## Revisiones finales
 - [ ] Comprobar logs y reparar posibles errores
@@ -181,13 +181,16 @@ attrs=["']\{["'](readonly|invisible|required)["']: *(\[[^\]]+\])\}["']
 - [x] barcode
 - [x] Impedir que los grupos creados desde fuera de la vista de la acción excedan la capacidad de la acción padre
 
-- [ ] Sincronizar acciones formativas con grupos formativos
+- [x] Sincronizar acciones formativas con grupos formativos
+- [x] Comprobar restricción en enrolment, sus fechas deben estar entre las de la acción formativa
 - [x] Añadir tareas NO formativas
-- [ ] Acción de mantenimiento
-- [ ] Buscar todos los wizard para revisar
+- [x] Acción de mantenimiento
+- [x] Buscar todos los wizard para revisar
 - [ ] Revisar informes y correos
+      - Los nombres en los menús no son apropiados
+      - Servir los informes a través de la WEB
 - [x] Jefa de estudios por academia
-- [ ] Ordenar por nombre
+- [x] Ordenar por nombre
 - [x] No se puede inscribir (enrolment) a un alumno sin signup code
 - [x] No se puede revocar el signup code a alumnos sin matrícula
       

@@ -34,6 +34,24 @@ class AcademyTrainingProgramLine(models.Model):
     _order = "sequence ASC"
     _rec_names_search = ["name", "code"]
 
+    _SHARED_KEYS = (
+        "name",
+        "description",
+        "active",
+        "code",
+        "sequence",
+        "optional",
+        "hours",
+        "training_program_id",
+        "training_module_id",
+        "competency_unit_ids",
+        "is_section",
+    )
+
+    @property
+    def shared_keys(self):
+        return type(self)._SHARED_KEYS
+
     name = fields.Char(
         string="Name",
         required=True,

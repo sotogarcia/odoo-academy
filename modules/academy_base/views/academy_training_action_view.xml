@@ -147,6 +147,15 @@
                         }" />
                     </group>
                   </page>
+                  <page id="training-groups" string="Groups" class="oe_page_lines" accesskey="L">
+                    <group col="2">
+                      <field name="child_ids" class="oe_field_child_ids" nolabel="1" colspan="2"
+                        readonly="not id" context="{
+                          'default_parent_id': id,
+                          'list_view_ref': 'academy_base.view_academy_training_action_group_embed_tree'
+                        }" />
+                    </group>
+                  </page>
                   <page id="data" string="Data" class="oe_page_data" accesskey="T">
                     <group id="action-details" string="Action details">
                       <group><field name="application_scope_id" class="od_field_application_scope"
@@ -179,6 +188,11 @@
                         <field name="subrogate_id" class="oe_field_subrogate_id"
                           domain="[('id', '&lt;&gt;', owner_id)]"
                           options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
+                      </group>
+                    </group>
+                    <group id="synchronize" string="Synchronize">
+                      <group>
+                        <field name="keep_synchronized" class="oe_field_keep_synchronized" />
                       </group>
                     </group>
                   </page>

@@ -60,6 +60,7 @@
         <field name="groups_id" eval="[(4, ref('academy_base.academy_group_manager'))]"/>
     </record>
 
+    <!-- Training program: Sincronize related training actions -->
     <record id="action_academy_program_synchronize_training_actions" model="ir.actions.server">
         <field name="type">ir.actions.server</field>
         <field name="name">Synchronize actions</field>
@@ -74,6 +75,7 @@
         <field name="groups_id" eval="[(4, ref('academy_base.academy_group_manager'))]"/>
     </record>
 
+    <!-- Training action: Sincronize from the related training program -->
     <record id="action_academy_program_synchronize_from_program" model="ir.actions.server">
         <field name="type">ir.actions.server</field>
         <field name="name">Synchronize from program</field>
@@ -82,6 +84,21 @@
         <field name="state">code</field>
         <field name="code"><![CDATA[
           action = model.call_wizard(optional=True, remove_mismatches=True, synchronize_groups=True, show_dialog=True, target_action_ids=records)
+        ]]></field>
+        <field name="binding_model_id" ref="academy_base.model_academy_training_action"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="groups_id" eval="[(4, ref('academy_base.academy_group_manager'))]"/>
+    </record>
+
+    <!-- Training program: Sincronize related training actions -->
+    <record id="action_academy_program_synchronize_training_groups" model="ir.actions.server">
+        <field name="type">ir.actions.server</field>
+        <field name="name">Synchronize groups</field>
+        <field name="model_id" ref="academy_base.model_academy_training_action_synchronize_wizard"/>
+        <field name="sequence" eval="5"/>
+        <field name="state">code</field>
+        <field name="code"><![CDATA[
+          action = model.call_wizard(optional=True, remove_mismatches=True, show_dialog=True)
         ]]></field>
         <field name="binding_model_id" ref="academy_base.model_academy_training_action"/>
         <field name="binding_view_types">list,form</field>

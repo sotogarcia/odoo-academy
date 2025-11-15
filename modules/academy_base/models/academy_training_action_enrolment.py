@@ -341,12 +341,14 @@ class AcademyTrainingActionEnrolment(models.Model):
         string="Start of action",
         help="Start date/time of the training action",
         related="training_action_id.date_start",
+        store=True,
     )
 
     date_stop = fields.Datetime(
         string="End of action",
         help="End date/time of the training action",
         related="training_action_id.date_stop",
+        store=True,
     )
 
     training_program_id = fields.Many2one(
@@ -430,10 +432,10 @@ class AcademyTrainingActionEnrolment(models.Model):
         pattern = self.env._(
             'Unsupported domain leaf ("finalized", "{}", "{}")'
         )
-        now = fields.Datetime.to_string(fields.Datetime.now())
+        now = fields.Datetime.now()
 
         if operator == "!=":
-            operator == "<>"
+            operator = "<>"
 
         if (operator == "=" and value) or (operator == "<>" and not value):
             domain = [
@@ -655,13 +657,35 @@ class AcademyTrainingActionEnrolment(models.Model):
             """,
             "Student enrolments cannot overlap for the same action",
         ),
+        (
+            "within_action_time_window",
+            """
+            CHECK(
+                (register >= date_start)
+                AND
+                (
+                    COALESCE(
+                        deregister,
+                        'infinity'::timestamp without time zone
+                    )
+                    <=
+                    COALESCE(
+                        date_stop,
+                        'infinity'::timestamp without time zone
+                    )
+                )
+            )
+            """,
+            "Student enrolments must be within the time window of the "
+            "training action.",
+        ),
     ]
 
     @api.constrains(
         "student_id", "training_action_id", "register", "deregister"
     )
     def _check_unique_enrolment(self):
-        """ """
+        """Prevent overlapping enrolments for the same student and action."""
         message = self.env._(
             "Student is already enrolled in the training action"
         )
@@ -742,7 +766,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         if not missing_pairs:
             return
 
-        # 4) Some pairs are missing → raise a validation error
+        # 4) Some pairs are missing -> raise a validation error
         raise ValidationError(
             self.env._(
                 "Student must be signed up in the enrolment company. "
@@ -790,6 +814,7 @@ class AcademyTrainingActionEnrolment(models.Model):
     def create(self, values_list):
         """Overridden method 'create'"""
 
+        self._ensure_enrolment_data(values_list)
         sanitize_code(values_list, "upper")
         self._ensure_parent_action(values_list)
 
@@ -831,7 +856,7 @@ class AcademyTrainingActionEnrolment(models.Model):
             {
                 "student_id": student.id,
                 "training_action_id": self.training_action_id.id,
-                "code": self._default_code(),
+                "code": default_code(self.env, _CODE_SEQUENCE),
             }
         )
 
@@ -877,34 +902,172 @@ class AcademyTrainingActionEnrolment(models.Model):
 
             return view_act
 
-    def copy_to(self, action_set, origin_set=False):
-        if not origin_set:
-            origin_set = self
+    # Copy enrolments to another training action
+    # -------------------------------------------------------------------------
 
-        action_set = ensure_recordset(
-            self.env, action_set, "academy.training.action"
-        )
-        origin_set = ensure_recordset(self.env, origin_set, self._name)
+    def copy_to(self, action_set, new_values=None, existing="skip"):
+        """Copy current enrolments into other training actions.
 
-        for enrolment in origin_set:
+        Each enrolment in ``self`` is copied to every action in
+        ``action_set`` by creating or updating a matching enrolment for
+        the same student in the target action. The time interval must
+        fit inside the target action date range; otherwise a validation
+        error is raised.
+
+        Behaviour when an overlapping enrolment already exists for the
+        same (student, training_action_id) pair is controlled by
+        ``existing``:
+
+        * ``"skip"`` (default): keep the existing enrolment and do not
+          create or update anything.
+        * ``"replace"``: delete the existing enrolment and create a new
+          one with the cloned values.
+        * ``"update"``: update the existing enrolment with the cloned
+          values and ``new_values`` instead of creating a new one.
+        * ``"upgrade"``: like ``"update"``, but the resulting interval
+          expands to cover both ranges:
+
+            * ``register`` becomes the minimum of both starts.
+            * ``deregister`` becomes the maximum of both ends, treating
+              ``False`` (no end) as infinity.
+
+        Args:
+            action_set (mixed): Target actions to receive copies. Can be
+                a recordset, an id or an iterable of ids; it is
+                normalized with :func:`ensure_recordset`.
+            new_values (dict | None): Optional overrides to apply to
+                each created/updated enrolment.
+            existing (str): Conflict policy when an overlapping
+                enrolment already exists. One of ``"skip"``,
+                ``"replace"``, ``"update"`` or ``"upgrade"``.
+
+        Returns:
+            recordset: All created or updated enrolments.
+        """
+
+        enrolment_obj = self.env[self._name]
+        if not self:
+            return enrolment_obj.browse()
+
+        self._ensure_existing_policy(existing)
+
+        action_model = "academy.training.action"
+        action_set = ensure_recordset(self.env, action_set, action_model)
+        if not action_set:
+            return enrolment_obj.browse()
+
+        overrides = dict(new_values or {})
+        result_set = enrolment_obj.browse()
+        existing_policy = existing
+
+        for enrolment in self:
+            base_values = enrolment.copy_data()[0]
+            base_values.update(overrides)
+
+            register = base_values.get("register")
+            register = fields.Datetime.to_datetime(register)
+            deregister = base_values.get("deregister")
+            if deregister:
+                deregister = fields.Datetime.to_datetime(deregister)
+
             for action in action_set:
-                register = enrolment.register
-                deregister = enrolment.deregister
+                action_start = action.date_start
+                action_stop = action.date_stop
 
-                if (
-                    register < action.date_start
-                    or register >= action.date_stop
-                ):
-                    register = action.date_start
+                self._assert_within_window(
+                    register, deregister, action_start, action_stop
+                )
 
-                if (
-                    deregister > action.date_stop
-                    or deregister <= action.date_start
-                    or deregister <= register
-                ):
-                    deregister = action.date_stop
+                values = dict(base_values)
+                values["training_action_id"] = action.id
 
-                register = register.strftime("")
+                # Search for overlapping enrolments of the same student
+                student_id = enrolment.student_id.id
+                if not student_id:
+                    continue
+
+                ubound = deregister or datetime.max
+                domain = [
+                    ("id", "!=", enrolment.id),
+                    ("student_id", "=", student_id),
+                    ("training_action_id", "=", action.id),
+                    ("register", "<", ubound),
+                    "|",
+                    ("deregister", "=", False),
+                    ("deregister", ">", register),
+                ]
+
+                existing_enrol = enrolment_obj.search(domain, limit=1)
+                if not existing_enrol:
+                    new_enrol = enrolment_obj.create(values)
+                    result_set |= new_enrol
+                    continue
+
+                # Conflict resolution according to the policy
+                if existing_policy == "skip":
+                    continue
+
+                if existing_policy == "replace":
+                    existing_enrol.unlink()
+                    new_enrol = enrolment_obj.create(values)
+                    result_set |= new_enrol
+                    continue
+
+                # update / upgrade -> write into the existing record
+                if existing_policy == "upgrade":
+                    # Extend interval to cover both enrolments
+                    existing_reg = existing_enrol.register
+                    existing_der = existing_enrol.deregister
+
+                    if existing_reg and register:
+                        values["register"] = min(existing_reg, register)
+
+                    if existing_der is None or deregister is None:
+                        values["deregister"] = None
+                    else:
+                        values["deregister"] = max(existing_der, deregister)
+
+                existing_enrol.write(values)
+                result_set |= existing_enrol
+
+        return result_set
+
+    @api.model
+    def _ensure_existing_policy(self, existing):
+        allowed_policies = {"skip", "replace", "update", "upgrade"}
+        if existing not in allowed_policies:
+            raise ValidationError(
+                self.env._(
+                    "Invalid existing policy '%(policy)s'. Allowed values "
+                    "are: %(values)s."
+                )
+                % {
+                    "policy": existing,
+                    "values": ", ".join(sorted(allowed_policies)),
+                }
+            )
+
+    def _assert_within_window(
+        self, register, deregister, date_start, date_stop
+    ):
+        """Ensure enrolment dates stay within the action date window."""
+        if register < date_start:
+            raise ValidationError(
+                self.env._(
+                    "Registration date cannot be earlier than the "
+                    "action start date."
+                )
+            )
+
+        if (deregister or datetime.max) > (date_stop or datetime.max):
+            raise ValidationError(
+                self.env._(
+                    "Deregistration date cannot be later than the "
+                    "action end date."
+                )
+            )
+
+    # -------------------------------------------------------------------------
 
     def fetch_enrolments(
         self,
@@ -1041,7 +1204,10 @@ class AcademyTrainingActionEnrolment(models.Model):
         enrolment_obj = self.env["academy.training.action.enrolment"]
         enrolment_set = enrolment_obj.search(domain)
 
-        _logger.info("Temporary student enrolments will be removed {}")
+        _logger.info(
+            "Temporary student enrolments will be removed: %d",
+            len(enrolment_set),
+        )
         enrolment_set.unlink()
 
     def _perform_a_full_enrolment(self, values):
@@ -1078,17 +1244,134 @@ class AcademyTrainingActionEnrolment(models.Model):
                 values["enrolment_date"] = now
 
     @api.model
-    def _ensure_enrolment_data(self, values):
-        if not values.get("code"):
-            company_id = values.get("company_id") or self.env.company.id
-            values["code"] = self._next_signup_code(company_id)
-            values["barcode"] = values["code"]
+    def _ensure_enrolment_data(self, values_list):
+        """Ensure code and enrolment_date are set for the enrolment."""
 
-        if not values.get("enrolment_date", False):
-            self._ensure_enrolment_date([values])
+        for values in values_list:
+            if not values.get("code"):
+                values["code"] = default_code(self.env, _CODE_SEQUENCE)
+
+            if not values.get("enrolment_date"):
+                self._ensure_enrolment_date([values])
 
     # Maintenance tasks
     # -------------------------------------------------------------------------
 
     def full_enrolment_maintenance_task(self):
-        pass
+        """Synchronize action lines for full enrolment records.
+
+        This method is intended to be called from a scheduled maintenance
+        job. It processes all active enrolments marked with
+        ``full_enrolment = True`` and makes sure their ``action_line_ids``
+        match the active action lines of the related training action.
+
+        The synchronization is done in two steps:
+
+        * :meth:`_fem_task_with_orm` computes which lines must be unlinked
+          and which ones must be appended for each enrolment.
+        * :meth:`_fem_task_optimized_m2m_update` applies the corresponding
+          batched M2M updates to minimize the number of writes.
+
+        The method is idempotent and does not return any value.
+        """
+
+        to_unlink, to_append = self._fem_task_with_orm()
+        self._fem_task_optimized_m2m_update(to_unlink, 3)
+        self._fem_task_optimized_m2m_update(to_append, 4)
+
+    def _fem_task_with_orm(self):
+        """Compute M2M diffs for full enrolment action lines."""
+
+        enrolment_obj = self.with_context(active_test=False)
+
+        now = fields.Datetime.now()
+
+        # 1) Candidate enrolments
+        enrolment_domain = [
+            ("full_enrolment", "=", True),
+            ("active", "=", True),
+            "|",
+            ("deregister", "=", False),
+            ("deregister", ">=", now),
+        ]
+        enrolment_set = enrolment_obj.search(enrolment_domain)
+        if not enrolment_set:
+            return {}, {}
+
+        # 2) Involved training actions
+        action_set = enrolment_set.mapped("training_action_id")
+
+        # 3) Map action -> active lines that each enrolment should have
+        lines_by_action = {}
+        for action in action_set:
+            lines_by_action.setdefault(action.id, set())
+
+            line_set = action.action_line_ids
+            if not line_set:
+                continue
+
+            filtered_set = line_set.filtered(lambda line: line.active)
+            if not filtered_set:
+                continue
+
+            lines_by_action[action.id].update(filtered_set.ids)
+
+        # 4) Recorrer enrolments y calcular diferencias
+        to_unlink = {}
+        to_append = {}
+
+        for enrolment in enrolment_set:
+            action_id = enrolment.training_action_id.id
+            should_have = lines_by_action.get(action_id, set())
+
+            # All currently linked lines (active or archived)
+            current_lines = set(enrolment.action_line_ids.ids)
+
+            missing = should_have - current_lines  # → to_append
+            extra = current_lines - should_have  # → to_unlink
+
+            if missing:
+                to_append[enrolment.id] = list(missing)
+            if extra:
+                to_unlink[enrolment.id] = list(extra)
+
+        return to_unlink, to_append
+
+    @staticmethod
+    def _fem_task_split_by_m2m_op(query_result):
+        """Split SQL result rows into unlink/append maps."""
+
+        to_unlink = {}
+        to_append = {}
+        for row in query_result:
+            enrolment_id = row.get("enrolment_id", False)
+            action_line_id = row.get("action_line_id", False)
+            if not enrolment_id or not action_line_id:
+                continue
+
+            if row.get("to_unlink", False):
+                to_unlink.setdefault(enrolment_id, [])
+                to_unlink[enrolment_id].append(action_line_id)
+            elif row.get("to_append", False):
+                to_append.setdefault(enrolment_id, [])
+                to_append[enrolment_id].append(action_line_id)
+
+        return to_unlink, to_append
+
+    @api.model
+    def _fem_task_optimized_m2m_update(self, enrol_line_map, op_num):
+        """Apply grouped M2M updates on action_line_ids."""
+
+        to_execute_grouped = {}
+        for enrolment_id, action_line_ids in enrol_line_map.items():
+            action_line_array = tuple(sorted(action_line_ids))
+            to_execute_grouped.setdefault(action_line_array, [])
+            to_execute_grouped[action_line_array].append(enrolment_id)
+
+        enrolment_obj = self.env[self._name]
+        for action_line_array, enrolment_ids in to_execute_grouped.items():
+            enrolment_set = enrolment_obj.browse(enrolment_ids)
+            if not enrolment_set:
+                continue
+            m2m_ops = [(op_num, line_id, 0) for line_id in action_line_array]
+            enrolment_set.write({"action_line_ids": m2m_ops})

@@ -25,6 +25,32 @@ _logger = getLogger(__name__)
 
 
 class AcademyChangeTrainingActionWizard(models.Model):
+    """
+
+                  |-------- A --------|
+
+    |- B1 -|  |- B2 -|  |- B3 -|  |- B4 -|  |- B5 -|
+
+           |- B6 -|                   |- B7 -|
+
+                  |- B8 -|     |- B9 -|
+
+                  |------- B10 -------|
+
+              |----------- B11 --------------|
+
+                  |--------- B12 ------------|
+
+              |--------- B13 ------------|
+
+
+    B6 se puede considerar un caso particular de B1, termina justo al empezar.
+    B7 se puede considerar un caso particular de B5, comienza justo al terminar.
+    B8, B9 y B10 se pueden consierar casos particulares de B3
+    B13 y B12 son casos particulares de B11
+
+    """
+
     _name = "academy.change.training.action.wizard"
     _description = "Academy change training action wizard"
 
@@ -265,8 +291,8 @@ class AcademyChangeTrainingActionWizard(models.Model):
         self._ensure_no_conflicting_records(enrolment_set, training_action)
 
         # 7. Terminate all active enrolments within processable recordset.
-        date_change = defaults.get("register", datetime.now)
-        old_enrolments = self._finish_enrolments(enrolment_set, date_change)
+        date_change = defaults.get("register", datetime.now())
+        self._finish_enrolments(enrolment_set, date_change)
         self._post_note_changed_to(enrolment_set, training_action)
 
         # 8. Create new enrolments for all affected students
@@ -276,7 +302,7 @@ class AcademyChangeTrainingActionWizard(models.Model):
 
         # 9. Invoke post-change hook for extensions
         self.after_change_training_action(
-            old_enrolments=old_enrolments,
+            old_enrolments=enrolment_set,
             new_enrolments=new_enrolments,
             training_action=training_action,
             **kwargs,
@@ -294,7 +320,7 @@ class AcademyChangeTrainingActionWizard(models.Model):
         if training_action and training_action.company_id:
             tz_name = training_action.company_id.partner_id.tz
 
-        # Fallback chain: company → default → UTC
+        # Fallback chain: company -> default -> UTC
         return tz_name or default or "UTC"
 
     @api.model
@@ -412,11 +438,13 @@ class AcademyChangeTrainingActionWizard(models.Model):
 
     @api.model
     def _finish_enrolments(self, enrolment_set, date_change=None):
-        """Set the deregistration date to now for all ongoing enrolments
-        whose deregistration date is unset or later than the current time."""
+        """Clamp deregistration dates for ongoing/future enrolments.
 
+        Ensures that affected enrolments end either on the change date,
+        on the action end date or on their own start date (if not started)."""
+
+        enrolment_obj = self.env[_ENROLMENT]
         date_change = date_change or fields.Datetime.now()
-        date_change_str = fields.Datetime.to_string(date_change)
 
         # Select enrolments without deregister or with a future deregister date
         to_terminate = enrolment_set.filtered(
@@ -425,25 +453,46 @@ class AcademyChangeTrainingActionWizard(models.Model):
         if not to_terminate:
             return
 
-        # Split between those already started and those not yet started
-        to_finish_enrolments = to_terminate.filtered(
-            lambda e: e.register <= date_change
-        )
-        to_terminate_later = to_terminate - to_finish_enrolments
+        before_count, on_date_count, scheduled_count = 0, 0, 0
+        finish_on_date = {}
+        finish_on_change = enrolment_obj.browse()
+        for enrolment in to_terminate:
+            # 1. Not yet started at the change date -> enrolment.register.
+            if enrolment.register > date_change:
+                scheduled_count += 1
+                new_dereg = enrolment.register
+                finish_on_date.setdefault(new_dereg, enrolment_obj.browse())
+                finish_on_date[new_dereg] |= enrolment
+                continue
 
-        if to_finish_enrolments:
-            to_finish_enrolments.write({"deregister": date_change_str})
+            # 2) Already started: clamp inside the action window.
+            date_stop = enrolment.training_action_id.date_stop or _INFINITY
+            if date_stop > date_change:
+                # 2.a) Action is still running at change date -> change date.
+                on_date_count += 1
+                finish_on_change |= enrolment
+            else:
+                # 2.b) Action ends before/at change date -> action.date_stop.
+                before_count += 1
+                finish_on_date.setdefault(date_stop, enrolment_obj.browse())
+                finish_on_date[date_stop] |= enrolment
 
-        if to_terminate_later:
-            for enrol in to_terminate_later:
-                start_str = fields.Datetime.to_string(enrol.register)
-                enrol.write({"deregister": start_str})
+        # Most common case: close on change date using a single bulk write.
+        if finish_on_change:
+            date_change_str = fields.Datetime.to_string(date_change)
+            finish_on_change.write({"deregister": date_change_str})
+
+        if finish_on_date:
+            for dt, dt_enrolment_set in finish_on_date.items():
+                dt_str = fields.Datetime.to_string(dt)
+                dt_enrolment_set.write({"deregister": dt_str})
 
         _logger.info(
-            "Terminated %d enrolments (%d on date, %d scheduled).",
+            "Terminated %d enrolments (%d before, %d on date, %d scheduled).",
             len(to_terminate),
-            len(to_finish_enrolments),
-            len(to_terminate_later),
+            before_count,
+            on_date_count,
+            scheduled_count,
         )
 
     def _create_enrolments(self, student_set, defaults):
