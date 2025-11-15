@@ -281,8 +281,15 @@ class AcademyTrainingActionSynchronizeWizard(models.TransientModel):
             `academy.training.action` recordset, a single ID, or a list/tuple
             of IDs. If omitted, children are derived from `source_set`.
         changes_only: bool, default False
-            If True, the update step is performed only on action lines where
-            the `needs_synchronization` flag is set to True.
+            If True, the update step is limited to lines marked as needing
+            synchronization, except when the parent action line itself is
+            marked as needing synchronization; in that case all related
+            action lines are updated.
+        sync_details : bool, default True
+            If True, child actions are first aligned with their parent
+            action (core fields and ``training_program_id``). If False,
+            only action lines are synchronized, leaving child action
+            headers unchanged.
 
         Side effects
         ------------
@@ -317,11 +324,13 @@ class AcademyTrainingActionSynchronizeWizard(models.TransientModel):
         source_set = self._sta_get_argument_set("source_set", "==", **kwargs)
         target_set = self._sta_get_argument_set("target_set", "!=", **kwargs)
         changes_only = kwargs.get("changes_only", False)
+        sync_details = kwargs.get("sync_details", True)
 
         # 2) Find child actions, align program with parent and group by parent
         children_set = self._stg_get_children(source_set, target_set)
         grp_child_set = self._stg_grouped_by_parent(children_set)
-        self._stg_synchronize_details(children_set)
+        if sync_details:
+            self._stg_synchronize_details(children_set)
 
         # 3) Fetch program lines; index child lines by parent snapshot line
         shared_keys = self._stg_get_shared_keys()

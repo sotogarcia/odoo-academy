@@ -36,10 +36,10 @@ class AcademyTrainingProgramLine(models.Model):
 
     _SHARED_KEYS = (
         "name",
+        "sequence",
         "description",
         "active",
         "code",
-        "sequence",
         "optional",
         "hours",
         "training_program_id",
@@ -257,6 +257,16 @@ class AcademyTrainingProgramLine(models.Model):
         if self.is_section:
             self.training_module_id = None
 
+    needs_synchronization = fields.Boolean(
+        string="Para sincronizar",
+        required=False,
+        readonly=True,
+        index=True,
+        default=True,
+        help="True if the line has changed since the last time it was "
+        "sychronized.",
+    )
+
     # -- Constraints ----------------------------------------------------------
 
     _sql_constraints = [
@@ -306,6 +316,10 @@ class AcademyTrainingProgramLine(models.Model):
 
     def write(self, values):
         sanitize_code(values, "upper")
+
+        if any(key in self.shared_keys for key in values.keys()):
+            values["needs_synchronization"] = True
+
         return super().write(values)
 
     def copy(self, default=None):

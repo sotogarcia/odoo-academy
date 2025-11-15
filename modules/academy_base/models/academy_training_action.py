@@ -62,6 +62,10 @@ class AcademyTrainingAction(models.Model):
     _order = "parent_path, sequence, name, id"
     _rec_names_search = ["name", "code", "training_program_id"]
 
+    @property
+    def shared_keys(self):
+        return self.env["academy.training.program"].shared_keys()
+
     # -- Company dependency: Fields and logic
     # -------------------------------------------------------------------------
 
@@ -1532,7 +1536,7 @@ class AcademyTrainingAction(models.Model):
         return training_action_set
 
     def synchronize(
-        self, *, full_sync=False, optional=True, remove_mismatches=True
+        self, *, optional=True, remove_mismatches=True, changes_only=False
     ):
         """Synchronize parent actions with training programs, and child actions
         with their respective parents.
@@ -1543,15 +1547,20 @@ class AcademyTrainingAction(models.Model):
           ``academy.training.program.synchronize.wizard`` so each
           parent synchronizes its lines from its training program.
         * For child actions (with ``parent_id``), it uses
-          ``academy.training.action.synchronize.wizard`` with
-          ``synchronize_groups=True`` so each group synchronizes its
-          lines from its parent action.
+          ``academy.training.action.synchronize.wizard`` so each group
+          synchronizes its lines from its parent action.
 
         Args:
             optional (bool): If False, skip creating optional lines in
                 both synchronization flows.
             remove_mismatches (bool): If True, remove target lines that
                 no longer match any source line.
+            changes_only (bool): If False, perform a full synchronization,
+                ignoring ``needs_synchronization`` flags and forcing all
+                related lines to be updated.
+                If True, each wizard runs in incremental mode, updating only
+                those lines that are marked as needing synchronization or whose
+                source line is flagged as changed.
 
         Returns:
             recordset: ``academy.training.action.line`` records that
@@ -1569,6 +1578,7 @@ class AcademyTrainingAction(models.Model):
             "optional": optional,
             "remove_mismatches": remove_mismatches,
             "target_set": parent_set,
+            "changes_only": changes_only,
         }
         result_set |= wizard_obj.synchronize_training_actions(**wizard_args)
 
@@ -1580,6 +1590,7 @@ class AcademyTrainingAction(models.Model):
             "remove_mismatches": remove_mismatches,
             "target_set": child_set,
             "synchronize_groups": True,
+            "changes_only": changes_only,
         }
         result_set |= wizard_obj.synchronize_training_groups(**wizard_args)
 
@@ -1589,16 +1600,38 @@ class AcademyTrainingAction(models.Model):
     # -------------------------------------------------------------------------
 
     @api.model
-    def training_action_synchronize_task(self, limit=None):
+    def training_action_synchronize_task(self):
+        """Run the scheduled training action synchronization task."""
         action_line_obj = self.env["academy.training.action.line"]
+
+        _logger.info("Training action synchronization task started.")
 
         action_obj = self.env["academy.training.action"]
         action_domain = [("keep_synchronized", "=", True)]
         action_set = action_obj.search(action_domain)
         if not action_set:
+            _logger.debug(
+                "Training action synchronization: no actions to process."
+            )
             return action_line_obj.browse()
 
-        return action_set.synchronize()
+        _logger.debug(
+            "Training action synchronization: %d action(s) will be processed.",
+            len(action_set),
+        )
+        result = action_set.synchronize(
+            optional=True,
+            remove_mismatches=True,
+            changes_only=True,
+        )
+
+        _logger.info(
+            "Training action synchronization task finished: %d line(s) "
+            "synchronized.",
+            len(result),
+        )
+
+        return result
 
     # -- Auxiliary methods
     # -------------------------------------------------------------------------

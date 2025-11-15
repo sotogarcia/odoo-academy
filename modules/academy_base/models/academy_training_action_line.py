@@ -35,19 +35,9 @@ class AcademyTrainingActionLine(models.Model):
     _order = "sequence ASC, name"
     _rec_names_search = ["name", "code"]
 
-    _SYNCHRONIZE_FIELDS = (
-        "name",
-        "sequence",
-        "description",
-        "active",
-        "code",
-        "optional",
-        "hours",
-        "training_program_id",
-        "training_module_id",
-        "competency_unit_ids",
-        "is_section",
-    )
+    @property
+    def shared_keys(self):
+        return self.env["academy.training.program.line"].shared_keys
 
     program_line_id = fields.Many2one(
         string="Program line",
@@ -301,7 +291,7 @@ class AcademyTrainingActionLine(models.Model):
     def write(self, values):
         """Overridden method 'write'"""
 
-        if any(key in self._SYNCHRONIZE_FIELDS for key in values.keys()):
+        if any(key in self.shared_keys for key in values.keys()):
             values["needs_synchronization"] = True
 
         result = super().write(values)

@@ -278,6 +278,11 @@ class AcademyTrainingProgramSynchronizeWizard(models.TransientModel):
             Actions to process. Accepts an `academy.training.action` recordset,
             a single ID, or a list/tuple of IDs. If omitted, actions are
             derived from `source_set`.
+        changes_only: bool, default False
+            If True, the update step is limited to lines marked as needing
+            synchronization, except when the source program line itself is
+            marked as needing synchronization; in that case all related
+            action lines are updated.
 
         Side effects
         ------------
@@ -308,6 +313,7 @@ class AcademyTrainingProgramSynchronizeWizard(models.TransientModel):
         optional = kwargs.get("optional", True)
         remove_mismatches = kwargs.get("remove_mismatches", True)
         synchronize_groups = kwargs.get("synchronize_groups", True)
+        changes_only = kwargs.get("changes_only", False)
         target_set = self._sta_get_argument_set(
             "target_set", "academy.training.action", **kwargs
         )
@@ -337,11 +343,15 @@ class AcademyTrainingProgramSynchronizeWizard(models.TransientModel):
             values = self._sta_read_source_values(prog_line, shared_keys)
             values["needs_synchronization"] = False
 
-            # 5) Update existing lines (even if optional)
-            update_set = grouped_act_lines.get(prog_line.id, empty_act_line)
-            result_set |= self._sta_update_lines(
-                update_set, values, shared_keys
-            )
+            # 5) Update existing lines (optionally only changed ones)
+            full_line_set = grouped_act_lines.get(prog_line.id, empty_act_line)
+            if changes_only and not prog_line.needs_synchronization:
+                update_set = full_line_set.filtered("needs_synchronization")
+            else:
+                update_set = full_line_set
+
+            if update_set:
+                result_set |= self._sta_update_lines(update_set, values)
 
             # 6) Skip creation for optional lines (optional=False)
             if prog_line.optional and not optional:
@@ -349,7 +359,7 @@ class AcademyTrainingProgramSynchronizeWizard(models.TransientModel):
 
             # 7.a) Compute missing actions and build create values
             create_over_set = self._sta_compute_create_over(
-                prog_line, grouped_act_set, update_set
+                prog_line, grouped_act_set, full_line_set
             )
             values_list = self._sta_create_values(create_over_set, values)
             if values_list:
@@ -511,7 +521,7 @@ class AcademyTrainingProgramSynchronizeWizard(models.TransientModel):
 
         return related_action_set - updated_action_set
 
-    def _sta_update_lines(self, act_line_set, values, shared_keys):
+    def _sta_update_lines(self, act_line_set, values):
         """Overwrites the given lines with `values` (write-dict),
         disabling tracking. Does not compare differences.
         """
