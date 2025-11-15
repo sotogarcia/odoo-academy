@@ -1577,6 +1577,7 @@ class AcademyTrainingAction(models.Model):
         wizard_args = {
             "optional": optional,
             "remove_mismatches": remove_mismatches,
+            "synchronize_groups": False,
             "target_set": parent_set,
             "changes_only": changes_only,
         }
@@ -1589,7 +1590,6 @@ class AcademyTrainingAction(models.Model):
             "optional": optional,
             "remove_mismatches": remove_mismatches,
             "target_set": child_set,
-            "synchronize_groups": True,
             "changes_only": changes_only,
         }
         result_set |= wizard_obj.synchronize_training_groups(**wizard_args)
@@ -1646,20 +1646,14 @@ class AcademyTrainingAction(models.Model):
 
         values = {"needs_synchronization": False}
 
-        program_ids = []
-        action_line_domains = [[("needs_synchronization", "=", True)]]
-        if action_set:
-            domain = [("training_action_id", "in", action_set.ids)]
-            action_line_domains.append(domain)
-            program_ids = action_set.mapped("training_program_id").ids
-
-        if result_set:
-            domain = [("id", "in", result_set.ids)]
-            action_line_domains.append(domain)
+        action_line_domain = [
+            ("needs_synchronization", "=", True),
+            ("training_action_id", "in", action_set.ids),
+        ]
+        program_ids = action_set.mapped("training_program_id").ids
 
         action_line_obj = self.env["academy.training.action.line"]
         action_line_obj = action_line_obj.with_context(active_test=False)
-        action_line_domain = AND(action_line_domains)
         action_line_set = action_line_obj.search(action_line_domain)
         if action_line_set:
             action_line_set.write(values)

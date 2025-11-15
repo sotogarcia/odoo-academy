@@ -615,7 +615,10 @@ class AcademyTrainingActionSynchronizeWizard(models.TransientModel):
     def _stg_get_shared_keys(self):
         prog_line_obj = self.env["academy.training.program.line"]
 
-        return prog_line_obj.shared_keys
+        shared_keys = ["program_line_id", "training_action_id"]
+        shared_keys.extend(prog_line_obj.shared_keys)
+
+        return shared_keys
 
     @staticmethod
     def _stg_read_source_values(parent_line, shared_keys):
