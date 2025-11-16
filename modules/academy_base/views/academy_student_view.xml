@@ -159,7 +159,7 @@
 
       <xpath expr="//field[@name='id']" position="after">
         <separator/>
-        <filter name="enroled" string="Enroled" domain="[('current_enrolment_count', '>', 0)]"/>
+        <filter name="enrolled" string="Enrolled" domain="[('current_enrolment_count', '>', 0)]"/>
         <filter name="not_enrolled" string="Not Enroled"
           domain="[('current_enrolment_count', '=', 0)]"/>
       </xpath>

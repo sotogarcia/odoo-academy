@@ -20,6 +20,7 @@
           <group col="2" string="Restrictions">
             <field name="source_program_count" class="oe_field_source_program_count" />
             <field name="target_action_count" class="oe_field_target_action_count" />
+            <field name="changes_only" class="oe_field_changes_only" />
           </group>
 
           <group col="2" string="Options">

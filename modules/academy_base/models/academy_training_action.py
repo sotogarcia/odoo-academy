@@ -735,6 +735,66 @@ class AcademyTrainingAction(models.Model):
 
         return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
+    current_enrolment_count = fields.Integer(
+        string="No. of current enrolments (rollup)",
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help="Show number of enrolments currently active",
+        compute="_compute_current_enrolment_count",
+        search="_search_current_enrolment_count",
+        copy=False,
+    )
+
+    @api.depends(
+        "rollup_enrolment_ids",
+        "rollup_enrolment_ids.register",
+        "rollup_enrolment_ids.deregister",
+        "rollup_enrolment_ids.active",
+    )
+    def _compute_current_enrolment_count(self):
+        """Compute number of currently active enrolments in the rollup."""
+        now = fields.Datetime.now()
+        domain = [
+            ("active", "=", True),
+            ("register", "<=", now),
+            "|",
+            ("deregister", "=", False),
+            ("deregister", ">=", now),
+        ]
+        counts = one2many_count(self, "rollup_enrolment_ids", domain)
+
+        for record in self:
+            record.current_enrolment_count = counts.get(record.id, 0)
+
+    @api.model
+    def _search_current_enrolment_count(self, operator, value):
+        # Handle boolean-like searches Odoo may pass for required fields
+        if value is True:
+            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
+        if value is False:
+            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
+
+        cmp_func = OPERATOR_MAP.get(operator)
+        if not cmp_func:
+            return FALSE_DOMAIN  # unsupported operator
+
+        now = fields.Datetime.now()
+        domain = [
+            ("active", "=", True),
+            ("register", "<=", now),
+            "|",
+            ("deregister", "=", False),
+            ("deregister", ">=", now),
+        ]
+        counts = one2many_count(
+            self.search([]), "rollup_enrolment_ids", domain
+        )
+        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
+
+        return [("id", "in", matched)] if matched else FALSE_DOMAIN
+
     # -- Teacher assignment: fields and logic
     # -------------------------------------------------------------------------
 

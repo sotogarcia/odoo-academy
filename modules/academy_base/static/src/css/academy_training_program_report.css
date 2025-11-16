@@ -3,6 +3,9 @@
 .module_list {counter-reset: modules;}
 .module_item::after {counter-increment: modules; content: counter(modules)}
 
+/* Training program report
+ *****************************************************************************/
+
 .training-program-report {
     font-size: 0.9em!important;
 }
@@ -34,6 +37,43 @@
 
 
 .training-program-report th {
+    font-weight: bold;
+}
+
+/* Training action report
+ *****************************************************************************/
+
+.training-action-report {
+    font-size: 0.9em!important;
+}
+
+.training-action-report h2,
+.training-action-report h3,
+.training-action-report h4,
+.training-action-report h5,
+.training-action-report h6 {
+    font-weight: bold;
+}
+
+
+.training-action-report .table thead,
+.training-action-report .table .thead {
+    background-color: RGB(248, 249, 250) !important;;
+}
+
+.training-action-report .table td,
+.training-action-report .table th {
+    padding: 8px!important;
+    border: 1px solid #CCC;
+}
+
+.training-action-report .table.table-sm td,
+.training-action-report .table.table-sm th {
+    padding: 4px 8px!important;
+}
+
+
+.training-action-report th {
     font-weight: bold;
 }
 

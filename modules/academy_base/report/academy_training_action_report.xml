@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo noupdate="0">
+
+  <record id="view_academy_training_action_general_qweb" model="ir.ui.view">
+    <field name="name">Training action general section</field>
+    <field name="model">academy.training.action</field>
+    <field name="type">qweb</field>
+    <field name="arch" type="xml">
+      <t t-name="academy_base.view_academy_training_action_general_qweb">
+
+        <!-- =========================================================== -->
+        <!--  General information                                        -->
+        <!-- =========================================================== -->
+        <p>
+          This section provides an overview of the training action, including
+          its official identification, responsible person, and modality.
+        </p>
+
+        <t t-set="hours" t-value="int(ata.hours)"/>
+        <t t-set="minutes" t-value="int(round((ata.hours - hours) * 60))"/>
+
+        <table border="1" cellspacing="0" cellpadding="1" class="table">
+          <tbody>
+            <tr>
+              <th class="thead">Code:</th>
+              <td><span t-esc="ata.code"/></td>
+              <th class="thead">Name:</th>
+              <td colspan="3"><span t-esc="ata.display_name"/></td>
+            </tr>
+            <tr>
+              <th class="thead">Company:</th>
+              <td><span t-esc="ata.company_id.display_name"/></td>
+              <th class="thead">Responsible:</th>
+              <td><span t-esc="ata.manager_id.display_name"/></td>
+              <th class="thead">Facilitator:</th>
+              <td><span t-esc="ata.primary_teacher_id.display_name"/></td>
+            </tr>
+            <tr>
+              <th class="thead">Modality:</th>
+              <td><span t-esc="ata.training_modality_id.display_name"/></td>
+              <th class="thead">Methodologies:</th>
+              <td colspan="3"><span t-esc="', '.join(ata.training_methodology_ids.mapped('display_name'))" /></td>
+            </tr>
+          </tbody>
+        </table>
+
+      </t>
+    </field>
+  </record>
+
+  <record id="view_academy_training_action_qweb" model="ir.ui.view">
+    <field name="name">Training action report</field>
+    <field name="model">academy.training.action</field>
+    <field name="type">qweb</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16"/>
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <t t-name="academy_base.view_academy_training_action_qweb">
+
+        <!-- =========================================================== -->
+        <!--  Training action container                                 -->
+        <!-- =========================================================== -->
+        <t t-call="web.html_container">
+          <t t-foreach="docs" t-as="o">
+            <t t-call="web.external_layout">
+
+              <t t-set="ata" t-value="o" />
+              <t t-set="prog" t-value="ata.training_program_id" />
+
+              <article class="training-action-report">
+                <header>
+                  <h2 class="h3"><t t-esc="ata.display_name" /></h2>
+                  <div class="mt-3" t-if="ata.description">
+                    <t t-esc="ata.description" />
+                  </div>
+                </header>
+
+                <!-- General information information -->
+                <section id="action-general" class="action-general my-4">
+                  <header>
+                    <h2 class="h4">General information</h2>
+                  </header>
+
+                  <!-- Content placeholder -->
+                  <div class="section-body">
+                    <t t-call="academy_base.view_academy_training_action_general_qweb"/>
+                  </div>
+                </section>
+
+                <!-- Program information -->
+                <section id="program-general" class="program-general my-4">
+                  <header>
+                    <h2 class="h4">Program information</h2>
+                  </header>
+
+                  <!-- Content placeholder -->
+                  <div class="section-body">
+                    <t t-call="academy_base.view_academy_training_program_general_qweb"/>
+                  </div>
+                </section>
+
+                <!-- Components (program lines) -->
+                <section id="components" class="program-components my-4">
+                  <header>
+                    <h2 class="h4">Program components</h2>
+                  </header>
+
+                  <!-- Content placeholder -->
+                  <div class="section-body">
+                    <t t-call="academy_base.view_academy_training_program_components_qweb" />
+                  </div>
+                </section>
+
+                <!-- Training actions -->
+                <section id="training-actions" class="program-training-actions my-4">
+                  <header>
+                    <h2 class="h4">Training actions</h2>
+                  </header>
+
+                  <!-- Content placeholder -->
+                  <div class="section-body">
+                    <t t-call="academy_base.view_academy_training_program_training_actions_qweb" />
+                  </div>
+                </section>
+
+              </article>
+              <!-- /training-program -->
+
+            </t>
+          </t>
+        </t>
+
+      </t>
+    </field>
+  </record>
+
+  <record id="action_report_academy_training_action" model="ir.actions.report">
+    <field name="name">Concise report</field>
+    <field name="model">academy.training.action</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">academy_base.view_academy_training_action_qweb</field>
+    <field name="attachment_use" eval="False"/>
+    <field name="attachment">(object.name + '.pdf')</field>
+    <field name="paperformat_id" ref="base.paperformat_euro"/>
+    <field name="help">Training action report</field>
+    <field name="binding_model_id" ref="academy_base.model_academy_training_action"/>
+  </record>
+
+  <record id="view_academy_training_action_modules_qweb" model="ir.ui.view">
+    <field name="name">Training action with modules report</field>
+    <field name="model">academy.training.action</field>
+    <field name="type">qweb</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16"/>
+    <field name="active" eval="True"/>
+    <field name="arch" type="xml">
+      <t t-name="academy_base.view_academy_training_action_modules_qweb">
+
+        <!-- =========================================================== -->
+        <!--  Training action container                                 -->
+        <!-- =========================================================== -->
+        <t t-call="web.html_container">
+          <t t-foreach="docs" t-as="o">
+            <t t-call="web.external_layout">
+
+              <t t-set="ata" t-value="o" />
+              <t t-set="prog" t-value="ata.training_program_id" />
+
+              <article class="training-action-report">
+                <header>
+                  <h2 class="h3"><t t-esc="ata.display_name" /></h2>
+                  <div class="mt-3" t-if="ata.description">
+                    <t t-esc="ata.description" />
+                  </div>
+                </header>
+
+                <!-- General information -->
+                <section id="action-general" class="action-general my-4">
+                  <header>
+                    <h2 class="h4">General information</h2>
+                  </header>
+
+                  <!-- Content placeholder -->
+                  <div class="section-body">
+                    <t t-call="academy_base.view_academy_training_action_general_qweb"/>
+                  </div>
+                </section>
+
+                <!-- Program information -->
+                <section id="program-general" class="program-general my-4">
+                  <header>
+                    <h2 class="h4">Program information</h2>
+                  </header>
+
+                  <!-- Content placeholder -->
+                  <div class="section-body">
+                    <t t-call="academy_base.view_academy_training_program_general_qweb"/>
+                  </div>
+                </section>
+
+
+                <!-- Components (program lines) -->
+                <section id="components" class="program-components my-4">
+                  <header>
+                    <h2 class="h4">Program components</h2>
+                  </header>
+
+                  <!-- Content placeholder -->
+                  <div class="section-body">
+                    <t t-call="academy_base.view_academy_training_program_components_qweb" />
+                  </div>
+                </section>
+
+                <!-- Training actions -->
+                <section id="training-actions" class="program-training-actions my-4">
+                  <header>
+                    <h2 class="h4">Training actions</h2>
+                  </header>
+
+                  <!-- Content placeholder -->
+                  <div class="section-body">
+                    <t t-call="academy_base.view_academy_training_program_training_actions_qweb" />
+                  </div>
+                </section>
+
+                <!-- Training modules -->
+                <section id="training-modules" class="program-training-modules my-4">
+                  <header>
+                    <h2 class="h4">Training modules</h2>
+                  </header>
+
+                  <!-- Content placeholder -->
+                  <div class="section-body">
+                    <t t-call="academy_base.view_academy_training_program_training_modules_qweb" />
+                  </div>
+                </section>
+
+              </article>
+              <!-- /training-program -->
+
+            </t>
+          </t>
+        </t>
+
+      </t>
+    </field>
+  </record>
+
+  <record id="action_report_academy_training_action_modules" model="ir.actions.report">
+    <field name="name">Detailed report</field>
+    <field name="model">academy.training.action</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">academy_base.view_academy_training_action_modules_qweb</field>
+    <field name="attachment_use" eval="False"/>
+    <field name="attachment">(object.name + '.pdf')</field>
+    <field name="paperformat_id" ref="base.paperformat_euro"/>
+    <field name="help">Detailed training action report</field>
+    <field name="binding_model_id" ref="academy_base.model_academy_training_action"/>
+  </record>
+
+</odoo>

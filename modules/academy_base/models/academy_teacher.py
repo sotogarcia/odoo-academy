@@ -17,7 +17,7 @@ _logger = getLogger(__name__)
 
 
 class AcademyTeacher(models.Model):
-    """A teacher is a partner who can be enroled on training actions"""
+    """A teacher is a partner who can be enrolled on training actions"""
 
     _name = "academy.teacher"
     _description = "Academy teacher"

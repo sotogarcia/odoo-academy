@@ -151,6 +151,7 @@ of reference catalogs and training structures across the platform.
         "views/academy_maintenance_task_view.xml",
         "views/res_config_settings_view.xml",
         "report/academy_training_program_report.xml",
+        "report/academy_training_action_report.xml",
         "wizard/academy_change_training_action_wizard_view.xml",
         "wizard/record_ownership_wizard_view.xml",
         "wizard/academy_training_action_synchronize_wizard_view.xml",

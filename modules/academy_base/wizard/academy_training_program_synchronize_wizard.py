@@ -115,6 +115,16 @@ class AcademyTrainingProgramSynchronizeWizard(models.TransientModel):
         for record in self:
             record.target_action_count = len(record.target_action_ids)
 
+    changes_only = fields.Boolean(
+        string="Marked for Update",
+        required=False,
+        readonly=False,
+        index=False,
+        default=True,
+        help="Update only the items that have been specifically marked for "
+        "synchronization",
+    )
+
     @api.model
     def call_wizard(self, **kwargs):
         """Open the wizard and prefill fields from kwargs.
@@ -143,6 +153,7 @@ class AcademyTrainingProgramSynchronizeWizard(models.TransientModel):
             "optional": kwargs.get("optional", False),
             "remove_mismatches": kwargs.get("remove_mismatches", True),
             "synchronize_groups": kwargs.get("synchronize_groups", False),
+            "changes_only": kwargs.get("changes_only", True),
         }
 
         field, model = "source_program_ids", "academy.training.program"
@@ -204,6 +215,7 @@ class AcademyTrainingProgramSynchronizeWizard(models.TransientModel):
             synchronize_groups=self.synchronize_groups,
             source_set=self.source_program_ids,
             target_set=self.target_action_ids,
+            changes_only=self.changes_only,
         )
 
     def perform_action(self):

@@ -20,9 +20,11 @@
           <group col="2" string="Restrictions">
             <field name="parent_action_count" class="oe_field_parent_action_count" />
             <field name="child_action_count" class="oe_field_child_action_count" />
+            <field name="changes_only" class="oe_field_changes_only" />
           </group>
 
           <group col="2" string="Options">
+            <field name="sync_details" class="oe_field_sync_details" />
             <field name="remove_mismatches" class="oe_field_remove_mismatches" />
             <field name="optional" class="oe_field_optional" />
           </group>
