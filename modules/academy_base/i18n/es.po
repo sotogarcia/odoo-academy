@@ -1779,7 +1779,7 @@ msgstr "Tecnología de los ordenadores"
 #: model:ir.actions.report,name:academy_base.action_report_academy_training_action
 #: model:ir.actions.report,name:academy_base.action_report_academy_training_program
 msgid "Concise report"
-msgstr "Informe del programa de formación"
+msgstr "Informe sencillo"
 
 #. module: academy_base
 #: model:ir.model,name:academy_base.model_res_config_settings
@@ -2274,7 +2274,7 @@ msgstr "Descripción detallada del contenido, alcance y objetivos de la línea"
 #: model:ir.actions.report,name:academy_base.action_report_academy_training_action_modules
 #: model:ir.actions.report,name:academy_base.action_report_academy_training_program_modules
 msgid "Detailed report"
-msgstr "Programa formativo al que pertenece esta materia"
+msgstr "Informe detallado"
 
 #. module: academy_base
 #: model_terms:ir.actions.report,help:academy_base.action_report_academy_training_action_modules

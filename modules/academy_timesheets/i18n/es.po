@@ -2787,8 +2787,8 @@ msgstr "Acción formativa de prueba"
 
 #. module: academy_timesheets
 #: model:ir.actions.report,name:academy_timesheets.action_report_academy_timesheets_training_action
-msgid "Training action weekly timetable"
-msgstr "Horario semanal de las acciones formativas"
+msgid "Weekly timetable"
+msgstr "Horario semanal"
 
 #. module: academy_timesheets
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_verification_wizard__training_action_ids

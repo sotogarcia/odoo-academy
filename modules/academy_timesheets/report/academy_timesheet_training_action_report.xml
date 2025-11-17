@@ -2,7 +2,7 @@
 
 <odoo noupdate="0">
 
-        <!-- REPORT: "Training action weekly timetable"
+        <!-- REPORT: "Weekly timetable"
 
             - Module: academy_timesheets    Model: academy.training.action
             - Language field used to translate it: lang
@@ -147,7 +147,7 @@
 
         <!-- Report action to show: "Training action" -->
         <record id="action_report_academy_timesheets_training_action" model="ir.actions.report">
-            <field name="name">Training action weekly timetable</field>
+            <field name="name">Weekly timetable</field>
             <field name="model">academy.training.action</field>
             <field name="report_type">qweb-pdf</field>
             <field name="report_name">academy_timesheets.view_academy_timesheet_training_action_qweb</field>
