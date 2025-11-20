@@ -106,7 +106,7 @@
                     <field name="code" class="oe_field_enrolment_code" />
                 </group>
                 <group col="2">
-                    <field name="enrolment_date" class="oe_field_enrolment_date" widget="date" />
+                    <field name="processing_date" class="oe_field_processing_date" widget="date" />
                 </group>
 
                 <group col="2" string="Training action">

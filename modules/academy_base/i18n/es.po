@@ -645,7 +645,7 @@ msgid "Administration and management"
 msgstr "Administración y gestión"
 
 #. module: academy_base
-#: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment__enrolment_date
+#: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment__processing_date
 msgid "Administrative date when the enrolment was recorded"
 msgstr "Fecha administrativa en la que se registró la inscripción"
 
@@ -2145,8 +2145,8 @@ msgstr "Demografía"
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_change_training_action_wizard__deregister
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment__deregister
-msgid "Deregistration"
-msgstr "Fecha de baja"
+msgid "Effective until"
+msgstr "Vigente hasta"
 
 #. module: academy_base
 #. odoo-python
@@ -2639,9 +2639,9 @@ msgid "Enrolment code"
 msgstr "Código"
 
 #. module: academy_base
-#: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment__enrolment_date
-msgid "Enrolment date"
-msgstr "Fecha de inscripción"
+#: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment__processing_date
+msgid "Processing date"
+msgstr "Fecha de tramitación"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_enrolment_kanban
@@ -6377,8 +6377,8 @@ msgstr "Geografía regional"
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_change_training_action_wizard__register
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment__register
-msgid "Registration"
-msgstr "Fecha de alta"
+msgid "Effective from"
+msgstr "Vigente desde"
 
 #. module: academy_base
 #. odoo-python

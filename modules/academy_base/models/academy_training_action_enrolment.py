@@ -122,8 +122,8 @@ class AcademyTrainingActionEnrolment(models.Model):
         tracking=True,
     )
 
-    enrolment_date = fields.Datetime(
-        string="Enrolment date",
+    processing_date = fields.Datetime(
+        string="Processing date",
         required=True,
         readonly=False,
         index=False,
@@ -392,7 +392,7 @@ class AcademyTrainingActionEnrolment(models.Model):
     # -------------------------------------------------------------------------
 
     register = fields.Datetime(
-        string="Registration",
+        string="Effective from",
         required=True,
         readonly=False,
         index=True,
@@ -402,7 +402,7 @@ class AcademyTrainingActionEnrolment(models.Model):
     )
 
     deregister = fields.Datetime(
-        string="Deregistration",
+        string="Effective until",
         required=False,
         readonly=False,
         index=True,
@@ -1237,22 +1237,22 @@ class AcademyTrainingActionEnrolment(models.Model):
                     ]
 
     @api.model
-    def _ensure_enrolment_date(self, vals_list):
+    def _ensure_processing_date(self, vals_list):
         now = fields.Datetime.now()
         for values in vals_list:
-            if not values.get("enrolment_date"):
-                values["enrolment_date"] = now
+            if not values.get("processing_date"):
+                values["processing_date"] = now
 
     @api.model
     def _ensure_enrolment_data(self, values_list):
-        """Ensure code and enrolment_date are set for the enrolment."""
+        """Ensure code and processing_date are set for the enrolment."""
 
         for values in values_list:
             if not values.get("code"):
                 values["code"] = default_code(self.env, _CODE_SEQUENCE)
 
-            if not values.get("enrolment_date"):
-                self._ensure_enrolment_date([values])
+            if not values.get("processing_date"):
+                self._ensure_processing_date([values])
 
     # Maintenance tasks
     # -------------------------------------------------------------------------
