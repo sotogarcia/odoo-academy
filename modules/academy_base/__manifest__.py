@@ -143,6 +143,7 @@ of reference catalogs and training structures across the platform.
         "views/academy_technical_staff.xml",
         "views/academy_student_view.xml",
         "views/academy_teacher_view.xml",
+        "views/academy_student_signup_view.xml",
         "views/academy_training_program_line_view.xml",
         "views/academy_training_action_line_view.xml",
         "views/academy_training_action_group_view.xml",

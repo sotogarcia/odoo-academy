@@ -23,6 +23,8 @@ class AcademyStudentSignup(models.Model):
     _rec_name = "id"
     _order = "company_id, id"
 
+    _inherit = ["mail.thread"]
+
     _check_company_auto = True
 
     company_id = fields.Many2one(
@@ -37,12 +39,13 @@ class AcademyStudentSignup(models.Model):
         context={},
         ondelete="restrict",
         auto_join=False,
+        tracking=True,
     )
 
     student_id = fields.Many2one(
         string="Student",
         required=True,
-        readonly=False,
+        readonly=True,
         index=True,
         default=None,
         help="Student this sign-up data belongs to.",
@@ -51,6 +54,7 @@ class AcademyStudentSignup(models.Model):
         context={},
         ondelete="cascade",
         auto_join=False,
+        tracking=True,
     )
 
     signup_code = fields.Char(
@@ -62,6 +66,7 @@ class AcademyStudentSignup(models.Model):
         help="Unique code assigned when the student signs up at the centre.",
         size=50,
         translate=False,
+        tracking=True,
     )
 
     signup_date = fields.Datetime(
@@ -71,6 +76,24 @@ class AcademyStudentSignup(models.Model):
         index=False,
         default=lambda self: fields.Datetime.now(),
         help="Date and time when the student signed up at the centre.",
+        tracking=True,
+    )
+
+    comment = fields.Html(
+        string="Internal notes",
+        required=False,
+        readonly=False,
+        index=False,
+        default=None,
+        help=(
+            "Private notes for staff only. Not shown to students, "
+            "not exported, and excluded from printed reports."
+        ),
+        sanitize=True,
+        sanitize_attributes=False,
+        strip_style=True,
+        translate=False,
+        copy=False,
     )
 
     # -- Constraints
@@ -219,3 +242,42 @@ class AcademyStudentSignup(models.Model):
         self._assert_no_enrolments_before_unlink()
 
         return super().unlink()
+
+    @api.depends(
+        "signup_code",
+        "student_id",
+        "student_id.name",
+        "company_id",
+        "company_id.name",
+    )
+    @api.depends_context("lang")
+    def _compute_display_name(self):
+        na = self.env._("#N/A")
+
+        if self.env.context.get("signup_short_display_name", False):
+            compute_method = self._compute_short_display_name
+        else:
+            compute_method = self._compute_long_display_name
+
+        for record in self:
+            record.display_name = compute_method(na)
+
+    def _compute_long_display_name(self, na):
+        self.ensure_one()
+
+        pattern = self.env._("{code} — {student} / {company}")
+        components = dict(code=na, student=na, company=na)
+
+        if self.signup_code:
+            components["code"] = self.signup_code
+
+        if self.student_id and self.student_id.display_name:
+            components["student"] = self.student_id.name
+
+        if self.company_id and self.company_id.display_name:
+            components["company"] = self.company_id.name
+
+        return pattern.format(**components)
+
+    def _compute_short_display_name(self, na):
+        return self.signup_code or na

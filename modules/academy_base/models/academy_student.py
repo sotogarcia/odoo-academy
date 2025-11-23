@@ -307,13 +307,30 @@ class AcademyStudent(models.Model):
         readonly=False,
         index=False,
         default=None,
-        help=False,
+        help="Per-company sign-up records for this student; used to track "
+        "onboarding, retention and billing.",
         comodel_name="academy.student.signup",
         inverse_name="student_id",
         domain=[],
         context={},
         auto_join=False,
         copy=False,
+    )
+
+    signup_id = fields.Many2one(
+        string="Sign-Up",
+        required=False,
+        readonly=True,
+        index=True,
+        default=None,
+        help="Sign-up record of this student for the active company, computed "
+        "from per-company sign-up data.",
+        comodel_name="academy.student.signup",
+        domain=[],
+        context={},
+        ondelete="cascade",
+        auto_join=False,
+        compute="_compute_signup_company_values",
     )
 
     signup_code = fields.Char(
@@ -361,7 +378,7 @@ class AcademyStudent(models.Model):
 
         for student in self:
             student_id = student.id
-            signup = signup_indexed.get(student_id, False)
+            signup = signup_indexed.get((student_id, company_id))
 
             values = {}
             if "signup_code" in student._fields:
@@ -399,9 +416,11 @@ class AcademyStudent(models.Model):
     )
     def _compute_signup_company_values(self):
         signup_indexed = self._load_indexed_signups()
+        company_id = self.env.company.id
         for student in self:
             student_id = student.id
-            signup = signup_indexed.get(student_id, False)
+            signup = signup_indexed.get((student_id, company_id))
+            student.signup_id = signup
             student.signup_code = signup.signup_code if signup else False
             student.signup_date = signup.signup_date if signup else False
 
@@ -616,12 +635,6 @@ class AcademyStudent(models.Model):
         ]
         signup_obj = self.env["academy.student.signup"]
         signup_set = signup_obj.search(signup_domain)
-
-        # Backward compatible shape:
-        # - single company  -> {student_id: signup}
-        # - multiple        -> {(student_id, company_id): signup}
-        if len(company_ids) == 1:
-            return {s.student_id.id: s for s in signup_set if s.id}
 
         return {
             (s.student_id.id, s.company_id.id): s for s in signup_set if s.id

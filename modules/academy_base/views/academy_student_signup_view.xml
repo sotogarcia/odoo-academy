@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo noupdate="0">
+
+  <!-- VIEWS: "Student signup"
+
+       - Model·········: academy.student.signup
+       - _rec_name·····: student_id
+       - Domain········: []
+       - Context·······: {}
+       - Parent menu ··: base.menu_custom
+       - View priority·: 16    Sequence····: 10
+       - Action help···: No sign-ups have been registered yet
+   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+  <!-- Tree view for "academy.student.signup" -->
+  <record id="view_academy_student_signuplist" model="ir.ui.view">
+    <field name="name">view.academy.student.signup.list</field>
+    <field name="model">academy.student.signup</field>
+    <field name="type">list</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16" />
+    <field name="active" eval="True" />
+    <field name="arch" type="xml">
+      <list string="academy_student_signuplist" create="1" delete="1" edit="1">
+        <field name="company_id" class="oe_field_company_id"
+            column_invisible="context.get('default_company_id')" />
+        <field name="student_id" class="oe_field_student_id"
+            column_invisible="context.get('default_student_id')" />
+        <field name="signup_code" class="oe_field_signup_code" />
+        <field name="signup_date" class="oe_field_signup_date" />
+      </list>
+    </field>
+  </record>
+
+  <!-- Form view for "academy.student.signup" -->
+  <record id="view_academy_student_signup_form" model="ir.ui.view">
+    <field name="name">view.academy.student.signup.form</field>
+    <field name="model">academy.student.signup</field>
+    <field name="type">form</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16" />
+    <field name="active" eval="True" />
+    <field name="arch" type="xml">
+      <form string="academy_student_signup_form" create="1" delete="1" edit="1">
+        <sheet>
+          <field name="id" invisible="1"/>
+          <div class="oe_title">
+           <label for="display_name" class="oe_edit_only" />
+           <h1>
+               <field name="display_name" class="oe_field_display_name" />
+           </h1>
+          </div>
+          <group col="2">
+            <group col="2" string="Account">
+              <field name="company_id" class="oe_field_company_id"
+                  options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
+              <field name="student_id" class="oe_field_student_id"
+                  options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
+            </group>
+            <group col="2" string="Details">
+              <field name="signup_code" class="oe_field_signup_code" />
+              <field name="signup_date" class="oe_field_signup_date" />
+            </group>
+          </group>
+          <notebook>
+            <page id="internal-notes" string="Internal notes" class="oe_page_internal_notes" accesskey="I">
+              <group col="2">
+                  <field name="comment" class="oe_field_comment" colspan="2" nolabel="1" widget="html" />
+              </group>
+            </page>
+          </notebook>
+        </sheet>
+
+        <chatter/>
+      </form>
+    </field>
+  </record>
+
+  <!-- Search view for "academy.student.signup" -->
+  <record id="view_academy_student_signup_search" model="ir.ui.view">
+    <field name="name">view.academy.student.signup.search</field>
+    <field name="model">academy.student.signup</field>
+    <field name="type">search</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16" />
+    <field name="active" eval="True" />
+    <field name="arch" type="xml">
+      <search string="academy_student_signup_search">
+        <field name="company_id" class="oe_field_company_id" />
+        <field name="student_id" class="oe_field_student_id" />
+        <field name="signup_code" class="oe_field_signup_code" />
+        <field name="signup_date" class="oe_field_signup_date" />
+
+        <group expand="1" string="Group By">
+          <filter name="group_by_company_id"
+                  string="Company"
+                  context="{'group_by': 'company_id'}" />
+          <filter name="group_by_student_id"
+                  string="Student"
+                  context="{'group_by': 'student_id'}" />
+        </group>
+
+      </search>
+    </field>
+  </record>
+
+  <!-- Main window action for model.name -->
+  <record id="action_student_signup_act_window" model="ir.actions.act_window">
+    <field name="type">ir.actions.act_window</field>
+    <field name="name">Student signup</field>
+    <field name="res_model">academy.student.signup</field>
+    <field name="view_mode">list,form</field>
+    <field name="target">current</field>
+    <field name="domain">[]</field>
+    <field name="context">{}</field>
+    <field name="search_view_id" ref="view_academy_student_signup_search" />
+    <field name="help" type="html">
+      <p class="oe_view_nocontent_create">
+        Click to add new sign-up
+      </p>
+      <p>
+        No sign-ups have been registered yet
+      </p>
+    </field>
+  </record>
+
+  <!-- Main menu for model.name -->
+  <record id="menu_student_signup" model="ir.ui.menu" >
+  <field name="name">Sign-up</field>
+  <field name="sequence" eval="10" />
+  <field name="action" ref="action_student_signup_act_window" />
+  <field name="parent_id" ref="base.menu_custom" />
+  </record>
+
+
+  <!-- Tree view for "academy.student.signup" -->
+  <record id="view_academy_student_signuplist_embed_on_student" model="ir.ui.view">
+    <field name="name">view.academy.student.signup.list</field>
+    <field name="model">academy.student.signup</field>
+    <field name="type">list</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16" />
+    <field name="active" eval="True" />
+    <field name="inherit_id" ref="academy_base.view_academy_student_signuplist" />
+    <field name="arch" type="xml">
+      <xpath expr="//list" position="attributes">
+        <attribute name="create">0</attribute>
+        <attribute name="delete">0</attribute>
+      </xpath>
+      <xpath expr="//field[@name='student_id']" position="replace" />
+    </field>
+  </record>
+
+</odoo>

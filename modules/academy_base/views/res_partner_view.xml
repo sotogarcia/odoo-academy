@@ -72,7 +72,7 @@
             </group>
           </group>
           <group>
-            <field name="comment" placeholder="Internal notes..." nolabel="1"/>
+            <field name="comment" placeholder="Internal notes..." nolabel="1" widget="html"/>
           </group>
           <field name="lang" invisible="True"/>
           <!-- Need to add lang to save default value from parented record -->

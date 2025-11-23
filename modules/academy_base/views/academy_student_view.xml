@@ -70,26 +70,34 @@
         </page>
       </xpath>
 
-      <xpath expr="//group[@id='page-details-main']" position="inside">
-        <group colspan="4">
-          <field name="signup_code" class="oe_field_signup_code" string="Sign-up code" readonly="1"/>
+      <xpath expr="//group[@id='page-details-main']" position="after">
+        <group col="3" string="Sign-up details">
+          <group>
+            <button name="perform_signup" string="Sign up" type="object" invisible="signup_id" />
+            <field name="signup_id" class="oe_field_signup_id"
+              context="{'signup_short_display_name': True}" invisible="not signup_id"
+              options="{'no_quick_create': True, 'no_create': True, 'no_open': False}" />
+          </group>
+          <group>
+            <field name="signup_date" class="oe_field_signup_date" readonly="not signup_code" />
+          </group>
+          <group col="2" class="d-flex justify-content-end">
+              <button name="revoke_signup" class="btn btn-sm btn-danger" string="Opt out" type="object"
+                invisible="not signup_code" confirm="Are you sure you want to do this?"/>
+          </group>
+          <group col="2" colspan="3" groups="base.group_no_one">
+            <field name="signup_ids" class="oe_field_signup_ids" nolabel="1"
+              context="{
+                  'default_student_id': id,
+                  'list_view_ref': 'academy_base.view_academy_student_signuplist_embed_on_student'
+              }" />
+          </group>
         </group>
-        <group colspan="4">
-          <field name="signup_date" class="oe_field_signup_date" readonly="not signup_code" />
-        </group>
-        <group id="toggle-signup" colspan="4" class="d-flex justify-content-end">
-          <button name="perform_signup" string="Sign up" type="object" invisible="signup_code" />
+        <!-- <group id="toggle-signup" colspan="4" class="d-flex justify-content-end">
           <button name="revoke_signup" string="Opt out" type="object" invisible="not signup_code" confirm="Are you sure you want to do this?"/>
-        </group>
-        <group colspan="12" string="Per-company sign-up data" groups="base.group_no_one">
-          <field name="signup_ids" class="oe_field_signup_ids" nolabel="1">
-            <list string="Sign-up" create="0" delete="1" edit="1" editable="bottom">
-              <field name="company_id" class="oe_field_company_id" />
-              <field name="signup_code" class="oe_field_signup_code" />
-              <field name="signup_date" class="oe_field_signup_date" />
-            </list>
-          </field>
-        </group>
+        </group> -->
+        <!-- <group colspan="12" string="Per-company sign-up data">
+        </group> -->
       </xpath>
     </field>
   </record>

@@ -898,7 +898,7 @@ msgstr "Archivado"
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_student_form
 msgid "Are you sure you want to do this?"
-msgstr "¿Está seguro de que desea hacer esto?"
+msgstr "¿Tienes la certeza de querer hacer esto?"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_action_form
@@ -5302,7 +5302,7 @@ msgstr "Investigación operativa"
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_student_form
 msgid "Opt out"
-msgstr "Excluir"
+msgstr "Cancelar la matricula"
 
 #. module: academy_base
 #: model:academy.professional.sector,name:academy_base.professional_sector_2103
@@ -6727,7 +6727,7 @@ msgstr "Muestra el número de áreas profesionales que pertenecen a esta familia
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_student_form
 msgid "Sign up"
-msgstr "Inscribirse"
+msgstr "Inscribir"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_student_form
@@ -6751,7 +6751,7 @@ msgstr "El código de inscripción debe ser único por empresa."
 #: model:ir.model.fields,field_description:academy_base.field_academy_student__signup_date
 #: model:ir.model.fields,field_description:academy_base.field_academy_student_signup__signup_date
 msgid "Sign-up date"
-msgstr "Fecha de alta"
+msgstr "Fecha de matrícula"
 
 #. module: academy_base
 #: model:academy.knowledge.area,name:academy_base.academy_knowledge_area_08
