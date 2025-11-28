@@ -44,7 +44,8 @@
 
                 <field name="seats" class="oe_field_seats" optional="hide"/>
                 <field name="excess" class="oe_field_excess" optional="hide"/>
-                <field name="rollup_enrolment_count" class="oe_field_rollup_enrolment_count" optional="show"/>
+                <field name="current_enrolment_count" class="oe_field_current_enrolment_count" optional="show" />
+                <field name="rollup_enrolment_count" class="oe_field_rollup_enrolment_count" optional="hide"/>
 
                 <field name="manager_id" class="oe_field_manager_id" string="Manager" optional="show"
                   options="{'no_quick_create': True, 'no_create': True, 'no_open': False}" />
@@ -290,7 +291,7 @@
                     </t>
                     <button name="view_rollup_enrolments" type="object" class="btn my-0 py-0" string="Student enrolments">
                       <i class="fa fa-lg fa-sign-in me-2" aria-hidden="true" title="View training action enrolments"></i>
-                      <field name="rollup_enrolment_count" class="oe_field_rollup_enrolment_count" />
+                      <field name="current_enrolment_count" class="oe_field_current_enrolment_count" />
                     </button>
 
                     <field name="activity_ids" widget="kanban_activity" class="my-0 py-0"/>

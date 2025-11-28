@@ -126,12 +126,7 @@
   </record>
 
   <!-- Main menu for model.name -->
-  <record id="menu_student_signup" model="ir.ui.menu" >
-  <field name="name">Sign-up</field>
-  <field name="sequence" eval="10" />
-  <field name="action" ref="action_student_signup_act_window" />
-  <field name="parent_id" ref="base.menu_custom" />
-  </record>
+  <delete id="menu_student_signup" model="ir.ui.menu" />
 
 
   <!-- Tree view for "academy.student.signup" -->

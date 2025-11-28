@@ -113,7 +113,7 @@ class AcademyTrainingActionEnrolment(models.Model):
     code = fields.Char(
         string="Enrolment code",
         required=True,
-        readonly=True,
+        readonly=False,
         index=True,
         default=lambda self: default_code(self.env, _CODE_SEQUENCE),
         help="Unique code automatically assigned to this enrolment",

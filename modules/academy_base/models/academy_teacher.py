@@ -28,12 +28,11 @@ class AcademyTeacher(models.Model):
 
     _order = "complete_name ASC, id DESC"
 
-    _rec_name = "complete_name"
+    _rec_name = "name"
     _rec_names_search = [
-        "complete_name",
+        "name",
         "email",
         "vat",
-        "company_registry",
     ]
 
     assignment_ids = fields.One2many(

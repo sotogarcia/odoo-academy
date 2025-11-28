@@ -57,7 +57,7 @@ class CivilServiceTrackerIssuingAuthority(models.Model):
         default=None,
         help=False,
         comodel_name="civil.service.tracker.public.offer",
-        inverse_name="public_administration_id",
+        inverse_name="issuing_authority_id",
         domain=[],
         context={},
         auto_join=False,

@@ -38,14 +38,8 @@ class AcademyStudent(models.Model):
 
     _order = "complete_name ASC, id DESC"
 
-    _rec_name = "complete_name"
-    _rec_names_search = [
-        "complete_name",
-        "email",
-        "signup_code",
-        "vat",
-        "company_registry",
-    ]
+    _rec_name = "name"
+    _rec_names_search = ["name", "email", "signup_code", "vat"]
 
     enrolment_ids = fields.One2many(
         string="Student enrolments",

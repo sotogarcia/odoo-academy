@@ -102,7 +102,7 @@ class CivilServiceTrackerPublicOffer(models.Model):
         required=False,
         readonly=False,
         index=True,
-        default=fields.Date.today(),
+        default=lambda self: fields.Date.context_today(self),
         help="Official date when the offer was approved or published",
         tracking=True,
         copy=False,

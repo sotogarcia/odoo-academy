@@ -30,7 +30,7 @@ class AcademyStudentSignup(models.Model):
     company_id = fields.Many2one(
         string="Company",
         required=True,
-        readonly=True,
+        readonly=False,
         index=True,
         default=lambda self: self.env.company,
         help="Company this sign-up data applies to.",
@@ -45,7 +45,7 @@ class AcademyStudentSignup(models.Model):
     student_id = fields.Many2one(
         string="Student",
         required=True,
-        readonly=True,
+        readonly=False,
         index=True,
         default=None,
         help="Student this sign-up data belongs to.",
@@ -60,7 +60,7 @@ class AcademyStudentSignup(models.Model):
     signup_code = fields.Char(
         string="Sign-up code",
         required=True,
-        readonly=True,
+        readonly=False,
         index=True,
         default=lambda self: self._next_signup_code(self.env.company.id),
         help="Unique code assigned when the student signs up at the centre.",

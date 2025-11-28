@@ -295,7 +295,7 @@
     <field name="arch" type="xml">
       <search string="academy_support_staff_search">
         <field name="name"
-          filter_domain="['|', '|', '|', '|', ('complete_name', 'ilike', self), ('email', 'ilike', self), ('vat', 'ilike', self), ('company_registry', 'ilike', self)]"/>
+          filter_domain="['|', '|', ('name', 'ilike', self), ('email', 'ilike', self), ('vat', 'ilike', self)]"/>
         <field name="phone"
           filter_domain="['|', ('phone', 'ilike', self), ('mobile', 'ilike', self)]"/>
         <field name="email"/>

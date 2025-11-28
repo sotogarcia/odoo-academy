@@ -123,7 +123,7 @@ class CivilServiceTrackerOfferQuickOfferWizard(models.TransientModel):
         required=False,
         readonly=False,
         index=True,
-        default=fields.Date.today(),
+        default=lambda self: fields.Date.context_today(self),
         help="Date when the public offer was officially approved or published.",
     )
 
