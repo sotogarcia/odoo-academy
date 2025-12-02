@@ -378,12 +378,12 @@ def update_target(env, context_key, new_value, *, limit_one=True):
     """
     target_spec = env.context.get(context_key, False)
 
-    if not target_spec or not isinstance(target_spec, str):
+    if not target_spec:
+        return
+
+    if not isinstance(target_spec, str):
         raise ValidationError(
-            env._(
-                "The target was not found or is not a valid string in "
-                "the context."
-            )
+            env._("The target is not a valid string in the context.")
         )
 
     pattern = r"^([^,]+),(\d+),([^,]+)$"
