@@ -16,7 +16,7 @@ _logger = getLogger(__name__)
 class ResConfigSettings(models.TransientModel):
     """Module configuration attributes"""
 
-    _inherit = ["res.config.settings"]
+    _inherit = "res.config.settings"
 
     head_of_studies_id = fields.Many2one(
         string="Head of Studies",
@@ -68,4 +68,13 @@ class ResConfigSettings(models.TransientModel):
             ("except_debug", "Except in developer mode"),
         ],
         config_parameter="academy_base.partner_vat_required",
+    )
+
+    auto_signup = fields.Boolean(
+        string="Auto sign up",
+        required=False,
+        readonly=False,
+        help="Automatically sign up the student upon enrolling in a training "
+        "action",
+        related="company_id.auto_signup",
     )

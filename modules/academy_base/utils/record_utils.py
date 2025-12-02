@@ -11,6 +11,7 @@ from odoo.osv.expression import TRUE_DOMAIN, FALSE_DOMAIN
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DATETIME_FORMAT
 
+from re import match as re_match
 from datetime import date, datetime
 from logging import getLogger
 
@@ -363,3 +364,76 @@ def ensure_ids(targets, raise_if_empty=True):
         return [targets]
 
     return targets
+
+
+def update_target(env, context_key, new_value, *, limit_one=True):
+    """
+    Read a target specification (model, ID, field) from the context and
+    update the given field with the provided value.
+
+    :param env: The Odoo Environment (self.env).
+    :param context_key: Context key where the specification is stored.
+    :param new_value: Value to be written in the target field.
+    :param limit_one: If True, use only first record from recordset.
+    """
+    target_spec = env.context.get(context_key, False)
+
+    if not target_spec or not isinstance(target_spec, str):
+        raise ValidationError(
+            env._(
+                "The target was not found or is not a valid string in "
+                "the context."
+            )
+        )
+
+    pattern = r"^([^,]+),(\d+),([^,]+)$"
+    match = re_match(pattern, target_spec)
+    if not match:
+        raise ValidationError(
+            env._(
+                "The target specification format is incorrect. "
+                "It must be 'model,numeric_ID,field'."
+            )
+        )
+
+    res_model, res_id_str, res_field = match.groups()
+    try:
+        res_id = int(res_id_str)
+    except ValueError:
+        raise ValidationError(
+            env._("The resource ID must be a valid integer.")
+        )
+
+    try:
+        record = env[res_model].browse(res_id)
+    except Exception:
+        pattern = env._(
+            "Could not find the model or the record with ID {} " "in model {}."
+        )
+        raise ValidationError(pattern.format(res_id, res_model))
+
+    if not record.exists():
+        pattern = env._("The record with ID {} in model {} does not exist.")
+        raise ValidationError(pattern.format(res_id, res_model))
+
+    if res_field not in record._fields:
+        pattern = env._("The field '{}' does not exist in model '{}'.")
+        raise ValidationError(pattern.format(res_field, res_model))
+
+    if record and limit_one:
+        record = record[0]
+
+    if isinstance(new_value, models.Model):
+        write_values = {res_field: new_value.id}
+    else:
+        write_values = {res_field: new_value}
+
+    try:
+        record.write(write_values)
+    except Exception as ex:
+        pattern = env._(
+            "Error while attempting to write the value to the field: {}"
+        )
+        raise ValidationError(pattern.format(ex))
+
+    return record

@@ -408,6 +408,7 @@ class AcademyStudent(models.Model):
         "signup_ids.signup_date",
         "signup_ids.company_id",
     )
+    @api.depends_context("company")
     def _compute_signup_company_values(self):
         signup_indexed = self._load_indexed_signups()
         company_id = self.env.company.id
@@ -448,7 +449,9 @@ class AcademyStudent(models.Model):
                 )
                 values.setdefault("signup_date", now)
 
-        return super().create(values_list)
+        result = super().create(values_list)
+
+        return result
 
     # -- Public methods
     # -------------------------------------------------------------------------
@@ -678,7 +681,7 @@ class AcademyStudent(models.Model):
         if companies is None:
             company_ids = [self.env.company.id]
         elif isinstance(companies, (list, tuple, set)):
-            company_ids = [ensure_id(c) for c in companies]
+            company_ids = [ensure_id(rc_id) for rc_id in companies]
         else:
             company_ids = ensure_ids(companies, raise_if_empty=False) or []
 

@@ -58,3 +58,13 @@ class ResCompany(models.Model):
             return admin.id
 
         return self.env.user.id
+
+    auto_signup = fields.Boolean(
+        string="Auto sign up",
+        required=False,
+        readonly=False,
+        index=False,
+        default=False,
+        help="Automatically sign up the student upon enrolling in a training "
+        "action.",
+    )

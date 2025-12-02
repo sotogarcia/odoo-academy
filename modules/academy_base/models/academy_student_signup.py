@@ -60,7 +60,7 @@ class AcademyStudentSignup(models.Model):
     signup_code = fields.Char(
         string="Sign-up code",
         required=True,
-        readonly=False,
+        readonly=True,
         index=True,
         default=lambda self: self._next_signup_code(self.env.company.id),
         help="Unique code assigned when the student signs up at the centre.",

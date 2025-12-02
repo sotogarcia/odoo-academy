@@ -69,6 +69,7 @@ from odoo.osv.expression import TRUE_DOMAIN
 from odoo.osv.expression import TERM_OPERATORS_NEGATION, AND
 from ..utils.helpers import sanitize_code, default_code
 from ..utils.sql_helpers import create_index
+from ..utils.res_config import get_config_param
 from ..utils.record_utils import (
     ARCHIVED_DOMAIN,
     INCLUDE_ARCHIVED_DOMAIN,
@@ -820,6 +821,8 @@ class AcademyTrainingActionEnrolment(models.Model):
 
         self._perform_a_full_enrolment(values_list)
 
+        self._ensure_auto_signup(values_list)
+
         result = super().create(values_list)
 
         return result
@@ -832,6 +835,8 @@ class AcademyTrainingActionEnrolment(models.Model):
 
         self._check_that_the_student_is_not_the_template(values)
         self._perform_a_full_enrolment(values)
+
+        self._ensure_auto_signup(values)
 
         result = super().write(values)
 
@@ -1120,6 +1125,42 @@ class AcademyTrainingActionEnrolment(models.Model):
 
     # Auxiliary methods
     # -------------------------------------------------------------------------
+
+    @api.model
+    def _ensure_auto_signup(self, values_list):
+        """Ensure auto sign-up before enrolment."""
+        if isinstance(values_list, dict):
+            target_list = [values_list]
+        else:
+            target_list = values_list
+
+        # 1. Group student IDs by company using values from values_list
+        current_company_id = self.env.company.id
+        students_by_company = dict()
+        for values in target_list or []:
+            student_id = values.get("student_id", False)
+            if not student_id:
+                continue
+            company_id = values.get("company_id", current_company_id)
+            students_by_company.setdefault(company_id, set())
+            students_by_company[company_id].add(student_id)
+
+        if not students_by_company:
+            return
+
+        # 2. For each company, check the config and perform sign-up if auto
+        company_obj = self.env["res.company"]
+        company_set = company_obj.browse(students_by_company.keys())
+        for company in company_set:
+            if not company.auto_signup:
+                continue
+
+            company_id = company.id
+            student_ids = students_by_company.get(company_id)
+            student_obj = self.env["academy.student"]
+            student_set = student_obj.browse(student_ids)
+            if student_set:
+                student_set.perform_signup(company_id)
 
     @api.model
     def _ensure_parent_action(self, values_list):

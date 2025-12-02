@@ -180,6 +180,18 @@
           <!-- Settings block: end -->
 
           <!-- Settings block: begin -->
+          <block title="Sign-up" name="academy_base_signup">
+
+            <setting string="Auto sign up" help="Automatically sign up the student upon enrolling in a training action.">
+              <div class="content-group mt8">
+                <field name="auto_signup" class="oe_inline"/>
+              </div>
+            </setting>
+
+          </block>
+          <!-- Settings block: end -->
+
+          <!-- Settings block: begin -->
           <block title="Maintenance" name="academy_base_maintenance">
 
             <setting string="Maintenance tasks" help="View and edit maintenance tasks">
