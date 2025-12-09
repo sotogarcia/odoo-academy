@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo noupdate="0">
+
+  <record id="view_company_form" model="ir.ui.view">
+    <field name="name">res.company.view.form.inherit</field>
+    <field name="model">res.company</field>
+    <field name="inherit_id" ref="base.view_company_form"/>
+    <field name="arch" type="xml">
+
+      <xpath expr="//notebook/page[last()]" position="after">
+        <page name="academy" string="Academy" class="oe_page_academy" accesskey="A">
+            <group col="2">
+              <group col="2" string="Educational Management" name="educational_management">>
+                <field name="head_of_studies_id" class="oe_field_head_of_studies_id" />
+                <field name="erp_manager_id" class="oe_field_erp_manager_id" />
+              </group>
+              <group col="2" string="Admissions Management" name="admissions_management">>
+                <field name="auto_signup" class="oe_field_auto_signup" />
+              </group>
+            </group>
+        </page>
+      </xpath>
+
+    </field>
+  </record>
+
+</odoo>

@@ -422,7 +422,10 @@ class AcademyTrainingProgram(models.Model):
         context.update(safe_eval(act_wnd.context))
         context.update({"default_training_program_id": self.id})
 
-        domain = [("training_program_id", "=", self.id)]
+        domain = [
+            ("training_program_id", "=", self.id),
+            ("child_ids", "=", False),
+        ]
 
         serialized = {
             "type": "ir.actions.act_window",

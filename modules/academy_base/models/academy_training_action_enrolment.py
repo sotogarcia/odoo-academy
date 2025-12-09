@@ -67,6 +67,7 @@ from odoo.tools.misc import format_date
 from odoo.exceptions import UserError, ValidationError
 from odoo.osv.expression import TRUE_DOMAIN
 from odoo.osv.expression import TERM_OPERATORS_NEGATION, AND
+from ..utils.datetime_utils import local_midnight_as_utc
 from ..utils.helpers import sanitize_code, default_code
 from ..utils.sql_helpers import create_index
 from ..utils.res_config import get_config_param
@@ -397,20 +398,49 @@ class AcademyTrainingActionEnrolment(models.Model):
         required=True,
         readonly=False,
         index=True,
-        default=lambda self: fields.Datetime.now(),
+        default=lambda self: self.default_register(),
         help="Date the enrolment becomes effective",
         tracking=True,
     )
+
+    def default_register(self):
+        today = fields.Date.context_today(self)
+        tz_name = (
+            self.training_action_id.company_id.partner_id.tz
+            or self.env.user.tz
+            or self.env.company.partner_id.tz
+            or "UTC"
+        )
+
+        new_register = local_midnight_as_utc(
+            value=today,
+            from_tz=tz_name,
+            remove_tz=True,
+        )
+
+        if self.training_action_id:
+            date_start = self.training_action_id.date_start
+            if date_start:
+                new_register = max(new_register, date_start)
+
+            date_stop = self.training_action_id.date_stop
+            if date_stop:
+                new_register = min(new_register, date_stop)
+
+        return new_register
 
     deregister = fields.Datetime(
         string="Effective until",
         required=False,
         readonly=False,
         index=True,
-        default=None,
+        default=lambda self: self.default_deregister(),
         help="Date the enrolment ends (leave empty if still ongoing)",
         tracking=True,
     )
+
+    def default_deregister(self):
+        return self.training_action_id.date_stop or None
 
     finalized = fields.Boolean(
         string="Finalized",

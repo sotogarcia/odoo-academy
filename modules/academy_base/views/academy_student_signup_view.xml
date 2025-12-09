@@ -125,10 +125,6 @@
     </field>
   </record>
 
-  <!-- Main menu for model.name -->
-  <delete id="menu_student_signup" model="ir.ui.menu" />
-
-
   <!-- Tree view for "academy.student.signup" -->
   <record id="view_academy_student_signuplist_embed_on_student" model="ir.ui.view">
     <field name="name">view.academy.student.signup.list</field>

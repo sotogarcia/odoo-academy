@@ -11,6 +11,7 @@ try:
 except ImportError:  # older Odoo (e.g. 13)
     from odoo.osv.expression import AND, expression as Expression
 
+from odoo import models
 from odoo.tools.translate import _lt
 from odoo.tools.safe_eval import safe_eval
 from operator import eq, ne, lt, le, gt, ge
@@ -428,3 +429,28 @@ def post_note(recordset, pattern, *args, **kwargs):
             message_type="comment",
             subtype_xmlid="mail.mt_note",
         )
+
+
+def str_ids(targets, *, separator=", ", if_empty=""):
+    """
+    Converts a recordset or a list of IDs into a comma-separated string.
+
+    This function is primarily used for logging or debugging purposes to get
+    a readable string representation of record identifiers.
+
+    :param targets: A recordset (models.Model) or a list/tuple of integer IDs.
+    :param separator: The string used to join the IDs. Defaults to ", ".
+    :param if_empty: The string to return if targets contain no IDs. Defaults to "".
+    :return: A string containing the joined IDs, or the 'if_empty' string.
+    :rtype: str
+    """
+    if isinstance(targets, models.Model):
+        target_items = [item for item in map(str, targets.ids)]
+    elif isinstance(targets, (tuple, list)):
+        target_items = [item for item in map(str, targets)]
+    elif isinstance(targets, int):
+        target_items = [str(targets)]
+    else:
+        target_items = ["Unknown"]
+
+    return separator.join(target_items) if target_items else if_empty

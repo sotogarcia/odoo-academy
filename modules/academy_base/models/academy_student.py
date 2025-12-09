@@ -431,24 +431,8 @@ class AcademyStudent(models.Model):
         Inject proxy defaults so their inverse creates `academy.student.signup`
         unless an inline signup_ids for the active company is already provided.
         """
-        signup_obj = self.env["academy.student.signup"]
-        company_id = self.env.company.id
-        now = fields.Datetime.now()
 
-        for values in values_list:
-            has_inline = any(
-                isinstance(cmd, (list, tuple))
-                and len(cmd) >= 3
-                and cmd[0] == 0
-                and (cmd[2] or {}).get("company_id") == company_id
-                for cmd in values.get("signup_ids", [])
-            )
-            if not has_inline:
-                values.setdefault(
-                    "signup_code", signup_obj._next_signup_code(company_id)
-                )
-                values.setdefault("signup_date", now)
-
+        self._update_signup_data_if_auto(values_list)
         result = super().create(values_list)
 
         return result
@@ -601,7 +585,7 @@ class AcademyStudent(models.Model):
         if not self:
             return 0
 
-        signup_obj = self.env["academy.student.signup"]
+        signup_obj = self.env["academy.student.signup"].sudo()
         company_ids = self._normalize_companies_argument(companies)
         if not company_ids:
             return 0
@@ -618,6 +602,47 @@ class AcademyStudent(models.Model):
 
     # -- Auxiliary methods
     # -------------------------------------------------------------------------
+
+    def _update_signup_data_if_auto(self, values_list):
+        """Injects required sign-up data (code and date) into the creation
+        values for students that must be auto-signed up.
+
+        This method verifies if the active company has auto-signup enabled.
+
+        :param values_list: A list of dictionaries containing the creation
+                            values for 'academy.student'.
+        :return: True if the operation was performed (auto-signup enabled
+                 and data prepared), False otherwise (auto-signup disabled).
+        :rtype: bool
+        """
+        company = self.env.company
+        if not company or not company.auto_signup:
+            return False
+
+        signup_obj = self.env["academy.student.signup"]
+        company_id = company.id
+        now = fields.Datetime.now()
+
+        if isinstance(values_list, dict):
+            target_list = [values_list]
+        else:
+            target_list = values_list
+
+        for values in target_list:
+            has_inline = any(
+                isinstance(cmd, (list, tuple))
+                and len(cmd) >= 3
+                and cmd[0] == 0
+                and (cmd[2] or {}).get("company_id") == company_id
+                for cmd in values.get("signup_ids", [])
+            )
+            if not has_inline:
+                values.setdefault(
+                    "signup_code", signup_obj._next_signup_code(company_id)
+                )
+                values.setdefault("signup_date", now)
+
+        return True
 
     def _load_indexed_signups(self, companies=None):
         company_ids = self._normalize_companies_argument(companies)
