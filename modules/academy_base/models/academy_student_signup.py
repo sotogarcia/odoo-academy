@@ -238,6 +238,19 @@ class AcademyStudentSignup(models.Model):
 
         return result
 
+    def write(self, values):
+        """Overridden 'write' method.
+        Prevents the user or company from being changed.
+        """
+
+        self._prevent_field_changes(values, "student_id", _("Student"))
+        self._prevent_field_changes(values, "company_id", _("Company"))
+
+        parent = super(AcademyStudentSignup, self)
+        result = parent.write(values)
+
+        return result
+
     def unlink(self):
         self._assert_no_enrolments_before_unlink()
 
@@ -281,3 +294,22 @@ class AcademyStudentSignup(models.Model):
 
     def _compute_short_display_name(self, na):
         return self.signup_code or na
+
+    def _prevent_field_changes(self, values, field_name, field_caption=None):
+        if field_name not in values:
+            self.ensure_one()
+
+            field_caption = field_caption or field_name
+            field_value = values.get(field_name, False)
+
+            if not field_value:
+                message = _("The field '%s' is required.")
+                raise ValidationError(message % field_caption)
+
+            elif field_value != getattr(self, field_name, False):
+                message = _(
+                    "The field '%s' cannot be changed once it has been set."
+                )
+                raise ValidationError(message % field_caption)
+
+        return True

@@ -23,9 +23,9 @@
     <field name="active" eval="True" />
     <field name="arch" type="xml">
       <list string="academy_student_signuplist" create="1" delete="1" edit="1">
-        <field name="company_id" class="oe_field_company_id"
+        <field name="company_id" class="oe_field_company_id" readonly="id"
             column_invisible="context.get('default_company_id')" />
-        <field name="student_id" class="oe_field_student_id"
+        <field name="student_id" class="oe_field_student_id" readonly="id"
             column_invisible="context.get('default_student_id')" />
         <field name="signup_code" class="oe_field_signup_code" />
         <field name="signup_date" class="oe_field_signup_date" />
@@ -53,9 +53,9 @@
           </div>
           <group col="2">
             <group col="2" string="Account">
-              <field name="company_id" class="oe_field_company_id"
+              <field name="company_id" class="oe_field_company_id" readonly="id"
                   options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
-              <field name="student_id" class="oe_field_student_id"
+              <field name="student_id" class="oe_field_student_id" readonly="id"
                   options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
             </group>
             <group col="2" string="Details">
