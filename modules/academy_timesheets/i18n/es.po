@@ -4012,6 +4012,12 @@ msgstr "Página web"
 msgid "Week"
 msgstr "Semana"
 
+
+#. module: academy_timesheets
+#: model:ir.model.fields.selection,name:academy_timesheets.selection__academy_timesheets_clone_wizard__interval_type__month
+msgid "Month"
+msgstr "Mes"
+
 #. module: academy_timesheets
 #: model:ir.model.fields,field_description:academy_timesheets.field_academy_timesheets_download_wizard__week_date
 msgid "Week date"
