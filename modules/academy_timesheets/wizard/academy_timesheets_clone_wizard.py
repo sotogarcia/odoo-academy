@@ -276,7 +276,7 @@ class AcademyTimesheetsCloneWizard(models.TransientModel):
         elif isinstance(target_set, mtype("academy.teacher")):
             field = "teacher_assignment_ids.teacher_id.id"
         else:
-            UserError(_("Invalid target model"))
+            raise UserError(_("Invalid target model"))
 
         return [(field, "in", target_ids)]
 
@@ -352,11 +352,9 @@ class AcademyTimesheetsCloneWizard(models.TransientModel):
                         )
 
                         try:
-                            self.env.cr.commit()
-                            session.unlink()
-                            self.env.cr.commit()
+                            with self.env.cr.savepoint():
+                                session.unlink()
                         except Exception as ex:
-                            self.env.cr.rollback()
                             sequence = log_obj.no_delete(
                                 sequence, self, target, from_date, session, ex
                             )
@@ -370,16 +368,19 @@ class AcademyTimesheetsCloneWizard(models.TransientModel):
                 )
                 for session in session_set:
                     try:
-                        defaults = self._compute_new_interval(session, to_date)
+                        with self.env.cr.savepoint():
+                            defaults = self._compute_new_interval(
+                                session,
+                                to_date,
+                            )
+                            defaults["state"] = self.state
 
-                        self.env.cr.commit()
-                        new_session = session.copy(defaults)
-                        if self.autoinvite:
-                            new_session.invite_all()
-                        self.env.cr.commit()
+                            new_session = session.copy(defaults)
+
+                            if self.autoinvite:
+                                new_session.invite_all()
 
                     except Exception as ex:
-                        self.env.cr.rollback()
                         sequence = log_obj.no_clone(
                             sequence,
                             self,
@@ -394,7 +395,10 @@ class AcademyTimesheetsCloneWizard(models.TransientModel):
                             sequence, self, target, from_date, to_date, session
                         )
 
-        return self._view_logs()
+        if self.show_logs:
+            return self._view_logs()
+
+        return {"type": "ir.actions.act_window_close"}
 
     def _view_logs(self):
         self.ensure_one()
