@@ -4,9 +4,11 @@
 import argparse
 import configparser
 import csv
+import json
 import logging
 import socket
 import subprocess
+import sys
 import time
 import uuid
 from datetime import date, datetime
@@ -29,6 +31,7 @@ class StudentRow:
         "email",
         "phone",
         "mobile",
+        "activity",
         "last_seen",
         "student_id",
         "match_index",
@@ -42,6 +45,7 @@ class StudentRow:
         ("Matched Email", "email"),
         ("Matched Phone", "phone"),
         ("Matched Mobile", "mobile"),
+        ("Matched Activity", "activity"),
         ("Matched Last seen", "last_seen"),
         ("Match Nº", "match_index"),
     )
@@ -67,6 +71,7 @@ class StudentRow:
         self._email = None
         self._phone = None
         self._mobile = None
+        self._activity = None
         self._last_seen = None
 
         self._row_index = self._validate_int(
@@ -202,6 +207,20 @@ class StudentRow:
         """Set and validate the student's mobile telephone number."""
         self._mobile = self._validate_string(
             "mobile",
+            value,
+            allow_none=True,
+        )
+
+    @property
+    def activity(self):
+        """Return the matched training activity code."""
+        return self._activity or ""
+
+    @activity.setter
+    def activity(self, value):
+        """Set and validate the matched training activity code."""
+        self._activity = self._validate_string(
+            "activity",
             value,
             allow_none=True,
         )
@@ -448,6 +467,7 @@ class StudentRow:
             f"email: {self.email}, "
             f"phone: {self.phone}, "
             f"mobile: {self.mobile}, "
+            f"activity: {self.activity}, "
             f"last_seen: {self.last_seen}"
         )
 
@@ -468,6 +488,7 @@ class StudentRow:
             email=result["email"],
             phone=result["phone"],
             mobile=result["mobile"],
+            activity=result["activity"],
             last_seen=result["last_seen"],
             student_id=result["student_id"],
             match_index=result["match_index"],
@@ -499,12 +520,16 @@ class StudentRow:
         """
         return [column_name for column_name, _ in cls._DATAFRAME_PROPERTIES]
 
-    def to_dataframe_values(self):
+    def to_dataframe_values(self, live_empty=True):
         """Return values to append to a source data frame row.
 
         Returns:
             A dictionary containing the matching result values.
         """
+
+        if live_empty and not self.match_index:
+            return self.empty_dataframe_values(self.row_index)
+
         return {
             column_name: getattr(self, property_name)
             for column_name, property_name in self._DATAFRAME_PROPERTIES
@@ -530,12 +555,13 @@ class StudentRow:
 
         return {
             "Source Row": row_index,
-            "Matched Student ID": 0,
+            "Matched Student ID": None,
             "Matched Name": "",
             "Matched VAT": "",
             "Matched Email": "",
             "Matched Phone": "",
             "Matched Mobile": "",
+            "Matched Activity": "",
             "Matched Last seen": "",
             "Match Nº": 0,
         }
@@ -604,9 +630,25 @@ class Application:
                 "The saved configuration could not be loaded: " f"{error}"
             )
 
+        argument_values = (
+            sys.argv[1:]
+            if arguments is None
+            else list(arguments)
+        )
+
+        activity_filter_supplied = any(
+            argument == "-af"
+            or argument == "--activity-filter"
+            or argument.startswith("--activity-filter=")
+            for argument in argument_values
+        )
+
+        if activity_filter_supplied:
+            configuration_defaults["activity_filters"] = None
+
         parser.set_defaults(**configuration_defaults)
 
-        return parser.parse_args(arguments)
+        return parser.parse_args(argument_values)
 
     def _add_spreadsheet_arguments(self, parser):
         """Add the spreadsheet-related arguments.
@@ -819,6 +861,20 @@ class Application:
         )
 
         group.add_argument(
+            "-af",
+            "--activity-filter",
+            dest="activity_filters",
+            action="append",
+            default=None,
+            metavar="PATTERN",
+            help=(
+                "PostgreSQL ILIKE pattern used to filter training activity "
+                "codes. The option may be repeated. Wildcards percent and "
+                "underscore are supported."
+            ),
+        )
+
+        group.add_argument(
             "-sc",
             "--save-config",
             action="store_true",
@@ -958,6 +1014,23 @@ class Application:
         if mask_character is not None:
             StudentRow._validate_mask_character(mask_character)
 
+        activity_filters = self.arguments.activity_filters or []
+        normalised_filters = []
+
+        for activity_filter in activity_filters:
+            if not isinstance(activity_filter, str):
+                raise TypeError("Activity filters must be strings.")
+
+            activity_filter = activity_filter.strip()
+
+            if not activity_filter:
+                raise ValueError("Activity filters must not be empty.")
+
+            if activity_filter not in normalised_filters:
+                normalised_filters.append(activity_filter)
+
+        self.arguments.activity_filters = normalised_filters
+
         if self.arguments.ssh_host and not self.arguments.ssh_user:
             raise ValueError(
                 "SSH user is required when an SSH host is configured."
@@ -1015,6 +1088,13 @@ class Application:
             self.arguments.vat_mask_character is not None,
         )
         self.logger.debug(
+            "Activity filters: %s",
+            (
+                ", ".join(self.arguments.activity_filters)
+                or "<not configured>"
+            ),
+        )
+        self.logger.debug(
             "CSV encoding: %s",
             self.arguments.csv_encoding,
         )
@@ -1055,8 +1135,8 @@ class Application:
         """Read the spreadsheet specified in the application arguments.
 
         CSV files are read using the configured encoding, separator and quote
-        character. Excel files are read from the configured sheet or, when no
-        sheet name is supplied, from the first sheet.
+        character. Excel files preserve the native value types read from the
+        configured sheet or, when no sheet name is supplied, the first sheet.
 
         Returns:
             A data frame containing the spreadsheet data.
@@ -1125,7 +1205,6 @@ class Application:
                 dataframe = pandas.read_excel(
                     workbook,
                     sheet_name=sheet_name,
-                    dtype=str,
                 )
 
         else:
@@ -1563,6 +1642,20 @@ class Application:
                 )
             )
 
+        activity_filter_clause = ""
+
+        if self.arguments.activity_filters:
+            activity_conditions = "\n        OR ".join(
+                "act.activity_code ILIKE %s"
+                for _ in self.arguments.activity_filters
+            )
+            activity_filter_clause = (
+                "    WHERE (\n"
+                f"        {activity_conditions}\n"
+                "    )\n"
+            )
+            parameters.extend(self.arguments.activity_filters)
+
         query = f"""
 WITH vals (
     row_index,
@@ -1571,45 +1664,77 @@ WITH vals (
 ) AS (
     VALUES
         {values_clause}
+),
+selected_enrolment AS (
+    SELECT DISTINCT ON (enrol.student_id)
+        enrol."id" AS enrolment_id,
+        enrol.student_id,
+        enrol.training_action_id,
+        enrol.register,
+        enrol.deregister,
+        act.activity_code AS activity,
+        GREATEST(
+            LEAST(
+                COALESCE(
+                    enrol.deregister::date,
+                    'infinity'::date
+                ),
+                CURRENT_DATE
+            ),
+            enrol.register::date
+        )::date AS last_seen
+    FROM academy_training_action_enrolment AS enrol
+    LEFT JOIN academy_training_action AS ata
+        ON ata."id" = enrol.training_action_id
+    LEFT JOIN academy_training_activity AS act
+        ON act."id" = ata.training_activity_id
+{activity_filter_clause}    ORDER BY
+        enrol.student_id,
+        -- Activas: 1, Futuras: 2, Pasadas: 3
+        CASE
+            WHEN enrol.deregister::date < CURRENT_DATE
+                THEN 3
+            WHEN enrol.register::date > CURRENT_DATE
+                THEN 2
+            ELSE 1
+        END ASC,
+        -- Diferencia positiva en días entre hoy y la validez de la matrícula
+        CASE
+            WHEN enrol.deregister::date < CURRENT_DATE
+                THEN CURRENT_DATE - enrol.deregister::date
+            WHEN enrol.register::date > CURRENT_DATE
+                THEN enrol.register::date - CURRENT_DATE
+            ELSE 0
+        END ASC,
+        enrol.register DESC NULLS LAST,
+        enrol."id" DESC
 )
 SELECT
-    std.id AS student_id,
-    rp.name,
+    std."id" AS student_id,
+    rp."name",
     rp.vat,
     rp.email,
     rp.phone,
     rp.mobile,
-    COALESCE(
-        enrol.deregister,
-        enrol.register
-    )::date AS last_seen,
+    enrol.activity,
+    enrol.last_seen,
     vals.row_index,
     ROW_NUMBER() OVER (
         PARTITION BY vals.row_index
-        ORDER BY std.id
+        ORDER BY std."id"
     )::integer AS match_index
 FROM vals
 INNER JOIN res_partner AS rp
-    ON unaccent(rp.name)
+    ON unaccent(rp."name")
         ILIKE unaccent(vals.name_pattern) ESCAPE '!'
     AND (
         vals.vat_pattern IS NULL
         OR rp.vat ILIKE vals.vat_pattern ESCAPE '!'
     )
 INNER JOIN academy_student AS std
-    ON std.res_partner_id = rp.id
-LEFT JOIN (
-    SELECT DISTINCT ON (student_id)
-        student_id,
-        register,
-        deregister
-    FROM academy_training_action_enrolment
-    ORDER BY
-        student_id,
-        deregister DESC NULLS FIRST,
-        register DESC
-) AS enrol
-    ON enrol.student_id = std.id
+    ON std.res_partner_id = rp."id"
+LEFT JOIN selected_enrolment AS enrol
+    ON enrol.student_id = std."id"
 ORDER BY
     vals.row_index,
     match_index
@@ -2197,6 +2322,12 @@ ORDER BY
                 "Miscellaneous",
                 "vat_mask_character",
             ),
+            "activity_filters": self._list_configuration_value(
+                configuration,
+                "Miscellaneous",
+                "activity_filters",
+                legacy_option="activity_filter",
+            ),
             "verbose": configuration.getboolean(
                 "Miscellaneous",
                 "verbose",
@@ -2236,6 +2367,78 @@ ORDER BY
         value = value.strip()
 
         return value or None
+
+    @staticmethod
+    def _list_configuration_value(
+        configuration,
+        section,
+        option,
+        legacy_option=None,
+    ):
+        """Read a list of strings from an INI configuration.
+
+        The preferred representation is a JSON array. A legacy single-value
+        option is also accepted for backwards compatibility.
+
+        Args:
+            configuration: Configuration parser containing the value.
+            section: Name of the INI section.
+            option: Name of the JSON-list option.
+            legacy_option: Previous single-value option name, if any.
+
+        Returns:
+            A list containing the configured non-empty strings.
+
+        Raises:
+            ValueError: If the configured JSON value is not a string list.
+        """
+        value = configuration.get(
+            section,
+            option,
+            fallback=None,
+        )
+
+        if value is None and legacy_option is not None:
+            value = configuration.get(
+                section,
+                legacy_option,
+                fallback=None,
+            )
+
+            if value is not None:
+                value = value.strip()
+                return [value] if value else []
+
+        if value is None or not value.strip():
+            return []
+
+        try:
+            values = json.loads(value)
+        except json.JSONDecodeError as error:
+            raise ValueError(
+                f"Configuration option '{option}' must be a JSON array."
+            ) from error
+
+        if not isinstance(values, list):
+            raise ValueError(
+                f"Configuration option '{option}' must be a JSON array."
+            )
+
+        normalised_values = []
+
+        for item in values:
+            if not isinstance(item, str):
+                raise ValueError(
+                    f"Configuration option '{option}' must contain "
+                    "only strings."
+                )
+
+            item = item.strip()
+
+            if item and item not in normalised_values:
+                normalised_values.append(item)
+
+        return normalised_values
 
     def _save_configuration(self):
         """Save the application configuration to the user's home folder.
@@ -2305,6 +2508,10 @@ ORDER BY
         configuration["Miscellaneous"] = {
             "vat_mask_character": self._configuration_value(
                 self.arguments.vat_mask_character
+            ),
+            "activity_filters": json.dumps(
+                self.arguments.activity_filters,
+                ensure_ascii=False,
             ),
             "verbose": self._configuration_value(self.arguments.verbose),
         }
