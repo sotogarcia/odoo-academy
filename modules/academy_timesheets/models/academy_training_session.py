@@ -1609,6 +1609,7 @@ class AcademyTrainingSession(models.Model):
                 values = {
                     "teacher_id": ta.teacher_id.id,
                     "sequence": ta.sequence,
+                    "validate": ta.validate,
                 }
                 m2m_op = (0, 0, values)
                 default["teacher_assignment_ids"].append(m2m_op)
@@ -1623,6 +1624,7 @@ class AcademyTrainingSession(models.Model):
                     "date_start": default["date_start"],
                     "date_stop": default["date_stop"],
                     "state": rv.state,
+                    "validate": rv.validate,
                 }
                 m2m_op = (0, 0, values)
                 default["reservation_ids"].append(m2m_op)

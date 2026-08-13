@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from datetime import date, datetime, timedelta
 from logging import getLogger
 
+from dateutil.relativedelta import relativedelta
 from odoo import api, fields, models
 from odoo.exceptions import UserError, ValidationError
 from odoo.osv.expression import AND
@@ -36,7 +37,7 @@ class _CloneDateRanges:
 
 
 class AcademyTimesheetsCloneWizard(models.TransientModel):
-    """Clone sessions from a selected day or week."""
+    """Clone sessions from a selected day, week, or month."""
 
     _name = "academy.timesheets.clone.wizard"
     _description = "Academy timesheets clone wizard"
@@ -54,6 +55,7 @@ class AcademyTimesheetsCloneWizard(models.TransientModel):
         selection=[
             ("day", "Day"),
             ("week", "Week"),
+            ("month", "Month"),
         ],
     )
 
@@ -179,6 +181,8 @@ class AcademyTimesheetsCloneWizard(models.TransientModel):
             source_weekday = self.from_start.weekday()
             if source_weekday != 0:
                 self.from_start -= timedelta(days=source_weekday)
+        elif self.interval_type == "month":
+            self.from_start = self.from_start.replace(day=1)
 
     @api.depends("interval_type", "from_start")
     def _compute_from_stop(self):
@@ -190,6 +194,8 @@ class AcademyTimesheetsCloneWizard(models.TransientModel):
                 wizard.from_stop = wizard.from_start
             elif wizard.interval_type == "week":
                 wizard.from_stop = wizard.from_start + timedelta(days=6)
+            elif wizard.interval_type == "month":
+                wizard.from_stop = wizard._get_month_end(wizard.from_start)
 
     @api.onchange("to_start", "interval_type")
     def _onchange_to_start(self):
@@ -201,6 +207,8 @@ class AcademyTimesheetsCloneWizard(models.TransientModel):
             destination_weekday = self.to_start.weekday()
             if destination_weekday != 0:
                 self.to_start -= timedelta(days=destination_weekday)
+        elif self.interval_type == "month":
+            self.to_start = self.to_start.replace(day=1)
 
     @api.depends("interval_type", "to_start")
     def _compute_to_stop(self):
@@ -212,6 +220,8 @@ class AcademyTimesheetsCloneWizard(models.TransientModel):
                 wizard.to_stop = wizard.to_start
             elif wizard.interval_type == "week":
                 wizard.to_stop = wizard.to_start + timedelta(days=6)
+            elif wizard.interval_type == "month":
+                wizard.to_stop = wizard._get_month_end(wizard.to_start)
 
     # -------------------------------------------------------------------------
     # Context and defaults
@@ -273,6 +283,14 @@ class AcademyTimesheetsCloneWizard(models.TransientModel):
 
             source_stop = source_start + timedelta(days=6)
             destination_stop = destination_start + timedelta(days=6)
+
+        elif self.interval_type == "month":
+            source_start = source_start.replace(day=1)
+            destination_start = destination_start.replace(day=1)
+
+            source_stop = self._get_month_end(source_start)
+            destination_stop = self._get_month_end(destination_start)
+
         else:
             source_stop = source_start
             destination_stop = destination_start
@@ -302,10 +320,56 @@ class AcademyTimesheetsCloneWizard(models.TransientModel):
         )
 
     @staticmethod
-    def _get_day_offsets(date_ranges):
-        """Return the day offsets in the source range."""
-        day_count = (date_ranges.source_stop - date_ranges.source_start).days
+    def _get_source_day_count(date_ranges):
+        """Return the number of days in the source range."""
+        return (date_ranges.source_stop - date_ranges.source_start).days
+
+    @staticmethod
+    def _get_destination_day_count(date_ranges):
+        """Return the number of days in the destination range."""
+        return (
+            date_ranges.destination_stop - date_ranges.destination_start
+        ).days
+
+    def _get_copy_day_count(self, date_ranges):
+        """Return the number of source days that can be copied."""
+        return min(
+            self._get_source_day_count(date_ranges),
+            self._get_destination_day_count(date_ranges),
+        )
+
+    def _get_day_offsets_to_process(self, date_ranges):
+        """Return the day offsets that must be processed."""
+        if self._should_replace_destination_sessions():
+            day_count = self._get_destination_day_count(date_ranges)
+        else:
+            day_count = self._get_copy_day_count(date_ranges)
+
         return range(day_count)
+
+    @staticmethod
+    def _get_source_date_for_offset(
+        date_ranges,
+        copy_day_count,
+        day_offset,
+    ):
+        """Return the source date corresponding to a day offset."""
+        if day_offset >= copy_day_count:
+            return None
+
+        return date_ranges.source_start + timedelta(days=day_offset)
+
+    @staticmethod
+    def _get_month_end(date_value):
+        """Return the last day of the month containing the given date."""
+        month_start = date_value.replace(day=1)
+        next_month_start = month_start + relativedelta(months=1)
+        month_end = next_month_start - relativedelta(days=1)
+
+        if isinstance(month_end, datetime):
+            return month_end.date()
+
+        return month_end
 
     # -------------------------------------------------------------------------
     # Business rules
@@ -450,12 +514,14 @@ class AcademyTimesheetsCloneWizard(models.TransientModel):
         log_state,
     ):
         """Process all selected clone targets."""
-        day_offsets = self._get_day_offsets(date_ranges)
+        copy_day_count = self._get_copy_day_count(date_ranges)
+        day_offsets = self._get_day_offsets_to_process(date_ranges)
 
         for clone_target in clone_targets:
             self._process_clone_target(
                 clone_target,
                 date_ranges,
+                copy_day_count,
                 day_offsets,
                 log_state,
             )
@@ -464,6 +530,7 @@ class AcademyTimesheetsCloneWizard(models.TransientModel):
         self,
         clone_target,
         date_ranges,
+        copy_day_count,
         day_offsets,
         log_state,
     ):
@@ -474,6 +541,7 @@ class AcademyTimesheetsCloneWizard(models.TransientModel):
             self._process_clone_date(
                 clone_target,
                 date_ranges,
+                copy_day_count,
                 day_offset,
                 log_state,
             )
@@ -482,21 +550,28 @@ class AcademyTimesheetsCloneWizard(models.TransientModel):
         self,
         clone_target,
         date_ranges,
+        copy_day_count,
         day_offset,
         log_state,
     ):
         """Process one source-to-destination date mapping."""
-        source_date = date_ranges.source_start + timedelta(days=day_offset)
         destination_date = date_ranges.destination_start + timedelta(
             days=day_offset
         )
 
-        self._log_clone_date_mapping(
-            log_state,
-            clone_target,
-            source_date,
-            destination_date,
+        source_date = self._get_source_date_for_offset(
+            date_ranges,
+            copy_day_count,
+            day_offset,
         )
+
+        if source_date is not None:
+            self._log_clone_date_mapping(
+                log_state,
+                clone_target,
+                source_date,
+                destination_date,
+            )
 
         if self._should_replace_destination_sessions():
             self._replace_destination_sessions(
@@ -505,7 +580,8 @@ class AcademyTimesheetsCloneWizard(models.TransientModel):
                 destination_date,
                 log_state,
             )
-        else:
+
+        elif source_date is not None:
             self._append_source_sessions(
                 clone_target,
                 source_date,
@@ -620,7 +696,7 @@ class AcademyTimesheetsCloneWizard(models.TransientModel):
                     destination_date,
                 )
 
-                log_reference_date = source_date
+                log_reference_date = source_date or destination_date
 
                 for destination_session in destination_sessions:
                     failed_operation = "delete"
@@ -633,24 +709,25 @@ class AcademyTimesheetsCloneWizard(models.TransientModel):
                         log_state,
                     )
 
-                failed_operation = "clone"
-                failed_session = None
+                if source_date is not None:
+                    failed_operation = "clone"
+                    failed_session = None
 
-                source_sessions = self._find_target_sessions_for_date(
-                    clone_target,
-                    source_date,
-                )
-
-                for source_session in source_sessions:
-                    failed_session = source_session
-
-                    self._clone_source_session(
+                    source_sessions = self._find_target_sessions_for_date(
                         clone_target,
                         source_date,
-                        destination_date,
-                        source_session,
-                        log_state,
                     )
+
+                    for source_session in source_sessions:
+                        failed_session = source_session
+
+                        self._clone_source_session(
+                            clone_target,
+                            source_date,
+                            destination_date,
+                            source_session,
+                            log_state,
+                        )
 
         except Exception as exception:  # noqa: BLE001
             log_state.sequence = initial_log_sequence
