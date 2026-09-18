@@ -67,9 +67,6 @@
       file="academy_base/static/src/img/training_framework_grade_e.png" />
   </record>
 
-  <!-- Obsolete framework: the Spanish VET system defines Grades A to E. -->
-  <delete id="framework_degree_f" model="academy.training.framework"/>
-
   <!-- SEPE Programs (Specialties Catalogue)  -->
   <record id="framework_sepe_programs" model="academy.training.framework">
     <field name="name">SEPE – Programs</field>
