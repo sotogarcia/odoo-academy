@@ -25,8 +25,10 @@
 
     <record id="academy_group_teacher" model="res.groups">
         <field name="name">Teacher</field>
-        <field name="comment">Users who can read base catalog, manage assigned training actions and
-            create/edit their own resources</field>
+        <field name="comment">
+            Users who can read the base catalog, access their assigned training
+            actions without modifying them, and create/edit their own resources
+        </field>
         <field name="category_id" ref="module_category_academy"/>
         <field name="implied_ids" eval="[(4, ref('academy_group_consultant'))]"/>
     </record>
