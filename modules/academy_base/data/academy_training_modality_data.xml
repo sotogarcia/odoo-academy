@@ -10,20 +10,20 @@
 
     <record id="academy_training_modality_blended" model="academy.training.modality">
         <field name="name">Mixed</field>
-        <field name="description">Combine the different modes of delivery for the needs of the
-            participants</field>
+        <field name="description">Combines different modes of delivery according to the needs of
+            the participants</field>
     </record>
 
     <record id="academy_training_modality_online" model="academy.training.modality">
         <field name="name">Online</field>
-        <field name="description">Training through the online platform that allows maximum
-            flexibility, accessibility to the reach of the participants</field>
+        <field name="description">Training delivered through an online platform, providing maximum
+            flexibility and accessibility for participants</field>
     </record>
 
     <record id="academy_training_modality_classroom" model="academy.training.modality">
         <field name="name">Classroom teaching</field>
-        <field name="description">Training given in the room, direct and personal communication
-            between the participants and the trainer</field>
+        <field name="description">Training delivered in a classroom, with direct and personal
+            communication between the participants and the trainer</field>
     </record>
 
 </odoo>

@@ -35,7 +35,7 @@
     </record>
 
     <record id="academy_professional_family_09" model="academy.professional.family">
-        <field name="name">Energy and hydraulics</field>
+        <field name="name">Energy and water</field>
     </record>
 
     <record id="academy_professional_family_10" model="academy.professional.family">

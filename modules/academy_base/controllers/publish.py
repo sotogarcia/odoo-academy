@@ -1,29 +1,30 @@
-# -*- coding: utf-8 -*-
+###############################################################################
+#    License, author and contributors information in:                         #
+#    __manifest__.py file at the root folder of this module.                  #
+###############################################################################
+
 
 from odoo import http
-from odoo.http import request, Response
+from odoo.http import request
 
-import logging
-
-_logger = logging.getLogger(__name__)
+ROUTE_PROGRAM = "/academy/catalog/program/<int:program_id>"
+ROUTE_ACTION = "/academy/monitoring/action/<int:action_id>"
 
 
 class Publish(http.Controller):
     @http.route(
-        "/academy/catalog/program/<program_id>", type="http", auth="public"
+        ROUTE_PROGRAM,
+        type="http",
+        auth="user",
+        methods=["GET"],
+        readonly=True,
     )
-    def program(self, **kw):
+    def program(self, program_id):
         """Render training program catalog page using QWeb report."""
-        program_raw = kw.get("program_id")
-        try:
-            program_id = int(program_raw)
-        except (TypeError, ValueError):
-            return request.not_found()
-
         program_obj = request.env["academy.training.program"]
         program = program_obj.browse(program_id).exists()
         if not program:
-            return request.not_found()
+            raise request.not_found()
 
         view_name = "academy_base.view_academy_training_program_modules_qweb"
         values = {"docs": program}
@@ -36,20 +37,18 @@ class Publish(http.Controller):
         return request.make_response(html, headers=headers)
 
     @http.route(
-        "/academy/monitoring/action/<action_id>", type="http", auth="public"
+        ROUTE_ACTION,
+        type="http",
+        auth="user",
+        methods=["GET"],
+        readonly=True,
     )
-    def action(self, **kw):
+    def action(self, action_id):
         """Render training action catalog page using QWeb report."""
-        action_raw = kw.get("action_id")
-        try:
-            action_id = int(action_raw)
-        except (TypeError, ValueError):
-            return request.not_found()
-
         action_obj = request.env["academy.training.action"]
         action = action_obj.browse(action_id).exists()
         if not action:
-            return request.not_found()
+            raise request.not_found()
 
         view_name = "academy_base.view_academy_training_action_modules_qweb"
         values = {"docs": action}

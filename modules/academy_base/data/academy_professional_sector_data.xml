@@ -52,7 +52,7 @@
     </record>
 
     <record id="professional_sector_1202" model="academy.professional.sector">
-        <field name="name">Analysis and functional analysis</field>
+        <field name="name">Analysis and functional analysis</field>
         <field name="code">1202</field>
         <field name="active" eval="1"/>
         <field name="professional_field_id" ref="professional_field_12"/>
@@ -262,7 +262,7 @@
     </record>
 
     <record id="professional_sector_2214" model="academy.professional.sector">
-        <field name="name">Units and constants</field>
+        <field name="name">Units and constants</field>
         <field name="code">2214</field>
         <field name="active" eval="1"/>
         <field name="professional_field_id" ref="professional_field_22"/>
@@ -535,21 +535,21 @@
     </record>
 
     <record id="professional_sector_2511" model="academy.professional.sector">
-        <field name="name">Soil Science</field>
+        <field name="name">Soil Science</field>
         <field name="code">2511</field>
         <field name="active" eval="1"/>
         <field name="professional_field_id" ref="professional_field_25"/>
     </record>
 
     <record id="professional_sector_2512" model="academy.professional.sector">
-        <field name="name">Space Sciences</field>
+        <field name="name">Space Sciences</field>
         <field name="code">2512</field>
         <field name="active" eval="1"/>
         <field name="professional_field_id" ref="professional_field_25"/>
     </record>
 
     <record id="professional_sector_2599" model="academy.professional.sector">
-        <field name="name">Other Earth, Space or Environmental specialities</field>
+        <field name="name">Other Earth, Space or Environmental specialities</field>
         <field name="code">2599</field>
         <field name="active" eval="1"/>
         <field name="professional_field_id" ref="professional_field_25"/>
@@ -661,7 +661,7 @@
     </record>
 
     <record id="professional_sector_3206" model="academy.professional.sector">
-        <field name="name">Nutrition sciences</field>
+        <field name="name">Nutrition sciences</field>
         <field name="code">3206</field>
         <field name="active" eval="1"/>
         <field name="professional_field_id" ref="professional_field_32"/>
@@ -759,14 +759,14 @@
     </record>
 
     <record id="professional_sector_3305" model="academy.professional.sector">
-        <field name="name">Construction technology</field>
+        <field name="name">Construction technology</field>
         <field name="code">3305</field>
         <field name="active" eval="1"/>
         <field name="professional_field_id" ref="professional_field_33"/>
     </record>
 
     <record id="professional_sector_3306" model="academy.professional.sector">
-        <field name="name">Electrical technology and engineering</field>
+        <field name="name">Electrical technology and engineering</field>
         <field name="code">3306</field>
         <field name="active" eval="1"/>
         <field name="professional_field_id" ref="professional_field_33"/>
@@ -815,7 +815,7 @@
     </record>
 
     <record id="professional_sector_3313" model="academy.professional.sector">
-        <field name="name">Mechanical Engineering and technology</field>
+        <field name="name">Mechanical Engineering and technology</field>
         <field name="code">3313</field>
         <field name="active" eval="1"/>
         <field name="professional_field_id" ref="professional_field_33"/>
@@ -836,21 +836,21 @@
     </record>
 
     <record id="professional_sector_3316" model="academy.professional.sector">
-        <field name="name">Metal products technology</field>
+        <field name="name">Metal products technology</field>
         <field name="code">3316</field>
         <field name="active" eval="1"/>
         <field name="professional_field_id" ref="professional_field_33"/>
     </record>
 
     <record id="professional_sector_3317" model="academy.professional.sector">
-        <field name="name">Motor vehicle technology</field>
+        <field name="name">Motor vehicle technology</field>
         <field name="code">3317</field>
         <field name="active" eval="1"/>
         <field name="professional_field_id" ref="professional_field_33"/>
     </record>
 
     <record id="professional_sector_3318" model="academy.professional.sector">
-        <field name="name">Mining technology</field>
+        <field name="name">Mining technology</field>
         <field name="code">3318</field>
         <field name="active" eval="1"/>
         <field name="professional_field_id" ref="professional_field_33"/>
@@ -871,7 +871,7 @@
     </record>
 
     <record id="professional_sector_3321" model="academy.professional.sector">
-        <field name="name">Petroleum and coal technology</field>
+        <field name="name">Petroleum and coal technology</field>
         <field name="code">3321</field>
         <field name="active" eval="1"/>
         <field name="professional_field_id" ref="professional_field_33"/>
@@ -885,7 +885,7 @@
     </record>
 
     <record id="professional_sector_3323" model="academy.professional.sector">
-        <field name="name">Railway technology</field>
+        <field name="name">Railway technology</field>
         <field name="code">3323</field>
         <field name="active" eval="1"/>
         <field name="professional_field_id" ref="professional_field_33"/>
@@ -899,14 +899,14 @@
     </record>
 
     <record id="professional_sector_3325" model="academy.professional.sector">
-        <field name="name">Telecommunications technology</field>
+        <field name="name">Telecommunications technology</field>
         <field name="code">3325</field>
         <field name="active" eval="1"/>
         <field name="professional_field_id" ref="professional_field_33"/>
     </record>
 
     <record id="professional_sector_3326" model="academy.professional.sector">
-        <field name="name">Textile technology</field>
+        <field name="name">Textile technology</field>
         <field name="code">3326</field>
         <field name="active" eval="1"/>
         <field name="professional_field_id" ref="professional_field_33"/>
@@ -948,7 +948,7 @@
     </record>
 
     <record id="professional_sector_5102" model="academy.professional.sector">
-        <field name="name">Ethnography and Ethnology</field>
+        <field name="name">Ethnography and Ethnology</field>
         <field name="code">5102</field>
         <field name="active" eval="1"/>
         <field name="professional_field_id" ref="professional_field_51"/>
@@ -1011,7 +1011,7 @@
     </record>
 
     <record id="professional_sector_5207" model="academy.professional.sector">
-        <field name="name">Population size and demographic evolution</field>
+        <field name="name">Population size and demographic evolution</field>
         <field name="code">5207</field>
         <field name="active" eval="1"/>
         <field name="professional_field_id" ref="professional_field_52"/>
@@ -1025,7 +1025,7 @@
     </record>
 
     <record id="professional_sector_5301" model="academy.professional.sector">
-        <field name="name">Domestic fiscal policy and public finance</field>
+        <field name="name">Domestic fiscal policy and public finance</field>
         <field name="code">5301</field>
         <field name="active" eval="1"/>
         <field name="professional_field_id" ref="professional_field_53"/>
@@ -1039,7 +1039,7 @@
     </record>
 
     <record id="professional_sector_5303" model="academy.professional.sector">
-        <field name="name">Economic accounting</field>
+        <field name="name">Economic accounting</field>
         <field name="code">5303</field>
         <field name="active" eval="1"/>
         <field name="professional_field_id" ref="professional_field_53"/>
@@ -1060,7 +1060,7 @@
     </record>
 
     <record id="professional_sector_5306" model="academy.professional.sector">
-        <field name="name">Economics of technological change</field>
+        <field name="name">Economics of technological change</field>
         <field name="code">5306</field>
         <field name="active" eval="1"/>
         <field name="professional_field_id" ref="professional_field_53"/>
@@ -1081,7 +1081,7 @@
     </record>
 
     <record id="professional_sector_5309" model="academy.professional.sector">
-        <field name="name">Industrial organization and public policy</field>
+        <field name="name">Industrial organization and public policy</field>
         <field name="code">5309</field>
         <field name="active" eval="1"/>
         <field name="professional_field_id" ref="professional_field_53"/>
@@ -1095,7 +1095,7 @@
     </record>
 
     <record id="professional_sector_5311" model="academy.professional.sector">
-        <field name="name">Organization and management of enterprises</field>
+        <field name="name">Organization and management of enterprises</field>
         <field name="code">5311</field>
         <field name="active" eval="1"/>
         <field name="professional_field_id" ref="professional_field_53"/>
@@ -1228,7 +1228,7 @@
     </record>
 
     <record id="professional_sector_5605" model="academy.professional.sector">
-        <field name="name">National law and legislation</field>
+        <field name="name">National law and legislation</field>
         <field name="code">5605</field>
         <field name="active" eval="1"/>
         <field name="professional_field_id" ref="professional_field_56"/>
@@ -1284,21 +1284,21 @@
     </record>
 
     <record id="professional_sector_5801" model="academy.professional.sector">
-        <field name="name">Educational theory and methods</field>
+        <field name="name">Educational theory and methods</field>
         <field name="code">5801</field>
         <field name="active" eval="1"/>
         <field name="professional_field_id" ref="professional_field_58"/>
     </record>
 
     <record id="professional_sector_5802" model="academy.professional.sector">
-        <field name="name">Organization and planning of education</field>
+        <field name="name">Organization and planning of education</field>
         <field name="code">5802</field>
         <field name="active" eval="1"/>
         <field name="professional_field_id" ref="professional_field_58"/>
     </record>
 
     <record id="professional_sector_5803" model="academy.professional.sector">
-        <field name="name">Teacher training and employment</field>
+        <field name="name">Teacher training and employment</field>
         <field name="code">5803</field>
         <field name="active" eval="1"/>
         <field name="professional_field_id" ref="professional_field_58"/>
@@ -1319,7 +1319,7 @@
     </record>
 
     <record id="professional_sector_5902" model="academy.professional.sector">
-        <field name="name">Policy sciences</field>
+        <field name="name">Policy sciences</field>
         <field name="code">5902</field>
         <field name="active" eval="1"/>
         <field name="professional_field_id" ref="professional_field_59"/>
@@ -1333,7 +1333,7 @@
     </record>
 
     <record id="professional_sector_5904" model="academy.professional.sector">
-        <field name="name">Political institutions</field>
+        <field name="name">Political institutions</field>
         <field name="code">5904</field>
         <field name="active" eval="1"/>
         <field name="professional_field_id" ref="professional_field_59"/>
@@ -1403,7 +1403,7 @@
     </record>
 
     <record id="professional_sector_6103" model="academy.professional.sector">
-        <field name="name">Counselling and guidance</field>
+        <field name="name">Counselling and guidance</field>
         <field name="code">6103</field>
         <field name="active" eval="1"/>
         <field name="professional_field_id" ref="professional_field_61"/>
@@ -1417,7 +1417,7 @@
     </record>
 
     <record id="professional_sector_6105" model="academy.professional.sector">
-        <field name="name">Evaluation and measurement in psychology</field>
+        <field name="name">Evaluation and measurement in psychology</field>
         <field name="code">6105</field>
         <field name="active" eval="1"/>
         <field name="professional_field_id" ref="professional_field_61"/>
@@ -1445,7 +1445,7 @@
     </record>
 
     <record id="professional_sector_6109" model="academy.professional.sector">
-        <field name="name">Occupational and personnel psychology</field>
+        <field name="name">Occupational and personnel psychology</field>
         <field name="code">6109</field>
         <field name="active" eval="1"/>
         <field name="professional_field_id" ref="professional_field_61"/>
@@ -1501,14 +1501,14 @@
     </record>
 
     <record id="professional_sector_6202" model="academy.professional.sector">
-        <field name="name">Literary theory, analysis and criticism</field>
+        <field name="name">Literary theory, analysis and criticism</field>
         <field name="code">6202</field>
         <field name="active" eval="1"/>
         <field name="professional_field_id" ref="professional_field_62"/>
     </record>
 
     <record id="professional_sector_6203" model="academy.professional.sector">
-        <field name="name">Fine arts theory, analysis and criticism</field>
+        <field name="name">Fine arts theory, analysis and criticism</field>
         <field name="code">6203</field>
         <field name="active" eval="1"/>
         <field name="professional_field_id" ref="professional_field_62"/>
@@ -1564,7 +1564,7 @@
     </record>
 
     <record id="professional_sector_6307" model="academy.professional.sector">
-        <field name="name">Social change and development</field>
+        <field name="name">Social change and development</field>
         <field name="code">6307</field>
         <field name="active" eval="1"/>
         <field name="professional_field_id" ref="professional_field_63"/>

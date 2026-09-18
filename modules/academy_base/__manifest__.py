@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 #
 #    Odoo, Open Source Management Solution
@@ -20,7 +19,7 @@
 #    along with this program.  If not, see http://www.gnu.org/licenses
 #
 ###############################################################################
-{
+{  # noqa: B018
     "name": "Academy Base",
     "summary": """
         Common information and behavior used by the academy modules""",
@@ -63,6 +62,7 @@ of reference catalogs and training structures across the platform.
     "depends": [
         "base",
         "mail",
+        "phone_validation",
         "record_ownership",
         "base_field_m2m_view",
         "partner_firstname",
@@ -106,6 +106,7 @@ of reference catalogs and training structures across the platform.
         "security/academy_training_program.xml",
         "security/academy_training_action.xml",
         "security/academy_training_action_enrolment.xml",
+        "views/res_partner_view.xml",
         "security/academy_support_staff.xml",
         "security/academy_technical_staff.xml",
         "security/academy_teacher.xml",
@@ -159,7 +160,6 @@ of reference catalogs and training structures across the platform.
         "wizard/academy_training_action_synchronize_wizard_view.xml",
         "wizard/academy_training_program_synchronize_wizard_view.xml",
     ],
-    "qweb": [],
     "demo": [
         "demo/res_partner.xml",
         "demo/res_company_demo.xml",

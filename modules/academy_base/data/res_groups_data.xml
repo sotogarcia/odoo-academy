@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<odoo noupdate="1">
+<odoo noupdate="0">
 
     <!-- Category: all the other module groups are child of this
         ============================================================ -->
@@ -10,8 +10,6 @@
         <field name="visible" eval="True"/>
         <field name="description">Academy category</field>
     </record>
-
-
 
     <!-- User who only can read data -->
     <record id="academy_group_consultant" model="res.groups">

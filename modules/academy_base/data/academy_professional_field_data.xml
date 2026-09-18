@@ -15,7 +15,7 @@
     </record>
 
     <record id="professional_field_21" model="academy.professional.field">
-        <field name="name">Astronomy, Astrophysics</field>
+        <field name="name">Astronomy, Astrophysics</field>
         <field name="code">21</field>
         <field name="active" eval="1"/>
     </record>
@@ -39,7 +39,7 @@
     </record>
 
     <record id="professional_field_25" model="academy.professional.field">
-        <field name="name">Earth and space science</field>
+        <field name="name">Earth and space science</field>
         <field name="code">25</field>
         <field name="active" eval="1"/>
     </record>
@@ -123,7 +123,7 @@
     </record>
 
     <record id="professional_field_62" model="academy.professional.field">
-        <field name="name">Sciences of Arts and Letters</field>
+        <field name="name">Sciences of Arts and Letters</field>
         <field name="code">62</field>
         <field name="active" eval="1"/>
     </record>

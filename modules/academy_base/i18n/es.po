@@ -2609,8 +2609,8 @@ msgstr "Final de la formación"
 
 #. module: academy_base
 #: model:academy.professional.family,name:academy_base.academy_professional_family_09
-msgid "Energy and hydraulics"
-msgstr "Energía e hidráulica"
+msgid "Energy and water"
+msgstr "Energía y Agua"
 
 #. module: academy_base
 #: model:academy.knowledge.area,name:academy_base.academy_knowledge_area_28
@@ -6565,8 +6565,8 @@ msgstr "Economía sectorial"
 
 #. module: academy_base
 #: model:academy.application.scope,name:academy_base.academy_application_scope_sectoral
-msgid "Sectorial"
-msgstr "Asistente de sesiones formativas"
+msgid "Sectoral"
+msgstr "Sectorial"
 
 #. module: academy_base
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_professional_field_form

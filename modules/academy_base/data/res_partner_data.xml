@@ -1,21 +1,18 @@
-<odoo>
+<?xml version="1.0" encoding="UTF-8"?>
 
-  <data noupdate="0">
+<odoo noupdate="0">
 
-    <!-- Issuing authorities -->
-    <record id="partner_mefp" model="res.partner">
-      <field name="name">Ministry of Education and VET (MEFP)</field>
-      <field name="company_type">company</field>
-      <field name="is_company">True</field>
-      <field name="active">True</field>
-    </record>
+  <!-- Issuing authorities -->
+  <record id="partner_mefp" model="res.partner">
+    <field name="name">Ministry of Education, Vocational Training and Sports</field>
+    <field name="is_company" eval="True"/>
+    <field name="active" eval="True"/>
+  </record>
 
-    <record id="partner_sepe" model="res.partner">
-      <field name="name">SEPE</field>
-      <field name="company_type">company</field>
-      <field name="is_company">True</field>
-      <field name="active">True</field>
-    </record>
-  </data>
+  <record id="partner_sepe" model="res.partner">
+    <field name="name">SEPE</field>
+    <field name="is_company" eval="True"/>
+    <field name="active" eval="True"/>
+  </record>
 
 </odoo>

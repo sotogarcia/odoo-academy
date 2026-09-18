@@ -51,4 +51,19 @@
         <field name="active" eval="True"/>
     </record>
 
+    <!-- The default student template is an internal record used when
+        duplicating enrolments and must not be modified or deleted. -->
+    <record id="ir_rule_protect_academy_student_default_template" model="ir.rule">
+        <field name="name">Protect default student template</field>
+        <field name="model_id" ref="academy_base.model_academy_student"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">
+            [('id', '!=', user.env.ref('academy_base.academy_student_default_template').id)]
+        </field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
 </odoo>

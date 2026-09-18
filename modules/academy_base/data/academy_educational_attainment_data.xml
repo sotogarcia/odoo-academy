@@ -83,9 +83,9 @@
 
     <record id="academy_educational_attainment_level_isced_2011_8"
         model="academy.educational.attainment">
-        <field name="name">Programmes designed primarily to lead to an advanced research qualification, usually concluding with the submission and defence of a substantive dissertation of publishable quality based on original research</field>
+        <field name="name">Doctoral or equivalent level</field>
         <field name="description">Programmes designed primarily to lead to an advanced research
-            qualification, usually concluding with the submission and defense of a substantive
+            qualification, usually concluding with the submission and defence of a substantive
             dissertation of publishable quality based on original research</field>
         <field name="level">8</field>
         <field name="sequence" eval="90"/>
@@ -94,8 +94,8 @@
     <record id="academy_educational_attainment_level_isced_2011_9"
         model="academy.educational.attainment">
         <field name="name">Not elsewhere classified</field>
-        <field name="description">Non-formal programs of the educational system and other programs
-            aimed at improving personal and professional training</field>
+        <field name="description">Educational attainment that cannot be classified elsewhere within
+            the ISCED framework</field>
         <field name="level">9</field>
         <field name="sequence" eval="100"/>
     </record>

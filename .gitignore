@@ -59,3 +59,6 @@ target/
 
 # Git
 .gitmessage
+
+modules/academy_base/static/docs/file_list.txt
+

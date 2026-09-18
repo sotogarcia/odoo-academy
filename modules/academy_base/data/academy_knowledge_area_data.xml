@@ -4,47 +4,47 @@
 
     <record id="academy_knowledge_area_01" model="academy.knowledge.area">
         <field name="name">Algebra</field>
-        <field name="knowle_code">5</field>
+        <field name="knowle_code">005</field>
     </record>
 
     <record id="academy_knowledge_area_02" model="academy.knowledge.area">
         <field name="name">Regional Geographic Analysis</field>
-        <field name="knowle_code">10</field>
+        <field name="knowle_code">010</field>
     </record>
 
     <record id="academy_knowledge_area_03" model="academy.knowledge.area">
         <field name="name">Mathematical Analysis</field>
-        <field name="knowle_code">15</field>
+        <field name="knowle_code">015</field>
     </record>
 
     <record id="academy_knowledge_area_04" model="academy.knowledge.area">
         <field name="name">Pathological Anatomy</field>
-        <field name="knowle_code">20</field>
+        <field name="knowle_code">020</field>
     </record>
 
     <record id="academy_knowledge_area_05" model="academy.knowledge.area">
         <field name="name">Anatomy and Pathological Anatomy Compared</field>
-        <field name="knowle_code">25</field>
+        <field name="knowle_code">025</field>
     </record>
 
     <record id="academy_knowledge_area_06" model="academy.knowledge.area">
         <field name="name">Anatomy and Human Embryology</field>
-        <field name="knowle_code">27</field>
+        <field name="knowle_code">027</field>
     </record>
 
     <record id="academy_knowledge_area_07" model="academy.knowledge.area">
         <field name="name">Physical Anthropology</field>
-        <field name="knowle_code">28</field>
+        <field name="knowle_code">028</field>
     </record>
 
     <record id="academy_knowledge_area_08" model="academy.knowledge.area">
         <field name="name">Social Anthropology</field>
-        <field name="knowle_code">30</field>
+        <field name="knowle_code">030</field>
     </record>
 
     <record id="academy_knowledge_area_09" model="academy.knowledge.area">
         <field name="name">Archaeology</field>
-        <field name="knowle_code">33</field>
+        <field name="knowle_code">033</field>
     </record>
 
     <record id="academy_knowledge_area_10" model="academy.knowledge.area">
@@ -53,7 +53,7 @@
     </record>
 
     <record id="academy_knowledge_area_11" model="academy.knowledge.area">
-        <field name="name">Ancient Histor</field>
+        <field name="name">Ancient History</field>
         <field name="knowle_code">445</field>
     </record>
 

@@ -1,15 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<odoo noupdate="0">
+<odoo noupdate="1">
 
-  <record id="academy_maintenance_full_enrolment_maintenance_task" model="academy.maintenance.task">
-      <field name="sequence" eval="10"/>
-      <field name="model_id" ref="academy_base.model_academy_training_action_enrolment"/>
-      <field name="method">full_enrolment_maintenance_task</field>
-      <field name="frequency">freq_1</field>
-      <field name="offset" eval="0"/>
-      <field name="active" eval="True"/>
-  </record>
+  <!--
+      Maintenance task execution order
+
+      The training action synchronization task must run before the full
+      enrolment maintenance task whenever both tasks are scheduled for the
+      same hour.
+
+      training_action_synchronize_task() updates the training action lines
+      first. full_enrolment_maintenance_task() then synchronizes full
+      enrolments against those action lines.
+
+      Therefore, the training action synchronization task has a lower
+      sequence value so that enrolments are always processed using the
+      already synchronized action structure.
+
+      With the current frequencies, both tasks coincide at 07:00, 15:00
+      and 23:00.
+  -->
 
   <record id="academy_maintenance_training_action_synchronize_task" model="academy.maintenance.task">
       <field name="sequence" eval="10"/>
@@ -17,6 +27,15 @@
       <field name="method">training_action_synchronize_task</field>
       <field name="frequency">freq_8</field>
       <field name="offset" eval="7"/>
+      <field name="active" eval="True"/>
+  </record>
+
+  <record id="academy_maintenance_full_enrolment_maintenance_task" model="academy.maintenance.task">
+      <field name="sequence" eval="20"/>
+      <field name="model_id" ref="academy_base.model_academy_training_action_enrolment"/>
+      <field name="method">full_enrolment_maintenance_task</field>
+      <field name="frequency">freq_1</field>
+      <field name="offset" eval="0"/>
       <field name="active" eval="True"/>
   </record>
 
