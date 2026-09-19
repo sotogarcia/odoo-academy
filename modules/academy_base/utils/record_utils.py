@@ -1,19 +1,17 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 #    License, author and contributors information in:                         #
-#    __openerp__.py file at the root folder of this module.                   #
+#    __manifest__.py file at the root folder of this module.                  #
 ###############################################################################
 
-from odoo import models
-from odoo.exceptions import UserError, ValidationError
-from odoo.tools.translate import _
-from odoo.osv.expression import TRUE_DOMAIN, FALSE_DOMAIN
-from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT
-from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DATETIME_FORMAT
-
-from re import match as re_match
 from datetime import date, datetime
 from logging import getLogger
+from re import match as re_match
+
+from odoo import models
+from odoo.exceptions import ValidationError
+from odoo.osv.expression import FALSE_DOMAIN, TRUE_DOMAIN
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DATETIME_FORMAT
 
 
 _logger = getLogger(__name__)
@@ -31,19 +29,32 @@ INCLUDE_ARCHIVED_DOMAIN = ["|", ("active", "=", True), ("active", "!=", True)]
 
 
 def get_active_records(env, expected=None):
-    """
-    Retrieves active records based on the active model and IDs from the
-    provided Odoo environment context.
+    """Return the active records defined in the Odoo context.
+
+    The active model is read from ``active_model`` and the target record IDs
+    are obtained from ``active_ids`` or, when that value is empty, from
+    ``active_id``.
+
+    The optional ``expected`` argument can restrict the accepted active model
+    to one or more model names. A recordset can also be supplied, in which
+    case its model name is used as the expected model.
 
     Args:
-        env (Environment): The Odoo environment
-        expected (tuple): List of expected model names. It also supports either
-                          the name of the model itself or a set of records for
-                          that model as long as the model is unique.
+        env (odoo.api.Environment): Odoo environment whose context contains
+            the active model and record identifiers.
+        expected (str | list | tuple | odoo.models.BaseModel | None, optional):
+            Expected active model name or collection of model names. A
+            recordset is interpreted as its model name. If None, any active
+            model is accepted. Defaults to None.
 
     Returns:
-        recordset or None: A recordset of active records based on the
-        context's active model, or None if no active model found.
+        odoo.models.BaseModel | None: Recordset containing the active records,
+        an empty recordset of the active model when no active IDs are present,
+        or None when the active model is missing or does not match
+        ``expected``.
+
+    Raises:
+        KeyError: If ``model`` does not exist in the Odoo registry.
     """
 
     _logger.debug(f"get_active_records({env}, {expected})")
@@ -53,7 +64,7 @@ def get_active_records(env, expected=None):
 
     if isinstance(expected, str):
         expected = [expected]
-    elif isinstance(expected, models.Model):
+    elif isinstance(expected, models.BaseModel):
         expected = [expected._name]
 
     if active_model and (expected is None or active_model in expected):
@@ -78,42 +89,38 @@ def get_active_records(env, expected=None):
 
 
 def has_changed(record, field_name):
-    """
-    Checks if the specified field's value has changed for a given Odoo record.
+    """Check whether a field value has changed on a single Odoo record.
 
-    This function is designed to be used within @api.onchange decorated methods
-    in Odoo models. It compares the current value of a field with its original
-    value (before user changes) to determine if the field has changed.
+    This utility is intended primarily for use inside ``@api.onchange``
+    methods. It compares the current field value with the value of the
+    corresponding original persisted record.
+
+    New records without an original persisted record are considered changed.
 
     Args:
-        record (recordset): A single Odoo recordset instance.
-        field_name (str): Name of the field to check for changes.
+        record (odoo.models.BaseModel): Single Odoo record whose field value
+            must be checked.
+        field_name (str): Name of the field to compare.
 
     Returns:
-        bool: True if the field's value has changed, False otherwise.
+        bool: True if the current field value differs from the original value,
+        or if the record has no persisted origin. False otherwise.
 
     Raises:
-        AssertionError: If the provided recordset does not contain the
-        specified field.
-
-    Note:
-        This function relies on 'record.origin' to access the original values,
-        which is only available for records that are already stored in the
-        database.
+        ValueError: If ``record`` does not contain exactly one record.
+        AttributeError: If ``field_name`` does not exist on the record.
     """
 
     _logger.debug(f"has_changed({record}, {field_name})")
 
     record.ensure_one()
 
-    result = False
-    if record:
-        if record._origin:
-            current_value = getattr(record, field_name)
-            old_value = getattr(record.origin, field_name)
-            result = current_value != old_value
-        else:
-            result = True
+    if record._origin:
+        current_value = getattr(record, field_name)
+        old_value = getattr(record._origin, field_name)
+        result = current_value != old_value
+    else:
+        result = True
 
     _logger.debug(f"has_changed > {result}")
 
@@ -121,42 +128,44 @@ def has_changed(record, field_name):
 
 
 def create_domain_for_ids(field_name, targets, restrictive=True):
-    """
-    Creates a domain where the specified field contains any of the given IDs.
+    """Create a domain matching records whose field contains target IDs.
 
-    This method constructs a search domain for a given field name, ensuring
-    the field contains any of the IDs in the targets. Handles different types
-    of target inputs (recordset, int, tuple, list) and raises an error for
-    unknown formats.
+    The target identifiers can be supplied as an Odoo recordset, a single
+    integer ID, or a list or tuple of IDs.
+
+    When no target IDs are provided, the returned domain depends on
+    ``restrictive``: a restrictive domain matches no records, while a
+    non-restrictive domain matches all records.
 
     Args:
-        field_name (str): The field name to construct the domain for.
-        targets (models.Model/int/tuple/list): Target IDs to include in the
-            domain. Can be a recordset, single ID, or list/tuple of IDs.
-        restrictive (bool): When targets are empty then if True returns a
-            domain that matches nothing (FALSE_DOMAIN), otherwise matches
-            everything (TRUE_DOMAIN). Defaults True.
+        field_name (str): Name of the field to include in the domain.
+        targets (odoo.models.BaseModel | int | list | tuple): Recordset,
+            single record ID, or sequence of record IDs.
+        restrictive (bool, optional): If True, empty targets produce
+            ``FALSE_DOMAIN``. If False, empty targets produce ``TRUE_DOMAIN``.
+            Defaults to True.
 
     Returns:
-        list: A domain list suitable for Odoo ORM search methods.
+        list: Odoo ORM domain matching the supplied target IDs.
 
     Raises:
-        UserError: If the targets parameter is in an unknown format.
+        TypeError: If ``targets`` has an unsupported type.
     """
-
     _logger.debug(
         f"create_domain_for_ids({field_name}, {targets}, {restrictive})"
     )
 
-    if isinstance(targets, models.Model):
+    if isinstance(targets, models.BaseModel):
         targets = targets.ids
-    elif isinstance(targets, (int)):
+
+    elif isinstance(targets, int) and not isinstance(targets, bool):
         targets = [targets]
-    elif isinstance(targets, (tuple, list)):
-        targets = targets
-    else:
-        msg = _("Unknown data for targets parameter")
-        raise UserError(msg)
+
+    elif not isinstance(targets, (tuple, list)):
+        raise TypeError(
+            "Argument 'targets' must be a recordset, int, list or tuple, "
+            f"not {type(targets)}"
+        )
 
     if targets:
         domain = [(field_name, "in", targets)]
@@ -173,31 +182,39 @@ def create_domain_for_ids(field_name, targets, restrictive=True):
 def create_domain_for_interval(
     field_start, field_stop, point_in_time, trunc_to_date=False
 ):
-    """
-    Creates a domain to find records where a time interval overlaps with a
-    given point in time or another interval. This is useful for filtering
-    records based on date or datetime fields.
+    """Create a domain matching records whose interval overlaps a point or
+    interval.
+
+    The target interval is defined by ``field_start`` and ``field_stop``. The
+    ``point_in_time`` argument can represent either a single point in time or a
+    two-value interval.
+
+    Open-ended target intervals are supported: records whose ``field_stop`` is
+    False are considered to continue indefinitely.
+
+    When ``trunc_to_date`` is True, date and datetime values are formatted
+    using Odoo's server date format. Otherwise, Odoo's server datetime format
+    is used.
 
     Args:
-        field_start (str): Field name representing the date_start of the interval.
-        field_stop (str): Field name representing the end of the interval.
-        point_in_time (date/datetime/list/tuple): A single date/datetime or a
-            tuple/list representing a date_start and end date/datetime for
-            comparison.
-        trunc_to_date (bool): If True, truncates datetime to date before
-            comparison. Defaults to False.
+        field_start (str): Name of the field containing the beginning of the
+            target interval.
+        field_stop (str): Name of the field containing the end of the target
+            interval.
+        point_in_time (date | datetime | list | tuple): Single date or
+            datetime, or a two-item list or tuple containing the beginning and
+            end of the interval to compare.
+        trunc_to_date (bool, optional): If True, format date and datetime
+            values using Odoo's server date format. If False, use the server
+            datetime format. Defaults to False.
 
     Returns:
-        list: A domain list suitable for Odoo ORM search methods. The domain
-        checks if the interval defined by field_start and field_stop overlaps
-        with the point in time or interval provided in point_in_time.
+        list: Odoo ORM domain matching records whose interval overlaps the
+        supplied point or interval.
 
-    Note:
-        - The function handles both single dates/datetime and intervals
-        (date_start and end).
-        - If trunc_to_date is True, datetime values are converted to date by
-        truncating the time part, which can be useful for date-only
-        comparisons.
+    Raises:
+        ValueError: If ``point_in_time`` is a list or tuple that does not
+            contain exactly two values.
     """
 
     _logger.debug(
@@ -205,6 +222,8 @@ def create_domain_for_interval(
         f"{point_in_time}, {trunc_to_date})"
     )
     if isinstance(point_in_time, (list, tuple)):
+        if len(point_in_time) != 2:
+            raise ValueError("'point_in_time' must contain exactly two values")
         date_start, date_stop = point_in_time[0], point_in_time[1]
     else:
         date_start, date_stop = point_in_time, point_in_time
@@ -229,41 +248,109 @@ def create_domain_for_interval(
 
 
 def get_by_ref(env, xmlid, raise_if_not_found=False):
-    if isinstance(xmlid, (tuple, list)) and len(xmlid) == 2:
-        xmlid = ".".join(xmlid)
-    elif not isinstance(str):
-        msg = _('Invalid external identifier "{}" for help string')
-        raise UserError(msg.format(xmlid))
+    """Return the record referenced by an external identifier.
 
-    imd_obj = env["ir.model.data"]
-    return imd_obj.xmlid_to_object(xmlid, raise_if_not_found=False)
+    The external identifier can be supplied directly as a string using the
+    standard ``"module.name"`` format, or as a two-item tuple or list
+    containing the module and identifier name separately.
+
+    Resolution is delegated to ``env.ref``.
+
+    Args:
+        env (odoo.api.Environment): Odoo environment used to resolve the
+            external identifier.
+        xmlid (str | tuple | list): External identifier expressed as
+            ``"module.name"`` or as a two-item sequence containing the module
+            and identifier name.
+        raise_if_not_found (bool, optional): If True, raise an exception when
+            the external identifier cannot be resolved. If False, return None.
+            Defaults to False.
+
+    Returns:
+        odoo.models.BaseModel | None: Referenced Odoo record, or None when it
+        cannot be resolved and ``raise_if_not_found`` is False.
+
+    Raises:
+        TypeError: If ``xmlid`` is not a string, tuple or list, or if a tuple
+            or list does not contain exactly two items.
+        ValueError: If the external identifier cannot be resolved and
+            ``raise_if_not_found`` is True.
+    """
+    if isinstance(xmlid, (tuple, list)):
+        if len(xmlid) != 2:
+            raise TypeError(
+                "External identifier must contain exactly a module and a name"
+            )
+
+        xmlid = ".".join(xmlid)
+
+    elif not isinstance(xmlid, str):
+        raise TypeError(
+            f"External identifier must be a string, tuple or list, "
+            f"not {type(xmlid)}"
+        )
+
+    return env.ref(
+        xmlid,
+        raise_if_not_found=raise_if_not_found,
+    )
 
 
 def single_or_default(items, default=None):
+    """Return the single truthy item in a collection or a default value.
+
+    The first item is returned only when the collection contains exactly one
+    element and that element is truthy. In every other case, ``default`` is
+    returned.
+
+    Args:
+        items (Sequence | None): Collection whose single item must be
+            retrieved. Falsy values are treated as empty input.
+        default (Any, optional): Value returned when ``items`` does not contain
+            exactly one truthy element. Defaults to None.
+
+    Returns:
+        Any: The only truthy item in ``items``, or ``default`` otherwise.
+
+    Raises:
+        TypeError: If ``items`` is truthy but does not support ``len()`` or
+            indexed access.
+    """
     if items and len(items) == 1 and items[0]:
         return items[0]
-    else:
-        return default
+
+    return default
 
 
 def get_training_program(env, target):
-    """Get the related training program record based on the given target
-    record.
+    """Return the training program associated with a supported target record.
 
-    This is useful to get the program from a training ``fields.Reference``
-    field.
+    The related training program is resolved according to the target model.
+    Supported models include training action enrolments, training actions,
+    training programs and competency units.
+
+    If ``target`` is empty or its model is not supported, an empty
+    ``academy.training.program`` recordset is returned.
 
     Args:
-        target (models.Model): A valid Odoo recordset corresponding to the
-        target.
+        env (odoo.api.Environment): Odoo environment used to obtain the
+            training program model.
+        target (odoo.models.BaseModel): Target recordset from which the
+            related training program must be resolved.
 
     Returns:
-        academy.training.program: The related training program record.
+        odoo.models.BaseModel: Related ``academy.training.program`` recordset,
+        or an empty recordset when no related program can be determined.
+
+    Raises:
+        ValueError: If ``target`` contains more than one record.
     """
 
     program = env["academy.training.program"]
 
     if target:
+        target.ensure_one()
+
         model = target._name
 
         if model == "academy.training.action.enrolment":
@@ -279,54 +366,76 @@ def get_training_program(env, target):
 
 
 def ensure_recordset(env, targets, model):
-    """
-    Ensure that the input `targets` is returned as a recordset for the
-    specified model.
+    """Return the given targets as a recordset of the specified model.
+
+    Existing recordsets are returned unchanged when they belong to the
+    expected model. Integer identifiers and sequences of identifiers are
+    converted into recordsets using ``browse()``. ``None`` and ``False`` are
+    treated as empty values and return an empty recordset.
 
     Args:
-        env (Environment): The current Odoo environment.
-        targets (RecordSet or list): Either a recordset or a list of IDs.
-        model (str): The name of the model to which the records belong.
+        env (odoo.api.Environment): Odoo environment used to access the target
+            model.
+        targets (odoo.models.BaseModel | int | list | tuple | None): Existing
+            recordset, single record identifier, sequence of identifiers, or
+            empty value to convert.
+        model (str): Technical name of the expected Odoo model.
 
     Returns:
-        RecordSet: A recordset of the specified model.
+        odoo.models.BaseModel: Recordset belonging to ``model``.
 
-    Behavior:
-        - If `targets` is already a recordset, it is returned as-is.
-        - If `targets` is a list or tuple of IDs, it is converted into a
-          recordset using `browse()`.
-        - Otherwise it will be returned and empty `model` recordset.
+    Raises:
+        KeyError: If ``model`` does not exist in the Odoo registry.
+        TypeError: If ``targets`` is a recordset of a different model or has
+            an unsupported type.
     """
     target_set = env[model]
 
-    if isinstance(targets, type(target_set)):  # Si ya es un recordset
-        target_set = targets
-    elif isinstance(targets, (list, tuple)):  # Si es una lista o tupla de IDs
-        target_set = target_set.browse(targets)
-    elif isinstance(targets, int):  # Si es un único ID
-        target_set = target_set.browse(targets)
+    if targets is None or targets is False:
+        return target_set
 
-    return target_set
+    if isinstance(targets, models.BaseModel):
+        if targets._name != model:
+            raise TypeError(
+                f"Expected recordset of model {model!r}, "
+                f"got {targets._name!r}"
+            )
+
+        return targets
+
+    if isinstance(targets, int) and not isinstance(targets, bool):
+        return target_set.browse(targets)
+
+    if isinstance(targets, (list, tuple)):
+        return target_set.browse(targets)
+
+    raise TypeError(
+        "Argument 'targets' must be a recordset, int, list, tuple or None, "
+        f"not {type(targets)}"
+    )
 
 
 def ensure_id(target):
-    """Coerce a recordset or id-like value to a single integer id.
+    """Return the identifier of a single recordset or the original value.
 
-    If `target` is an Odoo recordset, ensure it contains exactly one record
-    and return its `id`. Otherwise, return `target` unchanged.
+    If ``target`` is an Odoo recordset, it must contain exactly one record and
+    its ``id`` is returned. Values that are not recordsets are returned
+    unchanged.
 
     Args:
-        target (models.Model | int | Any): Recordset or id-like value.
+        target (odoo.models.BaseModel | Any): Recordset or arbitrary value to
+            normalize.
 
     Returns:
-        int | Any: The record id if a recordset was passed; otherwise the
-        original value.
+        int | Any: Record identifier when ``target`` is a recordset, otherwise
+        the original value.
 
     Raises:
-        ValueError: If `target` is a multi-record recordset (raised by
-        `ensure_one()`).
+        ValueError: If ``target`` is an Odoo recordset that does not contain
+            exactly one record.
     """
-    if isinstance(target, models.Model):
+
+    if isinstance(target, models.BaseModel):
         target.ensure_one()
         return target.id
 
@@ -334,52 +443,77 @@ def ensure_id(target):
 
 
 def ensure_ids(targets, raise_if_empty=True):
-    """Coerce a recordset or id(s) into a list of integer ids.
+    """Return record identifiers in a normalized form.
 
-    Behavior:
-    - Recordset  -> `recordset.ids`
-    - Single int -> `[int]`
-    - Other      -> returned as-is (e.g., an existing list/tuple of ids)
+    Odoo recordsets are converted to their ``ids`` list and a single integer
+    identifier is converted to a one-item list. Other values are returned
+    unchanged.
+
+    When ``raise_if_empty`` is True, falsy input values are rejected.
 
     Args:
-        targets (models.Model | int | list[int] | tuple[int] | None):
-            Source to convert.
-        raise_if_empty (bool): If True and `targets` is falsy, raise
-            `ValidationError`.
+        targets (odoo.models.BaseModel | int | list | tuple | None): Recordset,
+            single record identifier, collection of identifiers, or another
+            value to normalize.
+        raise_if_empty (bool, optional): If True, raise a validation error when
+            ``targets`` is falsy. Defaults to True.
 
     Returns:
-        list[int] | Any: List of ids when conversion applies; otherwise the
-        original value.
+        list[int] | tuple | None | Any: List of identifiers when ``targets`` is
+        a recordset or integer, otherwise the original value.
 
     Raises:
-        ValidationError: When `raise_if_empty` is True and `targets` is falsy.
+        odoo.exceptions.ValidationError: If ``raise_if_empty`` is True and
+            ``targets`` is falsy.
     """
+
     if raise_if_empty and not targets:
         raise ValidationError("List of IDs or recordset is expected")
 
-    if isinstance(targets, models.Model):
+    if isinstance(targets, models.BaseModel):
         return targets.ids
 
-    if isinstance(targets, int):
+    if isinstance(targets, int) and not isinstance(targets, bool):
         return [targets]
 
     return targets
 
 
-def update_target(env, context_key, new_value, *, limit_one=True):
-    """
-    Read a target specification (model, ID, field) from the context and
-    update the given field with the provided value.
+def update_target(env, context_key, new_value):
+    """Update a record field from a target specification stored in context.
 
-    :param env: The Odoo Environment (self.env).
-    :param context_key: Context key where the specification is stored.
-    :param new_value: Value to be written in the target field.
-    :param limit_one: If True, use only first record from recordset.
+    The context value identified by ``context_key`` must use the format
+    ``"model,numeric_ID,field"``. The referenced record and field are
+    validated before writing the supplied value.
+
+    If ``new_value`` is an Odoo recordset, it must contain exactly one record
+    and its identifier is written instead of the recordset itself.
+
+    Args:
+        env (odoo.api.Environment): Odoo environment used to resolve the
+            target model and record.
+        context_key (str): Context key containing the target specification.
+        new_value (Any): Value to write to the target field. A single-record
+            Odoo recordset is converted to its record ID.
+
+    Returns:
+        odoo.models.BaseModel | None: Updated target recordset, or None when
+        the context does not contain a target specification.
+
+    Raises:
+        ValidationError: If the target specification is not a string, has an
+            invalid format, references an unknown model, references a missing
+            record, or identifies a field that does not exist.
+        ValueError: If ``new_value`` is an Odoo recordset that does not
+            contain exactly one record.
+        odoo.exceptions.AccessError: If the current user does not have
+            sufficient rights to write the target record.
+        odoo.exceptions.UserError: If Odoo rejects the write operation.
     """
-    target_spec = env.context.get(context_key, False)
+    target_spec = env.context.get(context_key)
 
     if not target_spec:
-        return
+        return None
 
     if not isinstance(target_spec, str):
         raise ValidationError(
@@ -388,6 +522,7 @@ def update_target(env, context_key, new_value, *, limit_one=True):
 
     pattern = r"^([^,]+),(\d+),([^,]+)$"
     match = re_match(pattern, target_spec)
+
     if not match:
         raise ValidationError(
             env._(
@@ -397,43 +532,36 @@ def update_target(env, context_key, new_value, *, limit_one=True):
         )
 
     res_model, res_id_str, res_field = match.groups()
-    try:
-        res_id = int(res_id_str)
-    except ValueError:
+    res_id = int(res_id_str)
+
+    if res_model not in env:
         raise ValidationError(
-            env._("The resource ID must be a valid integer.")
+            env._("The model '{}' does not exist.").format(res_model)
         )
 
-    try:
-        record = env[res_model].browse(res_id)
-    except Exception:
-        pattern = env._(
-            "Could not find the model or the record with ID {} " "in model {}."
-        )
-        raise ValidationError(pattern.format(res_id, res_model))
+    record = env[res_model].browse(res_id)
 
     if not record.exists():
-        pattern = env._("The record with ID {} in model {} does not exist.")
-        raise ValidationError(pattern.format(res_id, res_model))
+        raise ValidationError(
+            env._("The record with ID {} in model {} does not exist.").format(
+                res_id, res_model
+            )
+        )
 
     if res_field not in record._fields:
-        pattern = env._("The field '{}' does not exist in model '{}'.")
-        raise ValidationError(pattern.format(res_field, res_model))
+        raise ValidationError(
+            env._("The field '{}' does not exist in model '{}'.").format(
+                res_field,
+                res_model,
+            )
+        )
 
-    if record and limit_one:
-        record = record[0]
-
-    if isinstance(new_value, models.Model):
+    if isinstance(new_value, models.BaseModel):
+        new_value.ensure_one()
         write_values = {res_field: new_value.id}
     else:
         write_values = {res_field: new_value}
 
-    try:
-        record.write(write_values)
-    except Exception as ex:
-        pattern = env._(
-            "Error while attempting to write the value to the field: {}"
-        )
-        raise ValidationError(pattern.format(ex))
+    record.write(write_values)
 
     return record

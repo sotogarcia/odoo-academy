@@ -1,129 +1,161 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 #    License, author and contributors information in:                         #
-#    __openerp__.py file at the root folder of this module.                   #
+#    __manifest__.py file at the root folder of this module.                  #
 ###############################################################################
 
-from odoo import api, SUPERUSER_ID
-from odoo.tools import config
-
-from os import path
 from logging import getLogger
+from os import path
 
+from odoo.tools import SQL, file_path
+from odoo.tools.sql import (
+    create_index as odoo_create_index,
+)
+from odoo.tools.sql import (
+    create_unique_index as odoo_create_unique_index,
+)
+from odoo.tools.sql import (
+    index_exists,
+    make_identifier,
+)
 
 _logger = getLogger(__name__)
 
 
 def search_for_path_in_addons(relative_path, file_name=None):
-    result = None
+    """Return the absolute path of a file located in an Odoo addons path.
 
-    addons_paths = config["addons_path"]
+    The relative path can be supplied either as a string or as a sequence of
+    path components. When ``file_name`` is provided, it is appended to the
+    relative path before resolving it through Odoo's addons paths.
 
-    if addons_paths:
-        if isinstance(relative_path, (tuple, list)):
-            relative_path = path.sep.join(relative_path)
+    Args:
+        relative_path (str | list | tuple): Relative path inside an Odoo
+            addons directory, or a sequence containing its path components.
+        file_name (str | None, optional): File name to append to the relative
+            path. Defaults to None.
 
-        if file_name:
-            relative_path = path.join(relative_path, file_name)
+    Returns:
+        str | None: Absolute path of the resolved file or directory, or None
+        when it cannot be found.
 
-        for addons_path in addons_paths.split(","):
-            file_path = path.join(addons_path, relative_path)
-            if path.exists(file_path):
-                result = file_path
-                break
+    Raises:
+        TypeError: If the supplied path components cannot be joined.
+    """
+    if isinstance(relative_path, (tuple, list)):
+        relative_path = path.join(*relative_path)
 
-    return result
+    if file_name:
+        relative_path = path.join(relative_path, file_name)
+
+    try:
+        return file_path(relative_path)
+    except FileNotFoundError:
+        return None
 
 
 def execute_sql_script(env, relative_path, file_name, referrer="SQL Script"):
-    """
-    Executes a SQL script file located in the specified relative path. This
-    function is designed for use within Odoo modules, either in the same module
-    or from external ones.
+    """Execute an SQL script stored inside an Odoo addons path.
+
+    The script file is resolved relative to the configured Odoo addons paths,
+    read using UTF-8 encoding and executed using the current environment
+    cursor.
 
     Args:
-        env (Environment): Odoo Environment.
-            relative_path (str/tuple/list): The relative path from the addons
-            directory to the SQL file. Can be a string, or a tuple/list of path
-            components.
-        file_name (str): Name of the SQL file to be executed.
-        referrer (str, optional): A string indicating the referrer of the
-            script execution, used for logging purposes.
-            Defaults to 'SQL Script'.
+        env (odoo.api.Environment): Odoo environment whose database cursor is
+            used to execute the script.
+        relative_path (str | list | tuple): Relative directory containing the
+            SQL script, or a sequence containing its path components.
+        file_name (str): Name of the SQL script file.
+        referrer (str, optional): Description used in log messages to identify
+            the caller. Defaults to ``"SQL Script"``.
 
-    Note:
-        - This function reads and executes the content of the SQL file.
-        - It logs the execution status, including any errors encountered.
-        - The function is meant to be versatile, allowing use from different
-          modules and supports both string and list/tuple for the relative
-          path.
-        - Ensure that the SQL script does not contain harmful commands, as it
-          will be executed directly in the database.
+    Returns:
+        None: The script is executed in the current Odoo transaction.
+
+    Raises:
+        FileNotFoundError: If the SQL script cannot be found.
+        OSError: If the script file cannot be read.
     """
+    script_path = search_for_path_in_addons(relative_path, file_name)
 
-    if isinstance(relative_path, (tuple, list)):
-        relative_path = path.sep.join(relative_path)
+    if not script_path:
+        raise FileNotFoundError(f"{referrer}. File not found: {file_name}")
 
-    file_path = search_for_path_in_addons(relative_path, file_name)
+    with open(script_path, "r", encoding="utf-8") as file:
+        script = file.read()
 
-    if file_path:
-        try:
-            with open(file_path, "r", encoding="utf-8") as file:
-                script = file.read()
-                env.cr.execute(script)
+    env.cr.execute(script)
 
-            _logger.info(f"{referrer}. Successfully executed {file_name}")
-
-        except Exception as ex:
-            _logger.error(f"{referrer}. Error executing {file_name}: {ex}")
-
-    else:
-        _logger.warning(f"{referrer}. File not found: {file_name}")
+    _logger.info(
+        "%s. Successfully executed %s",
+        referrer,
+        file_name,
+    )
 
 
 def install_extension(env, extension):
-    """
-    Installs the extension in the PostgreSQL database.
-    This function should be called with care, preferably during a maintenance
-    period, as it requires database superuser privileges.
+    """Install a PostgreSQL extension when it is not already available.
+
+    The extension is created inside a savepoint so a failure does not leave
+    the current Odoo transaction in an aborted state. No explicit commit is
+    performed; transaction management remains under Odoo's control.
 
     Args:
-        cr (cursor): Database cursor provided by the Odoo environment.
+        env (odoo.api.Environment): Odoo environment whose database cursor is
+            used to install the extension.
+        extension (str): PostgreSQL extension name.
 
-    Note:
-        - This operation requires superuser privileges in the PostgreSQL
-          database.
-        - Ensure that this script is executed in a controlled environment.
+    Returns:
+        bool: True when the command succeeds, otherwise False.
     """
-
-    sql = f"CREATE EXTENSION IF NOT EXISTS {extension};"
+    sql = SQL(
+        "CREATE EXTENSION IF NOT EXISTS %s",
+        SQL.identifier(extension),
+    )
 
     try:
-        env.cr.execute(sql)
-        env.cr.commit()
+        with env.cr.savepoint():
+            env.cr.execute(sql)
+    except Exception as ex:  # noqa: BLE001
+        _logger.warning(
+            "%s could not be installed. System says: %s",
+            extension,
+            ex,
+        )
+        return False
 
-    except Exception as ex:
-        message = f"{extension} could not be installed. System says: {ex}"
-        _logger.warning(message)
+    return True
 
 
 def process_psql_exception(ex):
-    result = {"pgcode": str(ex.pgcode)}
+    """Convert PostgreSQL exception information into a dictionary.
 
-    data = ex.pgerror
+    The PostgreSQL error code is stored under ``pgcode``. When PostgreSQL
+    provides a textual error message, lines using the ``"key: value"`` format
+    are also extracted and normalized to lowercase keys.
+
+    Args:
+        ex (Exception): PostgreSQL exception exposing ``pgcode`` and optionally
+            ``pgerror`` attributes.
+
+    Returns:
+        dict: Dictionary containing the PostgreSQL error code and any parsed
+        error properties available in the exception message.
+    """
+    result = {
+        "pgcode": str(getattr(ex, "pgcode", None)),
+    }
+
+    data = getattr(ex, "pgerror", None)
+
     if not data:
         return result
 
-    lines = data.split("\n")
-    for line in lines:
-        if not line:
-            continue
+    for line in data.splitlines():
+        key, separator, value = line.partition(": ")
 
-        pos_colon = line.find(": ")
-        if pos_colon:
-            key = line[:pos_colon].strip().lower()
-            value = line[(pos_colon + 1) :].strip()
-            result.update({key: value})
+        if separator:
+            result[key.strip().lower()] = value.strip()
 
     return result
 
@@ -137,75 +169,116 @@ def create_index(
     where=None,
     method="btree",
 ):
-    """
-    Create an index on the specified fields (or expressions) for a table.
+    """Create a database index unless an index with the same name exists.
+
+    Standard indexes are created using Odoo's SQL utilities. Unique indexes
+    without a partial condition use Odoo's ``create_unique_index`` helper.
+    Partial unique indexes, which are not directly supported by that helper,
+    are created using Odoo's composable ``SQL`` wrapper.
+
+    Field values are treated as SQL expressions, following the behavior of
+    Odoo's standard index helpers. When expressions are used, an explicit
+    index name should be supplied.
+
+    Field expressions and the ``where`` predicate are treated as trusted SQL
+    fragments and must therefore be defined by application code, not supplied
+    directly from untrusted user input.
 
     Args:
-        env (Environment): The Odoo environment to execute the SQL query.
-        table_name (str): Name of the table where the index will be
-            created.
-        fields (list or str): The field(s) or SQL expressions to index. For
-            complex expressions, prefer passing an explicit 'name'.
-        unique (bool): If True, creates a unique index. Default is False.
-        name (str): Optional explicit index name. Recommended when using
-            expressions or non-identifier field strings.
-        where (str): Optional SQL predicate to create a partial (conditional)
-            index. Example: "is_student = TRUE AND btrim(email) <> ''".
-        method (str): Index access method. Defaults to "btree".
-            Common values: "btree", "hash", "gin", "gist", "brin".
-            Only "btree" supports UNIQUE across all PostgreSQL versions.
-    Raises:
-        ValueError: If table_name or fields are invalid, or if a generated
-            index name would be invalid (e.g., expressions without name).
-    """
-    if not table_name or not fields:
-        message = "Table name and fields must be specified and non-empty."
-        raise ValueError(message)
+        env (odoo.api.Environment): Odoo environment whose database cursor is
+            used to create the index.
+        table_name (str): Name of the database table on which the index must
+            be created.
+        fields (str | list | tuple): Field name, SQL expression, or sequence
+            of field names or SQL expressions to include in the index.
+        unique (bool, optional): If True, create a unique index. Defaults to
+            False.
+        name (str | None, optional): Explicit index name. When omitted, a name
+            is generated from the table and indexed fields. Defaults to None.
+        where (str | None, optional): Trusted SQL predicate used to create a
+            partial index. Defaults to None.
+        method (str, optional): PostgreSQL index access method. Defaults to
+            ``"btree"``.
 
-    # Normalize fields to a list of strings
+    Returns:
+        None: The index is created in the current Odoo transaction when it
+            does not already exist.
+
+    Raises:
+        TypeError: If ``fields`` is not a string, list or tuple, or contains
+            values that are not strings.
+        ValueError: If ``table_name`` or ``fields`` is empty, an index name
+            cannot be generated safely, or a unique index requests an access
+            method other than ``btree``.
+    """
+    if not table_name:
+        raise ValueError("Table name must be specified and non-empty.")
+
     if isinstance(fields, str):
         fields = [fields]
-
-    # Require explicit name if fields include expressions that would break
-    # the generated identifier (spaces, parentheses, quotes, etc.).
-    if not name and any(ch in fld for fld in fields for ch in ' "()()'):
-        raise ValueError(
-            "Provide 'name' when fields contain SQL expressions or quotes."
+    elif isinstance(fields, (list, tuple)):
+        fields = list(fields)
+    else:
+        raise TypeError(
+            "Argument 'fields' must be a string, list or tuple, "
+            f"not {type(fields)}"
         )
 
-    unique_str = " UNIQUE " if unique else ""
-    field_names = "_".join(fields)
-    field_list = ", ".join(fields)
+    if not fields:
+        raise ValueError("At least one field must be specified.")
 
-    # Default index name: keep *_index; use *_pindex when 'where' is provided.
-    index_name = name or (
-        f"{table_name}_{field_names}_pindex"
-        if where
-        else f"{table_name}_{field_names}_index"
+    if not all(isinstance(field, str) and field for field in fields):
+        raise TypeError("Every indexed field or expression must be a string.")
+
+    if unique and method != "btree":
+        raise ValueError("Unique indexes require the 'btree' access method.")
+
+    if name:
+        index_name = name
+    else:
+        if any(not field.isidentifier() for field in fields):
+            raise ValueError(
+                "Provide 'name' when fields contain SQL expressions."
+            )
+
+        field_names = "_".join(fields)
+        suffix = "pindex" if where else "index"
+        index_name = make_identifier(f"{table_name}_{field_names}_{suffix}")
+
+    if unique and where:
+        if index_exists(env.cr, index_name):
+            return
+
+        sql = SQL(
+            "CREATE UNIQUE INDEX %s ON %s (%s) WHERE %s",
+            SQL.identifier(index_name),
+            SQL.identifier(table_name),
+            SQL(", ").join(SQL(field) for field in fields),
+            SQL(where),
+        )
+        env.cr.execute(sql)
+
+    elif unique:
+        odoo_create_unique_index(
+            env.cr,
+            index_name,
+            table_name,
+            fields,
+        )
+
+    else:
+        odoo_create_index(
+            env.cr,
+            index_name,
+            table_name,
+            fields,
+            method=method,
+            where=where or "",
+        )
+
+    _logger.debug(
+        "Index %s was ensured on table %s using (%s)",
+        index_name,
+        table_name,
+        ", ".join(fields),
     )
-
-    sentence = (
-        f"CREATE {unique_str} INDEX IF NOT EXISTS {index_name} "
-        f"ON {table_name} USING {method} ({field_list})"
-        + (f" WHERE {where}" if where else "")
-    )
-
-    try:
-        env.cr.execute(sentence)
-
-        kind = "conditional " if where else ""
-        message = (
-            f"New {kind}{unique_str.strip().lower()}index {index_name} "
-            f"was added to {table_name} using ({field_list})"
-            + (f" WHERE {where}." if where else ".")
-        )
-        _logger.debug(message)
-
-    except Exception as ex:
-        kind = "conditional " if where else ""
-        message = (
-            f"New {kind}{unique_str.strip().lower()}index {index_name} "
-            f"could not be added to {table_name} using ({field_list}). "
-            f"System says: {ex}"
-        )
-        _logger.error(message)
