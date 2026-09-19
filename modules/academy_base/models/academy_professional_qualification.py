@@ -1,17 +1,11 @@
-# -*- coding: utf-8 -*-
-""" AcademyProfessionalQualification
+###############################################################################
+#    License, author and contributors information in:                         #
+#    __manifest__.py file at the root folder of this module.                  #
+###############################################################################
 
-This module contains the academy.professional.qualification Odoo model which
-stores all professional qualification attributes and behavior.
-"""
-
-from odoo import models, fields, api
-from odoo.osv.expression import TRUE_DOMAIN, FALSE_DOMAIN
-from ..utils.helpers import OPERATOR_MAP, one2many_count
-
-from logging import getLogger
-
-_logger = getLogger(__name__)
+from odoo import api, fields, models
+from odoo.exceptions import ValidationError
+from odoo.tools.translate import _
 
 
 # pylint: disable=locally-disabled, R0903
@@ -21,9 +15,12 @@ class AcademyProfessionalQualification(models.Model):
     _name = "academy.professional.qualification"
     _description = "Academy professional qualification"
 
-    _inherit = ["image.mixin"]
+    _inherit = ["image.mixin"]  # noqa: RUF012
 
-    _rec_name = "name"
+    _rec_names_search = [  # noqa: RUF012
+        "name",
+        "qualification_code",
+    ]
     _order = "name ASC"
 
     name = fields.Char(
@@ -70,6 +67,10 @@ class AcademyProfessionalQualification(models.Model):
         auto_join=False,
     )
 
+    @api.onchange("professional_family_id")
+    def _onchange_professional_family_id(self):
+        self.professional_area_id = None
+
     professional_area_id = fields.Many2one(
         string="Professional area",
         required=False,
@@ -108,3 +109,28 @@ class AcademyProfessionalQualification(models.Model):
         ondelete="cascade",
         auto_join=False,
     )
+
+    @api.constrains("professional_family_id", "professional_area_id")
+    def _check_professional_area_id(self):
+        message1 = _("Select a professional family before choosing an area.")
+        message2 = _("Area %s does not belong to family %s.")
+
+        for record in self:
+            area = record.professional_area_id
+
+            if not area:
+                continue
+
+            family = record.professional_family_id
+
+            if not family:
+                raise ValidationError(message1)
+
+            if area.professional_family_id != family:
+                raise ValidationError(
+                    message2
+                    % (
+                        area.display_name,
+                        family.display_name,
+                    )
+                )

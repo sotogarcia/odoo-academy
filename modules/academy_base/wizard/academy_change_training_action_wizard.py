@@ -1,20 +1,23 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 #    License, author and contributors information in:                         #
 #    __openerp__.py file at the root folder of this module.                   #
 ###############################################################################
 
-from odoo import models, fields, api
-from odoo.tools.translate import _
-from odoo.exceptions import ValidationError
-from ..utils.record_utils import ensure_recordset, get_active_records
-from ..utils.helpers import post_note
-
-from datetime import datetime, date
-from pytz import utc, timezone
+from datetime import date, datetime
 from logging import getLogger
 
-_INFINITY = datetime.max
+from odoo import api, fields, models
+from odoo.exceptions import ValidationError
+from odoo.tools.translate import _
+from pytz import timezone, utc
+
+from ..utils.datetime_utils import (
+    DATETIME_NEGATIVE_INFINITY,
+    DATETIME_POSITIVE_INFINITY,
+)
+from ..utils.helpers import post_note
+from ..utils.record_utils import ensure_recordset, get_active_records
+
 _ENROLMENT = "academy.training.action.enrolment"
 
 MSG_TO = "Automatically terminated due to reassignment to training action: {}."
@@ -151,8 +154,8 @@ class AcademyChangeTrainingActionWizard(models.Model):
         if action:
             now = fields.Datetime.now()
 
-            lbound = action.date_start or datetime.min
-            ubound = action.date_stop or datetime.max
+            lbound = action.date_start or DATETIME_NEGATIVE_INFINITY
+            ubound = action.date_stop or DATETIME_POSITIVE_INFINITY
             self.register = min(ubound, max(lbound, now))
             self.deregister = action.date_stop
 
@@ -330,7 +333,7 @@ class AcademyChangeTrainingActionWizard(models.Model):
         If the company's timezone is undefined, falls back to the user's
         timezone, and finally to UTC.
         """
-        midnight_args = dict(hour=0, minute=0, second=0, microsecond=0)
+        midnight_args = {"hour": 0, "minute": 0, "second": 0, "microsecond": 0}
         tz_name = self._get_company_tz(training_action, self.env.user.tz)
 
         try:
@@ -397,13 +400,15 @@ class AcademyChangeTrainingActionWizard(models.Model):
         if not action_start:
             raise ValidationError(_("Training action has no start date."))
 
-        action_stop = training_action.date_stop or _INFINITY
+        action_stop = training_action.date_stop or DATETIME_POSITIVE_INFINITY
 
         enrol_start = values.get("register")
         if not enrol_start:
             raise ValidationError(_("Missing enrolment start date."))
 
-        enrol_stop = values.get("deregister", False) or _INFINITY
+        enrol_stop = (
+            values.get("deregister", False) or DATETIME_POSITIVE_INFINITY
+        )
 
         if action_start > enrol_start or action_stop < enrol_stop:
             message = _(
@@ -466,7 +471,10 @@ class AcademyChangeTrainingActionWizard(models.Model):
                 continue
 
             # 2) Already started: clamp inside the action window.
-            date_stop = enrolment.training_action_id.date_stop or _INFINITY
+            date_stop = (
+                enrolment.training_action_id.date_stop
+                or DATETIME_POSITIVE_INFINITY
+            )
             if date_stop > date_change:
                 # 2.a) Action is still running at change date -> change date.
                 on_date_count += 1

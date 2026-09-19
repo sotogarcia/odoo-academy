@@ -35,9 +35,26 @@ def evaluate_domain(recordset, src_domain, default=None, raise_on_fail=True):
     """Evaluate a field domain definition into a valid ORM domain.
 
     The source domain can be provided as a list, tuple, string expression,
-    callable, or ``None``. String expressions are evaluated with ``safe_eval``
-    using a minimal evaluation context containing the current Odoo environment
-    context. Callables receive ``recordset`` as their only argument.
+    callable, or ``None``. Lists and tuples are used directly after conversion
+    to a list. Callables receive ``recordset`` as their only argument.
+
+    String expressions are evaluated with ``safe_eval`` using a generic Odoo
+    evaluation context. The following variables are explicitly available:
+
+        ``uid``
+            ID of the current Odoo user.
+
+        ``user``
+            Current ``res.users`` record.
+
+        ``context``
+            Current Odoo environment context.
+
+    Context-specific values such as ``active_id``, ``active_ids`` or custom
+    keys are intentionally not exposed as independent variables. They remain
+    available through the ``context`` mapping, for example
+    ``context.get("active_id")``. This keeps the helper independent from more
+    specialized evaluation environments such as ``ir.actions``.
 
     Args:
         recordset (odoo.models.Model): Recordset used to provide the Odoo
@@ -46,12 +63,12 @@ def evaluate_domain(recordset, src_domain, default=None, raise_on_fail=True):
             evaluate. Lists and tuples are converted to a list, strings are
             evaluated with ``safe_eval``, callables are invoked with
             ``recordset``, and ``None`` leaves the default value unchanged.
-        default (list | tuple | None, optional): Fallback value returned when the
-            domain cannot be evaluated and ``raise_on_fail`` is False. Defaults
-            to None.
+        default (list | tuple | None, optional): Fallback value returned when
+            the domain cannot be evaluated and ``raise_on_fail`` is False.
+            Defaults to None.
         raise_on_fail (bool, optional): If True, raise an exception when the
-            domain cannot be evaluated or does not produce a list or tuple. If
-            False, return ``default`` instead. Defaults to True.
+            domain cannot be evaluated or does not produce a list or tuple.
+            If False, return ``default`` instead. Defaults to True.
 
     Returns:
         list | tuple | None: Evaluated ORM domain. If evaluation fails and
@@ -60,22 +77,28 @@ def evaluate_domain(recordset, src_domain, default=None, raise_on_fail=True):
     Raises:
         ValueError: If evaluation of a string or callable domain fails and
             ``raise_on_fail`` is True.
-        TypeError: If ``src_domain`` has an unsupported type, or if the evaluated
-            result is not a list or tuple, and ``raise_on_fail`` is True.
+        TypeError: If ``src_domain`` has an unsupported type, or if the
+            evaluated result is not a list or tuple, and ``raise_on_fail`` is
+            True.
     """
-
     domain = default
 
     if isinstance(src_domain, (list, tuple)):
         domain = list(src_domain)
 
     elif isinstance(src_domain, str):
+        eval_context = {
+            "uid": recordset.env.uid,
+            "user": recordset.env.user,
+            "context": recordset.env.context,
+        }
+
         try:
-            minimal_ctx = {"context": recordset.env.context}
-            domain = safe_eval(src_domain, minimal_ctx)
+            domain = safe_eval(src_domain, eval_context)
         except (NameError, SyntaxError, TypeError, ValueError) as ex:
             if raise_on_fail:
                 raise ValueError(INVALID_DOMAIN % src_domain) from ex
+
             domain = default
 
     elif callable(src_domain):
@@ -84,15 +107,16 @@ def evaluate_domain(recordset, src_domain, default=None, raise_on_fail=True):
         except Exception as ex:
             if raise_on_fail:
                 raise ValueError(INVALID_DOMAIN % src_domain) from ex
+
             domain = default
 
     elif src_domain is not None and raise_on_fail:
         raise TypeError(INVALID_DOMAIN % src_domain)
 
     if domain is not None and not isinstance(domain, (list, tuple)):
-        # Ensure a proper domain structure
         if raise_on_fail:
             raise TypeError(INVALID_DOMAIN % src_domain)
+
         domain = default
 
     return domain

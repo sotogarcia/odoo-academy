@@ -1,15 +1,10 @@
-# -*- coding: utf-8 -*-
-""" AcademyProfessionalCategory
+###############################################################################
+#    License, author and contributors information in:                         #
+#    __manifest__.py file at the root folder of this module.                  #
+###############################################################################
 
-This module contains the academy.professional.category Odoo model which stores
-all Professional Area attributes and behavior.
-"""
 
-from odoo import models, fields
-
-from logging import getLogger
-
-_logger = getLogger(__name__)
+from odoo import fields, models
 
 
 class AcademyProfessionalCategory(models.Model):
@@ -19,7 +14,7 @@ class AcademyProfessionalCategory(models.Model):
     _description = "Academy professional category"
 
     _rec_name = "name"
-    _order = "name ASC"
+    _order = "sequence ASC, name ASC"
 
     name = fields.Char(
         string="Name",

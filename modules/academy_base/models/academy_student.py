@@ -3,11 +3,9 @@
 #    __manifest__.py file at the root folder of this module.                  #
 ###############################################################################
 
-from logging import getLogger
-
 from odoo import api, fields, models
-from odoo.exceptions import AccessError, UserError, ValidationError
-from odoo.osv.expression import AND, FALSE_DOMAIN, TRUE_DOMAIN
+from odoo.exceptions import AccessError
+from odoo.osv.expression import AND, FALSE_DOMAIN
 from odoo.tools.safe_eval import safe_eval
 from odoo.tools.translate import _
 
@@ -24,8 +22,6 @@ from ..utils.record_utils import (
     ensure_id,
     ensure_ids,
 )
-
-_logger = getLogger(__name__)
 
 
 class AcademyStudent(models.Model):
@@ -752,6 +748,6 @@ class AcademyStudent(models.Model):
             company_ids = ensure_ids(companies, raise_if_empty=False) or []
 
         # Clean up and deduplicate
-        company_ids = list({cid for cid in company_ids if cid})
+        company_ids = list(dict.fromkeys(cid for cid in company_ids if cid))
 
         return company_ids

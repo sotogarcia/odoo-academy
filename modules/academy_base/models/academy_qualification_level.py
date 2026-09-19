@@ -1,24 +1,20 @@
-# -*- coding: utf-8 -*-
-""" AcademyQualificationLevel
+###############################################################################
+#    License, author and contributors information in:                         #
+#    __manifest__.py file at the root folder of this module.                  #
+###############################################################################
 
-This module contains the academy.qualification.level Odoo model which stores
-all qualification level attributes and behavior.
-"""
 
-from odoo import models, fields
-
-from logging import getLogger
-
-_logger = getLogger(__name__)
+from odoo import fields, models
 
 
 class AcademyQualificationLevel(models.Model):
-    """Qualification level is a property of the training program"""
+    """Qualification level is a property of the training program."""
 
     _name = "academy.qualification.level"
     _description = "Academy qualification level"
 
     _rec_name = "name"
+    _rec_names_search = ["name", "level"]  # noqa: RUF012
     _order = "sequence ASC, name ASC"
 
     name = fields.Char(
@@ -48,9 +44,9 @@ class AcademyQualificationLevel(models.Model):
         readonly=False,
         index=True,
         default=None,
-        help="Enter new code",
+        help="Official qualification level code",
         size=8,
-        translate=True,
+        translate=False,
     )
 
     sequence = fields.Integer(
@@ -70,3 +66,13 @@ class AcademyQualificationLevel(models.Model):
         default=True,
         help="Disable to archive without deleting.",
     )
+
+    # -- SQL constraints ------------------------------------------------------
+
+    _sql_constraints = [  # noqa: RUF012
+        (
+            "level_unique",
+            "unique(level)",
+            "Qualification level code must be unique.",
+        ),
+    ]

@@ -1,26 +1,27 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 #    License, author and contributors information in:                         #
 #    __openerp__.py file at the root folder of this module.                   #
 ###############################################################################
 
-from odoo import models, fields, api
-from odoo.tools import single_email_re
-from odoo.tools.misc import file_path
-from odoo.tools.translate import _
-from odoo.exceptions import ValidationError, UserError
-from odoo.addons.phone_validation.tools.phone_validation import phone_format
-from odoo.osv.expression import AND
-
-from ..utils.res_config import get_config_param
-from ..utils.helpers import is_debug_mode
-
-from base64 import b64encode
-from pytz import timezone, utc
-from datetime import datetime, time
 from collections.abc import Iterable
-
 from logging import getLogger
+
+from odoo import api, fields, models
+from odoo.addons.phone_validation.tools.phone_validation import phone_format
+from odoo.exceptions import ValidationError
+from odoo.osv.expression import (
+    AND,
+    NEGATIVE_TERM_OPERATORS,
+    OR,
+    TERM_OPERATORS_NEGATION,
+    TRUE_DOMAIN,
+)
+from odoo.tools import single_email_re
+from odoo.tools.safe_eval import safe_eval
+from odoo.tools.translate import _
+
+from ..utils.helpers import is_debug_mode
+from ..utils.res_config import get_config_param
 
 _logger = getLogger(__name__)
 
@@ -29,17 +30,17 @@ class AcademySupportStaff(models.Model):
     _name = "academy.support.staff"
     _description = "Academy support staff member"
 
-    _inherit = [
+    _inherit = [  # noqa: RUF012
         "mail.thread",
         "mail.activity.mixin",
     ]
 
-    _inherits = {"res.partner": "partner_id"}
+    _inherits = {"res.partner": "partner_id"}  # noqa: RUF012
 
     _order = "complete_name ASC, id DESC"
 
     _rec_name = "complete_name"
-    _rec_names_search = [
+    _rec_names_search = [  # noqa: RUF012
         "complete_name",
         "email",
         "vat",
@@ -76,11 +77,11 @@ class AcademySupportStaff(models.Model):
         readonly=False,
         index=True,
         default=None,
-        help="Student’s highest educational attainment",
+        help="Highest educational attainment of this person",
         comodel_name="academy.educational.attainment",
         domain=[],
         context={},
-        ondelete="cascade",
+        ondelete="set null",
         auto_join=False,
         tracking=True,
     )
@@ -129,10 +130,110 @@ class AcademySupportStaff(models.Model):
 
     @api.model
     def _search_implied_cefrl_ids(self, operator, value):
+        """Search the union of direct and implied CEFRL certificates."""
+
+        if operator == "<>":
+            operator = "!="
+
+        if operator == "=?":
+            if not value:
+                return TRUE_DOMAIN
+
+            operator = "="
+
+        supported_operators = {
+            "=",
+            "!=",
+            "in",
+            "not in",
+            "=like",
+            "=ilike",
+            "like",
+            "not like",
+            "ilike",
+            "not ilike",
+            "child_of",
+            "parent_of",
+            "any",
+            "not any",
+        }
+
+        if operator not in supported_operators:
+            raise NotImplementedError(
+                _("Unsupported search operator: %s") % operator
+            )
+
+        # Since every direct certificate is also part of implied_cefrl_ids,
+        # the union is empty exactly when cefrl_ids itself is empty.
+        if value is False and operator in ("=", "!="):
+            return [("cefrl_ids", operator, False)]
+
+        # Search by a domain applied to the certificates themselves.
+        if operator in ("any", "not any"):
+            matching_domain = value
+
+            source_domain = OR(
+                [
+                    matching_domain,
+                    [
+                        (
+                            "implied_ids",
+                            "any",
+                            matching_domain,
+                        )
+                    ],
+                ]
+            )
+
+            return [
+                (
+                    "cefrl_ids",
+                    operator,
+                    source_domain,
+                )
+            ]
+
+        is_negative = operator in NEGATIVE_TERM_OPERATORS
+
+        if is_negative:
+            matching_operator = TERM_OPERATORS_NEGATION[operator]
+        else:
+            matching_operator = operator
+
+        if matching_operator in ("child_of", "parent_of"):
+            matching_domain = [
+                ("id", matching_operator, value),
+            ]
+        elif isinstance(value, str):
+            matching_domain = [
+                ("display_name", matching_operator, value),
+            ]
+        else:
+            matching_domain = [
+                ("id", matching_operator, value),
+            ]
+
+        source_domain = OR(
+            [
+                matching_domain,
+                [
+                    (
+                        "implied_ids",
+                        "any",
+                        matching_domain,
+                    )
+                ],
+            ]
+        )
+
+        relation_operator = "not any" if is_negative else "any"
+
         return [
-            "|",
-            ("cefrl_ids", operator, value),
-            ("cefrl_ids.implied_ids", operator, value),
+            (
+                "cefrl_ids",
+                relation_operator,
+                source_domain,
+            )
         ]
 
     # -- Field and onchange: creation_mode ------------------------------------
@@ -177,10 +278,13 @@ class AcademySupportStaff(models.Model):
 
     @api.model
     def _search_phone_number(self, operator, value):
-        """Allow searching in call_number as if it were a real field."""
         return [
             "|",
+            "&",
+            ("mobile", "!=", False),
             ("mobile", operator, value),
+            "&",
+            ("mobile", "=", False),
             ("phone", operator, value),
         ]
 
@@ -189,7 +293,7 @@ class AcademySupportStaff(models.Model):
     email_required = fields.Boolean(
         string="Require email",
         required=False,
-        readonly=False,
+        readonly=True,
         index=False,
         default=False,
         help="When enabled, an email address is mandatory for this record.",
@@ -219,7 +323,7 @@ class AcademySupportStaff(models.Model):
     vat_required = fields.Boolean(
         string="Require VAT",
         required=False,
-        readonly=False,
+        readonly=True,
         index=False,
         default=False,
         help="When enabled, a VAT number is mandatory for this record.",
@@ -275,7 +379,7 @@ class AcademySupportStaff(models.Model):
 
     # -- Constraints ----------------------------------------------------------
 
-    _sql_constraints = [
+    _sql_constraints = [  # noqa: RUF012
         (
             "unique_partner",
             "UNIQUE(partner_id)",
@@ -320,11 +424,7 @@ class AcademySupportStaff(models.Model):
         if (required == "always") or (
             required == "except_debug" and not is_debug_mode(self.env)
         ):
-            country_codes = self._get_all_country_codes()
-            country_codes = [row.code for row in country_codes if row.code]
-            # Foreign companies that trade with non-enterprises in the EU
-            # may have a VATIN starting with "EU" instead of a country code.
-            country_codes.append("EU")
+            country_codes = self._get_valid_vat_country_codes()
 
             for record in self:
                 vat = (getattr(record, "vat", "") or "").strip()
@@ -383,7 +483,7 @@ class AcademySupportStaff(models.Model):
 
     def address_get(self, adr_pref=None):
         partner_set = self._get_partner_with_context()
-        return partner_set.address_get(adr_pref=None)
+        return partner_set.address_get(adr_pref=adr_pref)
 
     @api.model
     def view_header_get(self, view_id, view_type):
@@ -397,26 +497,40 @@ class AcademySupportStaff(models.Model):
 
     def mail_action_blacklist_remove(self):
         partner_set = self._get_partner_with_context()
-        return partner_set.partner_id.mail_action_blacklist_remove()
+        return partner_set.mail_action_blacklist_remove()
 
     def create_company(self):
         partner_set = self._get_partner_with_context()
-        return partner_set.partner_id.create_company()
+        return partner_set.create_company()
 
     @api.model
-    @api.returns("self", lambda value: value.id)
+    @api.returns("res.partner", lambda value: value.id)
     def find_or_create(self, email, assert_valid_email=False):
-        self.partner_id.find_or_create(email, assert_valid_email=False)
+        partner_obj = self.env["res.partner"]
+
+        return partner_obj.find_or_create(
+            email,
+            assert_valid_email=assert_valid_email,
+        )
 
     @api.readonly
     @api.model
     def im_search(self, name, limit=20, excluded_ids=None):
-        self.partner_id.im_search(name, limit=20, excluded_ids=None)
+        partner_obj = self.env["res.partner"]
+        return partner_obj.im_search(
+            name,
+            limit=limit,
+            excluded_ids=excluded_ids,
+        )
 
     @api.readonly
     @api.model
     def get_mention_suggestions(self, search, limit=8):
-        self.partner_id.get_mention_suggestions(search, limit=8)
+        partner_obj = self.env["res.partner"]
+        return partner_obj.get_mention_suggestions(
+            search,
+            limit=limit,
+        )
 
     # -- Base model methods overrides -----------------------------------------
 
@@ -478,6 +592,31 @@ class AcademySupportStaff(models.Model):
         return super().unlink()
 
     # -- Auxiliary methods ----------------------------------------------------
+
+    @api.model
+    def _get_valid_vat_country_codes(self, country_data=None):
+        """Return the country prefixes accepted for VAT numbers.
+
+        Standard prefixes are obtained from ``res.country.code``. The special
+        ``EU`` prefix is also accepted because it may be assigned to non-EU
+        businesses registered for VAT transactions with EU consumers.
+
+        Args:
+            country_data (res.country, optional): Preloaded country records used to
+                avoid an additional query. Defaults to None.
+
+        Returns:
+            set[str]: Uppercase VAT country prefixes accepted by the application.
+        """
+        if country_data is None:
+            country_data = self._get_all_country_codes()
+
+        country_codes = {
+            country.code.upper() for country in country_data if country.code
+        }
+        country_codes.add("EU")
+
+        return country_codes
 
     def _split_vat(self, vat):
         """
@@ -560,45 +699,43 @@ class AcademySupportStaff(models.Model):
         """Ensure VAT has the correct country code prefix.
 
         Args:
-            values (dict): dictionary with potential 'vat' and 'country_id'.
-            country_data (recordset, optional): cached res.country records.
+            values (dict): Dictionary with potential ``vat`` and ``country_id``.
+            country_data (res.country, optional): Preloaded country records used to
+                avoid an additional query. Defaults to None.
 
         Side effects:
-            Updates values['vat'] in place if the prefix is missing.
+            Updates ``values["vat"]`` in place when the VAT prefix needs to be
+            normalized or added.
         """
-
-        # Return early if there is no VAT to process
         vat = values.get("vat", False)
         if not vat:
             return
 
-        # Split VAT into country code and number; normalize both
         if len(vat) > 2 and vat[:2].isalpha():
             country_code, number = self._split_vat(vat)
         else:
             country_code, number = None, vat
+
         country_code = (country_code or "").strip().upper()
         number = (number or "").strip().upper()
 
-        # Load all country codes if they were not preloaded already
         if country_data is None:
             country_data = self._get_all_country_codes()
 
-        # If the already starts with a valid country code, normalize and return
-        country_codes = {c.code or "" for c in (country_data or [])}
+        country_codes = self._get_valid_vat_country_codes(country_data)
         if country_code in country_codes:
             values["vat"] = f"{country_code}{number}"
             return
 
-        # Try to get the target country from values or fall back to env
         country_id = values.get("country_id", False)
         if country_id:
-            # Works with recordsets and with search_fetch results
             country = next(
-                (c for c in (country_data or []) if c.id == country_id), False
+                (item for item in country_data if item.id == country_id),
+                False,
             )
         else:
             country = self._get_default_country()
+
         if not country:
             return
 
@@ -606,7 +743,6 @@ class AcademySupportStaff(models.Model):
         if not country_code:
             return
 
-        # Prefix country code and set VAT
         values["vat"] = f"{country_code}{number}"
 
     @staticmethod
@@ -622,27 +758,52 @@ class AcademySupportStaff(models.Model):
             company_type="person",
         )
 
-    @staticmethod
-    def _eval_domain(domain):
-        """Evaluate a domain expresion (str, False, None, list or tuple) an
-        returns a valid domain
+    def _eval_domain(self, domain):
+        """Evaluate an action domain into a valid ORM domain.
 
-        Arguments:
-            domain {mixed} -- domain expresion
+        The ORM domain and the Odoo context are independent concepts. The context
+        is only involved here because an action domain may be stored as a Python
+        expression referencing variables available in the action evaluation
+        environment.
+
+        The standard evaluation context provided by ``ir.actions.actions`` is used
+        so expressions can reference values such as ``uid``, ``user``, ``time`` or
+        ``datetime``. The current environment context is also exposed both through
+        its individual keys, such as ``active_id``, and through the ``context``
+        variable itself.
+
+        Args:
+            domain (str | list | tuple | None): Action domain definition to
+                evaluate.
 
         Returns:
-            mixed -- Odoo valid domain. This will be a tuple or list
+            list: Evaluated ORM domain. An empty domain is returned when the input
+            is empty, has an unsupported type, cannot be evaluated, or does not
+            produce a list or tuple.
         """
 
-        if domain in [False, None]:
-            domain = []
-        elif not isinstance(domain, (list, tuple)):
-            try:
-                domain = eval(domain)
-            except Exception:
-                domain = []
+        if domain in (False, None):
+            return []
 
-        return domain
+        if isinstance(domain, (list, tuple)):
+            return list(domain)
+
+        if not isinstance(domain, str):
+            return []
+
+        eval_context = self.env["ir.actions.actions"]._get_eval_context()
+        eval_context.update(self.env.context)
+        eval_context["context"] = self.env.context
+
+        try:
+            domain = safe_eval(domain, eval_context)
+        except (NameError, SyntaxError, TypeError, ValueError):
+            return []
+
+        if not isinstance(domain, (list, tuple)):
+            return []
+
+        return list(domain)
 
     @api.model
     def _sanitize_phone_number(self, targets):

@@ -1,17 +1,15 @@
-# -*- coding: utf-8 -*-
-""" AcademyProfessionalFamily
+###############################################################################
+#    License, author and contributors information in:                         #
+#    __manifest__.py file at the root folder of this module.                  #
+###############################################################################
 
-This module contains the academy.professional.family Odoo model which stores
-all professional family attributes and behavior.
-"""
 
-from odoo import models, fields, api
-from odoo.osv.expression import TRUE_DOMAIN, FALSE_DOMAIN
-from ..utils.helpers import OPERATOR_MAP, one2many_count
+from odoo import api, fields, models
 
-from logging import getLogger
-
-_logger = getLogger(__name__)
+from ..utils.helpers import (
+    one2many_count,
+    one2many_count_search_domain,
+)
 
 
 # pylint: disable=locally-disabled, R0903
@@ -21,7 +19,7 @@ class AcademyProfessionalFamily(models.Model):
     _name = "academy.professional.family"
     _description = "Academy professional family"
 
-    _inherit = ["image.mixin"]
+    _inherit = ["image.mixin"]  # noqa: RUF012
 
     _rec_name = "name"
     _order = "name ASC"
@@ -110,17 +108,9 @@ class AcademyProfessionalFamily(models.Model):
 
     @api.model
     def _search_professional_area_count(self, operator, value):
-        # Handle boolean-like searches Odoo may pass for required fields
-        if value is True:
-            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
-        if value is False:
-            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
-
-        cmp_func = OPERATOR_MAP.get(operator)
-        if not cmp_func:
-            return FALSE_DOMAIN  # unsupported operator
-
-        counts = one2many_count(self.search([]), "professional_area_ids")
-        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
-
-        return [("id", "in", matched)] if matched else FALSE_DOMAIN
+        return one2many_count_search_domain(
+            self,
+            "professional_area_ids",
+            operator,
+            value,
+        )

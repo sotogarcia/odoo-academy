@@ -1,9 +1,13 @@
-# -*- coding: utf-8 -*-
-from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError
+###############################################################################
+#    License, author and contributors information in:                         #
+#    __manifest__.py file at the root folder of this module.                  #
+###############################################################################
 
 from contextlib import contextmanager
 from logging import getLogger
+
+from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 
 _logger = getLogger(__name__)
 

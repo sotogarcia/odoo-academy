@@ -9,6 +9,10 @@ from odoo import fields
 from odoo.tools.translate import _lt
 from pytz import timezone, utc
 
+DATETIME_NEGATIVE_INFINITY = fields.Datetime.to_datetime("0001-01-01 00:00:00")
+
+DATETIME_POSITIVE_INFINITY = fields.Datetime.to_datetime("9999-12-31 23:59:59")
+
 
 def now_o_clock(offset_hours=0, round_up=False):
     """Return the current time aligned to an exact hour.

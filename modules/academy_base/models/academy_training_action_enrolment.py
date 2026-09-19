@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 #    License, author and contributors information in:                         #
 #    __openerp__.py file at the root folder of this module.                   #
@@ -62,28 +61,29 @@ Implementation notes
   reporting queries.
 """
 
-from odoo import models, fields, api
-from odoo.tools.misc import format_date
+from datetime import date, datetime, time, timedelta
+from logging import getLogger
+
+from odoo import api, fields, models
 from odoo.exceptions import UserError, ValidationError
-from odoo.osv.expression import TRUE_DOMAIN
-from odoo.osv.expression import TERM_OPERATORS_NEGATION, AND
-from ..utils.datetime_utils import local_midnight_as_utc
-from ..utils.helpers import sanitize_code, default_code
-from ..utils.sql_helpers import create_index
-from ..utils.res_config import get_config_param
+from odoo.osv.expression import AND, TERM_OPERATORS_NEGATION, TRUE_DOMAIN
+from odoo.tools.misc import format_date
+from pytz import timezone, utc
+
+from ..utils.datetime_utils import (
+    DATETIME_POSITIVE_INFINITY,
+    local_midnight_as_utc,
+)
+from ..utils.helpers import default_code, sanitize_code
 from ..utils.record_utils import (
     ARCHIVED_DOMAIN,
     INCLUDE_ARCHIVED_DOMAIN,
-    ensure_recordset,
     create_domain_for_ids,
     create_domain_for_interval,
+    ensure_recordset,
 )
-
-from datetime import datetime, date, time, timedelta
-from pytz import timezone, utc
-
-from logging import getLogger
-
+from ..utils.res_config import get_config_param
+from ..utils.sql_helpers import create_index
 
 _CODE_SEQUENCE = "academy.training.action.enrolment.sequence"
 
@@ -502,7 +502,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         "deregister", "training_action_id", "training_action_id.date_stop"
     )
     def _compute_available_until(self):
-        infinity = datetime.max
+        infinity = DATETIME_POSITIVE_INFINITY
 
         for record in self:
             deregister = record.deregister or infinity
@@ -647,7 +647,7 @@ class AcademyTrainingActionEnrolment(models.Model):
     )
 
     def _compute_color(self):
-        infinity = datetime.max
+        infinity = DATETIME_POSITIVE_INFINITY
         now = fields.Datetime.now()
         for record in self:
             register = record.register
@@ -663,7 +663,7 @@ class AcademyTrainingActionEnrolment(models.Model):
     # -- Contraints
     # -------------------------------------------------------------------------
 
-    _sql_constraints = [
+    _sql_constraints = [  # noqa: RUF012
         (
             "check_date_order",
             'CHECK("deregister" IS NULL OR "register" <= "deregister")',
@@ -707,8 +707,10 @@ class AcademyTrainingActionEnrolment(models.Model):
                 )
             )
             """,
-            "Student enrolments must be within the time window of the "
-            "training action.",
+            (
+                "Student enrolments must be within the time window of the "
+                "training action."
+            ),
         ),
     ]
 
@@ -1021,7 +1023,7 @@ class AcademyTrainingActionEnrolment(models.Model):
                 if not student_id:
                     continue
 
-                ubound = deregister or datetime.max
+                ubound = deregister or DATETIME_POSITIVE_INFINITY
                 domain = [
                     ("id", "!=", enrolment.id),
                     ("student_id", "=", student_id),
@@ -1094,7 +1096,8 @@ class AcademyTrainingActionEnrolment(models.Model):
                 )
             )
 
-        if (deregister or datetime.max) > (date_stop or datetime.max):
+        infinity = DATETIME_POSITIVE_INFINITY
+        if (deregister or infinity) > (date_stop or infinity):
             raise ValidationError(
                 self.env._(
                     "Deregistration date cannot be later than the "

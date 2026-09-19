@@ -1,15 +1,10 @@
-# -*- coding: utf-8 -*-
-""" AcademyProfessionalArea
+###############################################################################
+#    License, author and contributors information in:                         #
+#    __manifest__.py file at the root folder of this module.                  #
+###############################################################################
 
-This module contains the academy.professional.area Odoo model which stores
-all Professional Area attributes and behavior.
-"""
 
-from odoo import models, fields
-
-from logging import getLogger
-
-_logger = getLogger(__name__)
+from odoo import fields, models
 
 
 # pylint: disable=locally-disabled, R0903
@@ -19,7 +14,7 @@ class AcademyProfessionalArea(models.Model):
     _name = "academy.professional.area"
     _description = "Academy professional area"
 
-    _inherit = ["image.mixin"]
+    _inherit = ["image.mixin"]  # noqa: RUF012
 
     _rec_name = "name"
     _order = "name ASC"
@@ -64,7 +59,7 @@ class AcademyProfessionalArea(models.Model):
         comodel_name="academy.professional.family",
         domain=[],
         context={},
-        ondelete="cascade",
+        ondelete="restrict",
         auto_join=False,
     )
 

@@ -1,15 +1,10 @@
-# -*- coding: utf-8 -*-
-""" AcademyProfessionalSector
+###############################################################################
+#    License, author and contributors information in:                         #
+#    __manifest__.py file at the root folder of this module.                  #
+###############################################################################
 
-This module contains the academy.professional.sector Odoo model which stores
-all professional sector attributes and behavior.
-"""
 
-from odoo import models, fields
-
-from logging import getLogger
-
-_logger = getLogger(__name__)
+from odoo import fields, models
 
 
 class AcademyProfessionalSector(models.Model):
@@ -18,9 +13,9 @@ class AcademyProfessionalSector(models.Model):
     _name = "academy.professional.sector"
     _description = "Academy professional sector"
 
-    _inherit = ["image.mixin"]
+    _inherit = ["image.mixin"]  # noqa: RUF012
 
-    _rec_name = "name"
+    _rec_names_search = ["name", "code"]  # noqa: RUF012
     _order = "name ASC"
 
     name = fields.Char(
@@ -66,7 +61,7 @@ class AcademyProfessionalSector(models.Model):
 
     professional_field_id = fields.Many2one(
         string="Professional field",
-        required=False,
+        required=True,
         readonly=False,
         index=False,
         default=None,
@@ -77,3 +72,11 @@ class AcademyProfessionalSector(models.Model):
         ondelete="cascade",
         auto_join=False,
     )
+
+    _sql_constraints = [  # noqa: RUF012
+        (
+            "code_unique",
+            "unique(code)",
+            "Professional sector code must be unique.",
+        ),
+    ]

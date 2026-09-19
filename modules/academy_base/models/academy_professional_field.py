@@ -1,13 +1,12 @@
-# -*- coding: utf-8 -*-
-""" AcademyProfessionalField
+###############################################################################
+#    License, author and contributors information in:                         #
+#    __manifest__.py file at the root folder of this module.                  #
+###############################################################################
 
-This module contains the academy.professional.field Odoo model which stores
-all professional field attributes and behavior.
-"""
-
-from odoo import models, fields
 
 from logging import getLogger
+
+from odoo import fields, models
 
 _logger = getLogger(__name__)
 
@@ -18,9 +17,9 @@ class AcademyProfessionalField(models.Model):
     _name = "academy.professional.field"
     _description = "Academy professional field"
 
-    _inherit = ["image.mixin"]
+    _inherit = ["image.mixin"]  # noqa: RUF012
 
-    _rec_name = "name"
+    _rec_names_search = ["name", "code"]  # noqa: RUF012
     _order = "name ASC"
 
     name = fields.Char(
@@ -77,3 +76,11 @@ class AcademyProfessionalField(models.Model):
         context={},
         auto_join=False,
     )
+
+    _sql_constraints = [  # noqa: RUF012
+        (
+            "code_unique",
+            "unique(code)",
+            "Professional field code must be unique.",
+        ),
+    ]
