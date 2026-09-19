@@ -24,7 +24,11 @@
     <field name="arch" type="xml">
       <list string="academy_competency_unit_tree" create="1" delete="1" edit="1">
         <field name="code" string="Code" class="oe_field_competency_code"/>
-        <field name="name" string="Name" class="oe_field_competency_name w-100"/>
+        <field name="name" string="Name" class="oe_field_competency_name"/>
+        <field name="level" class="oe_field_level" optional="show" />
+        <field name="professional_family_id" class="oe_field_professional_family_id" optional="hide" />
+        <field name="professional_area_id" class="oe_field_professional_area_id" optional="hide" />
+        <field name="professional_field_id" class="oe_field_professional_field_id" optional="hide" />
       </list>
     </field>
   </record>
@@ -54,10 +58,30 @@
           </div>
 
           <group col="2">
-            <field name="code" class="oe_field_competency_code" placeholder="Enter new code"
-              string="Code"/>
-            <field name="description" class="oe_field_description"/>
+            <group col="2">
+                <field name="code" class="oe_field_competency_code" />
+            </group>
+            <group col="2">
+                <field name="level" class="oe_field_level" />
+            </group>
           </group>
+
+          <group col="2">
+            <group col="2" colspan="2">
+                <field name="professional_family_id" class="oe_field_professional_family_id" />
+            </group>
+            <group col="2">
+                <field name="professional_area_id" class="oe_field_professional_area_id" />
+            </group>
+            <group col="2">
+                <field name="professional_field_id" class="oe_field_professional_field_id" />
+            </group>
+          </group>
+
+          <group col="2" string="Description">
+            <field name="description" class="oe_field_description" nolabel="1" />
+          </group>
+
         </sheet>
 
         <chatter/>
@@ -75,9 +99,26 @@
     <field name="active" eval="True"/>
     <field name="arch" type="xml">
       <search string="academy_competency_unit_search">
-        <field name="name" string="Name"/>
-        <field name="code"/>
+        <field name="code" class="oe_field_code" />
+        <field name="name" class="oe_field_name" />
 
+        <separator />
+        <filter name="group_by_level"
+                string="By level"
+                context="{'group_by': 'level'}" />
+
+        <separator />
+        <filter name="group_by_professional_family_id"
+                string="Professional family"
+                context="{'group_by': 'professional_family_id'}" />
+        <filter name="group_by_professional_area_id"
+                string="Professional area"
+                context="{'group_by': 'professional_area_id'}" />
+        <filter name="group_by_professional_field_id"
+                string="Professional field"
+                context="{'group_by': 'professional_field_id'}" />
+
+        <separator />
         <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
 
       </search>

@@ -13,7 +13,6 @@ from odoo.osv.expression import FALSE_DOMAIN, TRUE_DOMAIN
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DATETIME_FORMAT
 
-
 _logger = getLogger(__name__)
 
 

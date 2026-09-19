@@ -1,15 +1,10 @@
-# -*- coding: utf-8 -*-
-""" AcademyKnowledgeArea
+###############################################################################
+#    License, author and contributors information in:                         #
+#    __manifest__.py file at the root folder of this module.                  #
+###############################################################################
 
-This module contains the academy.knowledge.area Odoo model which stores
-all Knowledge Area attributes and behavior.
-"""
 
-from odoo import models, fields
-
-from logging import getLogger
-
-_logger = getLogger(__name__)
+from odoo import fields, models
 
 
 class AcademyKnowledgeArea(models.Model):
@@ -18,7 +13,7 @@ class AcademyKnowledgeArea(models.Model):
     _name = "academy.knowledge.area"
     _description = "Academy knowledge area"
 
-    _rec_name = "name"
+    _rec_names_search = ["name", "knowle_code"]  # noqa: RUF012
     _order = "name ASC"
 
     name = fields.Char(
@@ -55,9 +50,17 @@ class AcademyKnowledgeArea(models.Model):
         string="Code",
         required=True,
         readonly=False,
-        index=False,
+        index=True,
         default=None,
         help="Enter new code",
         size=30,
         translate=False,
     )
+
+    _sql_constraints = [  # noqa: RUF012
+        (
+            "code_unique",
+            "unique(knowle_code)",
+            "Knowledge area code must be unique.",
+        ),
+    ]

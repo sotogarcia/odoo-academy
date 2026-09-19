@@ -1,19 +1,13 @@
-# -*- coding: utf-8 -*-
-""" AcademyEducationalAttainment
+###############################################################################
+#    License, author and contributors information in:                         #
+#    __manifest__.py file at the root folder of this module.                  #
+###############################################################################
 
-This module contains the academy.educational.attainment Odoo model which stores
-all educational attainment attributes and behavior.
-"""
-
-from odoo import models, fields
-
-from logging import getLogger
-
-_logger = getLogger(__name__)
+from odoo import fields, models
 
 
 class AcademyEducationalAttainment(models.Model):
-    """Qualification level is a property of the training program"""
+    """Represent an educational attainment level."""
 
     _name = "academy.educational.attainment"
     _description = "Academy educational attainment"
@@ -27,7 +21,7 @@ class AcademyEducationalAttainment(models.Model):
         readonly=False,
         index=True,
         default=None,
-        help="Official name of the Educational Attainment",
+        help="Official name of the educational attainment",
         size=255,
         translate=True,
     )
@@ -38,7 +32,7 @@ class AcademyEducationalAttainment(models.Model):
         readonly=False,
         index=False,
         default=None,
-        help="Detailed description of the Educational Attainment",
+        help="Detailed description of the educational attainment",
         translate=True,
     )
 
@@ -57,7 +51,7 @@ class AcademyEducationalAttainment(models.Model):
         readonly=False,
         index=False,
         default=0,
-        help="Choose level order",
+        help="Choose educational attainment order",
     )
 
     level = fields.Char(
@@ -66,7 +60,17 @@ class AcademyEducationalAttainment(models.Model):
         readonly=False,
         index=True,
         default=None,
-        help="Enter new code",
+        help="Official ISCED educational attainment code",
         size=8,
-        translate=True,
+        translate=False,
     )
+
+    # -- SQL constraints ------------------------------------------------------
+
+    _sql_constraints = [  # noqa: RUF012
+        (
+            "level_unique",
+            "unique(level)",
+            "Educational attainment code must be unique.",
+        ),
+    ]

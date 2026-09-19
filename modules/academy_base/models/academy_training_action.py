@@ -269,7 +269,7 @@ class AcademyTrainingAction(models.Model):
         comodel_name="academy.application.scope",
         domain=[],
         context={},
-        ondelete="cascade",
+        ondelete="restrict",
         auto_join=False,
         copy=True,
     )

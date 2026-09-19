@@ -1,32 +1,25 @@
-# -*- coding: utf-8 -*-
-""" AcademyCompetencyUnit
+###############################################################################
+#    License, author and contributors information in:                         #
+#    __manifest__.py file at the root folder of this module.                  #
+###############################################################################
 
-This module contains the academy.competency.unit Odoo model which stores
-all competency unit attributes and behavior.
-"""
-
-from odoo import models, fields, api
-from odoo.tools.translate import _
-from ..utils.helpers import sanitize_code
+from odoo import api, fields, models
 from odoo.exceptions import ValidationError
+from odoo.tools.translate import _
 
-from logging import getLogger
-
-_logger = getLogger(__name__)
+from ..utils.helpers import sanitize_code
 
 
 # pylint: disable=locally-disabled, R0903
 class AcademyCompetencyUnit(models.Model):
-    """Competence Standard stores the specific name will be used by a module in
-    a training program
-    """
+    """Represent a professional competence standard (ECP)."""
 
     _name = "academy.competency.unit"
     _description = "Academy competency unit"
 
     _rec_name = "name"
     _order = "name ASC"
-    _rec_names_search = ["name", "code"]
+    _rec_names_search = ["name", "code"]  # noqa: RUF012
 
     name = fields.Char(
         string="Name",
@@ -93,7 +86,7 @@ class AcademyCompetencyUnit(models.Model):
         comodel_name="academy.professional.family",
         domain=[],
         context={},
-        ondelete="cascade",
+        ondelete="set null",
         auto_join=False,
     )
 
@@ -111,7 +104,7 @@ class AcademyCompetencyUnit(models.Model):
         comodel_name="academy.professional.area",
         domain=[],
         context={},
-        ondelete="cascade",
+        ondelete="set null",
         auto_join=False,
     )
 
@@ -125,37 +118,43 @@ class AcademyCompetencyUnit(models.Model):
         comodel_name="academy.professional.field",
         domain=[],
         context={},
-        ondelete="cascade",
+        ondelete="set null",
         auto_join=False,
     )
 
     # -------------------------- Contraints -----------------------------------
 
-    _sql_constraints = [
+    _sql_constraints = [  # noqa: RUF012
         (
             "code_unique",
             "unique(code)",
-            "Module code must be unique",
+            "Competence standard code must be unique.",
         ),
     ]
 
-    @api.constrains("professional_area_id")
+    @api.constrains("professional_family_id", "professional_area_id")
     def _check_professional_area_id(self):
-        message1 = _("Select a professional family before choosing an area")
+        message1 = _("Select a professional family before choosing an area.")
         message2 = _("Area %s does not belong to family %s.")
 
         for record in self:
             area = record.professional_area_id
+
             if not area:
                 continue
 
             family = record.professional_family_id
+
             if not family:
                 raise ValidationError(message1)
 
             if area.professional_family_id != family:
                 raise ValidationError(
-                    message2 % (area.display_name, family.display_name)
+                    message2
+                    % (
+                        area.display_name,
+                        family.display_name,
+                    )
                 )
 
     # -- Methods overrides ----------------------------------------------------

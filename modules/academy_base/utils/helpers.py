@@ -10,7 +10,7 @@ from uuid import uuid4
 
 from odoo import models
 from odoo.exceptions import ValidationError
-from odoo.osv.expression import AND
+from odoo.osv.expression import AND, FALSE_DOMAIN, TRUE_DOMAIN
 from odoo.tools import SQL
 from odoo.tools.safe_eval import safe_eval
 from odoo.tools.translate import _lt
@@ -371,6 +371,99 @@ def many2many_count(parent_set, m2m_field_name, domain=None):
         counts[parent_id] = count
 
     return counts
+
+
+def one2many_count_search_domain(
+    parent_set,
+    o2m_field_name,
+    operator,
+    value,
+    domain=None,
+):
+    """Build a parent domain by comparing One2many record counts.
+
+    Matching related records are grouped by the inverse Many2one field using
+    a single public ORM ``read_group`` call. Parents absent from the grouped
+    result are treated as having a count of zero.
+
+    The domain and context declared on the One2many field are respected,
+    together with any additional domain supplied by the caller. Odoo access
+    rights, record rules and ``active_test`` behavior are applied by the ORM.
+
+    Args:
+        parent_set (odoo.models.Model): Recordset of the parent model.
+        o2m_field_name (str): Name of the One2many field defined on the
+            parent model.
+        operator (str): Comparison operator to apply to the related-record
+            count.
+        value (int | bool): Value to compare against the related-record count.
+        domain (list | tuple | str | callable | None, optional): Additional
+            domain to apply to the related records. Defaults to None.
+
+    Returns:
+        list: ORM domain to apply to the parent model.
+
+    Raises:
+        TypeError: If ``o2m_field_name`` is not a One2many field, or if a
+            domain or context has an unsupported type.
+        ValueError: If a domain or context expression cannot be evaluated.
+        odoo.exceptions.AccessError: If the current user cannot read the
+            related model or the fields involved in the operation.
+    """
+    if value is True:
+        return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
+
+    if value is False:
+        return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
+
+    compare = OPERATOR_MAP.get(operator)
+    if not compare:
+        return FALSE_DOMAIN
+
+    field, comodel, related_domain, _counts = _prepare_relational_count(
+        parent_set,
+        o2m_field_name,
+        "one2many",
+        domain,
+    )
+
+    grouped_data = comodel.read_group(
+        domain=related_domain,
+        fields=[field.inverse_name],
+        groupby=[field.inverse_name],
+        lazy=False,
+    )
+
+    counts = {}
+
+    for row in grouped_data:
+        parent = row.get(field.inverse_name)
+
+        if parent:
+            counts[parent[0]] = row["__count"]
+
+    if compare(0, value):
+        excluded_ids = [
+            parent_id
+            for parent_id, count in counts.items()
+            if not compare(count, value)
+        ]
+
+        if not excluded_ids:
+            return TRUE_DOMAIN
+
+        return [("id", "not in", excluded_ids)]
+
+    matched_ids = [
+        parent_id
+        for parent_id, count in counts.items()
+        if compare(count, value)
+    ]
+
+    if not matched_ids:
+        return FALSE_DOMAIN
+
+    return [("id", "in", matched_ids)]
 
 
 def is_debug_mode(env):

@@ -1,19 +1,13 @@
-# -*- coding: utf-8 -*-
-""" AcademyApplicationScope
+###############################################################################
+#    License, author and contributors information in:                         #
+#    __manifest__.py file at the root folder of this module.                  #
+###############################################################################
 
-This module contains the academy.application.scope Odoo model which stores
-all application scope attributes and behavior.
-"""
-
-from odoo import models, fields
-
-from logging import getLogger
-
-_logger = getLogger(__name__)
+from odoo import fields, models
 
 
 class AcademyApplicationScope(models.Model):
-    """Application scope is a property of the training action"""
+    """Represent an application scope assigned to training actions."""
 
     _name = "academy.application.scope"
     _description = "Academy application scope"
@@ -27,7 +21,7 @@ class AcademyApplicationScope(models.Model):
         readonly=False,
         index=True,
         default=None,
-        help="Enter new name",
+        help="Official name of the application scope",
         size=255,
         translate=True,
     )
