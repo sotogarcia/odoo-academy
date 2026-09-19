@@ -1,30 +1,28 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 #    License, author and contributors information in:                         #
 #    __openerp__.py file at the root folder of this module.                   #
 ###############################################################################
 
-from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError
-from odoo.osv.expression import TRUE_DOMAIN, FALSE_DOMAIN
-from odoo.tools.safe_eval import safe_eval
-from ..utils.helpers import OPERATOR_MAP, one2many_count
-from ..utils.helpers import sanitize_code, default_code
-
 from uuid import uuid4
-from logging import getLogger
 
+from odoo import _, api, fields, models
+from odoo.tools.safe_eval import safe_eval
+
+from ..utils.helpers import (
+    default_code,
+    one2many_count,
+    one2many_count_search_domain,
+    sanitize_code,
+)
 
 CODE_SEQUENCE = "academy.training.framework.sequence"
-
-_logger = getLogger(__name__)
 
 
 class AcademyTrainingFramework(models.Model):
     _name = "academy.training.framework"
     _description = "Academy training framework"
 
-    _inherit = [
+    _inherit = [  # noqa: RUF012
         "ownership.mixin",
         "image.mixin",
         "mail.thread",
@@ -32,7 +30,7 @@ class AcademyTrainingFramework(models.Model):
 
     _order = "name ASC"
     _rec_name = "name"
-    _rec_names_search = ["name", "code", "legal_code"]
+    _rec_names_search = ["name", "code", "legal_code"]  # noqa: RUF012
 
     name = fields.Char(
         string="Name",
@@ -136,20 +134,12 @@ class AcademyTrainingFramework(models.Model):
 
     @api.model
     def _search_training_program_count(self, operator, value):
-        # Handle boolean-like searches Odoo may pass for required fields
-        if value is True:
-            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
-        if value is False:
-            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
-
-        cmp_func = OPERATOR_MAP.get(operator)
-        if not cmp_func:
-            return FALSE_DOMAIN  # unsupported operator
-
-        counts = one2many_count(self.search([]), "training_program_ids")
-        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
-
-        return [("id", "in", matched)] if matched else FALSE_DOMAIN
+        return one2many_count_search_domain(
+            self,
+            "training_program_ids",
+            operator,
+            value,
+        )
 
     is_modular = fields.Boolean(
         string="Is modular",
@@ -176,7 +166,7 @@ class AcademyTrainingFramework(models.Model):
 
     # -- Constraints ----------------------------------------------------------
 
-    _sql_constraints = [
+    _sql_constraints = [  # noqa: RUF012
         (
             "unique_code",
             "unique(code)",

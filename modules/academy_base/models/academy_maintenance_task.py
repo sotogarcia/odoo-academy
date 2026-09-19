@@ -109,7 +109,7 @@ class AcademyMaintenanceTask(models.Model):
         ),
     )
 
-    _sql_constraints = [
+    _sql_constraints = [  # noqa: RUF012
         (
             "uniq_model_method",
             "unique(model_id, method)",
@@ -202,16 +202,47 @@ class AcademyMaintenanceTask(models.Model):
 
     @api.model
     def _get_cron_user(self):
-        """Return the cron's user (fallback to current env user)."""
+        """Return the maintenance cron user or the current user as fallback.
+
+        The user configured on the maintenance cron is used when both the cron
+        record and its user are available. If the cron XMLID cannot be resolved,
+        or the cron has no user configured, the current environment user is
+        returned instead.
+
+        Returns:
+            res.users: User under which maintenance tasks should be executed.
+        """
         cron = self.env.ref(_CRON_TASK_XID, raise_if_not_found=False)
-        return cron.user_id or self.env.user
+
+        if cron and cron.user_id:
+            return cron.user_id
+
+        return self.env.user
 
     @api.model
     def _now_local_for_user(self, user=None):
-        """Return 'now' localized for the given user (fallback UTC)."""
+        """Return the current datetime localized for the given user.
+
+        The timezone configured on the supplied user is used explicitly, avoiding
+        any ``tz`` value inherited from the current environment context. If no user
+        is supplied, the current environment user is used. If that user has no
+        timezone configured, UTC is used as fallback.
+
+        Args:
+            user (res.users, optional): User whose timezone should be used.
+                Defaults to the current environment user.
+
+        Returns:
+            datetime: Timezone-aware current datetime localized to the user's
+            timezone, or UTC when no timezone is configured.
+        """
         user = user or self.env.user
+        timezone = user.tz or "UTC"
+
+        recordset = self.with_user(user).with_context(tz=timezone)
         now_utc = fields.Datetime.now()
-        return fields.Datetime.context_timestamp(self.with_user(user), now_utc)
+
+        return fields.Datetime.context_timestamp(recordset, now_utc)
 
     @api.model
     def _search_tasks_for_hour(self, hour_slot):
@@ -232,13 +263,43 @@ class AcademyMaintenanceTask(models.Model):
 
     @api.model
     def _run_isolated(self, cr, user_id, md_name, mt_name, context=None):
-        """Create a temp env and run a @api.model method on a model name."""
-        env = api.Environment(cr, user_id, context or self.env.context)
+        """Execute a model method using an isolated database cursor.
+
+        A dedicated Odoo environment is created for the supplied cursor and user.
+        The target model is accessed in superuser mode so maintenance operations
+        are not restricted by access rights or record rules.
+
+        Transaction management is intentionally left to the caller. In particular,
+        when the supplied cursor is used as a context manager, Odoo commits on
+        successful completion and rolls back automatically when an exception
+        escapes the context.
+
+        Args:
+            cr (odoo.sql_db.Cursor): Database cursor used for the isolated
+                transaction.
+            user_id (int): User ID used to build the isolated environment.
+            md_name (str): Technical name of the target model.
+            mt_name (str): Name of the model method to execute.
+            context (dict | None, optional): Context for the isolated environment.
+                Defaults to the current environment context.
+
+        Raises:
+            NotImplementedError: If the requested method does not exist on the
+                target model.
+        """
+        context = self.env.context if context is None else context
+
+        env = api.Environment(
+            cr,
+            user_id,
+            context,
+        )
+
         target_model = env[md_name].sudo()
+
         if not hasattr(target_model, mt_name):
-            raise NotImplementedError(
-                "Method not found: %s.%s" % (md_name, mt_name)
-            )
+            raise NotImplementedError(f"Method not found: {md_name}.{mt_name}")
+
         getattr(target_model, mt_name)()
 
     @api.model
@@ -271,23 +332,31 @@ class AcademyMaintenanceTask(models.Model):
 
                 frequency = task.frequency
                 offset = task.offset
-                _logger.debug(_MSG_TASK, md_name, mt_name, frequency, offset)
+                _logger.debug(
+                    _MSG_TASK,
+                    md_name,
+                    mt_name,
+                    frequency,
+                    offset,
+                )
 
-                with self.env.registry.cursor() as new_cr:
-                    try:
+                try:
+                    with self.env.registry.cursor() as new_cr:
                         self._run_isolated(
-                            new_cr, cron_user.id, md_name, mt_name, context
+                            new_cr,
+                            cron_user.id,
+                            md_name,
+                            mt_name,
+                            context,
                         )
-                        _logger.info(_MSG_OK, md_name, mt_name)
-                        new_cr.commit()
 
-                    except NotImplementedError as nie:
-                        _logger.error(_MSG_MISSING, nie, exc_info=True)
-                        new_cr.rollback()
+                    _logger.info(_MSG_OK, md_name, mt_name)
 
-                    except Exception:
-                        _logger.exception(_MSG_FAILED, md_name, mt_name)
-                        new_cr.rollback()
+                except NotImplementedError:
+                    _logger.exception(_MSG_MISSING)
+
+                except Exception:
+                    _logger.exception(_MSG_FAILED, md_name, mt_name)
 
     def execute_right_now(self):
         """Execute the configured maintenance task immediately."""

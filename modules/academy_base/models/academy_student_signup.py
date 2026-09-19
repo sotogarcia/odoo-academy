@@ -1,15 +1,14 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 #    License, author and contributors information in:                         #
 #    __openerp__.py file at the root folder of this module.                   #
 ###############################################################################
 
-from odoo import models, fields, api
-from odoo.tools.translate import _
-from odoo.exceptions import UserError, ValidationError
 
 from logging import getLogger
 
+from odoo import api, fields, models
+from odoo.exceptions import UserError, ValidationError
+from odoo.tools.translate import _
 
 _logger = getLogger(__name__)
 
@@ -23,7 +22,7 @@ class AcademyStudentSignup(models.Model):
     _rec_name = "id"
     _order = "company_id, id"
 
-    _inherit = ["mail.thread"]
+    _inherit = ["mail.thread"]  # noqa: RUF012
 
     _check_company_auto = True
 
@@ -99,7 +98,7 @@ class AcademyStudentSignup(models.Model):
     # -- Constraints
     # -------------------------------------------------------------------------
 
-    _sql_constraints = [
+    _sql_constraints = [  # noqa: RUF012
         (
             "unique_student_company",
             "UNIQUE(student_id, company_id)",
@@ -246,7 +245,7 @@ class AcademyStudentSignup(models.Model):
         self._prevent_field_changes(values, "student_id", _("Student"))
         self._prevent_field_changes(values, "company_id", _("Company"))
 
-        parent = super(AcademyStudentSignup, self)
+        parent = super()
         result = parent.write(values)
 
         return result
@@ -279,7 +278,7 @@ class AcademyStudentSignup(models.Model):
         self.ensure_one()
 
         pattern = self.env._("{code} — {student} / {company}")
-        components = dict(code=na, student=na, company=na)
+        components = {"code": na, "student": na, "company": na}
 
         if self.signup_code:
             components["code"] = self.signup_code
@@ -296,17 +295,41 @@ class AcademyStudentSignup(models.Model):
         return self.signup_code or na
 
     def _prevent_field_changes(self, values, field_name, field_caption=None):
+        """Prevent an existing Many2one value from being removed or changed.
+
+        The check is performed only when ``field_name`` is explicitly included in
+        the values being written. Writing unrelated fields does not trigger the
+        validation.
+
+        Args:
+            values (dict): Values supplied to ``write``.
+            field_name (str): Name of the Many2one field that must remain
+                unchanged.
+            field_caption (str, optional): Human-readable field name used in
+                validation messages. Defaults to the technical field name.
+
+        Returns:
+            bool: True when the supplied values do not alter the protected field.
+
+        Raises:
+            ValidationError: If the protected field is cleared or changed.
+        """
         if field_name not in values:
-            self.ensure_one()
+            return True
 
-            field_caption = field_caption or field_name
-            field_value = values.get(field_name, False)
+        field_caption = field_caption or field_name
+        field_value = values.get(field_name, False)
 
-            if not field_value:
-                message = _("The field '%s' is required.")
-                raise ValidationError(message % field_caption)
+        if not field_value:
+            message = _("The field '%s' is required.")
+            raise ValidationError(message % field_caption)
 
-            elif field_value != getattr(self, field_name, False):
+        for record in self:
+            current_value = (
+                record[field_name].id if record[field_name] else False
+            )
+
+            if field_value != current_value:
                 message = _(
                     "The field '%s' cannot be changed once it has been set."
                 )

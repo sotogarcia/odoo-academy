@@ -994,7 +994,7 @@ class AcademyTrainingAction(models.Model):
 
         return AND([base_domain, name_domain])
 
-    student_ids = fields.Many2manyView(
+    student_ids = fields.Many2many(
         string="Students",
         required=False,
         readonly=True,
@@ -1002,13 +1002,30 @@ class AcademyTrainingAction(models.Model):
         default=None,
         help="Students directly or indirectly enrolled in this action.",
         comodel_name="academy.student",
-        relation="academy_training_action_student_link",
+        relation="academy_training_action_student_rel",
         column1="training_action_id",
         column2="student_id",
         domain=[],
         context={},
+        compute="_compute_student_ids",
+        store=True,
         copy=False,
     )
+
+    @api.depends(
+        "enrolment_ids",
+        "enrolment_ids.student_id",
+        "enrolment_ids.active",
+        "rollup_enrolment_ids",
+        "rollup_enrolment_ids.student_id",
+        "rollup_enrolment_ids.active",
+    )
+    def _compute_student_ids(self):
+        for record in self:
+            enrolments = record.enrolment_ids | record.rollup_enrolment_ids
+            enrolments = enrolments.filtered("active")
+
+            record.student_ids = enrolments.mapped("student_id")
 
     student_count = fields.Integer(
         string="No. of students",
@@ -1022,13 +1039,7 @@ class AcademyTrainingAction(models.Model):
         copy=False,
     )
 
-    @api.depends(
-        "enrolment_ids",
-        "rollup_enrolment_ids",
-        "enrolment_ids.student_id",
-        "rollup_enrolment_ids.student_id",
-        "student_ids",
-    )
+    @api.depends("student_ids")
     def _compute_student_count(self):
         counts = many2many_count(self, "student_ids")
 
@@ -1054,7 +1065,7 @@ class AcademyTrainingAction(models.Model):
 
     # ------------------------------ CONSTRAINS -------------------------------
 
-    _sql_constraints = [
+    _sql_constraints = [  # noqa: RUF012
         (
             "check_date_order",
             'CHECK("date_stop" IS NULL OR "date_start" < "date_stop")',

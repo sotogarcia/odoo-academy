@@ -1,33 +1,25 @@
-# -*- coding: utf-8 -*-
-""" AcademyTeacher
+###############################################################################
+#    License, author and contributors information in:                         #
+#    __manifest__.py file at the root folder of this module.                  #
+###############################################################################
 
-This module contains the academy.technical.staff Odoo model which stores
-all technical staff members attributes and behavior.
-"""
-
-from odoo import models, fields, api
-from odoo.tools.safe_eval import safe_eval
-from odoo.tools.translate import _
-
-from logging import getLogger
-
-_logger = getLogger(__name__)
+from odoo import api, models
 
 
-class AcademyTeacher(models.Model):
-    """A technical staff is a partner who can be enrolled on training actions"""
+class AcademyTechnicalStaff(models.Model):
+    """A technical staff member is a specialized support staff member."""
 
     _name = "academy.technical.staff"
     _description = "Academy technical staff member"
 
-    _inherit = [
+    _inherit = [  # noqa: RUF012
         "academy.support.staff",
     ]
 
     _order = "complete_name ASC, id DESC"
 
     _rec_name = "complete_name"
-    _rec_names_search = [
+    _rec_names_search = [  # noqa: RUF012
         "complete_name",
         "email",
         "vat",

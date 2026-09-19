@@ -1,19 +1,13 @@
-# -*- coding: utf-8 -*-
-""" AcademyTrainingMethodology
+###############################################################################
+#    License, author and contributors information in:                         #
+#    __manifest__.py file at the root folder of this module.                  #
+###############################################################################
 
-This module contains the academy.training.methodology Odoo model which stores
-all training methodology attributes and behavior.
-"""
-
-from odoo import models, fields
-
-from logging import getLogger
-
-_logger = getLogger(__name__)
+from odoo import fields, models
 
 
 class AcademyTrainingMethodology(models.Model):
-    """Training methodology is a property of the training action"""
+    """Training methodology is a property of a training action."""
 
     _name = "academy.training.methodology"
     _description = "Academy training methodology"

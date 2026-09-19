@@ -106,7 +106,7 @@ class AcademySupportStaff(models.Model):
     implied_cefrl_ids = fields.Many2many(
         string="Implied languages",
         required=False,
-        readonly=False,
+        readonly=True,
         index=True,
         default=None,
         help=False,
@@ -438,7 +438,7 @@ class AcademySupportStaff(models.Model):
                     error = _("VAT with a known country code is required.")
                     raise ValidationError(error)
 
-    # -- Public exported methods ----------------------------------------
+    # -- Public exported methods ----------------------------------------------
 
     def sanitize_phone_number(self):
         self._sanitize_phone_number(self)
@@ -597,9 +597,10 @@ class AcademySupportStaff(models.Model):
     def _get_valid_vat_country_codes(self, country_data=None):
         """Return the country prefixes accepted for VAT numbers.
 
-        Standard prefixes are obtained from ``res.country.code``. The special
-        ``EU`` prefix is also accepted because it may be assigned to non-EU
-        businesses registered for VAT transactions with EU consumers.
+        Standard prefixes are obtained from the ``code`` field of
+        ``res.country`` records. The special ``EU`` prefix is also accepted
+        because it may be assigned to non-EU businesses registered for VAT
+        transactions with EU consumers.
 
         Args:
             country_data (res.country, optional): Preloaded country records used to
@@ -761,16 +762,19 @@ class AcademySupportStaff(models.Model):
     def _eval_domain(self, domain):
         """Evaluate an action domain into a valid ORM domain.
 
-        The ORM domain and the Odoo context are independent concepts. The context
-        is only involved here because an action domain may be stored as a Python
-        expression referencing variables available in the action evaluation
-        environment.
+        Action domains may be stored either as an already evaluated list or tuple,
+        or as a Python expression that must be evaluated before being used by the
+        ORM.
 
-        The standard evaluation context provided by ``ir.actions.actions`` is used
-        so expressions can reference values such as ``uid``, ``user``, ``time`` or
-        ``datetime``. The current environment context is also exposed both through
-        its individual keys, such as ``active_id``, and through the ``context``
-        variable itself.
+        String expressions are evaluated with ``safe_eval`` using the standard
+        evaluation context provided by ``ir.actions.actions``. The current Odoo
+        context is exposed through the ``context`` variable, while action-specific
+        values such as ``active_id`` and ``allowed_company_ids`` are provided
+        explicitly.
+
+        The ORM domain and the Odoo context remain independent concepts. The
+        context is only involved here because the stored domain expression may
+        reference variables available in the action evaluation environment.
 
         Args:
             domain (str | list | tuple | None): Action domain definition to
@@ -781,7 +785,6 @@ class AcademySupportStaff(models.Model):
             is empty, has an unsupported type, cannot be evaluated, or does not
             produce a list or tuple.
         """
-
         if domain in (False, None):
             return []
 
@@ -792,8 +795,13 @@ class AcademySupportStaff(models.Model):
             return []
 
         eval_context = self.env["ir.actions.actions"]._get_eval_context()
-        eval_context.update(self.env.context)
-        eval_context["context"] = self.env.context
+        eval_context.update(
+            {
+                "active_id": self.env.context.get("active_id"),
+                "context": self.env.context,
+                "allowed_company_ids": self.env.companies.ids,
+            }
+        )
 
         try:
             domain = safe_eval(domain, eval_context)

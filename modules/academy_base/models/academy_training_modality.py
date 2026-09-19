@@ -1,15 +1,10 @@
-# -*- coding: utf-8 -*-
-""" AcademyTrainingModality
+###############################################################################
+#    License, author and contributors information in:                         #
+#    __manifest__.py file at the root folder of this module.                  #
+###############################################################################
 
-This module contains the academy.training.modality Odoo model which stores
-all training modality attributes and behavior.
-"""
 
-from odoo import models, fields
-
-from logging import getLogger
-
-_logger = getLogger(__name__)
+from odoo import fields, models
 
 
 class AcademyTrainingModality(models.Model):

@@ -82,18 +82,6 @@ from . import academy_training_action_enrolment
 from . import academy_training_teacher_assignment
 
 # ---------------------------------------------------------------------------
-# Relationships between training models
-# ---------------------------------------------------------------------------
-
-from . import academy_training_action_student_link
-
-# from . import academy_competency_unit_teacher_rel
-# from . import academy_training_program_training_module_rel
-# from . import academy_training_program_training_unit_rel
-# from . import academy_training_module_used_in_training_action_rel
-
-
-# ---------------------------------------------------------------------------
 # Settings
 # ---------------------------------------------------------------------------
 

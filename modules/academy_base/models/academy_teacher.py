@@ -1,19 +1,16 @@
-# -*- coding: utf-8 -*-
-""" AcademyTeacher
+###############################################################################
+#    License, author and contributors information in:                         #
+#    __openerp__.py file at the root folder of this module.                   #
+###############################################################################
 
-This module contains the academy.teacher Odoo model which stores
-all teacher attributes and behavior.
-"""
 
-from odoo import models, fields, api
+from odoo import api, fields, models
 from odoo.tools.safe_eval import safe_eval
-from odoo.tools.translate import _
-from odoo.osv.expression import TRUE_DOMAIN, FALSE_DOMAIN
-from ..utils.helpers import OPERATOR_MAP, one2many_count
 
-from logging import getLogger
-
-_logger = getLogger(__name__)
+from ..utils.helpers import (
+    one2many_count,
+    one2many_count_search_domain,
+)
 
 
 class AcademyTeacher(models.Model):
@@ -22,17 +19,18 @@ class AcademyTeacher(models.Model):
     _name = "academy.teacher"
     _description = "Academy teacher"
 
-    _inherit = [
+    _inherit = [  # noqa: RUF012
         "academy.support.staff",
     ]
 
     _order = "complete_name ASC, id DESC"
 
-    _rec_name = "name"
-    _rec_names_search = [
-        "name",
+    _rec_name = "complete_name"
+    _rec_names_search = [  # noqa: RUF012
+        "complete_name",
         "email",
         "vat",
+        "company_registry",
     ]
 
     assignment_ids = fields.One2many(
@@ -50,7 +48,7 @@ class AcademyTeacher(models.Model):
     )
 
     assignment_count = fields.Integer(
-        string="No. of teachers",
+        string="No. of assignments",
         required=False,
         readonly=True,
         index=False,
@@ -69,20 +67,12 @@ class AcademyTeacher(models.Model):
 
     @api.model
     def _search_assignment_count(self, operator, value):
-        # Handle boolean-like searches Odoo may pass for required fields
-        if value is True:
-            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
-        if value is False:
-            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
-
-        cmp_func = OPERATOR_MAP.get(operator)
-        if not cmp_func:
-            return FALSE_DOMAIN  # unsupported operator
-
-        counts = one2many_count(self.search([]), "assignment_ids")
-        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
-
-        return [("id", "in", matched)] if matched else FALSE_DOMAIN
+        return one2many_count_search_domain(
+            self,
+            "assignment_ids",
+            operator,
+            value,
+        )
 
     # -- Methods overrides ----------------------------------------------------
 
