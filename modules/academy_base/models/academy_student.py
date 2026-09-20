@@ -531,6 +531,8 @@ class AcademyStudent(models.Model):
         if not student_set or not company_ids:
             return self.env["academy.student.signup"].browse()
 
+        student_set._ensure_signup_company_access(company_ids)
+
         allowed_company_ids = list(
             student_set.env.context.get("allowed_company_ids")
             or [student_set.env.company.id]
@@ -596,13 +598,7 @@ class AcademyStudent(models.Model):
         if not student_set or not company_ids:
             return 0
 
-        user_company_ids = set(student_set.env.user.company_ids.ids)
-        target_company_ids = set(company_ids)
-
-        if not target_company_ids.issubset(user_company_ids):
-            raise AccessError(
-                _("You are not allowed to manage sign-ups for some companies.")
-            )
+        student_set._ensure_signup_company_access(company_ids)
 
         allowed_company_ids = list(
             student_set.env.context.get("allowed_company_ids")
@@ -751,3 +747,25 @@ class AcademyStudent(models.Model):
         company_ids = list(dict.fromkeys(cid for cid in company_ids if cid))
 
         return company_ids
+
+    def _ensure_signup_company_access(self, company_ids):
+        """Ensure the user can manage sign-ups for the target companies.
+
+        Args:
+            company_ids (iterable[int]): Company IDs for which sign-up data will
+                be managed.
+
+        Returns:
+            None
+
+        Raises:
+            AccessError: If the user is not allowed to manage one or more target
+                companies.
+        """
+        user_company_ids = set(self.env.user.company_ids.ids)
+        target_company_ids = set(company_ids)
+
+        if not target_company_ids.issubset(user_company_ids):
+            raise AccessError(
+                _("You are not allowed to manage sign-ups for some companies.")
+            )

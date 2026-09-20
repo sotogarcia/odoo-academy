@@ -1,33 +1,37 @@
-# -*- coding: utf-8 -*-
-""" AcademyTrainingAction
+###############################################################################
+#    License, author and contributors information in:                         #
+#    __manifest__.py file at the root folder of this module.                  #
+###############################################################################
 
-This module contains the academy.training.action Odoo model which stores
-all training action attributes and behavior.
-"""
-
-
-from odoo.tools.translate import _
-from odoo.tools.misc import format_date
-
-# pylint: disable=locally-disabled, E0401
-from odoo import models, fields, api
-from odoo.tools.safe_eval import safe_eval
-from odoo.exceptions import ValidationError, UserError
-from odoo.osv.expression import AND, OR, TRUE_DOMAIN, FALSE_DOMAIN
-from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DATETIME_FORMAT
-from ..utils.helpers import OPERATOR_MAP, one2many_count, many2many_count
-from ..utils.sql_helpers import create_index
-
-from ..utils.record_utils import create_domain_for_ids
-from ..utils.record_utils import create_domain_for_interval
-from ..utils.record_utils import ARCHIVED_DOMAIN, INCLUDE_ARCHIVED_DOMAIN
-from ..utils.datetime_utils import local_midnight_as_utc
-from ..utils.helpers import sanitize_code, default_code
 
 from logging import getLogger
-from pytz import utc
 from uuid import uuid4
-from enum import IntFlag, auto
+
+# pylint: disable=locally-disabled, E0401
+from odoo import api, fields, models
+from odoo.exceptions import ValidationError
+from odoo.osv.expression import AND, FALSE_DOMAIN, OR, TRUE_DOMAIN
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DATETIME_FORMAT
+from odoo.tools.misc import format_date
+from odoo.tools.safe_eval import safe_eval
+from odoo.tools.translate import _
+
+from ..utils.datetime_utils import local_midnight_as_utc
+from ..utils.helpers import (
+    OPERATOR_MAP,
+    default_code,
+    many2many_count,
+    one2many_count,
+    one2many_count_search_domain,
+    sanitize_code,
+)
+from ..utils.record_utils import (
+    ARCHIVED_DOMAIN,
+    INCLUDE_ARCHIVED_DOMAIN,
+    create_domain_for_ids,
+    create_domain_for_interval,
+)
+from ..utils.sql_helpers import create_index
 
 # from psycopg2 import Error as PsqlError
 # from datetime import datetime, date, time, timedelta
@@ -51,7 +55,7 @@ class AcademyTrainingAction(models.Model):
     _name = "academy.training.action"
     _description = "Academy training action"
 
-    _inherit = [
+    _inherit = [  # noqa: RUF012
         "ownership.mixin",
         "mail.thread",
         "image.mixin",
@@ -60,7 +64,7 @@ class AcademyTrainingAction(models.Model):
 
     _rec_name = "name"
     _order = "parent_path, sequence, name, id"
-    _rec_names_search = ["name", "code", "training_program_id"]
+    _rec_names_search = ["name", "code", "training_program_id"]  # noqa: RUF012
 
     @property
     def shared_keys(self):
@@ -103,6 +107,7 @@ class AcademyTrainingAction(models.Model):
         context={},
         ondelete="cascade",
         auto_join=False,
+        check_company=True,
         copy=True,
     )
 
@@ -144,7 +149,7 @@ class AcademyTrainingAction(models.Model):
         copy=False,
     )
 
-    @api.depends("child_ids")
+    @api.depends("child_ids", "child_ids.active")
     def _compute_training_group_count(self):
         counts = one2many_count(self, "child_ids")
 
@@ -153,20 +158,12 @@ class AcademyTrainingAction(models.Model):
 
     @api.model
     def _search_training_group_count(self, operator, value):
-        # Handle boolean-like searches Odoo may pass for required fields
-        if value is True:
-            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
-        if value is False:
-            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
-
-        cmp_func = OPERATOR_MAP.get(operator)
-        if not cmp_func:
-            return FALSE_DOMAIN  # unsupported operator
-
-        counts = one2many_count(self.search([]), "child_ids")
-        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
-
-        return [("id", "in", matched)] if matched else FALSE_DOMAIN
+        return one2many_count_search_domain(
+            self,
+            "child_ids",
+            operator,
+            value,
+        )
 
     keep_synchronized = fields.Boolean(
         string="Synchronize program",
@@ -401,12 +398,15 @@ class AcademyTrainingAction(models.Model):
                             if X == INFINITY -> date_stop is set (not open)
                             else open OR date_stop != X
         """
+        if op in ("=", "!=") and val in (False, None):
+            return FALSE_DOMAIN if op == "=" else TRUE_DOMAIN
+
         # Normalize incoming value to a datetime when applicable
         dt = val
         if isinstance(dt, str):
             try:
                 dt = fields.Datetime.to_datetime(dt)
-            except Exception:
+            except ValueError:
                 dt = val  # leave as-is for non-datetime ops
 
         if op in (">=", ">"):
@@ -424,9 +424,6 @@ class AcademyTrainingAction(models.Model):
             if dt == _INFINITY:
                 return [("date_stop", "!=", False)]
             return ["|", ("date_stop", "=", False), ("date_stop", "!=", dt)]
-
-        if op in ("=", "!=") and val in (False, None):
-            return FALSE_DOMAIN if op == "=" else TRUE_DOMAIN
 
         return TRUE_DOMAIN
 
@@ -541,7 +538,7 @@ class AcademyTrainingAction(models.Model):
 
     action_line_ids = fields.One2many(
         string="Action lines",
-        required=True,
+        required=False,
         readonly=False,
         index=True,
         default=None,
@@ -569,7 +566,11 @@ class AcademyTrainingAction(models.Model):
         copy=False,
     )
 
-    @api.depends("action_line_ids")
+    @api.depends(
+        "action_line_ids",
+        "action_line_ids.active",
+        "action_line_ids.is_section",
+    )
     def _compute_action_line_count(self):
         domain = [("is_section", "=", False)]
         counts = one2many_count(self, "action_line_ids", domain)
@@ -579,20 +580,17 @@ class AcademyTrainingAction(models.Model):
 
     @api.model
     def _search_action_line_count(self, operator, value):
-        # Handle boolean-like searches Odoo may pass for required fields
-        if value is True:
-            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
-        if value is False:
-            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
+        domain = [
+            ("is_section", "=", False),
+        ]
 
-        cmp_func = OPERATOR_MAP.get(operator)
-        if not cmp_func:
-            return FALSE_DOMAIN  # unsupported operator
-
-        counts = one2many_count(self.search([]), "action_line_ids")
-        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
-
-        return [("id", "in", matched)] if matched else FALSE_DOMAIN
+        return one2many_count_search_domain(
+            self,
+            "action_line_ids",
+            operator,
+            value,
+            domain,
+        )
 
     # -- Capacity: fields and logic
     # -------------------------------------------------------------------------
@@ -660,7 +658,10 @@ class AcademyTrainingAction(models.Model):
         copy=False,
     )
 
-    @api.depends("enrolment_ids")
+    @api.depends(
+        "enrolment_ids",
+        "enrolment_ids.active",
+    )
     def _compute_enrolment_count(self):
         counts = one2many_count(self, "enrolment_ids")
 
@@ -669,20 +670,12 @@ class AcademyTrainingAction(models.Model):
 
     @api.model
     def _search_enrolment_count(self, operator, value):
-        # Handle boolean-like searches Odoo may pass for required fields
-        if value is True:
-            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
-        if value is False:
-            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
-
-        cmp_func = OPERATOR_MAP.get(operator)
-        if not cmp_func:
-            return FALSE_DOMAIN  # unsupported operator
-
-        counts = one2many_count(self.search([]), "enrolment_ids")
-        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
-
-        return [("id", "in", matched)] if matched else FALSE_DOMAIN
+        return one2many_count_search_domain(
+            self,
+            "enrolment_ids",
+            operator,
+            value,
+        )
 
     rollup_enrolment_ids = fields.One2many(
         string="Enrolments (rollup)",
@@ -711,7 +704,10 @@ class AcademyTrainingAction(models.Model):
         copy=False,
     )
 
-    @api.depends("rollup_enrolment_ids")
+    @api.depends(
+        "rollup_enrolment_ids",
+        "rollup_enrolment_ids.active",
+    )
     def _compute_rollup_enrolment_count(self):
         counts = one2many_count(self, "rollup_enrolment_ids")
 
@@ -720,20 +716,12 @@ class AcademyTrainingAction(models.Model):
 
     @api.model
     def _search_rollup_enrolment_count(self, operator, value):
-        # Handle boolean-like searches Odoo may pass for required fields
-        if value is True:
-            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
-        if value is False:
-            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
-
-        cmp_func = OPERATOR_MAP.get(operator)
-        if not cmp_func:
-            return FALSE_DOMAIN  # unsupported operator
-
-        counts = one2many_count(self.search([]), "rollup_enrolment_ids")
-        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
-
-        return [("id", "in", matched)] if matched else FALSE_DOMAIN
+        return one2many_count_search_domain(
+            self,
+            "rollup_enrolment_ids",
+            operator,
+            value,
+        )
 
     current_enrolment_count = fields.Integer(
         string="No. of current enrolments (rollup)",
@@ -770,16 +758,6 @@ class AcademyTrainingAction(models.Model):
 
     @api.model
     def _search_current_enrolment_count(self, operator, value):
-        # Handle boolean-like searches Odoo may pass for required fields
-        if value is True:
-            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
-        if value is False:
-            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
-
-        cmp_func = OPERATOR_MAP.get(operator)
-        if not cmp_func:
-            return FALSE_DOMAIN  # unsupported operator
-
         now = fields.Datetime.now()
         domain = [
             ("active", "=", True),
@@ -788,12 +766,14 @@ class AcademyTrainingAction(models.Model):
             ("deregister", "=", False),
             ("deregister", ">=", now),
         ]
-        counts = one2many_count(
-            self.search([]), "rollup_enrolment_ids", domain
-        )
-        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
 
-        return [("id", "in", matched)] if matched else FALSE_DOMAIN
+        return one2many_count_search_domain(
+            self,
+            "rollup_enrolment_ids",
+            operator,
+            value,
+            domain,
+        )
 
     # -- Teacher assignment: fields and logic
     # -------------------------------------------------------------------------
@@ -847,45 +827,77 @@ class AcademyTrainingAction(models.Model):
             record.primary_teacher_id = primary_dict.get(record.id)
 
     def _inverse_primary_teacher_id(self):
-        """When setting a primary teacher:
-        - If the teacher already has an assignment in this unit, move it to 1st.
-        - Else, overwrite the teacher of the lowest-sequence assignment.
-          If there are no assignments yet, create one at sequence=1.
+        """Update the global teacher assignment used as primary teacher.
+
+        Only global assignments, those without ``action_line_id``, participate
+        in the primary teacher of a training action.
+
+        When a teacher is selected:
+
+        * If that teacher already has a global assignment, it is moved to the
+          first position.
+        * If the teacher does not have a global assignment, the current primary
+          assignment is reused by changing its teacher.
+        * If no global assignment exists, a new one is created.
+
+        When the field is cleared, the current active primary global assignment
+        is removed. If other active global assignments remain, the next one by
+        sequence automatically becomes the primary teacher.
+
+        Returns:
+            None
         """
         assignment_obj = self.env["academy.training.teacher.assignment"]
+
         for record in self:
-            teacher = record.primary_teacher_id
             if not record.id:
                 continue
 
-            domain = [("training_action_id", "=", record.id)]
-            assigns = assignment_obj.search(domain, order="sequence, id")
+            domain = [
+                ("training_action_id", "=", record.id),
+                ("action_line_id", "=", False),
+            ]
+            order = "sequence ASC, id ASC"
+            assignment_set = assignment_obj.search(domain, order=order)
 
-            if not assigns:
-                if teacher:
-                    values = {
-                        "training_action_id": record.id,
-                        "teacher_id": teacher.id,
-                        "sequence": 1,
-                    }
-                    assignment_obj.create(values)
+            domain = [("teacher_id.active", "=", True)]
+            active_assignment_set = assignment_set.filtered_domain(domain)
+
+            primary_assignment = active_assignment_set[:1]
+            teacher = record.primary_teacher_id
+
+            if not teacher:
+                if primary_assignment:
+                    primary_assignment.unlink()
+                    record._normalize_global_assignments()
                 continue
 
-            if teacher:
-                existing = assigns.filtered(lambda a: a.teacher_id == teacher)
-                if existing:
-                    # take to first place
-                    existing.write({"sequence": 0})
-                else:
-                    # overwrite the assignment with a lower sequence
-                    first = assigns[0]
-                    first.write({"teacher_id": teacher.id})
+            domain = [("teacher_id", "=", teacher.id)]
+            teacher_assignment = assignment_set.filtered_domain(domain)[:1]
 
-                # normalize 1..n
-                ordered = assignment_obj.search(domain, order="sequence, id")
-                for i, a in enumerate(ordered, start=1):
-                    if a.sequence != i:
-                        a.sequence = i
+            if teacher_assignment:
+                record._prioritize_global_assignment(
+                    teacher_assignment, assignment_set
+                )
+                continue
+
+            if primary_assignment:
+                primary_assignment.write({"teacher_id": teacher.id})
+                continue
+
+            if assignment_set:
+                first_assignment = assignment_set[:1]
+                first_assignment.write({"teacher_id": teacher.id})
+                record._normalize_global_assignments()
+                continue
+
+            values = {
+                "training_action_id": record.id,
+                "action_line_id": False,
+                "teacher_id": teacher.id,
+                "sequence": 1,
+            }
+            assignment_obj.create(values)
 
     teacher_assignment_count = fields.Integer(
         string="No. of teachers",
@@ -907,20 +919,12 @@ class AcademyTrainingAction(models.Model):
 
     @api.model
     def _search_teacher_assignment_count(self, operator, value):
-        # Handle boolean-like searches Odoo may pass for required fields
-        if value is True:
-            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
-        if value is False:
-            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
-
-        cmp_func = OPERATOR_MAP.get(operator)
-        if not cmp_func:
-            return FALSE_DOMAIN  # unsupported operator
-
-        counts = one2many_count(self.search([]), "teacher_assignment_ids")
-        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
-
-        return [("id", "in", matched)] if matched else FALSE_DOMAIN
+        return one2many_count_search_domain(
+            self,
+            "teacher_assignment_ids",
+            operator,
+            value,
+        )
 
     # -- Business fields and logic
     # 1 => Red
@@ -1076,63 +1080,82 @@ class AcademyTrainingAction(models.Model):
             "CHECK(seats >= 0)",
             "The number of users must be greater than or equal to zero",
         ),
+        (
+            "excess_greater_or_equal_to_seats",
+            "CHECK(excess >= seats)",
+            "Excess capacity must be greater than or equal to seating capacity",
+        ),
     ]
 
-    # Funcionará si los campos vuelve a ser almacenados. Ahora NO lo son.
-    # (
-    #     "prevent_enrolment_group_mix",
-    #     "CHECK (COALESCE(training_group_count, 0) = 0 "
-    #     "OR COALESCE(enrolment_count, 0) = 0)",
-    #     "An action with groups cannot have direct enrolments, and an action "
-    #     "with direct enrolments cannot have groups.",
-    # ),
-
-    @api.constrains("enrolment_ids", "child_ids", "parent_id")
+    @api.constrains(
+        "enrolment_ids",
+        "child_ids",
+        "parent_id",
+    )
     def _check_enrolment_group_conflict(self):
-        """Enforce consistency between enrolments and training groups.
+        """Prevent mixing direct enrolments and training groups.
 
-        It forbids adding groups under actions with enrolments,
-        enrolling in actions whose parent already has groups, mixing
-        groups and enrolments on a single action, and creating children
-        under support-type actions.
+        A training action with direct enrolments cannot become the parent of
+        training groups, and a training action cannot simultaneously contain
+        direct enrolments and child groups.
+
+        Raises:
+            ValidationError: If a group is assigned to an action with direct
+                enrolments, or if an action contains both enrolments and groups.
         """
-        case_1 = _(
+        parent_enrolment_msg = _(
             "You cannot create or assign a training group under "
             "an action that already has student enrolments.\n\n"
             "Remove the enrolments from the parent action first."
         )
-        case_2 = _(
-            "You cannot enrol students in a training action whose "
-            "parent already contains training groups.\n\n"
-            "Enrol them in one of the existing groups instead."
-        )
-        case_3 = _(
+        mixed_content_msg = _(
             "A training action cannot have both direct student "
             "enrolments and associated training groups.\n\n"
             "Remove either the enrolments or the groups before "
             "proceeding."
         )
-        case_4 = _("A support service cannot have child support services.")
 
         for record in self:
-            parent = record.parent_id or self.env["academy.training.action"]
+            parent = record.parent_id
 
-            # --- Case 1: the parent already has enrolments -> cannot add child
             if parent and parent.enrolment_ids:
-                raise ValidationError(case_1)
+                raise ValidationError(parent_enrolment_msg)
 
-            # --- Case 2: the parent already has child groups -> cannot enrol
-            if record.enrolment_ids and parent and parent.child_ids:
-                raise ValidationError(case_2)
-
-            # --- Case 3: the record itself is a parent (top-level action)
-            # It cannot have both enrolments and groups at the same time.
             if record.enrolment_ids and record.child_ids:
-                raise ValidationError(case_3)
+                raise ValidationError(mixed_content_msg)
 
-            # --- Case 4: the record is not a training action and has children
+    @api.constrains("parent_id", "training_program_id", "child_ids")
+    def _check_support_has_no_groups(self):
+        """Prevent support services from having training groups.
+
+        Raises:
+            ValidationError: If a support service has child actions or if an
+                action is assigned as a child of a support service.
+        """
+        err_msg = _("A support service cannot have training groups.")
+
+        for record in self:
             if record.program_type == "support" and record.child_ids:
-                raise ValidationError(case_4)
+                raise ValidationError(err_msg)
+
+            if record.parent_id and record.parent_id.program_type == "support":
+                raise ValidationError(err_msg)
+
+    @api.constrains("parent_id", "child_ids")
+    def _check_two_level_hierarchy(self):
+        """Ensure training actions use only a two-level hierarchy.
+
+        Raises:
+            ValidationError: If a training group contains child groups or its
+                parent is itself a training group.
+        """
+        err_msg = _("Training groups cannot contain other training groups.")
+
+        for record in self:
+            if record.parent_id and (
+                record.parent_id.parent_id or record.child_ids
+            ):
+                raise ValidationError(err_msg)
 
     @api.constrains("parent_id")
     def _check_no_cycle(self):
@@ -1222,6 +1245,30 @@ class AcademyTrainingAction(models.Model):
                     )
                 )
 
+    @api.constrains(
+        "parent_id",
+        "training_program_id",
+    )
+    def _check_group_training_program(self):
+        """Ensure a training group uses its parent's training program.
+
+        Raises:
+            ValidationError: If a training group and its parent use different
+                training programs.
+        """
+        err_msg = _(
+            "A training group must use the same training program as its "
+            "parent action."
+        )
+
+        for record in self:
+            if (
+                record.parent_id
+                and record.training_program_id
+                != record.parent_id.training_program_id
+            ):
+                raise ValidationError(err_msg)
+
     # -- Overridden methods
     # -------------------------------------------------------------------------
 
@@ -1274,41 +1321,68 @@ class AcademyTrainingAction(models.Model):
         return records
 
     def write(self, values):
-        """Overridden method 'write'"""
+        """Overridden method 'write'."""
         sanitize_code(values, "upper")
         self._prevent_use_student_link(values)
 
-        result = super().write(values)
+        self.update_enrolments(values=values)
 
-        self.update_enrolments()
+        result = super().write(values)
 
         return result
 
     def copy(self, default=None):
+        """Duplicate the training action and its related records.
+
+        Action lines, child groups and global teacher assignments are copied
+        explicitly because their corresponding relational fields use
+        ``copy=False``. Values supplied through ``default`` take precedence over
+        the automatic duplication behavior.
+
+        Args:
+            default (dict | None): Values to override in the duplicated training
+                action. Defaults to None.
+
+        Returns:
+            academy.training.action: Newly created training action.
+        """
+        self.ensure_one()
+
         default = dict(default or {})
 
-        if not default.get("name", False):
+        if "name" not in default:
             name = self.name or _("New training action")
-            sufix = uuid4().hex[:8]
-            default["name"] = f"{name} ‒ {sufix}"
+            suffix = uuid4().hex[:8]
+            default["name"] = f"{name} ‒ {suffix}"
 
-        action_id = default.get("training_action_id") or self.id
+        copy_action_lines = "action_line_ids" not in default
+        copy_groups = "child_ids" not in default
+
         if "teacher_assignment_ids" not in default:
-            self._copy_global_teacher_assignments(default, action_id)
+            self._copy_global_teacher_assignments(default)
 
-        self_ctx = self.with_context({_CTX_SKIP_PROGRAM: True})
+        self_ctx = self.with_context(
+            **{
+                _CTX_SKIP_PROGRAM: True,
+            }
+        )
         new_action = super(AcademyTrainingAction, self_ctx).copy(default)
 
-        line_default = {
-            "training_action_id": new_action.id,
-            "training_program_id": new_action.training_program_id.id,
-        }
-        for line in self.action_line_ids:
-            line.copy(default=line_default)
+        if copy_action_lines and new_action.program_type != "support":
+            line_default = {
+                "training_action_id": new_action.id,
+            }
 
-        group_default = dict(parent_id=new_action.id)
-        for training_group in self.child_ids:
-            training_group.copy(default=group_default)
+            for line in self.action_line_ids:
+                line.copy(default=line_default)
+
+        if copy_groups:
+            group_default = {
+                "parent_id": new_action.id,
+            }
+
+            for training_group in self.child_ids:
+                training_group.copy(default=group_default)
 
         return new_action
 
@@ -1427,24 +1501,69 @@ class AcademyTrainingAction(models.Model):
 
         return serialized
 
-    def update_enrolments(self, force=False):
+    def update_enrolments(self, values=None, force=False):
+        """Keep enrolment dates within the training action time window.
+
+        Pending action values can be supplied when the method is called before
+        ``write()`` so enrolments are adjusted before the stored related action
+        dates are recomputed.
+
+        Args:
+            values (dict | None): Pending values for the training action.
+                Defaults to None.
+            force (bool): Reserved flag for forcing the update. Defaults to False.
+
+        Returns:
+            None
+        """
+        values = values or {}
+
         for record in self:
-            enrol_set = record.enrolment_ids
-            target = enrol_set.filtered(
-                lambda r: r.date_start < record.date_start
-            )
+            enrolment_set = record.enrolment_ids
 
-            target.write(
-                {"date_start": fields.Datetime.to_string(record.date_start)}
-            )
+            date_start = values.get("date_start", record.date_start)
+            date_start = fields.Datetime.to_datetime(date_start)
 
-            if record.date_stop:
-                target = enrol_set.filtered(
-                    lambda r: r.date_stop and r.date_stop > record.date_stop
-                )
-                target.write(
-                    {"date_stop": fields.Datetime.to_string(record.date_stop)}
-                )
+            date_stop = values.get("date_stop", record.date_stop)
+            date_stop = fields.Datetime.to_datetime(date_stop)
+
+            for enrolment in enrolment_set:
+                register = enrolment.register
+                deregister = enrolment.deregister
+
+                new_register = register
+                new_deregister = deregister
+
+                if date_start and register < date_start:
+                    new_register = date_start
+
+                if date_stop and (not deregister or deregister > date_stop):
+                    new_deregister = date_stop
+
+                # If the action window has been reduced beyond the current
+                # enrolment interval, keep the resulting interval valid.
+                if date_stop and new_register > date_stop:
+                    new_register = date_stop
+
+                if new_deregister and new_deregister < new_register:
+                    new_deregister = new_register
+
+                enrolment_values = {}
+
+                if new_register != register:
+                    enrolment_values["register"] = fields.Datetime.to_string(
+                        new_register
+                    )
+
+                if new_deregister != deregister:
+                    enrolment_values["deregister"] = (
+                        fields.Datetime.to_string(new_deregister)
+                        if new_deregister
+                        else False
+                    )
+
+                if enrolment_values:
+                    enrolment.write(enrolment_values)
 
     def view_enrolments(self):
         self.ensure_one()
@@ -1841,7 +1960,7 @@ class AcademyTrainingAction(models.Model):
         }
 
         parent_domain = [("id", "in", list(parent_ids))]
-        parent_context = dict(active_test=False)
+        parent_context = {"active_test": False}
         parent_obj = self.env[self._name].with_context(parent_context)
         parent_set = parent_obj.search(parent_domain)
 
@@ -1950,3 +2069,75 @@ class AcademyTrainingAction(models.Model):
             from_tz=tz_name,
             remove_tz=True,
         )
+
+    def _prioritize_global_assignment(
+        self,
+        teacher_assignment,
+        assignment_set,
+    ):
+        """Move a global teacher assignment to the first position.
+
+        Args:
+            teacher_assignment (
+                academy.training.teacher.assignment
+            ): Assignment that must become the primary one.
+            assignment_set (
+                academy.training.teacher.assignment
+            ): Ordered global assignments of the training action.
+
+        Returns:
+            None
+        """
+        self.ensure_one()
+        teacher_assignment.ensure_one()
+
+        ordered_ids = [teacher_assignment.id]
+        ordered_ids.extend(
+            assignment.id
+            for assignment in assignment_set
+            if assignment != teacher_assignment
+        )
+
+        ordered_set = self.env["academy.training.teacher.assignment"].browse(
+            ordered_ids
+        )
+
+        for sequence, assignment in enumerate(ordered_set, start=1):
+            if assignment.sequence != sequence:
+                assignment.write(
+                    {
+                        "sequence": sequence,
+                    }
+                )
+
+    def _normalize_global_assignments(self):
+        """Normalize the sequence of global teacher assignments.
+
+        Assignments linked to a specific action line are intentionally excluded,
+        because they do not participate in the primary teacher of the training
+        action.
+
+        Returns:
+            None
+        """
+        self.ensure_one()
+
+        assignment_obj = self.env["academy.training.teacher.assignment"]
+
+        domain = [
+            ("training_action_id", "=", self.id),
+            ("action_line_id", "=", False),
+        ]
+
+        assignment_set = assignment_obj.search(
+            domain,
+            order="sequence ASC, id ASC",
+        )
+
+        for sequence, assignment in enumerate(assignment_set, start=1):
+            if assignment.sequence != sequence:
+                assignment.write(
+                    {
+                        "sequence": sequence,
+                    }
+                )

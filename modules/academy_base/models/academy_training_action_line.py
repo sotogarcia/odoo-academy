@@ -1,21 +1,16 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 #    License, author and contributors information in:                         #
-#    __openerp__.py file at the root folder of this module.                   #
+#    __manifest__.py file at the root folder of this module.                  #
 ###############################################################################
 
-from typing import Required, ValuesView
-from odoo import models, fields, api
-from odoo.tools.translate import _
-from odoo.osv.expression import TRUE_DOMAIN, FALSE_DOMAIN
-from odoo.tools.safe_eval import safe_eval
-from odoo.exceptions import ValidationError
-from ..utils.helpers import OPERATOR_MAP, one2many_count
-
 from uuid import uuid4
-from logging import getLogger
 
-_logger = getLogger(__name__)
+from odoo import api, fields, models
+from odoo.exceptions import ValidationError
+from odoo.tools.safe_eval import safe_eval
+from odoo.tools.translate import _
+
+from ..utils.helpers import one2many_count, one2many_count_search_domain
 
 
 class AcademyTrainingActionLine(models.Model):
@@ -29,11 +24,11 @@ class AcademyTrainingActionLine(models.Model):
     _name = "academy.training.action.line"
     _description = "Training action line"
 
-    _inherit = ["academy.training.program.line"]
+    _inherit = ["academy.training.program.line"]  # noqa: RUF012
 
     _rec_name = "name"
     _order = "sequence ASC, name"
-    _rec_names_search = ["name", "code"]
+    _rec_names_search = ["name", "code"]  # noqa: RUF012
 
     @property
     def shared_keys(self):
@@ -49,7 +44,7 @@ class AcademyTrainingActionLine(models.Model):
         comodel_name="academy.training.program.line",
         domain=[],
         context={},
-        ondelete="cascade",
+        ondelete="set null",
         auto_join=False,
         copy=True,
         tracking=True,
@@ -127,7 +122,6 @@ class AcademyTrainingActionLine(models.Model):
         ondelete="set null",
         auto_join=False,
         compute="_compute_primary_teacher_id",
-        inverse="_inverse_primary_teacher_id",
         store=True,
         copy=False,
         tracking=True,
@@ -138,60 +132,15 @@ class AcademyTrainingActionLine(models.Model):
         "teacher_assignment_ids.sequence",
         "teacher_assignment_ids.teacher_id",
         "teacher_assignment_ids.teacher_id.active",
-        "teacher_assignment_ids.training_action_id",
+        "teacher_assignment_ids.action_line_id",
     )
     def _compute_primary_teacher_id(self):
+        """Compute the primary active teacher for each action line."""
         assignment_obj = self.env["academy.training.teacher.assignment"]
         primary_dict = assignment_obj.get_primary(self)
 
         for record in self:
             record.primary_teacher_id = primary_dict.get(record.id)
-
-    def _inverse_primary_teacher_id(self):
-        """When setting a primary teacher:
-        - If the teacher already has an assignment in this unit, move it to 1st.
-        - Else, overwrite the teacher of the lowest-sequence assignment.
-          If there are no assignments yet, create one at sequence=1.
-        """
-        assignment_obj = self.env["academy.training.teacher.assignment"]
-        for record in self:
-            teacher = record.primary_teacher_id
-            if not record.id:
-                continue
-
-            domain = [("training_action_id", "=", record.id)]
-            assigns = assignment_obj.search(
-                domain, order="sequence NULLS LAST"
-            )
-
-            if not assigns:
-                if teacher:
-                    values = {
-                        "training_action_id": record.training_action_id.id,
-                        "action_line_id": None,
-                        "teacher_id": teacher.id,
-                        "sequence": 1,
-                    }
-                    assignment_obj.create(values)
-                continue
-
-            if teacher:
-                existing = assigns.filtered(lambda a: a.teacher_id == teacher)
-                if existing:
-                    # take to first place
-                    existing.write({"sequence": 0})
-                else:
-                    # overwrite the assignment with a lower sequence
-                    first = assigns[0]
-                    first.write({"teacher_id": teacher.id})
-
-                # normalize 1..n
-                ordered = assignment_obj.search(
-                    domain, order="sequence NULLS LAST"
-                )
-                for i, a in enumerate(ordered, start=1):
-                    if a.sequence != i:
-                        a.sequence = i
 
     teacher_assignment_count = fields.Integer(
         string="No. of teachers",
@@ -214,20 +163,12 @@ class AcademyTrainingActionLine(models.Model):
 
     @api.model
     def _search_teacher_assignment_count(self, operator, value):
-        # Handle boolean-like searches Odoo may pass for required fields
-        if value is True:
-            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
-        if value is False:
-            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
-
-        cmp_func = OPERATOR_MAP.get(operator)
-        if not cmp_func:
-            return FALSE_DOMAIN  # unsupported operator
-
-        counts = one2many_count(self.search([]), "teacher_assignment_ids")
-        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
-
-        return [("id", "in", matched)] if matched else FALSE_DOMAIN
+        return one2many_count_search_domain(
+            self,
+            "teacher_assignment_ids",
+            operator,
+            value,
+        )
 
     needs_synchronization = fields.Boolean(
         string="Para sincronizar",
@@ -242,7 +183,7 @@ class AcademyTrainingActionLine(models.Model):
     # -- Constraints
     # -------------------------------------------------------------------------
 
-    _sql_constraints = [
+    _sql_constraints = [  # noqa: RUF012
         (
             "code_unique",  # Same name as program to overload it
             "UNIQUE(code, training_action_id)",
@@ -266,14 +207,34 @@ class AcademyTrainingActionLine(models.Model):
     # -- Copy method and auxiliaty methods ------------------------------------
 
     def copy(self, default=None):
+        """Duplicate the action line into another training action.
+
+        The target training action must be different from the source action.
+        The original line code is preserved unless explicitly overridden.
+
+        Args:
+            default (dict | None): Values to override on the duplicated line.
+                The target action can be supplied through
+                ``training_action_id``. Defaults to None.
+
+        Returns:
+            academy.training.action.line: Newly created action line.
+
+        Raises:
+            ValidationError: If no target training action is provided or if
+                the target is the current training action.
+        """
         self.ensure_one()
+
         default = dict(default or {})
 
-        # Ensure target action is set and it is different than original
-        if not default.get("training_action_id", False):
-            self._ensure_new_training_action_on_copy(default)
+        self._ensure_new_training_action_on_copy(default)
 
-        action_id = default.get("training_action_id")
+        if "code" not in default:
+            default["code"] = self.code
+
+        action_id = default["training_action_id"]
+
         if "teacher_assignment_ids" not in default:
             self._copy_teacher_assignments(default, action_id)
 
@@ -291,7 +252,7 @@ class AcademyTrainingActionLine(models.Model):
     def write(self, values):
         """Overridden method 'write'"""
 
-        if any(key in self.shared_keys for key in values.keys()):
+        if any(key in self.shared_keys for key in values):
             values["needs_synchronization"] = True
 
         result = super().write(values)
@@ -299,8 +260,32 @@ class AcademyTrainingActionLine(models.Model):
         return result
 
     def _ensure_new_training_action_on_copy(self, default):
-        action_id = self.env.context.get("default_training_action_id")
+        """Ensure a different target action is used when duplicating a line.
+
+        The target action is taken first from ``default`` and, if absent, from
+        ``default_training_action_id`` in the context.
+
+        Args:
+            default (dict): Values that will be passed to ``copy``.
+
+        Returns:
+            None
+
+        Raises:
+            ValidationError: If no target training action is supplied or if it
+                is the same action as the source line.
+        """
+        action_id = default.get("training_action_id")
+
         if isinstance(action_id, models.BaseModel):
+            action_id.ensure_one()
+            action_id = action_id.id
+
+        if not action_id:
+            action_id = self.env.context.get("default_training_action_id")
+
+        if isinstance(action_id, models.BaseModel):
+            action_id.ensure_one()
             action_id = action_id.id
 
         if not action_id:
@@ -312,8 +297,7 @@ class AcademyTrainingActionLine(models.Model):
                 )
             )
 
-        # Prevent duplicating into the same training action
-        if self.training_action_id and self.training_action_id.id == action_id:
+        if action_id == self.training_action_id.id:
             raise ValidationError(
                 _(
                     "Cannot duplicate into the same training action. "
@@ -321,7 +305,7 @@ class AcademyTrainingActionLine(models.Model):
                 )
             )
 
-        default.setdefault("training_action_id", action_id)
+        default["training_action_id"] = action_id
 
     def _copy_teacher_assignments(self, default, training_action_id):
         if isinstance(training_action_id, models.BaseModel):
@@ -332,6 +316,7 @@ class AcademyTrainingActionLine(models.Model):
             values = {
                 "training_action_id": training_action_id,
                 "teacher_id": assign.teacher_id.id,
+                "sequence": assign.sequence,
             }
             o2m_ops.append((0, 0, values))
 
@@ -352,7 +337,7 @@ class AcademyTrainingActionLine(models.Model):
         context.update(safe_eval(act_wnd.context))
         context.update(
             {
-                "default_training_action_id_id": self.training_action_id.id,
+                "default_training_action_id": self.training_action_id.id,
                 "default_action_line_id": self.id,
             }
         )
@@ -398,7 +383,7 @@ class AcademyTrainingActionLine(models.Model):
         source_values = program_lines.copy_data(defaults)
 
         # Fill in with the non-copyable field values
-        for index in range(0, len(program_lines)):
+        for index in range(len(program_lines)):
             source_values[index]["code"] = program_lines[index].code
 
         # Keep only keys that exist in the current model

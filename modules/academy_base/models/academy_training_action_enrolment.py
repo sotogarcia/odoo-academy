@@ -1,6 +1,6 @@
 ###############################################################################
 #    License, author and contributors information in:                         #
-#    __openerp__.py file at the root folder of this module.                   #
+#    __manifest__.py file at the root folder of this module.                  #
 ###############################################################################
 
 """
@@ -61,13 +61,14 @@ Implementation notes
   reporting queries.
 """
 
-from datetime import datetime, timedelta
+from datetime import timedelta
 from logging import getLogger
 
 from odoo import api, fields, models
 from odoo.exceptions import UserError, ValidationError
 from odoo.osv.expression import AND, TERM_OPERATORS_NEGATION
 from odoo.tools.misc import format_date
+from odoo.tools.translate import _
 from pytz import timezone
 
 from ..utils.datetime_utils import (
@@ -633,7 +634,8 @@ class AcademyTrainingActionEnrolment(models.Model):
         for record in self:
             if record.parent_action_id:
                 record.available_action_ids = child_action_set.filtered(
-                    lambda r: r.parent_id == record.parent_action_id
+                    lambda r: r.parent_id
+                    == record.parent_action_id  # noqa: B023
                 )
             else:
                 record.available_action_ids = full_action_set
@@ -760,6 +762,26 @@ class AcademyTrainingActionEnrolment(models.Model):
             if action and action.child_ids:
                 raise ValidationError(message)
 
+    @api.constrains("training_action_id")
+    def _check_training_action_company(self):
+        """Ensure enrolments belong to the active company.
+
+        Raises:
+            ValidationError: If the training action belongs to a company other
+                than the active company.
+        """
+        err_msg = _(
+            "Students can only be enrolled in training actions "
+            "belonging to the active company."
+        )
+
+        for record in self:
+            if (
+                record.training_action_id
+                and record.training_action_id.company_id != self.env.company
+            ):
+                raise ValidationError(err_msg)
+
     @api.constrains("student_id", "company_id")
     def _check_student_has_signup_in_company(self):
         """Ensure each (student, company) pair in this batch has a signup row.
@@ -811,6 +833,62 @@ class AcademyTrainingActionEnrolment(models.Model):
             % {"n": len(missing_pairs)}
         )
 
+    def _prevent_company_change(self, values):
+        """Prevent changing the company of existing training actions.
+
+        Args:
+            values (dict): Values that will be written.
+
+        Returns:
+            None
+
+        Raises:
+            ValidationError: If the company of an existing training action is
+                changed.
+        """
+        if "company_id" not in values:
+            return
+
+        company_id = values.get("company_id")
+
+        if isinstance(company_id, models.BaseModel):
+            company_id.ensure_one()
+            company_id = company_id.id
+
+        company_id = company_id or False
+
+        err_msg = _(
+            "The company of a training action cannot be changed once "
+            "the action has been created."
+        )
+
+        for record in self:
+            if company_id != record.company_id.id:
+                raise ValidationError(err_msg)
+
+    @api.constrains(
+        "training_action_id",
+        "action_line_ids",
+    )
+    def _check_action_lines_belong_to_action(self):
+        """Ensure all selected lines belong to the enrolled action.
+
+        Raises:
+            ValidationError: If an action line belongs to another training action.
+        """
+        err_msg = _(
+            "All enrolment lines must belong to the selected training action."
+        )
+
+        for record in self:
+            invalid_lines = record.action_line_ids.filtered(
+                lambda line: line.training_action_id
+                != record.training_action_id  # noqa: B023
+            )
+
+            if invalid_lines:
+                raise ValidationError(err_msg)
+
     # Overridden methods
     # -------------------------------------------------------------------------
 
@@ -848,8 +926,7 @@ class AcademyTrainingActionEnrolment(models.Model):
 
     @api.model_create_multi
     def create(self, values_list):
-        """Overridden method 'create'"""
-
+        """Create enrolments and initialize their related data."""
         self._ensure_enrolment_data(values_list)
         sanitize_code(values_list, "upper")
         self._ensure_parent_action(values_list)
@@ -858,22 +935,27 @@ class AcademyTrainingActionEnrolment(models.Model):
 
         self._ensure_auto_signup(values_list)
 
-        result = super().create(values_list)
-
-        return result
+        return super().create(values_list)
 
     def write(self, values):
-        """Overridden method 'write'"""
-
+        """Update enrolments and keep full-enrolment lines synchronized."""
         sanitize_code(values, "upper")
         self._ensure_parent_action(values)
 
         self._check_that_the_student_is_not_the_template(values)
-        self._perform_a_full_enrolment(values)
-
         self._ensure_auto_signup(values)
 
-        result = super().write(values)
+        grouped_values = self._prepare_full_enrolment_write(values)
+
+        result = True
+
+        for record_set, write_values in grouped_values:
+            result = (
+                super(AcademyTrainingActionEnrolment, record_set).write(
+                    write_values
+                )
+                and result
+            )
 
         return result
 
@@ -1162,41 +1244,114 @@ class AcademyTrainingActionEnrolment(models.Model):
     # Auxiliary methods
     # -------------------------------------------------------------------------
 
-    @api.model
     def _ensure_auto_signup(self, values_list):
-        """Ensure auto sign-up before enrolment."""
+        """Ensure students are signed up in the active company before enrolment.
+
+        The target training action is always checked against the active company
+        before any automatic sign-up is performed. On create, student and action
+        values are read from the creation values. On write, missing values are
+        taken from each existing enrolment.
+
+        Args:
+            values_list (dict | list[dict]): Values used to create or update
+                enrolments.
+
+        Returns:
+            None
+
+        Raises:
+            ValidationError: If a target training action belongs to a company
+                other than the active company.
+        """
         if isinstance(values_list, dict):
             target_list = [values_list]
         else:
-            target_list = values_list
+            target_list = values_list or []
 
-        # 1. Group student IDs by company using values from values_list
-        current_company_id = self.env.company.id
-        students_by_company = {}
-        for values in target_list or []:
-            student_id = values.get("student_id", False)
-            if not student_id:
-                continue
-            company_id = values.get("company_id", current_company_id)
-            students_by_company.setdefault(company_id, set())
-            students_by_company[company_id].add(student_id)
+        company = self.env.company
 
-        if not students_by_company:
+        student_ids = set()
+        action_ids = set()
+
+        if self:
+            values = target_list[0] if target_list else {}
+
+            if not {
+                "student_id",
+                "training_action_id",
+            } & set(values):
+                return
+
+            student_id = values.get("student_id")
+            training_action_id = values.get("training_action_id")
+
+            if isinstance(student_id, models.BaseModel):
+                student_id.ensure_one()
+                student_id = student_id.id
+
+            if isinstance(training_action_id, models.BaseModel):
+                training_action_id.ensure_one()
+                training_action_id = training_action_id.id
+
+            for record in self:
+                target_student_id = (
+                    student_id
+                    if "student_id" in values
+                    else record.student_id.id
+                )
+                target_action_id = (
+                    training_action_id
+                    if "training_action_id" in values
+                    else record.training_action_id.id
+                )
+
+                if target_student_id:
+                    student_ids.add(target_student_id)
+
+                if target_action_id:
+                    action_ids.add(target_action_id)
+
+        else:
+            for values in target_list:
+                student_id = values.get("student_id")
+                action_id = values.get("training_action_id")
+
+                if isinstance(student_id, models.BaseModel):
+                    student_id.ensure_one()
+                    student_id = student_id.id
+
+                if isinstance(action_id, models.BaseModel):
+                    action_id.ensure_one()
+                    action_id = action_id.id
+
+                if student_id:
+                    student_ids.add(student_id)
+
+                if action_id:
+                    action_ids.add(action_id)
+
+        action_obj = self.env["academy.training.action"]
+        action_set = action_obj.browse(action_ids).exists()
+
+        invalid_action_set = action_set.filtered(
+            lambda action: action.company_id != company
+        )
+
+        if invalid_action_set:
+            raise ValidationError(
+                _(
+                    "Students can only be enrolled in training actions "
+                    "belonging to the active company."
+                )
+            )
+
+        if not company.auto_signup or not student_ids:
             return
 
-        # 2. For each company, check the config and perform sign-up if auto
-        company_obj = self.env["res.company"]
-        company_set = company_obj.browse(students_by_company.keys())
-        for company in company_set:
-            if not company.auto_signup:
-                continue
+        student_set = self.env["academy.student"].browse(student_ids).exists()
 
-            company_id = company.id
-            student_ids = students_by_company.get(company_id)
-            student_obj = self.env["academy.student"]
-            student_set = student_obj.browse(student_ids)
-            if student_set:
-                student_set.perform_signup(company_id)
+        if student_set:
+            student_set.perform_signup(company.id)
 
     @api.model
     def _ensure_parent_action(self, values_list):
@@ -1267,7 +1422,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         temp_student_xid = "academy_base.academy_student_default_template"
         temp_student = self.env.ref(temp_student_xid)
 
-        one_hour_ago = datetime.now() - timedelta(hours=1)
+        one_hour_ago = fields.Datetime.now() - timedelta(hours=1)
         one_hour_ago = fields.Datetime.to_string(one_hour_ago)
 
         student_domain = [
@@ -1287,31 +1442,135 @@ class AcademyTrainingActionEnrolment(models.Model):
         )
         enrolment_set.unlink()
 
-    def _perform_a_full_enrolment(self, values):
-        """Ensure the M2M of action lines is populated when full_enrolment is
-        True. Accepts either a dict (write) or a list of dicts (create).
+    @api.model
+    def _perform_a_full_enrolment(self, values_list):
+        """Populate action lines for new full enrolments.
+
+        Each enrolment is processed independently using its own target training
+        action. Only active action lines are included.
+
+        Args:
+            values_list (list[dict]): Values of the enrolments being created.
+
+        Returns:
+            None
         """
-        values_list = values if isinstance(values, list) else [values]
-        for vals in values_list:
-            # Only act when explicitly requested or, on write, when the record
-            # has the flag
-            flag = vals.get("full_enrolment")
-            if flag is None and self:
-                flag = self[:1].full_enrolment
-            if not flag:
+        defaults = self.default_get(["full_enrolment", "training_action_id"])
+
+        default_full = defaults.get("full_enrolment", False)
+        default_action_id = defaults.get("training_action_id", False)
+
+        action_ids = set()
+
+        for values in values_list:
+            full_enrolment = values.get("full_enrolment", default_full)
+            if not full_enrolment:
                 continue
 
-            action_id = vals.get("training_action_id")
-            if not action_id and self:
-                # during write, allow using the current action
-                action_id = self[:1].training_action_id.id
+            action_id = values.get("training_action_id", default_action_id)
+
+            if isinstance(action_id, models.BaseModel):
+                action_id.ensure_one()
+                action_id = action_id.id
 
             if action_id:
-                action = self.env["academy.training.action"].browse(action_id)
-                if action and action.action_line_ids:
-                    vals["action_line_ids"] = [
-                        (6, 0, action.action_line_ids.ids)
-                    ]
+                action_ids.add(action_id)
+
+        line_ids_by_action = self._get_active_action_line_ids(action_ids)
+
+        for values in values_list:
+            full_enrolment = values.get("full_enrolment", default_full)
+            if not full_enrolment:
+                continue
+
+            action_id = values.get("training_action_id", default_action_id)
+
+            if isinstance(action_id, models.BaseModel):
+                action_id.ensure_one()
+                action_id = action_id.id
+
+            line_ids = line_ids_by_action.get(action_id, [])
+
+            values["action_line_ids"] = [(6, 0, line_ids)]
+
+    def _prepare_full_enrolment_write(self, values):
+        """Prepare write batches according to each enrolment's target action.
+
+        Full enrolments are grouped by the active action lines that must be linked
+        to them. This allows a multi-record write to preserve each enrolment's own
+        training action instead of using the first record in ``self``.
+
+        Args:
+            values (dict): Values supplied to ``write``.
+
+        Returns:
+            list[tuple]: Pairs containing a recordset and its corresponding
+                write values.
+        """
+        if not self:
+            return []
+
+        target_by_record = {}
+        action_ids = set()
+
+        value_action_id = values.get("training_action_id")
+
+        if isinstance(value_action_id, models.BaseModel):
+            value_action_id.ensure_one()
+            value_action_id = value_action_id.id
+
+        for record in self:
+            full_enrolment = values.get(
+                "full_enrolment",
+                record.full_enrolment,
+            )
+
+            if not full_enrolment:
+                target_by_record[record.id] = False
+                continue
+
+            action_id = value_action_id or record.training_action_id.id
+
+            target_by_record[record.id] = action_id
+
+            if action_id:
+                action_ids.add(action_id)
+
+        line_ids_by_action = self._get_active_action_line_ids(action_ids)
+
+        grouped = {}
+
+        for record in self:
+            action_id = target_by_record.get(record.id)
+
+            if not action_id:
+                key = None
+            else:
+                key = tuple(line_ids_by_action.get(action_id, []))
+
+            if key not in grouped:
+                grouped[key] = record
+            else:
+                grouped[key] |= record
+
+        result = []
+
+        for line_ids, record_set in grouped.items():
+            write_values = dict(values)
+
+            if line_ids is not None:
+                write_values["action_line_ids"] = [
+                    (6, 0, list(line_ids)),
+                ]
+
+            result.append(
+                (
+                    record_set,
+                    write_values,
+                )
+            )
+
+        return result
 
     @api.model
     def _ensure_processing_date(self, vals_list):
@@ -1330,6 +1589,36 @@ class AcademyTrainingActionEnrolment(models.Model):
 
             if not values.get("processing_date"):
                 self._ensure_processing_date([values])
+
+    @api.model
+    def _get_active_action_line_ids(self, action_ids):
+        """Return active action line IDs grouped by training action.
+
+        Args:
+            action_ids (iterable[int]): Training action IDs to inspect.
+
+        Returns:
+            dict: Mapping from training action IDs to lists of active action
+                line IDs.
+        """
+        result = {action_id: [] for action_id in action_ids}
+
+        if not action_ids:
+            return result
+
+        line_obj = self.env["academy.training.action.line"]
+
+        line_set = line_obj.search(
+            [
+                ("training_action_id", "in", list(action_ids)),
+                ("active", "=", True),
+            ]
+        )
+
+        for line in line_set:
+            result[line.training_action_id.id].append(line.id)
+
+        return result
 
     # Maintenance tasks
     # -------------------------------------------------------------------------
