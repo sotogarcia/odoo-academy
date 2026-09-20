@@ -1336,15 +1336,18 @@ class AcademyTrainingAction(models.Model):
         return records
 
     def write(self, values):
-        """Overridden method 'write'."""
+        """Update the training action and adjust affected enrolments."""
         self._prevent_company_change(values)
 
         sanitize_code(values, "upper")
         self._prevent_use_student_link(values)
 
-        self.update_enrolments(values=values)
+        update_enrolments = bool({"date_start", "date_stop"} & values.keys())
 
         result = super().write(values)
+
+        if update_enrolments:
+            self.update_enrolments()
 
         return result
 
@@ -1518,31 +1521,20 @@ class AcademyTrainingAction(models.Model):
 
         return serialized
 
-    def update_enrolments(self, values=None, force=False):
+    def update_enrolments(self):
         """Keep enrolment dates within the training action time window.
 
-        Pending action values can be supplied when the method is called before
-        ``write()`` so enrolments are adjusted before the stored related action
-        dates are recomputed.
-
-        Args:
-            values (dict | None): Pending values for the training action.
-                Defaults to None.
-            force (bool): Reserved flag for forcing the update. Defaults to False.
+        Existing enrolment intervals are clamped to the current training action
+        interval. Open enrolments are closed when the action has an end date.
 
         Returns:
             None
         """
-        values = values or {}
-
         for record in self:
             enrolment_set = record.enrolment_ids
 
-            date_start = values.get("date_start", record.date_start)
-            date_start = fields.Datetime.to_datetime(date_start)
-
-            date_stop = values.get("date_stop", record.date_stop)
-            date_stop = fields.Datetime.to_datetime(date_stop)
+            date_start = record.date_start
+            date_stop = record.date_stop
 
             for enrolment in enrolment_set:
                 register = enrolment.register
@@ -1557,8 +1549,6 @@ class AcademyTrainingAction(models.Model):
                 if date_stop and (not deregister or deregister > date_stop):
                     new_deregister = date_stop
 
-                # If the action window has been reduced beyond the current
-                # enrolment interval, keep the resulting interval valid.
                 if date_stop and new_register > date_stop:
                     new_register = date_stop
 
