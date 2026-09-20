@@ -283,13 +283,44 @@ class AcademyTrainingModule(models.Model):
 
     @api.depends(
         "program_line_ids",
+        "program_line_ids.active",
         "program_line_ids.training_program_id",
     )
     def _compute_training_program_ids(self):
+        program_ids_by_module = {
+            record.id: set() for record in self if record.id
+        }
+
+        line_obj = self.env["academy.training.program.line"]
+
+        rows = line_obj.read_group(
+            domain=[
+                ("training_module_id", "in", self.ids),
+                ("active", "=", True),
+            ],
+            fields=[
+                "training_module_id",
+                "training_program_id",
+            ],
+            groupby=[
+                "training_module_id",
+                "training_program_id",
+            ],
+            lazy=False,
+        )
+
+        for row in rows:
+            module = row.get("training_module_id")
+            program = row.get("training_program_id")
+
+            if module and program:
+                program_ids_by_module[module[0]].add(program[0])
+
+        program_obj = self.env["academy.training.program"]
+
         for record in self:
-            record.training_program_ids = (
-                record.program_line_ids.training_program_id
-            )
+            program_ids = program_ids_by_module.get(record.id, set())
+            record.training_program_ids = program_obj.browse(program_ids)
 
     training_program_count = fields.Integer(
         string="No. of programs",

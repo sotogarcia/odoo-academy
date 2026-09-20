@@ -7,7 +7,6 @@ from uuid import uuid4
 
 from odoo import api, fields, models
 from odoo.exceptions import ValidationError
-from odoo.osv.expression import FALSE_DOMAIN, TRUE_DOMAIN
 from odoo.tools.safe_eval import safe_eval
 from odoo.tools.translate import _
 
@@ -387,7 +386,7 @@ class AcademyTrainingProgram(models.Model):
         index=False,
         default=0.0,
         digits=(16, 2),
-        help="Total hours computed from linked modules",
+        help="Total hours computed from active program lines",
         compute="_compute_hours",
         store=True,
         copy=True,

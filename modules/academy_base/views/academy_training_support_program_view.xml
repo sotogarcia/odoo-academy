@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <odoo noupdate="0">
-
+<!--<xpath expr="//field[@name='program_line_count']" position="replace" />-->
   <!-- VIEWS: "Academy training support program"
 
             - Model·········: academy.training.program
@@ -25,6 +25,7 @@
     <field name="arch" type="xml">
       <xpath expr="//list" position="attributes">
         <attribute name="string">academy_training_support_program_tree</attribute>
+        <xpath expr="//field[@name='program_line_count']" position="replace" />
         <xpath expr="//field[@name='program_line_count']" position="replace" />
       </xpath>
     </field>

@@ -5,7 +5,7 @@
   <!-- VIEWS: "Teacher assignment"
 
       - Model·········: academy.training.teacher.assignment
-      - _rec_name·····: name
+      - _rec_name·····: _compute_display_name
       - Domain········: []
       - Context·······: {}
       - Parent menu ··: academy_base.menu_academy_monitoring
@@ -26,11 +26,11 @@
             <field name="sequence" class="oe_field_sequence" widget="handle" />
             <field name="training_action_id" class="oe_field_training_action_id"
               options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"
-              readonly="context.get('default_training_action_id', False)" />
+              readonly="id or context.get('default_training_action_id', False)" />
             <field name="action_line_id" class="oe_field_action_line_id"
               options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"
               domain="[('training_action_id', '=', training_action_id)]"
-              readonly="context.get('default_action_line_id', False)" />
+              readonly="id or context.get('default_action_line_id', False)" />
             <field name="teacher_id" class="oe_field_teacher_id" />
           </list>
       </field>
@@ -57,11 +57,11 @@
                     <field name="teacher_id" class="oe_field_teacher_id" />
                     <field name="training_action_id" class="oe_field_training_action_id"
                       options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"
-                      readonly="context.get('default_training_action_id', False)" />
+                      readonly="id or context.get('default_training_action_id', False)" />
                     <field name="action_line_id" class="oe_field_action_line_id"
                       options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"
                       domain="[('training_action_id', '=', training_action_id)]"
-                      readonly="context.get('default_action_line_id', False)" />
+                      readonly="id or context.get('default_action_line_id', False)" />
                   </group>
               </sheet>
           </form>
