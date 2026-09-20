@@ -671,8 +671,13 @@ class AcademyTrainingActionEnrolment(models.Model):
     _sql_constraints = [  # noqa: RUF012
         (
             "check_date_order",
-            'CHECK("deregister" IS NULL OR "register" <= "deregister")',
-            "End date must be greater than start date",
+            """
+            CHECK(
+                deregister IS NULL
+                OR register <= deregister
+            )
+            """,
+            "The enrolment end date cannot be earlier than the start date.",
         ),
         (
             "prevent_overlap",
@@ -686,38 +691,46 @@ class AcademyTrainingActionEnrolment(models.Model):
                         COALESCE(
                             deregister,
                             'infinity'::timestamp without time zone
-                        )
+                        ),
+                        '[)'
                     )
                 ) WITH &&
             ) DEFERRABLE INITIALLY IMMEDIATE
             """,
-            "Student enrolments cannot overlap for the same action",
-        ),
-        (
-            "within_action_time_window",
-            """
-            CHECK(
-                (register >= date_start)
-                AND
-                (
-                    COALESCE(
-                        deregister,
-                        'infinity'::timestamp without time zone
-                    )
-                    <=
-                    COALESCE(
-                        date_stop,
-                        'infinity'::timestamp without time zone
-                    )
-                )
-            )
-            """,
-            (
-                "Student enrolments must be within the time window of the "
-                "training action."
-            ),
+            "Student enrolments cannot overlap for the same training action.",
         ),
     ]
+
+    @api.constrains(
+        "training_action_id",
+        "register",
+        "deregister",
+    )
+    def _check_within_action_time_window(self):
+        """Ensure enrolment dates stay within the training action window.
+
+        Raises:
+            ValidationError: If an enrolment starts before the training action or
+                ends after it.
+        """
+        err_msg = _(
+            "Student enrolments must be within the time window of the "
+            "training action."
+        )
+
+        for record in self:
+            action = record.training_action_id
+
+            if not action:
+                continue
+
+            if action.date_start and record.register < action.date_start:
+                raise ValidationError(err_msg)
+
+            if action.date_stop and (
+                not record.deregister or record.deregister > action.date_stop
+            ):
+                raise ValidationError(err_msg)
 
     @api.constrains(
         "student_id", "training_action_id", "register", "deregister"
@@ -832,39 +845,6 @@ class AcademyTrainingActionEnrolment(models.Model):
             )
             % {"n": len(missing_pairs)}
         )
-
-    def _prevent_company_change(self, values):
-        """Prevent changing the company of existing training actions.
-
-        Args:
-            values (dict): Values that will be written.
-
-        Returns:
-            None
-
-        Raises:
-            ValidationError: If the company of an existing training action is
-                changed.
-        """
-        if "company_id" not in values:
-            return
-
-        company_id = values.get("company_id")
-
-        if isinstance(company_id, models.BaseModel):
-            company_id.ensure_one()
-            company_id = company_id.id
-
-        company_id = company_id or False
-
-        err_msg = _(
-            "The company of a training action cannot be changed once "
-            "the action has been created."
-        )
-
-        for record in self:
-            if company_id != record.company_id.id:
-                raise ValidationError(err_msg)
 
     @api.constrains(
         "training_action_id",
@@ -1030,129 +1010,212 @@ class AcademyTrainingActionEnrolment(models.Model):
     def copy_to(self, action_set, new_values=None, existing="skip"):
         """Copy current enrolments into other training actions.
 
-        Each enrolment in ``self`` is copied to every action in
-        ``action_set`` by creating or updating a matching enrolment for
-        the same student in the target action. The time interval must
-        fit inside the target action date range; otherwise a validation
-        error is raised.
+        Each enrolment in ``self`` is copied to every action in ``action_set``.
+        Full enrolments are populated from the active lines of the target action.
+        Partial enrolments preserve their scope by mapping their selected source
+        lines to equivalent active lines in the target action.
 
-        Behaviour when an overlapping enrolment already exists for the
-        same (student, training_action_id) pair is controlled by
-        ``existing``:
+        Behaviour when an overlapping enrolment already exists for the same
+        student and training action is controlled by ``existing``:
 
-        * ``"skip"`` (default): keep the existing enrolment and do not
-          create or update anything.
-        * ``"replace"``: delete the existing enrolment and create a new
-          one with the cloned values.
-        * ``"update"``: update the existing enrolment with the cloned
-          values and ``new_values`` instead of creating a new one.
-        * ``"upgrade"``: like ``"update"``, but the resulting interval
-          expands to cover both ranges:
-
-            * ``register`` becomes the minimum of both starts.
-            * ``deregister`` becomes the maximum of both ends, treating
-              ``False`` (no end) as infinity.
+        * ``"skip"``: Leave the existing enrolment unchanged.
+        * ``"replace"``: Remove the existing enrolment and create a new one.
+        * ``"update"``: Update the existing enrolment with the copied values.
+        * ``"upgrade"``: Update the existing enrolment and expand its effective
+          interval to cover both enrolments.
 
         Args:
-            action_set (mixed): Target actions to receive copies. Can be
-                a recordset, an id or an iterable of ids; it is
-                normalized with :func:`ensure_recordset`.
-            new_values (dict | None): Optional overrides to apply to
-                each created/updated enrolment.
-            existing (str): Conflict policy when an overlapping
-                enrolment already exists. One of ``"skip"``,
-                ``"replace"``, ``"update"`` or ``"upgrade"``.
+            action_set (mixed): Target training actions. Can be a recordset, an
+                ID or an iterable of IDs.
+            new_values (dict | None): Values that override the copied enrolment
+                values. Defaults to None.
+            existing (str): Conflict policy. One of ``"skip"``, ``"replace"``,
+                ``"update"`` or ``"upgrade"``.
 
         Returns:
-            recordset: All created or updated enrolments.
-        """
+            academy.training.action.enrolment: Created or updated enrolments.
 
+        Raises:
+            ValidationError: If ``existing`` is invalid, the copied interval does
+                not fit in the target action or partial enrolment lines cannot be
+                mapped to the target action.
+        """
         enrolment_obj = self.env[self._name]
         if not self:
             return enrolment_obj.browse()
 
         self._ensure_existing_policy(existing)
 
-        action_model = "academy.training.action"
-        action_set = ensure_recordset(self.env, action_set, action_model)
+        action_set = ensure_recordset(
+            self.env,
+            action_set,
+            "academy.training.action",
+        )
         if not action_set:
             return enrolment_obj.browse()
 
         overrides = dict(new_values or {})
         result_set = enrolment_obj.browse()
-        existing_policy = existing
 
         for enrolment in self:
             base_values = enrolment.copy_data()[0]
             base_values.update(overrides)
 
-            register = base_values.get("register")
-            register = fields.Datetime.to_datetime(register)
+            register = fields.Datetime.to_datetime(base_values.get("register"))
+
             deregister = base_values.get("deregister")
             if deregister:
                 deregister = fields.Datetime.to_datetime(deregister)
 
             for action in action_set:
-                action_start = action.date_start
-                action_stop = action.date_stop
-
                 self._assert_within_window(
-                    register, deregister, action_start, action_stop
+                    register,
+                    deregister,
+                    action.date_start,
+                    action.date_stop,
                 )
 
                 values = dict(base_values)
                 values["training_action_id"] = action.id
 
-                # Search for overlapping enrolments of the same student
-                student_id = enrolment.student_id.id
+                full_enrolment = values.get("full_enrolment", False)
+
+                if not full_enrolment and "action_line_ids" not in overrides:
+                    target_line_ids = enrolment._map_action_lines_to(action)
+                    values["action_line_ids"] = [
+                        (6, 0, target_line_ids),
+                    ]
+
+                student_id = values.get("student_id")
+
+                if isinstance(student_id, models.BaseModel):
+                    student_id.ensure_one()
+                    student_id = student_id.id
+
                 if not student_id:
                     continue
 
-                ubound = deregister or DATETIME_POSITIVE_INFINITY
+                upper_bound = deregister or DATETIME_POSITIVE_INFINITY
+
                 domain = [
                     ("id", "!=", enrolment.id),
                     ("student_id", "=", student_id),
                     ("training_action_id", "=", action.id),
-                    ("register", "<", ubound),
+                    ("register", "<", upper_bound),
                     "|",
                     ("deregister", "=", False),
                     ("deregister", ">", register),
                 ]
 
-                existing_enrol = enrolment_obj.search(domain, limit=1)
-                if not existing_enrol:
-                    new_enrol = enrolment_obj.create(values)
-                    result_set |= new_enrol
+                existing_enrolment = enrolment_obj.search(
+                    domain,
+                    limit=1,
+                )
+
+                if not existing_enrolment:
+                    result_set |= enrolment_obj.create(values)
                     continue
 
-                # Conflict resolution according to the policy
-                if existing_policy == "skip":
+                if existing == "skip":
                     continue
 
-                if existing_policy == "replace":
-                    existing_enrol.unlink()
-                    new_enrol = enrolment_obj.create(values)
-                    result_set |= new_enrol
+                if existing == "replace":
+                    existing_enrolment.unlink()
+                    result_set |= enrolment_obj.create(values)
                     continue
 
-                # update / upgrade -> write into the existing record
-                if existing_policy == "upgrade":
-                    # Extend interval to cover both enrolments
-                    existing_reg = existing_enrol.register
-                    existing_der = existing_enrol.deregister
+                if existing == "upgrade":
+                    existing_register = existing_enrolment.register
+                    existing_deregister = existing_enrolment.deregister
 
-                    if existing_reg and register:
-                        values["register"] = min(existing_reg, register)
+                    if existing_register and register:
+                        values["register"] = min(
+                            existing_register,
+                            register,
+                        )
 
-                    if existing_der is None or deregister is None:
-                        values["deregister"] = None
+                    if not existing_deregister or not deregister:
+                        values["deregister"] = False
                     else:
-                        values["deregister"] = max(existing_der, deregister)
+                        values["deregister"] = max(
+                            existing_deregister,
+                            deregister,
+                        )
 
-                existing_enrol.write(values)
-                result_set |= existing_enrol
+                existing_enrolment.write(values)
+                result_set |= existing_enrolment
 
         return result_set
+
+    def _map_action_lines_to(self, target_action):
+        """Map partial enrolment lines to an equivalent target action.
+
+        Lines linked to a program line are matched through ``program_line_id``.
+        Custom lines without a program line are matched by ``code``. Only active
+        target lines are considered.
+
+        Args:
+            target_action (academy.training.action): Target training action.
+
+        Returns:
+            list[int]: IDs of the equivalent target action lines.
+
+        Raises:
+            ValidationError: If one or more source lines have no equivalent active
+                line in the target training action.
+        """
+        self.ensure_one()
+        target_action.ensure_one()
+
+        source_line_set = self.action_line_ids
+        if not source_line_set:
+            return []
+
+        line_obj = self.env["academy.training.action.line"]
+        target_line_set = line_obj.search(
+            [
+                ("training_action_id", "=", target_action.id),
+                ("active", "=", True),
+            ]
+        )
+
+        by_program_line = {}
+        by_code = {}
+
+        for line in target_line_set:
+            if line.program_line_id:
+                by_program_line[line.program_line_id.id] = line.id
+            elif line.code:
+                by_code[line.code] = line.id
+
+        target_line_ids = []
+        missing_line_set = line_obj.browse()
+
+        for source_line in source_line_set:
+            target_line_id = False
+
+            if source_line.program_line_id:
+                target_line_id = by_program_line.get(
+                    source_line.program_line_id.id
+                )
+            elif source_line.code:
+                target_line_id = by_code.get(source_line.code)
+
+            if target_line_id:
+                target_line_ids.append(target_line_id)
+            else:
+                missing_line_set |= source_line
+
+        if missing_line_set:
+            raise ValidationError(
+                _(
+                    "The enrolment cannot be copied because some selected "
+                    "training lines have no equivalent active line in the "
+                    "target training action."
+                )
+            )
+
+        return target_line_ids
 
     @api.model
     def _ensure_existing_policy(self, existing):

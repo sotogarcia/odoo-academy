@@ -1248,9 +1248,14 @@ class AcademyTrainingAction(models.Model):
     @api.constrains(
         "parent_id",
         "training_program_id",
+        "child_ids",
     )
     def _check_group_training_program(self):
-        """Ensure a training group uses its parent's training program.
+        """Ensure training groups use their parent's training program.
+
+        The constraint validates both sides of the hierarchy so changing the
+        training program of either a group or its parent cannot leave existing
+        groups with a different program.
 
         Raises:
             ValidationError: If a training group and its parent use different
@@ -1267,6 +1272,16 @@ class AcademyTrainingAction(models.Model):
                 and record.training_program_id
                 != record.parent_id.training_program_id
             ):
+                raise ValidationError(err_msg)
+
+            invalid_child_set = record.child_ids.filtered(
+                lambda child: (
+                    child.training_program_id
+                    != record.training_program_id  # noqa: B023
+                )
+            )
+
+            if invalid_child_set:
                 raise ValidationError(err_msg)
 
     # -- Overridden methods
@@ -1322,6 +1337,8 @@ class AcademyTrainingAction(models.Model):
 
     def write(self, values):
         """Overridden method 'write'."""
+        self._prevent_company_change(values)
+
         sanitize_code(values, "upper")
         self._prevent_use_student_link(values)
 
@@ -1886,19 +1903,29 @@ class AcademyTrainingAction(models.Model):
 
         return domain
 
-    def _copy_global_teacher_assignments(self, default, training_action_id):
-        if isinstance(training_action_id, models.BaseModel):
-            training_action_id = training_action_id.id
+    def _copy_global_teacher_assignments(self, default):
+        """Add global teacher assignments to copy defaults.
 
-        glogal_assignments = self.teacher_assignment_ids.filtered(
-            lambda r: not r.action_line_id
+        Only assignments belonging directly to the training action are copied.
+        Assignments linked to action lines are copied together with their
+        corresponding action lines.
+
+        Args:
+            default (dict): Values used to create the duplicated training action.
+
+        Returns:
+            None
+        """
+        assignment_set = self.teacher_assignment_ids.filtered(
+            lambda assignment: not assignment.action_line_id
         )
 
         o2m_ops = [(5, 0, 0)]
-        for assign in glogal_assignments:
+
+        for assignment in assignment_set:
             values = {
-                "training_action_id": training_action_id,
-                "teacher_id": assign.teacher_id.id,
+                "teacher_id": assignment.teacher_id.id,
+                "sequence": assignment.sequence,
             }
             o2m_ops.append((0, 0, values))
 
@@ -2141,3 +2168,36 @@ class AcademyTrainingAction(models.Model):
                         "sequence": sequence,
                     }
                 )
+
+    def _prevent_company_change(self, values):
+        """Prevent changing the company of existing training actions.
+
+        Args:
+            values (dict): Values that will be written.
+
+        Returns:
+            None
+
+        Raises:
+            ValidationError: If the company of an existing training action is
+                changed.
+        """
+        if "company_id" not in values:
+            return
+
+        company_id = values.get("company_id")
+
+        if isinstance(company_id, models.BaseModel):
+            company_id.ensure_one()
+            company_id = company_id.id
+
+        company_id = company_id or False
+
+        err_msg = _(
+            "The company of a training action cannot be changed once "
+            "the action has been created."
+        )
+
+        for record in self:
+            if company_id != record.company_id.id:
+                raise ValidationError(err_msg)
