@@ -1,26 +1,24 @@
-# -*- coding: utf-8 -*-
-""" AcademyTrainingProgram
+###############################################################################
+#    License, author and contributors information in:                         #
+#    __manifest__.py file at the root folder of this module.                  #
+###############################################################################
 
-This module contains the academy.training.program Odoo model which stores
-all training program attributes and behavior.
-"""
+from uuid import uuid4
 
-
-# pylint: disable=locally-disabled, E0401
-from odoo import models, fields, api
-from odoo.osv.expression import TRUE_DOMAIN, FALSE_DOMAIN
+from odoo import api, fields, models
 from odoo.exceptions import ValidationError
-from ..utils.helpers import OPERATOR_MAP, one2many_count
-from ..utils.helpers import sanitize_code, default_code
+from odoo.osv.expression import FALSE_DOMAIN, TRUE_DOMAIN
 from odoo.tools.safe_eval import safe_eval
 from odoo.tools.translate import _
 
-from logging import getLogger
-from uuid import uuid4
+from ..utils.helpers import (
+    default_code,
+    one2many_count,
+    one2many_count_search_domain,
+    sanitize_code,
+)
 
 CODE_SEQUENCE = "academy.training.program.sequence"
-
-_logger = getLogger(__name__)
 
 
 class AcademyTrainingProgram(models.Model):
@@ -29,7 +27,7 @@ class AcademyTrainingProgram(models.Model):
     _name = "academy.training.program"
     _description = "Academy training program"
 
-    _inherit = [
+    _inherit = [  # noqa: RUF012
         "ownership.mixin",
         "image.mixin",
         "mail.thread",
@@ -38,7 +36,11 @@ class AcademyTrainingProgram(models.Model):
 
     _rec_name = "name"
     _order = "name ASC"
-    _rec_names_search = ["name", "code", "training_framework_id"]
+    _rec_names_search = [  # noqa: RUF012
+        "name",
+        "code",
+        "training_framework_id",
+    ]
 
     _IMMUTABLE_FIELDS = ("program_type", "training_framework_id")
 
@@ -273,7 +275,7 @@ class AcademyTrainingProgram(models.Model):
 
     program_line_ids = fields.One2many(
         string="Program lines",
-        required=True,
+        required=False,
         readonly=False,
         index=True,
         default=None,
@@ -300,9 +302,13 @@ class AcademyTrainingProgram(models.Model):
         copy=False,
     )
 
-    @api.depends("program_line_ids")
+    @api.depends(
+        "program_line_ids",
+        "program_line_ids.active",
+        "program_line_ids.is_section",
+    )
     def _compute_program_line_count(self):
-        domain = [("is_section", "=", False)]
+        domain = [("active", "=", True), ("is_section", "=", False)]
         counts = one2many_count(self, "program_line_ids", domain)
 
         for record in self:
@@ -332,35 +338,45 @@ class AcademyTrainingProgram(models.Model):
         readonly=True,
         index=False,
         default=0,
-        help="Computed number of training actions",
+        help="Number of active leaf training actions using this program",
         compute="_compute_training_action_count",
         search="_search_training_action_count",
         copy=False,
     )
 
-    @api.depends("training_action_ids")
+    @api.depends(
+        "training_action_ids",
+        "training_action_ids.active",
+        "training_action_ids.child_ids",
+    )
     def _compute_training_action_count(self):
-        counts = one2many_count(self, "training_action_ids")
+        domain = [
+            ("active", "=", True),
+            ("child_ids", "=", False),
+        ]
+        counts = one2many_count(
+            self,
+            "training_action_ids",
+            domain,
+        )
 
         for record in self:
             record.training_action_count = counts.get(record.id, 0)
 
     @api.model
     def _search_training_action_count(self, operator, value):
-        # Handle boolean-like searches Odoo may pass for required fields
-        if value is True:
-            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
-        if value is False:
-            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
+        domain = [
+            ("active", "=", True),
+            ("child_ids", "=", False),
+        ]
 
-        cmp_func = OPERATOR_MAP.get(operator)
-        if not cmp_func:
-            return FALSE_DOMAIN  # unsupported operator
-
-        counts = one2many_count(self.search([]), "training_action_ids")
-        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
-
-        return [("id", "in", matched)] if matched else FALSE_DOMAIN
+        return one2many_count_search_domain(
+            self,
+            "training_action_ids",
+            operator,
+            value,
+            domain,
+        )
 
     # Computed field: hours --------------------------------------------------
 
@@ -378,16 +394,40 @@ class AcademyTrainingProgram(models.Model):
         tracking=True,
     )
 
-    @api.depends("program_line_ids.training_module_id.hours")
+    @api.depends(
+        "program_line_ids",
+        "program_line_ids.active",
+        "program_line_ids.is_section",
+        "program_line_ids.hours",
+    )
     def _compute_hours(self):
-        hours_path = "program_line_ids.training_module_id.hours"
+        totals = dict.fromkeys(self.ids, 0.0)
+
+        line_obj = self.env["academy.training.program.line"]
+
+        rows = line_obj.read_group(
+            domain=[
+                ("training_program_id", "in", self.ids),
+                ("active", "=", True),
+                ("is_section", "=", False),
+            ],
+            fields=["hours:sum"],
+            groupby=["training_program_id"],
+            lazy=False,
+        )
+
+        for row in rows:
+            program = row.get("training_program_id")
+
+            if program:
+                totals[program[0]] = row.get("hours", 0.0)
+
         for record in self:
-            hours_list = record.mapped(hours_path)
-            record.hours = sum(hours_list) if hours_list else 0.0
+            record.hours = totals.get(record.id, 0.0)
 
     # -------------------------- Contraints -----------------------------------
 
-    _sql_constraints = [
+    _sql_constraints = [  # noqa: RUF012
         (
             "code_unique",
             "unique(code)",
@@ -403,6 +443,51 @@ class AcademyTrainingProgram(models.Model):
                 raise ValidationError(
                     _("A Training Support Program cannot have training lines.")
                 )
+
+    @api.constrains("professional_family_id", "professional_area_id")
+    def _check_professional_area_family(self):
+        """Ensure the professional area belongs to the selected family.
+
+        Raises:
+            ValidationError: If the selected professional area does not belong
+                to the selected professional family.
+        """
+        for record in self:
+            area = record.professional_area_id
+
+            if (
+                area
+                and area.professional_family_id
+                != record.professional_family_id
+            ):
+                raise ValidationError(
+                    _(
+                        "The professional area must belong to the selected "
+                        "professional family."
+                    )
+                )
+
+    @api.constrains("professional_field_id", "professional_sector_ids")
+    def _check_professional_sectors_field(self):
+        """Ensure all professional sectors belong to the selected field.
+
+        Raises:
+            ValidationError: If any selected professional sector does not belong
+                to the selected professional field.
+        """
+        err_msg = _(
+            "All professional sectors must belong to the selected "
+            "professional field."
+        )
+
+        for record in self:
+            sector_set = record.professional_sector_ids
+            pro_field = record.professional_field_id
+            domain = [("professional_field_id", "!=", pro_field.id or False)]
+            invalid_sector_set = sector_set.filtered_domain(domain)
+
+            if invalid_sector_set:
+                raise ValidationError(err_msg)
 
     # ---------------------------- PUBLIC FIELDS ------------------------------
 
@@ -486,20 +571,42 @@ class AcademyTrainingProgram(models.Model):
         return super().write(values)
 
     def copy(self, default=None):
+        """Duplicate the training program and its program lines.
+
+        The program lines are copied explicitly because ``program_line_ids`` has
+        ``copy=False``. Values supplied through ``default`` take precedence over
+        the automatic duplication behavior.
+
+        Args:
+            default (dict | None): Values to override in the duplicated training
+                program. Defaults to None.
+
+        Returns:
+            academy.training.program: Newly created training program.
+        """
         self.ensure_one()
 
         default = dict(default or {})
 
-        if not default.get("name", False):
+        if "name" not in default:
             name = self.name or _("New training program")
-            sufix = uuid4().hex[:8]
-            default["name"] = f"{name} ‒ {sufix}"
+            suffix = uuid4().hex[:8]
+            default["name"] = f"{name} ‒ {suffix}"
+
+        copy_program_lines = (
+            "program_line_ids" not in default
+            and default.get("program_type", self.program_type) != "support"
+        )
 
         new_program = super().copy(default)
 
-        line_default = {"training_program_id": new_program.id}
-        for line in self.program_line_ids:
-            line.copy(default=line_default)
+        if copy_program_lines:
+            line_default = {
+                "training_program_id": new_program.id,
+            }
+
+            for line in self.program_line_ids:
+                line.copy(default=line_default)
 
         return new_program
 

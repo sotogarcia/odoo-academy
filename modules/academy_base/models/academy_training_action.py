@@ -64,7 +64,7 @@ class AcademyTrainingAction(models.Model):
 
     @property
     def shared_keys(self):
-        return self.env["academy.training.program"].shared_keys()
+        return self.env["academy.training.program"].shared_keys
 
     # -- Company dependency: Fields and logic
     # -------------------------------------------------------------------------

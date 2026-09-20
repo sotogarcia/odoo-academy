@@ -1,21 +1,20 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 #    License, author and contributors information in:                         #
 #    __manifest__.py file at the root folder of this module.                  #
 ###############################################################################
 
-from odoo import models, fields, api
-from odoo.tools.translate import _
-from odoo.exceptions import ValidationError, UserError
-from ..utils.sql_helpers import create_index
-
 from logging import getLogger
 
+from odoo import api, fields, models
+from odoo.exceptions import UserError, ValidationError
+from odoo.tools.translate import _
+
+from ..utils.sql_helpers import create_index
 
 _logger = getLogger(__name__)
 
 
-class AcademyTrainingActionAssignment(models.Model):
+class AcademyTrainingTeacherAssignment(models.Model):
     """Link between a training action and a teacher (optionally a program
     unit).
 
@@ -26,10 +25,17 @@ class AcademyTrainingActionAssignment(models.Model):
 
     _name = "academy.training.teacher.assignment"
     _description = "Academy training action teacher assignment"
+    _order = "sequence ASC, id ASC"
 
-    _inherit = ["mail.thread"]
+    _inherit = ["mail.thread"]  # noqa: RUF012
 
-    IMMUTABLE_FIELDS = [
+    _rec_names_search = [  # noqa: RUF012
+        "teacher_id",
+        "training_action_id",
+        "action_line_id",
+    ]
+
+    IMMUTABLE_FIELDS = [  # noqa: RUF012
         "training_action_id",
         "action_line_id",
     ]
@@ -173,37 +179,55 @@ class AcademyTrainingActionAssignment(models.Model):
         err = _("Duplicating records on this model is strictly prohibited.")
         raise UserError(err)
 
+    @api.depends(
+        "teacher_id",
+        "training_action_id",
+        "action_line_id",
+    )
+    def _compute_display_name(self):
+        for record in self:
+            target = record.action_line_id or record.training_action_id
+
+            if record.teacher_id and target:
+                record.display_name = (
+                    f"{record.teacher_id.display_name} — {target.display_name}"
+                )
+            elif record.teacher_id:
+                record.display_name = record.teacher_id.display_name
+            else:
+                record.display_name = self.env._("Teacher assignment")
+
     # -- Auxiliary methods
     # -------------------------------------------------------------------------
 
-    def _prevent_change_immutable_fields(self, vals):
-        """
-        Helper method to check if immutable fields are being modified.
-        It raises a UserError if a field is modified after its initial set.
-        """
-
-        error_message = _(
-            "The field '%(f)s' cannot be modified once it has been set."
-        )
-
-        fields_to_check = set(self.IMMUTABLE_FIELDS) & set(vals.keys())
-        if not fields_to_check:
+    def _prevent_change_immutable_fields(self, values):
+        """Prevent immutable fields from being changed after record creation."""
+        field_names = set(self.IMMUTABLE_FIELDS) & set(values)
+        if not field_names:
             return True
 
+        message = _(
+            "The field '%(field)s' cannot be modified once the record "
+            "has been created."
+        )
+
         for record in self:
-            for field_name in fields_to_check:
-                new_value = vals[field_name]
+            for field_name in field_names:
+                current_value = record[field_name]
+                current_value = current_value.id if current_value else False
+
+                new_value = values[field_name]
                 if isinstance(new_value, models.BaseModel):
                     new_value = new_value.id
 
-                current_value = (
-                    record[field_name].id if record[field_name] else False
-                )
+                new_value = new_value or False
 
-                if current_value and current_value != new_value:
+                if current_value != new_value:
                     raise ValidationError(
-                        error_message
-                        % {"f": record._fields[field_name].string}
+                        message
+                        % {
+                            "field": record._fields[field_name].string,
+                        }
                     )
 
         return True
@@ -225,9 +249,24 @@ class AcademyTrainingActionAssignment(models.Model):
 
     @api.model
     def get_primary(self, targets):
-        """Return the *primary* (first by sequence) active teacher per target
-        (action or program unit), as a dict: {target_id: teacher_record}.
-        For targets with no assignment, value is an empty recordset.
+        """Return the primary active teacher for each target.
+
+        For training actions, only global assignments are considered. Assignments
+        attached to a specific action line are excluded.
+
+        For training action lines, only assignments belonging to the corresponding
+        line are considered.
+
+        Args:
+            targets (odoo.models.Model): Training actions or training action lines.
+
+        Returns:
+            dict: Mapping from target IDs to their primary teacher. Targets without
+                assignments are mapped to an empty ``academy.teacher`` recordset.
+
+        Raises:
+            ValidationError: If ``targets`` is not a recordset or belongs to an
+                unsupported model.
         """
         mapping = {
             "academy.training.action": "training_action_id",
@@ -238,31 +277,36 @@ class AcademyTrainingActionAssignment(models.Model):
             raise ValidationError(self.env._("A recordset is required"))
 
         model_name = targets._name
-        if model_name not in mapping.keys():
+        if model_name not in mapping:
             message = self.env._("Unsupported model: %s")
             raise ValidationError(message % model_name)
 
-        assignment_obj = self.env[self._name]
-        teacher_obj = self.env["academy.teacher"]
         if not targets:
-            return teacher_obj.browse()
+            return {}
 
-        field_name = mapping.get(model_name)
+        field_name = mapping[model_name]
 
         domain = [
             (field_name, "in", targets.ids),
             ("teacher_id.active", "=", True),
         ]
-        order = f"{field_name}, sequence NULLS LAST"
-        assignment_set = assignment_obj.search(domain, order=order)
 
-        # Seed all targets with empty teacher to ensure total coverage
-        result = {t.id: teacher_obj.browse() for t in targets}
+        if model_name == "academy.training.action":
+            domain.append(("action_line_id", "=", False))
+
+        assignment_set = self.search(
+            domain,
+            order=f"{field_name}, sequence NULLS LAST, id ASC",
+        )
+
+        teacher_obj = self.env["academy.teacher"]
+        result = {target.id: teacher_obj.browse() for target in targets}
+
         for assignment in assignment_set:
-            key = getattr(assignment, field_name).id
-            # Keep first (lowest sequence) assignment only
-            if not result[key]:
-                result[key] = assignment.teacher_id
+            target_id = assignment[field_name].id
+
+            if not result[target_id]:
+                result[target_id] = assignment.teacher_id
 
         return result
 

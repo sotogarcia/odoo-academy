@@ -1,16 +1,9 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 #    License, author and contributors information in:                         #
 #    __manifest__.py file at the root folder of this module.                  #
 ###############################################################################
 
-from odoo import models, fields, api
-from odoo.tools.translate import _
-
-from logging import getLogger
-
-
-_logger = getLogger(__name__)
+from odoo import models, fields
 
 
 class ResConfigSettings(models.TransientModel):
@@ -19,19 +12,18 @@ class ResConfigSettings(models.TransientModel):
     _inherit = "res.config.settings"
 
     head_of_studies_id = fields.Many2one(
-        string="Head of Studies",
-        required=True,
         readonly=False,
-        help="User responsible for academic oversight within the platform.",
         related="company_id.head_of_studies_id",
     )
 
     erp_manager_id = fields.Many2one(
-        string="ERP Manager",
-        required=True,
         readonly=False,
-        help="User responsible for functional supervision of the ERP system.",
         related="company_id.erp_manager_id",
+    )
+
+    auto_signup = fields.Boolean(
+        readonly=False,
+        related="company_id.auto_signup",
     )
 
     partner_email_required = fields.Selection(
@@ -68,13 +60,4 @@ class ResConfigSettings(models.TransientModel):
             ("except_debug", "Except in developer mode"),
         ],
         config_parameter="academy_base.partner_vat_required",
-    )
-
-    auto_signup = fields.Boolean(
-        string="Auto sign up",
-        required=False,
-        readonly=False,
-        help="Automatically sign up the student upon enrolling in a training "
-        "action",
-        related="company_id.auto_signup",
     )

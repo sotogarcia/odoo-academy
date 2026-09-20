@@ -1,20 +1,24 @@
-# -*- coding: utf-8 -*-
-""" AcademyTrainingModule
+###############################################################################
+#    License, author and contributors information in:                         #
+#    __manifest__.py file at the root folder of this module.                  #
+###############################################################################
 
-This module contains the academy.training.module Odoo model which stores
-all training module attributes and behavior.
-"""
 
-from odoo import models, fields, api
-from odoo.tools.translate import _
-from odoo.tools.safe_eval import safe_eval
-from odoo.exceptions import ValidationError, UserError
-from odoo.osv.expression import TRUE_DOMAIN, FALSE_DOMAIN
-from ..utils.helpers import OPERATOR_MAP, one2many_count, many2many_count
-from ..utils.helpers import sanitize_code, default_code
-
-from uuid import uuid4
 from logging import getLogger
+from uuid import uuid4
+
+from odoo import api, fields, models
+from odoo.exceptions import UserError, ValidationError
+from odoo.tools.safe_eval import safe_eval
+from odoo.tools.translate import _
+
+from ..utils.helpers import (
+    default_code,
+    many2many_count,
+    one2many_count,
+    one2many_count_search_domain,
+    sanitize_code,
+)
 
 MODULE_SEQUENCE = "academy.training.module.sequence"
 UNIT_SEQUENCE = "academy.training.unit.sequence"
@@ -31,7 +35,7 @@ class AcademyTrainingModule(models.Model):
     _name = "academy.training.module"
     _description = "Academy training module"
 
-    _inherit = [
+    _inherit = [  # noqa: RUF012
         "ownership.mixin",
         "image.mixin",
         "mail.thread",
@@ -39,7 +43,7 @@ class AcademyTrainingModule(models.Model):
 
     _rec_name = "name"
     _order = "parent_path, sequence, name"
-    _rec_names_search = ["name", "code"]
+    _rec_names_search = ["name", "code"]  # noqa: RUF012
 
     _parent_name = "training_module_id"
     _parent_store = True
@@ -199,19 +203,12 @@ class AcademyTrainingModule(models.Model):
 
     @api.model
     def _search_program_line_count(self, operator, value):
-        if value is True:
-            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
-        if value is False:
-            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
-
-        cmp_func = OPERATOR_MAP.get(operator)
-        if not cmp_func:
-            return FALSE_DOMAIN  # unsupported operator
-
-        counts = many2many_count(self.search([]), "program_line_ids")
-        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
-
-        return [("id", "in", matched)] if matched else FALSE_DOMAIN
+        return one2many_count_search_domain(
+            self,
+            "program_line_ids",
+            operator,
+            value,
+        )
 
     # --------------------------- COMPUTED FIELDS -----------------------------
 
@@ -236,20 +233,12 @@ class AcademyTrainingModule(models.Model):
 
     @api.model
     def _search_training_unit_count(self, operator, value):
-        # Handle boolean-like searches Odoo may pass for required fields
-        if value is True:
-            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
-        if value is False:
-            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
-
-        cmp_func = OPERATOR_MAP.get(operator)
-        if not cmp_func:
-            return FALSE_DOMAIN  # unsupported operator
-
-        counts = one2many_count(self.search([]), "training_unit_ids")
-        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
-
-        return [("id", "in", matched)] if matched else FALSE_DOMAIN
+        return one2many_count_search_domain(
+            self,
+            "training_unit_ids",
+            operator,
+            value,
+        )
 
     delivered_modules_ids = fields.Many2many(
         string="Deliverable modules",
@@ -280,15 +269,27 @@ class AcademyTrainingModule(models.Model):
         readonly=True,
         index=False,
         default=None,
-        help=False,
+        help="Training programs that use this training module",
         comodel_name="academy.training.program",
         relation="academy_training_module_training_program_rel",
         column1="training_module_id",
         column2="training_program_id",
         domain=[],
         context={},
+        compute="_compute_training_program_ids",
+        store=True,
         copy=False,
     )
+
+    @api.depends(
+        "program_line_ids",
+        "program_line_ids.training_program_id",
+    )
+    def _compute_training_program_ids(self):
+        for record in self:
+            record.training_program_ids = (
+                record.program_line_ids.training_program_id
+            )
 
     training_program_count = fields.Integer(
         string="No. of programs",
@@ -298,10 +299,11 @@ class AcademyTrainingModule(models.Model):
         default=0,
         help="Number of training programs using this training module",
         compute="_compute_training_program_count",
+        store=True,
         copy=False,
     )
 
-    @api.depends("program_line_ids", "program_line_ids.training_module_id")
+    @api.depends("training_program_ids")
     def _compute_training_program_count(self):
         counts = many2many_count(self, "training_program_ids")
 
@@ -310,7 +312,7 @@ class AcademyTrainingModule(models.Model):
 
     # --- SQL constraints --------------------------------------------------
 
-    _sql_constraints = [
+    _sql_constraints = [  # noqa: RUF012
         (
             "code_unique",
             "unique(code)",
@@ -376,24 +378,39 @@ class AcademyTrainingModule(models.Model):
 
         return result
 
+    def unlink(self):
+        parents = self.mapped("training_module_id")
+
+        result = super().unlink()
+
+        self.env["academy.training.module"]._update_parent_hours(
+            parents=parents
+        )
+
+        return result
+
     def copy(self, default=None):
+        self.ensure_one()
+
         default = dict(default or {})
 
         self._prevent_copy_training_units(default)
 
-        if not default.get("name", False):
+        if not default.get("name"):
             name = self.name or _("New training module")
-            sufix = uuid4().hex[:8]
-            default["name"] = f"{name} ‒ {sufix}"
+            suffix = uuid4().hex[:8]
+            default["name"] = f"{name} ‒ {suffix}"
 
         new_module = super().copy(default)
 
-        unit_context = dict(default_training_module_id=new_module.id)
-        unit_default = {"training_module_id": new_module.id}
+        unit_default = {
+            "training_module_id": new_module.id,
+        }
+
         for unit in self.training_unit_ids:
-            # Allow choose the right sequence for training units/blocks
-            unit_ctx = unit.with_context(unit_context)
-            unit_ctx.copy(default=unit_default)
+            unit.with_context(default_training_module_id=new_module.id).copy(
+                default=unit_default
+            )
 
         return new_module
 
@@ -491,35 +508,36 @@ class AcademyTrainingModule(models.Model):
     # -------------------------- AUXILIARY METHODS ----------------------------
 
     def _prevent_copy_training_units(self, default):
-        parent_id = self.training_module_id
+        parent_id = self.training_module_id.id or False
         new_parent_id = default.get("training_module_id", False)
+
+        if isinstance(new_parent_id, models.BaseModel):
+            new_parent_id.ensure_one()
+            new_parent_id = new_parent_id.id
+
         if parent_id and (not new_parent_id or parent_id == new_parent_id):
-            m = _("Duplicating training units/blocks is strictly prohibited.")
-            raise UserError(m)
+            raise UserError(
+                _("Duplicating training units/blocks is strictly prohibited.")
+            )
 
     def _get_id(self, model_or_id):
-        """Returns a valid id or rises an error"""
-        if isinstance(model_or_id, int):
-            result = model_or_id
-        else:
-            self.ensure_one()
-            result = model_or_id.id
+        """Return the identifier represented by an ID or singleton recordset."""
+        if isinstance(model_or_id, models.BaseModel):
+            model_or_id.ensure_one()
+            return model_or_id.id
 
-        return result
+        return model_or_id
 
     @api.model
     def _update_parent_hours(self, parents=None):
-        """
-        Recompute the 'hours' field for the given parent modules.
+        """Recompute total hours for the supplied parent modules.
 
-        This method sums the 'hours' of all active child modules and updates
-        each parent module with the total. It is called after create/write
-        operations to keep parent hours consistent with their children.
+        The total is calculated from active child units. Parents without active
+        children are explicitly reset to zero.
 
         Args:
-            parents (recordset[academy.training.module] | None):
-                Optional recordset of parent modules to update. If None,
-                the method will use the parents of the current recordset.
+            parents (recordset[academy.training.module] | None): Parent modules
+                whose total hours must be recomputed.
 
         Returns:
             None
@@ -527,8 +545,13 @@ class AcademyTrainingModule(models.Model):
         if not parents:
             return
 
-        module_obj = self.env["academy.training.module"]
-        rows = module_obj.read_group(
+        parents = parents.exists()
+        if not parents:
+            return
+
+        totals = dict.fromkeys(parents.ids, 0.0)
+
+        rows = self.read_group(
             domain=[
                 ("training_module_id", "in", parents.ids),
                 ("active", "=", True),
@@ -538,8 +561,11 @@ class AcademyTrainingModule(models.Model):
         )
 
         for row in rows:
-            training_module_id = row["training_module_id"][0]
-            total_hours = row.get("hours", 0.0)
+            parent_id = row["training_module_id"][0]
+            totals[parent_id] = row.get("hours", 0.0)
 
-            module = module_obj.browse(training_module_id)
-            module.write({"hours": total_hours})
+        for parent in parents:
+            total_hours = totals[parent.id]
+
+            if parent.hours != total_hours:
+                parent.write({"hours": total_hours})

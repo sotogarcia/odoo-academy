@@ -61,14 +61,14 @@ Implementation notes
   reporting queries.
 """
 
-from datetime import date, datetime, time, timedelta
+from datetime import datetime, timedelta
 from logging import getLogger
 
 from odoo import api, fields, models
 from odoo.exceptions import UserError, ValidationError
-from odoo.osv.expression import AND, TERM_OPERATORS_NEGATION, TRUE_DOMAIN
+from odoo.osv.expression import AND, TERM_OPERATORS_NEGATION
 from odoo.tools.misc import format_date
-from pytz import timezone, utc
+from pytz import timezone
 
 from ..utils.datetime_utils import (
     DATETIME_POSITIVE_INFINITY,
@@ -82,7 +82,6 @@ from ..utils.record_utils import (
     create_domain_for_interval,
     ensure_recordset,
 )
-from ..utils.res_config import get_config_param
 from ..utils.sql_helpers import create_index
 
 _CODE_SEQUENCE = "academy.training.action.enrolment.sequence"
@@ -98,9 +97,13 @@ class AcademyTrainingActionEnrolment(models.Model):
 
     _rec_name = "code"
     _order = "training_action_id, student_id, code ASC"
-    _rec_names_search = ["code", "training_action_id", "student_id"]
+    _rec_names_search = [  # noqa: RUF012
+        "code",
+        "training_action_id",
+        "student_id",
+    ]
 
-    _inherit = [
+    _inherit = [  # noqa: RUF012
         "ownership.mixin",
         "mail.thread",
         "mail.activity.mixin",
@@ -882,7 +885,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         Assign a temporaty student to allow the copy.
         """
 
-        parent = super(AcademyTrainingActionEnrolment, self)
+        parent = super()
 
         xmlid = "academy_base.academy_student_default_template"
         imd_obj = self.env["ir.model.data"]
@@ -1169,7 +1172,7 @@ class AcademyTrainingActionEnrolment(models.Model):
 
         # 1. Group student IDs by company using values from values_list
         current_company_id = self.env.company.id
-        students_by_company = dict()
+        students_by_company = {}
         for values in target_list or []:
             student_id = values.get("student_id", False)
             if not student_id:

@@ -1,18 +1,12 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 #    License, author and contributors information in:                         #
-#    __openerp__.py file at the root folder of this module.                   #
+#    __manifest__.py file at the root folder of this module.                  #
 ###############################################################################
 
-from odoo import models, fields, api
+from odoo import api, fields, models
 from odoo.exceptions import UserError, ValidationError
-from odoo.osv.expression import FALSE_DOMAIN
+
 from ..utils.sql_helpers import create_index
-
-
-from logging import exception, getLogger
-
-_logger = getLogger(__name__)
 
 
 class ResPartner(models.Model):
@@ -60,9 +54,11 @@ class ResPartner(models.Model):
         search="_search_has_active_users",
     )
 
+    @api.depends("user_ids.active")
     def _compute_has_active_users(self):
         for record in self:
-            record.has_active_users = bool(record.user_ids)
+            user_set = record.with_context(active_test=False).user_ids
+            record.has_active_users = any(user_set.mapped("active"))
 
     @api.model
     def _search_has_active_users(self, operator, value):
@@ -73,20 +69,17 @@ class ResPartner(models.Model):
             message = f"Invalid operator {operator} for boolean value"
             raise ValidationError(message)
 
-        value = bool(value)
+        has_active_users = (operator == "=") == bool(value)
 
-        if operator == "=" and value is True:
-            domain = [("user_ids", "!=", False)]
-        elif operator == "=" and value is False:
-            domain = [("user_ids", "=", False)]
-        elif operator == "!=" and value is True:
-            domain = [("user_ids", "=", False)]
-        elif operator == "!=" and value is False:
-            domain = [("user_ids", "!=", False)]
-        else:
-            domain = FALSE_DOMAIN
+        relation_operator = "any" if has_active_users else "not any"
 
-        return domain
+        return [
+            (
+                "user_ids",
+                relation_operator,
+                [("active", "=", True)],
+            )
+        ]
 
     student_id = fields.One2many(
         string="Student",
@@ -251,7 +244,7 @@ class ResPartner(models.Model):
         - email: strip + lower
         - If the value is empty `''`, set it to `None`
         """
-        sanitize = dict(ref=None, vat="upper", email="lower")
+        sanitize = {"ref": None, "vat": "upper", "email": "lower"}
 
         if not values_list:
             return values_list

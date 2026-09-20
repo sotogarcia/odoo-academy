@@ -1,29 +1,24 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 #    License, author and contributors information in:                         #
-#    __openerp__.py file at the root folder of this module.                   #
+#    __manifest__.py file at the root folder of this module.                  #
 ###############################################################################
 
-from odoo import models, fields, api
-from odoo.tools.translate import _
-from odoo.tools.safe_eval import safe_eval
-from odoo.exceptions import ValidationError
-from ..utils.helpers import sanitize_code
-from odoo.osv.expression import TRUE_DOMAIN, FALSE_DOMAIN
-from ..utils.helpers import OPERATOR_MAP, many2many_count
 
 from uuid import uuid4
-from logging import getLogger
 
+from odoo import api, fields, models
+from odoo.exceptions import ValidationError
+from odoo.tools.safe_eval import safe_eval
+from odoo.tools.translate import _
 
-_logger = getLogger(__name__)
+from ..utils.helpers import many2many_count, sanitize_code
 
 
 class AcademyTrainingProgramLine(models.Model):
     _name = "academy.training.program.line"
     _description = "Academy training program line"
 
-    _inherit = [
+    _inherit = [  # noqa: RUF012
         "ownership.mixin",
         "image.mixin",
         "mail.thread",
@@ -32,7 +27,7 @@ class AcademyTrainingProgramLine(models.Model):
 
     _rec_name = "name"
     _order = "sequence ASC"
-    _rec_names_search = ["name", "code"]
+    _rec_names_search = ["name", "code"]  # noqa: RUF012
 
     _SHARED_KEYS = (
         "name",
@@ -42,10 +37,14 @@ class AcademyTrainingProgramLine(models.Model):
         "code",
         "optional",
         "hours",
-        "training_program_id",
         "training_module_id",
         "competency_unit_ids",
         "is_section",
+    )
+
+    _SYNCHRONIZATION_KEYS = (
+        *_SHARED_KEYS,
+        "training_program_id",
     )
 
     @property
@@ -213,34 +212,24 @@ class AcademyTrainingProgramLine(models.Model):
         readonly=True,
         index=False,
         default=0,
-        help=False,
+        help="Number of active competence standards linked to this line",
         compute="_compute_competency_unit_count",
-        search="_search_competency_unit_count",
+        store=True,
         copy=False,
     )
 
-    @api.depends("competency_unit_ids")
+    @api.depends(
+        "competency_unit_ids",
+        "competency_unit_ids.active",
+    )
     def _compute_competency_unit_count(self):
-        counts = many2many_count(self, "competency_unit_ids")
+        counts = many2many_count(
+            self,
+            "competency_unit_ids",
+        )
 
         for record in self:
             record.competency_unit_count = counts.get(record.id, 0)
-
-    @api.model
-    def _search_competency_unit_count(self, operator, value):
-        if value is True:
-            return TRUE_DOMAIN if operator == "=" else FALSE_DOMAIN
-        if value is False:
-            return TRUE_DOMAIN if operator != "=" else FALSE_DOMAIN
-
-        cmp_func = OPERATOR_MAP.get(operator)
-        if not cmp_func:
-            return FALSE_DOMAIN  # unsupported operator
-
-        counts = many2many_count(self.search([]), "competency_unit_ids")
-        matched = [cid for cid, cnt in counts.items() if cmp_func(cnt, value)]
-
-        return [("id", "in", matched)] if matched else FALSE_DOMAIN
 
     is_section = fields.Boolean(
         string="Is section",
@@ -265,35 +254,22 @@ class AcademyTrainingProgramLine(models.Model):
         default=True,
         help="True if the line has changed since the last time it was "
         "sychronized.",
+        copy=False,
     )
 
     # -- Constraints ----------------------------------------------------------
 
-    _sql_constraints = [
+    _sql_constraints = [  # noqa: RUF012
         (
             "code_unique",
             "UNIQUE(code)",
-            "Module code must be unique",
+            "Program line code must be unique",
         ),
         (
             "non_negative_hours",
             "CHECK(hours >= 0)",
             "Hours must be a non-negative number",
         ),
-        # (
-        #     "unique_module_by_program",
-        #     "UNIQUE(training_program_id, training_module_id)",
-        #     "The module cannot be duplicated in the same training program",
-        # ),
-        # (
-        #     "section_xor_training",
-        #     """CHECK(
-        #         COALESCE(is_section, FALSE)
-        #         <>
-        #         (training_module_id IS NOT NULL)
-        #     )""",
-        #     "Line must be either a section (no training) or a training item.",
-        # ),
     ]
 
     @api.constrains("code", "is_section")
@@ -303,6 +279,38 @@ class AcademyTrainingProgramLine(models.Model):
         for record in self:
             if not record.code and not record.is_section:
                 raise ValidationError(message)
+
+    @api.constrains("training_program_id")
+    def _check_training_program_type(self):
+        """Prevent adding lines to training support programs.
+
+        Raises:
+            ValidationError: If a program line belongs to a training support
+                program.
+        """
+        err_msg = _("A Training Support Program cannot have training lines.")
+
+        for record in self:
+            if record.training_program_id.program_type == "support":
+                raise ValidationError(err_msg)
+
+    @api.constrains("is_section", "training_module_id")
+    def _check_training_module(self):
+        """Ensure the module matches the program line type.
+
+        Raises:
+            ValidationError: If a section has a training module or a regular
+                program line has no training module.
+        """
+        section_msg = _("A section cannot have a training module.")
+        line_msg = _("A training module is required for a program line.")
+
+        for record in self:
+            if record.is_section and record.training_module_id:
+                raise ValidationError(section_msg)
+
+            if not record.is_section and not record.training_module_id:
+                raise ValidationError(line_msg)
 
     # -- Methods overrides ----------------------------------------------------
 
@@ -317,20 +325,35 @@ class AcademyTrainingProgramLine(models.Model):
     def write(self, values):
         sanitize_code(values, "upper")
 
-        if any(key in self.shared_keys for key in values.keys()):
+        if any(key in self._SYNCHRONIZATION_KEYS for key in values):
             values["needs_synchronization"] = True
 
         return super().write(values)
 
     def copy(self, default=None):
+        """Duplicate the program line into another training program.
+
+        Args:
+            default (dict | None): Values to override on the duplicated line.
+                The target program can be supplied through
+                ``training_program_id``. Defaults to None.
+
+        Returns:
+            academy.training.program.line: Newly created program line.
+
+        Raises:
+            ValidationError: If no target training program is provided or if
+                the target is the current training program.
+        """
         self.ensure_one()
+
         default = dict(default or {})
 
-        default["code"] = uuid4().hex[:8]
-
-        # Ensure target action is set and it is different than original
-        if not default.get("training_program_id", False):
+        if self._name == "academy.training.program.line":
             self._ensure_new_training_program_on_copy(default)
+
+        if "code" not in default:
+            default["code"] = uuid4().hex[:8]
 
         return super().copy(default)
 
@@ -364,8 +387,29 @@ class AcademyTrainingProgramLine(models.Model):
     # -- Auxiliary methods ----------------------------------------------------
 
     def _ensure_new_training_program_on_copy(self, default):
-        program_id = self.env.context.get("default_training_program_id")
+        """Ensure a different target program is used when duplicating a line.
+
+        Args:
+            default (dict): Values that will be passed to ``copy``.
+
+        Returns:
+            None
+
+        Raises:
+            ValidationError: If no target program is supplied or if it is the
+                same program as the source line.
+        """
+        program_id = default.get("training_program_id")
+
         if isinstance(program_id, models.BaseModel):
+            program_id.ensure_one()
+            program_id = program_id.id
+
+        if not program_id:
+            program_id = self.env.context.get("default_training_program_id")
+
+        if isinstance(program_id, models.BaseModel):
+            program_id.ensure_one()
             program_id = program_id.id
 
         if not program_id:
@@ -377,11 +421,7 @@ class AcademyTrainingProgramLine(models.Model):
                 )
             )
 
-        # Prevent duplicating into the same training program
-        if (
-            self.training_program_id
-            and self.training_program_id.id == program_id
-        ):
+        if program_id == self.training_program_id.id:
             raise ValidationError(
                 _(
                     "Cannot duplicate into the same training program. "
@@ -389,4 +429,4 @@ class AcademyTrainingProgramLine(models.Model):
                 )
             )
 
-        default.setdefault("training_program_id", program_id)
+        default["training_program_id"] = program_id
