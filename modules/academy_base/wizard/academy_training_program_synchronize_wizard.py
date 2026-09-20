@@ -1,14 +1,14 @@
-# -*- coding: utf-8 -*-
 ###############################################################################
 #    License, author and contributors information in:                         #
-#    __openerp__.py file at the root folder of this module.                   #
+#    __manifest__.py file at the root folder of this module.                  #
 ###############################################################################
 
-from odoo import models, fields, api
-from odoo.tools.safe_eval import safe_eval
-from ..utils.record_utils import get_active_records, ensure_recordset
-
 from logging import getLogger
+
+from odoo import api, fields, models
+from odoo.tools.safe_eval import safe_eval
+
+from ..utils.record_utils import ensure_recordset, get_active_records
 
 _logger = getLogger(__name__)
 
@@ -381,10 +381,17 @@ class AcademyTrainingProgramSynchronizeWizard(models.TransientModel):
 
         # 8) Remove action lines without a matching program line
         act_line_set = action_set.mapped("action_line_ids")  # After upsert
-        self._sta_unlink(prog_line_set, act_line_set, remove_mismatches)
+        unlinked_action_set = self._sta_unlink(
+            prog_line_set,
+            act_line_set,
+            remove_mismatches,
+        )
 
         # 9) Chatter note on all lines touched (created or overwritten)
-        self._notify_synchronization(result_set)
+        affected_action_set = result_set.mapped("training_action_id")
+        affected_action_set |= unlinked_action_set
+
+        self._notify_synchronization(affected_action_set)
 
         _logger.info(
             "Synchronization finished: training programs -> training actions."
@@ -487,8 +494,10 @@ class AcademyTrainingProgramSynchronizeWizard(models.TransientModel):
 
     @staticmethod
     def _sta_unlink(prog_lines, act_lines, remove_mismatches):
+        action_obj = act_lines.env["academy.training.action"]
+
         if not remove_mismatches:
-            return
+            return action_obj.browse()
 
         prog_line_ids = prog_lines.ids
         to_unlink = act_lines.filtered(
@@ -502,8 +511,12 @@ class AcademyTrainingProgramSynchronizeWizard(models.TransientModel):
             len(to_unlink),
         )
 
+        action_set = to_unlink.mapped("training_action_id")
+
         if to_unlink:
             to_unlink.unlink()
+
+        return action_set
 
     def _sta_get_shared_keys(self):
         prog_line_obj = self.env["academy.training.program.line"]
@@ -547,7 +560,7 @@ class AcademyTrainingProgramSynchronizeWizard(models.TransientModel):
         # Blindaje: nunca mover líneas entre acciones en updates
         vals2write.pop("training_action_id", None)
         # Reducir ruido de chatter/seguimiento
-        context = dict(tracking_disable=True, mail_create_nosubscribe=True)
+        context = {"tracking_disable": True, "mail_create_nosubscribe": True}
         act_line_set.with_context(context).write(vals2write)
 
         return act_line_set
@@ -572,7 +585,10 @@ class AcademyTrainingProgramSynchronizeWizard(models.TransientModel):
 
         act_line_obj = self.env["academy.training.action.line"]
         if creation_value_list:
-            context = dict(tracking_disable=True, mail_create_nosubscribe=True)
+            context = {
+                "tracking_disable": True,
+                "mail_create_nosubscribe": True,
+            }
             act_line_ctx = act_line_obj.with_context(context)
             result_set = act_line_ctx.create(creation_value_list)
         else:
@@ -581,17 +597,11 @@ class AcademyTrainingProgramSynchronizeWizard(models.TransientModel):
         return result_set
 
     @api.model
-    def _notify_synchronization(self, result_set):
+    def _notify_synchronization(self, action_set):
         """Post one short sync note on each affected training action."""
-        action_obj = self.env["academy.training.action"]
-        if not result_set:
-            return action_obj.browse()
-
-        action_set = result_set.mapped("training_action_id")
         if not action_set:
-            return action_obj.browse()
+            return action_set
 
-        # Silenciar tracking/seguidores/notificaciones por email
         ctx = {
             "tracking_disable": True,
             "mail_notrack": True,
@@ -615,4 +625,5 @@ class AcademyTrainingProgramSynchronizeWizard(models.TransientModel):
             "Synchronization chatter: posted sync note on %d action(s).",
             len(action_set),
         )
+
         return action_set

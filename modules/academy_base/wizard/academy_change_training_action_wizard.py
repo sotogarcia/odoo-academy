@@ -1,6 +1,6 @@
 ###############################################################################
 #    License, author and contributors information in:                         #
-#    __openerp__.py file at the root folder of this module.                   #
+#    __manifest__.py file at the root folder of this module.                  #
 ###############################################################################
 
 from datetime import date, datetime
@@ -14,6 +14,7 @@ from pytz import timezone, utc
 from ..utils.datetime_utils import (
     DATETIME_NEGATIVE_INFINITY,
     DATETIME_POSITIVE_INFINITY,
+    local_midnight_as_utc,
 )
 from ..utils.helpers import post_note
 from ..utils.record_utils import ensure_recordset, get_active_records
@@ -27,7 +28,7 @@ MSG_FROM_N = "Enrolment transferred as part of a bulk reassignment operation."
 _logger = getLogger(__name__)
 
 
-class AcademyChangeTrainingActionWizard(models.Model):
+class AcademyChangeTrainingActionWizard(models.TransientModel):
     """
 
                   |-------- A --------|
@@ -261,7 +262,6 @@ class AcademyChangeTrainingActionWizard(models.Model):
         """
         self_ctx = self.with_context(active_test=False)
 
-        old_enrolments = self.env[_ENROLMENT].browse()
         new_enrolments = self.env[_ENROLMENT].browse()
 
         # 1.  Ensure `enrolments` is a valid enrolment recordset
@@ -294,7 +294,7 @@ class AcademyChangeTrainingActionWizard(models.Model):
         self._ensure_no_conflicting_records(enrolment_set, training_action)
 
         # 7. Terminate all active enrolments within processable recordset.
-        date_change = defaults.get("register", datetime.now())
+        date_change = defaults.get("register", fields.Datetime.now())
         self._finish_enrolments(enrolment_set, date_change)
         self._post_note_changed_to(enrolment_set, training_action)
 
@@ -328,29 +328,20 @@ class AcademyChangeTrainingActionWizard(models.Model):
 
     @api.model
     def _local_midnight(self, training_action):
-        """Compute midnight in the training action's company timezone.
+        """Compute midnight in the training action's company timezone."""
+        tz_name = self._get_company_tz(
+            training_action,
+            self.env.user.tz,
+        )
 
-        If the company's timezone is undefined, falls back to the user's
-        timezone, and finally to UTC.
-        """
-        midnight_args = {"hour": 0, "minute": 0, "second": 0, "microsecond": 0}
-        tz_name = self._get_company_tz(training_action, self.env.user.tz)
+        recordset = self.with_context(tz=tz_name)
+        today = fields.Date.context_today(recordset)
 
-        try:
-            local_tz = timezone(tz_name)
-        except Exception:
-            local_tz = timezone("UTC")
-
-        naive_now = fields.Datetime.now()
-        utc_now = naive_now.replace(tzinfo=utc)
-
-        local_now = utc_now.astimezone(local_tz)
-        local_midnight = local_now.replace(**midnight_args)
-
-        utc_midnight = local_midnight.astimezone(utc)
-        naive_midnight = utc_midnight.replace(tzinfo=None)
-
-        return naive_midnight
+        return local_midnight_as_utc(
+            value=today,
+            from_tz=tz_name,
+            remove_tz=True,
+        )
 
     @api.model
     def _process_defaults(self, training_action, **kwargs):
