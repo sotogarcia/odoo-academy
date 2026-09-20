@@ -3,8 +3,6 @@
 #    __manifest__.py file at the root folder of this module.                  #
 ###############################################################################
 
-# ruff: noqa: B023
-
 from logging import getLogger
 from operator import eq, ne
 
@@ -356,7 +354,7 @@ class AcademyTrainingActionSynchronizeWizard(models.TransientModel):
         children_set = self._stg_get_children(source_set, target_set)
         grp_child_set = self._stg_grouped_by_parent(children_set)
         if sync_details:
-            self._stg_synchronize_details(children_set)
+            detail_action_set = self._stg_synchronize_details(children_set)
 
         # 3) Fetch program lines; index child lines by parent snapshot line
         shared_keys = self._stg_get_shared_keys()
@@ -405,9 +403,10 @@ class AcademyTrainingActionSynchronizeWizard(models.TransientModel):
             remove_mismatches,
         )
 
-        # 9) Chatter note on all lines touched (created or overwritten)
+        # 9) Chatter note on all affected training actions
         affected_action_set = result_set.mapped("training_action_id")
         affected_action_set |= unlinked_action_set
+        affected_action_set |= detail_action_set
 
         self._notify_synchronization(affected_action_set)
 
@@ -525,6 +524,8 @@ class AcademyTrainingActionSynchronizeWizard(models.TransientModel):
     @api.model
     def _stg_synchronize_details(self, child_set):
         """Synchronize child actions with their parent actions."""
+        action_obj = self.env["academy.training.action"]
+        result_set = action_obj.browse()
 
         grouped_by_parent = {}
 
@@ -533,23 +534,30 @@ class AcademyTrainingActionSynchronizeWizard(models.TransientModel):
             if not parent:
                 continue
 
-            # Group record by parent action
             if parent not in grouped_by_parent:
                 grouped_by_parent[parent] = child
             else:
                 grouped_by_parent[parent] |= child
 
-        # Set training program from parent
         if grouped_by_parent:
-            ctx = {"tracking_disable": True, "mail_create_nosubscribe": True}
+            ctx = {
+                "tracking_disable": True,
+                "mail_create_nosubscribe": True,
+            }
 
             for parent, children_of_parent in grouped_by_parent.items():
                 values = self._stg_read_action_values(parent)
-                child_actions = children_of_parent.with_context(ctx)
+
                 program = parent.training_program_id
                 if program:
                     values["training_program_id"] = program.id
+
+                child_actions = children_of_parent.with_context(ctx)
                 child_actions.write(values)
+
+                result_set |= children_of_parent
+
+        return result_set
 
     @staticmethod
     def _stg_group_child_lines(child_line_set):
@@ -567,15 +575,21 @@ class AcademyTrainingActionSynchronizeWizard(models.TransientModel):
             code = child_line.code
 
             parent_line = empty_record
+
             if prog_line_id:
-                parent_line = parent_lines.filtered(
-                    lambda pl: pl.training_action_id.id == parent_id
-                    and pl.program_line_id.id == prog_line_id
+                parent_line = parent_lines.filtered_domain(
+                    [
+                        ("training_action_id", "=", parent_id),
+                        ("program_line_id", "=", prog_line_id),
+                    ]
                 )
             elif code:
-                parent_line = parent_lines.filtered(
-                    lambda pl: pl.training_action_id.id == parent_id
-                    and (not pl.program_line_id and pl.code == code)
+                parent_line = parent_lines.filtered_domain(
+                    [
+                        ("training_action_id", "=", parent_id),
+                        ("program_line_id", "=", False),
+                        ("code", "=", code),
+                    ]
                 )
 
             if not parent_line:
@@ -583,6 +597,7 @@ class AcademyTrainingActionSynchronizeWizard(models.TransientModel):
 
             parent_line = parent_line[:1]
             parent_line_id = parent_line.id
+
             if parent_line_id not in grouped_by_parent_line:
                 grouped_by_parent_line[parent_line_id] = child_line
             else:

@@ -9,7 +9,6 @@ from logging import getLogger
 from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 from odoo.tools.translate import _
-from pytz import timezone, utc
 
 from ..utils.datetime_utils import (
     DATETIME_NEGATIVE_INFINITY,
