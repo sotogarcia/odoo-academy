@@ -329,6 +329,44 @@ class AcademyTrainingProgram(models.Model):
         copy=False,
     )
 
+    # Computed field: training_module_ids -------------------------------------
+
+    training_module_ids = fields.Many2many(
+        string="Training modules",
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help="Training modules used by this program, in program line order.",
+        comodel_name="academy.training.module",
+        domain=[],
+        context={},
+        compute="_compute_training_module_ids",
+        store=False,
+        copy=False,
+    )
+
+    @api.depends(
+        "program_line_ids",
+        "program_line_ids.sequence",
+        "program_line_ids.training_module_id",
+    )
+    def _compute_training_module_ids(self):
+        module_obj = self.env["academy.training.module"]
+
+        for record in self:
+            module_ids = []
+            seen_ids = set()
+
+            for line in record.program_line_ids:
+                module_id = line.training_module_id.id
+
+                if module_id and module_id not in seen_ids:
+                    seen_ids.add(module_id)
+                    module_ids.append(module_id)
+
+            record.training_module_ids = module_obj.browse(module_ids)
+
     # Computed field: training_action_count -----------------------------------
 
     training_action_count = fields.Integer(

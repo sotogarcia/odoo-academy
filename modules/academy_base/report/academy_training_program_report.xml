@@ -224,12 +224,7 @@
           associated with a module are also listed below it.
         </p>
 
-        <t
-          t-set="modules"
-          t-value="prog.program_line_ids.mapped('training_module_id')"
-        />
-
-        <t t-foreach="modules" t-as="module">
+        <t t-foreach="prog.training_module_ids" t-as="module">
           <t t-set="mod_hours" t-value="int(module.hours)"/>
           <t t-set="mod_minutes" t-value="int(round((module.hours - mod_hours) * 60))"/>
 
