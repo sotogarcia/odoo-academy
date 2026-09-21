@@ -31,8 +31,8 @@
               </group>
 
               <footer>
-                <button name="perform_action" string="Accept" type="object" />
-                <button name="Cancel" string="Cancel" type="object" special="cancel" />
+                <button name="perform_action" string="Accept" type="object" class="btn-primary" />
+                <button string="Cancel" special="cancel" />
               </footer>
 
           </form>

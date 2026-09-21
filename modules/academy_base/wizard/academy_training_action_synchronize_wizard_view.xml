@@ -13,7 +13,7 @@
       <form string="Synchronize groups" create="1" delete="1" edit="1">
 
         <field name="parent_action_ids" class="oe_field_parent_action_ids" invisible="1" />
-          <field name="child_action_ids" class="oe_field_child_action_ids" invisible="1" />
+        <field name="child_action_ids" class="oe_field_child_action_ids" invisible="1" />
 
         <group col="2">
 
@@ -34,14 +34,16 @@
         <div class="alert alert-info" role="alert">
           <h5>Restriction rules</h5>
           <dl class="dl-grid-two-cols">
-            <dt>Actions &amp; Groups</dt>
-            <dd>Intersection of groups from the selected actions and the
-                chosen groups.</dd>
+            <dt>Parent actions &amp; Groups</dt>
+            <dd>
+              Intersection of groups from the selected parent actions and the
+              chosen groups.
+            </dd>
 
-            <dt>Only programs</dt>
-            <dd>All groups from the selected actions.</dd>
+            <dt>Only parent actions</dt>
+            <dd>All groups from the selected parent actions.</dd>
 
-            <dt>Only actions</dt>
+            <dt>Only groups</dt>
             <dd>Exactly the chosen groups.</dd>
 
             <dt>Neither</dt>

@@ -387,7 +387,7 @@ class AcademyTrainingProgramSynchronizeWizard(models.TransientModel):
             remove_mismatches,
         )
 
-        # 9) Chatter note on all lines touched (created or overwritten)
+        # 9) Chatter note on all affected training actions
         affected_action_set = result_set.mapped("training_action_id")
         affected_action_set |= unlinked_action_set
 

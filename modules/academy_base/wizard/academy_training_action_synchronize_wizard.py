@@ -353,6 +353,7 @@ class AcademyTrainingActionSynchronizeWizard(models.TransientModel):
         # 2) Find child actions, align program with parent and group by parent
         children_set = self._stg_get_children(source_set, target_set)
         grp_child_set = self._stg_grouped_by_parent(children_set)
+        detail_action_set = self.env["academy.training.action"].browse()
         if sync_details:
             detail_action_set = self._stg_synchronize_details(children_set)
 
@@ -546,16 +547,30 @@ class AcademyTrainingActionSynchronizeWizard(models.TransientModel):
             }
 
             for parent, children_of_parent in grouped_by_parent.items():
-                values = self._stg_read_action_values(parent)
-
+                source_values = self._stg_read_action_values(parent)
                 program = parent.training_program_id
+
+                update_set = action_obj.browse()
+
+                for child in children_of_parent:
+                    current_values = self._stg_read_action_values(child)
+
+                    if (
+                        current_values != source_values
+                        or child.training_program_id != program
+                    ):
+                        update_set |= child
+
+                if not update_set:
+                    continue
+
+                values = dict(source_values)
+
                 if program:
                     values["training_program_id"] = program.id
 
-                child_actions = children_of_parent.with_context(ctx)
-                child_actions.write(values)
-
-                result_set |= children_of_parent
+                update_set.with_context(ctx).write(values)
+                result_set |= update_set
 
         return result_set
 
