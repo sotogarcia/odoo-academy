@@ -137,6 +137,7 @@ of reference catalogs and training structures across the platform.
         "demo/res_company_demo.xml",
         "demo/res_users.xml",
         "demo/academy_student_demo.xml",
+        "demo/academy_student_signup_demo.xml",
         "demo/academy_teacher_demo.xml",
         "demo/academy_professional_area.xml",
         "demo/academy_professional_category.xml",
