@@ -262,16 +262,19 @@ class AcademyStudentSignup(models.Model):
         "company_id",
         "company_id.name",
     )
-    @api.depends_context("lang")
+    @api.depends_context("lang", "signup_short_display_name")
     def _compute_display_name(self):
         na = self.env._("#N/A")
 
-        if self.env.context.get("signup_short_display_name", False):
-            compute_method = self._compute_short_display_name
-        else:
-            compute_method = self._compute_long_display_name
+        short = self.env.context.get("signup_short_display_name", False)
+        method_name = (
+            "_compute_short_display_name"
+            if short
+            else "_compute_long_display_name"
+        )
 
         for record in self:
+            compute_method = getattr(record, method_name)
             record.display_name = compute_method(na)
 
     def _compute_long_display_name(self, na):
