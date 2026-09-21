@@ -232,6 +232,11 @@ class AcademyTrainingActionSynchronizeWizard(models.TransientModel):
 
         return result_set
 
+    def button_confirm(self):
+        self.perform_action()
+
+        return {"type": "ir.actions.act_window_close"}
+
     @api.model
     def _get_records(self, kwargs, key, expected):
         if isinstance(expected, str):

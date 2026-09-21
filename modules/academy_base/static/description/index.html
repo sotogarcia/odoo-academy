@@ -1,31 +1,136 @@
-<section class="oe_container">
-    <div class="oe_row oe_spaced">
-        <div class="oe_span12">
-            <h2 class="oe_slogan">Academy Base</h2>
-            <h3 class="oe_slogan">
-                Features used by several Odoo modules related with academic work.
-            </h3>
-        </div>
-        <div class="oe_span6">
-            <div class="oe_demo oe_picture oe_screenshot">
-                <a href="https://github.com/sotogarcia/odoo-academy">
-                <img src="git-project.jpg">
-                </a>
-                <div class="oe_demo_footer oe_centeralign">Git project</div>
-            </div>
-        </div>
-        <div class="oe_span6">
-            <p class="oe_mt32">
-                The module <b>Academy Base</b> is part of a large project that
-                collect several items related with academic work.
-            </p>
-            <p class="oe_mt32">
-                It is hosted entirely on
-                <a href="https://github.com/sotogarcia/academy-scripts">Github</a>,
-                it can be downloaded and used it for free under
-                <a href="http://www.gnu.org/licenses/agpl-3.0.html">Affero GPL 3 license</a>.
-            </p>
-        </div>
+<section style="max-width: 896px; margin: 0 auto;">
+    <div align="center">
+        <h1 style="color: #875A7B;">Academy Base</h1>
+        <p>
+            Common models, catalogs and business rules for the Academy addons.
+        </p>
+        <p>
+            <a href="https://www.odoo.com/documentation/18.0/">
+                <img alt="Odoo 18.0"
+                     src="https://img.shields.io/badge/Odoo-18.0-714B67.svg"/>
+            </a>
+            <a href="https://www.gnu.org/licenses/agpl-3.0.html">
+                <img alt="License: AGPL-3"
+                     src="https://img.shields.io/badge/license-AGPL--3-blue.svg"/>
+            </a>
+            <a href="https://github.com/academia-postal-3/odoo-academy">
+                <img alt="GitHub"
+                     src="https://img.shields.io/badge/GitHub-odoo--academy-lightgrey.svg?logo=github"/>
+            </a>
+        </p>
     </div>
 </section>
 
+<section style="max-width: 896px; margin: 0 auto;">
+    <h2>Overview</h2>
+    <p>
+        <strong>Academy Base</strong> provides the shared foundation for the
+        Academy modules in Odoo 18. It defines the main training catalogs,
+        training programs and actions, students, teachers, enrolments and the
+        common synchronization and maintenance mechanisms used by dependent
+        addons.
+    </p>
+</section>
+
+<section style="max-width: 896px; margin: 0 auto;">
+    <h2>Features</h2>
+    <ul>
+        <li>Training frameworks, programs, modules and program lines.</li>
+        <li>Training actions and child training groups.</li>
+        <li>Full and partial student enrolments.</li>
+        <li>Company-specific student sign-ups.</li>
+        <li>Teacher assignments at action and action-line level.</li>
+        <li>Synchronization from programs to actions and from actions to groups.</li>
+        <li>Multi-company security rules and Academy user roles.</li>
+        <li>Scheduled maintenance tasks and QWeb reports.</li>
+    </ul>
+</section>
+
+<section style="max-width: 896px; margin: 0 auto;">
+    <h2>Installation</h2>
+
+    <div style="border-left: 4px solid #875A7B; padding: 12px 16px; margin: 16px 0;">
+        <h3 style="margin-top: 0;">PostgreSQL requirement</h3>
+        <p>
+            The PostgreSQL extension <code>btree_gist</code> must be enabled
+            manually in every database where <code>academy_base</code> is
+            installed.
+        </p>
+        <pre style="background: #f5f5f5; padding: 12px;"><code>CREATE EXTENSION IF NOT EXISTS btree_gist;</code></pre>
+        <p style="margin-bottom: 0;">
+            The module does not install PostgreSQL extensions automatically.
+            The database role used by Odoo may not have, and normally should
+            not require, sufficient privileges to create them.
+        </p>
+    </div>
+
+    <p>
+        Once the PostgreSQL requirement and the module dependencies are
+        available, update the Odoo Apps list and install
+        <strong>Academy Base</strong>.
+    </p>
+</section>
+
+<section style="max-width: 896px; margin: 0 auto;">
+    <h2>Usage</h2>
+    <p>
+        The module adds the main <strong>Academy</strong> menu with access to
+        monitoring, community, catalog, tools and advanced management areas.
+        Available options depend on the user's Academy security groups.
+    </p>
+    <p>
+        Academy-specific configuration is available from
+        <strong>Settings &rarr; Academy</strong>.
+    </p>
+</section>
+
+<section style="max-width: 896px; margin: 0 auto;">
+    <h2>Technical notes</h2>
+    <p>
+        Business integrity is primarily enforced through the Odoo ORM and model
+        constraints. Database constraints are retained where atomic
+        database-level enforcement is appropriate, such as enrolment overlap
+        prevention.
+    </p>
+    <p>
+        <code>academy_base</code> is a foundational dependency for other
+        Academy addons. Changes to its models, fields, constraints or security
+        rules should therefore be reviewed against dependent modules.
+    </p>
+</section>
+
+<section style="max-width: 896px; margin: 0 auto;">
+    <h2>Bug Tracker</h2>
+    <p>
+        Bugs and improvement proposals are tracked on
+        <a href="https://github.com/academia-postal-3/odoo-academy/issues">
+            GitHub Issues
+        </a>.
+        Please check whether the issue has already been reported before opening
+        a new one.
+    </p>
+</section>
+
+<section style="max-width: 896px; margin: 0 auto;">
+    <h2>Credits</h2>
+    <p>
+        <strong>Author:</strong> Jorge Soto Garcia
+    </p>
+    <p>
+        The module is maintained as part of the
+        <a href="https://github.com/academia-postal-3/odoo-academy">
+            odoo-academy
+        </a>
+        project.
+    </p>
+</section>
+
+<section style="max-width: 896px; margin: 0 auto;">
+    <h2>License</h2>
+    <p>
+        This module is licensed under the
+        <a href="https://www.gnu.org/licenses/agpl-3.0.html">
+            GNU Affero General Public License, version 3
+        </a>.
+    </p>
+</section>

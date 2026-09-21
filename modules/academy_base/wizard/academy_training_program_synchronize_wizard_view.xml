@@ -50,7 +50,7 @@
         </div>
 
         <footer>
-          <button name="perform_action"
+          <button name="button_confirm"
                     string="Synchronize"
                     class="btn-primary"
                     type="object"

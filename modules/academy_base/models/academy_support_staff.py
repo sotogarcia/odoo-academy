@@ -4,7 +4,6 @@
 ###############################################################################
 
 from collections.abc import Iterable
-from logging import getLogger
 
 from odoo import api, fields, models
 from odoo.addons.phone_validation.tools.phone_validation import phone_format
@@ -22,8 +21,6 @@ from odoo.tools.translate import _
 
 from ..utils.helpers import is_debug_mode
 from ..utils.res_config import get_config_param
-
-_logger = getLogger(__name__)
 
 
 class AcademySupportStaff(models.Model):
@@ -46,6 +43,8 @@ class AcademySupportStaff(models.Model):
         "vat",
         "company_registry",
     ]
+
+    _country_code_cache = {}  # noqa: RUF012
 
     partner_id = fields.Many2one(
         string="Partner",
@@ -554,30 +553,26 @@ class AcademySupportStaff(models.Model):
     def create(self, vals_list):
         category_xid = self._get_relevant_category_external_id()
         category = self.env.ref(category_xid, raise_if_not_found=False)
-        country_codes = self._get_all_country_codes()
 
         self._sanitize_phone_number(vals_list)
 
         for values in vals_list:
             self._ensure_natural_person(values)
-            self._vat_prepend_country_code(values, country_codes)
+            self._vat_prepend_country_code(values)
             self._force_category(values, category)
 
-        result = super().create(vals_list)
-
-        return result
+        return super().create(vals_list)
 
     def write(self, values):
-        """Overridden method 'write'"""
+        """Overridden method 'write'."""
 
         self._sanitize_phone_number(values)
-
         self._ensure_natural_person(values)
-        self._vat_prepend_country_code(values)
 
-        result = super().write(values)
+        if not values.get("vat", False):
+            return super().write(values)
 
-        return result
+        return self._write_with_normalized_vat(values)
 
     def unlink(self):
         """Overridden method 'unlink'"""
@@ -593,31 +588,70 @@ class AcademySupportStaff(models.Model):
 
     # -- Auxiliary methods ----------------------------------------------------
 
-    @api.model
-    def _get_valid_vat_country_codes(self, country_data=None):
-        """Return the country prefixes accepted for VAT numbers.
+    def _write_with_normalized_vat(self, values):
+        """Write values after normalizing VAT with the effective country."""
+        if "country_id" in values:
+            return self._write_with_explicit_vat_country(values)
 
-        Standard prefixes are obtained from the ``code`` field of
-        ``res.country`` records. The special ``EU`` prefix is also accepted
-        because it may be assigned to non-EU businesses registered for VAT
-        transactions with EU consumers.
+        return self._write_with_record_vat_countries(values)
 
-        Args:
-            country_data (res.country, optional): Preloaded country records used to
-                avoid an additional query. Defaults to None.
+    def _write_with_explicit_vat_country(self, values):
+        """Write VAT using the country explicitly supplied in values."""
+        country_id = values.get("country_id", False)
+        country = (
+            self.env["res.country"].browse(country_id) if country_id else False
+        )
 
-        Returns:
-            set[str]: Uppercase VAT country prefixes accepted by the application.
-        """
-        if country_data is None:
-            country_data = self._get_all_country_codes()
+        self._vat_prepend_country_code(
+            values,
+            country=country,
+        )
 
-        country_codes = {
-            country.code.upper() for country in country_data if country.code
-        }
-        country_codes.add("EU")
+        return super().write(values)
 
-        return country_codes
+    def _write_with_record_vat_countries(self, values):
+        """Write VAT grouping records by their effective country."""
+        default_country = self._get_default_country()
+        records_by_country = self._group_by_effective_country(default_country)
+
+        result = True
+
+        for country_id, record_set in records_by_country.items():
+            record_values = values.copy()
+
+            country = (
+                self.env["res.country"].browse(country_id)
+                if country_id
+                else False
+            )
+
+            self._vat_prepend_country_code(
+                record_values,
+                country=country,
+            )
+
+            result = (
+                super(AcademySupportStaff, record_set).write(record_values)
+                and result
+            )
+
+        return result
+
+    def _group_by_effective_country(self, default_country=None):
+        """Group records by the country used for VAT normalization."""
+        result = {}
+
+        for record in self:
+            country = record.country_id or default_country
+            country_id = country.id if country else False
+
+            result.setdefault(
+                country_id,
+                self.browse(),
+            )
+            result[country_id] |= record
+
+        return result
 
     def _split_vat(self, vat):
         """
@@ -683,26 +717,25 @@ class AcademySupportStaff(models.Model):
                 values["country_id"] = country.id
 
     @api.model
-    def _get_all_country_codes(self):
-        """Fetch all country records with their codes.
-
-        This helper is used in operations on VAT, such as constraints
-        or normalization.
-
-        Returns:
-            res.country: recordset of countries with the 'code' field loaded
-        """
-        country_obj = self.env["res.country"]
-        return country_obj.search_fetch([], ["code"])
-
-    @api.model
-    def _vat_prepend_country_code(self, values, country_data=None):
+    def _vat_prepend_country_code(self, values, country="auto"):
         """Ensure VAT has the correct country code prefix.
 
+        If the VAT already contains a recognized country prefix, that prefix is
+        preserved and normalized.
+
+        The ``country`` argument controls how the country used to prepend a missing
+        prefix is determined:
+
+        * ``"auto"``: use ``country_id`` from ``values`` when present; otherwise
+          fall back to the default country returned by ``_get_default_country()``.
+        * ``res.country``: use the explicitly supplied country.
+        * ``False`` or an empty recordset: do not prepend a country code when the
+          VAT does not already contain a recognized prefix.
+
         Args:
-            values (dict): Dictionary with potential ``vat`` and ``country_id``.
-            country_data (res.country, optional): Preloaded country records used to
-                avoid an additional query. Defaults to None.
+            values (dict): Dictionary containing the VAT value to normalize.
+            country (str | res.country | bool, optional): Country resolution mode
+                or explicit country. Defaults to ``"auto"``.
 
         Side effects:
             Updates ``values["vat"]`` in place when the VAT prefix needs to be
@@ -720,27 +753,24 @@ class AcademySupportStaff(models.Model):
         country_code = (country_code or "").strip().upper()
         number = (number or "").strip().upper()
 
-        if country_data is None:
-            country_data = self._get_all_country_codes()
+        country_codes = self._get_valid_vat_country_codes()
 
-        country_codes = self._get_valid_vat_country_codes(country_data)
         if country_code in country_codes:
             values["vat"] = f"{country_code}{number}"
             return
 
-        country_id = values.get("country_id", False)
-        if country_id:
-            country = next(
-                (item for item in country_data if item.id == country_id),
-                False,
-            )
-        else:
-            country = self._get_default_country()
+        if country == "auto":
+            country_id = values.get("country_id", False)
+
+            if country_id:
+                country = self.env["res.country"].browse(country_id)
+            else:
+                country = self._get_default_country()
 
         if not country:
             return
 
-        country_code = (country.code or "").upper()
+        country_code = (country.code or "").strip().upper()
         if not country_code:
             return
 
@@ -815,8 +845,6 @@ class AcademySupportStaff(models.Model):
 
     @api.model
     def _sanitize_phone_number(self, targets):
-        msg = "Web scoring calculator: Invalid {} number {}. System says: {}"
-
         def _custom_set(item, key, value):
             item[key] = value
 
@@ -832,7 +860,7 @@ class AcademySupportStaff(models.Model):
         elif isinstance(targets, models.Model):
             _get, _set = getattr, setattr
         else:
-            message = _("targets arguemnt must be a dict or recordset not %s")
+            message = _("targets argument must be a dict or recordset not %s")
             raise ValidationError(message % type(targets))
 
         company = (
@@ -844,8 +872,8 @@ class AcademySupportStaff(models.Model):
         c_code, c_phone_code = None, None
         if company and company.country_id:
             country = company.country_id
-            if country:
-                c_code, c_phone_code = country.code, country.phone_code
+            c_code = country.code
+            c_phone_code = country.phone_code
 
         phone_fields = ["phone", "mobile"]
         for target in targets:
@@ -854,16 +882,15 @@ class AcademySupportStaff(models.Model):
                 if not phone_value:
                     continue
 
-                try:
-                    phone_value = phone_format(
-                        phone_value,
-                        c_code,
-                        c_phone_code,
-                        force_format="INTERNATIONAL",
-                    )
-                    _set(target, phone_field, phone_value)
-                except Exception as ex:
-                    _logger.debug(msg.format(phone_field, phone_value, ex))
+                phone_value = phone_format(
+                    phone_value,
+                    c_code,
+                    c_phone_code,
+                    force_format="INTERNATIONAL",
+                    raise_exception=False,
+                )
+
+                _set(target, phone_field, phone_value)
 
     def _get_partner_with_context(self):
         partner_set = self.mapped("partner_id")
@@ -877,6 +904,71 @@ class AcademySupportStaff(models.Model):
             context.update(active_ids=self.partner_id.ids)
 
         return partner_set.with_context(context)
+
+    # -- Methods to work with country code cache ------------------------------
+
+    @api.model
+    def _get_country_code_signature(self):
+        """Return the current signature of stored country codes.
+
+        The signature combines the number of countries having a code with the
+        latest modification date. This allows the country code cache to detect
+        creations, updates and deletions performed through the ORM.
+
+        Returns:
+            tuple[int, datetime | None]: Country code count and latest write date.
+        """
+        self.env.cr.execute(
+            """
+            SELECT COUNT(*), MAX(write_date)
+              FROM res_country
+             WHERE code IS NOT NULL
+            """
+        )
+
+        return self.env.cr.fetchone()
+
+    @api.model
+    def _get_valid_vat_country_codes(self):
+        """Return the cached set of country prefixes accepted for VAT numbers.
+
+        The cache is maintained independently for each database and refreshed
+        whenever the current country code signature differs from the signature
+        stored when that database cache was last populated.
+
+        Standard prefixes are obtained from the ``code`` field of ``res.country``.
+        The special ``EU`` prefix is also accepted because it may be assigned to
+        non-EU businesses registered for VAT transactions with EU consumers.
+
+        Returns:
+            set[str]: Uppercase VAT country prefixes accepted by the application.
+        """
+        signature = self._get_country_code_signature()
+
+        database = self.env.cr.dbname
+        cache = type(self)._country_code_cache.setdefault(
+            database,
+            {
+                "signature": None,
+                "codes": None,
+            },
+        )
+
+        if cache["signature"] != signature:
+            country_set = self.env["res.country"].search_fetch(
+                [("code", "!=", False)],
+                ["code"],
+            )
+
+            country_codes = {
+                country.code.upper() for country in country_set if country.code
+            }
+            country_codes.add("EU")
+
+            cache["signature"] = signature
+            cache["codes"] = country_codes
+
+        return cache["codes"]
 
     # -- Methods need to be implemented in derivated models -------------------
 

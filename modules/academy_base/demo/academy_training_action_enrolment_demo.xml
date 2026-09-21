@@ -10,7 +10,7 @@
         <field name="register"
             eval="(DateTime.today() - timedelta(days=DateTime.today().weekday() - 2 )).strftime('%Y-%m-%d 9:00:00')"/>
         <field name="deregister"
-            eval="(DateTime.today() + relativedelta(months=3)).strftime('%Y-%m-%d 22:00:00')"/>
+            eval="(DateTime.today() + relativedelta(months=3)).strftime('%Y-%m-%d 21:00:00')"/>
         <field name="training_modality_id" ref="academy_training_modality_classroom" />
     </record>
 
@@ -22,7 +22,7 @@
         <field name="register"
             eval="(DateTime.today() - timedelta(days=DateTime.today().weekday() - 2 )).strftime('%Y-%m-%d 9:00:00')"/>
         <field name="deregister"
-            eval="(DateTime.today() + relativedelta(months=3)).strftime('%Y-%m-%d 22:00:00')"/>
+            eval="(DateTime.today() + relativedelta(months=3)).strftime('%Y-%m-%d 21:00:00')"/>
         <field name="training_modality_id" ref="academy_training_modality_classroom" />
     </record>
 
@@ -34,7 +34,7 @@
         <field name="register"
             eval="(DateTime.today() - timedelta(days=DateTime.today().weekday() - 2 )).strftime('%Y-%m-%d 9:00:00')"/>
         <field name="deregister"
-            eval="(DateTime.today() + relativedelta(months=3)).strftime('%Y-%m-%d 22:00:00')"/>
+            eval="(DateTime.today() + relativedelta(months=3)).strftime('%Y-%m-%d 21:00:00')"/>
         <field name="training_modality_id" ref="academy_training_modality_classroom" />
     </record>
 
@@ -58,7 +58,7 @@
         <field name="register"
             eval="(DateTime.today() - timedelta(days=DateTime.today().weekday() - 2 )).strftime('%Y-%m-%d 9:00:00')"/>
         <field name="deregister"
-            eval="(DateTime.today() + relativedelta(months=3)).strftime('%Y-%m-%d 22:00:00')"/>
+            eval="(DateTime.today() + relativedelta(months=3)).strftime('%Y-%m-%d 21:00:00')"/>
         <field name="training_modality_id" ref="academy_training_modality_classroom" />
     </record>
 

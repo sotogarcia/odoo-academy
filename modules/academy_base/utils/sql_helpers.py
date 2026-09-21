@@ -93,40 +93,6 @@ def execute_sql_script(env, relative_path, file_name, referrer="SQL Script"):
     )
 
 
-def install_extension(env, extension):
-    """Install a PostgreSQL extension when it is not already available.
-
-    The extension is created inside a savepoint so a failure does not leave
-    the current Odoo transaction in an aborted state. No explicit commit is
-    performed; transaction management remains under Odoo's control.
-
-    Args:
-        env (odoo.api.Environment): Odoo environment whose database cursor is
-            used to install the extension.
-        extension (str): PostgreSQL extension name.
-
-    Returns:
-        bool: True when the command succeeds, otherwise False.
-    """
-    sql = SQL(
-        "CREATE EXTENSION IF NOT EXISTS %s",
-        SQL.identifier(extension),
-    )
-
-    try:
-        with env.cr.savepoint():
-            env.cr.execute(sql)
-    except Exception as ex:  # noqa: BLE001
-        _logger.warning(
-            "%s could not be installed. System says: %s",
-            extension,
-            ex,
-        )
-        return False
-
-    return True
-
-
 def process_psql_exception(ex):
     """Convert PostgreSQL exception information into a dictionary.
 

@@ -9,7 +9,7 @@
         <field name="active">True</field>
         <field name="sequence">2</field>
         <field name="training_module_id" ref="academy_base.academy_training_module_ms2010"/>
-        <field name="training_action_id" ref="academy_base.academy_training_program_ms"/>
+        <field name="training_action_id" ref="academy_base.academy_training_action_demo_2"/>
         <field name="training_program_id" ref="academy_base.academy_training_program_ms"/>
     </record>
 
@@ -20,7 +20,7 @@
         <field name="active">True</field>
         <field name="sequence">1</field>
         <field name="training_module_id" ref="academy_base.academy_training_module_lb5"/>
-        <field name="training_action_id" ref="academy_base.academy_training_program_ADGD0308"/>
+        <field name="training_action_id" ref="academy_base.academy_training_action_demo_1"/>
         <field name="training_program_id" ref="academy_base.academy_training_program_ADGD0308"/>
     </record>
 
@@ -31,7 +31,7 @@
         <field name="active">True</field>
         <field name="sequence">1</field>
         <field name="training_module_id" ref="academy_base.academy_training_module_win10"/>
-        <field name="training_action_id" ref="academy_base.academy_training_program_ms"/>
+        <field name="training_action_id" ref="academy_base.academy_training_action_demo_2"/>
         <field name="training_program_id" ref="academy_base.academy_training_program_ms"/>
     </record>
 
@@ -42,7 +42,7 @@
         <field name="active">True</field>
         <field name="sequence">2</field>
         <field name="training_module_id" ref="academy_base.academy_training_module_odoo"/>
-        <field name="training_action_id" ref="academy_base.academy_training_program_ADGD0308"/>
+        <field name="training_action_id" ref="academy_base.academy_training_action_demo_1"/>
         <field name="training_program_id" ref="academy_base.academy_training_program_ADGD0308"/>
     </record>
 

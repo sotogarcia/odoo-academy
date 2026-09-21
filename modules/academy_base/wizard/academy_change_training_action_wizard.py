@@ -195,6 +195,13 @@ class AcademyChangeTrainingActionWizard(models.TransientModel):
                 full_enrolment=record.full_enrolment,
             )
 
+        return enrolment_set
+
+    def button_confirm(self):
+        self.perform_action()
+
+        return {"type": "ir.actions.act_window_close"}
+
     # -- Public hooks
     # -------------------------------------------------------------------------
 

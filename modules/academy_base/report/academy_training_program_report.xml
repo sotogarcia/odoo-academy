@@ -10,7 +10,7 @@
       <t t-name="academy_base.view_academy_training_program_general_qweb">
 
         <!-- =========================================================== -->
-        <!--  General information                                        -->
+        <!--  General information                                       -->
         <!-- =========================================================== -->
         <p>
           This section provides an overview of the training program, including
@@ -47,7 +47,9 @@
             </tr>
             <tr t-if="prog.professional_sector_ids">
               <th class="thead">Sectors:</th>
-              <td colspan="5"><span t-esc="', '.join(prog.professional_sector_ids.mapped('display_name'))" /></td>
+              <td colspan="5">
+                <span t-esc="', '.join(prog.professional_sector_ids.mapped('display_name'))"/>
+              </td>
             </tr>
             <tr>
               <th class="thead">Attainment:</th>
@@ -78,6 +80,7 @@
     <field name="type">qweb</field>
     <field name="arch" type="xml">
       <t t-name="academy_base.view_academy_training_program_components_qweb">
+
         <p>
           This section lists the individual components that make up the
           training program. Each component corresponds to a specific
@@ -88,7 +91,7 @@
           <thead>
             <tr>
               <th>Code</th>
-              <th>component</th>
+              <th>Component</th>
               <th>Module</th>
             </tr>
           </thead>
@@ -98,10 +101,13 @@
                 <td><span t-esc="line.code"/></td>
                 <td><span t-esc="line.name"/></td>
                 <td>
-                  <a target="_self" t-if="line.training_module_id and line.training_module_id.code"
-                     t-att-href="'#' + (line.training_module_id.code or '').lower()"
-                     t-att-title="line.training_module_id.display_name"
-                     style="color: inherit; text-decoration: none;">
+                  <a
+                    target="_self"
+                    t-if="line.training_module_id and line.training_module_id.code"
+                    t-att-href="'#' + line.training_module_id.code.lower()"
+                    t-att-title="line.training_module_id.display_name"
+                    style="color: inherit; text-decoration: none;"
+                  >
                     <span t-esc="line.training_module_id.code"/>
                   </a>
                 </td>
@@ -111,7 +117,7 @@
         </table>
 
         <t t-if="not prog.program_line_ids">
-          <p>No. program components have been defined for this training program.</p>
+          <p>No program components have been defined for this training program.</p>
         </t>
 
       </t>
@@ -124,21 +130,24 @@
     <field name="type">qweb</field>
     <field name="arch" type="xml">
       <t t-name="academy_base.view_academy_training_program_training_actions_qweb">
+
         <p>
           This section lists the training actions currently associated with
           the program. Each action includes its code, title, scheduled
-          interval, delivery mode, assigned tutor, and related statistics.
+          interval, delivery mode, responsible manager, and related statistics.
         </p>
 
         <t t-foreach="prog.training_action_ids" t-as="action">
-          <t t-set="ata_hours" t-value="int(action.hours)" />
-          <t t-set="ata_minutes" t-value="int(round((action.hours - ata_hours) * 60))" />
+          <t t-set="ata_hours" t-value="int(action.hours)"/>
+          <t t-set="ata_minutes" t-value="int(round((action.hours - ata_hours) * 60))"/>
 
-          <table class="table" t-if="prog.program_line_ids">
+          <table class="table">
             <thead>
               <tr>
-                <th colspan="4">
-                  <h4 class="h6 card-title my-0"><t t-esc="action.display_name" /></h4>
+                <th colspan="3">
+                  <h4 class="h6 card-title my-0">
+                    <t t-esc="action.display_name"/>
+                  </h4>
                 </th>
               </tr>
             </thead>
@@ -149,17 +158,25 @@
                 <th>Manager</th>
               </tr>
               <tr>
-                <td><t t-esc="action.code" /></td>
-                <td><span t-esc="f'{ata_hours} h {ata_minutes:02d} min'"/></td>
+                <td><t t-esc="action.code"/></td>
+                <td>
+                  <span t-esc="f'{ata_hours} h {ata_minutes:02d} min'"/>
+                </td>
                 <td>
                   <t t-if="action.manager_id">
-                    <a target="_self" t-if="action.manager_id.email"
-                       t-att-href="'mailto:' + action.manager_id.email.lower()"
-                       t-att-title="action.manager_id.display_name"
-                       style="color: inherit; text-decoration: none;">
+                    <a
+                      target="_self"
+                      t-if="action.manager_id.email"
+                      t-att-href="'mailto:' + action.manager_id.email.lower()"
+                      t-att-title="action.manager_id.display_name"
+                      style="color: inherit; text-decoration: none;"
+                    >
                       <span t-esc="action.manager_id.display_name"/>
                     </a>
-                    <t t-if="not action.manager_id.email" t-esc="action.display_name" />
+                    <t
+                      t-if="not action.manager_id.email"
+                      t-esc="action.manager_id.display_name"
+                    />
                   </t>
                 </td>
               </tr>
@@ -169,21 +186,26 @@
                 <th>Enrolments</th>
               </tr>
               <tr>
-                <td><t t-esc="action.lifespan" /></td>
-                <td><t t-esc="action.training_modality_id.display_name" /></td>
-                <td><t t-esc="action.enrolment_count" /></td>
+                <td><t t-esc="action.lifespan"/></td>
+                <td><t t-esc="action.training_modality_id.display_name"/></td>
+                <td><t t-esc="action.enrolment_count"/></td>
               </tr>
               <tr t-if="action.description">
                 <td colspan="3">
                   <h5 class="h6 card-title my-2">Description</h5>
                   <div>
-                    <t t-esc="action.description" />
+                    <t t-esc="action.description"/>
                   </div>
                 </td>
               </tr>
             </tbody>
           </table>
         </t>
+
+        <t t-if="not prog.training_action_ids">
+          <p>No training actions have been defined for this training program.</p>
+        </t>
+
       </t>
     </field>
   </record>
@@ -194,6 +216,7 @@
     <field name="type">qweb</field>
     <field name="arch" type="xml">
       <t t-name="academy_base.view_academy_training_program_training_modules_qweb">
+
         <p>
           This section details the training modules that compose the program.
           Each module includes its identification, responsible person, and
@@ -201,16 +224,22 @@
           associated with a module are also listed below it.
         </p>
 
-        <t t-foreach="prog.program_line_ids" t-as="line">
-          <t t-set="module" t-value="line.training_module_id" />
-          <t t-set="mod_hours" t-value="int(module.hours)" />
-          <t t-set="mod_minutes" t-value="int(round((module.hours - mod_hours) * 60))" />
+        <t
+          t-set="modules"
+          t-value="prog.program_line_ids.mapped('training_module_id')"
+        />
 
-          <table class="table" t-if="prog.program_line_ids">
+        <t t-foreach="modules" t-as="module">
+          <t t-set="mod_hours" t-value="int(module.hours)"/>
+          <t t-set="mod_minutes" t-value="int(round((module.hours - mod_hours) * 60))"/>
+
+          <table class="table">
             <thead>
               <tr>
                 <th colspan="4">
-                  <h4 class="h6 card-title my-0"><t t-esc="module.display_name" /></h4>
+                  <h4 class="h6 card-title my-0">
+                    <t t-esc="module.display_name"/>
+                  </h4>
                 </th>
               </tr>
               <tr>
@@ -222,18 +251,26 @@
             </thead>
             <tbody>
               <tr>
-                <td><t t-esc="module.code" /></td>
+                <td><t t-esc="module.code"/></td>
                 <td><span t-esc="module.training_unit_count"/></td>
-                <td><span t-esc="f'{mod_hours} h {mod_minutes:02d} min'"/></td>
+                <td>
+                  <span t-esc="f'{mod_hours} h {mod_minutes:02d} min'"/>
+                </td>
                 <td>
                   <t t-if="module.manager_id">
-                    <a target="_self" t-if="module.manager_id.email"
-                       t-att-href="'mailto:' + module.manager_id.email.lower()"
-                       t-att-title="module.manager_id.display_name"
-                       style="color: inherit; text-decoration: none;">
+                    <a
+                      target="_self"
+                      t-if="module.manager_id.email"
+                      t-att-href="'mailto:' + module.manager_id.email.lower()"
+                      t-att-title="module.manager_id.display_name"
+                      style="color: inherit; text-decoration: none;"
+                    >
                       <span t-esc="module.manager_id.display_name"/>
                     </a>
-                    <t t-if="not module.manager_id.email" t-esc="module.display_name" />
+                    <t
+                      t-if="not module.manager_id.email"
+                      t-esc="module.manager_id.display_name"
+                    />
                   </t>
                 </td>
               </tr>
@@ -241,13 +278,15 @@
                 <td colspan="4">
                   <h5 class="h6 card-title my-2">Description</h5>
                   <div>
-                    <t t-esc="module.description" />
+                    <t t-esc="module.description"/>
                   </div>
                 </td>
               </tr>
               <tr t-if="module.training_unit_ids">
                 <td colspan="4">
-                  <h5 class="h6 card-title mt-3 mb-2">Training blocks/Training units</h5>
+                  <h5 class="h6 card-title mt-3 mb-2">
+                    Training blocks/Training units
+                  </h5>
                   <table class="table table-sm">
                     <thead>
                       <tr>
@@ -258,12 +297,19 @@
                     </thead>
                     <tbody>
                       <t t-foreach="module.training_unit_ids" t-as="unit">
-                        <t t-set="unit_hours" t-value="int(unit.hours)" />
-                        <t t-set="unit_minutes" t-value="int(round((unit.hours - unit_hours) * 60))" />
+                        <t t-set="unit_hours" t-value="int(unit.hours)"/>
+                        <t
+                          t-set="unit_minutes"
+                          t-value="int(round((unit.hours - unit_hours) * 60))"
+                        />
                         <tr>
-                          <td><t t-esc="unit.code" /></td>
-                          <td><t t-esc="unit.display_name" /></td>
-                          <td><span t-esc="f'{unit_hours} h {unit_minutes:02d} min'"/></td>
+                          <td><t t-esc="unit.code"/></td>
+                          <td><t t-esc="unit.display_name"/></td>
+                          <td>
+                            <span
+                              t-esc="f'{unit_hours} h {unit_minutes:02d} min'"
+                            />
+                          </td>
                         </tr>
                       </t>
                     </tbody>
@@ -273,6 +319,11 @@
             </tbody>
           </table>
         </t>
+
+        <t t-if="not modules">
+          <p>No training modules have been defined for this training program.</p>
+        </t>
+
       </t>
     </field>
   </record>
@@ -288,20 +339,17 @@
       <t t-name="academy_base.view_academy_training_program_qweb">
 
         <!-- =========================================================== -->
-        <!--  Training program container                                 -->
+        <!--  Training program container                                -->
         <!-- =========================================================== -->
         <t t-call="web.html_container">
           <t t-foreach="docs" t-as="o">
             <t t-call="web.external_layout">
 
-              <t t-set="prog" t-value="o" />
+              <t t-set="prog" t-value="o"/>
 
               <article class="training-program-report">
                 <header>
-                  <h2 class="h3"><t t-esc="prog.display_name" /></h2>
-                  <div class="mt-3" t-if="prog.description">
-                    <t t-esc="prog.description" />
-                  </div>
+                  <h2 class="h3"><t t-esc="prog.display_name"/></h2>
                 </header>
 
                 <!-- General information -->
@@ -310,7 +358,6 @@
                     <h2 class="h4">General information</h2>
                   </header>
 
-                  <!-- Content placeholder -->
                   <div class="section-body">
                     <t t-call="academy_base.view_academy_training_program_general_qweb"/>
                   </div>
@@ -322,9 +369,8 @@
                     <h2 class="h4">Program components</h2>
                   </header>
 
-                  <!-- Content placeholder -->
                   <div class="section-body">
-                    <t t-call="academy_base.view_academy_training_program_components_qweb" />
+                    <t t-call="academy_base.view_academy_training_program_components_qweb"/>
                   </div>
                 </section>
 
@@ -334,9 +380,8 @@
                     <h2 class="h4">Training actions</h2>
                   </header>
 
-                  <!-- Content placeholder -->
                   <div class="section-body">
-                    <t t-call="academy_base.view_academy_training_program_training_actions_qweb" />
+                    <t t-call="academy_base.view_academy_training_program_training_actions_qweb"/>
                   </div>
                 </section>
 
@@ -374,20 +419,17 @@
       <t t-name="academy_base.view_academy_training_program_modules_qweb">
 
         <!-- =========================================================== -->
-        <!--  Training program container                                 -->
+        <!--  Training program container                                -->
         <!-- =========================================================== -->
         <t t-call="web.html_container">
           <t t-foreach="docs" t-as="o">
             <t t-call="web.external_layout">
 
-              <t t-set="prog" t-value="o" />
+              <t t-set="prog" t-value="o"/>
 
               <article class="training-program-report">
                 <header>
-                  <h2 class="h3"><t t-esc="prog.display_name" /></h2>
-                  <div class="mt-3" t-if="prog.description">
-                    <t t-esc="prog.description" />
-                  </div>
+                  <h2 class="h3"><t t-esc="prog.display_name"/></h2>
                 </header>
 
                 <!-- General information -->
@@ -396,7 +438,6 @@
                     <h2 class="h4">General information</h2>
                   </header>
 
-                  <!-- Content placeholder -->
                   <div class="section-body">
                     <t t-call="academy_base.view_academy_training_program_general_qweb"/>
                   </div>
@@ -408,9 +449,8 @@
                     <h2 class="h4">Program components</h2>
                   </header>
 
-                  <!-- Content placeholder -->
                   <div class="section-body">
-                    <t t-call="academy_base.view_academy_training_program_components_qweb" />
+                    <t t-call="academy_base.view_academy_training_program_components_qweb"/>
                   </div>
                 </section>
 
@@ -420,9 +460,8 @@
                     <h2 class="h4">Training actions</h2>
                   </header>
 
-                  <!-- Content placeholder -->
                   <div class="section-body">
-                    <t t-call="academy_base.view_academy_training_program_training_actions_qweb" />
+                    <t t-call="academy_base.view_academy_training_program_training_actions_qweb"/>
                   </div>
                 </section>
 
@@ -432,9 +471,8 @@
                     <h2 class="h4">Training modules</h2>
                   </header>
 
-                  <!-- Content placeholder -->
                   <div class="section-body">
-                    <t t-call="academy_base.view_academy_training_program_training_modules_qweb" />
+                    <t t-call="academy_base.view_academy_training_program_training_modules_qweb"/>
                   </div>
                 </section>
 
