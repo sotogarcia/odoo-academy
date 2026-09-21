@@ -146,7 +146,6 @@ of reference catalogs and training structures across the platform.
         "demo/academy_training_program.xml",
         "demo/academy_training_program_line.xml",
         "demo/academy_training_action.xml",
-        "demo/academy_training_action_line.xml",
         "demo/academy_training_action_enrolment_demo.xml",
         "demo/academy_training_action_group.xml",
     ],

@@ -22,7 +22,7 @@ _LOCK_KEY = "academy_maintenance_task"
 _MSG_BEGIN = "Academy maintenance: hour=%s, tasks=%d"
 _MSG_TASK = "Executing task: %s.%s, freq=%s, offset=%s"
 _MSG_OK = "Task OK: %s.%s"
-_MSG_MISSING = "Task missing: %s"
+_MSG_MISSING = "Task missing: %s.%s"
 _MSG_FAILED = "Task FAILED: %s.%s (rolled back)"
 
 _FREQUENCY_MAP = {
@@ -348,13 +348,7 @@ class AcademyMaintenanceTask(models.Model):
                 frequency = task.frequency
                 offset = task.offset
 
-                _logger.debug(
-                    _MSG_TASK,
-                    md_name,
-                    mt_name,
-                    frequency,
-                    offset,
-                )
+                _logger.debug(_MSG_TASK, md_name, mt_name, frequency, offset)
 
                 try:
                     with self.env.registry.cursor() as new_cr:
@@ -369,14 +363,10 @@ class AcademyMaintenanceTask(models.Model):
                     _logger.info(_MSG_OK, md_name, mt_name)
 
                 except NotImplementedError:
-                    _logger.exception(_MSG_MISSING)
+                    _logger.exception(_MSG_MISSING, md_name, mt_name)
 
                 except Exception:
-                    _logger.exception(
-                        _MSG_FAILED,
-                        md_name,
-                        mt_name,
-                    )
+                    _logger.exception(_MSG_FAILED, md_name, mt_name)
 
     def execute_right_now(self):
         """Execute the configured maintenance task immediately."""
