@@ -27,7 +27,7 @@ class AcademyTrainingActionLine(models.Model):
     _inherit = ["academy.training.program.line"]  # noqa: RUF012
 
     _rec_name = "name"
-    _order = "sequence ASC, name"
+    _order = "sequence ASC, name, id"
     _rec_names_search = ["name", "code"]  # noqa: RUF012
 
     @property

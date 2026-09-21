@@ -26,7 +26,7 @@ class AcademyTrainingProgramLine(models.Model):
     ]
 
     _rec_name = "name"
-    _order = "sequence ASC"
+    _order = "sequence ASC, name, id"
     _rec_names_search = ["name", "code"]  # noqa: RUF012
 
     _SHARED_KEYS = (

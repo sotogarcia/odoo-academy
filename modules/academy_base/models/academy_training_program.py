@@ -348,6 +348,7 @@ class AcademyTrainingProgram(models.Model):
 
     @api.depends(
         "program_line_ids",
+        "program_line_ids.active",
         "program_line_ids.sequence",
         "program_line_ids.training_module_id",
     )

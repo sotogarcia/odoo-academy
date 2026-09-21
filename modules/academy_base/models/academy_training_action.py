@@ -609,7 +609,9 @@ class AcademyTrainingAction(models.Model):
 
     @api.depends(
         "action_line_ids",
+        "action_line_ids.active",
         "action_line_ids.sequence",
+        "action_line_ids.name",
         "action_line_ids.training_module_id",
     )
     def _compute_training_module_ids(self):
