@@ -23,20 +23,25 @@
     <field name="active" eval="True"/>
     <field name="arch" type="xml">
       <list string="academy_training_program_line_tree" class="academy-training-program-line-tree"
-        create="1" delete="1" edit="1" decoration-bf="is_section" decoration-muted="is_section" >
+        create="1" delete="1" edit="1" decoration-bf="is_section" decoration-muted="is_section">
 
         <field name="active" column_invisible="1"/>
-        <field name="training_program_id" column_invisible="1" />
+        <field name="training_program_id" column_invisible="1"/>
         <field name="is_section" class="oe_field_is_section" column_invisible="True"/>
 
         <field name="sequence" class="oe_field_sequence" widget="handle"/>
         <field name="code" class="oe_field_code" invisible="is_section"/>
         <field name="name" class="oe_field_name academy-section-title"/>
-        <field name="hours" class="oe_field_hours" widget="float_time" required="not is_section" invisible="is_section"/>
-        <field name="optional" class="oe_field_optional text-center" invisible="is_section" optional="show" />
-        <field name="training_module_id" class="oe_field_training_module_id" required="not is_section" invisible="is_section" optional="show" />
-        <field name="competency_unit_ids" class="oe_field_competency_unit_ids" widget="many2many_tags" invisible="is_section" optional="show" />
-        <field name="description" class="oe_field_description" invisible="is_section" optional="hide" />
+        <field name="hours" class="oe_field_hours" widget="float_time" required="not is_section"
+          invisible="is_section"/>
+        <field name="optional" class="oe_field_optional text-center" invisible="is_section"
+          optional="show"/>
+        <field name="training_module_id" class="oe_field_training_module_id"
+          required="not is_section" invisible="is_section" optional="show"/>
+        <field name="competency_unit_ids" class="oe_field_competency_unit_ids"
+          widget="many2many_tags" invisible="is_section" optional="show"/>
+        <field name="description" class="oe_field_description" invisible="is_section"
+          optional="hide"/>
       </list>
     </field>
   </record>
@@ -59,7 +64,7 @@
           <div class="oe_title">
             <label for="name" class="oe_edit_only"/>
             <h1>
-              <field name="name" class="oe_field_name" placeholder="Enter new name" widget="text" />
+              <field name="name" class="oe_field_name" placeholder="Enter new name" widget="text"/>
             </h1>
           </div>
 
@@ -72,7 +77,7 @@
                 widget="many2many_tags"/>
             </group>
             <group col="2" colspan="1" string="Main settings">
-              <field name="code" class="oe_field_code" required="not is_section" />
+              <field name="code" class="oe_field_code" required="not is_section"/>
               <field name="hours" class="oe_field_hours"/>
               <field name="optional" class="oe_field_optional"/>
             </group>
@@ -166,21 +171,21 @@
     <field name="mode">primary</field>
     <field name="priority" eval="99"/>
     <field name="active" eval="True"/>
-    <field name="inherit_id" ref="view_academy_training_program_line_tree" />
+    <field name="inherit_id" ref="view_academy_training_program_line_tree"/>
     <field name="arch" type="xml">
       <xpath expr="//list" position="attributes">
-          <attribute name="editable"/>
-          <attribute name="create">1</attribute>
-          <attribute name="delete">1</attribute>
+        <attribute name="editable"/>
+        <attribute name="create">1</attribute>
+        <attribute name="delete">1</attribute>
       </xpath>
 
       <xpath expr="//field[@name='competency_unit_ids']" position="replace">
-          <field name="competency_unit_count" class="oe_field_competency_unit_count text-center"
-            invisible="is_section" optional="hide"/>
+        <field name="competency_unit_count" class="oe_field_competency_unit_count text-center"
+          invisible="is_section" optional="hide"/>
       </xpath>
 
       <xpath expr="//field[@name='training_module_id']" position="attributes">
-          <attribute name="optional">hide</attribute>
+        <attribute name="optional">hide</attribute>
       </xpath>
 
       <xpath expr="//field[@name='description']" position="replace">

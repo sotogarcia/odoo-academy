@@ -199,17 +199,17 @@
     <field name="active" eval="True"/>
     <field name="arch" type="xml">
       <kanban sample="1">
-        <field name="avatar_128" />
-        <field name="is_company" />
-        <field name="parent_id" />
-        <field name="active" />
-        <field name="mobile" />
-        <field name="phone" />
-        <field name="email" />
-        <field name="vat" />
-        <field name="call_number" />
-        <field name="avatar_128" />
-        <field name="has_custom_avatar" />
+        <field name="avatar_128"/>
+        <field name="is_company"/>
+        <field name="parent_id"/>
+        <field name="active"/>
+        <field name="mobile"/>
+        <field name="phone"/>
+        <field name="email"/>
+        <field name="vat"/>
+        <field name="call_number"/>
+        <field name="avatar_128"/>
+        <field name="has_custom_avatar"/>
 
         <templates>
           <t t-name="card" class="flex-row">
@@ -232,36 +232,38 @@
                 </t>
               </t>
               <t t-else="">
-                <img id="default-avatar" src="/academy_base/static/src/img/support-staff-128.png" class="w-100 h-auto p-2"
-                  alt="Student" title="Student without image" />
+                <img id="default-avatar" src="/academy_base/static/src/img/support-staff-128.png"
+                  class="w-100 h-auto p-2" alt="Student" title="Student without image"/>
               </t>
             </aside>
 
-            <div class="flex-fill d-flex flex-column justify-content-between overflow-hidden w-100 ps-2 ps-md-0">
+            <div
+              class="flex-fill d-flex flex-column justify-content-between overflow-hidden w-100 ps-2 ps-md-0">
               <main class="d-flex flex-column justify-content-start align-items-start">
                 <h2 class="h4">
-                    <field name="display_name"/>
+                  <field name="display_name"/>
                 </h2>
 
                 <ul class="list-unstyled w-100 small my-0">
                   <li class="d-flex flex-row justify-content-start lh-lg text-truncate">
                     <t t-if="record.phone.raw_value or record.mobile.raw_value">
                       <t t-if="record.mobile.raw_value">
-                        <t t-esc="record.mobile.raw_value" />
+                        <t t-esc="record.mobile.raw_value"/>
                       </t>
                       <t t-if="record.phone.raw_value and record.mobile.raw_value">
                         <span class="px-2">/</span>
                       </t>
                       <t t-if="record.phone.raw_value">
-                        <t t-esc="record.phone.raw_value" />
+                        <t t-esc="record.phone.raw_value"/>
                       </t>
                     </t>
                     <t t-else="">No phone</t>
                   </li>
 
-                  <li class="d-flex flex-row justify-content-start lh-lg text-truncate" t-att-title="record.email.raw_value">
+                  <li class="d-flex flex-row justify-content-start lh-lg text-truncate"
+                    t-att-title="record.email.raw_value">
                     <t t-if="record.email.raw_value">
-                      <t t-esc="record.email.raw_value" />
+                      <t t-esc="record.email.raw_value"/>
                     </t>
                     <t t-else="">No email</t>
                   </li>

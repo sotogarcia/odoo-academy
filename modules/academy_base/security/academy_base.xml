@@ -3,89 +3,85 @@
 <odoo noupdate="0">
 
 
-    <!-- Category: all the other module groups are child of this
+  <!-- Category: all the other module groups are child of this
         ============================================================ -->
-    <record id="module_category_academy" model="ir.module.category">
-        <field name="name">Academy</field>
-        <field name="sequence" eval="10"/>
-        <field name="visible" eval="True"/>
-        <field name="description">Academy category</field>
-    </record>
+  <record id="module_category_academy" model="ir.module.category">
+    <field name="name">Academy</field>
+    <field name="sequence" eval="10"/>
+    <field name="visible" eval="True"/>
+    <field name="description">Academy category</field>
+  </record>
 
-    <!-- User who only can read data -->
-    <record id="academy_group_consultant" model="res.groups">
-        <field name="name">Consultant</field>
-        <field name="comment">Users who can only read base catalog and assigned training
-            actions</field>
-        <field name="category_id" ref="module_category_academy"/>
-        <field name="implied_ids"
-            eval="[(4, ref('base.group_user')), (4, ref('record_ownership.record_ownership_consultant'))]"
-        />
-    </record>
+  <!-- User who only can read data -->
+  <record id="academy_group_consultant" model="res.groups">
+    <field name="name">Consultant</field>
+    <field name="comment">Users who can only read base catalog and assigned training actions</field>
+    <field name="category_id" ref="module_category_academy"/>
+    <field name="implied_ids"
+      eval="[(4, ref('base.group_user')), (4, ref('record_ownership.record_ownership_consultant'))]"
+    />
+  </record>
 
-    <record id="academy_group_teacher" model="res.groups">
-        <field name="name">Teacher</field>
-        <field name="comment">
-            Users who can read the base catalog, access their assigned training
-            actions without modifying them, and create/edit their own resources
-        </field>
-        <field name="category_id" ref="module_category_academy"/>
-        <field name="implied_ids" eval="[(4, ref('academy_group_consultant'))]"/>
-    </record>
+  <record id="academy_group_teacher" model="res.groups">
+    <field name="name">Teacher</field>
+    <field name="comment"> Users who can read the base catalog, access their assigned training
+      actions without modifying them, and create/edit their own resources </field>
+    <field name="category_id" ref="module_category_academy"/>
+    <field name="implied_ids" eval="[(4, ref('academy_group_consultant'))]"/>
+  </record>
 
-    <record id="academy_group_technical" model="res.groups">
-        <field name="name">Technical</field>
-        <field name="comment">Users who can read and manage full catalog, create/edit training
-            actions and assign to them teachers or consultants</field>
-        <field name="category_id" ref="module_category_academy"/>
-        <field name="implied_ids"
-            eval="[(4, ref('academy_group_teacher')), (4, ref('base.group_partner_manager'))]"/>
-    </record>
+  <record id="academy_group_technical" model="res.groups">
+    <field name="name">Technical</field>
+    <field name="comment">Users who can read and manage full catalog, create/edit training actions
+      and assign to them teachers or consultants</field>
+    <field name="category_id" ref="module_category_academy"/>
+    <field name="implied_ids"
+      eval="[(4, ref('academy_group_teacher')), (4, ref('base.group_partner_manager'))]"/>
+  </record>
 
-    <record id="academy_group_manager" model="res.groups">
-        <field name="name">Manager</field>
-        <field name="comment">Users who can create/edit information in all models</field>
-        <field name="category_id" ref="module_category_academy"/>
-        <field name="implied_ids" eval="[(4, ref('academy_group_technical'))]"/>
-        <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
-    </record>
+  <record id="academy_group_manager" model="res.groups">
+    <field name="name">Manager</field>
+    <field name="comment">Users who can create/edit information in all models</field>
+    <field name="category_id" ref="module_category_academy"/>
+    <field name="implied_ids" eval="[(4, ref('academy_group_technical'))]"/>
+    <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+  </record>
 
 
-    <!-- Multicompany
+  <!-- Multicompany
         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-    <record id="ir_rule_restricted_training_action_multi_company" model="ir.rule">
-        <field name="name">Restricted Training Action: multi-company</field>
-        <field name="model_id" ref="academy_base.model_academy_training_action"/>
-        <field name="global" eval="True"/>
-        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
-    </record>
+  <record id="ir_rule_restricted_training_action_multi_company" model="ir.rule">
+    <field name="name">Restricted Training Action: multi-company</field>
+    <field name="model_id" ref="academy_base.model_academy_training_action"/>
+    <field name="global" eval="True"/>
+    <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+  </record>
 
-    <record id="ir_rule_restricted_training_action_enrolment_multi_company" model="ir.rule">
-        <field name="name">Restricted Training Action Enrolment: multi-company</field>
-        <field name="model_id" ref="academy_base.model_academy_training_action_enrolment"/>
-        <field name="global" eval="True"/>
-        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
-    </record>
+  <record id="ir_rule_restricted_training_action_enrolment_multi_company" model="ir.rule">
+    <field name="name">Restricted Training Action Enrolment: multi-company</field>
+    <field name="model_id" ref="academy_base.model_academy_training_action_enrolment"/>
+    <field name="global" eval="True"/>
+    <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+  </record>
 
-    <record id="ir_rule_restricted_student_signup_multi_company" model="ir.rule">
-        <field name="name">Restricted Student Sign-Up: multi-company</field>
-        <field name="model_id" ref="academy_base.model_academy_student_signup"/>
-        <field name="global" eval="True"/>
-        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
-    </record>
+  <record id="ir_rule_restricted_student_signup_multi_company" model="ir.rule">
+    <field name="name">Restricted Student Sign-Up: multi-company</field>
+    <field name="model_id" ref="academy_base.model_academy_student_signup"/>
+    <field name="global" eval="True"/>
+    <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+  </record>
 
-    <!-- No one can write/delete THIS specific cron
+  <!-- No one can write/delete THIS specific cron
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-    <record id="ir_rule_block_edit_academy_maintenance_cron" model="ir.rule">
-      <field name="name">Block write/unlink on Academy maintenance cron</field>
-      <field name="model_id" ref="base.model_ir_cron"/>
-      <field name="domain_force">
-        [('id','!=', user.env.ref('academy_base.ir_cron_academy_maintenance_task').id)]
-      </field>
-      <field name="perm_write" eval="True"/>
-      <field name="perm_unlink" eval="True"/>
-      <field name="perm_read" eval="False"/>
-      <field name="perm_create" eval="False"/>
-    </record>
+  <record id="ir_rule_block_edit_academy_maintenance_cron" model="ir.rule">
+    <field name="name">Block write/unlink on Academy maintenance cron</field>
+    <field name="model_id" ref="base.model_ir_cron"/>
+    <field name="domain_force"> [('id','!=',
+      user.env.ref('academy_base.ir_cron_academy_maintenance_task').id)] </field>
+    <field name="perm_write" eval="True"/>
+    <field name="perm_unlink" eval="True"/>
+    <field name="perm_read" eval="False"/>
+    <field name="perm_create" eval="False"/>
+  </record>
 
 </odoo>

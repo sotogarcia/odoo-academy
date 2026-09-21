@@ -120,28 +120,33 @@
                   options="{'img_class': 'w-100 h-auto p-2 align-top'}"/>
               </t>
               <t t-if="!record.image_128.raw_value">
-                <img id="training-module-no-image" src="/academy_base/static/src/img/training-module-128.png" class="w-100 h-auto p-2"
-                  alt="Training module" title="Training module without image" />
+                <img id="training-module-no-image"
+                  src="/academy_base/static/src/img/training-module-128.png"
+                  class="w-100 h-auto p-2" alt="Training module"
+                  title="Training module without image"/>
               </t>
             </aside>
 
-            <div class="flex-fill d-flex flex-column justify-content-between overflow-hidden w-100 ps-2 ps-md-0">
+            <div
+              class="flex-fill d-flex flex-column justify-content-between overflow-hidden w-100 ps-2 ps-md-0">
               <main class="d-flex flex-column justify-content-start align-items-start">
                 <h2 class="h4">
                   <field name="display_name"/>
                 </h2>
 
                 <ul class="list-unstyled w-100 small my-0">
-                  <li class="d-flex flex-row justify-content-start lh-lg text-truncate" title="Training module code">
-                        <span t-if="record.code.raw_value">
-                          <t t-esc="record.code.raw_value"/>
-                        </span>
-                        <span t-if="!record.code.raw_value">---</span>
+                  <li class="d-flex flex-row justify-content-start lh-lg text-truncate"
+                    title="Training module code">
+                    <span t-if="record.code.raw_value">
+                      <t t-esc="record.code.raw_value"/>
+                    </span>
+                    <span t-if="!record.code.raw_value">---</span>
                   </li>
 
-                  <li class="d-flex flex-row justify-content-start lh-lg text-truncate" title="Teaching hours">
+                  <li class="d-flex flex-row justify-content-start lh-lg text-truncate"
+                    title="Teaching hours">
                     <strong class="pe-2">Hours:</strong>
-                    <field name="hours" class="oe_field_hours" widget="float_time" />
+                    <field name="hours" class="oe_field_hours" widget="float_time"/>
                   </li>
 
                 </ul>
@@ -150,9 +155,11 @@
 
               <!-- footer: begin -->
               <footer class="d-flex justify-content-end align-items-start mt-2">
-                <button name="view_training_programs" type="object" class="btn my-0 py-0" string="No. of programs">
-                  <i class="fa fa-lg fa-cubes me-2" aria-hidden="true" title="View training programs"></i>
-                  <field name="training_program_count" class="oe_field_training_program_count" />
+                <button name="view_training_programs" type="object" class="btn my-0 py-0"
+                  string="No. of programs">
+                  <i class="fa fa-lg fa-cubes me-2" aria-hidden="true"
+                    title="View training programs"/>
+                  <field name="training_program_count" class="oe_field_training_program_count"/>
                 </button>
               </footer>
               <!-- footer: end -->
@@ -230,10 +237,11 @@
       </xpath>
       <xpath expr="//field[@name='code']" position="after">
         <field name="hours" class="oe_field_ownhours" widget="float_time"
-          placeholder="Enter the number of hours for this module" invisible="training_unit_count != 0"/>
+          placeholder="Enter the number of hours for this module"
+          invisible="training_unit_count != 0"/>
         <field name="hours" class="oe_field_hours" widget="float_time"
-          placeholder="Total hours from all units in the module" invisible="training_unit_count == 0"
-        />
+          placeholder="Total hours from all units in the module"
+          invisible="training_unit_count == 0"/>
       </xpath>
     </field>
   </record>
@@ -252,13 +260,14 @@
       <xpath expr="//main/ul/li[1]" position="after">
         <li class="d-flex flex-row justify-content-start lh-lg text-truncate" title="Teaching hours">
           <strong class="pe-2">Units:</strong>
-          <field name="training_unit_count" class="oe_field_training_unit_count" />
+          <field name="training_unit_count" class="oe_field_training_unit_count"/>
         </li>
       </xpath>
       <xpath expr="//footer/button[1]" position="before">
-        <button name="view_training_units" type="object" class="btn my-0 py-0" string="Training units/blocks">
-          <i class="fa fa-lg fa-list me-2" aria-hidden="true" title="View training units/blocks"></i>
-          <field name="training_unit_count" class="oe_field_training_unit_count" />
+        <button name="view_training_units" type="object" class="btn my-0 py-0"
+          string="Training units/blocks">
+          <i class="fa fa-lg fa-list me-2" aria-hidden="true" title="View training units/blocks"/>
+          <field name="training_unit_count" class="oe_field_training_unit_count"/>
         </button>
       </xpath>
     </field>
@@ -350,7 +359,7 @@
           invisible="not training_module_id"/>
       </xpath>
       <xpath expr="//field[@name='code']" position="after">
-        <field name="hours" class="oe_field_ownhours" widget="float_time" />
+        <field name="hours" class="oe_field_ownhours" widget="float_time"/>
       </xpath>
     </field>
   </record>
@@ -368,8 +377,8 @@
         <attribute name="title">Training unit/block code</attribute>
       </xpath>
       <xpath expr="//img[@id='training-module-no-image']" position="replace">
-        <img id="training-unit-no-image" src="/academy_base/static/src/img/training-unit-128.png" class="w-100 h-auto p-2"
-          alt="Training module" title="Training unit without image" />
+        <img id="training-unit-no-image" src="/academy_base/static/src/img/training-unit-128.png"
+          class="w-100 h-auto p-2" alt="Training module" title="Training unit without image"/>
       </xpath>
     </field>
   </record>
@@ -412,7 +421,7 @@
     <field name="act_window_id" ref="academy_base.action_training_module_units_act_window"/>
   </record>
 
-<!--<record id="view_academy_training_module_embed_units_tree" model="ir.ui.view">
+  <!--<record id="view_academy_training_module_embed_units_tree" model="ir.ui.view">
     <field name="name">view.academy.training.module.embed_unitstree</field>
     <field name="model">academy.training.module</field>
     <field name="type">list</field>

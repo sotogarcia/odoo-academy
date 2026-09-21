@@ -25,14 +25,15 @@
       <list string="academy_training_action_enrolment_tree" create="1" delete="1" edit="1"
         decoration-success="is_current">
         <field name="is_current" column_invisible="1"/>
-        <field name="code" class="oe_field_enrolment_code" optional="hide" />
+        <field name="code" class="oe_field_enrolment_code" optional="hide"/>
         <field name="training_program_id" class="oe_field_training_program_id" optional="hide"/>
-        <field name="parent_action_id" class="oe_field_parent_action_id" string="Training action" />
-        <field name="training_action_id" class="oe_field_training_action_id" string="Training group" invisible="parent_action_id == training_action_id" />
+        <field name="parent_action_id" class="oe_field_parent_action_id" string="Training action"/>
+        <field name="training_action_id" class="oe_field_training_action_id" string="Training group"
+          invisible="parent_action_id == training_action_id"/>
         <field name="student_id" class="oe_field_student_id"/>
         <field name="training_modality_id" class="oe_field_training_modality_id" optional="show"/>
-        <field name="register" class="oe_field_register" widget="date" />
-        <field name="deregister" class="oe_field_deregister" widget="date" />
+        <field name="register" class="oe_field_register" widget="date"/>
+        <field name="deregister" class="oe_field_deregister" widget="date"/>
         <field name="vat" class="oe_field_vat" optional="hide"/>
         <field name="email" class="oe_field_email" optional="show"/>
         <field name="phone" class="oe_field_phone" optional="show"/>
@@ -59,15 +60,15 @@
               invisible="active == True"/>
           </div>
 
-          <field name="training_program_id" invisible="1" force_save="1" />
-          <field name="parent_action_id" invisible="1" force_save="1" />
-          <field name="available_action_ids"  invisible="1" />
+          <field name="training_program_id" invisible="1" force_save="1"/>
+          <field name="parent_action_id" invisible="1" force_save="1"/>
+          <field name="available_action_ids" invisible="1"/>
 
           <div class="w-100" id="academy-academy-training-action-enrolment-title">
             <field name="active" invisible="1"/>
             <field name="id" invisible="1"/>
-            <field name="available_action_ids" invisible="1" />
-            <field name="available_line_ids" invisible="1" />
+            <field name="available_action_ids" invisible="1"/>
+            <field name="available_line_ids" invisible="1"/>
 
             <label for="display_name" class="oe_edit_only"/>
             <h1>
@@ -89,8 +90,8 @@
             </group>
 
             <group col="2" string="Dates">
-              <field name="register" class="oe_field_register"  />
-              <field name="deregister" class="oe_field_deregister"  />
+              <field name="register" class="oe_field_register"/>
+              <field name="deregister" class="oe_field_deregister"/>
             </group>
 
             <group col="2" string="Options">
@@ -103,10 +104,10 @@
             <page string="Details" class="oe_page_details" accesskey="D">
               <group col="2">
                 <group col="2">
-                    <field name="code" class="oe_field_enrolment_code" />
+                  <field name="code" class="oe_field_enrolment_code"/>
                 </group>
                 <group col="2">
-                    <field name="processing_date" class="oe_field_processing_date" widget="date" />
+                  <field name="processing_date" class="oe_field_processing_date" widget="date"/>
                 </group>
 
                 <group col="2" string="Training action">
@@ -127,15 +128,15 @@
               <group col="2">
                 <field name="action_line_ids" class="oe_field_action_line_ids"
                   options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"
-                  domain="[('id', 'in', available_line_ids)]" readonly="full_enrolment"
-                  nolabel="1" colspan="2" context="{
+                  domain="[('id', 'in', available_line_ids)]" readonly="full_enrolment" nolabel="1"
+                  colspan="2" context="{
                     'list_view_ref': 'academy_base.view_academy_training_action_line_tree_m2m'
-                  }" />
+                  }"/>
               </group>
             </page>
             <page id="setup" string="Setup" class="oe_page_setup" accesskey="S">
               <group col="2">
-                  <field name="full_enrolment" class="oe_field_full_enrolment" />
+                <field name="full_enrolment" class="oe_field_full_enrolment"/>
               </group>
               <group string="Ownership" groups="record_ownership.record_ownership_proxy">
                 <group>
@@ -177,7 +178,7 @@
         <field name="register"/>
         <field name="deregister"/>
         <field name="training_action_id"/>
-        <field name="parent_action_id" />
+        <field name="parent_action_id"/>
         <field name="student_id"/>
         <field name="color"/>
 
@@ -185,39 +186,45 @@
           <t t-name="card" class="flex-row">
             <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
 
-              <aside class="o_kanban_aside_full">
-                <t t-if="record.image_128.raw_value">
-                  <field name="image_128" class="w-100" widget="image"
-                    options="{'img_class': 'w-100 h-auto p-2 align-top'}"/>
+            <aside class="o_kanban_aside_full">
+              <t t-if="record.image_128.raw_value">
+                <field name="image_128" class="w-100" widget="image"
+                  options="{'img_class': 'w-100 h-auto p-2 align-top'}"/>
+              </t>
+              <t t-if="!record.image_128.raw_value">
+                <t t-if="record.training_action_id.raw_value != record.parent_action_id.raw_value">
+                  <img src="/academy_base/static/src/img/training-group-128.png"
+                    class="w-100 h-auto p-2" alt="Training action"
+                    title="Training action without image"/>
                 </t>
-                <t t-if="!record.image_128.raw_value">
-                  <t t-if="record.training_action_id.raw_value != record.parent_action_id.raw_value">
-                    <img src="/academy_base/static/src/img/training-group-128.png" class="w-100 h-auto p-2"
-                      alt="Training action" title="Training action without image" />
-                  </t>
-                  <t t-if="record.training_action_id.raw_value == record.parent_action_id.raw_value">
-                    <img src="/academy_base/static/src/img/training-action-128.png" class="w-100 h-auto p-2"
-                      alt="Training action" title="Training action without image" />
-                  </t>
+                <t t-if="record.training_action_id.raw_value == record.parent_action_id.raw_value">
+                  <img src="/academy_base/static/src/img/training-action-128.png"
+                    class="w-100 h-auto p-2" alt="Training action"
+                    title="Training action without image"/>
                 </t>
-              </aside>
+              </t>
+            </aside>
 
-            <div class="flex-fill d-flex flex-column justify-content-between overflow-hidden w-100 ps-2 ps-md-0">
+            <div
+              class="flex-fill d-flex flex-column justify-content-between overflow-hidden w-100 ps-2 ps-md-0">
               <main class="d-flex flex-column justify-content-start align-items-start">
                 <h2 class="h4">
-                    <field name="code"/>
+                  <field name="code"/>
                 </h2>
 
                 <ul class="list-unstyled w-100 small my-0">
-                  <li class="d-flex flex-row justify-content-start lh-lg text-truncate" title="Training action/group">
-                   <field name="training_action_id" class="oe_field_training_action_id"/>
+                  <li class="d-flex flex-row justify-content-start lh-lg text-truncate"
+                    title="Training action/group">
+                    <field name="training_action_id" class="oe_field_training_action_id"/>
                   </li>
 
-                  <li class="d-flex flex-row justify-content-start lh-lg text-truncate" title="Student">
-                      <field name="student_id" class="oe_field_student_id"/>
+                  <li class="d-flex flex-row justify-content-start lh-lg text-truncate"
+                    title="Student">
+                    <field name="student_id" class="oe_field_student_id"/>
                   </li>
 
-                  <li class="d-flex flex-row justify-content-start lh-lg text-truncate" title="Enrolment lifespan">
+                  <li class="d-flex flex-row justify-content-start lh-lg text-truncate"
+                    title="Enrolment lifespan">
                     <field name="lifespan" class="oe_field_lifespan"/>
                   </li>
                 </ul>
@@ -342,9 +349,9 @@
       <list string="view_academy_training_action_enrolment_embed_tree" create="1" delete="1"
         edit="1">
         <field name="training_action_id" class="oe_field_training_action_id"/>
-        <field name="training_modality_id" class="oe_field_training_modality_id" />
-        <field name="register" class="oe_field_register" widget="date" />
-        <field name="deregister" class="oe_field_deregister" widget="date" />
+        <field name="training_modality_id" class="oe_field_training_modality_id"/>
+        <field name="register" class="oe_field_register" widget="date"/>
+        <field name="deregister" class="oe_field_deregister" widget="date"/>
       </list>
     </field>
   </record>
@@ -363,9 +370,9 @@
       <list string="view_academy_training_action_enrolment_edit_by_user_tree" create="1" delete="1"
         edit="1" editable="top">
         <field name="training_action_id" class="oe_field_training_action_id"/>
-        <field name="training_modality_id" class="oe_field_training_modality_id" />
-        <field name="register" class="oe_field_register" />
-        <field name="deregister" class="oe_field_deregister" />
+        <field name="training_modality_id" class="oe_field_training_modality_id"/>
+        <field name="register" class="oe_field_register"/>
+        <field name="deregister" class="oe_field_deregister"/>
       </list>
     </field>
   </record>
@@ -386,12 +393,12 @@
     <field name="active" eval="True"/>
     <field name="arch" type="xml">
       <list string="Enrolments" create="1" delete="1" edit="1">
-        <field name="code" class="oe_field_enrolment_code" />
+        <field name="code" class="oe_field_enrolment_code"/>
         <field name="training_action_id" class="oe_field_training_action_id"
           domain="['|', ('date_stop', '=', False), ('date_stop', '>=', context_today().strftime('%%Y-%%m-%%d'))]"/>
         <field name="training_modality_id" class="oe_field_training_modality_id" optional="show"/>
-        <field name="register" class="oe_field_register" />
-        <field name="deregister" class="oe_field_deregister" />
+        <field name="register" class="oe_field_register"/>
+        <field name="deregister" class="oe_field_deregister"/>
       </list>
     </field>
   </record>

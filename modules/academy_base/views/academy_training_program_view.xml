@@ -85,15 +85,15 @@
                   readonly="context.get('default_training_framework_id', False)" force_save="1"/>
               </group>
               <group>
-                <field name="code" class="oe_field_activity_code" />
+                <field name="code" class="oe_field_activity_code"/>
               </group>
             </group>
           </div>
 
           <notebook>
             <page id="program-lines" string="Program lines" class="oe_page_lines" accesskey="L">
-              <field name="program_line_ids" class="oe_field_program_line_ids"
-                readonly="not id" context="{
+              <field name="program_line_ids" class="oe_field_program_line_ids" readonly="not id"
+                context="{
                   'list_view_ref': 'academy_base.view_academy_training_program_line_tree_program_embed',
                   'default_training_program_id': id
                 }"/>
@@ -118,7 +118,7 @@
                 </group>
                 <group id="attainment" string="Attainment">
                   <field name="attainment_id" class="oe_field_attainment_id" string="Required"/>
-                  <field name="hours" class="oe_field_hours" widget="float_time" />
+                  <field name="hours" class="oe_field_hours" widget="float_time"/>
                   <field name="qualification_level_id" class="oe_field_qualification_level_id"
                     string="Granted"/>
                   <field name="general_competence" class="oe_field_general_competence"
@@ -143,8 +143,8 @@
                 <field name="description" class="oe_field_description" colspan="2" nolabel="1"/>
               </group>
             </page>
-            <page id="internal-notes" string="Internal Notes" class="oe_page_internal_notes" accesskey="I"
-              groups="base.group_user">
+            <page id="internal-notes" string="Internal Notes" class="oe_page_internal_notes"
+              accesskey="I" groups="base.group_user">
               <group col="2">
                 <field name="comment" class="oe_field_comment" nolabel="1" colspan="2" widget="html"
                 />
@@ -171,10 +171,10 @@
         <field name="display_name"/>
         <field name="image_128"/>
         <field name="code"/>
-        <field name="training_action_count" />
-        <field name="program_line_count" />
-        <field name="training_framework_id" />
-        <field name="hours" />
+        <field name="training_action_count"/>
+        <field name="program_line_count"/>
+        <field name="training_framework_id"/>
+        <field name="hours"/>
 
         <templates>
           <t t-name="card" class="flex-row">
@@ -186,32 +186,38 @@
                   options="{'img_class': 'w-100 h-auto p-2 align-top'}"/>
               </t>
               <t t-if="!record.image_128.raw_value">
-                <img id="alternative-image" src="/academy_base/static/src/img/training-program-128.png" class="w-100 h-auto p-2"
-                  alt="Training program" title="Training program without image" />
+                <img id="alternative-image"
+                  src="/academy_base/static/src/img/training-program-128.png"
+                  class="w-100 h-auto p-2" alt="Training program"
+                  title="Training program without image"/>
               </t>
             </aside>
 
-            <div class="flex-fill d-flex flex-column justify-content-between overflow-hidden w-100 ps-2 ps-md-0">
+            <div
+              class="flex-fill d-flex flex-column justify-content-between overflow-hidden w-100 ps-2 ps-md-0">
               <main class="d-flex flex-column justify-content-start align-items-start">
                 <h2 class="h4">
                   <field name="display_name"/>
                 </h2>
 
                 <ul class="list-unstyled w-100 small my-0">
-                  <li class="d-flex flex-row justify-content-start lh-lg text-truncate" title="Training framework">
-                   <field name="training_framework_id" class="oe_field_training_framework_id" />
+                  <li class="d-flex flex-row justify-content-start lh-lg text-truncate"
+                    title="Training framework">
+                    <field name="training_framework_id" class="oe_field_training_framework_id"/>
                   </li>
 
-                  <li class="d-flex flex-row justify-content-start lh-lg text-truncate" title="Training program code">
+                  <li class="d-flex flex-row justify-content-start lh-lg text-truncate"
+                    title="Training program code">
                     <span t-if="record.code.raw_value">
-                          <t t-esc="record.code.raw_value"/>
-                        </span>
-                        <span t-if="!record.code.raw_value">---</span>
+                      <t t-esc="record.code.raw_value"/>
+                    </span>
+                    <span t-if="!record.code.raw_value">---</span>
                   </li>
 
-                  <li class="d-flex flex-row justify-content-start lh-lg text-truncate" title="Teaching hours">
+                  <li class="d-flex flex-row justify-content-start lh-lg text-truncate"
+                    title="Teaching hours">
                     <strong class="pe-2">Hours:</strong>
-                    <field name="hours" class="oe_field_hours" widget="float_time" />
+                    <field name="hours" class="oe_field_hours" widget="float_time"/>
                   </li>
                 </ul>
 
@@ -219,13 +225,16 @@
 
               <!-- footer: begin -->
               <footer class="d-flex justify-content-end align-items-start mt-2">
-                <button name="view_training_program_lines" type="object" class="btn my-0 py-0" string="Lines">
-                  <i class="fa fa-lg fa-cubes me-2" aria-hidden="true" title="View detailed program"></i>
-                  <field name="program_line_count" class="oe_field_program_line_count" />
+                <button name="view_training_program_lines" type="object" class="btn my-0 py-0"
+                  string="Lines">
+                  <i class="fa fa-lg fa-cubes me-2" aria-hidden="true" title="View detailed program"/>
+                  <field name="program_line_count" class="oe_field_program_line_count"/>
                 </button>
-                <button name="view_training_actions" type="object" class="btn my-0 py-0" string="Training actions">
-                  <i class="fa fa-lg fa-clipboard me-2" aria-hidden="true" title="View training actions"></i>
-                  <field name="training_action_count" class="oe_field_training_action_count" />
+                <button name="view_training_actions" type="object" class="btn my-0 py-0"
+                  string="Training actions">
+                  <i class="fa fa-lg fa-clipboard me-2" aria-hidden="true"
+                    title="View training actions"/>
+                  <field name="training_action_count" class="oe_field_training_action_count"/>
                 </button>
 
                 <field name="activity_ids" widget="kanban_activity" class="my-0 py-0"/>
@@ -332,7 +341,7 @@
     <field name="arch" type="xml">
       <list string="Quick edit" create="0" delete="0" edit="1" editable="bottom">
         <field name="name" class="oe_field_name"/>
-        <field name="code" class="oe_field_code" />
+        <field name="code" class="oe_field_code"/>
         <field name="owner_id" class="oe_field_owner_id"
           groups="record_ownership.record_ownership_consultant"/>
         <field name="subrogate_id" class="oe_field_subrogate_id"/>

@@ -25,7 +25,7 @@
     <field name="arch" type="xml">
       <xpath expr="//field[@name='vat']" position="before">
         <field name="signup_code" class="oe_field_signup_code" string="Sign-up code" readonly="1"/>
-        <field name="signup_date" class="oe_field_signup_date" widget="date" />
+        <field name="signup_date" class="oe_field_signup_date" widget="date"/>
       </xpath>
       <xpath expr="//list" position="attributes">
         <attribute name="string">academy_student_tree</attribute>
@@ -59,38 +59,39 @@
       </xpath>
 
       <xpath expr="//field[@name='id']" position="after">
-          <field name="current_enrolment_ids" invisible="1" />
+        <field name="current_enrolment_ids" invisible="1"/>
       </xpath>
 
       <xpath expr="//notebook/page[1]" position="before">
         <page string="Enrolments" class="oe_page_enrolments" accesskey="E" autofocus="autofocus">
           <field name="enrolment_ids" class="oe_field_current_enrolment_ids"
             domain="[('is_current', '=', True)]"
-            context="{'list_view_ref': 'academy_base.view_academy_training_action_enrolment_tree_embed'}" />
+            context="{'list_view_ref': 'academy_base.view_academy_training_action_enrolment_tree_embed'}"
+          />
         </page>
       </xpath>
 
       <xpath expr="//group[@id='page-details-main']" position="after">
         <group col="3" string="Sign-up details">
           <group>
-            <button name="perform_signup" string="Sign up" type="object" invisible="signup_id" />
+            <button name="perform_signup" string="Sign up" type="object" invisible="signup_id"/>
             <field name="signup_id" class="oe_field_signup_id"
               context="{'signup_short_display_name': True}" invisible="not signup_id"
-              options="{'no_quick_create': True, 'no_create': True, 'no_open': False}" />
+              options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
           </group>
           <group>
-            <field name="signup_date" class="oe_field_signup_date" readonly="not signup_code" />
+            <field name="signup_date" class="oe_field_signup_date" readonly="not signup_code"/>
           </group>
           <group col="2" class="d-flex justify-content-end">
-              <button name="revoke_signup" class="btn btn-sm btn-danger" string="Opt out" type="object"
-                invisible="not signup_code" confirm="Are you sure you want to do this?"/>
+            <button name="revoke_signup" class="btn btn-sm btn-danger" string="Opt out"
+              type="object" invisible="not signup_code" confirm="Are you sure you want to do this?"
+            />
           </group>
           <group col="2" colspan="3" groups="base.group_no_one">
-            <field name="signup_ids" class="oe_field_signup_ids" nolabel="1"
-              context="{
+            <field name="signup_ids" class="oe_field_signup_ids" nolabel="1" context="{
                   'default_student_id': id,
                   'list_view_ref': 'academy_base.view_academy_student_signuplist_embed_on_student'
-              }" />
+              }"/>
           </group>
         </group>
         <!-- <group id="toggle-signup" colspan="4" class="d-flex justify-content-end">
@@ -115,30 +116,38 @@
         <attribute name="string">academy_student_kanban</attribute>
       </xpath>
       <xpath expr="//img[@id='default-avatar']" position="attributes">
-          <attribute name="src">/academy_base/static/src/img/student-128.png</attribute>
+        <attribute name="src">/academy_base/static/src/img/student-128.png</attribute>
       </xpath>
       <xpath expr="//field[@name='vat']" position="before">
-        <field name="signup_code" />
+        <field name="signup_code"/>
       </xpath>
 
       <xpath expr="//ul/li[last()]" position="after">
-        <li class="d-flex flex-row justify-content-start lh-lg text-truncate" t-att-title="record.vat.raw_value">
+        <li class="d-flex flex-row justify-content-start lh-lg text-truncate"
+          t-att-title="record.vat.raw_value">
           <strong class="pe-2">VAT:</strong>
-          <span t-if="record.vat.raw_value"><t t-esc="record.vat.raw_value" /></span>
+          <span t-if="record.vat.raw_value">
+            <t t-esc="record.vat.raw_value"/>
+          </span>
           <span t-else="">---</span>
         </li>
 
-        <li class="d-flex flex-row justify-content-start lh-lg text-truncate" t-att-title="record.signup_code.raw_value">
+        <li class="d-flex flex-row justify-content-start lh-lg text-truncate"
+          t-att-title="record.signup_code.raw_value">
           <strong class="pe-2">Code:</strong>
-          <span t-if="record.signup_code.raw_value"><t t-esc="record.signup_code.raw_value" /></span>
+          <span t-if="record.signup_code.raw_value">
+            <t t-esc="record.signup_code.raw_value"/>
+          </span>
           <span t-else="">---</span>
         </li>
       </xpath>
 
       <xpath expr="//field[@name='activity_ids']" position="before">
-        <button name="view_enrolments" type="object" class="btn my-0 py-0" string="Student enrolments">
-          <i class="fa fa-lg fa-sign-in me-2" aria-hidden="true" title="View student training action enrolments"></i>
-          <field name="enrolment_count" class="oe_field_enrolment_count" />
+        <button name="view_enrolments" type="object" class="btn my-0 py-0"
+          string="Student enrolments">
+          <i class="fa fa-lg fa-sign-in me-2" aria-hidden="true"
+            title="View student training action enrolments"/>
+          <field name="enrolment_count" class="oe_field_enrolment_count"/>
         </button>
       </xpath>
 
@@ -162,7 +171,8 @@
 
       <xpath expr="//field[@name='name']" position="replace">
         <field name="name"
-          filter_domain="['|', '|', '|', '|', ('complete_name', 'ilike', self), ('signup_code', 'ilike', self), ('email', 'ilike', self), ('vat', 'ilike', self), ('company_registry', 'ilike', self)]"/>
+          filter_domain="['|', '|', '|', '|', ('complete_name', 'ilike', self), ('signup_code', 'ilike', self), ('email', 'ilike', self), ('vat', 'ilike', self), ('company_registry', 'ilike', self)]"
+        />
       </xpath>
 
       <xpath expr="//field[@name='id']" position="after">

@@ -2,79 +2,34 @@
 
 <odoo noupdate="0">
 
-    <record
-        id="academy_student_signup_demo_1"
-        model="academy.student.signup"
-    >
-        <field
-            name="student_id"
-            ref="academy_base.academy_res_partner_demo_student_1"
-        />
-        <field
-            name="company_id"
-            ref="base.main_company"
-        />
-        <field name="signup_code">DEMO-001</field>
-    </record>
+  <record id="academy_student_signup_demo_1" model="academy.student.signup">
+    <field name="student_id" ref="academy_base.academy_res_partner_demo_student_1"/>
+    <field name="company_id" ref="base.main_company"/>
+    <field name="signup_code">DEMO-001</field>
+  </record>
 
-    <record
-        id="academy_student_signup_demo_2"
-        model="academy.student.signup"
-    >
-        <field
-            name="student_id"
-            ref="academy_base.academy_res_partner_demo_student_2"
-        />
-        <field
-            name="company_id"
-            ref="academy_base.res_company_my_academy"
-        />
-        <field name="signup_code">DEMO-002</field>
-    </record>
+  <record id="academy_student_signup_demo_2" model="academy.student.signup">
+    <field name="student_id" ref="academy_base.academy_res_partner_demo_student_2"/>
+    <field name="company_id" ref="academy_base.res_company_my_academy"/>
+    <field name="signup_code">DEMO-002</field>
+  </record>
 
-    <record
-        id="academy_student_signup_demo_3"
-        model="academy.student.signup"
-    >
-        <field
-            name="student_id"
-            ref="academy_base.academy_res_partner_demo_student_3"
-        />
-        <field
-            name="company_id"
-            ref="base.main_company"
-        />
-        <field name="signup_code">DEMO-003</field>
-    </record>
+  <record id="academy_student_signup_demo_3" model="academy.student.signup">
+    <field name="student_id" ref="academy_base.academy_res_partner_demo_student_3"/>
+    <field name="company_id" ref="base.main_company"/>
+    <field name="signup_code">DEMO-003</field>
+  </record>
 
-    <record
-        id="academy_student_signup_demo_4"
-        model="academy.student.signup"
-    >
-        <field
-            name="student_id"
-            ref="academy_base.academy_res_partner_demo_student_4"
-        />
-        <field
-            name="company_id"
-            ref="base.main_company"
-        />
-        <field name="signup_code">DEMO-004</field>
-    </record>
+  <record id="academy_student_signup_demo_4" model="academy.student.signup">
+    <field name="student_id" ref="academy_base.academy_res_partner_demo_student_4"/>
+    <field name="company_id" ref="base.main_company"/>
+    <field name="signup_code">DEMO-004</field>
+  </record>
 
-    <record
-        id="academy_student_signup_demo_5"
-        model="academy.student.signup"
-    >
-        <field
-            name="student_id"
-            ref="academy_base.academy_res_partner_demo_student_5"
-        />
-        <field
-            name="company_id"
-            ref="base.main_company"
-        />
-        <field name="signup_code">DEMO-005</field>
-    </record>
+  <record id="academy_student_signup_demo_5" model="academy.student.signup">
+    <field name="student_id" ref="academy_base.academy_res_partner_demo_student_5"/>
+    <field name="company_id" ref="base.main_company"/>
+    <field name="signup_code">DEMO-005</field>
+  </record>
 
 </odoo>

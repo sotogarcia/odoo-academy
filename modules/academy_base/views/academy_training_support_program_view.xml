@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <odoo noupdate="0">
-<!--<xpath expr="//field[@name='program_line_count']" position="replace" />-->
+  <!--<xpath expr="//field[@name='program_line_count']" position="replace" />-->
   <!-- VIEWS: "Academy training support program"
 
             - Model·········: academy.training.program
@@ -21,12 +21,12 @@
     <field name="mode">primary</field>
     <field name="priority" eval="16"/>
     <field name="active" eval="True"/>
-    <field name="inherit_id" ref="view_academy_training_program_tree" />
+    <field name="inherit_id" ref="view_academy_training_program_tree"/>
     <field name="arch" type="xml">
       <xpath expr="//list" position="attributes">
         <attribute name="string">academy_training_support_program_tree</attribute>
-        <xpath expr="//field[@name='program_line_count']" position="replace" />
-        <xpath expr="//field[@name='program_line_count']" position="replace" />
+        <xpath expr="//field[@name='program_line_count']" position="replace"/>
+        <xpath expr="//field[@name='program_line_count']" position="replace"/>
       </xpath>
     </field>
   </record>
@@ -39,20 +39,20 @@
     <field name="mode">primary</field>
     <field name="priority" eval="16"/>
     <field name="active" eval="True"/>
-    <field name="inherit_id" ref="view_academy_training_program_form" />
+    <field name="inherit_id" ref="view_academy_training_program_form"/>
     <field name="arch" type="xml">
       <xpath expr="//form" position="attributes">
         <attribute name="string">academy_training_support_program_tree</attribute>
       </xpath>
 
-      <xpath expr="//button[@name='view_training_program_lines']" position="replace" />
-      <xpath expr="//page[@id='program-lines']" position="replace" />
-      <xpath expr="//group[@id='classification']" position="replace" />
-      <xpath expr="//group[@id='attainment']" position="replace" />
+      <xpath expr="//button[@name='view_training_program_lines']" position="replace"/>
+      <xpath expr="//page[@id='program-lines']" position="replace"/>
+      <xpath expr="//group[@id='classification']" position="replace"/>
+      <xpath expr="//group[@id='attainment']" position="replace"/>
 
       <xpath expr="//page[@id='details']" position="inside">
         <group col="2">
-            <field name="hours" class="oe_field_hours" />
+          <field name="hours" class="oe_field_hours"/>
         </group>
       </xpath>
 
@@ -66,14 +66,15 @@
     <field name="mode">primary</field>
     <field name="priority" eval="16"/>
     <field name="active" eval="True"/>
-    <field name="inherit_id" ref="view_academy_training_program_kanban" />
+    <field name="inherit_id" ref="view_academy_training_program_kanban"/>
     <field name="arch" type="xml">
       <xpath expr="//kanban" position="attributes">
         <attribute name="string">academy_training_support_program_tree</attribute>
       </xpath>
-      <xpath expr="//button[@name='view_training_program_lines']" position="replace" />
+      <xpath expr="//button[@name='view_training_program_lines']" position="replace"/>
       <xpath expr="//img[@id='alternative-image']" position="attributes">
-        <attribute name="src">/academy_base/static/src/img/training-support-program-128.png</attribute>
+        <attribute name="src"
+          >/academy_base/static/src/img/training-support-program-128.png</attribute>
       </xpath>
     </field>
   </record>
@@ -86,7 +87,7 @@
     <field name="mode">primary</field>
     <field name="priority" eval="16"/>
     <field name="active" eval="True"/>
-    <field name="inherit_id" ref="view_academy_training_program_search" />
+    <field name="inherit_id" ref="view_academy_training_program_search"/>
     <field name="arch" type="xml">
       <xpath expr="//search" position="attributes">
         <attribute name="string">academy_training_support_program_tree</attribute>
@@ -131,7 +132,7 @@
             technicals.
         ········································································ -->
 
-<!--   <record id="view_academy_training_activites_quick_edit_tree" model="ir.ui.view">
+  <!--   <record id="view_academy_training_activites_quick_edit_tree" model="ir.ui.view">
     <field name="name">Quick edit for academy training activites</field>
     <field name="model">academy.training.program</field>
     <field name="type">list</field>
@@ -149,7 +150,7 @@
       </list>
     </field>
   </record> -->
-<!--
+  <!--
   <record id="action_training_support_program_quick_edit_act_window" model="ir.actions.act_window">
     <field name="type">ir.actions.act_window</field>
     <field name="name">Training programs</field>
