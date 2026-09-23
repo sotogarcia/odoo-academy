@@ -95,7 +95,7 @@ def evaluate_domain(recordset, src_domain, default=None, raise_on_fail=True):
 
         try:
             domain = safe_eval(src_domain, eval_context)
-        except (NameError, SyntaxError, TypeError, ValueError) as ex:
+        except Exception as ex:
             if raise_on_fail:
                 raise ValueError(INVALID_DOMAIN % src_domain) from ex
 
@@ -161,13 +161,16 @@ def evaluate_context(recordset, src_context, default=None, raise_on_fail=True):
         context = src_context
 
     elif isinstance(src_context, str):
-        # Evaluate with minimal context
+        eval_context = {
+            "context": recordset.env.context,
+        }
+
         try:
-            minimal_ctx = {"context": recordset.env.context}
-            context = safe_eval(src_context, minimal_ctx)
-        except (NameError, SyntaxError, TypeError, ValueError) as ex:
+            context = safe_eval(src_context, eval_context)
+        except Exception as ex:
             if raise_on_fail:
                 raise ValueError(INVALID_CTX % src_context) from ex
+
             context = default
 
     elif callable(src_context):
@@ -176,14 +179,16 @@ def evaluate_context(recordset, src_context, default=None, raise_on_fail=True):
         except Exception as ex:
             if raise_on_fail:
                 raise ValueError(INVALID_CTX % src_context) from ex
+
             context = default
+
     elif src_context is not None and raise_on_fail:
         raise TypeError(INVALID_CTX % src_context)
 
     if context is not None and not isinstance(context, dict):
-        # Ensure a proper context structure
         if raise_on_fail:
             raise TypeError(INVALID_CTX % src_context)
+
         context = default
 
     return context
@@ -697,3 +702,83 @@ def str_ids(targets, *, separator=", ", if_empty=""):
         )
 
     return separator.join(target_items) if target_items else if_empty
+
+
+def _build_act_window_ctx(env, action, new_context=None):
+    """Build the final action context and its evaluation environment."""
+
+    new_context = new_context or {}
+
+    context = dict(env.context)
+
+    action_obj = env["ir.actions.act_window"]
+    eval_context = action_obj._get_eval_context()
+    eval_context.update(
+        {
+            "context": context,
+            "active_id": context.get("active_id"),
+            "allowed_company_ids": env.user.company_ids.ids,
+        }
+    )
+
+    action_context = safe_eval(
+        action.get("context") or "{}",
+        eval_context,
+    )
+
+    context.update(action_context)
+    context.update(new_context)
+
+    return context, eval_context
+
+
+def build_act_window_action(env, action_xid, context=None, domain=None):
+    """Build an act-window action with additional context and domain.
+
+    Load the window action identified by ``action_xid`` using Odoo's
+    ``_for_xml_id()`` helper, evaluate its declared context and domain with
+    the standard action evaluation environment, and merge caller-provided
+    values without discarding the action's original configuration.
+
+    Context values are applied in this order:
+
+    1. Current environment context.
+    2. Context declared by the action.
+    3. ``additional_context`` supplied by the caller.
+
+    The action domain is evaluated using the resulting context and then
+    combined with ``additional_domain`` using a logical AND.
+
+    Args:
+        env (odoo.api.Environment): Odoo environment used to load and
+            evaluate the action.
+        action_xid (str): External identifier of the
+            ``ir.actions.act_window`` record.
+        additional_context (dict | None, optional): Context values to append
+            to the action context. These values take precedence over both
+            the current environment context and the context declared by the
+            action. Defaults to None.
+        additional_domain (list | tuple | None, optional): Domain to combine
+            with the domain declared by the action using a logical AND.
+            Defaults to None.
+
+    Returns:
+        dict: Action dictionary ready to be returned to the Odoo web client,
+        preserving the original action definition while applying the
+        additional context and domain.
+    """
+
+    context = context or {}
+    domain = domain or TRUE_DOMAIN
+
+    action_obj = env["ir.actions.act_window"]
+    action = action_obj._for_xml_id(action_xid)
+
+    final_context, eval_context = _build_act_window_ctx(env, action, context)
+
+    action_domain = safe_eval(action.get("domain") or "[]", eval_context)
+    final_domain = AND([action_domain, domain])
+
+    action.update({"context": final_context, "domain": final_domain})
+
+    return action
