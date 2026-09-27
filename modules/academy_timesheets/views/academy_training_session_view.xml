@@ -424,7 +424,7 @@
         <!-- Main menu for model.name -->
         <record id="menu_sessions" model="ir.ui.menu" >
             <field name="name">Training sessions</field>
-            <field name="sequence" eval="15" />
+            <field name="sequence" eval="30" />
             <field name="action" ref="action_sessions_act_window" />
             <field name="parent_id" ref="academy_base.menu_academy_monitoring" />
             <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>

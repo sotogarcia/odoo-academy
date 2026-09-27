@@ -45,6 +45,8 @@
       <form string="academy_student_signup_form" create="1" delete="1" edit="1">
         <sheet>
           <field name="id" invisible="1"/>
+          <div class="oe_button_box" name="button_box" />
+
           <div class="oe_title">
             <label for="display_name" class="oe_edit_only"/>
             <h1>
@@ -89,9 +91,9 @@
     <field name="active" eval="True"/>
     <field name="arch" type="xml">
       <search string="academy_student_signup_search">
+        <field name="signup_code" class="oe_field_signup_code"/>
         <field name="company_id" class="oe_field_company_id"/>
         <field name="student_id" class="oe_field_student_id"/>
-        <field name="signup_code" class="oe_field_signup_code"/>
         <field name="signup_date" class="oe_field_signup_date"/>
 
         <group expand="1" string="Group By">
@@ -117,6 +119,15 @@
       <p class="oe_view_nocontent_create"> Click to add new sign-up </p>
       <p> No sign-ups have been registered yet </p>
     </field>
+  </record>
+
+  <!-- Main menu for model.name -->
+  <record id="menu_student_signup" model="ir.ui.menu">
+    <field name="name">Student sign-ups</field>
+    <field name="sequence" eval="20"/>
+    <field name="action" ref="action_student_signup_act_window"/>
+    <field name="parent_id" ref="academy_base.menu_academy_monitoring"/>
+    <field name="groups_id" eval="[(4, ref('academy_base.academy_group_technical'))]"/>
   </record>
 
   <!-- Tree view for "academy.student.signup" -->

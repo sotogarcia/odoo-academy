@@ -8,206 +8,344 @@
     <field name="priority" eval="20"/>
     <field name="inherit_id" ref="base.res_config_settings_view_form"/>
     <field name="arch" type="xml">
+
       <xpath expr="//form" position="inside">
-        <app string="Academy" name="academy_base" groups="base.group_system">
 
-          <!-- Settings block: begin -->
-          <block title="Responsibility" name="academy_base_responsibility">
+        <app
+          string="Academy"
+          name="academy_base"
+          groups="base.group_system">
 
-            <setting string="Head of Studies" help="Head of Studies for the educational platform">
-              <div class="content-group mt8">
-                <field name="head_of_studies_id" widget="res_users"
-                  options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"
-                  class="oe_inline"/>
-              </div>
+          <block
+            title="Responsibility"
+            name="academy_base_responsibility">
+
+            <setting
+              id="academy_head_of_studies"
+              string="Head of Studies"
+              company_dependent="1"
+              help="Head of Studies for the educational platform.">
+
+              <field
+                name="head_of_studies_id"
+                widget="res_users"
+                class="oe_inline"
+                options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
+
             </setting>
 
-            <setting string="ERP Manager" help="ERP Manager at the institution (non-technical)">
-              <div class="content-group mt8">
-                <field name="erp_manager_id" widget="res_users"
-                  options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"
-                  class="oe_inline"/>
-              </div>
-            </setting>
+            <setting
+              id="academy_erp_manager"
+              string="ERP Manager"
+              company_dependent="1"
+              help="ERP Manager at the institution (non-technical).">
 
-          </block>
-          <!-- Settings block: end -->
+              <field
+                name="erp_manager_id"
+                widget="res_users"
+                class="oe_inline"
+                options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
 
-
-          <!-- Settings block: begin -->
-          <block title="Professional qualification" name="academy_base_professional_qualification">
-
-            <setting string="Professional qualifications"
-              help=" View and edit professional qualifications.">
-              <div class="content-group mt8">
-                <button name="%(academy_base.action_professional_qualification_act_window)d"
-                  string="&#160;Update qualifications" type="action" class="oe_link"
-                  icon="fa-arrow-right"/>
-              </div>
-            </setting>
-
-            <setting string="Qualification levels" help="View and edit qualification levels.">
-              <div class="content-group mt8">
-                <button name="%(academy_base.action_qualification_level_act_window)d"
-                  string="&#160;Update levels" type="action" class="oe_link" icon="fa-arrow-right"/>
-              </div>
             </setting>
 
           </block>
-          <!-- Settings block: end -->
 
-          <!-- Settings block: begin -->
-          <block title="Professional information" name="academy_base_professional_information">
+          <block
+            title="Professional qualification"
+            name="academy_base_professional_qualification">
 
-            <setting string="Professional families" help="View and edit professional families">
-              <div class="content-group mt8">
-                <button name="%(academy_base.action_professional_family_act_window)d"
-                  string="&#160;Update families" type="action" class="oe_link" icon="fa-arrow-right"
-                />
-              </div>
+            <setting
+              id="academy_professional_qualifications"
+              string="Professional qualifications"
+              help="View and edit professional qualifications.">
+
+              <button
+                name="%(academy_base.action_professional_qualification_act_window)d"
+                string="Update qualifications"
+                type="action"
+                class="oe_link"
+                icon="fa-arrow-right"/>
+
             </setting>
 
-            <setting string="Professional areas" help="View and edit professional areas">
-              <div class="content-group mt8">
-                <button name="%(academy_base.action_professional_area_act_window)d"
-                  string="&#160;Update areas" type="action" class="oe_link" icon="fa-arrow-right"/>
-              </div>
-            </setting>
+            <setting
+              id="academy_qualification_levels"
+              string="Qualification levels"
+              help="View and edit qualification levels.">
 
-          </block>
-          <!-- Settings block: end -->
+              <button
+                name="%(academy_base.action_qualification_level_act_window)d"
+                string="Update levels"
+                type="action"
+                class="oe_link"
+                icon="fa-arrow-right"/>
 
-          <!-- Settings block: begin -->
-          <block title="Training specialities" name="academy_base_training_specialties">
-
-            <setting string="Professional sectors" help="View and edit professional sectors">
-              <div class="content-group mt8">
-                <button name="%(academy_base.action_professional_sector_act_window)d"
-                  string="&#160;Update sectors" type="action" class="oe_link" icon="fa-arrow-right"/>
-
-              </div>
-            </setting>
-
-            <setting string="Professional fields" help="View and edit professional fields">
-              <div class="content-group mt8">
-                <button name="%(academy_base.action_professional_field_act_window)d"
-                  string="&#160;Update fields" type="action" class="oe_link" icon="fa-arrow-right"/>
-              </div>
-            </setting>
-
-            <setting string="Training Program Lines" help="View and edit training program lines">
-              <div class="content-group mt8">
-                <button name="%(academy_base.action_training_program_line_act_window)d"
-                  string="&#160;Update program lines" type="action" class="oe_link"
-                  icon="fa-arrow-right"/>
-              </div>
-            </setting>
-
-            <setting string="Training units" help="View and edit training units">
-              <div class="content-group mt8">
-                <button name="%(academy_base.action_training_module_units_act_window)d"
-                  string="&#160;Update units" type="action" class="oe_link" icon="fa-arrow-right"/>
-              </div>
             </setting>
 
           </block>
-          <!-- Settings block: end -->
 
-          <!-- Settings block: begin -->
-          <block title="Training actions" name="academy_base_training_actions">
+          <block
+            title="Professional information"
+            name="academy_base_professional_information">
 
-            <setting string="Professional categories" help="View and edit professional categories.">
-              <div class="content-group mt8">
-                <button name="%(academy_base.action_professional_category_act_window)d"
-                  string="&#160;Update categories" type="action" class="oe_link"
-                  icon="fa-arrow-right"/>
-              </div>
+            <setting
+              id="academy_professional_families"
+              string="Professional families"
+              help="View and edit professional families.">
+
+              <button
+                name="%(academy_base.action_professional_family_act_window)d"
+                string="Update families"
+                type="action"
+                class="oe_link"
+                icon="fa-arrow-right"/>
+
             </setting>
 
-            <setting string="Application scopes" help="View and edit Application scopes.">
-              <div class="content-group mt8">
-                <button name="%(academy_base.action_application_scope_act_window)d"
-                  string="&#160;Update scopes" type="action" class="oe_link" icon="fa-arrow-right"/>
-              </div>
-            </setting>
+            <setting
+              id="academy_professional_areas"
+              string="Professional areas"
+              help="View and edit professional areas.">
 
-            <setting string="Training modalities" help="View and edit training modalities.">
-              <div class="content-group mt8">
-                <button name="%(academy_base.action_training_modality_act_window)d"
-                  string="&#160;Update modalities" type="action" class="oe_link"
-                  icon="fa-arrow-right"/>
-              </div>
-            </setting>
+              <button
+                name="%(academy_base.action_professional_area_act_window)d"
+                string="Update areas"
+                type="action"
+                class="oe_link"
+                icon="fa-arrow-right"/>
 
-            <setting string="Training methodologies" help="View and edit training methodologies.">
-              <div class="content-group mt8">
-                <button name="%(academy_base.action_training_methodology_act_window)d"
-                  string="&#160;Update methodologies" type="action" class="oe_link"
-                  icon="fa-arrow-right"/>
-              </div>
-            </setting>
-
-            <setting string="Knowledge areas" help="View and edit Knowledge areas.">
-              <div class="content-group mt8">
-                <button name="%(academy_base.action_knowledge_area_act_window)d"
-                  string="&#160;Update knowledge areas" type="action" class="oe_link"
-                  icon="fa-arrow-right"/>
-              </div>
             </setting>
 
           </block>
-          <!-- Settings block: end -->
 
-          <!-- Settings block: begin -->
-          <block title="Partners (Students and teachers)" name="academy_base_partner">
+          <block
+            title="Training specialities"
+            name="academy_base_training_specialties">
 
-            <setting string="Educational attainments"
+            <setting
+              id="academy_professional_sectors"
+              string="Professional sectors"
+              help="View and edit professional sectors.">
+
+              <button
+                name="%(academy_base.action_professional_sector_act_window)d"
+                string="Update sectors"
+                type="action"
+                class="oe_link"
+                icon="fa-arrow-right"/>
+
+            </setting>
+
+            <setting
+              id="academy_professional_fields"
+              string="Professional fields"
+              help="View and edit professional fields.">
+
+              <button
+                name="%(academy_base.action_professional_field_act_window)d"
+                string="Update fields"
+                type="action"
+                class="oe_link"
+                icon="fa-arrow-right"/>
+
+            </setting>
+
+            <setting
+              id="academy_training_program_lines"
+              string="Training program lines"
+              help="View and edit training program lines.">
+
+              <button
+                name="%(academy_base.action_training_program_line_act_window)d"
+                string="Update program lines"
+                type="action"
+                class="oe_link"
+                icon="fa-arrow-right"/>
+
+            </setting>
+
+            <setting
+              id="academy_training_units"
+              string="Training units"
+              help="View and edit training units.">
+
+              <button
+                name="%(academy_base.action_training_module_units_act_window)d"
+                string="Update units"
+                type="action"
+                class="oe_link"
+                icon="fa-arrow-right"/>
+
+            </setting>
+
+          </block>
+
+          <block
+            title="Training actions"
+            name="academy_base_training_actions">
+
+            <setting
+              id="academy_professional_categories"
+              string="Professional categories"
+              help="View and edit professional categories.">
+
+              <button
+                name="%(academy_base.action_professional_category_act_window)d"
+                string="Update categories"
+                type="action"
+                class="oe_link"
+                icon="fa-arrow-right"/>
+
+            </setting>
+
+            <setting
+              id="academy_application_scopes"
+              string="Application scopes"
+              help="View and edit application scopes.">
+
+              <button
+                name="%(academy_base.action_application_scope_act_window)d"
+                string="Update scopes"
+                type="action"
+                class="oe_link"
+                icon="fa-arrow-right"/>
+
+            </setting>
+
+            <setting
+              id="academy_training_modalities"
+              string="Training modalities"
+              help="View and edit training modalities.">
+
+              <button
+                name="%(academy_base.action_training_modality_act_window)d"
+                string="Update modalities"
+                type="action"
+                class="oe_link"
+                icon="fa-arrow-right"/>
+
+            </setting>
+
+            <setting
+              id="academy_training_methodologies"
+              string="Training methodologies"
+              help="View and edit training methodologies.">
+
+              <button
+                name="%(academy_base.action_training_methodology_act_window)d"
+                string="Update methodologies"
+                type="action"
+                class="oe_link"
+                icon="fa-arrow-right"/>
+
+            </setting>
+
+            <setting
+              id="academy_knowledge_areas"
+              string="Knowledge areas"
+              help="View and edit knowledge areas.">
+
+              <button
+                name="%(academy_base.action_knowledge_area_act_window)d"
+                string="Update knowledge areas"
+                type="action"
+                class="oe_link"
+                icon="fa-arrow-right"/>
+
+            </setting>
+
+          </block>
+
+          <block
+            title="Partners (Students and teachers)"
+            name="academy_base_partner">
+
+            <setting
+              id="academy_educational_attainments"
+              string="Educational attainments"
               help="Edit partner educational attainment information.">
-              <div class="content-group mt8">
-                <button name="%(academy_base.action_educational_attainment_act_window)d"
-                  string="&#160;Update educational attainments" type="action" class="oe_link"
-                  icon="fa-arrow-right"/>
+
+              <button
+                name="%(academy_base.action_educational_attainment_act_window)d"
+                string="Update educational attainments"
+                type="action"
+                class="oe_link"
+                icon="fa-arrow-right"/>
+
+            </setting>
+
+            <setting
+              id="academy_partner_validation"
+              string="Validation"
+              help="Validate partner input data.">
+
+              <div class="content-group">
+                <div class="row mt16">
+                  <label
+                    for="partner_email_required"
+                    string="Email"
+                    class="col-lg-4 o_light_label"/>
+                  <field
+                    name="partner_email_required"
+                    class="oe_inline"/>
+                </div>
+
+                <div class="row mt8">
+                  <label
+                    for="partner_vat_required"
+                    string="VAT"
+                    class="col-lg-4 o_light_label"/>
+                  <field
+                    name="partner_vat_required"
+                    class="oe_inline"/>
+                </div>
               </div>
+
             </setting>
 
-            <setting string="Validation" help="Validate partner input data.">
-              <group class="content-group mt8">
-                <field name="partner_email_required" class="oe_inline"/>
-                <field name="partner_vat_required" class="oe_inline"/>
-              </group>
-            </setting>
           </block>
-          <!-- Settings block: end -->
 
-          <!-- Settings block: begin -->
-          <block title="Sign-up" name="academy_base_signup">
+          <block
+            title="Sign-up"
+            name="academy_base_signup">
 
-            <setting string="Auto sign up"
+            <setting
+              id="academy_auto_signup"
+              string="Auto sign up"
+              company_dependent="1"
               help="Automatically sign up the student upon enrolling in a training action.">
-              <div class="content-group mt8">
-                <field name="auto_signup" class="oe_inline"/>
-              </div>
+
+              <field name="auto_signup"/>
+
             </setting>
 
           </block>
-          <!-- Settings block: end -->
 
-          <!-- Settings block: begin -->
-          <block title="Maintenance" name="academy_base_maintenance">
+          <block
+            title="Maintenance"
+            name="academy_base_maintenance">
 
-            <setting string="Maintenance tasks" help="View and edit maintenance tasks">
-              <div class="content-group mt8">
-                <button name="%(academy_base.action_maintenance_tasks_act_window)d"
-                  string="&#160;Update tasks" type="action" class="oe_link" icon="fa-arrow-right"/>
+            <setting
+              id="academy_maintenance_tasks"
+              string="Maintenance tasks"
+              help="View and edit maintenance tasks.">
 
-              </div>
+              <button
+                name="%(academy_base.action_maintenance_tasks_act_window)d"
+                string="Update tasks"
+                type="action"
+                class="oe_link"
+                icon="fa-arrow-right"/>
+
             </setting>
 
           </block>
-          <!-- Settings block: end -->
 
         </app>
+
       </xpath>
+
     </field>
   </record>
+
 </odoo>
