@@ -98,9 +98,9 @@ class AcademyStudent(models.Model):
         auto_join=False,
     )
 
-    # -- Computed field: last_deregister --------------------------------------
+    # -- Computed field: latest_enrolment_end --------------------------------------
 
-    last_deregister = fields.Datetime(
+    latest_enrolment_end = fields.Datetime(
         string="End of training",
         required=False,
         readonly=True,
@@ -111,8 +111,8 @@ class AcademyStudent(models.Model):
             "in the active company. Open-ended enrolments are treated as "
             "having an indefinite end."
         ),
-        compute="_compute_last_deregister",
-        search="_search_last_deregister",
+        compute="_compute_latest_enrolment_end",
+        search="_search_latest_enrolment_end",
     )
 
     @api.depends(
@@ -121,14 +121,14 @@ class AcademyStudent(models.Model):
         "enrolment_ids.active",
     )
     @api.depends_context("allowed_company_ids", "force_company")
-    def _compute_last_deregister(self):
+    def _compute_latest_enrolment_end(self):
         context = self.env.context.copy()
         context.update(active_test=False)
 
         enrolment_obj = self.env["academy.training.action.enrolment"]
         enrolment_obj = enrolment_obj.with_context(context).sudo()
 
-        domain = self._get_last_deregister_domain(self.ids)
+        domain = self._get_latest_enrolment_end_domain(self.ids)
 
         rows = enrolment_obj.read_group(
             domain=domain,
@@ -144,9 +144,9 @@ class AcademyStudent(models.Model):
         }
 
         for record in self:
-            record.last_deregister = last_out.get(record.id, False)
+            record.latest_enrolment_end = last_out.get(record.id, False)
 
-    def _search_last_deregister(self, operator, value):
+    def _search_latest_enrolment_end(self, operator, value):
         """Search students by their latest effective enrolment end."""
 
         context = dict(self.env.context, active_test=False)
@@ -157,10 +157,10 @@ class AcademyStudent(models.Model):
             .sudo()
         )
 
-        last_deregister_domain = self._get_last_deregister_domain()
+        latest_enrolment_end_domain = self._get_latest_enrolment_end_domain()
 
         rows = enrolment_obj.read_group(
-            domain=last_deregister_domain,
+            domain=latest_enrolment_end_domain,
             fields=["available_until:max"],
             groupby=["student_id"],
             lazy=False,
@@ -199,14 +199,14 @@ class AcademyStudent(models.Model):
 
         matched_ids = [
             student_id
-            for student_id, last_deregister in last_out.items()
-            if last_deregister and compare(last_deregister, value_dt)
+            for student_id, latest_enrolment_end in last_out.items()
+            if latest_enrolment_end and compare(latest_enrolment_end, value_dt)
         ]
 
         return [("id", "in", matched_ids)] if matched_ids else FALSE_DOMAIN
 
     @api.model
-    def _get_last_deregister_domain(self, student_ids=None):
+    def _get_latest_enrolment_end_domain(self, student_ids=None):
         now = fields.Datetime.now()
 
         domain = [

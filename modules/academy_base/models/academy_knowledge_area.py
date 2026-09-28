@@ -13,7 +13,7 @@ class AcademyKnowledgeArea(models.Model):
     _name = "academy.knowledge.area"
     _description = "Academy knowledge area"
 
-    _rec_names_search = ["name", "knowle_code"]  # noqa: RUF012
+    _rec_names_search = ["name", "code"]  # noqa: RUF012
     _order = "name ASC"
 
     name = fields.Char(
@@ -46,7 +46,7 @@ class AcademyKnowledgeArea(models.Model):
         help="Disable to archive without deleting.",
     )
 
-    knowle_code = fields.Char(
+    code = fields.Char(
         string="Code",
         required=True,
         readonly=False,
@@ -60,7 +60,7 @@ class AcademyKnowledgeArea(models.Model):
     _sql_constraints = [  # noqa: RUF012
         (
             "code_unique",
-            "unique(knowle_code)",
+            "unique(code)",
             "Knowledge area code must be unique.",
         ),
     ]

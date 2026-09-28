@@ -23,7 +23,7 @@
     <field name="active" eval="True"/>
     <field name="arch" type="xml">
       <list string="academy_professional_qualification_tree" create="1" delete="1" edit="1">
-        <field name="qualification_code"/>
+        <field name="code"/>
         <field name="name"/>
         <field name="qualification_level_id"/>
       </list>
@@ -57,7 +57,7 @@
           <group col="2">
             <field name="professional_family_id" class="oe_field_professional_family_id"/>
             <field name="professional_area_id" class="oe_field_professional_area_id"/>
-            <field name="qualification_code" class="oe_field_qualification_code"/>
+            <field name="code" class="oe_field_code"/>
             <field name="qualification_level_id" class="oe_field_qualification_level_id"/>
           </group>
           <notebook>
@@ -83,7 +83,7 @@
       <kanban create="1" delete="1" edit="1">
         <field name="image_128"/>
         <field name="name"/>
-        <field name="qualification_code"/>
+        <field name="code"/>
         <field name="qualification_level_id"/>
 
         <templates>
@@ -111,7 +111,7 @@
                   </li>
                   <li class="o_ellipsis">
                     <strong>Units:&#160;</strong>
-                    <field name="qualification_code"/>
+                    <field name="code"/>
                   </li>
                 </ul>
               </div>
@@ -135,7 +135,7 @@
         <field name="name"/>
         <field name="professional_family_id"/>
         <field name="professional_area_id"/>
-        <field name="qualification_code"/>
+        <field name="code"/>
         <field name="qualification_level_id"/>
 
         <filter string="By family" name="qualification_grouped_by_family" domain="[]"

@@ -14,7 +14,7 @@ class AcademyQualificationLevel(models.Model):
     _description = "Academy qualification level"
 
     _rec_name = "name"
-    _rec_names_search = ["name", "level"]  # noqa: RUF012
+    _rec_names_search = ["name", "code"]  # noqa: RUF012
     _order = "sequence ASC, name ASC"
 
     name = fields.Char(
@@ -38,7 +38,7 @@ class AcademyQualificationLevel(models.Model):
         translate=True,
     )
 
-    level = fields.Char(
+    code = fields.Char(
         string="Code",
         required=True,
         readonly=False,
@@ -72,7 +72,7 @@ class AcademyQualificationLevel(models.Model):
     _sql_constraints = [  # noqa: RUF012
         (
             "level_unique",
-            "unique(level)",
+            "unique(code)",
             "Qualification level code must be unique.",
         ),
     ]

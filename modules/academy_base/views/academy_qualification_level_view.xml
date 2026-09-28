@@ -24,7 +24,7 @@
     <field name="arch" type="xml">
       <list string="academy_qualification_level_tree" create="1" delete="1" edit="1">
         <field name="sequence" class="oe_field_sequence" widget="handle"/>
-        <field name="level" class="oe_field_level"/>
+        <field name="code" class="oe_field_code"/>
         <field name="name" class="oe_field_name"/>
       </list>
     </field>
@@ -52,7 +52,7 @@
             </h1>
           </div>
           <group col="2">
-            <field name="level" class="oe_field_level"/>
+            <field name="code" class="oe_field_code"/>
             <field name="description" class="oe_field_description"
               placeholder="Enter new description"/>
           </group>
@@ -72,7 +72,7 @@
     <field name="arch" type="xml">
       <search string="academy_qualification_level_search">
         <field name="name"/>
-        <field name="level" string="Code"/>
+        <field name="code" string="Code"/>
 
         <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
 

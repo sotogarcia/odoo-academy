@@ -1554,11 +1554,11 @@ msgstr "Formación"
 #. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_competency_unit__code
 #: model:ir.model.fields,field_description:academy_base.field_academy_educational_attainment__level
-#: model:ir.model.fields,field_description:academy_base.field_academy_knowledge_area__knowle_code
+#: model:ir.model.fields,field_description:academy_base.field_academy_knowledge_area__code
 #: model:ir.model.fields,field_description:academy_base.field_academy_professional_field__code
-#: model:ir.model.fields,field_description:academy_base.field_academy_professional_qualification__qualification_code
+#: model:ir.model.fields,field_description:academy_base.field_academy_professional_qualification__code
 #: model:ir.model.fields,field_description:academy_base.field_academy_professional_sector__code
-#: model:ir.model.fields,field_description:academy_base.field_academy_qualification_level__level
+#: model:ir.model.fields,field_description:academy_base.field_academy_qualification_level__code
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action__code
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action_enrolment__action_code
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action_line__code
@@ -2588,7 +2588,7 @@ msgid "End date must be greater than start date"
 msgstr "La fecha de finalización debe ser mayor que la fecha de inicio"
 
 #. module: academy_base
-#: model:ir.model.fields,help:academy_base.field_academy_student__last_deregister
+#: model:ir.model.fields,help:academy_base.field_academy_student__latest_enrolment_end
 msgid "End date of the most recent enrolment (empty if still open)."
 msgstr "Fecha de fin de la inscripción más reciente; 9999-12-31 si está abierta."
 
@@ -2603,7 +2603,7 @@ msgid "End of action"
 msgstr "Final de la acción"
 
 #. module: academy_base
-#: model:ir.model.fields,field_description:academy_base.field_academy_student__last_deregister
+#: model:ir.model.fields,field_description:academy_base.field_academy_student__latest_enrolment_end
 msgid "End of training"
 msgstr "Final de la formación"
 
@@ -2701,10 +2701,10 @@ msgstr "Introducir el código del módulo"
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_educational_attainment__level
-#: model:ir.model.fields,help:academy_base.field_academy_knowledge_area__knowle_code
+#: model:ir.model.fields,help:academy_base.field_academy_knowledge_area__code
 #: model:ir.model.fields,help:academy_base.field_academy_professional_field__code
 #: model:ir.model.fields,help:academy_base.field_academy_professional_sector__code
-#: model:ir.model.fields,help:academy_base.field_academy_qualification_level__level
+#: model:ir.model.fields,help:academy_base.field_academy_qualification_level__code
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_competency_unit_form
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_knowledge_area_form
 #: model_terms:ir.ui.view,arch_db:academy_base.view_academy_training_module_form
@@ -2730,7 +2730,7 @@ msgid "Enter new description"
 msgstr "Introduzca una nueva descripción"
 
 #. module: academy_base
-#: model:ir.model.fields,help:academy_base.field_academy_professional_qualification__qualification_code
+#: model:ir.model.fields,help:academy_base.field_academy_professional_qualification__code
 #: model:ir.model.fields,help:academy_base.field_academy_training_action__code
 msgid "Enter new internal code"
 msgstr "Introduzca un nuevo código interno"

@@ -23,7 +23,7 @@
     <field name="active" eval="True"/>
     <field name="arch" type="xml">
       <list string="academy_knowledge_area_tree" create="1" delete="1" edit="1">
-        <field name="knowle_code"/>
+        <field name="code"/>
         <field name="name"/>
         <field name="description"/>
       </list>
@@ -52,7 +52,7 @@
             </h1>
           </div>
           <group col="2">
-            <field name="knowle_code" class="oe_field_knowle_code" placeholder="Enter new code"/>
+            <field name="code" class="oe_field_code" placeholder="Enter new code"/>
             <field name="description" class="oe_field_description"
               placeholder="Enter new description"/>
           </group>
@@ -72,7 +72,7 @@
     <field name="arch" type="xml">
       <search string="academy_knowledge_area_search">
         <field name="name"/>
-        <field name="knowle_code"/>
+        <field name="code"/>
 
         <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
 

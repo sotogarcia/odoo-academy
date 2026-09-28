@@ -19,7 +19,7 @@ class AcademyProfessionalQualification(models.Model):
 
     _rec_names_search = [  # noqa: RUF012
         "name",
-        "qualification_code",
+        "code",
     ]
     _order = "name ASC"
 
@@ -85,7 +85,7 @@ class AcademyProfessionalQualification(models.Model):
         auto_join=False,
     )
 
-    qualification_code = fields.Char(
+    code = fields.Char(
         string="Code",
         required=True,
         readonly=False,
