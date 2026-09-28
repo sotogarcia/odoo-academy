@@ -72,9 +72,10 @@ of reference catalogs and training structures across the platform.
         "data/res_partner_category_data.xml",
         # Security groups must be loaded before server actions and other data
         # records that reference them.
+        "data/ir_cron_data.xml",
         "security/academy_base.xml",
-        "data/ir_sequence_data.xml",
         "data/ir_actions_server_data.xml",
+        "data/ir_sequence_data.xml",
         "data/academy_training_methodology_data.xml",
         "data/academy_training_modality_data.xml",
         "data/academy_application_scope_data.xml",
@@ -88,7 +89,6 @@ of reference catalogs and training structures across the platform.
         "data/academy_student_data.xml",
         "data/academy_training_framework_data.xml",
         "data/academy_maintenance_task.xml",
-        "data/ir_cron_data.xml",
         "security/ir.model.access.csv",
         "security/academy_student.xml",
         "views/academy_base.xml",
