@@ -1664,7 +1664,7 @@ class AcademyTrainingAction(models.Model):
         domain = AND([domain, [("parent_action_id", "=", self.id)]])
         
         action.update({
-            "name": name
+            "name": name,
             "domain": domain,
             "context": ctx
         })
