@@ -1616,12 +1616,12 @@ class AcademyTrainingAction(models.Model):
         name = self.env._("Enrolments: {}").format(self.display_name)
 
         act_xid = "academy_base.action_training_action_enrolment_act_window"
-        action = self.env.ref(act_xid)
+        action = self.env['ir.actions.act_window']._for_xml_id(act_xid)
 
         parent_action_id = self.parent_id.id if self.parent_id else self.id
 
         ctx = self.env.context.copy()
-        ctx.update(safe_eval(action.context))
+        ctx.update(safe_eval(action["context"]))
         ctx.update(
             {
                 "default_training_action_id": self.id,
@@ -1629,22 +1629,16 @@ class AcademyTrainingAction(models.Model):
             }
         )
 
-        domain = self._eval_domain(action.domain)
+        domain = self._eval_domain(action["domain"])
         domain = AND([domain, [("training_action_id", "=", self.id)]])
-
-        action_values = {
+        
+        action.update({
             "name": name,
-            "type": action.type,
-            "help": action.help,
-            "domain": domain,
             "context": ctx,
-            "res_model": action.res_model,
-            "target": action.target,
-            "view_mode": action.view_mode,
-            "search_view_id": action.search_view_id.id,
-        }
+            "domain": domain
+        })
 
-        return action_values
+        return action
 
     def view_rollup_enrolments(self):
         self.ensure_one()
@@ -1652,7 +1646,6 @@ class AcademyTrainingAction(models.Model):
         name = self.env._("Enrolments: {}").format(self.display_name)
 
         act_xid = "academy_base.action_training_action_enrolment_act_window"
-        action = self.env.ref(act_xid)
         action = self.env['ir.actions.act_window']._for_xml_id(act_xid)
 
         parent_action_id = self.parent_id.id if self.parent_id else self.id
@@ -1671,6 +1664,7 @@ class AcademyTrainingAction(models.Model):
         domain = AND([domain, [("parent_action_id", "=", self.id)]])
         
         action.update({
+            "name": name
             "domain": domain,
             "context": ctx
         })

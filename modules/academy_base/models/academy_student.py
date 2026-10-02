@@ -447,7 +447,7 @@ class AcademyStudent(models.Model):
             module="academy_base",
             name="action_training_action_enrolment_act_window",
         )
-        action = self.env.ref(act_xid)
+        action = self.env['ir.actions.act_window']._for_xml_id(act_xid)
 
         view_xid = "{module}.{name}".format(
             module="academy_base",
@@ -455,27 +455,20 @@ class AcademyStudent(models.Model):
         )
 
         ctx = self.env.context.copy()
-        ctx.update(safe_eval(action.context or "{}", {"uid": self.env.uid}))
+        ctx.update(safe_eval(action["context"] or "{}", {"uid": self.env.uid}))
         ctx.update({"default_student_id": self.id})
         ctx.update({"list_view_ref": view_xid})
 
-        domain = self._eval_domain(action.domain)
+        domain = self._eval_domain(action["domain"])
         domain = AND([domain, [("student_id", "=", self.id)]])
-
-        action_values = {
+        
+        action.update({
             "name": name,
-            "type": action.type,
-            "help": action.help,
-            "domain": domain,
             "context": ctx,
-            "res_model": action.res_model,
-            "target": action.target,  # "current",
-            "view_mode": action.view_mode,
-            "search_view_id": action.search_view_id.id,
-            "nodestroy": True,
-        }
+            "domain": domain
+        })
 
-        return action_values
+        return action
 
     def fetch_enrolled(
         self, training_actions=None, point_in_time=None, archived=False
