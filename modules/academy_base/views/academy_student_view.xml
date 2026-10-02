@@ -193,8 +193,7 @@
     <field name="view_mode">kanban,list,form,activity</field>
     <field name="path">academy-student</field>
     <field name="target">current</field>
-    <field name="domain"
-      eval="[('id', '&lt;&gt;', ref('academy_base.academy_student_default_template'))]"/>
+    <field name="domain" eval="[]"/>
     <field name="context">{}</field>
     <field name="search_view_id" ref="view_academy_student_search"/>
     <field name="help" type="html">

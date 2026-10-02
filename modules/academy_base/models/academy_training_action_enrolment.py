@@ -82,6 +82,7 @@ from ..utils.record_utils import (
     create_domain_for_ids,
     create_domain_for_interval,
     ensure_recordset,
+    prevent_field_changes,
 )
 from ..utils.sql_helpers import create_index
 
@@ -919,10 +920,13 @@ class AcademyTrainingActionEnrolment(models.Model):
 
     def write(self, values):
         """Update enrolments and keep full-enrolment lines synchronized."""
+
+        fields_to_freeze = ("student_id", "training_action_id")
+        prevent_field_changes(self, values, fields_to_freeze)
+
         sanitize_code(values, "upper")
         self._ensure_parent_action(values)
 
-        self._check_that_the_student_is_not_the_template(values)
         self._ensure_auto_signup(values)
 
         grouped_values = self._prepare_full_enrolment_write(values)
@@ -941,28 +945,19 @@ class AcademyTrainingActionEnrolment(models.Model):
 
     @api.returns("self", lambda value: value.id)
     def copy(self, default=None):
-        """Prevents new record of the inherited (_inherits) models will
-        be created. It also adds the following sequence value.
+        """Copy the enrolment using its definitive structural relations.
 
-        Assign a temporaty student to allow the copy.
+        ``student_id`` and ``training_action_id`` are immutable once the new
+        enrolment has been created. Any overrides for those fields must therefore
+        be supplied in ``default`` so the copied enrolment is created directly
+        with its final values.
         """
-
-        parent = super()
-
-        xmlid = "academy_base.academy_student_default_template"
-        imd_obj = self.env["ir.model.data"]
-        student = imd_obj.xmlid_to_object(xmlid, raise_if_not_found=True)
+        self.ensure_one()
 
         default = dict(default or {})
-        default.update(
-            {
-                "student_id": student.id,
-                "training_action_id": self.training_action_id.id,
-                "code": default_code(self.env, _CODE_SEQUENCE),
-            }
-        )
+        default["code"] = default_code(self.env, _CODE_SEQUENCE)
 
-        return parent.copy(default)
+        return super().copy(default)
 
     # Public methods
     # -------------------------------------------------------------------------
@@ -1455,55 +1450,6 @@ class AcademyTrainingActionEnrolment(models.Model):
             parent_id = parent_map.get(action_id)
             if parent_id:
                 values["parent_action_id"] = parent_id
-
-    def _check_that_the_student_is_not_the_template(self, values):
-        """When registrations are duplicated, the temporary student is
-        assigned to them. This method generates a validation error when one of
-        them tries to be modified without establishing a real student for it.
-        """
-
-        msg = self.env._(
-            "You must assign a real student to each of the enrolments."
-        )
-
-        temp_student_xid = "academy_base.academy_student_default_template"
-        temp_student = self.env.ref(temp_student_xid)
-
-        if temp_student.id in self.student_id.ids:
-            new_student_id = values.get("student_id", False)
-            if not new_student_id or new_student_id == temp_student.id:
-                raise ValidationError(msg)
-
-    @api.model
-    def remove_temporary_student_enrolments(self):
-        """When registrations are duplicated, the temporary student is
-        assigned to them. These must be edited to establish the corresponding
-        student or, otherwise, a scheduled task will invoke this method to
-        remove them.
-        """
-
-        temp_student_xid = "academy_base.academy_student_default_template"
-        temp_student = self.env.ref(temp_student_xid)
-
-        one_hour_ago = fields.Datetime.now() - timedelta(hours=1)
-        one_hour_ago = fields.Datetime.to_string(one_hour_ago)
-
-        student_domain = [
-            "&",
-            ("student_id", "=", temp_student.id),
-            "|",
-            ("create_date", "=", False),
-            ("create_date", "<", one_hour_ago),
-        ]
-        domain = AND([INCLUDE_ARCHIVED_DOMAIN, student_domain])
-        enrolment_obj = self.env["academy.training.action.enrolment"]
-        enrolment_set = enrolment_obj.search(domain)
-
-        _logger.info(
-            "Temporary student enrolments will be removed: %d",
-            len(enrolment_set),
-        )
-        enrolment_set.unlink()
 
     @api.model
     def _perform_a_full_enrolment(self, values_list):

@@ -6426,11 +6426,6 @@ msgid "Remove target program lines that do not match the source program."
 msgstr "Eliminar las líneas de programa destino que no coincidan con el programa origen."
 
 #. module: academy_base
-#: model:ir.actions.server,name:academy_base.ir_cron_remove_temporary_student_enrollments_ir_actions_server
-msgid "Remove temporary student enrolments"
-msgstr "Eliminar inscripciones temporales de estudiantes"
-
-#. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_student__vat_required
 #: model:ir.model.fields,field_description:academy_base.field_academy_support_staff__vat_required
 #: model:ir.model.fields,field_description:academy_base.field_academy_teacher__vat_required

@@ -495,6 +495,103 @@ def one2many_count_search_domain(
     return [("id", "in", matched_ids)]
 
 
+def many2many_count_search_domain(
+    parent_set,
+    m2m_field_name,
+    operator,
+    value,
+    domain=None,
+):
+    """Build a parent domain by comparing Many2many record counts.
+
+    Matching related records are grouped by the parent column of the
+    Many2many relation table. Parents absent from the grouped result are
+    treated as having a count of zero.
+
+    The domain and context declared on the Many2many field are respected,
+    together with any additional domain supplied by the caller. Access
+    rights, record rules and ``active_test`` behavior are applied to the
+    related model through its ORM query.
+
+    Args:
+        parent_set (odoo.models.Model): Recordset of the parent model.
+        m2m_field_name (str): Name of the stored Many2many field defined on
+            the parent model.
+        operator (str): Comparison operator to apply to the related-record
+            count.
+        value (int | bool): Value to compare against the related-record count.
+        domain (list | tuple | str | callable | None, optional): Additional
+            domain to apply to the related records. Defaults to None.
+
+    Returns:
+        list: ORM domain to apply to the parent model.
+
+    Raises:
+        TypeError: If ``m2m_field_name`` is not a stored Many2many field, or
+            if a domain or context has an unsupported type.
+        ValueError: If a domain or context expression cannot be evaluated.
+        odoo.exceptions.AccessError: If the current user cannot read the
+            related model or the fields involved in the operation.
+    """
+    if isinstance(value, bool):
+        value = int(value)
+
+    compare = OPERATOR_MAP.get(operator)
+    if not compare:
+        return FALSE_DOMAIN
+
+    field, comodel, related_domain, _counts = _prepare_relational_count(
+        parent_set,
+        m2m_field_name,
+        "many2many",
+        domain,
+    )
+
+    child_query = comodel._search(related_domain)
+
+    relation_table = SQL.identifier(field.relation)
+    parent_column = SQL.identifier(field.column1)
+    child_column = SQL.identifier(field.column2)
+
+    sql = SQL(
+        """
+        SELECT %(parent_column)s, COUNT(*)
+          FROM %(relation_table)s
+         WHERE %(child_column)s IN %(child_query)s
+         GROUP BY %(parent_column)s
+        """,
+        parent_column=parent_column,
+        relation_table=relation_table,
+        child_column=child_column,
+        child_query=child_query.subselect(),
+    )
+
+    counts = dict(parent_set.env.execute_query(sql))
+
+    if compare(0, value):
+        excluded_ids = [
+            parent_id
+            for parent_id, count in counts.items()
+            if not compare(count, value)
+        ]
+
+        if not excluded_ids:
+            return TRUE_DOMAIN
+
+        return [("id", "not in", excluded_ids)]
+
+    matched_ids = [
+        parent_id
+        for parent_id, count in counts.items()
+        if compare(count, value)
+    ]
+
+    if not matched_ids:
+        return FALSE_DOMAIN
+
+    return [("id", "in", matched_ids)]
+
+
 def is_debug_mode(env):
     """Check whether the current Odoo context enables a debug mode.
 

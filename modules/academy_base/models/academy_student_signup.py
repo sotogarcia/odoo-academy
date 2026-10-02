@@ -7,8 +7,14 @@
 from logging import getLogger
 
 from odoo import api, fields, models
+from odoo.addons.academy_base.utils.helpers import (
+    one2many_count,
+    one2many_count_search_domain,
+)
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools.translate import _
+
+from ..utils.record_utils import prevent_field_changes
 
 _logger = getLogger(__name__)
 
@@ -39,6 +45,7 @@ class AcademyStudentSignup(models.Model):
         ondelete="restrict",
         auto_join=False,
         tracking=True,
+        copy=True,
     )
 
     student_id = fields.Many2one(
@@ -54,6 +61,7 @@ class AcademyStudentSignup(models.Model):
         ondelete="cascade",
         auto_join=False,
         tracking=True,
+        copy=True,
     )
 
     signup_code = fields.Char(
@@ -61,11 +69,12 @@ class AcademyStudentSignup(models.Model):
         required=True,
         readonly=True,
         index=True,
-        default=lambda self: self._next_signup_code(self.env.company.id),
+        default=lambda self: _("New"),
         help="Unique code assigned when the student signs up at the centre.",
         size=50,
         translate=False,
         tracking=True,
+        copy=False,
     )
 
     signup_date = fields.Datetime(
@@ -76,6 +85,7 @@ class AcademyStudentSignup(models.Model):
         default=lambda self: fields.Datetime.now(),
         help="Date and time when the student signed up at the centre.",
         tracking=True,
+        copy=False,
     )
 
     comment = fields.Html(
@@ -94,6 +104,73 @@ class AcademyStudentSignup(models.Model):
         translate=False,
         copy=False,
     )
+
+    enrolment_ids = fields.One2many(
+        string="Enrolments",
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help="Enrolments associated with this student sign-up.",
+        comodel_name="academy.training.action.enrolment",
+        inverse_name="signup_id",
+        domain=[],
+        context={},
+        auto_join=False,
+        copy=False,
+    )
+
+    enrolment_count = fields.Integer(
+        string="Enrolment count",
+        required=False,
+        readonly=True,
+        index=False,
+        default=0,
+        help="Number of active enrolments associated with this sign-up.",
+        compute="_compute_enrolment_count",
+        search="_search_enrolment_count",
+    )
+
+    enrolment_count_str = fields.Char(
+        string="Enrolment summary",
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help="Number of current enrolments / total number of active enrolments.",
+        translate=False,
+        compute="_compute_enrolment_count",
+    )
+
+    @api.depends(
+        "enrolment_ids",
+        "enrolment_ids.active",
+        "enrolment_ids.register",
+        "enrolment_ids.deregister",
+    )
+    def _compute_enrolment_count(self):
+        totals = one2many_count(self, "enrolment_ids")
+
+        domain = [("is_current", "=", True)]
+        currents = one2many_count(self, "enrolment_ids", domain)
+
+        for signup in self:
+            total_count = totals.get(signup.id, 0)
+            signup.enrolment_count = total_count
+
+            current_count = currents.get(signup.id, 0)
+            signup.enrolment_count_str = (
+                f"{current_count: >3} / {total_count: <3}"
+            )
+
+    @api.model
+    def _search_enrolment_count(self, operator, value):
+        return one2many_count_search_domain(
+            self,
+            "enrolment_ids",
+            operator,
+            value,
+        )
 
     # -- Constraints
     # -------------------------------------------------------------------------
@@ -165,7 +242,9 @@ class AcademyStudentSignup(models.Model):
 
     @api.model
     def _ensure_signup_data(self, values):
-        if not values.get("signup_code"):
+        i18n_new = _("New")
+
+        if values.get("signup_code", i18n_new) == i18n_new:
             company_id = values.get("company_id") or self.env.company.id
             values["signup_code"] = self._next_signup_code(company_id)
 
@@ -173,52 +252,14 @@ class AcademyStudentSignup(models.Model):
             values["signup_date"] = fields.Datetime.now()
 
     def _assert_no_enrolments_before_unlink(self):
-        """Raise ValidationError if any (student, company) pair has enrolments.
+        """Raise ValidationError if any sign-up has related enrolments."""
 
-        Efficient batch check:
-        - Single pass to collect required (student_id, company_id) pairs.
-        - One grouped query to enrolments to find existing pairs.
-        - If any required pair exists in enrolments, raise ValidationError.
-        """
+        signups = self.with_context(active_test=False)
 
-        # 1) Collect all required pairs (student, company)
-        student_ids, company_ids, required_pairs = set(), set(), set()
-        for signup in self:
-            student_id = signup.student_id.id
-            company_id = signup.company_id.id
-            if student_id and company_id:
-                student_ids.add(student_id)
-                company_ids.add(company_id)
-                required_pairs.add((student_id, company_id))
-
-        if not required_pairs:
-            return
-
-        # 2) Fetch existing enrolment pairs (single grouped query)
-        enrol_model = (
-            self.env["academy.training.action.enrolment"]
-            .with_context(active_test=False)
-            .sudo()
-        )
-        rows = enrol_model.read_group(
-            domain=[
-                ("student_id", "in", list(student_ids)),
-                ("company_id", "in", list(company_ids)),
-            ],
-            fields=["id:count"],
-            groupby=["student_id", "company_id"],
-            lazy=False,
-        )
-        existing_pairs = {
-            (row["student_id"][0], row["company_id"][0]) for row in rows
-        }
-
-        # 3) If any of the pairs to be deleted have enrolments, block them.
-        blocking_pairs = required_pairs & existing_pairs
-        if blocking_pairs:
+        if signups.filtered("enrolment_ids"):
             message = self.env._(
                 "Cannot remove sign-up records because there are enrolments "
-                "for at least one student/company in this batch."
+                "for at least one sign-up in this batch."
             )
 
             raise ValidationError(message)
@@ -242,18 +283,23 @@ class AcademyStudentSignup(models.Model):
         Prevents the user or company from being changed.
         """
 
-        self._prevent_field_changes(values, "student_id", _("Student"))
-        self._prevent_field_changes(values, "company_id", _("Company"))
+        fields_to_freeze = ("student_id", "company_id")
+        prevent_field_changes(self, values, fields_to_freeze)
 
-        parent = super()
-        result = parent.write(values)
-
-        return result
+        return super().write(values)
 
     def unlink(self):
         self._assert_no_enrolments_before_unlink()
 
         return super().unlink()
+
+    def copy(self, default=None):
+        self.ensure_one()
+
+        default = dict(default or {})
+        self._check_copy_target(default)
+
+        return super().copy(default)
 
     @api.depends(
         "signup_code",
@@ -297,45 +343,24 @@ class AcademyStudentSignup(models.Model):
     def _compute_short_display_name(self, na):
         return self.signup_code or na
 
-    def _prevent_field_changes(self, values, field_name, field_caption=None):
-        """Prevent an existing Many2one value from being removed or changed.
+    def _check_copy_target(self, default):
+        """Validate that a copied sign-up targets another student or company.
 
-        The check is performed only when ``field_name`` is explicitly included in
-        the values being written. Writing unrelated fields does not trigger the
-        validation.
+        The copied record must differ from the original sign-up in at least one
+        component of its functional identity: `student_id` or `company_id`.
 
-        Args:
-            values (dict): Values supplied to ``write``.
-            field_name (str): Name of the Many2one field that must remain
-                unchanged.
-            field_caption (str, optional): Human-readable field name used in
-                validation messages. Defaults to the technical field name.
-
-        Returns:
-            bool: True when the supplied values do not alter the protected field.
-
-        Raises:
-            ValidationError: If the protected field is cleared or changed.
+        :param dict default: Values supplied to `copy()` for the new record.
+        :raises UserError: If both student and company remain unchanged.
         """
-        if field_name not in values:
-            return True
+        self.ensure_one()
 
-        field_caption = field_caption or field_name
-        field_value = values.get(field_name, False)
+        company_id = default.get("company_id", self.company_id.id)
+        student_id = default.get("student_id", self.student_id.id)
 
-        if not field_value:
-            message = _("The field '%s' is required.")
-            raise ValidationError(message % field_caption)
-
-        for record in self:
-            current_value = (
-                record[field_name].id if record[field_name] else False
+        if (
+            company_id == self.company_id.id
+            and student_id == self.student_id.id
+        ):
+            raise UserError(
+                _("Duplication is only allowed for a new student or company.")
             )
-
-            if field_value != current_value:
-                message = _(
-                    "The field '%s' cannot be changed once it has been set."
-                )
-                raise ValidationError(message % field_caption)
-
-        return True

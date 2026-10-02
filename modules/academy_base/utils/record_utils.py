@@ -26,6 +26,13 @@ _logger = getLogger(__name__)
 ARCHIVED_DOMAIN = [("active", "!=", True)]
 INCLUDE_ARCHIVED_DOMAIN = ["|", ("active", "=", True), ("active", "!=", True)]
 
+_PREVENT_FIELD_CHANGES_SUPPORTED_TYPES = frozenset(
+    {
+        "many2one",
+        "selection",
+    }
+)
+
 
 def get_active_records(env, expected=None):
     """Return the active records defined in the Odoo context.
@@ -564,3 +571,86 @@ def update_target(env, context_key, new_value):
     record.write(write_values)
 
     return record
+
+
+def _validate_prevent_field_changes_fields(records, field_names):
+    """Validate fields supported by ``prevent_field_changes``.
+
+    Args:
+        records (odoo.models.BaseModel): Recordset whose fields are checked.
+        field_names (Iterable[str]): Field names to validate.
+
+    Returns:
+        bool: True when all fields are supported.
+
+    Raises:
+        KeyError: If a field does not exist on the model.
+        TypeError: If a field type is not supported.
+    """
+    for field_name in field_names:
+        field = records._fields[field_name]
+
+        if field.type not in _PREVENT_FIELD_CHANGES_SUPPORTED_TYPES:
+            raise TypeError(
+                f"Field {field_name!r} of type {field.type!r} is not "
+                "supported by prevent_field_changes()."
+            )
+
+    return True
+
+
+def prevent_field_changes(records, values, field_names):
+    """Prevent selected fields from changing on existing records.
+
+    Fields not present in ``values`` are ignored. Writing the current value
+    again is allowed; replacing or clearing an existing value is rejected.
+
+    Only explicitly supported field types can be checked. Unsupported types
+    raise ``TypeError`` so new Odoo or extension field types are not accepted
+    implicitly.
+
+    Args:
+        records (odoo.models.BaseModel): Records being updated.
+        values (dict): Values supplied to ``write``.
+        field_names (str | Iterable[str]): Fields that must remain immutable.
+
+    Returns:
+        bool: True when none of the protected fields would change.
+
+    Raises:
+        KeyError: If a field does not exist on the model.
+        TypeError: If a protected field has an unsupported field type.
+        ValidationError: If a protected field would be changed.
+        ValueError: If the supplied value is invalid for the field.
+    """
+    if isinstance(field_names, str):
+        field_names = (field_names,)
+
+    fields_to_check = tuple(
+        field_name for field_name in field_names if field_name in values
+    )
+
+    if not fields_to_check:
+        return True
+
+    _validate_prevent_field_changes_fields(records, fields_to_check)
+
+    message = records.env._("Cannot modify '%(field)s' on created records.")
+
+    for record in records:
+        for field_name in fields_to_check:
+            field = record._fields[field_name]
+
+            current_value = field.convert_to_cache(
+                record[field_name],
+                record,
+            )
+            new_value = field.convert_to_cache(
+                values[field_name],
+                record,
+            )
+
+            if new_value != current_value:
+                raise ValidationError(message % {"field": field.string})
+
+    return True
