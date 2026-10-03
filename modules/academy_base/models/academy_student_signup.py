@@ -172,6 +172,52 @@ class AcademyStudentSignup(models.Model):
             value,
         )
 
+    latest_enrolment_end = fields.Datetime(
+        string="End of training",
+        required=False,
+        readonly=True,
+        index=True,
+        default=None,
+        help="Latest effective enrolment end.",
+        compute="_compute_latest_enrolment_end",
+        store=True,
+    )
+
+    @api.depends(
+        "enrolment_ids",
+        "enrolment_ids.available_until",
+        "enrolment_ids.active",
+        "company_id.include_archived",
+    )
+    def _compute_latest_enrolment_end(self):
+        enrolment_obj = self.env["academy.training.action.enrolment"]
+
+        context = dict(self.env.context, active_test=False)
+        enrolment_obj = enrolment_obj.with_context(context).sudo()
+
+        domain = [
+            ("signup_id", "in", self.ids),
+            "|",
+            ("signup_id.company_id.include_archived", "=", True),
+            ("active", "=", True),
+        ]
+
+        rows = enrolment_obj.read_group(
+            domain=domain,
+            fields=["available_until:max"],
+            groupby=["signup_id"],
+            lazy=False,
+        )
+
+        latest_end = {
+            row["signup_id"][0]: row.get("available_until")
+            for row in rows
+            if row.get("signup_id")
+        }
+
+        for signup in self:
+            signup.latest_enrolment_end = latest_end.get(signup.id, False)
+
     # -- Constraints
     # -------------------------------------------------------------------------
 

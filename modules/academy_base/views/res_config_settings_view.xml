@@ -319,6 +319,16 @@
 
             </setting>
 
+            <setting
+              id="academy_include_archived"
+              string="Include archived"
+              company_dependent="1"
+              help="Include archived records when computing the latest enrolment end.">
+
+              <field name="include_archived"/>
+
+            </setting>
+
           </block>
 
           <block

@@ -5,7 +5,7 @@
 
 from odoo import api, fields, models
 from odoo.exceptions import AccessError
-from odoo.osv.expression import AND, FALSE_DOMAIN
+from odoo.osv.expression import AND
 from odoo.tools.safe_eval import safe_eval
 from odoo.tools.translate import _
 
@@ -97,135 +97,6 @@ class AcademyStudent(models.Model):
         context={},
         auto_join=False,
     )
-
-    # -- Computed field: latest_enrolment_end --------------------------------------
-
-    latest_enrolment_end = fields.Datetime(
-        string="End of training",
-        required=False,
-        readonly=True,
-        index=True,
-        default=None,
-        help=(
-            "Latest effective enrolment end used for retention calculations "
-            "in the active company. Open-ended enrolments are treated as "
-            "having an indefinite end."
-        ),
-        compute="_compute_latest_enrolment_end",
-        search="_search_latest_enrolment_end",
-    )
-
-    @api.depends(
-        "enrolment_ids",
-        "enrolment_ids.available_until",
-        "enrolment_ids.active",
-    )
-    @api.depends_context("allowed_company_ids", "force_company")
-    def _compute_latest_enrolment_end(self):
-        context = self.env.context.copy()
-        context.update(active_test=False)
-
-        enrolment_obj = self.env["academy.training.action.enrolment"]
-        enrolment_obj = enrolment_obj.with_context(context).sudo()
-
-        domain = self._get_latest_enrolment_end_domain(self.ids)
-
-        rows = enrolment_obj.read_group(
-            domain=domain,
-            fields=["available_until:max"],
-            groupby=["student_id"],
-            lazy=False,
-        )
-
-        last_out = {
-            row["student_id"][0]: row.get("available_until")
-            for row in rows
-            if row.get("student_id")
-        }
-
-        for record in self:
-            record.latest_enrolment_end = last_out.get(record.id, False)
-
-    def _search_latest_enrolment_end(self, operator, value):
-        """Search students by their latest effective enrolment end."""
-
-        context = dict(self.env.context, active_test=False)
-
-        enrolment_obj = (
-            self.env["academy.training.action.enrolment"]
-            .with_context(context)
-            .sudo()
-        )
-
-        latest_enrolment_end_domain = self._get_latest_enrolment_end_domain()
-
-        rows = enrolment_obj.read_group(
-            domain=latest_enrolment_end_domain,
-            fields=["available_until:max"],
-            groupby=["student_id"],
-            lazy=False,
-        )
-
-        last_out = {
-            row["student_id"][0]: row.get("available_until")
-            for row in rows
-            if row.get("student_id")
-        }
-
-        operator = {
-            "==": "=",
-            "<>": "!=",
-        }.get(operator, operator)
-
-        if value in (False, None):
-            student_ids = list(last_out)
-
-            if operator == "=":
-                return [("id", "not in", student_ids)]
-
-            if operator == "!=":
-                return [("id", "in", student_ids)]
-
-            return FALSE_DOMAIN
-
-        compare = OPERATOR_MAP.get(operator)
-        if not compare:
-            return FALSE_DOMAIN
-
-        try:
-            value_dt = fields.Datetime.to_datetime(value)
-        except (TypeError, ValueError):
-            return FALSE_DOMAIN
-
-        matched_ids = [
-            student_id
-            for student_id, latest_enrolment_end in last_out.items()
-            if latest_enrolment_end and compare(latest_enrolment_end, value_dt)
-        ]
-
-        return [("id", "in", matched_ids)] if matched_ids else FALSE_DOMAIN
-
-    @api.model
-    def _get_latest_enrolment_end_domain(self, student_ids=None):
-        now = fields.Datetime.now()
-
-        domain = [
-            "&",
-            ("company_id", "=", self.env.company.id),
-            "|",
-            ("available_until", "<=", now),
-            ("active", "=", True),
-        ]
-
-        if student_ids is not None:
-            domain = AND(
-                [
-                    domain,
-                    [("student_id", "in", student_ids)],
-                ]
-            )
-
-        return domain
 
     # -- Computed field: current_enrolment_count ------------------------------
 
@@ -399,9 +270,21 @@ class AcademyStudent(models.Model):
             ("signup_ids.signup_date", operator, value),
         ]
 
+    latest_enrolment_end = fields.Datetime(
+        string="End of training",
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help="Latest effective enrolment end for the active company.",
+        compute="_compute_signup_company_values",
+        search="_search_latest_enrolment_end",
+    )
+
     @api.depends(
         "signup_ids.signup_code",
         "signup_ids.signup_date",
+        "signup_ids.latest_enrolment_end",
         "signup_ids.company_id",
     )
     @api.depends_context("company")
@@ -414,8 +297,44 @@ class AcademyStudent(models.Model):
             signup = signup_indexed.get((student_id, company_id))
 
             student.signup_id = signup
-            student.signup_code = signup.signup_code if signup else False
-            student.signup_date = signup.signup_date if signup else False
+            if signup:
+                student.signup_code = signup.signup_code
+                student.signup_date = signup.signup_date
+                student.latest_enrolment_end = signup.latest_enrolment_end
+            else:
+                student.signup_code = False
+                student.signup_date = False
+                student.latest_enrolment_end = False
+
+    @api.model
+    def _search_latest_enrolment_end(self, operator, value):
+        operator = {
+            "==": "=",
+            "<>": "!=",
+        }.get(operator, operator)
+
+        signup_obj = self.env["academy.student.signup"]
+
+        if value in (False, None):
+            domain = [
+                ("company_id", "=", self.env.company.id),
+                ("latest_enrolment_end", "!=", False),
+            ]
+            signups = signup_obj.search(domain)
+
+            if operator == "=":
+                return [("id", "not in", signups.student_id.ids)]
+
+            if operator == "!=":
+                return [("id", "in", signups.student_id.ids)]
+
+        domain = [
+            ("company_id", "=", self.env.company.id),
+            ("latest_enrolment_end", operator, value),
+        ]
+        signups = signup_obj.search(domain)
+
+        return [("id", "in", signups.student_id.ids)]
 
     # -- Methods overrides -------------------------------------------
 
@@ -447,7 +366,7 @@ class AcademyStudent(models.Model):
             module="academy_base",
             name="action_training_action_enrolment_act_window",
         )
-        action = self.env['ir.actions.act_window']._for_xml_id(act_xid)
+        action = self.env["ir.actions.act_window"]._for_xml_id(act_xid)
 
         view_xid = "{module}.{name}".format(
             module="academy_base",
@@ -461,12 +380,8 @@ class AcademyStudent(models.Model):
 
         domain = self._eval_domain(action["domain"])
         domain = AND([domain, [("student_id", "=", self.id)]])
-        
-        action.update({
-            "name": name,
-            "context": ctx,
-            "domain": domain
-        })
+
+        action.update({"name": name, "context": ctx, "domain": domain})
 
         return action
 

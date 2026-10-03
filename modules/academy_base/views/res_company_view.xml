@@ -21,6 +21,7 @@
 
             <group name="admissions_management" string="Admissions Management">
               <field name="auto_signup" class="oe_field_auto_signup"/>
+              <field name="include_archived" class="oe_field_include_archived"/>
             </group>
 
           </group>

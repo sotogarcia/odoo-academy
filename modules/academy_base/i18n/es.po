@@ -24,8 +24,8 @@ msgstr "00:00 del día siguiente, o indefinidamente para inscripciones abiertas.
 
 #. module: academy_base
 #: model:ir.model.fields,help:academy_base.field_academy_training_action_enrolment__available_until
-msgid "00:00 the day after, or indefinity for open enrolments."
-msgstr "00:00 del día siguiente, o indefinidamente para inscripciones abiertas."
+msgid "Effective enrolment end, limited by the training action end."
+msgstr "Fin efectivo de la inscripción, limitado por la fecha de fin de la acción formativa."
 
 #. module: academy_base
 #: model:academy.qualification.level,level:academy_base.academy_qualification_level_es_3B

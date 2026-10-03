@@ -514,7 +514,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         readonly=True,
         index=True,
         default=None,
-        help="00:00 the day after, or indefinity for open enrolments.",
+        help="Effective enrolment end, limited by the training action end.",
         compute="_compute_available_until",
         store=True,
     )
