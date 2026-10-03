@@ -10,7 +10,6 @@ from odoo.tools.safe_eval import safe_eval
 from odoo.tools.translate import _
 
 from ..utils.helpers import (
-    OPERATOR_MAP,
     one2many_count,
     one2many_count_search_domain,
 )

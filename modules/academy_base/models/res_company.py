@@ -3,7 +3,7 @@
 #    __manifest__.py file at the root folder of this module.                  #
 ###############################################################################
 
-from odoo import models, fields, api
+from odoo import api, fields, models
 
 
 class ResCompany(models.Model):
@@ -69,5 +69,5 @@ class ResCompany(models.Model):
         readonly=False,
         index=False,
         default=True,
-        help="Include archived records in enrolment end calculation.",
+        help="Include archived records in sign-up calculations.",
     )

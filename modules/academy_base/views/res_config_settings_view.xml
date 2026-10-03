@@ -323,7 +323,7 @@
               id="academy_include_archived"
               string="Include archived"
               company_dependent="1"
-              help="Include archived records when computing the latest enrolment end.">
+              help="Include archived records in sign-up calculations.">
 
               <field name="include_archived"/>
 
