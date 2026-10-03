@@ -61,7 +61,6 @@ Implementation notes
   reporting queries.
 """
 
-from datetime import timedelta
 from logging import getLogger
 
 from odoo import api, fields, models
@@ -393,6 +392,23 @@ class AcademyTrainingActionEnrolment(models.Model):
         readonly=True,
         help="Programme lines included in this enrolment",
         related="training_action_id.action_line_ids",
+    )
+
+    # -- Sign-up information
+    # -------------------------------------------------------------------------
+
+    signup_id = fields.Many2one(
+        string="Sign-up",
+        required=True,
+        readonly=True,
+        index=True,
+        default=None,
+        help="Student sign-up corresponding to the enrolment company.",
+        comodel_name="academy.student.signup",
+        domain=[],
+        context={},
+        ondelete="restrict",
+        auto_join=False,
     )
 
     # -- Time interval: fields and logic
@@ -796,56 +812,16 @@ class AcademyTrainingActionEnrolment(models.Model):
             ):
                 raise ValidationError(err_msg)
 
-    @api.constrains("student_id", "company_id")
-    def _check_student_has_signup_in_company(self):
-        """Ensure each (student, company) pair in this batch has a signup row.
+    @api.constrains("signup_id", "student_id", "company_id")
+    def _check_signup_consistency(self):
+        for enrolment in self:
+            signup = enrolment.signup_id
 
-        Efficient, batched validation:
-        - Collect required (student_id, company_id) pairs in one pass.
-        - Fetch existing signup pairs with a single grouped query.
-        - If any required pair is missing, raise a single ValidationError.
-        """
+            if signup.student_id != enrolment.student_id:
+                raise ValidationError(_("Student and sign-up mismatch."))
 
-        # 1) Collect all required pairs (student, company)
-        student_ids, company_ids, required_pairs = set(), set(), set()
-        for record in self:
-            student_id = record.student_id.id
-            company_id = record.company_id.id
-            if student_id and company_id:
-                student_ids.add(student_id)
-                company_ids.add(company_id)
-                required_pairs.add((student_id, company_id))
-
-        if not required_pairs:
-            return
-
-        # 2) Fetch existing signup pairs (single grouped query)
-        signup_obj = self.env["academy.student.signup"].sudo()
-        domain = [
-            ("student_id", "in", list(student_ids)),
-            ("company_id", "in", list(company_ids)),
-        ]
-        rows = signup_obj.read_group(
-            domain=domain,
-            fields=["id:count"],
-            groupby=["student_id", "company_id"],
-            lazy=False,
-        )
-
-        # 3) Verify that all required pairs exist
-        found_pairs = {(r["student_id"][0], r["company_id"][0]) for r in rows}
-        missing_pairs = required_pairs - found_pairs
-        if not missing_pairs:
-            return
-
-        # 4) Some pairs are missing -> raise a validation error
-        raise ValidationError(
-            self.env._(
-                "Student must be signed up in the enrolment company. "
-                "Missing %(n)s pair(s)."
-            )
-            % {"n": len(missing_pairs)}
-        )
+            if signup.company_id != enrolment.company_id:
+                raise ValidationError(_("Company and sign-up mismatch."))
 
     @api.constrains(
         "training_action_id",
@@ -914,20 +890,18 @@ class AcademyTrainingActionEnrolment(models.Model):
 
         self._perform_a_full_enrolment(values_list)
 
-        self._ensure_auto_signup(values_list)
+        self._prepare_signup_values(values_list)
 
         return super().create(values_list)
 
     def write(self, values):
         """Update enrolments and keep full-enrolment lines synchronized."""
 
-        fields_to_freeze = ("student_id", "training_action_id")
+        fields_to_freeze = ("student_id", "training_action_id", "signup_id")
         prevent_field_changes(self, values, fields_to_freeze)
 
         sanitize_code(values, "upper")
         self._ensure_parent_action(values)
-
-        self._ensure_auto_signup(values)
 
         grouped_values = self._prepare_full_enrolment_write(values)
 
@@ -1287,7 +1261,107 @@ class AcademyTrainingActionEnrolment(models.Model):
 
         return enrolment_set
 
-    # -- Auxiliary methods
+    # =========================================================================
+    # Sign-up initialization
+    # -------------------------------------------------------------------------
+    # Resolve and persist the enrolment sign-up before record creation.
+    # =========================================================================
+
+    @staticmethod
+    def _relation_id(value):
+        """Return the ID represented by a relational value."""
+        if isinstance(value, models.BaseModel):
+            value.ensure_one()
+            return value.id
+
+        return value
+
+    @api.model
+    def _extract_relation_ids(self, values_list):
+        """Collect student and training action IDs from creation values."""
+        student_ids = set()
+        action_ids = set()
+
+        for values in values_list:
+            student_id = self._relation_id(values.get("student_id"))
+            action_id = self._relation_id(values.get("training_action_id"))
+
+            if student_id:
+                student_ids.add(student_id)
+
+            if action_id:
+                action_ids.add(action_id)
+
+        return student_ids, action_ids
+
+    @api.model
+    def _check_action_company(self, action_ids, company):
+        """Ensure all target training actions belong to the company."""
+        action_obj = self.env["academy.training.action"]
+        action_set = action_obj.browse(action_ids).exists()
+
+        invalid_action_set = action_set.filtered(
+            lambda action: action.company_id != company
+        )
+
+        if invalid_action_set:
+            raise ValidationError(_("Training action company mismatch."))
+
+    @api.model
+    def _fetch_or_create_signups(self, student_ids, company):
+        """Fetch required sign-ups, creating missing ones when enabled."""
+        student_obj = self.env["academy.student"]
+        student_set = student_obj.browse(student_ids).exists()
+
+        if company.auto_signup:
+            return student_set.perform_signup(company.id)
+
+        signup_obj = self.env["academy.student.signup"]
+        domain = [
+            ("student_id", "in", student_set.ids),
+            ("company_id", "=", company.id),
+        ]
+
+        return signup_obj.search(domain)
+
+    @staticmethod
+    def _map_signups_by_student(signup_set):
+        """Map each student ID to its sign-up ID."""
+        return {signup.student_id.id: signup.id for signup in signup_set}
+
+    @api.model
+    def _inject_signup_ids(self, values_list, signup_by_student):
+        """Inject the definitive sign-up into each enrolment creation value.
+
+        Existing ``signup_id`` values are overwritten because the relation is
+        determined by the student and enrolment company.
+        """
+        for values in values_list:
+            student_id = self._relation_id(values.get("student_id"))
+            signup_id = signup_by_student.get(student_id)
+
+            if not signup_id:
+                err = _("Student must be signed up in the enrolment company.")
+                raise ValidationError(err)
+
+            values["signup_id"] = signup_id
+
+    @api.model
+    def _prepare_signup_values(self, values_list):
+        """Resolve and assign the sign-up for enrolments being created."""
+        student_ids, action_ids = self._extract_relation_ids(values_list)
+
+        company = self.env.company
+
+        self._check_action_company(action_ids, company)
+
+        signup_set = self._fetch_or_create_signups(student_ids, company)
+        signup_by_student = self._map_signups_by_student(signup_set)
+
+        self._inject_signup_ids(values_list, signup_by_student)
+
+    # =========================================================================
+    # Auxiliary methods
     # -------------------------------------------------------------------------
 
     def get_timezone(self):
@@ -1298,118 +1372,6 @@ class AcademyTrainingActionEnrolment(models.Model):
             return timezone(company.partner_id.tz)
 
         return timezone("utc")
-
-    # Auxiliary methods
-    # -------------------------------------------------------------------------
-
-    def _ensure_auto_signup(self, values_list):
-        """Ensure students are signed up in the active company before enrolment.
-
-        The target training action is always checked against the active company
-        before any automatic sign-up is performed. On create, student and action
-        values are read from the creation values. On write, missing values are
-        taken from each existing enrolment.
-
-        Args:
-            values_list (dict | list[dict]): Values used to create or update
-                enrolments.
-
-        Returns:
-            None
-
-        Raises:
-            ValidationError: If a target training action belongs to a company
-                other than the active company.
-        """
-        if isinstance(values_list, dict):
-            target_list = [values_list]
-        else:
-            target_list = values_list or []
-
-        company = self.env.company
-
-        student_ids = set()
-        action_ids = set()
-
-        if self:
-            values = target_list[0] if target_list else {}
-
-            if not {
-                "student_id",
-                "training_action_id",
-            } & set(values):
-                return
-
-            student_id = values.get("student_id")
-            training_action_id = values.get("training_action_id")
-
-            if isinstance(student_id, models.BaseModel):
-                student_id.ensure_one()
-                student_id = student_id.id
-
-            if isinstance(training_action_id, models.BaseModel):
-                training_action_id.ensure_one()
-                training_action_id = training_action_id.id
-
-            for record in self:
-                target_student_id = (
-                    student_id
-                    if "student_id" in values
-                    else record.student_id.id
-                )
-                target_action_id = (
-                    training_action_id
-                    if "training_action_id" in values
-                    else record.training_action_id.id
-                )
-
-                if target_student_id:
-                    student_ids.add(target_student_id)
-
-                if target_action_id:
-                    action_ids.add(target_action_id)
-
-        else:
-            for values in target_list:
-                student_id = values.get("student_id")
-                action_id = values.get("training_action_id")
-
-                if isinstance(student_id, models.BaseModel):
-                    student_id.ensure_one()
-                    student_id = student_id.id
-
-                if isinstance(action_id, models.BaseModel):
-                    action_id.ensure_one()
-                    action_id = action_id.id
-
-                if student_id:
-                    student_ids.add(student_id)
-
-                if action_id:
-                    action_ids.add(action_id)
-
-        action_obj = self.env["academy.training.action"]
-        action_set = action_obj.browse(action_ids).exists()
-
-        invalid_action_set = action_set.filtered(
-            lambda action: action.company_id != company
-        )
-
-        if invalid_action_set:
-            raise ValidationError(
-                _(
-                    "Students can only be enrolled in training actions "
-                    "belonging to the active company."
-                )
-            )
-
-        if not company.auto_signup or not student_ids:
-            return
-
-        student_set = self.env["academy.student"].browse(student_ids).exists()
-
-        if student_set:
-            student_set.perform_signup(company.id)
 
     @api.model
     def _ensure_parent_action(self, values_list):
