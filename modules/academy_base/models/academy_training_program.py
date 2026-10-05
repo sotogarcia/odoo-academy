@@ -16,6 +16,7 @@ from ..utils.helpers import (
     one2many_count_search_domain,
     sanitize_code,
 )
+from ..utils.record_utils import prevent_field_changes
 
 CODE_SEQUENCE = "academy.training.program.sequence"
 
@@ -604,7 +605,7 @@ class AcademyTrainingProgram(models.Model):
         """Overridden method 'write'"""
         values = values or {}
 
-        self._avoid_writing_to_immutable_fields(values)
+        prevent_field_changes(self, values, self._IMMUTABLE_FIELDS)
         sanitize_code(values, "upper")
 
         return super().write(values)
@@ -648,31 +649,3 @@ class AcademyTrainingProgram(models.Model):
                 line.copy(default=line_default)
 
         return new_program
-
-    def _avoid_writing_to_immutable_field(self, values, field_name):
-        self.ensure_one()
-
-        field = self._fields[field_name]
-        new = values.get(field_name)
-        # Normalizar Many2one a ID para comparar
-        if field.type == "many2one":
-            old = self[field_name].id or False
-            if isinstance(new, models.BaseModel):
-                new = new.id
-        else:
-            old = self[field_name]
-        if new != old:
-            raise ValidationError(
-                _("Field '%s' cannot be modified after saving.") % field.string
-            )
-
-    def _avoid_writing_to_immutable_fields(self, values):
-        fields_to_check = set(values) & set(self._IMMUTABLE_FIELDS)
-        if fields_to_check:
-            for record in self:
-                for field_name in fields_to_check:
-                    record._avoid_writing_to_immutable_field(
-                        values, field_name
-                    )
-
-        return True

@@ -30,6 +30,7 @@ from ..utils.record_utils import (
     INCLUDE_ARCHIVED_DOMAIN,
     create_domain_for_ids,
     create_domain_for_interval,
+    prevent_field_changes,
 )
 from ..utils.sql_helpers import create_index
 
@@ -42,6 +43,11 @@ _INFINITY = fields.Datetime.to_datetime("9999-12-31 23:59:59")
 _PARENT_EXCLUDE = {"parent_id", "name", "child_ids"}
 _CTX_SKIP_PROGRAM = "skip_training_program_replication"
 
+_IMMUTABLE_FIELDS = (
+    "company_id",
+    "training_program_id",
+    "parent_id",
+)
 
 _logger = getLogger(__name__)
 
@@ -1375,7 +1381,7 @@ class AcademyTrainingAction(models.Model):
 
     def write(self, values):
         """Update the training action and adjust affected enrolments."""
-        self._prevent_company_change(values)
+        prevent_field_changes(self, values, self._IMMUTABLE_FIELDS)
 
         sanitize_code(values, "upper")
         self._prevent_use_student_link(values)
@@ -1616,7 +1622,7 @@ class AcademyTrainingAction(models.Model):
         name = self.env._("Enrolments: {}").format(self.display_name)
 
         act_xid = "academy_base.action_training_action_enrolment_act_window"
-        action = self.env['ir.actions.act_window']._for_xml_id(act_xid)
+        action = self.env["ir.actions.act_window"]._for_xml_id(act_xid)
 
         parent_action_id = self.parent_id.id if self.parent_id else self.id
 
@@ -1631,12 +1637,8 @@ class AcademyTrainingAction(models.Model):
 
         domain = self._eval_domain(action["domain"])
         domain = AND([domain, [("training_action_id", "=", self.id)]])
-        
-        action.update({
-            "name": name,
-            "context": ctx,
-            "domain": domain
-        })
+
+        action.update({"name": name, "context": ctx, "domain": domain})
 
         return action
 
@@ -1646,7 +1648,7 @@ class AcademyTrainingAction(models.Model):
         name = self.env._("Enrolments: {}").format(self.display_name)
 
         act_xid = "academy_base.action_training_action_enrolment_act_window"
-        action = self.env['ir.actions.act_window']._for_xml_id(act_xid)
+        action = self.env["ir.actions.act_window"]._for_xml_id(act_xid)
 
         parent_action_id = self.parent_id.id if self.parent_id else self.id
         training_action_id = self.id if not self.child_ids else None
@@ -1662,12 +1664,8 @@ class AcademyTrainingAction(models.Model):
 
         domain = self._eval_domain(action["domain"])
         domain = AND([domain, [("parent_action_id", "=", self.id)]])
-        
-        action.update({
-            "name": name,
-            "domain": domain,
-            "context": ctx
-        })
+
+        action.update({"name": name, "domain": domain, "context": ctx})
 
         return action
 
@@ -2184,36 +2182,3 @@ class AcademyTrainingAction(models.Model):
                         "sequence": sequence,
                     }
                 )
-
-    def _prevent_company_change(self, values):
-        """Prevent changing the company of existing training actions.
-
-        Args:
-            values (dict): Values that will be written.
-
-        Returns:
-            None
-
-        Raises:
-            ValidationError: If the company of an existing training action is
-                changed.
-        """
-        if "company_id" not in values:
-            return
-
-        company_id = values.get("company_id")
-
-        if isinstance(company_id, models.BaseModel):
-            company_id.ensure_one()
-            company_id = company_id.id
-
-        company_id = company_id or False
-
-        err_msg = _(
-            "The company of a training action cannot be changed once "
-            "the action has been created."
-        )
-
-        for record in self:
-            if company_id != record.company_id.id:
-                raise ValidationError(err_msg)

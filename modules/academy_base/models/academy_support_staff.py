@@ -20,6 +20,7 @@ from odoo.tools.safe_eval import safe_eval
 from odoo.tools.translate import _
 
 from ..utils.helpers import is_debug_mode
+from ..utils.record_utils import prevent_field_changes
 from ..utils.res_config import get_config_param
 
 
@@ -565,6 +566,8 @@ class AcademySupportStaff(models.Model):
 
     def write(self, values):
         """Overridden method 'write'."""
+
+        prevent_field_changes(self, values, "partner_id")
 
         self._sanitize_phone_number(values)
         self._ensure_natural_person(values)

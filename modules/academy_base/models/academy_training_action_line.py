@@ -11,6 +11,7 @@ from odoo.tools.safe_eval import safe_eval
 from odoo.tools.translate import _
 
 from ..utils.helpers import one2many_count, one2many_count_search_domain
+from ..utils.record_utils import prevent_field_changes
 
 
 class AcademyTrainingActionLine(models.Model):
@@ -251,6 +252,8 @@ class AcademyTrainingActionLine(models.Model):
 
     def write(self, values):
         """Overridden method 'write'"""
+
+        prevent_field_changes(self, values, "training_action_id")
 
         if any(key in self.shared_keys for key in values):
             values["needs_synchronization"] = True

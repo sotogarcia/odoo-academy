@@ -62,8 +62,8 @@
         <field name="current_enrolment_ids" invisible="1"/>
       </xpath>
 
-      <xpath expr="//notebook/page[1]" position="before">
-        <page string="Enrolments" class="oe_page_enrolments" accesskey="E" autofocus="autofocus">
+      <xpath expr="//notebook/page[1]" position="after">
+        <page string="Enrolments" class="oe_page_enrolments" accesskey="E">
           <field name="enrolment_ids" class="oe_field_current_enrolment_ids"
             domain="[('is_current', '=', True)]"
             context="{'list_view_ref': 'academy_base.view_academy_training_action_enrolment_tree_embed'}"
@@ -75,7 +75,7 @@
         <group col="3" string="Sign-up details">
           <group>
             <button name="perform_signup" string="Sign up" type="object" invisible="signup_id"/>
-            <field name="signup_id" class="oe_field_signup_id"
+            <field name="signup_id" class="oe_field_signup_id btn btn-light py-0"
               context="{'signup_short_display_name': True}" invisible="not signup_id"
               options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
           </group>

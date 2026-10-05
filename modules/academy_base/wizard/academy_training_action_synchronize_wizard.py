@@ -553,26 +553,19 @@ class AcademyTrainingActionSynchronizeWizard(models.TransientModel):
 
             for parent, children_of_parent in grouped_by_parent.items():
                 source_values = self._stg_read_action_values(parent)
-                program = parent.training_program_id
 
                 update_set = action_obj.browse()
 
                 for child in children_of_parent:
                     current_values = self._stg_read_action_values(child)
 
-                    if (
-                        current_values != source_values
-                        or child.training_program_id != program
-                    ):
+                    if current_values != source_values:
                         update_set |= child
 
                 if not update_set:
                     continue
 
                 values = dict(source_values)
-
-                if program:
-                    values["training_program_id"] = program.id
 
                 update_set.with_context(ctx).write(values)
                 result_set |= update_set

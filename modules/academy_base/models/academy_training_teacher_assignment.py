@@ -9,6 +9,7 @@ from odoo import api, fields, models
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools.translate import _
 
+from ..utils.record_utils import prevent_field_changes
 from ..utils.sql_helpers import create_index
 
 _logger = getLogger(__name__)
@@ -161,8 +162,7 @@ class AcademyTrainingTeacherAssignment(models.Model):
         # This is for future,
         self._complete_training_action_from_single_line(values)
 
-        # Ensure immutability check sees any value completed above
-        self._prevent_change_immutable_fields(values)
+        prevent_field_changes(self, values, self.IMMUTABLE_FIELDS)
 
         result = super().write(values)
 
@@ -199,38 +199,6 @@ class AcademyTrainingTeacherAssignment(models.Model):
 
     # -- Auxiliary methods
     # -------------------------------------------------------------------------
-
-    def _prevent_change_immutable_fields(self, values):
-        """Prevent immutable fields from being changed after record creation."""
-        field_names = set(self.IMMUTABLE_FIELDS) & set(values)
-        if not field_names:
-            return True
-
-        message = _(
-            "The field '%(field)s' cannot be modified once the record "
-            "has been created."
-        )
-
-        for record in self:
-            for field_name in field_names:
-                current_value = record[field_name]
-                current_value = current_value.id if current_value else False
-
-                new_value = values[field_name]
-                if isinstance(new_value, models.BaseModel):
-                    new_value = new_value.id
-
-                new_value = new_value or False
-
-                if current_value != new_value:
-                    raise ValidationError(
-                        message
-                        % {
-                            "field": record._fields[field_name].string,
-                        }
-                    )
-
-        return True
 
     def _forward_messages_to_the_training_item(self):
         """Move chatter to the most specific training thread available."""
