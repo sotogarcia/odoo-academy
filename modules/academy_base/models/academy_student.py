@@ -12,6 +12,7 @@ from odoo.tools.translate import _
 from ..utils.helpers import (
     one2many_count,
     one2many_count_search_domain,
+    build_act_window_action
 )
 from ..utils.record_utils import (
     ARCHIVED_DOMAIN,
@@ -359,28 +360,23 @@ class AcademyStudent(models.Model):
     def view_enrolments(self):
         self.ensure_one()
 
-        name = self.env._("Enrolments: {}").format(self.display_name)
-
         act_xid = "{module}.{name}".format(
             module="academy_base",
             name="action_training_action_enrolment_act_window",
         )
-        action = self.env["ir.actions.act_window"]._for_xml_id(act_xid)
-
+        
         view_xid = "{module}.{name}".format(
             module="academy_base",
             name="view_academy_training_action_enrolment_edit_by_user_tree",
         )
+        
+        context = {
+            "default_student_id": self.id,
+            "list_view_ref": view_xid
+        }
+        domain = [("student_id", "=", self.id)]
 
-        ctx = self.env.context.copy()
-        ctx.update(safe_eval(action["context"] or "{}", {"uid": self.env.uid}))
-        ctx.update({"default_student_id": self.id})
-        ctx.update({"list_view_ref": view_xid})
-
-        domain = self._eval_domain(action["domain"])
-        domain = AND([domain, [("student_id", "=", self.id)]])
-
-        action.update({"name": name, "context": ctx, "domain": domain})
+        action = build_act_window_action(self.env, act_xid, context, domain)
 
         return action
 
