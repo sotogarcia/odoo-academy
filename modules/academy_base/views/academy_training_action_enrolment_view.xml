@@ -60,6 +60,7 @@
               invisible="active == True"/>
           </div>
 
+          <field name="id" invisible="1"/>
           <field name="training_program_id" invisible="1" force_save="1"/>
           <field name="parent_action_id" invisible="1" force_save="1"/>
           <field name="available_action_ids" invisible="1"/>
