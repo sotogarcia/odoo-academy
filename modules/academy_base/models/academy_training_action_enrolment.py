@@ -1349,6 +1349,18 @@ class AcademyTrainingActionEnrolment(models.Model):
     @api.model
     def _prepare_signup_values(self, values_list):
         """Resolve and assign the sign-up for enrolments being created."""
+        defaults = self.default_get(["student_id", "training_action_id"])
+
+        default_student_id = defaults.get("student_id", False)
+        default_action_id = defaults.get("training_action_id", False)
+
+        for values in values_list:
+            if "student_id" not in values and default_student_id:
+                values["student_id"] = default_student_id
+
+            if "training_action_id" not in values and default_action_id:
+                values["training_action_id"] = default_action_id
+
         student_ids, action_ids = self._extract_relation_ids(values_list)
 
         company = self.env.company

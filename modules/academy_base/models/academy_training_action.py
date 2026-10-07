@@ -19,12 +19,12 @@ from odoo.tools.translate import _
 from ..utils.datetime_utils import local_midnight_as_utc
 from ..utils.helpers import (
     OPERATOR_MAP,
+    build_act_window_action,
     default_code,
     many2many_count,
     one2many_count,
     one2many_count_search_domain,
     sanitize_code,
-    build_act_window_action
 )
 from ..utils.record_utils import (
     ARCHIVED_DOMAIN,
@@ -1382,7 +1382,7 @@ class AcademyTrainingAction(models.Model):
 
     def write(self, values):
         """Update the training action and adjust affected enrolments."""
-        prevent_field_changes(self, values, self._IMMUTABLE_FIELDS)
+        prevent_field_changes(self, values, _IMMUTABLE_FIELDS)
 
         sanitize_code(values, "upper")
         self._prevent_use_student_link(values)
@@ -1621,7 +1621,7 @@ class AcademyTrainingAction(models.Model):
         self.ensure_one()
 
         act_xid = "academy_base.action_training_action_enrolment_act_window"
-        
+
         parent_action_id = self.parent_id.id if self.parent_id else self.id
         context = {
             "default_training_action_id": self.id,
@@ -1645,7 +1645,7 @@ class AcademyTrainingAction(models.Model):
             "default_parent_action_id": parent_action_id,
         }
         domain = [("parent_action_id", "=", self.id)]
-        
+
         action = build_act_window_action(self.env, act_xid, context, domain)
 
         return action
