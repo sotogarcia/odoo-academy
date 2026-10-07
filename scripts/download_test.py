@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # pylint: disable=I0011,W0703,R0903,R0902
 """ Import files into Odoo ir.attachement records
 """
@@ -9,19 +8,15 @@
 
 from pprint import pprint
 import argparse
-import uuid
 import odoorpc
-import magic
 import os
 import sys
 import locale
 import base64
-import hashlib
 import re
-import urllib
 import mimetypes
 
-if sys.version_info >= (3, 0):
+if sys.version_info >= (3, 0):  # noqa: UP036
     import urllib.parse as urlparse
 else:
     import urlparse
@@ -33,7 +28,7 @@ UNIX_LINE_ENDING = b"\n"
 # -------------------------- MAIN SCRIPT BEHAVIOR -----------------------------
 
 
-class App(object):
+class App:
     """Application main controller, this class has been defined following the
     singleton pattern to ensures only one object can be instantiated.
     """
@@ -200,14 +195,14 @@ class App(object):
         """Computes output file path and resources folder path"""
         if not args.output:
             ext = "pdf" if self._report else "txt"
-            fname = "Enunciado.{}".format(ext)
+            fname = f"Enunciado.{ext}"
             self._output = os.path.abspath(fname)
         else:
             self._output = os.path.abspath(args.output)
 
         dn = os.path.dirname(self._output)
         sep = os.path.sep
-        self._resources = "{d}{s}Recursos{s}".format(d=dn, s=sep)
+        self._resources = f"{dn}{sep}Recursos{sep}"
         if not os.path.exists(self._resources):
             os.mkdir(self._resources)
 
@@ -255,7 +250,7 @@ class App(object):
                 port=self._port,
             )
             result = True
-        except Exception as ex:
+        except Exception as ex:  # noqa: BLE001
             print(ex)
 
         return result
@@ -352,8 +347,8 @@ class App(object):
         lines = ""
         for attach in question.ir_attachment_ids:
             ext = mimetypes.guess_extension(attach.mimetype)
-            fname = "{}{}".format(attach.id, ext)
-            line = "![{}]({})\n".format(attach.name, fname)
+            fname = f"{attach.id}{ext}"
+            line = f"![{attach.name}]({fname})\n"
             lines = lines + line
 
         if lines:
@@ -370,15 +365,15 @@ class App(object):
         return text or ""
 
     def _question_to_string(self, question, text=None):
-        return "{}. {}\n".format(question.id, question.name)
+        return f"{question.id}. {question.name}\n"
 
     def _answer_to_string(self, answer, index, text=None):
         letter = "x" if answer.is_correct else chr(97 + index)
-        return "{}) {}\n".format(letter, answer.name)
+        return f"{letter}) {answer.name}\n"
 
     def _download_attachment(self, attach):
         ext = mimetypes.guess_extension(attach.mimetype)
-        fname = "{}{}{}".format(self._resources, attach.id, ext)
+        fname = f"{self._resources}{attach.id}{ext}"
         with open(fname, "wb") as f:
             f.write(base64.b64decode(attach.datas))
 
@@ -397,7 +392,7 @@ class App(object):
             qindex = qindex + 1
 
             # Answer can have more than one solution
-            if qindex in solutions.keys():
+            if qindex in solutions.keys():  # noqa: SIM118
                 value = solutions[qindex] + ", " + letter
                 solutions[qindex] = value
             else:
@@ -405,7 +400,7 @@ class App(object):
 
     def _write_solutions(self, solutions):
         padlen = len(str(list(solutions.keys())[-1]))
-        pattern = "{:>%d} — {}\n" % padlen
+        pattern = "{:>%d} — {}\n" % padlen  # noqa: UP031
 
         dirname = os.path.dirname(self._output)
         fpath = os.path.join(dirname, "Solución.txt")
@@ -425,7 +420,7 @@ class App(object):
         links = test.browse(test_id).question_ids
 
         title = test.browse(test_id).name
-        self._print("Descargando {}".format(title))
+        self._print(f"Descargando {title}")
 
         text = ""  # Statement text
         solutions = {}
@@ -471,7 +466,7 @@ class App(object):
                 test_id = self._search_one()
 
                 if test_id > 0:
-                    self._resequence(test_id)
+                    # self._resequence(test_id)
 
                     if self._report:
                         report = self._download_report(test_id)
