@@ -10,6 +10,7 @@
 # ---------------------------------------------------------------------------
 from . import res_partner
 from . import academy_student_signup
+from . import academy_student_signup_state_transition
 
 from . import academy_support_staff
 from . import academy_technical_staff
