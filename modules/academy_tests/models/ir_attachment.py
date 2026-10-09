@@ -36,7 +36,6 @@ class IrAttachment(models.Model):
         column2="question_id",
         domain=[],
         context={},
-        limit=None,
     )
 
     @api.model_create_multi

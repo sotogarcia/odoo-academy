@@ -22,42 +22,40 @@ _logger = getLogger(__name__)
 
 # pylint: disable=locally-disabled, R0903
 class Nameofmodel(models.TransientModel):
-    """ This model is the representation of the name of model
-    """
+    """This model is the representation of the name of model"""
 
-    _name = 'academy.tests.question.append.wizard'
-    _description = u'Academy tests, question append wizard'
+    _name = "academy.tests.question.append.wizard"
+    _description = "Academy tests, question append wizard"
 
-    _rec_name = 'id'
-    _order = 'id DESC'
+    _rec_name = "id"
+    _order = "id DESC"
 
     test_id = fields.Many2one(
-        string='Test',
+        string="Test",
         required=True,
         readonly=False,
         index=False,
         default=lambda self: self.default_test_id(),
-        help='Test to which questions will be append',
-        comodel_name='academy.tests.test',
+        help="Test to which questions will be append",
+        comodel_name="academy.tests.test",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
     question_link_ids = fields.One2many(
-        string='Questions',
+        string="Questions",
         required=True,
         readonly=False,
         index=False,
         default=lambda self: self.default_question_ids(),
         help=False,
-        comodel_name='academy.tests.question.append.wizard.link',
-        inverse_name='wizard_id',
+        comodel_name="academy.tests.question.append.wizard.link",
+        inverse_name="wizard_id",
         domain=[],
         context={},
         auto_join=False,
-        limit=None
     )
 
     def _get_active_ids(self):
@@ -66,23 +64,23 @@ class Nameofmodel(models.TransientModel):
         Returns:
             list: list of integers with gotten IDs
         """
-        return self.env.context.get('active_ids', [])
+        return self.env.context.get("active_ids", [])
 
     def _get_active_model_and_path(self):
-        """ Get active_model from context and choose mapping path to access to
+        """Get active_model from context and choose mapping path to access to
         question ID
         """
-        model = self.env.context.get('active_model')
+        model = self.env.context.get("active_model")
 
-        if model == 'academy.tests.test.question.rel':
-            return model, 'question_id.id'
-        elif model == 'academy.tests.question':
-            return model, 'id'
+        if model == "academy.tests.test.question.rel":
+            return model, "question_id.id"
+        elif model == "academy.tests.question":
+            return model, "id"
 
         return False, False
 
     def default_question_ids(self):
-        """ Get default `id` values from context, these will be questions
+        """Get default `id` values from context, these will be questions
         had been chosen before launch this wizard
         """
 
@@ -92,8 +90,7 @@ class Nameofmodel(models.TransientModel):
         active_model, path_for_id = self._get_active_model_and_path()
 
         if active_model and active_ids:
-
-            domain = [('id', 'in', active_ids)]
+            domain = [("id", "in", active_ids)]
             model_obj = self.env[active_model]
             record_set = model_obj.search(domain)
 
@@ -101,29 +98,29 @@ class Nameofmodel(models.TransientModel):
             for record in record_set:
                 sequence += 1
                 values = {
-                    'wizard_id': self.id,
-                    'question_id': record.mapped(path_for_id)[0],
-                    'sequence': sequence
+                    "wizard_id": self.id,
+                    "question_id": record.mapped(path_for_id)[0],
+                    "sequence": sequence,
                 }
                 x2mop.append((0, 0, values))
 
         return x2mop
 
     def default_test_id(self):
-        """ Get last test used with wizard. Wizard is a transient model
+        """Get last test used with wizard. Wizard is a transient model
         therefore there could be none.
         """
 
-        uid = self.env.context.get('uid', -1)
-        domain = [('create_uid', '=', uid)]
-        order = 'write_date desc, create_date desc, id desc'
+        uid = self.env.context.get("uid", -1)
+        domain = [("create_uid", "=", uid)]
+        order = "write_date desc, create_date desc, id desc"
 
         wizard_set = self.search(domain, limit=1, order=order)
 
         if wizard_set and wizard_set.test_id:
             return wizard_set.test_id.id
 
-        test_obj = self.env['academy.tests.test']
+        test_obj = self.env["academy.tests.test"]
         test_set = test_obj.search(domain, limit=1, order=order)
 
         return test_set.id if test_set else False
@@ -131,26 +128,25 @@ class Nameofmodel(models.TransientModel):
     def _ensure_required(self):
         # pylint: disable=locally-disabled, W0101
         if not self.test_id:
-            raise ValidationError(_('Test field is required'))
+            raise ValidationError(_("Test field is required"))
             return False
 
         if not self.question_link_ids:
-            raise ValidationError(_('Questions field is required'))
+            raise ValidationError(_("Questions field is required"))
             return False
 
         return True
 
     def _get_last_sequence(self):
-        rel_domain = [('test_id', '=', self.test_id.id)]
-        rel_obj = self.env['academy.tests.test.question.rel']
-        rel_set = rel_obj.search(rel_domain, limit=1, order='sequence desc')
+        rel_domain = [("test_id", "=", self.test_id.id)]
+        rel_obj = self.env["academy.tests.test.question.rel"]
+        rel_set = rel_obj.search(rel_domain, limit=1, order="sequence desc")
 
         return rel_set.sequence if rel_set else 0
 
     def execute(self):
-        """ Performs the wizard action
-        """
-        dep_msg = _('Question with dependencies must be added manually')
+        """Performs the wizard action"""
+        dep_msg = _("Question with dependencies must be added manually")
         self.ensure_one()
         self._ensure_required()
 
@@ -162,7 +158,7 @@ class Nameofmodel(models.TransientModel):
                 raise UserError(dep_msg)
 
             sequence += 1
-            link = {'sequence': sequence, 'question_id': link.question_id.id}
+            link = {"sequence": sequence, "question_id": link.question_id.id}
             operations.append((0, None, link))
 
         if self.test_id and operations:

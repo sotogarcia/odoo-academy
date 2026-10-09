@@ -101,7 +101,6 @@ class AcademyStudentSignup(models.Model):
         domain=[],
         context={},
         auto_join=False,
-        limit=None,
         copy=False,
     )
 
@@ -515,7 +514,7 @@ class AcademyStudentSignup(models.Model):
         return enrolment if enrolment.deregister else False
 
     @staticmethod
-    def has_closing_tie_priority(
+    def _has_closing_tie_priority(
         enrolment_end,
         component_end,
         closing_enrolment,
@@ -528,19 +527,30 @@ class AcademyStudentSignup(models.Model):
         )
 
     def _split_enrolment_components(self, enrolment_set):
-        """Split enrolments into temporally connected groups.
+        """Split enrolments into temporally connected components.
 
         Two enrolments belong to the same component when their time intervals
-        overlap or touch. If there is a gap between them, they belong to
-        separate components.
+        overlap or touch. If there is a gap between them, they belong to separate
+        components.
 
         An enrolment without `deregister` is considered open-ended up to
-        `INFINITY`, so any later enrolment remains connected to the same
+        `INFINITY`, so any later enrolment remains connected to the same component.
+
+        Each component is returned as a tuple with the following structure:
+
+            (
+                component_enrolments,
+                start_enrolment,
+                closing_enrolment,
+            )
+
+        `component_enrolments` contains all enrolments in the component.
+
+        `start_enrolment` is the enrolment that determines the beginning of the
         component.
 
-        Each component is returned as a tuple containing its enrolments, the
-        enrolment that starts it and the enrolment that closes it. Open-ended
-        components have no closing enrolment.
+        `closing_enrolment` is the enrolment that determines the end of the
+        component, or `False` when the component is open-ended.
 
         Example:
 
@@ -598,7 +608,7 @@ class AcademyStudentSignup(models.Model):
             elif enrolment_end > component_end:
                 component_end = enrolment_end
                 closing_enrolment = enrolment
-            elif self.has_closing_tie_priority(
+            elif self._has_closing_tie_priority(
                 enrolment_end,
                 component_end,
                 closing_enrolment,

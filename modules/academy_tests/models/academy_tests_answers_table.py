@@ -10,155 +10,151 @@ from logging import getLogger
 from odoo import models, fields, api
 from odoo.tools import drop_view_if_exists
 
-from .utils.view_academy_tests_answers_table import \
-    ACADEMY_TESTS_ANSWERS_TABLE_MODEL
+from .utils.view_academy_tests_answers_table import (
+    ACADEMY_TESTS_ANSWERS_TABLE_MODEL,
+)
 
 _logger = getLogger(__name__)
 
 
 class AcademyTestsAnswersTable(models.Model):
-    """ This model uses an SQL VIEW to create an answer table for a test
-    """
+    """This model uses an SQL VIEW to create an answer table for a test"""
 
-    _name = 'academy.tests.answers.table'
-    _description = u'Academy tests, answers table entry'
+    _name = "academy.tests.answers.table"
+    _description = "Academy tests, answers table entry"
 
-    _rec_name = 'name'
-    _order = 'sequence ASC, id ASC'
+    _rec_name = "name"
+    _order = "sequence ASC, id ASC"
 
     _auto = False
 
     name = fields.Char(
-        string='Name',
+        string="Name",
         required=True,
         readonly=False,
         index=True,
         default=None,
-        help='Letter for this answer',
+        help="Letter for this answer",
         size=1024,
-        translate=True
+        translate=True,
     )
 
     description = fields.Text(
-        string='Description',
+        string="Description",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='Something about this question',
-        translate=True
+        help="Something about this question",
+        translate=True,
     )
 
     test_id = fields.Many2one(
-        string='Test',
+        string="Test",
         required=True,
         readonly=False,
         index=False,
         default=None,
-        help='Test to which this item belongs',
-        comodel_name='academy.tests.test',
+        help="Test to which this item belongs",
+        comodel_name="academy.tests.test",
         domain=[],
         context={},
-        ondelete='cascade',
+        ondelete="cascade",
         auto_join=False,
     )
 
     question_id = fields.Many2one(
-        string='Question',
+        string="Question",
         required=True,
         readonly=False,
         index=False,
         default=None,
-        help='Question to which this answer belongs',
-        comodel_name='academy.tests.question',
+        help="Question to which this answer belongs",
+        comodel_name="academy.tests.question",
         domain=[],
         context={},
-        ondelete='cascade',
+        ondelete="cascade",
         auto_join=False,
     )
 
     link_id = fields.Many2one(
-        string='Test/Question link',
+        string="Test/Question link",
         required=True,
         readonly=False,
         index=False,
         default=None,
-        help='Test question relationship',
-        comodel_name='academy.tests.test.question.rel',
+        help="Test question relationship",
+        comodel_name="academy.tests.test.question.rel",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
     sequence = fields.Integer(
-        string='Sequence',
+        string="Sequence",
         required=True,
         readonly=False,
         index=False,
         default=10,
-        help='Preference order for this question'
+        help="Preference order for this question",
     )
 
     topic_id = fields.Many2one(
-        string='Topic',
+        string="Topic",
         required=False,
         readonly=True,
         index=False,
         default=None,
         help=False,
-        comodel_name='academy.tests.topic',
+        comodel_name="academy.tests.topic",
         domain=[],
         context={},
-        ondelete='cascade',
+        ondelete="cascade",
         auto_join=False,
-        compute=lambda self: self._compute_topic_id()
+        compute=lambda self: self._compute_topic_id(),
     )
 
-    @api.depends('question_id')
+    @api.depends("question_id")
     def _compute_topic_id(self):
         for record in self:
             record.topic_id = record.question_id.topic_id
 
     category_ids = fields.Many2many(
-        string='Categories',
+        string="Categories",
         required=False,
         readonly=True,
         index=False,
         default=None,
         help=False,
-        comodel_name='academy.tests.category',
-        relation='academy_test_answer_table_category_rel',
-        column1='answer_table_id',
-        column2='category_id',
+        comodel_name="academy.tests.category",
+        relation="academy_test_answer_table_category_rel",
+        column1="answer_table_id",
+        column2="category_id",
         domain=[],
         context={},
-        limit=None,
-        compute=lambda self: self._compute_category_ids()
+        compute=lambda self: self._compute_category_ids(),
     )
 
     test_block_id = fields.Many2one(
-        string='Test block',
-        related='link_id.test_block_id'
+        string="Test block", related="link_id.test_block_id"
     )
 
-    @api.depends('question_id')
+    @api.depends("question_id")
     def _compute_category_ids(self):
         for record in self:
-            ids = record.question_id.category_ids.mapped('id') or []
+            ids = record.question_id.category_ids.mapped("id") or []
             record.category_ids = [(6, None, ids)]
 
     def init(self):
-        """ Build database view which will be used as module origin
+        """Build database view which will be used as module origin
 
-            :param cr: database cursor
+        :param cr: database cursor
         """
 
         drop_view_if_exists(self._cr, self._table)
         self._cr.execute(
-            'create or replace view {} as ({})'.format(
-                self._table,
-                ACADEMY_TESTS_ANSWERS_TABLE_MODEL
+            "create or replace view {} as ({})".format(
+                self._table, ACADEMY_TESTS_ANSWERS_TABLE_MODEL
             )
         )
-

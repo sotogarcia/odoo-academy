@@ -27,7 +27,6 @@ class AcademyTrainingAction(models.Model):
         domain=[],
         context={},
         auto_join=False,
-        limit=None,
         help=(
             "List of test assignments that have been created for this "
             "training action"
@@ -81,7 +80,6 @@ class AcademyTrainingAction(models.Model):
         domain=[],
         context={},
         auto_join=False,
-        limit=None,
         help=(
             "List of test templates available to be used in this training "
             "action"

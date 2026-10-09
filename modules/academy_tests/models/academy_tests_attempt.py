@@ -26,272 +26,274 @@ MAX_RETRIES = 5
 
 
 class AcademyTestAttempt(models.Model):
-    """ Logs all student answers in a test attempt, even if later he
+    """Logs all student answers in a test attempt, even if later he
     change it by another answer
     """
 
-    _name = 'academy.tests.attempt'
-    _description = u'Academy tests attempt'
+    _name = "academy.tests.attempt"
+    _description = "Academy tests attempt"
 
-    _rec_name = 'id'
-    _order = 'start DESC'
+    _rec_name = "id"
+    _order = "start DESC"
 
     _check_company_auto = True
 
     description = fields.Text(
-        string='Description',
+        string="Description",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='Something about this attempt',
-        translate=True
+        help="Something about this attempt",
+        translate=True,
     )
 
     prevalence = fields.Integer(
-        string='Prevalence',
+        string="Prevalence",
         required=False,
         readonly=True,
         index=False,
         default=9999,
-        help='Rank of the attempts by assignment and user'
+        help="Rank of the attempts by assignment and user",
     )
 
     rank = fields.Integer(
-        string='Rank',
+        string="Rank",
         required=True,
         readonly=True,
         index=True,
         default=9999,
-        help='Rank of the attempts by assignment'
+        help="Rank of the attempts by assignment",
     )
 
     active = fields.Boolean(
-        string='Active',
+        string="Active",
         required=False,
         readonly=False,
         index=False,
         default=True,
-        help='Check it to show this attempt or uncheck to archivate'
+        help="Check it to show this attempt or uncheck to archivate",
     )
 
     individual_id = fields.Many2one(
-        string='Individual assignment',
+        string="Individual assignment",
         required=True,
         readonly=False,
         index=True,
         default=None,
         help=False,
-        comodel_name='academy.tests.test.training.assignment.enrolment.rel',
+        comodel_name="academy.tests.test.training.assignment.enrolment.rel",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
     company_id = fields.Many2one(
-        string='Company',
+        string="Company",
         required=False,
         readonly=True,
         index=True,
         default=None,
-        help='Available for company',
-        comodel_name='res.company',
+        help="Available for company",
+        comodel_name="res.company",
         domain=[],
         context={},
-        ondelete='cascade',
+        ondelete="cascade",
         auto_join=False,
-        related='individual_id.company_id',
-        store=True
+        related="individual_id.company_id",
+        store=True,
     )
 
     assignment_id = fields.Many2one(
-        string='Assignment',
+        string="Assignment",
         index=True,
         readonly=True,
-        related='individual_id.assignment_id',
-        store=True
+        related="individual_id.assignment_id",
+        store=True,
     )
 
     test_id = fields.Many2one(
-        string='Test',
+        string="Test",
         index=True,
         readonly=True,
-        related='individual_id.assignment_id.test_id',
-        store=True
+        related="individual_id.assignment_id.test_id",
+        store=True,
     )
 
     enrolment_id = fields.Many2one(
-        string='Enrolment',
+        string="Enrolment",
         index=True,
         readonly=True,
-        related='individual_id.enrolment_id',
-        store=True
+        related="individual_id.enrolment_id",
+        store=True,
     )
 
     student_id = fields.Many2one(
-        string='Student',
+        string="Student",
         index=True,
         readonly=True,
-        related='individual_id.enrolment_id.student_id',
-        store=True
+        related="individual_id.enrolment_id.student_id",
+        store=True,
     )
 
     start = fields.Datetime(
-        string='Start',
+        string="Start",
         required=True,
         readonly=False,
         index=False,
         default=fields.datetime.now(),
-        help='Choose date and time to start the attempt'
+        help="Choose date and time to start the attempt",
     )
 
     elapsed = fields.Float(
-        string='Elapsed time',
+        string="Elapsed time",
         required=True,
         readonly=False,
         index=False,
         default=0.0,
         digits=(16, 10),
-        help='Enter the time has been used in attempt'
+        help="Enter the time has been used in attempt",
     )
 
     available_time = fields.Float(
-        string='Available time',
+        string="Available time",
         required=True,
         readonly=False,
         index=False,
         default=0.0,
         digits=(8, 6),
-        help='Enter the total time for the attempt'
+        help="Enter the total time for the attempt",
     )
 
     end = fields.Datetime(
-        string='End',
+        string="End",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='Choose date and time the attempt ended'
+        help="Choose date and time the attempt ended",
     )
 
     correction_type = fields.Selection(
-        string='Correction type',
+        string="Correction type",
         required=True,
         readonly=False,
         index=False,
-        default='test',
-        help='Choose the type of attempt',
-        selection=[('question', 'By question'), ('test', 'By test')]
+        default="test",
+        help="Choose the type of attempt",
+        selection=[("question", "By question"), ("test", "By test")],
     )
 
     attempt_answer_ids = fields.One2many(
-        string='Answers',
+        string="Answers",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='Links all answer attempts',
-        comodel_name='academy.tests.attempt.answer',
-        inverse_name='attempt_id',
+        help="Links all answer attempts",
+        comodel_name="academy.tests.attempt.answer",
+        inverse_name="attempt_id",
         domain=[],
         context={},
         auto_join=False,
-        limit=None,
         copy=True,
     )
 
     attempt_answer_count = fields.Integer(
-        string='Total answers',
+        string="Total answers",
         required=True,
         readonly=True,
         index=True,
         default=0,
-        help='Total number of user\'s answers to this attempt',
-        compute='_compute_attempt_answer_count'
+        help="Total number of user's answers to this attempt",
+        compute="_compute_attempt_answer_count",
     )
 
-    @api.depends('attempt_answer_ids')
+    @api.depends("attempt_answer_ids")
     def _compute_attempt_answer_count(self):
         for record in self:
             record.attempt_answer_count = len(record.attempt_answer_ids)
 
     attempt_final_answer_ids = fields.One2many(
-        string='Final answers',
+        string="Final answers",
         required=False,
         readonly=True,
         index=False,
         default=None,
-        help='Links to the attempt final answers',
-        comodel_name='academy.tests.attempt.answer',
-        inverse_name='attempt_id',
-        domain=[('prevalence', '=', 1)],
+        help="Links to the attempt final answers",
+        comodel_name="academy.tests.attempt.answer",
+        inverse_name="attempt_id",
+        domain=[("prevalence", "=", 1)],
         context={},
         auto_join=False,
-        limit=None,
         copy=False,
     )
 
     right = fields.Float(
-        string='Right (awarded)',
+        string="Right (awarded)",
         required=True,
         readonly=False,
         index=False,
         default=1.0,
         digits=(16, 10),
-        help='Score by right question'
+        help="Score by right question",
     )
 
     wrong = fields.Float(
-        string='Wrong (awarded)',
+        string="Wrong (awarded)",
         required=True,
         readonly=False,
         index=False,
         default=-1.0,
         digits=(16, 10),
-        help='Score by wrong question'
+        help="Score by wrong question",
     )
 
     blank = fields.Float(
-        string='Blank (awarded)',
+        string="Blank (awarded)",
         required=True,
         readonly=False,
         index=False,
         default=0.0,
         digits=(16, 10),
-        help='Score by blank question'
+        help="Score by blank question",
     )
 
     lock_time = fields.Boolean(
-        string='Lock time',
+        string="Lock time",
         required=False,
         readonly=False,
         index=False,
         default=True,
-        help=('Check to not allow the user to continue with the test once '
-              'the time has passed')
+        help=(
+            "Check to not allow the user to continue with the test once "
+            "the time has passed"
+        ),
     )
 
     closed = fields.Boolean(
-        string='Closed',
+        string="Closed",
         required=False,
         readonly=False,
         index=False,
         default=False,
-        help='Attempt has finished and it has been fully stored'
+        help="Attempt has finished and it has been fully stored",
     )
 
     training_action_id = fields.Many2one(
-        string='Training action',
-        related='individual_id.enrolment_id.training_action_id',
-        store=True
+        string="Training action",
+        related="individual_id.enrolment_id.training_action_id",
+        store=True,
     )
 
     training_activity_id = fields.Many2one(
-        string='Training activity',
-        related=('individual_id.enrolment_id.training_action_id.'
-                 'training_activity_id'),
-        store=True
+        string="Training activity",
+        related=(
+            "individual_id.enrolment_id.training_action_id."
+            "training_activity_id"
+        ),
+        store=True,
     )
 
     # competency_unit_id = fields.Many2one(
@@ -319,245 +321,260 @@ class AcademyTestAttempt(models.Model):
     # )
 
     question_count = fields.Integer(
-        string='Question count',
+        string="Question count",
         required=True,
         readonly=True,
         index=False,
         default=0,
-        help='Total number of questions'
+        help="Total number of questions",
     )
 
     answered_count = fields.Integer(
-        string='Anwered count',
+        string="Anwered count",
         required=True,
         readonly=True,
         index=False,
         default=0,
-        help='The number of answered questions'
+        help="The number of answered questions",
     )
 
     doubt_count = fields.Integer(
-        string='Doubt count',
+        string="Doubt count",
         required=True,
         readonly=True,
         index=False,
         default=0,
-        help='The number of questions that have been answered with doubt'
+        help="The number of questions that have been answered with doubt",
     )
 
     answer_count = fields.Integer(
-        string='Answer count',
+        string="Answer count",
         required=True,
         readonly=True,
         index=False,
         default=0,
-        help='The number of final sure responses'
+        help="The number of final sure responses",
     )
 
     right_count = fields.Integer(
-        string='Right count',
+        string="Right count",
         required=True,
         readonly=True,
         index=False,
         default=0,
-        help='The number of right final answers'
+        help="The number of right final answers",
     )
 
     wrong_count = fields.Integer(
-        string='Wrong count',
+        string="Wrong count",
         required=True,
         readonly=True,
         index=False,
         default=0,
-        help='The number of wrong final answers'
+        help="The number of wrong final answers",
     )
 
     blank_count = fields.Integer(
-        string='Blank count',
+        string="Blank count",
         required=True,
         readonly=True,
         index=False,
         default=0,
-        help='The number of blank final answers'
+        help="The number of blank final answers",
     )
 
     max_points = fields.Float(
-        string='Max points',
+        string="Max points",
         required=True,
         readonly=True,
         index=True,
         default=0.0,
         digits=(16, 10),
-        help='Maximum score that can be obtained in the exercise'
+        help="Maximum score that can be obtained in the exercise",
     )
 
     final_points = fields.Float(
-        string='Final points',
+        string="Final points",
         required=True,
         readonly=True,
         index=False,
         default=0.0,
         digits=(16, 10),
-        help='Total points earned based on final answers'
+        help="Total points earned based on final answers",
     )
 
     right_points = fields.Float(
-        string='Right points',
+        string="Right points",
         required=True,
         readonly=True,
         index=False,
         default=0.0,
         digits=(16, 10),
-        help='Total points earned based on right final answers'
+        help="Total points earned based on right final answers",
     )
 
     wrong_points = fields.Float(
-        string='Wrong points',
+        string="Wrong points",
         required=True,
         readonly=True,
         index=False,
         default=0.0,
         digits=(16, 10),
-        help='Total points earned based on wrong final answers'
+        help="Total points earned based on wrong final answers",
     )
 
     blank_points = fields.Float(
-        string='Blank points',
+        string="Blank points",
         required=True,
         readonly=True,
         index=False,
         default=0.0,
         digits=(16, 10),
-        help='Total points earned based on blank final answers'
+        help="Total points earned based on blank final answers",
     )
 
     answered_percent = fields.Float(
-        string='Answered percent',
+        string="Answered percent",
         required=True,
         readonly=True,
         index=False,
         default=0.0,
         digits=(16, 10),
-        help=('Percentage of questions that have been answered, regardless of '
-              'correctness')
+        help=(
+            "Percentage of questions that have been answered, regardless of "
+            "correctness"
+        ),
     )
 
     right_percent = fields.Float(
-        string='Right percent',
+        string="Right percent",
         required=True,
         readonly=True,
         index=False,
         default=0.0,
         digits=(16, 10),
-        help=('Percentage of correctly answered questions out of the total '
-              'number of questions')
+        help=(
+            "Percentage of correctly answered questions out of the total "
+            "number of questions"
+        ),
     )
 
     wrong_percent = fields.Float(
-        string='Wrong percent',
+        string="Wrong percent",
         required=True,
         readonly=True,
         index=False,
         default=0.0,
         digits=(16, 10),
-        help=('Percentage of incorrectly answered questions out of the total '
-              'number of questions')
+        help=(
+            "Percentage of incorrectly answered questions out of the total "
+            "number of questions"
+        ),
     )
 
     blank_percent = fields.Float(
-        string='Blank percent',
+        string="Blank percent",
         required=True,
         readonly=True,
         index=False,
         default=0.0,
         digits=(16, 10),
-        help=('Percentage of questions left unanswered out of the total '
-              'number of questions')
+        help=(
+            "Percentage of questions left unanswered out of the total "
+            "number of questions"
+        ),
     )
 
     passed = fields.Boolean(
-        string='Passed',
+        string="Passed",
         required=False,
         readonly=True,
         index=True,
         default=False,
-        help='True if final score is greater or equal to 5.0, False otherwise'
+        help="True if final score is greater or equal to 5.0, False otherwise",
     )
 
     final_score = fields.Float(
-        string='Final score',
+        string="Final score",
         required=True,
         readonly=True,
         index=False,
         default=0.0,
         digits=(16, 10),
-        help=('Total score earned based on final answers, calculated on a '
-              'scale of 10')
+        help=(
+            "Total score earned based on final answers, calculated on a "
+            "scale of 10"
+        ),
     )
 
     right_score = fields.Float(
-        string='Right score',
+        string="Right score",
         required=True,
         readonly=True,
         index=False,
         default=0.0,
         digits=(16, 10),
-        help=('Total score earned based on right final answers, calculated on '
-              'a scale of 10')
+        help=(
+            "Total score earned based on right final answers, calculated on "
+            "a scale of 10"
+        ),
     )
 
     wrong_score = fields.Float(
-        string='Wrong score',
+        string="Wrong score",
         required=True,
         readonly=True,
         index=False,
         default=0.0,
         digits=(16, 10),
-        help=('Total score earned based on wrong final answers, calculated on '
-              'a scale of 10')
+        help=(
+            "Total score earned based on wrong final answers, calculated on "
+            "a scale of 10"
+        ),
     )
 
     blank_score = fields.Float(
-        string='Blank score',
+        string="Blank score",
         required=True,
         readonly=True,
         index=False,
         default=0.0,
         digits=(16, 10),
-        help=('Total score earned based on blank final answers, calculated on '
-              'a scale of 10')
+        help=(
+            "Total score earned based on blank final answers, calculated on "
+            "a scale of 10"
+        ),
     )
 
     rating = fields.Integer(
-        string='Rating',
+        string="Rating",
         required=False,
         readonly=False,
         index=False,
         default=0,
-        help=('Final attempt score computed over 10 points and truncated to '
-              'the nearest lower integer')
+        help=(
+            "Final attempt score computed over 10 points and truncated to "
+            "the nearest lower integer"
+        ),
     )
 
     grade = fields.Selection(
-        string='Grade',
+        string="Grade",
         required=False,
         readonly=True,
         index=False,
-        default='fail',
-        help='Passed if the obtained score reaches half of the maximum score',
-        selection=[
-            ('pass', 'Passing'),
-            ('fail', 'Failing')
-        ]
+        default="fail",
+        help="Passed if the obtained score reaches half of the maximum score",
+        selection=[("pass", "Passing"), ("fail", "Failing")],
     )
 
     last_signal = fields.Datetime(
-        string='Last signal',
+        string="Last signal",
         required=True,
         readonly=True,
         index=False,
         default=fields.datetime.now(),
-        help='Timestamp of the latest \'keep alive\' signal received.'
+        help="Timestamp of the latest 'keep alive' signal received.",
     )
 
     # -------------------------------------------------------------------------
@@ -566,44 +583,40 @@ class AcademyTestAttempt(models.Model):
 
     _sql_constraints = [
         (
-            'check_start_before_end',
+            "check_start_before_end",
             'CHECK("end" IS NULL OR start <= "end")',
-            _(u'The start date/time must be anterior to the end date')
+            _("The start date/time must be anterior to the end date"),
+        ),
+        ("positive_rank", "CHECK(rank > 0)", "Rank must be a positive number"),
+        (
+            "positive_prevalence",
+            "CHECK(prevalence > 0)",
+            "Prevalence must be a positive number",
         ),
         (
-            'positive_rank',
-            'CHECK(rank > 0)',
-            'Rank must be a positive number'
-        ),
-        (
-            'positive_prevalence',
-            'CHECK(prevalence > 0)',
-            'Prevalence must be a positive number'
-        ),
-        (
-            'end_date_before_closed',
-            '''CHECK (
+            "end_date_before_closed",
+            """CHECK (
                 (closed != TRUE AND "end" IS NULL)
                 OR (closed = TRUE AND "end" IS NOT NULL)
-            )''',
-            'The record cannot be closed unless the end date is set.'
-        )
+            )""",
+            "The record cannot be closed unless the end date is set.",
+        ),
     ]
 
     # -------------------------------------------------------------------------
     # Overridden Non-CRUD Methods
     # -------------------------------------------------------------------------
 
-    @api.depends('student_id', 'test_id')
+    @api.depends("student_id", "test_id")
     def name_get(self):
         result = []
         for record in self:
             if isinstance(record.id, models.NewId):
-                name = _('New attempt')
+                name = _("New attempt")
             else:
-                student = record.student_id.name or _('Student')
-                test = record.test_id.name or _('Test')
-                name = '{} - {} - #{}'.format(student, test, record.id)
+                student = record.student_id.name or _("Student")
+                test = record.test_id.name or _("Test")
+                name = "{} - {} - #{}".format(student, test, record.id)
 
             result.append((record.id, name))
 
@@ -614,7 +627,7 @@ class AcademyTestAttempt(models.Model):
         Ensures the custom index exists in the database.
         """
 
-        fields = ['individual_id', 'active', 'closed']
+        fields = ["individual_id", "active", "closed"]
         create_index(self.env, self._table, fields, unique=False)
 
     # -------------------------------------------------------------------------
@@ -623,8 +636,7 @@ class AcademyTestAttempt(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
-        """ Overridden method 'create'
-        """
+        """Overridden method 'create'"""
 
         # Prevent manually closed
         self._raise_if_closed_set(vals_list)
@@ -638,8 +650,7 @@ class AcademyTestAttempt(models.Model):
         return result
 
     def write(self, values):
-        """ Remove answer_id when user action is True
-        """
+        """Remove answer_id when user action is True"""
 
         # Prevent manually closed
         self._raise_if_closed_set(values)
@@ -650,8 +661,7 @@ class AcademyTestAttempt(models.Model):
         return result
 
     def unlink(self):
-        """ Overridden method 'unlink'
-        """
+        """Overridden method 'unlink'"""
 
         parent = super(AcademyTestAttempt, self)
         result = parent.unlink()
@@ -660,10 +670,10 @@ class AcademyTestAttempt(models.Model):
 
     @api.model
     def _get_individual_from_values(self, values):
-        individual_mod = 'academy.tests.test.training.assignment.enrolment.rel'
+        individual_mod = "academy.tests.test.training.assignment.enrolment.rel"
         individual_set = self.env[individual_mod]
 
-        individual_id = values.get('individual_id', False)
+        individual_id = values.get("individual_id", False)
         if individual_id:
             individual_set = individual_set.browse(individual_id)
 
@@ -674,8 +684,8 @@ class AcademyTestAttempt(models.Model):
         scale = assignment.correction_scale_id
 
         if not scale:
-            scale_path = 'academy_tests.default_correction_scale_id'
-            config_param_obj = self.env['ir.config_parameter'].sudo()
+            scale_path = "academy_tests.default_correction_scale_id"
+            config_param_obj = self.env["ir.config_parameter"].sudo()
             scale = config_param_obj.get_param(scale_path)
 
         return scale
@@ -683,7 +693,7 @@ class AcademyTestAttempt(models.Model):
     @staticmethod
     def _update_scale_values(values, scale):
         values = values or {}
-        fields = ['right', 'wrong', 'blank']
+        fields = ["right", "wrong", "blank"]
 
         for item in fields:
             if item not in values:
@@ -723,7 +733,6 @@ class AcademyTestAttempt(models.Model):
             vals_list = [vals_list]
 
         for values in vals_list:
-
             individual = self._get_individual_from_values(values)
             if not individual:
                 continue
@@ -733,31 +742,32 @@ class AcademyTestAttempt(models.Model):
             if scale:
                 self._update_scale_values(values, scale)
 
-            if 'question_count' not in values:
-                question_count = len(assignment.mapped('test_id.question_ids'))
-                assert self._is_natural(question_count, allow_zero=True), \
-                    'Number of questions must be a non-negative integer'
-                values['question_count'] = question_count
+            if "question_count" not in values:
+                question_count = len(assignment.mapped("test_id.question_ids"))
+                assert self._is_natural(
+                    question_count, allow_zero=True
+                ), "Number of questions must be a non-negative integer"
+                values["question_count"] = question_count
 
-            if 'max_points' not in values:
-                right = values.get('right', None)
-                assert isinstance(right, (int, float)), \
-                    'Right points values must be numeric'
-                values['max_points'] = \
-                    values['question_count'] * right
+            if "max_points" not in values:
+                right = values.get("right", None)
+                assert isinstance(
+                    right, (int, float)
+                ), "Right points values must be numeric"
+                values["max_points"] = values["question_count"] * right
 
     def _is_natural(self, value, allow_zero=False):
-        return isinstance(value, int) \
-            and (value > 0 or (value == 0 and allow_zero))
+        return isinstance(value, int) and (
+            value > 0 or (value == 0 and allow_zero)
+        )
 
     def _raise_if_closed_set(self, vals_list):
-        if not self.env.context.get('attempt_close_enabled', False):
-
+        if not self.env.context.get("attempt_close_enabled", False):
             if isinstance(vals_list, dict):  # Single item
                 vals_list = [vals_list]
 
             for values in vals_list:
-                if values.get('closed', False):
+                if values.get("closed", False):
                     message = (
                         'The "closed" field cannot be set to True directly. '
                         'Use the "recalculate" or "close" methods instead.'
@@ -769,15 +779,17 @@ class AcademyTestAttempt(models.Model):
     # -------------------------------------------------------------------------
 
     def _ctx_disable_update(self, action, default=False):
-        return self.env.context.get(f'disable_{action}_update', default)
+        return self.env.context.get(f"disable_{action}_update", default)
 
     @staticmethod
     def _safe_division(dividend, divisor, default=0):
         try:
             result = dividend / divisor
         except ZeroDivisionError:
-            message = (f'Warning: Division by zero. '
-                       f'Returning {default} as the result.')
+            message = (
+                f"Warning: Division by zero. "
+                f"Returning {default} as the result."
+            )
             _logger.warning(message)
             result = default
 
@@ -786,79 +798,85 @@ class AcademyTestAttempt(models.Model):
     def get_computed_values(self):
         self.ensure_one()
 
-        _logger.debug(f'Calculating values for test attempt ID {self.id}')
+        _logger.debug(f"Calculating values for test attempt ID {self.id}")
 
         values = {}
 
-        link_path = 'individual_id.assignment_id.test_id.question_ids'
+        link_path = "individual_id.assignment_id.test_id.question_ids"
         answer_set = self.attempt_final_answer_ids
 
-        values['question_count'] = len(self.mapped(link_path))
-        values['answered_count'] = len(answer_set.filtered(
-            lambda r: r.user_action != 'blank'
-        ))
-        values['doubt_count'] = len(answer_set.filtered(
-            lambda r: r.user_action == 'doubt'
-        ))
-
-        values['answer_count'] = len(answer_set.filtered(
-            lambda r: r.user_action == 'answer'
-        ))
-
-        values['right_count'] = len(answer_set.filtered(
-            lambda r: r.is_correct
-        ))
-        values['wrong_count'] = len(answer_set.filtered(
-            lambda r: not r.is_correct and r.user_action != 'blank'
-        ))
-        values['blank_count'] = (
-            values['question_count'] - values['answered_count']
+        values["question_count"] = len(self.mapped(link_path))
+        values["answered_count"] = len(
+            answer_set.filtered(lambda r: r.user_action != "blank")
+        )
+        values["doubt_count"] = len(
+            answer_set.filtered(lambda r: r.user_action == "doubt")
         )
 
-        values['max_points'] = values['question_count'] * self.right
-        values['right_points'] = values['right_count'] * self.right
-        values['wrong_points'] = values['wrong_count'] * self.wrong
-        values['blank_points'] = values['blank_count'] * self.blank
-        values['final_points'] = (
-            values['right_points']
-            + values['wrong_points']
-            + values['blank_points']
+        values["answer_count"] = len(
+            answer_set.filtered(lambda r: r.user_action == "answer")
         )
 
-        values['answered_percent'] = self._safe_division(
-            values['answered_count'], values['question_count'])
+        values["right_count"] = len(
+            answer_set.filtered(lambda r: r.is_correct)
+        )
+        values["wrong_count"] = len(
+            answer_set.filtered(
+                lambda r: not r.is_correct and r.user_action != "blank"
+            )
+        )
+        values["blank_count"] = (
+            values["question_count"] - values["answered_count"]
+        )
 
-        values['right_percent'] = self._safe_division(
-            values['right_count'], values['question_count'])
+        values["max_points"] = values["question_count"] * self.right
+        values["right_points"] = values["right_count"] * self.right
+        values["wrong_points"] = values["wrong_count"] * self.wrong
+        values["blank_points"] = values["blank_count"] * self.blank
+        values["final_points"] = (
+            values["right_points"]
+            + values["wrong_points"]
+            + values["blank_points"]
+        )
 
-        values['wrong_percent'] = self._safe_division(
-            values['wrong_count'], values['question_count'])
+        values["answered_percent"] = self._safe_division(
+            values["answered_count"], values["question_count"]
+        )
 
-        values['blank_percent'] = self._safe_division(
-            values['blank_count'], values['question_count'])
+        values["right_percent"] = self._safe_division(
+            values["right_count"], values["question_count"]
+        )
+
+        values["wrong_percent"] = self._safe_division(
+            values["wrong_count"], values["question_count"]
+        )
+
+        values["blank_percent"] = self._safe_division(
+            values["blank_count"], values["question_count"]
+        )
 
         # Rule of three
         # x_points --- max_points     => x_score = x_points * 10 / max_points
         # x_score  --- 10
         # ---------------------------------------------------------------------
-        factor = self._safe_division(10, values['max_points'])
-        values['final_score'] = values['final_points'] * factor
-        values['right_score'] = values['right_points'] * factor
-        values['wrong_score'] = values['wrong_points'] * factor
-        values['blank_score'] = values['blank_points'] * factor
+        factor = self._safe_division(10, values["max_points"])
+        values["final_score"] = values["final_points"] * factor
+        values["right_score"] = values["right_points"] * factor
+        values["wrong_score"] = values["wrong_points"] * factor
+        values["blank_score"] = values["blank_points"] * factor
 
-        values['rating'] = floor(values['final_score'])
-        values['passed'] = (values['final_score'] >= 5.0)
-        values['grade'] = 'pass' if values['passed'] else 'fail'
+        values["rating"] = floor(values["final_score"])
+        values["passed"] = values["final_score"] >= 5.0
+        values["grade"] = "pass" if values["passed"] else "fail"
 
         return values
 
     def _get_anwered_link_ids(self):
-        field_path = 'attempt_final_answer_ids.question_link_id'
+        field_path = "attempt_final_answer_ids.question_link_id"
         return self.mapped(field_path)
 
     def _get_tests_link_ids(self):
-        field_path = 'individual_id.assignment_id.test_id.question_ids'
+        field_path = "individual_id.assignment_id.test_id.question_ids"
         return self.mapped(field_path)
 
     def _update_values_with_missing_answers(self, values):
@@ -870,20 +888,24 @@ class AcademyTestAttempt(models.Model):
         test_set = self._get_tests_link_ids()
         left_set = test_set - answered_set
 
-        for link_item in (left_set):
-            o2m_op = (0, 0, {
-                'active': True,
-                'user_action': 'blank',
-                'attempt_id': self.id,
-                'question_link_id': link_item.id,
-                'answer_id': None,
-                'prevalence': 1
-            })
+        for link_item in left_set:
+            o2m_op = (
+                0,
+                0,
+                {
+                    "active": True,
+                    "user_action": "blank",
+                    "attempt_id": self.id,
+                    "question_link_id": link_item.id,
+                    "answer_id": None,
+                    "prevalence": 1,
+                },
+            )
 
             attempt_answer_o2m_ops.append(o2m_op)
 
         if attempt_answer_o2m_ops:
-            values['attempt_answer_ids'] = attempt_answer_o2m_ops
+            values["attempt_answer_ids"] = attempt_answer_o2m_ops
 
     def _update_time_values(self, values):
         self.ensure_one()
@@ -896,27 +918,28 @@ class AcademyTestAttempt(models.Model):
         else:
             now = fields.Datetime.now()
             date_stop = max(now, date_start)
-            values['end'] = date_stop.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+            values["end"] = date_stop.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
 
         elapsed = self.elapsed or 0.0
         seconds = (date_stop - date_start).total_seconds()
         elapsed = elapsed + (seconds / 3600.0)
 
-        values['elapsed'] = \
-            min(self.available_time or float(maxsize), elapsed)
+        values["elapsed"] = min(self.available_time or float(maxsize), elapsed)
 
         return values
 
     def _log_closing(self):
-        message = f'The following test attempts will be closed: {self.ids}.'
+        message = f"The following test attempts will be closed: {self.ids}."
         _logger.info(message)
 
     def _filter_closed_records(self, warning=True):
         if warning:
             opened_set = self.filtered(lambda r: not r.closed)
             if opened_set:
-                _logger.warning(f'Open test attempts {opened_set.ids} will be '
-                                f'ignored during recalculation.')
+                _logger.warning(
+                    f"Open test attempts {opened_set.ids} will be "
+                    f"ignored during recalculation."
+                )
 
         return self.filtered(lambda r: r.closed)
 
@@ -938,12 +961,14 @@ class AcademyTestAttempt(models.Model):
         # Disable prevalence and rank updates within this method
         # Allow bypassing close restriction con create and write methods
         context = self.env.context.copy()
-        context.update({
-            'disable_prevalence_update': True,
-            'disable_rank_update': True,
-            'disable_attempt_update': True,
-            'attempt_close_enabled': True
-        })
+        context.update(
+            {
+                "disable_prevalence_update": True,
+                "disable_rank_update": True,
+                "disable_attempt_update": True,
+                "attempt_close_enabled": True,
+            }
+        )
         target_set = self.with_context(context)
 
         # Exclude opened attempts
@@ -951,14 +976,14 @@ class AcademyTestAttempt(models.Model):
             target_set = target_set._filter_closed_records(warning=True)
 
         # Update related answer prevalence
-        attempt_answer_set = target_set.mapped('attempt_answer_ids')
+        attempt_answer_set = target_set.mapped("attempt_answer_ids")
         attempt_answer_set.update_prevalence()
 
         for record in target_set:
             values = record.get_computed_values()
 
             if close and not record.closed:
-                values['closed'] = True
+                values["closed"] = True
 
                 record._update_time_values(values)
                 record._update_values_with_missing_answers(values)
@@ -967,24 +992,24 @@ class AcademyTestAttempt(models.Model):
             record.write(values)
 
         # See: It will be used self insted self_ctx to get global context
-        if not self._ctx_disable_update('prevalence'):
+        if not self._ctx_disable_update("prevalence"):
             self.update_prevalence()
 
         # See: It will be used self insted self_ctx to get global context
-        if not self._ctx_disable_update('rank'):
+        if not self._ctx_disable_update("rank"):
             self.update_rank()
 
         # See: It will be used self insted self_ctx to get global context
-        if not self._ctx_disable_update('attempt'):
-            individual_set = self.mapped('individual_id')
+        if not self._ctx_disable_update("attempt"):
+            individual_set = self.mapped("individual_id")
             individual_set.fast_update_attempt_data()
 
-            assignment_set = self.mapped('individual_id.assignment_id')
+            assignment_set = self.mapped("individual_id.assignment_id")
             assignment_set.fast_update_attempt_data()
 
     def recalculate_all(self, close=False):
-        domain = TRUE_DOMAIN if close else [('closed', '=', True)]
-        attempt_obj = self.env['academy.tests.attempt']
+        domain = TRUE_DOMAIN if close else [("closed", "=", True)]
+        attempt_obj = self.env["academy.tests.attempt"]
         attempt_set = attempt_obj.search(domain)
 
         attempt_set.recalculate(close=close)
@@ -1005,10 +1030,10 @@ class AcademyTestAttempt(models.Model):
     # -------------------------------------------------------------------------
 
     def _get_individual_ids(self):
-        return self.mapped('individual_id').ids
+        return self.mapped("individual_id").ids
 
     def update_prevalence(self, individual_ids=False):
-        sql_pattern = '''
+        sql_pattern = """
             WITH attempt_prevalence AS (
                 SELECT
                     "id",
@@ -1032,21 +1057,21 @@ class AcademyTestAttempt(models.Model):
                 attempt_prevalence AS ap
             WHERE
                 ap."id" = att."id";
-        '''
+        """
 
         if individual_ids is False:
             individual_ids = self._get_individual_ids()
 
         if individual_ids:
-            ids_str = ', '.join([str(item_id) for item_id in individual_ids])
+            ids_str = ", ".join([str(item_id) for item_id in individual_ids])
             sql = sql_pattern.format(ids=ids_str)
 
-            self._execute_query(sql, action='update_prevalence')
+            self._execute_query(sql, action="update_prevalence")
 
     @api.model
     def _execute_query(self, sql, selection=False, notify=False, action=None):
         results = []
-        action = action or 'SQL'
+        action = action or "SQL"
 
         for attempt in range(MAX_RETRIES):
             try:
@@ -1060,23 +1085,23 @@ class AcademyTestAttempt(models.Model):
 
             except SerializationFailure:
                 if attempt < MAX_RETRIES - 1:
-                    message = 'Failed to execute SQL {} / {} tries'
+                    message = "Failed to execute SQL {} / {} tries"
                     _logger.warning(message.format(attempt, MAX_RETRIES))
                     sleep(1)  # Wait before retry
                 else:
                     if notify:
-                        message = _('Failed to execute {} after {} tries')
+                        message = _("Failed to execute {} after {} tries")
                         raise UserError(message.format(action, MAX_RETRIES))
                     else:
-                        message = 'Failed to execute {} after {} tries'
+                        message = "Failed to execute {} after {} tries"
                         _logger.error(message.format(action, MAX_RETRIES))
 
             except Exception as ex:
                 if notify:
-                    message = _('Failed to execute {}. System says: {}')
+                    message = _("Failed to execute {}. System says: {}")
                     raise UserError(message.format(action, ex))
                 else:
-                    message = 'Failed to execute {}. System says: {}'
+                    message = "Failed to execute {}. System says: {}"
                     _logger.error(message.format(action, ex))
 
                 break
@@ -1088,10 +1113,10 @@ class AcademyTestAttempt(models.Model):
     # -------------------------------------------------------------------------
 
     def _get_assignment_ids(self):
-        return self.mapped('assignment_id').ids
+        return self.mapped("assignment_id").ids
 
     def update_rank(self, assignment_ids=False):
-        sql_pattern = '''
+        sql_pattern = """
             WITH attempt_rank AS (
                 SELECT
                     "id",
@@ -1115,16 +1140,16 @@ class AcademyTestAttempt(models.Model):
                 attempt_rank AS ap
             WHERE
                 ap."id" = att."id";
-        '''
+        """
 
         if assignment_ids is False:
             assignment_ids = self._get_assignment_ids()
 
         if assignment_ids:
-            ids_str = ', '.join([str(item_id) for item_id in assignment_ids])
+            ids_str = ", ".join([str(item_id) for item_id in assignment_ids])
             sql = sql_pattern.format(ids=ids_str)
 
-            self._execute_query(sql, action='update_rank')
+            self._execute_query(sql, action="update_rank")
 
     # -------------------------------------------------------------------------
     # Actions and Events
@@ -1137,38 +1162,38 @@ class AcademyTestAttempt(models.Model):
         It is designed to be called by an `ir.cron` job in Odoo, automating the
         process of closing outdated attempts.
         """
-        attempt_obj = self.env['academy.tests.attempt']
+        attempt_obj = self.env["academy.tests.attempt"]
 
         life_span = self.get_attempt_lifespan()
         limit_date = fields.Datetime.now() - timedelta(days=life_span)
-        domain = [('closed', '!=', True), ('start', '<=', limit_date)]
+        domain = [("closed", "!=", True), ("start", "<=", limit_date)]
         opened_set = attempt_obj.search(domain)
         opened_set.close()
 
     def view_attempt_answers(self):
         self.ensure_one()
 
-        action_xid = 'academy_tests.action_test_attempt_answers_act_window'
+        action_xid = "academy_tests.action_test_attempt_answers_act_window"
         act_wnd = self.env.ref(action_xid)
 
-        name = _('Answers')
+        name = _("Answers")
 
         context = self.env.context.copy()
         context.update(safe_eval(act_wnd.context))
-        context.update({'default_attempt_id': self.id})
+        context.update({"default_attempt_id": self.id})
 
-        domain = [('attempt_id', '=', self.id)]
+        domain = [("attempt_id", "=", self.id)]
 
         serialized = {
-            'type': 'ir.actions.act_window',
-            'res_model': act_wnd.res_model,
-            'target': 'current',
-            'name': name,
-            'view_mode': act_wnd.view_mode,
-            'domain': domain,
-            'context': context,
-            'search_view_id': act_wnd.search_view_id.id,
-            'help': act_wnd.help
+            "type": "ir.actions.act_window",
+            "res_model": act_wnd.res_model,
+            "target": "current",
+            "name": name,
+            "view_mode": act_wnd.view_mode,
+            "domain": domain,
+            "context": context,
+            "search_view_id": act_wnd.search_view_id.id,
+            "help": act_wnd.help,
         }
 
         return serialized
@@ -1192,8 +1217,8 @@ class AcademyTestAttempt(models.Model):
         """
         self_su = self.sudo()
 
-        domain = [('closed', '=', True)]
-        attempt_obj = self_su.env['academy.tests.attempt']
+        domain = [("closed", "=", True)]
+        attempt_obj = self_su.env["academy.tests.attempt"]
         closed_set = attempt_obj.search(domain)
         closed_set.recalculate()
 
@@ -1223,15 +1248,17 @@ class AcademyTestAttempt(models.Model):
         """
         default = 30
 
-        config_obj = self.env['ir.config_parameter'].sudo()
-        param_name = 'academy_tests.attempt_lifespan'
+        config_obj = self.env["ir.config_parameter"].sudo()
+        param_name = "academy_tests.attempt_lifespan"
         attempt_lifespan = config_obj.get_param(param_name, default=default)
 
         try:
             attempt_lifespan = int(attempt_lifespan)
         except (ValueError, TypeError) as ex:
-            message = (f'Failed to convert attempt lifespan to integer. '
-                       f'System says: {ex}. Using default value of 30.')
+            message = (
+                f"Failed to convert attempt lifespan to integer. "
+                f"System says: {ex}. Using default value of 30."
+            )
             _logger.warning(message)
             attempt_lifespan = default
 

@@ -75,7 +75,7 @@
         <group col="3" string="Sign-up details">
           <group>
             <button name="perform_signup" string="Sign up" type="object" invisible="signup_id"/>
-            <field name="signup_id" class="oe_field_signup_id btn btn-light py-0"
+            <field name="signup_id" class="oe_field_signup_id"
               context="{'signup_short_display_name': True}" invisible="not signup_id"
               options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
           </group>

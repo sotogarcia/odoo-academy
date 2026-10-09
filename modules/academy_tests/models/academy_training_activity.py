@@ -12,127 +12,135 @@ _logger = getLogger(__name__)
 
 
 class AcademyTrainingActivity(models.Model):
-    """ Extends model adding a many2many field to link tests to actions
-    """
+    """Extends model adding a many2many field to link tests to actions"""
 
-    _inherit = 'academy.training.activity'
+    _inherit = "academy.training.activity"
 
     available_time = fields.Float(
-        string='Default time',
+        string="Default time",
         required=False,
         readonly=False,
         index=False,
         default=0.5,
         digits=(8, 6),
-        help=('Default available time to complete exercises. This value will '
-              'be used to create new templates')
+        help=(
+            "Default available time to complete exercises. This value will "
+            "be used to create new templates"
+        ),
     )
 
     correction_scale_id = fields.Many2one(
-        string='Default correction scale',
+        string="Default correction scale",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        comodel_name='academy.tests.correction.scale',
+        comodel_name="academy.tests.correction.scale",
         domain=[],
         context={},
-        ondelete='cascade',
+        ondelete="cascade",
         auto_join=False,
-        help=('Choose the default correction scale will be used on the new ',
-              'created templates')
+        help=(
+            "Choose the default correction scale will be used on the new ",
+            "created templates",
+        ),
     )
 
     assignment_ids = fields.One2many(
-        string='Test assignments',
+        string="Test assignments",
         required=False,
         readonly=False,
         index=True,
         default=None,
-        comodel_name='academy.tests.test.training.assignment',
-        inverse_name='training_activity_id',
+        comodel_name="academy.tests.test.training.assignment",
+        inverse_name="training_activity_id",
         domain=[],
         context={},
         auto_join=False,
-        limit=None,
-        help=('List of test assignments that have been created for this '
-              'training action enrollment')
+        help=(
+            "List of test assignments that have been created for this "
+            "training action enrollment"
+        ),
     )
 
     assignment_count = fields.Integer(
-        string='Nº assignments',
+        string="Nº assignments",
         required=False,
         readonly=True,
         index=False,
         default=0,
         store=False,
-        compute='_compute_assignment_count',
-        help=('Show the number of test assignments that have been created for'
-              'this training action enrollment')
+        compute="_compute_assignment_count",
+        help=(
+            "Show the number of test assignments that have been created for"
+            "this training action enrollment"
+        ),
     )
 
-    @api.depends('assignment_ids')
+    @api.depends("assignment_ids")
     def _compute_assignment_count(self):
         for record in self:
-            record.assignment_count = \
-                len(record.assignment_ids)
+            record.assignment_count = len(record.assignment_ids)
 
     template_ids = fields.One2many(
-        string='Templates',
+        string="Templates",
         required=False,
         readonly=False,
         index=True,
         default=None,
-        comodel_name='academy.tests.random.template',
-        inverse_name='training_activity_id',
+        comodel_name="academy.tests.random.template",
+        inverse_name="training_activity_id",
         domain=[],
         context={},
         auto_join=False,
-        limit=None,
-        help=('List of test templates available to be used in this training '
-              'action enrollment')
+        help=(
+            "List of test templates available to be used in this training "
+            "action enrollment"
+        ),
     )
 
     template_count = fields.Integer(
-        string='Nº templates',
+        string="Nº templates",
         required=False,
         readonly=True,
         index=False,
         default=0,
         store=False,
-        compute='_compute_template_count',
-        help=('Show the number of test templates available to be used in this '
-              'training action enrollment')
+        compute="_compute_template_count",
+        help=(
+            "Show the number of test templates available to be used in this "
+            "training action enrollment"
+        ),
     )
 
-    @api.depends('template_ids')
+    @api.depends("template_ids")
     def _compute_template_count(self):
         for record in self:
             record.template_count = len(record.template_ids)
 
     available_question_ids = fields.Many2manyView(
-        string='Available questions',
+        string="Available questions",
         required=False,
         readonly=True,
         index=False,
         default=None,
-        help='Show questions available in the module',
-        comodel_name='academy.tests.question',
-        relation='academy_tests_question_training_activity_rel',
-        column1='training_activity_id',
-        column2='question_id',
+        help="Show questions available in the module",
+        comodel_name="academy.tests.question",
+        relation="academy_tests_question_training_activity_rel",
+        column1="training_activity_id",
+        column2="question_id",
         domain=[],
         context={},
-        limit=None,
-        copy=False
+        copy=False,
     )
 
     def create_test_template(self, no_open=False):
-        template_obj = self.env['academy.tests.random.template']
-        module_obj = self.env['academy.training.module']
+        template_obj = self.env["academy.tests.random.template"]
+        module_obj = self.env["academy.training.module"]
 
         values = module_obj.get_template_values(
-            self.competency_unit_ids, name=self.name)
+            self.competency_unit_ids, name=self.name
+        )
 
         template = template_obj.create(values)
 

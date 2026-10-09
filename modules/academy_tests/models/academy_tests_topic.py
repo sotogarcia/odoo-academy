@@ -18,22 +18,18 @@ _logger = getLogger(__name__)
 
 
 class AcademyTestsTopic(models.Model):
-    """ This is a property of the academy.tests.question model
-    """
+    """This is a property of the academy.tests.question model"""
 
-    _name = 'academy.tests.topic'
-    _description = u'Academy tests, question topic'
+    _name = "academy.tests.topic"
+    _description = "Academy tests, question topic"
 
-    _rec_name = 'name'
-    _order = 'name ASC'
+    _rec_name = "name"
+    _order = "name ASC"
 
-    _inherit = [
-        'ownership.mixin',
-        'mail.thread'
-    ]
+    _inherit = ["ownership.mixin", "mail.thread"]
 
     name = fields.Char(
-        string='Name',
+        string="Name",
         required=True,
         readonly=False,
         index=True,
@@ -41,175 +37,174 @@ class AcademyTestsTopic(models.Model):
         help="Name for this topic",
         size=1024,
         translate=True,
-        track_visibility='onchange'
+        track_visibility="onchange",
     )
 
     description = fields.Text(
-        string='Description',
+        string="Description",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='Something about this test',
-        translate=True
+        help="Something about this test",
+        translate=True,
     )
 
     active = fields.Boolean(
-        string='Active',
+        string="Active",
         required=False,
         readonly=False,
         index=False,
         default=True,
-        help=('If the active field is set to false, it will allow you to '
-              'hide record without removing it')
+        help=(
+            "If the active field is set to false, it will allow you to "
+            "hide record without removing it"
+        ),
     )
 
     category_ids = fields.One2many(
-        string='Categories',
+        string="Categories",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='Allowed categories for questions in this topic',
-        comodel_name='academy.tests.category',
-        inverse_name='topic_id',
+        help="Allowed categories for questions in this topic",
+        comodel_name="academy.tests.category",
+        inverse_name="topic_id",
         domain=[],
         context={},
         auto_join=False,
-        limit=None,
     )
 
     question_ids = fields.One2many(
-        string='Questions',
+        string="Questions",
         required=False,
         readonly=True,
         index=False,
         default=None,
-        help='List the related questions',
-        comodel_name='academy.tests.question',
-        inverse_name='topic_id',
+        help="List the related questions",
+        comodel_name="academy.tests.question",
+        inverse_name="topic_id",
         domain=[],
         context={},
         auto_join=False,
-        limit=None
     )
 
     topic_version_ids = fields.One2many(
-        string='Versions',
+        string="Versions",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='Manage different versions of the same topic',
-        comodel_name='academy.tests.topic.version',
-        inverse_name='topic_id',
+        help="Manage different versions of the same topic",
+        comodel_name="academy.tests.topic.version",
+        inverse_name="topic_id",
         domain=[],
         context={},
         auto_join=False,
-        limit=None
     )
 
     provisional = fields.Boolean(
-        string='Provisional',
+        string="Provisional",
         required=False,
         readonly=False,
         index=True,
         default=False,
-        help='Check it to indicate the topic is not definitive'
+        help="Check it to indicate the topic is not definitive",
     )
 
     # -------------------------- MANAGEMENT FIELDS ----------------------------
 
     category_count = fields.Integer(
-        string='Number of categories',
+        string="Number of categories",
         required=False,
         readonly=True,
         index=False,
         default=0,
-        help='Show number of categories',
+        help="Show number of categories",
         store=False,
-        compute='_compute_category_count'
+        compute="_compute_category_count",
     )
 
-    @api.depends('category_ids')
+    @api.depends("category_ids")
     def _compute_category_count(self):
-        """ Computes `category_count` field value, this will be the number
+        """Computes `category_count` field value, this will be the number
         of categories related with this topic
         """
         for record in self:
             record.category_count = len(record.category_ids)
 
     version_count = fields.Integer(
-        string='Number of versions',
+        string="Number of versions",
         required=False,
         readonly=True,
         index=False,
         default=0,
-        help='Show number of versions',
+        help="Show number of versions",
         store=False,
-        compute='_compute_version_count'
+        compute="_compute_version_count",
     )
 
-    @api.depends('topic_version_ids')
+    @api.depends("topic_version_ids")
     def _compute_version_count(self):
-        """ Computes `version_count` field value, this will be the number
+        """Computes `version_count` field value, this will be the number
         of categories related with this topic
         """
         for record in self:
             record.version_count = len(record.topic_version_ids)
 
     last_version_id = fields.Many2one(
-        string='Last version',
+        string="Last version",
         required=False,
         readonly=True,
         index=True,
         default=None,
-        help='Most recent version based on sequence',
-        comodel_name='academy.tests.topic.version',
+        help="Most recent version based on sequence",
+        comodel_name="academy.tests.topic.version",
         domain=[],
         context={},
-        ondelete='cascade',
+        ondelete="cascade",
         auto_join=False,
-        compute='_compute_last_version_id',
-        store=True
+        compute="_compute_last_version_id",
+        store=True,
     )
 
-    @api.depends('topic_version_ids.sequence')
+    @api.depends("topic_version_ids.sequence")
     def _compute_last_version_id(self):
         for record in self:
             versions = record.topic_version_ids
             if versions:
-                record.last_version_id = \
-                    max(versions, key=lambda v: v.sequence)
+                record.last_version_id = max(
+                    versions, key=lambda v: v.sequence
+                )
             else:
                 record.last_version_id = False
 
     question_count = fields.Integer(
-        string='Number of questions',
+        string="Number of questions",
         required=False,
         readonly=True,
         index=False,
         default=0,
-        help='Show number of questions',
+        help="Show number of questions",
         store=False,
-        compute='_compute_question_count',
-        search='_search_question_count'
+        compute="_compute_question_count",
+        search="_search_question_count",
     )
 
-    @api.depends('question_ids')
+    @api.depends("question_ids")
     def _compute_question_count(self):
-        """ Computes `question_count` field value, this will be the number
+        """Computes `question_count` field value, this will be the number
         of categories related with this topic
         """
         for record in self:
             record.question_count = len(record.question_ids)
 
-
     @api.model
     def _search_question_count(self, operator, value):
         domain = FALSE_DOMAIN
 
-        sql = f'''
+        sql = f"""
             WITH grouped_question_count AS (
               SELECT
                 topic_id,
@@ -228,12 +223,13 @@ class AcademyTestsTopic(models.Model):
             LEFT JOIN grouped_question_count AS gqc 
               ON gqc.topic_id = top."id"
             WHERE COALESCE(question_count, 0) {operator} {value}
-        '''
+        """
 
         if isinstance(value, bool):
             # =True or !=False. agreement_coun is always established
-            if (operator not in NEGATIVE and value is True) or \
-               (operator in NEGATIVE and value is False):
+            if (operator not in NEGATIVE and value is True) or (
+                operator in NEGATIVE and value is False
+            ):
                 domain = TRUE_DOMAIN
         else:
             sql = sql.format(operator=operator, value=value)
@@ -241,79 +237,77 @@ class AcademyTestsTopic(models.Model):
             rows = self.env.cr.dictfetchall()
 
             if rows:
-                topic_ids = [row['topic_id'] for row in (rows or [])]
-                domain = [('id', 'in', topic_ids)]
+                topic_ids = [row["topic_id"] for row in (rows or [])]
+                domain = [("id", "in", topic_ids)]
 
         return domain
 
     training_activity_ids = fields.Many2many(
-        string='Activities',
+        string="Activities",
         required=False,
         readonly=True,
         index=False,
         default=None,
-        help='List all training activities that use this topic',
-        comodel_name='academy.training.activity',
-        relation='academy_training_activity_test_topic_rel',
-        column1='test_topic_id',
-        column2='training_activity_id',
+        help="List all training activities that use this topic",
+        comodel_name="academy.training.activity",
+        relation="academy_training_activity_test_topic_rel",
+        column1="test_topic_id",
+        column2="training_activity_id",
         domain=[],
         context={},
-        limit=None,
         store=False,
-        compute='_compute_training_activity_ids',
-        search='_search_training_activity_ids'
+        compute="_compute_training_activity_ids",
+        search="_search_training_activity_ids",
     )
 
     competency_unit_ids = fields.Many2many(
-        string='Competency units',
+        string="Competency units",
         required=False,
         readonly=True,
         index=False,
         default=None,
-        help='List all competency units that use this topic',
-        comodel_name='academy.competency.unit',
-        relation='academy_competency_unit_test_topic_rel',
-        column1='test_topic_id',
-        column2='competency_unit_id',
+        help="List all competency units that use this topic",
+        comodel_name="academy.competency.unit",
+        relation="academy_competency_unit_test_topic_rel",
+        column1="test_topic_id",
+        column2="competency_unit_id",
         domain=[],
         context={},
-        limit=None,
         store=False,
-        compute='_compute_competency_unit_ids',
-        search='_search_competency_unit_ids'
+        compute="_compute_competency_unit_ids",
+        search="_search_competency_unit_ids",
     )
 
     training_module_ids = fields.Many2manyView(
-        string='Modules',
+        string="Modules",
         required=False,
         readonly=True,
         index=False,
         default=None,
-        help='List all training modules that use this topic',
-        comodel_name='academy.training.module',
-        relation='academy_training_module_test_topic_rel',
-        column1='test_topic_id',
-        column2='training_module_id',
+        help="List all training modules that use this topic",
+        comodel_name="academy.training.module",
+        relation="academy_training_module_test_topic_rel",
+        column1="test_topic_id",
+        column2="training_module_id",
         domain=[],
         context={},
-        limit=None,
     )
 
     def _compute_training_activity_ids(self):
         for record in self:
             record.training_activity_ids = [(5, None, None)]
 
-            model = 'academy.tests.topic.training.module.link'
-            domain = [('topic_id', '=', record.id)]
+            model = "academy.tests.topic.training.module.link"
+            domain = [("topic_id", "=", record.id)]
             module_ids = self._read_field_values(
-                model, domain, 'training_module_id.id')
+                model, domain, "training_module_id.id"
+            )
 
             if module_ids:
-                field_path = 'competency_unit_ids.training_module_id.id'
-                domain = [(field_path, 'in', module_ids)]
-                activity_set = self.env['academy.training.activity']
-                activity_ids = activity_set.search(domain).mapped('id')
+                field_path = "competency_unit_ids.training_module_id.id"
+                domain = [(field_path, "in", module_ids)]
+                activity_set = self.env["academy.training.activity"]
+                activity_ids = activity_set.search(domain).mapped("id")
 
                 if activity_ids:
                     record.training_activity_ids = [(6, None, activity_ids)]
@@ -322,27 +316,27 @@ class AcademyTestsTopic(models.Model):
         for record in self:
             record.competency_unit_ids = [(5, None, None)]
 
-            model = 'academy.tests.topic.training.module.link'
-            domain = [('topic_id', '=', record.id)]
+            model = "academy.tests.topic.training.module.link"
+            domain = [("topic_id", "=", record.id)]
             module_ids = self._read_field_values(
-                model, domain, 'training_module_id.id')
+                model, domain, "training_module_id.id"
+            )
 
             if module_ids:
-                domain = [('training_module_id', 'in', module_ids)]
-                competency_set = self.env['academy.competency.unit']
+                domain = [("training_module_id", "in", module_ids)]
+                competency_set = self.env["academy.competency.unit"]
                 competency_set = competency_set.search(domain)
 
                 if competency_set:
-                    competency_ids = competency_set.mapped('id')
+                    competency_ids = competency_set.mapped("id")
                     record.competency_unit_ids = [(6, None, competency_ids)]
 
     def _search_training_activity_ids(self, operator, value):
-
-        domain = [('name', operator, value)]
-        activity_set = self.env['academy.training.activity']
+        domain = [("name", operator, value)]
+        activity_set = self.env["academy.training.activity"]
         activity_set = activity_set.search(domain)
 
-        path = 'competency_unit_ids.training_module_id.id'
+        path = "competency_unit_ids.training_module_id.id"
         module_ids = activity_set.mapped(path)
 
         domain = self._topic_domain_from_module_ids(module_ids)
@@ -350,12 +344,11 @@ class AcademyTestsTopic(models.Model):
         return domain
 
     def _search_competency_unit_ids(self, operator, value):
-
-        domain = [('competency_name', operator, value)]
-        competency_set = self.env['academy.competency.unit']
+        domain = [("competency_name", operator, value)]
+        competency_set = self.env["academy.competency.unit"]
         competency_set = competency_set.search(domain)
 
-        path = 'training_module_id.id'
+        path = "training_module_id.id"
         module_ids = competency_set.mapped(path)
 
         domain = self._topic_domain_from_module_ids(module_ids)
@@ -371,12 +364,12 @@ class AcademyTestsTopic(models.Model):
         result = FALSE_DOMAIN
 
         if module_ids:
-            model = 'academy.tests.topic.training.module.link'
-            domain = [('training_module_id', 'in', module_ids)]
-            topic_ids = self._read_field_values(model, domain, 'topic_id.id')
+            model = "academy.tests.topic.training.module.link"
+            domain = [("training_module_id", "in", module_ids)]
+            topic_ids = self._read_field_values(model, domain, "topic_id.id")
 
             if topic_ids:
-                result = [('id', 'in', topic_ids)]
+                result = [("id", "in", topic_ids)]
 
         return result
 
@@ -384,16 +377,16 @@ class AcademyTestsTopic(models.Model):
 
     _sql_constraints = [
         (
-            'category_uniq',
-            'UNIQUE(name)',
-            _(u'There is already another topic with the same name')
+            "category_uniq",
+            "UNIQUE(name)",
+            _("There is already another topic with the same name"),
         )
     ]
 
-    @api.constrains('topic_version_ids', 'category_ids')
+    @api.constrains("topic_version_ids", "category_ids")
     def _check_no_empty(self):
-        ver_msg = _('Topic must have at least one version')
-        cat_msg = _('Topic must have at least one category')
+        ver_msg = _("Topic must have at least one version")
+        cat_msg = _("Topic must have at least one category")
 
         for record in self:
             if not record.topic_version_ids:
@@ -406,13 +399,13 @@ class AcademyTestsTopic(models.Model):
     def last_version(self, topic_id=None):
         item = topic_id or self
 
-        versions = item.topic_version_ids.sorted(key='sequence', reverse=True)
+        versions = item.topic_version_ids.sorted(key="sequence", reverse=True)
 
         return versions[0] if versions else False
 
     @staticmethod
     def findall(regex, strlist):
-        """ Search regex pattern in a list of strings. It's used to
+        """Search regex pattern in a list of strings. It's used to
         search pattern in question name and question description
         """
         result = False
@@ -425,28 +418,26 @@ class AcademyTestsTopic(models.Model):
         return result
 
     def search_for_categories(self, _in_string):
-        """ Search partial matches for all category keywords in given string
+        """Search partial matches for all category keywords in given string
         and returns that categories
 
         Returned value wille be a dictionary {topic_id: [categorory_id1, ...]}
         """
 
-        msg = _('Error on autocategorize. Text: {}, Keywords: {}, Error: {}')
+        msg = _("Error on autocategorize. Text: {}, Keywords: {}, Error: {}")
         result = {}
         if isinstance(_in_string, str):
             _in_string = [_in_string]
 
         # STEP 1: Run over topic recordset
         for record in self:
-
             result[record.id] = []
             cat_items = record.category_ids
 
             # STEP 2: Run over categories with keywords in current topic
             for catitem in cat_items.filtered(lambda x: x.keywords):
-
-                keywords = catitem.keywords.split(',')
-                keywords = ['\\b' + kw.strip() + '\\b' for kw in keywords]
+                keywords = catitem.keywords.split(",")
+                keywords = ["\\b" + kw.strip() + "\\b" for kw in keywords]
 
                 # STEP 3: Run over current category keywords
                 for keyword in keywords:
@@ -456,8 +447,9 @@ class AcademyTestsTopic(models.Model):
                             result[record.id].append(catitem.id)
 
                     except Exception as ex:
-                        _logger.warning(msg.format(
-                            _in_string, catitem.keywords, str(ex)))
+                        _logger.warning(
+                            msg.format(_in_string, catitem.keywords, str(ex))
+                        )
 
         return result
 
@@ -465,13 +457,13 @@ class AcademyTestsTopic(models.Model):
         self.ensure_one()
 
         action = {
-            'type': 'ir.actions.act_window',
-            'name': 'New topic version wizard',
-            'res_model': 'academy.test.new.topic.version.wizard',
-            'view_mode': 'form',
-            'target': 'new',
-            'domain': [],
-            'context': {'active_model': self._name, 'active_id': self.id},
+            "type": "ir.actions.act_window",
+            "name": "New topic version wizard",
+            "res_model": "academy.test.new.topic.version.wizard",
+            "view_mode": "form",
+            "target": "new",
+            "domain": [],
+            "context": {"active_model": self._name, "active_id": self.id},
         }
 
         return action

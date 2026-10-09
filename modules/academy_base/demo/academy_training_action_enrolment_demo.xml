@@ -2,14 +2,20 @@
 
 <odoo noupdate="0">
 
+<!--
+  acción 1:    15/03 ───────────────────────── 15/09 21:00
+  enrolments:          17/06 ───────────────── 15/09 21:00
+
+  acción 2:    15/03 ───────────────────────────────────── 15/12
+  enrolment 4:                              10/09 ─ 15/09 22:00
+-->
+
   <record id="academy_training_action_enrolment_demo_1" model="academy.training.action.enrolment">
     <field name="student_id" ref="academy_base.academy_res_partner_demo_student_1"/>
     <field name="training_action_id" ref="academy_base.academy_training_action_demo_1_default"/>
     <field name="full_enrolment" eval="True"/>
-    <field name="register"
-      eval="(DateTime.today() - timedelta(days=DateTime.today().weekday() - 2)).strftime('%Y-%m-%d 9:00:00')"/>
-    <field name="deregister"
-      eval="(DateTime.today() + relativedelta(months=3)).strftime('%Y-%m-%d 21:00:00')"/>
+    <field name="register">2020-06-17 09:00:00</field>
+    <field name="deregister">2020-09-15 21:00:00</field>
     <field name="training_modality_id" ref="academy_training_modality_classroom"/>
   </record>
 
@@ -17,10 +23,8 @@
     <field name="student_id" ref="academy_base.academy_res_partner_demo_student_4"/>
     <field name="training_action_id" ref="academy_base.academy_training_action_demo_1_default"/>
     <field name="full_enrolment" eval="True"/>
-    <field name="register"
-      eval="(DateTime.today() - timedelta(days=DateTime.today().weekday() - 2)).strftime('%Y-%m-%d 9:00:00')"/>
-    <field name="deregister"
-      eval="(DateTime.today() + relativedelta(months=3)).strftime('%Y-%m-%d 21:00:00')"/>
+    <field name="register">2020-06-17 09:00:00</field>
+    <field name="deregister">2020-09-15 21:00:00</field>
     <field name="training_modality_id" ref="academy_training_modality_classroom"/>
   </record>
 
@@ -28,10 +32,8 @@
     <field name="student_id" ref="academy_base.academy_res_partner_demo_student_5"/>
     <field name="training_action_id" ref="academy_base.academy_training_action_demo_1_default"/>
     <field name="full_enrolment" eval="True"/>
-    <field name="register"
-      eval="(DateTime.today() - timedelta(days=DateTime.today().weekday() - 2)).strftime('%Y-%m-%d 9:00:00')"/>
-    <field name="deregister"
-      eval="(DateTime.today() + relativedelta(months=3)).strftime('%Y-%m-%d 21:00:00')"/>
+    <field name="register">2020-06-17 09:00:00</field>
+    <field name="deregister">2020-09-15 21:00:00</field>
     <field name="training_modality_id" ref="academy_training_modality_classroom"/>
   </record>
 
@@ -44,10 +46,8 @@
     <field name="student_id" ref="academy_base.academy_res_partner_demo_student_2"/>
     <field name="training_action_id" ref="academy_base.academy_training_action_demo_2_default"/>
     <field name="full_enrolment" eval="True"/>
-    <field name="register"
-      eval="(DateTime.today() + relativedelta(months=3) - timedelta(days=DateTime.today().weekday() + 5)).strftime('%Y-%m-%d 13:00:00')"/>
-    <field name="deregister"
-      eval="(DateTime.today() + relativedelta(months=3)).strftime('%Y-%m-%d 22:00:00')"/>
+    <field name="register">2020-09-10 13:00:00</field>
+    <field name="deregister">2020-09-15 22:00:00</field>
     <field name="training_modality_id" ref="academy_training_modality_classroom"/>
   </record>
 
@@ -59,10 +59,8 @@
                 ('training_action_id', '=', ref('academy_base.academy_training_action_demo_1_default')),
                 ('program_line_id', '=', ref('academy_base.academy_training_program_line_odoo'))
             ]"/>
-    <field name="register"
-      eval="(DateTime.today() - timedelta(days=DateTime.today().weekday() - 2)).strftime('%Y-%m-%d 9:00:00')"/>
-    <field name="deregister"
-      eval="(DateTime.today() + relativedelta(months=3)).strftime('%Y-%m-%d 21:00:00')"/>
+    <field name="register">2020-06-17 09:00:00</field>
+    <field name="deregister">2020-09-15 21:00:00</field>
     <field name="training_modality_id" ref="academy_training_modality_classroom"/>
   </record>
 

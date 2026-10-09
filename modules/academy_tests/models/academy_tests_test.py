@@ -28,31 +28,30 @@ from .utils.sql_operations import ACADEMY_TESTS_SHUFFLE
 from .utils.sql_operations import ACADEMY_TESTS_ARRANGE_BLOCKS
 from .utils.sql_inverse_searches import QUESTION_COUNT_SEARCH
 from .utils.sql_inverse_searches import SEARCH_TEST_ATTEMPT_COUNT
-from .utils.libuseful import prepare_text, fix_established, is_numeric, \
-    eval_domain
+from .utils.libuseful import (
+    prepare_text,
+    fix_established,
+    is_numeric,
+    eval_domain,
+)
 
 _logger = getLogger(__name__)
 
 
 # pylint: disable=locally-disabled, R0903, W0212
 class AcademyTestsTest(models.Model):
-    """ Stored tests which can be reused in future
-    """
+    """Stored tests which can be reused in future"""
 
-    _name = 'academy.tests.test'
-    _description = u'Academy tests, test'
+    _name = "academy.tests.test"
+    _description = "Academy tests, test"
 
-    _rec_name = 'name'
-    _order = 'write_date DESC, create_date DESC'
+    _rec_name = "name"
+    _order = "write_date DESC, create_date DESC"
 
-    _inherit = [
-        'ownership.mixin',
-        'image.mixin',
-        'mail.thread'
-    ]
+    _inherit = ["ownership.mixin", "image.mixin", "mail.thread"]
 
     name = fields.Char(
-        string='Name',
+        string="Name",
         required=True,
         readonly=False,
         index=True,
@@ -60,89 +59,93 @@ class AcademyTestsTest(models.Model):
         help="Name for this test",
         size=255,
         translate=True,
-        track_visibility='onchange'
+        track_visibility="onchange",
     )
 
     description = fields.Text(
-        string='Description',
+        string="Description",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='Something about this test',
-        translate=True
+        help="Something about this test",
+        translate=True,
     )
 
     active = fields.Boolean(
-        string='Active',
+        string="Active",
         required=False,
         readonly=False,
         index=True,
         default=True,
-        help=('If the active field is set to false, it will allow you to '
-              'hide record without removing it')
+        help=(
+            "If the active field is set to false, it will allow you to "
+            "hide record without removing it"
+        ),
     )
 
     code = fields.Char(
-        string='Code',
+        string="Code",
         required=False,
         readonly=False,
         index=True,
         default=None,
-        help='Internal code',
+        help="Internal code",
         size=20,
-        translate=False
+        translate=False,
     )
 
     preamble = fields.Text(
-        string='Preamble',
+        string="Preamble",
         required=False,
         readonly=False,
         index=False,
         default=lambda self: self.default_preamble(),
-        help='What it is said before beginning to test',
-        translate=True
+        help="What it is said before beginning to test",
+        translate=True,
     )
 
     @api.model
     def default_preamble(self):
-        return _('This exercise poses different questions, presenting a set '
-                 'of alternative answers for each of them, among which you '
-                 'must select the only correct one.')
+        return _(
+            "This exercise poses different questions, presenting a set "
+            "of alternative answers for each of them, among which you "
+            "must select the only correct one."
+        )
 
     question_ids = fields.One2many(
-        string='Questions',
+        string="Questions",
         required=False,
         readonly=False,
         index=True,
         default=None,
         help=False,
-        comodel_name='academy.tests.test.question.rel',
-        inverse_name='test_id',
+        comodel_name="academy.tests.test.question.rel",
+        inverse_name="test_id",
         domain=[],
         context={},
         auto_join=False,
-        limit=None,
     )
 
     last_edition = fields.Datetime(
-        string='Last edition',
+        string="Last edition",
         required=False,
         readonly=True,
         index=False,
         default=fields.datetime.now(),
-        help=('Automatically calculated field that stores the most recent '
-              'date/time when the test or any of its related questions or '
-              'answers were last edited. This date/time is determined by '
-              'comparing the write dates of the test, its questions, and '
-              'their answers'),
-        compute='_compute_last_edition',
-        search='_search_last_edition'
+        help=(
+            "Automatically calculated field that stores the most recent "
+            "date/time when the test or any of its related questions or "
+            "answers were last edited. This date/time is determined by "
+            "comparing the write dates of the test, its questions, and "
+            "their answers"
+        ),
+        compute="_compute_last_edition",
+        search="_search_last_edition",
     )
 
-    @api.depends('write_date', 'question_ids')
+    @api.depends("write_date", "question_ids")
     def _compute_last_edition(self):
-
         if self.ids:
             params = (tuple(self.ids),)
             sql = self._sql_last_edition(main_clause='test."id" IN %s')
@@ -152,7 +155,7 @@ class AcademyTestsTest(models.Model):
         else:
             result = {}
 
-        date_dict = {row['id']: row['write_date'] for row in result}
+        date_dict = {row["id"]: row["write_date"] for row in result}
 
         for record in self:
             last_edition = date_dict.get(record.id, record.write_date)
@@ -165,13 +168,13 @@ class AcademyTestsTest(models.Model):
             value = not value
 
         if value is False:
-            if operator == '=':
-                clause = 'write_date IS NULL'
+            if operator == "=":
+                clause = "write_date IS NULL"
             else:
-                clause = 'write_date IS NOT NULL'
+                clause = "write_date IS NOT NULL"
             params = ()
         else:
-            clause = 'write_date {} %s'.format(operator)
+            clause = "write_date {} %s".format(operator)
             params = (value,)
 
         cursor = self.env.cr
@@ -185,200 +188,195 @@ class AcademyTestsTest(models.Model):
 
         if result:
             test_ids = [row[0] for row in result]
-            domain = [('id', 'in', test_ids)]
+            domain = [("id", "in", test_ids)]
         else:
             domain = FALSE_DOMAIN
 
-        _logger.debug('_search_last_edition: {}'.format(domain))
+        _logger.debug("_search_last_edition: {}".format(domain))
 
         return domain
 
     answers_table_ids = fields.One2many(
-        string='Answers table',
+        string="Answers table",
         required=False,
         readonly=True,
         index=False,
         default=None,
-        help='Summary with answers table',
-        comodel_name='academy.tests.answers.table',
-        inverse_name='test_id',
+        help="Summary with answers table",
+        comodel_name="academy.tests.answers.table",
+        inverse_name="test_id",
         domain=[],
         context={},
         auto_join=False,
-        limit=None,
     )
 
     assignment_ids = fields.One2many(
-        string='Training assignments',
+        string="Training assignments",
         required=False,
         readonly=False,
         index=True,
         default=None,
-        help='False',
-        comodel_name='academy.tests.test.training.assignment',
-        inverse_name='test_id',
+        help="False",
+        comodel_name="academy.tests.test.training.assignment",
+        inverse_name="test_id",
         domain=[],
         context={},
         auto_join=False,
-        limit=None
     )
 
     assignment_count = fields.Integer(
-        string='Nº assignments',
+        string="Nº assignments",
         required=False,
         readonly=True,
         index=False,
         default=0,
-        help='Show the number or training assignments for this test',
+        help="Show the number or training assignments for this test",
         store=False,
-        compute='_compute_assignment_count'
+        compute="_compute_assignment_count",
     )
 
-    @api.depends('assignment_ids')
+    @api.depends("assignment_ids")
     def _compute_assignment_count(self):
         for record in self:
-            record.assignment_count = \
-                len(record.assignment_ids)
+            record.assignment_count = len(record.assignment_ids)
 
     random_template_id = fields.Many2one(
-        string='Template',
+        string="Template",
         required=False,
         readonly=True,
         index=False,
         default=None,
-        help='Template has been used to Populate this tests',
-        comodel_name='academy.tests.random.template',
+        help="Template has been used to Populate this tests",
+        comodel_name="academy.tests.random.template",
         domain=[],
         context={},
-        ondelete='set null',
-        auto_join=False
+        ondelete="set null",
+        auto_join=False,
     )
 
     test_kind_id = fields.Many2one(
-        string='Kind of test',
+        string="Kind of test",
         required=True,
         readonly=False,
         index=False,
         default=lambda self: self.default_test_kind_id(),
-        help='Choose the kind for this test',
-        comodel_name='academy.tests.test.kind',
+        help="Choose the kind for this test",
+        comodel_name="academy.tests.test.kind",
         domain=[],
         context={},
-        ondelete='restrict',
-        auto_join=False
+        ondelete="restrict",
+        auto_join=False,
     )
 
     def default_test_kind_id(self):
-        return self.env.ref('academy_tests.academy_tests_test_kind_common')
+        return self.env.ref("academy_tests.academy_tests_test_kind_common")
 
     first_use_id = fields.Many2one(
-        string='First use',
+        string="First use",
         required=False,
         readonly=False,
         index=False,
         default=None,
         help=False,
-        comodel_name='res.partner',
+        comodel_name="res.partner",
         domain=[],
         context={},
-        ondelete='set null',
-        auto_join=False
+        ondelete="set null",
+        auto_join=False,
     )
 
     authorship = fields.Boolean(
-        string='Authorship',
+        string="Authorship",
         required=False,
         readonly=False,
         index=False,
         default=True,
-        help='Check it to indicate that it is your own authorship'
+        help="Check it to indicate that it is your own authorship",
     )
 
     repeat_images = fields.Boolean(
-        string='Repeat images',
+        string="Repeat images",
         required=False,
         readonly=False,
         index=False,
         default=False,
-        help='Repeat the image every time it is referred to in a question'
+        help="Repeat the image every time it is referred to in a question",
     )
 
     tag_ids = fields.Many2many(
-        string='Tags',
+        string="Tags",
         required=False,
         readonly=False,
         index=True,
         default=None,
-        help='Tag can be used to better describe this question',
-        comodel_name='academy.tests.tag',
-        relation='academy_tests_test_tag_rel',
-        column1='test_id',
-        column2='tag_id',
+        help="Tag can be used to better describe this question",
+        comodel_name="academy.tests.tag",
+        relation="academy_tests_test_tag_rel",
+        column1="test_id",
+        column2="tag_id",
         domain=[],
         context={},
-        limit=None,
-        track_visibility='onchange',
+        track_visibility="onchange",
     )
 
     test_block_ids = fields.Many2manyView(
-        string='Test blocks',
+        string="Test blocks",
         required=False,
         readonly=True,
         index=False,
         default=None,
-        help='List all blocks have been used in this tests',
-        comodel_name='academy.tests.test.block',
-        relation='academy_tests_test_test_block_rel',
-        column1='test_id',
-        column2='test_block_id',
+        help="List all blocks have been used in this tests",
+        comodel_name="academy.tests.test.block",
+        relation="academy_tests_test_test_block_rel",
+        column1="test_id",
+        column2="test_block_id",
         domain=[],
         context={},
-        limit=None,
-        copy=False
+        copy=False,
     )
 
     auto_arrange_blocks = fields.Boolean(
-        string='Auto arrange blocks',
+        string="Auto arrange blocks",
         required=False,
         readonly=False,
         index=False,
         default=True,
-        help='Check it to auto arrange questions in blocks'
+        help="Check it to auto arrange questions in blocks",
     )
 
     restart_numbering = fields.Boolean(
-        string='Restart numbering',
+        string="Restart numbering",
         required=False,
         readonly=False,
         index=False,
         default=False,
-        help='Check it to restart numbering in each block'
+        help="Check it to restart numbering in each block",
     )
 
     block_starts_page = fields.Boolean(
-        string='Block starts a page',
+        string="Block starts a page",
         required=False,
         readonly=False,
         index=False,
         default=True,
-        help='Check it to do each block starts a new page'
+        help="Check it to do each block starts a new page",
     )
 
     # -------------------------- MANAGEMENT FIELDS ----------------------------
 
     attempt_count = fields.Integer(
-        string='Attempt count',
+        string="Attempt count",
         required=False,
         readonly=True,
         index=False,
         default=0,
         store=False,
-        help='Show number of test attempts',
-        compute='_compute_attempt_count',
-        search='_search_attempt_count'
+        help="Show number of test attempts",
+        compute="_compute_attempt_count",
+        search="_search_attempt_count",
     )
 
-    @api.depends('attempt_ids')
+    @api.depends("attempt_ids")
     def _compute_attempt_count(self):
         for record in self:
             record.attempt_count = len(record.attempt_ids)
@@ -392,49 +390,51 @@ class AcademyTestsTest(models.Model):
         rows = self.env.cr.dictfetchall()
 
         if rows:
-            test_ids = [row['test_id'] for row in rows]
-            domain = [('id', 'in', test_ids)]
+            test_ids = [row["test_id"] for row in rows]
+            domain = [("id", "in", test_ids)]
 
         return domain
 
     @staticmethod
     def _ensure_search_attempt_count_(operator, value):
         if isinstance(value, bool):
-            if not operator == '=':
+            if not operator == "=":
                 value = not value
 
             if value:
-                operator = '>'
+                operator = ">"
 
             value = 0
 
         return operator, value
 
     question_count = fields.Integer(
-        string='Number of questions',
+        string="Number of questions",
         required=False,
         readonly=False,
         index=False,
         default=0,
         store=False,
-        help='Show the number of questions in test',
-        compute='_compute_question_count',
-        search='_search_question_count'
+        help="Show the number of questions in test",
+        compute="_compute_question_count",
+        search="_search_question_count",
     )
 
-    @api.depends('question_ids')
+    @api.depends("question_ids")
     def _compute_question_count(self):
         for record in self:
             record.question_count = len(record.question_ids)
 
     def _search_question_count(self, operator, operand):
-        supported = ['=', '!=', '<=', '<', '>', '>=']
+        supported = ["=", "!=", "<=", "<", ">", ">="]
 
-        assert operator in supported, \
-            UserError(_('Search operator not supported'))
+        assert operator in supported, UserError(
+            _("Search operator not supported")
+        )
 
-        assert is_numeric(operand) or operand in [True, False], \
-            UserError(_('Search value not supported'))
+        assert is_numeric(operand) or operand in [True, False], UserError(
+            _("Search value not supported")
+        )
 
         operator, operand = fix_established(operator, operand)
 
@@ -443,67 +443,67 @@ class AcademyTestsTest(models.Model):
         self.env.cr.execute(sql)
         ids = self.env.cr.fetchall()
 
-        return [('id', 'in', ids)]
+        return [("id", "in", ids)]
 
     topic_ids = fields.Many2manyView(
-        string='Topics',
+        string="Topics",
         required=False,
         readonly=True,
         index=False,
         default=None,
-        help='Topics from all the questions in the test',
-        comodel_name='academy.tests.topic',
-        relation='academy_tests_test_topic_rel',
-        column1='test_id',
-        column2='topic_id',
+        help="Topics from all the questions in the test",
+        comodel_name="academy.tests.topic",
+        relation="academy_tests_test_topic_rel",
+        column1="test_id",
+        column2="topic_id",
         domain=[],
         context={},
-        limit=None,
-        copy=False
+        copy=False,
     )
 
     topic_count = fields.Integer(
-        string='Number of topics',
+        string="Number of topics",
         required=False,
         readonly=True,
         index=False,
         default=0,
         store=False,
-        help='Display the number of topics related with test',
-        compute=lambda self: self._compute_topic_count()
+        help="Display the number of topics related with test",
+        compute=lambda self: self._compute_topic_count(),
     )
 
-    @api.depends('question_ids')
+    @api.depends("question_ids")
     def _compute_topic_count(self):
         for record in self:
-            question_set = record.question_ids.mapped('question_id')
-            topic_set = question_set.mapped('topic_id')
-            ids = topic_set.mapped('id')
+            question_set = record.question_ids.mapped("question_id")
+            topic_set = question_set.mapped("topic_id")
+            ids = topic_set.mapped("id")
 
             record.topic_count = len(ids)
 
     topic_id = fields.Many2one(
-        string='Topic',
+        string="Topic",
         required=False,
         readonly=True,
         index=False,
         default=None,
         help=False,
-        comodel_name='academy.tests.topic',
+        comodel_name="academy.tests.topic",
         domain=[],
         context={},
-        ondelete='cascade',
+        ondelete="cascade",
         auto_join=False,
-        compute=lambda self: self._compute_topic_id()
+        compute=lambda self: self._compute_topic_id(),
     )
 
-    @api.depends('question_ids')
+    @api.depends("question_ids")
     def _compute_topic_id(self):
         for record in self:
             rel_ids = record.question_ids.filtered(
-                lambda rel: rel.question_id.topic_id)
-            question_ids = rel_ids.mapped('question_id')
-            topics = {k.id: 0 for k in question_ids.mapped('topic_id')}
+                lambda rel: rel.question_id.topic_id
+            )
+            question_ids = rel_ids.mapped("question_id")
+            topics = {k.id: 0 for k in question_ids.mapped("topic_id")}
 
             if not topics:
                 record.topic_id = None
@@ -514,192 +514,192 @@ class AcademyTestsTest(models.Model):
 
                 topic_id = max(topics.items(), key=itemgetter(1))[0]
 
-                topic_obj = self.env['academy.tests.topic']
+                topic_obj = self.env["academy.tests.topic"]
                 record.topic_id = topic_obj.browse(topic_id)
 
     lang = fields.Char(
-        string='Language',
+        string="Language",
         required=True,
         readonly=True,
         index=False,
         help=False,
         size=255,
         translate=False,
-        compute='_compute_lang',
-        store=False
+        compute="_compute_lang",
+        store=False,
     )
 
     attempt_ids = fields.One2many(
-        string='Attempts',
+        string="Attempts",
         required=False,
         readonly=False,
         index=True,
         default=None,
-        help='Related test attempts',
-        comodel_name='academy.tests.attempt',
-        inverse_name='test_id',
+        help="Related test attempts",
+        comodel_name="academy.tests.attempt",
+        inverse_name="test_id",
         domain=[],
         context={},
         auto_join=False,
-        limit=None
     )
 
     correction_scale_id = fields.Many2one(
-        string='Correction scale',
+        string="Correction scale",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='Choose the scale of correction',
-        comodel_name='academy.tests.correction.scale',
+        help="Choose the scale of correction",
+        comodel_name="academy.tests.correction.scale",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
     def default_correction_scale_id(self):
         # This is a public method but it's NOT used to automatically set the
         # default value for ``correction_scale_id`` field.
-        xid = 'academy_tests.academy_tests_correction_scale_default'
+        xid = "academy_tests.academy_tests_correction_scale_default"
         return self.env.ref(xid)
 
     time_by = fields.Selection(
-        string='Time by',
+        string="Time by",
         required=True,
         readonly=False,
         index=False,
-        default='test',
+        default="test",
         help=False,
-        selection=[('test', 'Test'), ('question', 'Question')]
+        selection=[("test", "Test"), ("question", "Question")],
     )
 
     available_time = fields.Float(
-        string='Time',
+        string="Time",
         required=False,
         readonly=False,
         index=False,
         default=0.0,
         digits=(8, 6),
-        help='Available time to complete the exercise'
+        help="Available time to complete the exercise",
     )
 
     lock_time = fields.Boolean(
-        string='Lock time',
+        string="Lock time",
         required=False,
         readonly=False,
         index=False,
         default=True,
-        help=('Check to not allow the user to continue with ',
-              'the test once the time has passed')
+        help=(
+            "Check to not allow the user to continue with ",
+            "the test once the time has passed",
+        ),
     )
 
     # -------------------------- PYTHON CONSTRAINS ----------------------------
 
-    @api.constrains('question_ids')
+    @api.constrains("question_ids")
     def _check_question_availability(self):
-        """ Check if questions are ready and they have not dependencies
-        """
-        dep_msg = _('Some of the questions have unmet dependencies.')
-        ready_msg = _('Some of the questions have not been marked as ready.')
+        """Check if questions are ready and they have not dependencies"""
+        dep_msg = _("Some of the questions have unmet dependencies.")
+        ready_msg = _("Some of the questions have not been marked as ready.")
 
         for record in self:
-            for link_id in record.question_ids.sorted('sequence'):
+            for link_id in record.question_ids.sorted("sequence"):
                 previous_ids = record.question_ids.filtered(
-                    lambda x: x.sequence < link_id.sequence) \
-                    .mapped('question_id')
+                    lambda x: x.sequence < link_id.sequence
+                ).mapped("question_id")
 
                 dep_id = link_id.question_id.depends_on_id
 
                 if dep_id and dep_id not in previous_ids:
                     raise ValidationError(dep_msg)
 
-                if link_id.question_id.status != 'ready':
+                if link_id.question_id.status != "ready":
                     raise ValidationError(ready_msg)
 
     _sql_constraints = [
         (
-            'non_negative_available_time',
-            'CHECK(available_time >= 0)',  # It can be zero if not set
-            _(u'Available time cannot be negative')
+            "non_negative_available_time",
+            "CHECK(available_time >= 0)",  # It can be zero if not set
+            _("Available time cannot be negative"),
         )
     ]
     # ----------------------- AUXILIARY FIELD METHODS -------------------------
 
-    @api.depends('name')
+    @api.depends("name")
     def _compute_lang(self):
-        """ Gets the language used by the current user and sets it as `lang`
-            field value
+        """Gets the language used by the current user and sets it as `lang`
+        field value
         """
 
-        user_id = self.env['res.users'].browse(self.env.uid)
+        user_id = self.env["res.users"].browse(self.env.uid)
 
         for record in self:
             record.lang = user_id.lang
 
     def import_questions(self):
-        """ Runs a wizard to import questions from plain text
+        """Runs a wizard to import questions from plain text
         @note: actually this method is not used
         """
         return {
-            'type': 'ir.actions.act_window',
-            'res_model': 'academy.tests.question.import.wizard',
-            'view_mode': 'form',
-            'views': [(False, 'form')],
-            'target': 'new',
-            'context': {'default_test_id': self.id}
+            "type": "ir.actions.act_window",
+            "res_model": "academy.tests.question.import.wizard",
+            "view_mode": "form",
+            "views": [(False, "form")],
+            "target": "new",
+            "context": {"default_test_id": self.id},
         }
 
     def random_questions(self):
-        """ Runs wizard to append random questions. This allows uses to set
+        """Runs wizard to append random questions. This allows uses to set
         filter criteria, maximum number of questions, etc.
         """
         return {
-            'type': 'ir.actions.act_window',
-            'res_model': 'academy.tests.random.wizard',
-            'view_mode': 'form',
-            'views': [(False, 'form')],
-            'target': 'new',
-            'context': {'default_test_id': self.id}
+            "type": "ir.actions.act_window",
+            "res_model": "academy.tests.random.wizard",
+            "view_mode": "form",
+            "views": [(False, "form")],
+            "target": "new",
+            "context": {"default_test_id": self.id},
         }
 
     def show_questions(self):
         self.ensure_one()
-    
-        action_xid = 'academy_tests.action_test_question_links_act_window'
+
+        action_xid = "academy_tests.action_test_question_links_act_window"
         act_wnd = self.env.ref(action_xid)
-    
-        name = (self.name or _('Questions links'))
+
+        name = self.name or _("Questions links")
         if len(name) > 64:
-            name = f'{name[:61]}...'
-    
+            name = f"{name[:61]}..."
+
         context = self.env.context.copy()
-        context.update(safe_eval(act_wnd.context or '{}'))
-        context.update({'default_test_id': self.id})
-    
+        context.update(safe_eval(act_wnd.context or "{}"))
+        context.update({"default_test_id": self.id})
+
         domain = eval_domain(act_wnd.domain)
-        domain = AND([domain, [('test_id', '=', self.id)]])
-    
+        domain = AND([domain, [("test_id", "=", self.id)]])
+
         serialized = {
-            'type': 'ir.actions.act_window',
-            'res_model': act_wnd.res_model,
-            'target': 'current',
-            'name': name,
-            'view_mode': act_wnd.view_mode,
-            'domain': domain,
-            'context': context,
-            'search_view_id': act_wnd.search_view_id.id,
-            'help': act_wnd.help
+            "type": "ir.actions.act_window",
+            "res_model": act_wnd.res_model,
+            "target": "current",
+            "name": name,
+            "view_mode": act_wnd.view_mode,
+            "domain": domain,
+            "context": context,
+            "search_view_id": act_wnd.search_view_id.id,
+            "help": act_wnd.help,
         }
-    
+
         return serialized
 
     @api.model
     def create(self, values):
-        """ Create a new record for a model AcademyTestsTest
-            @param values: provides a data for new record
+        """Create a new record for a model AcademyTestsTest
+        @param values: provides a data for new record
 
-            @return: returns a id of new record
+        @return: returns a id of new record
         """
 
         result = super(AcademyTestsTest, self).create(values)
@@ -708,10 +708,10 @@ class AcademyTestsTest(models.Model):
         return result
 
     def write(self, values):
-        """ Update all record(s) in recordset, with new value comes as {values}
-            @param values: dict of new values to be set
+        """Update all record(s) in recordset, with new value comes as {values}
+        @param values: dict of new values to be set
 
-            @return: True on success, False otherwise
+        @return: True on success, False otherwise
         """
 
         result = super(AcademyTestsTest, self).write(values)
@@ -719,7 +719,7 @@ class AcademyTestsTest(models.Model):
 
         return result
 
-    @api.returns('self', lambda value: value.id)
+    @api.returns("self", lambda value: value.id)
     def copy(self, default=None):
         self.ensure_one()
 
@@ -728,15 +728,15 @@ class AcademyTestsTest(models.Model):
             default = {}
 
         # STEP 2: Make new name adding ``(copy)``
-        if 'name' not in default:
-            default['name'] = _("%s (copy)") % self.name
+        if "name" not in default:
+            default["name"] = _("%s (copy)") % self.name
 
         # STEP 3: Create new links for all questions in the original test
-        create_empty = self.env.context.get('create_empty_test', False)
+        create_empty = self.env.context.get("create_empty_test", False)
         if self.question_ids and not create_empty:
             leafs = self.question_ids.mapped(self._mapped_question_ids)
-            if(leafs):
-                default['question_ids'] = leafs
+            if leafs:
+                default["question_ids"] = leafs
 
         # STEP 4: Call parent method
         result = super(AcademyTestsTest, self).copy(default=default)
@@ -745,23 +745,25 @@ class AcademyTestsTest(models.Model):
 
     @staticmethod
     def _mapped_question_ids(item):
-        return (0, 0, {
-            'test_id': item.test_id.id,
-            'question_id': item.question_id.id,
-            'sequence': item.sequence,
-            'active': item.active
-        })
+        return (
+            0,
+            0,
+            {
+                "test_id": item.test_id.id,
+                "question_id": item.question_id.id,
+                "sequence": item.sequence,
+                "active": item.active,
+            },
+        )
 
     def resequence(self):
-        """ This updates the sequence of the questions into the test
-        """
+        """This updates the sequence of the questions into the test"""
 
         if self:
-
             if self.auto_arrange_blocks:  # Keep test blocks
-                test_ids = self.mapped('id')
+                test_ids = self.mapped("id")
                 test_ids_str = [str(tid) for tid in test_ids]
-                joined = ', '.join(test_ids_str)
+                joined = ", ".join(test_ids_str)
 
                 query = ACADEMY_TESTS_ARRANGE_BLOCKS.format(joined)
 
@@ -773,29 +775,29 @@ class AcademyTestsTest(models.Model):
 
                     index = 1
                     for rel_item in rel_set:
-                        rel_item.write({'sequence': index})
+                        rel_item.write({"sequence": index})
                         index = index + 1
 
     def shuffle(self):
-        dep_msg = _('This test has dependent questions, '
-                    'it must be sorted manually')
+        dep_msg = _(
+            "This test has dependent questions, " "it must be sorted manually"
+        )
 
         for record in self:
-
             if not record.question_ids:
                 continue
 
             link_ids = record.question_ids
-            dep_ids = link_ids.mapped('question_id.depends_on_id')
+            dep_ids = link_ids.mapped("question_id.depends_on_id")
 
             if dep_ids:
                 raise UserError(dep_msg)
 
             else:
-                ids = record.mapped('id')
+                ids = record.mapped("id")
 
                 # Use complex search to keep images consecutive
-                target_ids = ', '.join([str(i) for i in ids])
+                target_ids = ", ".join([str(i) for i in ids])
                 sql = ACADEMY_TESTS_SHUFFLE.format(target_ids)
 
                 record.env.cr.execute(sql)
@@ -803,18 +805,17 @@ class AcademyTestsTest(models.Model):
                 # record.env.invalidate_all()
 
     def _creation_subtype(self):
-        xid = 'academy_tests.academy_tests_test_created'
+        xid = "academy_tests.academy_tests_test_created"
         return self.env.ref(xid)
 
     def _track_subtype(self, init_values):
         self.ensure_one()
 
-        if('active' not in init_values):
-
-            if 'owner_id' in init_values:
-                xid = 'academy_tests.academy_tests_test_owned'
+        if "active" not in init_values:
+            if "owner_id" in init_values:
+                xid = "academy_tests.academy_tests_test_owned"
             else:
-                xid = 'academy_tests.academy_tests_test_written'
+                xid = "academy_tests.academy_tests_test_written"
 
             return self.env.ref(xid)
 
@@ -830,19 +831,19 @@ class AcademyTestsTest(models.Model):
         otherwise index or URLs will be used instead
         """
 
-        text = ''
+        text = ""
 
         for record in self:
             parts = []
 
-            parts.append('# {}'.format(record.name.strip()))
+            parts.append("# {}".format(record.name.strip()))
 
-            desc = prepare_text(record.description or '', '>')
-            if(desc):
+            desc = prepare_text(record.description or "", ">")
+            if desc:
                 parts.append(desc)
 
-            pre = prepare_text(record.preamble or '')
-            if(pre):
+            pre = prepare_text(record.preamble or "")
+            if pre:
                 parts.append(pre)
 
             parts.append(linesep)
@@ -858,50 +859,49 @@ class AcademyTestsTest(models.Model):
 
     def choose_report_dialog(self):
         return {
-            'name': _('Choose report'),
-            'type': 'ir.actions.act_window',
-            'res_model': 'academy.test.choose.report.wizard',
-            'view_mode': 'form',
-            'views': [(False, 'form')],
-            'target': 'new',
-            'domain': [],
-            'context': {'default_test_id': self.id}
+            "name": _("Choose report"),
+            "type": "ir.actions.act_window",
+            "res_model": "academy.test.choose.report.wizard",
+            "view_mode": "form",
+            "views": [(False, "form")],
+            "target": "new",
+            "domain": [],
+            "context": {"default_test_id": self.id},
         }
 
     def update_questions_dialog(self):
-        wizard_model = 'academy.tests.update.questions.wizard'
-        question_set = self.mapped('question_ids.question_id')
+        wizard_model = "academy.tests.update.questions.wizard"
+        question_set = self.mapped("question_ids.question_id")
 
         wizard_set = self.env[wizard_model]
         wizard_set = wizard_set.create({})
         wizard_set.set_questions(question_set)
 
         return {
-            'name': _('Update questions'),
-            'type': 'ir.actions.act_window',
-            'res_model': wizard_model,
-            'view_mode': 'form',
-            'views': [(False, 'form')],
-            'target': 'new',
-            'domain': [],
-            'res_id': wizard_set.id
+            "name": _("Update questions"),
+            "type": "ir.actions.act_window",
+            "res_model": wizard_model,
+            "view_mode": "form",
+            "views": [(False, "form")],
+            "target": "new",
+            "domain": [],
+            "res_id": wizard_set.id,
         }
 
     @staticmethod
     def _localize_paragraph_styles(doc):
         style_mapping = {
-            'Explanation': _('Explanation'),
-            'Preamble': _('Preamble'),
-            'Question': _('Question'),
-            'Answer': _('Answer'),
-            'Right answer': _('Right answer'),
+            "Explanation": _("Explanation"),
+            "Preamble": _("Preamble"),
+            "Question": _("Question"),
+            "Answer": _("Answer"),
+            "Right answer": _("Right answer"),
         }
 
         for old_style_name, new_style_name in style_mapping.items():
             doc.styles[old_style_name].name = new_style_name
 
     def save_as_docx(self):
-
         tpl_path = self._docx_get_template_path()
         wd = self._docx_new_from_template(tpl_path)
 
@@ -916,49 +916,51 @@ class AcademyTestsTest(models.Model):
         wd.save(buffer)
         datas = base64.b64encode(buffer.getvalue())
 
-        attach_item = self.env['ir.attachment'].create({
-            'name': '{}.docx'.format(self.name),
-            'datas': datas,
-            'type': 'binary',
-            'res_model': 'academy.tests.test',
-            'res_id': self.id,
-            'mimetype': 'application/msword'
-        })
+        attach_item = self.env["ir.attachment"].create(
+            {
+                "name": "{}.docx".format(self.name),
+                "datas": datas,
+                "type": "binary",
+                "res_model": "academy.tests.test",
+                "res_id": self.id,
+                "mimetype": "application/msword",
+            }
+        )
 
         return {
-            'name': attach_item.name,
-            'res_model': 'ir.actions.act_url',
-            'type': 'ir.actions.act_url',
-            'target': '_blank',
-            'url': '/web/content/{}?download=true'.format(attach_item.id)
+            "name": attach_item.name,
+            "res_model": "ir.actions.act_url",
+            "type": "ir.actions.act_url",
+            "target": "_blank",
+            "url": "/web/content/{}?download=true".format(attach_item.id),
         }
 
     def _docx_get_template_path(self):
         file_path = os.path.realpath(__file__)
         dir_path = os.path.dirname(file_path)
-        return os.path.join(dir_path, '..', 'static', 'docx', 'test.docx')
+        return os.path.join(dir_path, "..", "static", "docx", "test.docx")
 
     def _docx_new_from_template(self, template_path):
         wd = None
 
-        with open(template_path, 'rb') as tpl_file:
+        with open(template_path, "rb") as tpl_file:
             buffer = BytesIO(tpl_file.read())
             wd = docx.Document(buffer)
 
         return wd
 
     def _docx_update_title(self, wd):
-        wd.add_paragraph(self.name, 'Heading 1')
+        wd.add_paragraph(self.name, "Heading 1")
 
     def _docx_update_preamble(self, wd):
-        wd.add_paragraph(self.preamble, 'Preamble')
+        wd.add_paragraph(self.preamble, "Preamble")
 
     @staticmethod
     def _docx_update_block(link, wd):
         if link.test_block_id:
-            wd.add_paragraph(link.test_block_id.name, 'Heading 2')
+            wd.add_paragraph(link.test_block_id.name, "Heading 2")
             if link.test_block_id.preamble:
-                wd.add_paragraph(link.test_block_id.preamble, 'Preamble')
+                wd.add_paragraph(link.test_block_id.preamble, "Preamble")
 
     def _docx_update_questions(self, wd):
         test_block_id = 0
@@ -973,73 +975,73 @@ class AcademyTestsTest(models.Model):
                 content = base64.b64decode(img.datas)
                 img_stream = BytesIO(content)
                 wd.add_picture(img_stream)
-                wd.add_paragraph(img.name, 'Caption')
+                wd.add_paragraph(img.name, "Caption")
 
             if qitem.description:
                 for line in self._split_lines(qitem.description):
                     if line:
-                        wd.add_paragraph(line, 'Explanation')
+                        wd.add_paragraph(line, "Explanation")
             if qitem.preamble:
                 for line in self._split_lines(qitem.preamble):
                     if line:
-                        wd.add_paragraph(line, 'Explanation')
+                        wd.add_paragraph(line, "Explanation")
 
-            wd.add_paragraph(qitem.name, 'Question')
+            wd.add_paragraph(qitem.name, "Question")
 
             for aitem in qitem.answer_ids:
                 if aitem.is_correct:
-                    wd.add_paragraph(style='Answer') \
-                        .add_run(aitem.name, style='Right answer')
+                    wd.add_paragraph(style="Answer").add_run(
+                        aitem.name, style="Right answer"
+                    )
                 else:
-                    wd.add_paragraph(aitem.name, 'Answer')
+                    wd.add_paragraph(aitem.name, "Answer")
 
-            wd.add_paragraph('', 'Normal')
+            wd.add_paragraph("", "Normal")
 
     @staticmethod
     def _split_lines(content):
         return split(r"[\r\n]+", content)
 
     def request_for_questions(self):
-
         self.ensure_one()
 
-        rset_domain = [('test_id', '=', self.id)]
-        rset_obj = self.env['academy.tests.question.request.set']
+        rset_domain = [("test_id", "=", self.id)]
+        rset_obj = self.env["academy.tests.question.request.set"]
         rset_set = rset_obj.search(rset_domain)
 
         act_window = {
-            'model': 'ir.actions.act_window',
-            'type': 'ir.actions.act_window',
-            'name': _('Request for questions'),
-            'res_model': 'academy.tests.question.request.set',
-            'target': 'new',
-            'view_mode': 'form',
-            'views': [(False, 'form')],
-            'domain': [],
-            'context': {}
+            "model": "ir.actions.act_window",
+            "type": "ir.actions.act_window",
+            "name": _("Request for questions"),
+            "res_model": "academy.tests.question.request.set",
+            "target": "new",
+            "view_mode": "form",
+            "views": [(False, "form")],
+            "domain": [],
+            "context": {},
         }
 
         if rset_set:
-            act_window['res_id'] = rset_set.id
+            act_window["res_id"] = rset_set.id
         else:
-            act_window['context'] = {'default_test_id': self.id}
+            act_window["context"] = {"default_test_id": self.id}
 
         return act_window
 
     def download_as_moodle_xml(self):
         self.ensure_one()
 
-        relative_url = '/academy_tests/moodle/test?test_id={}'
+        relative_url = "/academy_tests/moodle/test?test_id={}"
         return {
-            'type': 'ir.actions.act_url',
-            'url': relative_url.format(self.id),
-            'target': 'self',
+            "type": "ir.actions.act_url",
+            "url": relative_url.format(self.id),
+            "target": "self",
         }
 
     def download_as_pdf(self):
         self.ensure_one()
 
-        report_xid = 'academy_tests.action_report_full_printable_test'
+        report_xid = "academy_tests.action_report_full_printable_test"
         report_act = self.env.ref(report_xid)
         doc_ids = [self.id]
 
@@ -1048,56 +1050,53 @@ class AcademyTestsTest(models.Model):
     def redirect_to_preview(self):
         self.ensure_one()
 
-        relative_url = '/academy_tests/test/preview?test_id={}'
+        relative_url = "/academy_tests/test/preview?test_id={}"
         return {
-            'type': 'ir.actions.act_url',
-            'url': relative_url.format(self.id),
-            'target': 'new',
+            "type": "ir.actions.act_url",
+            "url": relative_url.format(self.id),
+            "target": "new",
         }
 
     def compute_block_classes(self, block):
         self.ensure_one()
 
-        classes = ['academy-post-test-block']
+        classes = ["academy-post-test-block"]
 
         if self.restart_numbering:
-            classes.append('academy-post-test-restart-numbering')
+            classes.append("academy-post-test-restart-numbering")
 
         if self.block_starts_page:
-            classes.append('academy-post-test-page-break')
+            classes.append("academy-post-test-page-break")
 
         if block or self.block_starts_page:
-            classes.extend(['invisible', 'm-0', 'border-0'])
+            classes.extend(["invisible", "m-0", "border-0"])
 
-        return ' '.join(classes)
+        return " ".join(classes)
 
     def view_training_assignments(self):
         self.ensure_one()
 
         return {
-            'model': 'ir.actions.act_window',
-            'type': 'ir.actions.act_window',
-            'name': _('Training assignments'),
-            'res_model': 'academy.tests.test.training.assignment',
-            'target': 'current',
-            'view_mode': 'kanban,tree,form',
-            'domain': [('test_id', '=', self.id)],
-            'context': {
-                'name_get': 'training',
-                'default_test_id': self.id
-            }
+            "model": "ir.actions.act_window",
+            "type": "ir.actions.act_window",
+            "name": _("Training assignments"),
+            "res_model": "academy.tests.test.training.assignment",
+            "target": "current",
+            "view_mode": "kanban,tree,form",
+            "domain": [("test_id", "=", self.id)],
+            "context": {"name_get": "training", "default_test_id": self.id},
         }
 
     def new_from_template(self, gui=True):
         self.ensure_one()
 
         if not self.random_template_id:
-            msg = _('This test was not created from a template')
+            msg = _("This test was not created from a template")
             raise UserError(msg)
 
         result = self.random_template_id.new_test(gui=gui)
-        if isinstance(result, dict) and 'target' in result.keys():
-            result['target'] = 'main'
+        if isinstance(result, dict) and "target" in result.keys():
+            result["target"] = "main"
 
         return result
 
@@ -1105,45 +1104,44 @@ class AcademyTestsTest(models.Model):
         self.ensure_one()
 
         return {
-            'model': 'ir.actions.act_window',
-            'type': 'ir.actions.act_window',
-            'name': _('New assignment'),
-            'res_model': 'academy.tests.test.training.assignment',
-            'target': 'new',
-            'view_mode': 'form',
-            'context': {
-                'default_test_id': self.id
-            }
+            "model": "ir.actions.act_window",
+            "type": "ir.actions.act_window",
+            "name": _("New assignment"),
+            "res_model": "academy.tests.test.training.assignment",
+            "target": "new",
+            "view_mode": "form",
+            "context": {"default_test_id": self.id},
         }
 
     collaborator_ids = fields.Many2many(
-        string='Collaborators',
+        string="Collaborators",
         required=False,
         readonly=False,
         index=True,
         default=None,
-        help=('Choose the collaborator users with whom you wish to share '
-              'access to this record'),
-        comodel_name='res.users',
-        relation='academy_tests_collaborator_res_users_rel',
-        column1='test_id',
-        column2='user_id',
+        help=(
+            "Choose the collaborator users with whom you wish to share "
+            "access to this record"
+        ),
+        comodel_name="res.users",
+        relation="academy_tests_collaborator_res_users_rel",
+        column1="test_id",
+        column2="user_id",
         domain=[],
         context={},
-        limit=None
     )
 
     collab_self_check = fields.Boolean(
-        string='Is current user a collaborator',
+        string="Is current user a collaborator",
         required=True,
         readonly=True,
         index=False,
         default=False,
         help=False,
-        compute='_compute_collab_self_check'
+        compute="_compute_collab_self_check",
     )
 
-    @api.depends('collaborator_ids')
+    @api.depends("collaborator_ids")
     def _compute_collab_self_check(self):
         current_user_id = self.env.uid
 
@@ -1174,7 +1172,7 @@ class AcademyTestsTest(models.Model):
             str: The generated SQL query.
         """
 
-        main_sql = '''
+        main_sql = """
             SELECT
                 test."id",
                 MAX(
@@ -1195,18 +1193,18 @@ class AcademyTestsTest(models.Model):
                 ON ans.question_id = atq."id" AND ans.active
             WHERE test.active {}
             GROUP BY test."id"
-        '''
+        """
 
-        main_clause = '' if not main_clause else ' AND ' + main_clause
+        main_clause = "" if not main_clause else " AND " + main_clause
         sql = main_sql.format(main_clause)
 
         if wrap:
-            wrap_clause = '' if not wrap_clause else ' WHERE ' + wrap_clause
+            wrap_clause = "" if not wrap_clause else " WHERE " + wrap_clause
             wrapper_sql = 'WITH src AS ({}) SELECT "id" FROM src {}'
             sql = wrapper_sql.format(sql, wrap_clause)
 
         return sql
 
     def view_shuffle_wizard(self, use_context=True):
-        link_set = self.mapped('question_ids')
+        link_set = self.mapped("question_ids")
         return link_set.view_shuffle_wizard(use_context=False)

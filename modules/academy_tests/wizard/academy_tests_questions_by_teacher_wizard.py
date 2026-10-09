@@ -30,138 +30,135 @@ class Period(IntEnum):
 
 
 WIZARD_STATES = [
-    ('step1', _('Dates')),
-    ('step2', _('Teachers')),
-    ('step3', _('Topics')),
+    ("step1", _("Dates")),
+    ("step2", _("Teachers")),
+    ("step3", _("Topics")),
 ]
 
 
 ORDER_BY = [
-    ('az', _('Name (ASC)')),
-    ('za', _('Name (DESC)')),
-    ('09', _('Quantity (ASC)')),
-    ('90', _('Quantity (DESC)')),
+    ("az", _("Name (ASC)")),
+    ("za", _("Name (DESC)")),
+    ("09", _("Quantity (ASC)")),
+    ("90", _("Quantity (DESC)")),
 ]
 
 
 class AcademyTestsQuestionsByTeacherWizard(models.TransientModel):
-    """ Wizard to choose teacher and dates between
-    """
+    """Wizard to choose teacher and dates between"""
 
-    _name = 'academy.tests.questions.by.teacher.wizard'
-    _description = u'Academy tests questions by teacher wizard'
+    _name = "academy.tests.questions.by.teacher.wizard"
+    _description = "Academy tests questions by teacher wizard"
 
-    _rec_name = 'id'
-    _order = 'id DESC'
+    _rec_name = "id"
+    _order = "id DESC"
 
     state = fields.Selection(
-        string='State',
+        string="State",
         required=False,
         readonly=False,
         index=False,
-        default='step1',
-        help='Current wizard step',
-        selection=WIZARD_STATES
+        default="step1",
+        help="Current wizard step",
+        selection=WIZARD_STATES,
     )
 
     order_by = fields.Selection(
-        string='Order by',
+        string="Order by",
         required=True,
         readonly=False,
         index=False,
-        default='az',
-        help='Choose how records will be sorted',
-        selection=ORDER_BY
+        default="az",
+        help="Choose how records will be sorted",
+        selection=ORDER_BY,
     )
 
     teacher_ids = fields.Many2many(
-        string='Teachers',
+        string="Teachers",
         required=False,
         readonly=False,
         index=False,
         default=lambda self: self._default_teacher_ids(),
         help=False,
-        comodel_name='academy.teacher',
-        relation='academy_tests_questions_by_teacher_wizard_teacher_rel',
-        column1='wizard_id',
-        column2='teacher_id',
+        comodel_name="academy.teacher",
+        relation="academy_tests_questions_by_teacher_wizard_teacher_rel",
+        column1="wizard_id",
+        column2="teacher_id",
         domain=[],
         context={},
-        limit=None
     )
 
     topic_ids = fields.Many2many(
-        string='Topics',
+        string="Topics",
         required=False,
         readonly=False,
         index=False,
         default=lambda self: self._default_topic_ids(),
         help=False,
-        comodel_name='academy.tests.topic',
-        relation='academy_tests_questions_by_teacher_wizard_topic_rel',
-        column1='wizard_id',
-        column2='topic_id',
+        comodel_name="academy.tests.topic",
+        relation="academy_tests_questions_by_teacher_wizard_topic_rel",
+        column1="wizard_id",
+        column2="topic_id",
         domain=[],
         context={},
-        limit=None
     )
 
     start = fields.Date(
-        string='Start',
+        string="Start",
         required=True,
         readonly=False,
         index=False,
         default=lambda self: self.compute_period(Period.THIS_WEEK)[0],
-        help='Choose the start date'
+        help="Choose the start date",
     )
 
     end = fields.Date(
-        string='End',
+        string="End",
         required=True,
         readonly=False,
         index=False,
         default=lambda self: self.compute_period(Period.THIS_WEEK)[1],
-        help='Choose the end date'
+        help="Choose the end date",
     )
 
     period = fields.Selection(
-        string='Period',
+        string="Period",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='Choose period',
+        help="Choose period",
         selection=[
-            ('0', 'Today'),
-            ('1', 'One week'),
-            ('2', 'This week'),
-            ('3', 'Last week'),
-            ('4', 'One month'),
-            ('5', 'This month'),
-            ('6', 'Last month'),
-            ('7', 'One year'),
-            ('8', 'This year'),
-            ('9', 'Last year'),
-        ]
+            ("0", "Today"),
+            ("1", "One week"),
+            ("2", "This week"),
+            ("3", "Last week"),
+            ("4", "One month"),
+            ("5", "This month"),
+            ("6", "Last month"),
+            ("7", "One year"),
+            ("8", "This year"),
+            ("9", "Last year"),
+        ],
     )
 
     allow_empty = fields.Boolean(
-        string='Allow empty',
+        string="Allow empty",
         required=False,
         readonly=False,
         index=False,
         default=False,
-        help='Check it to allow empty lines'
+        help="Check it to allow empty lines",
     )
 
     def _default_teacher_ids(self):
-        teacher_set = self.env['academy.teacher']
-        active_model = self.env.context.get('active_model', False)
+        teacher_set = self.env["academy.teacher"]
+        active_model = self.env.context.get("active_model", False)
 
-        if active_model == 'academy.teacher':
-            active_ids = self.env.context.get('active_ids', [-1])
+        if active_model == "academy.teacher":
+            active_ids = self.env.context.get("active_ids", [-1])
 
-            teacher_domain = [('id', 'in', active_ids)]
+            teacher_domain = [("id", "in", active_ids)]
 
             teacher_set = teacher_set.search(teacher_domain)
 
@@ -170,19 +167,19 @@ class AcademyTestsQuestionsByTeacherWizard(models.TransientModel):
     def _default_topic_ids(self):
         teacher_set = self.teacher_ids or self._default_teacher_ids()
 
-        question_set = self.env['academy.tests.question']
+        question_set = self.env["academy.tests.question"]
 
-        teacher_ids = teacher_set.mapped('res_users_id.id')
-        domain = [('owner_id', 'in', teacher_ids)]
+        teacher_ids = teacher_set.mapped("res_users_id.id")
+        domain = [("owner_id", "in", teacher_ids)]
 
         item_set = question_set.read_group(
             domain,
-            fields=['topic_ids:array_agg(topic_id)'],
-            groupby=['topic_id'],
-            lazy=False
+            fields=["topic_ids:array_agg(topic_id)"],
+            groupby=["topic_id"],
+            lazy=False,
         )
 
-        topic_ids = [item['topic_id'][0] for item in item_set]
+        topic_ids = [item["topic_id"][0] for item in item_set]
 
         return [(6, 0, topic_ids)]
 
@@ -242,7 +239,7 @@ class AcademyTestsQuestionsByTeacherWizard(models.TransientModel):
             end = (start + relativedelta(years=1)) - relativedelta(days=1)
             return start, end
 
-    @api.onchange('period')
+    @api.onchange("period")
     def _onchange_period(self):
         if self.period:
             start, end = self.compute_period(self.period)
@@ -252,26 +249,23 @@ class AcademyTestsQuestionsByTeacherWizard(models.TransientModel):
             self.period = None
 
     def show_pivot(self):
-
-        teacher_ids = self.teacher_ids.mapped('res_users_id.id')
-        topic_ids = self.topic_ids.mapped('id')
+        teacher_ids = self.teacher_ids.mapped("res_users_id.id")
+        topic_ids = self.topic_ids.mapped("id")
 
         domain = [
-            ('owner_id', 'in', teacher_ids),
-            ('topic_id', 'in', topic_ids),
-            ('create_date', '>=', fields.Date.to_string(self.start)),
-            ('create_date', '<=', fields.Date.to_string(self.end)),
+            ("owner_id", "in", teacher_ids),
+            ("topic_id", "in", topic_ids),
+            ("create_date", ">=", fields.Date.to_string(self.start)),
+            ("create_date", "<=", fields.Date.to_string(self.end)),
         ]
 
         return {
-            'model': 'ir.actions.act_window',
-            'type': 'ir.actions.act_window',
-            'name': _('Questions by teacher'),
-            'res_model': 'academy.tests.question',
-            'view_mode': 'pivot',
-            'target': 'current',
-            'domain': domain,
-            'context': {
-                'group_by': ['owner_id', 'topic_id']
-            }
+            "model": "ir.actions.act_window",
+            "type": "ir.actions.act_window",
+            "name": _("Questions by teacher"),
+            "res_model": "academy.tests.question",
+            "view_mode": "pivot",
+            "target": "current",
+            "domain": domain,
+            "context": {"group_by": ["owner_id", "topic_id"]},
         }

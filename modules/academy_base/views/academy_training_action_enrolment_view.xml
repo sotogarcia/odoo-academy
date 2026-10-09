@@ -54,6 +54,12 @@
     <field name="active" eval="True"/>
     <field name="arch" type="xml">
       <form string="academy_training_action_enrolment_form" create="1" delete="1" edit="1">
+        <header>
+          <field name="state" widget="statusbar"
+            statusbar_visible="on_hold,reserved,active"
+            options="{'clickable': '1'}"/>
+        </header>
+
         <sheet>
           <div class="oe_button_box" name="button_box">
             <widget name="web_ribbon" title="Archived" bg_color="bg-danger"

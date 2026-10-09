@@ -24,52 +24,52 @@ _logger = getLogger(__name__)
 
 
 MODEL_ALLOW_SECONDARY = {
-    'academy.training.action.enrolment': True,
-    'academy.training.action': True,
-    'academy.training.activity': True,
-    'academy.competency.unit': False,
-    'academy.training.module': False
+    "academy.training.action.enrolment": True,
+    "academy.training.action": True,
+    "academy.training.activity": True,
+    "academy.competency.unit": False,
+    "academy.training.module": False,
 }
 
 MAX_RETRIES = 5
 
 
 class AcademyTestsTestTrainingAssignment(models.Model):
-    """ Allow users to assign test to training actions, training activities,
+    """Allow users to assign test to training actions, training activities,
     competency units, training modules or training units
     """
 
-    _name = 'academy.tests.test.training.assignment'
-    _description = u'Academy tests test training assignment'
+    _name = "academy.tests.test.training.assignment"
+    _description = "Academy tests test training assignment"
 
-    _rec_name = 'name'
-    _order = 'release DESC'
+    _rec_name = "name"
+    _order = "release DESC"
 
     _inherit = [
-        'academy.abstract.training.reference',
-        'ownership.mixin',
-        'mail.thread'
+        "academy.abstract.training.reference",
+        "ownership.mixin",
+        "mail.thread",
     ]
 
     _check_company_auto = True
 
     company_id = fields.Many2one(
-        string='Company',
+        string="Company",
         required=False,
         readonly=True,
         index=True,
         default=None,
-        help='Available for company',
-        comodel_name='res.company',
+        help="Available for company",
+        comodel_name="res.company",
         domain=[],
         context={},
-        ondelete='cascade',
+        ondelete="cascade",
         auto_join=False,
-        compute='_compute_company_id',
-        store=True
+        compute="_compute_company_id",
+        store=True,
     )
 
-    @api.depends('enrolment_id', 'enrolment_id.training_action_id')
+    @api.depends("enrolment_id", "enrolment_id.training_action_id")
     def _compute_company_id(self):
         for record in self:
             if record.enrolment_id:
@@ -80,351 +80,362 @@ class AcademyTestsTestTrainingAssignment(models.Model):
                 record.company_id = None
 
     name = fields.Char(
-        string='Name',
+        string="Name",
         required=True,
         readonly=False,
         index=True,
         default=lambda self: self.default_name(),
-        help='Enter new name',
+        help="Enter new name",
         size=255,
-        translate=True
+        translate=True,
     )
 
     def default_name(self):
-        uid = self.env.context.get('uid', 1)
-        user = self.env['res.users'].browse(uid)
-        now = fields.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        uid = self.env.context.get("uid", 1)
+        user = self.env["res.users"].browse(uid)
+        now = fields.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-        return 'Test from {} - {}'.format(user.name, now)
+        return "Test from {} - {}".format(user.name, now)
 
     active = fields.Boolean(
-        string='Active',
+        string="Active",
         required=False,
         readonly=False,
         index=True,
         default=True,
-        help=('If the active field is set to false, it will allow you to '
-              'hide record without removing it'),
-        track_visibility='onchange'
+        help=(
+            "If the active field is set to false, it will allow you to "
+            "hide record without removing it"
+        ),
+        track_visibility="onchange",
     )
 
     description = fields.Text(
-        string='Description',
+        string="Description",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='Enter new description',
-        translate=True
+        help="Enter new description",
+        translate=True,
     )
 
     test_id = fields.Many2one(
-        string='Test',
+        string="Test",
         required=True,
         readonly=False,
         index=True,
         default=None,
-        help='Test will be assigned to the chosen training item',
-        comodel_name='academy.tests.test',
+        help="Test will be assigned to the chosen training item",
+        comodel_name="academy.tests.test",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
     random_template_id = fields.Many2one(
-        string='Template ',
-        readonly=True,
-        related="test_id.random_template_id"
+        string="Template ", readonly=True, related="test_id.random_template_id"
     )
 
     secondary_id = fields.Many2one(
-        string='Sub-assignment',
+        string="Sub-assignment",
         required=False,
         readonly=False,
         index=False,
         default=None,
         help=False,
-        comodel_name='academy.competency.unit',
+        comodel_name="academy.competency.unit",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
     release = fields.Datetime(
-        string='Release',
+        string="Release",
         required=True,
         readonly=False,
         index=True,
         default=fields.datetime.now(),
-        help='Date and time from which the test will be available'
+        help="Date and time from which the test will be available",
     )
 
     expiration = fields.Datetime(
-        string='Expiration',
+        string="Expiration",
         required=True,
         readonly=False,
         index=True,
         default=datetime.now() + relativedelta(years=100),
-        help='Date and time from which the test will be available'
+        help="Date and time from which the test will be available",
     )
 
     time_by = fields.Selection(
-        string='Time by',
+        string="Time by",
         required=True,
         readonly=False,
         index=False,
-        default='test',
-        help='Specify if the available time is per test or per question',
-        selection=[('test', 'Test'), ('question', 'Question')]
+        default="test",
+        help="Specify if the available time is per test or per question",
+        selection=[("test", "Test"), ("question", "Question")],
     )
 
     available_time = fields.Float(
-        string='Time',
+        string="Time",
         required=True,
         readonly=False,
         index=False,
         default=0.5,
         digits=(8, 6),
-        help='Available time per test or question to complete the exercise'
+        help="Available time per test or question to complete the exercise",
     )
 
     lock_time = fields.Boolean(
-        string='Lock time',
+        string="Lock time",
         required=False,
         readonly=False,
         index=False,
         default=True,
-        help=('Check to not allow the user to continue with ',
-              'the test once the time has passed')
+        help=(
+            "Check to not allow the user to continue with ",
+            "the test once the time has passed",
+        ),
     )
 
     correction_scale_id = fields.Many2one(
-        string='Correction scale',
+        string="Correction scale",
         required=True,
         readonly=False,
         index=False,
         default=lambda self: self.default_correction_scale_id(),
-        help='Choose the scale of correction',
-        comodel_name='academy.tests.correction.scale',
+        help="Choose the scale of correction",
+        comodel_name="academy.tests.correction.scale",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
     def default_correction_scale_id(self):
-        xid = 'academy_tests.academy_tests_correction_scale_default'
+        xid = "academy_tests.academy_tests_correction_scale_default"
         return self.env.ref(xid)
 
     enrolment_id = fields.Many2one(
-        string='Enrolment',
+        string="Enrolment",
         required=False,
         readonly=True,
         index=True,
         default=None,
-        help='The enrolment to which the test will be assigned',
-        comodel_name='academy.training.action.enrolment',
+        help="The enrolment to which the test will be assigned",
+        comodel_name="academy.training.action.enrolment",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
     training_action_id = fields.Many2one(
-        string='Training action',
+        string="Training action",
         required=False,
         readonly=True,
         index=True,
         default=None,
-        help='The training action to which the test will be assigned',
-        comodel_name='academy.training.action',
+        help="The training action to which the test will be assigned",
+        comodel_name="academy.training.action",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
     training_activity_id = fields.Many2one(
-        string='Training activity',
+        string="Training activity",
         required=False,
         readonly=True,
         index=True,
         default=None,
-        help='The training activity to which the test will be assigned',
-        comodel_name='academy.training.activity',
+        help="The training activity to which the test will be assigned",
+        comodel_name="academy.training.activity",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
     competency_unit_id = fields.Many2one(
-        string='Competency unit',
+        string="Competency unit",
         required=False,
         readonly=True,
         index=True,
         default=None,
-        help='The competency unit to which the test will be assigned',
-        comodel_name='academy.competency.unit',
+        help="The competency unit to which the test will be assigned",
+        comodel_name="academy.competency.unit",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
     training_module_id = fields.Many2one(
-        string='Training module',
+        string="Training module",
         required=False,
         readonly=True,
         index=True,
         default=None,
-        help='The training module to which the test will be assigned',
-        comodel_name='academy.training.module',
+        help="The training module to which the test will be assigned",
+        comodel_name="academy.training.module",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
     attempt_ids = fields.One2many(
-        string='Attempts',
+        string="Attempts",
         required=False,
         readonly=False,
         index=True,
         default=None,
-        help='Test attempts by students',
-        comodel_name='academy.tests.attempt',
-        inverse_name='assignment_id',
+        help="Test attempts by students",
+        comodel_name="academy.tests.attempt",
+        inverse_name="assignment_id",
         domain=[],
         context={},
         auto_join=False,
-        limit=None
     )
 
     # Will be filled by fast_update_attempt_data method
     attempt_count = fields.Integer(
-        string='Attempt count',
+        string="Attempt count",
         required=False,
         readonly=True,
         index=False,
         default=0,
-        help=('Total number of attempts related to the current individual'
-              'assignment.'),
-        store=True
+        help=(
+            "Total number of attempts related to the current individual"
+            "assignment."
+        ),
+        store=True,
     )
 
     enrolment_ids = fields.Many2manyView(
-        string='Enrolments',
+        string="Enrolments",
         required=False,
         readonly=True,
         index=False,
         default=None,
-        help='List with all the enrolments who can take the test',
-        comodel_name='academy.training.action.enrolment',
-        relation='academy_tests_test_training_assignment_enrolment_rel',
-        column1='assignment_id',
-        column2='enrolment_id',
+        help="List with all the enrolments who can take the test",
+        comodel_name="academy.training.action.enrolment",
+        relation="academy_tests_test_training_assignment_enrolment_rel",
+        column1="assignment_id",
+        column2="enrolment_id",
         domain=[],
         context={},
-        limit=None,
-        copy=False
+        copy=False,
     )
 
     enrolment_count = fields.Integer(
-        string='Nº enrolments',
+        string="Nº enrolments",
         required=False,
         readonly=True,
         index=False,
         default=0,
         store=False,
-        help='Show number of enrolments who can take the test',
-        compute='_compute_enrolment_count'
+        help="Show number of enrolments who can take the test",
+        compute="_compute_enrolment_count",
     )
 
-    @api.depends('enrolment_ids')
+    @api.depends("enrolment_ids")
     def _compute_enrolment_count(self):
         for record in self:
             record.enrolment_count = len(record.enrolment_ids)
 
     student_ids = fields.Many2manyView(
-        string='Students',
+        string="Students",
         required=False,
         readonly=True,
         index=False,
         default=None,
-        help='List with all the students who can take the test',
-        comodel_name='academy.student',
-        relation='academy_tests_test_training_assignment_student_rel',
-        column1='assignment_id',
-        column2='student_id',
+        help="List with all the students who can take the test",
+        comodel_name="academy.student",
+        relation="academy_tests_test_training_assignment_student_rel",
+        column1="assignment_id",
+        column2="student_id",
         domain=[],
         context={},
-        limit=None,
-        copy=False
+        copy=False,
     )
 
     student_count = fields.Integer(
-        string='Nº students',
+        string="Nº students",
         required=False,
         readonly=True,
         index=False,
         default=0,
         store=False,
-        help='Show number of students who can take the test',
-        compute='_compute_student_count'
+        help="Show number of students who can take the test",
+        compute="_compute_student_count",
     )
 
-    @api.depends('student_ids')
+    @api.depends("student_ids")
     def _compute_student_count(self):
         for record in self:
             record.student_count = len(record.student_ids)
 
     secondary_activity_id = fields.Many2one(
-        string='Secondary activity',
+        string="Secondary activity",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='Value will be used to compute secodary_id field domain',
-        comodel_name='academy.training.activity',
+        help="Value will be used to compute secodary_id field domain",
+        comodel_name="academy.training.activity",
         domain=[],
         context={},
-        ondelete='cascade',
+        ondelete="cascade",
         auto_join=False,
         store=False,
-        compute='_compute_secondary_activity_id'
+        compute="_compute_secondary_activity_id",
     )
 
-    @api.depends('training_ref')
+    @api.depends("training_ref")
     def _compute_secondary_activity_id(self):
         for record in self:
             record.secondary_activity_id = record._get_activity()
 
     validate_test = fields.Boolean(
-        string='Check test',
+        string="Check test",
         required=False,
         readonly=False,
         index=False,
         default=False,
-        help='Check it to validate test before save'
+        help="Check it to validate test before save",
     )
 
     def _check_topics_and_categories(self):
         result = False
 
         for record in self:
-            test_topic_ids, test_category_ids = \
-                record._get_test_categorization()
-            training_topic_ids, training_category_ids = \
-                record._get_training_categorization()
+            (
+                test_topic_ids,
+                test_category_ids,
+            ) = record._get_test_categorization()
+            (
+                training_topic_ids,
+                training_category_ids,
+            ) = record._get_training_categorization()
 
-            extra_topic_ids = [topic_id for topic_id in test_topic_ids
-                               if topic_id not in training_topic_ids]
+            extra_topic_ids = [
+                topic_id
+                for topic_id in test_topic_ids
+                if topic_id not in training_topic_ids
+            ]
 
-            extra_cat_ids = [category_id for category_id in test_category_ids
-                             if category_id not in training_category_ids]
+            extra_cat_ids = [
+                category_id
+                for category_id in test_category_ids
+                if category_id not in training_category_ids
+            ]
 
             result = not extra_topic_ids and not extra_cat_ids
 
@@ -434,324 +445,351 @@ class AcademyTestsTestTrainingAssignment(models.Model):
         return result
 
     def _get_test_categorization(self):
-        question_set = self.mapped('test_id.question_id.question_id')
+        question_set = self.mapped("test_id.question_id.question_id")
 
-        topic_ids = question_set.mapped('topic_id.id')
-        category_ids = question_set.mapped('category_ids.id')
+        topic_ids = question_set.mapped("topic_id.id")
+        category_ids = question_set.mapped("category_ids.id")
 
         return topic_ids, category_ids
 
     def _get_training_categorization(self):
-        record_set = self.mapped('training_ref')
+        record_set = self.mapped("training_ref")
 
-        if self.training_ref._name == 'academy.training.action.enrolment':
-            record_set = record_set.mapped('training_action_id')
+        if self.training_ref._name == "academy.training.action.enrolment":
+            record_set = record_set.mapped("training_action_id")
 
-        if self.training_ref._name == 'academy.training.action':
-            record_set = record_set.mapped('training_activity_id')
+        if self.training_ref._name == "academy.training.action":
+            record_set = record_set.mapped("training_activity_id")
 
-        if self.training_ref._name == 'academy.training.activity':
-            record_set = record_set.mapped('secondary_ids')
+        if self.training_ref._name == "academy.training.activity":
+            record_set = record_set.mapped("secondary_ids")
 
-        if self.training_ref._name == 'academy.competency.unit':
-            record_set = record_set.mapped('training_module_ids')
+        if self.training_ref._name == "academy.competency.unit":
+            record_set = record_set.mapped("training_module_ids")
 
-        topic_ids = record_set.mapped('available_topic_ids.id')
-        category_ids = record_set.mapped('available_categories_ids.id')
+        topic_ids = record_set.mapped("available_topic_ids.id")
+        category_ids = record_set.mapped("available_categories_ids.id")
 
         return topic_ids, category_ids
 
     first_attempt_id = fields.Many2one(
-        string='First attempt',
+        string="First attempt",
         required=False,
         readonly=True,
         index=True,
         default=None,
-        help=('Reference to the first attempt at the assigned test for this '
-              'assignment.'),
-        comodel_name='academy.tests.attempt',
+        help=(
+            "Reference to the first attempt at the assigned test for this "
+            "assignment."
+        ),
+        comodel_name="academy.tests.attempt",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
     last_attempt_id = fields.Many2one(
-        string='Last attempt',
+        string="Last attempt",
         required=False,
         readonly=True,
         index=True,
         default=None,
-        help=('Reference to the most recent attempt at the assigned test for '
-              'this assignment.'),
-        comodel_name='academy.tests.attempt',
+        help=(
+            "Reference to the most recent attempt at the assigned test for "
+            "this assignment."
+        ),
+        comodel_name="academy.tests.attempt",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
     best_attempt_id = fields.Many2one(
-        string='Best attempt',
+        string="Best attempt",
         required=False,
         readonly=True,
         index=True,
         default=None,
-        help=('Reference to the highest scoring attempt at the assigned test '
-              'for this assignment.'),
-        comodel_name='academy.tests.attempt',
+        help=(
+            "Reference to the highest scoring attempt at the assigned test "
+            "for this assignment."
+        ),
+        comodel_name="academy.tests.attempt",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
     first_attempt = fields.Datetime(
-        string='First attempt datetime',
+        string="First attempt datetime",
         required=False,
         readonly=True,
         index=False,
         default=None,
-        help='Date and time when the first attempt was completed'
+        help="Date and time when the first attempt was completed",
     )
 
     last_attempt = fields.Datetime(
-        string='Last attempt datetime',
+        string="Last attempt datetime",
         required=False,
         readonly=True,
         index=False,
         default=None,
-        help='Date and time when the last attempt was completed'
+        help="Date and time when the last attempt was completed",
     )
 
     best_attempt = fields.Datetime(
-        string='Best attempt datetime',
+        string="Best attempt datetime",
         required=False,
         readonly=True,
         index=False,
         default=None,
-        help='Date and time when the best attempt was completed'
+        help="Date and time when the best attempt was completed",
     )
 
     first_points = fields.Float(
-        string='First points',
+        string="First points",
         required=True,
         readonly=True,
         index=False,
         default=0.0,
         digits=(16, 2),
-        help='Points earned on the first attempt'
+        help="Points earned on the first attempt",
     )
 
     last_points = fields.Float(
-        string='Last points',
+        string="Last points",
         required=True,
         readonly=True,
         index=False,
         default=0.0,
         digits=(16, 2),
-        help='Points earned on the last attempt'
+        help="Points earned on the last attempt",
     )
 
     best_points = fields.Float(
-        string='Best points',
+        string="Best points",
         required=True,
         readonly=True,
         index=False,
         default=0.0,
         digits=(16, 2),
-        help='Points earned on the best attempt'
+        help="Points earned on the best attempt",
     )
 
     first_student_id = fields.Many2one(
-        string='First student',
+        string="First student",
         required=False,
         readonly=True,
         index=True,
         default=None,
-        help='Student who has obtained the highest score in the assigned test',
-        comodel_name='academy.student',
+        help="Student who has obtained the highest score in the assigned test",
+        comodel_name="academy.student",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
     last_student_id = fields.Many2one(
-        string='Last student',
+        string="Last student",
         required=False,
         readonly=True,
         index=True,
         default=None,
-        help='Student who has taken the test for the first time',
-        comodel_name='academy.student',
+        help="Student who has taken the test for the first time",
+        comodel_name="academy.student",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
     best_student_id = fields.Many2one(
-        string='Best student',
+        string="Best student",
         required=False,
         readonly=True,
         index=True,
         default=None,
-        help='Student who has taken the test for the last time',
-        comodel_name='academy.student',
+        help="Student who has taken the test for the last time",
+        comodel_name="academy.student",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
     question_count = fields.Integer(
-        string='Number of questions',
+        string="Number of questions",
         required=False,
         readonly=False,
         index=False,
         default=0,
-        help='Show the number of questions in test'
+        help="Show the number of questions in test",
     )
 
     max_points = fields.Float(
-        string='Max points',
+        string="Max points",
         required=True,
         readonly=True,
         index=False,
         default=0.0,
         digits=(16, 2),
-        help='The maximum points achievable in an attempt'
+        help="The maximum points achievable in an attempt",
     )
 
-    @api.depends('question_count', 'correction_scale_id')
+    @api.depends("question_count", "correction_scale_id")
     def _compute_max_points(self):
         for record in self:
-            record.max_points = \
+            record.max_points = (
                 record.question_count * record.correction_scale_id.right
+            )
 
     max_final_points = fields.Float(
-        string='MAX final points',
+        string="MAX final points",
         required=True,
         readonly=True,
         index=True,
         default=0.0,
         digits=(16, 2),
-        help=('Maximum of points from final answers in the attempts of this '
-              'assignment')
+        help=(
+            "Maximum of points from final answers in the attempts of this "
+            "assignment"
+        ),
     )
 
     min_final_points = fields.Float(
-        string='MIN final points',
+        string="MIN final points",
         required=True,
         readonly=True,
         index=True,
         default=0.0,
         digits=(16, 2),
-        help=('Minimum of points from final answers in the attempts of this '
-              'assignment')
+        help=(
+            "Minimum of points from final answers in the attempts of this "
+            "assignment"
+        ),
     )
 
     avg_final_points = fields.Float(
-        string='AVG final points',
+        string="AVG final points",
         required=True,
         readonly=True,
         index=True,
         default=0.0,
         digits=(16, 2),
-        help=('Average of points from final answers in the attempts of this '
-              'assignment')
+        help=(
+            "Average of points from final answers in the attempts of this "
+            "assignment"
+        ),
     )
 
     avg_right_points = fields.Float(
-        string='AVG right points',
+        string="AVG right points",
         required=True,
         readonly=True,
         index=True,
         default=0.0,
         digits=(16, 2),
-        help=('Average of points from right answers in the attempts of this '
-              'assignment')
+        help=(
+            "Average of points from right answers in the attempts of this "
+            "assignment"
+        ),
     )
 
     avg_wrong_points = fields.Float(
-        string='AVG wrong points',
+        string="AVG wrong points",
         required=True,
         readonly=True,
         index=True,
         default=0.0,
         digits=(16, 2),
-        help=('Average of points from wrong answers in the attempts of this '
-              'assignment')
+        help=(
+            "Average of points from wrong answers in the attempts of this "
+            "assignment"
+        ),
     )
 
     avg_blank_points = fields.Float(
-        string='AVG blank points',
+        string="AVG blank points",
         required=True,
         readonly=True,
         index=True,
         default=0.0,
         digits=(16, 2),
-        help=('Average of points from blank answers in the attempts of this '
-              'assignment')
+        help=(
+            "Average of points from blank answers in the attempts of this "
+            "assignment"
+        ),
     )
 
     avg_answered_count = fields.Integer(
-        string='AVG answered count',
+        string="AVG answered count",
         required=True,
         readonly=True,
         index=True,
         default=0,
-        help=('Average number of answered questions in the attempts of this '
-              'assignment')
+        help=(
+            "Average number of answered questions in the attempts of this "
+            "assignment"
+        ),
     )
 
     avg_right_count = fields.Integer(
-        string='AVG right count',
+        string="AVG right count",
         required=True,
         readonly=True,
         index=True,
         default=0,
-        help=('Average number of right answers in the attempts of this '
-              'assignment')
+        help=(
+            "Average number of right answers in the attempts of this "
+            "assignment"
+        ),
     )
 
     avg_wrong_count = fields.Integer(
-        string='AVG wrong count',
+        string="AVG wrong count",
         required=True,
         readonly=True,
         index=True,
         default=0,
-        help=('Average number of wrong answers in the attempts of this '
-              'assignment')
+        help=(
+            "Average number of wrong answers in the attempts of this "
+            "assignment"
+        ),
     )
 
     avg_blank_count = fields.Integer(
-        string='AVG blank count',
+        string="AVG blank count",
         required=True,
         readonly=True,
         index=True,
         default=0,
-        help=('Average number of blank questions in the attempts of this '
-              'assignment')
+        help=(
+            "Average number of blank questions in the attempts of this "
+            "assignment"
+        ),
     )
 
     passed_count = fields.Integer(
-        string='Passed count',
+        string="Passed count",
         required=True,
         readonly=True,
         index=True,
         default=0,
-        help=('Number of passed attempts')
+        help=("Number of passed attempts"),
     )
 
     failed_count = fields.Integer(
-        string='Failed count',
+        string="Failed count",
         required=True,
         readonly=True,
         index=True,
         default=0,
-        help=('Number of failed attempts')
+        help=("Number of failed attempts"),
     )
 
     # -------------------------------------------------------------------------
@@ -760,45 +798,43 @@ class AcademyTestsTestTrainingAssignment(models.Model):
 
     _sql_constraints = [
         (
-            'mandaroty_training_ref',
-            'CHECK(training_type IS NOT NULL AND training_ref IS NOT NULL)',
-            _(u'You must set a training item')
+            "mandaroty_training_ref",
+            "CHECK(training_type IS NOT NULL AND training_ref IS NOT NULL)",
+            _("You must set a training item"),
         ),
         (
-            'positive_available_interval',
-            'CHECK(expiration > release)',
-            _(u'Expiration date must be later than release date')
+            "positive_available_interval",
+            "CHECK(expiration > release)",
+            _("Expiration date must be later than release date"),
         ),
         (
-            'single_assignment',
-            'UNIQUE(test_id, training_ref)',
-            _(u'Assignment of test to training is duplicated')
+            "single_assignment",
+            "UNIQUE(test_id, training_ref)",
+            _("Assignment of test to training is duplicated"),
         ),
         (
-            'positive_available_time',
-            'CHECK(available_time > 0)',  # It can be zero if not set
-            _(u'Available time attribute must have a positive value')
-        )
+            "positive_available_time",
+            "CHECK(available_time > 0)",  # It can be zero if not set
+            _("Available time attribute must have a positive value"),
+        ),
     ]
 
     # -------------------------------------------------------------------------
     # Extend parent abstract model
     # -------------------------------------------------------------------------
 
-    @api.onchange('training_ref')
+    @api.onchange("training_ref")
     def _onchange_training_ref(self):
-
         _super = super(AcademyTestsTestTrainingAssignment, self)
         _super._onchange_training_ref()
 
-        if self.training_ref and has_changed(self, 'training_ref'):
+        if self.training_ref and has_changed(self, "training_ref"):
             self.update_realization_attributes()
 
-    @api.onchange('test_id')
+    @api.onchange("test_id")
     def _onchange_test_id(self):
-
         if self.test_id:
-            if has_changed(self, 'test_id'):
+            if has_changed(self, "test_id"):
                 if self.test_id.name:
                     self.name = self.test_id.name
 
@@ -824,14 +860,14 @@ class AcademyTestsTestTrainingAssignment(models.Model):
                 record.lock_time = test.lock_time
             elif activity and activity.available_time:
                 record.available_time = test.available_time or 0.5
-                record.time_by = 'test'
+                record.time_by = "test"
                 record.lock_time = True
             else:
-                field_names = ['available_time', 'time_by', 'lock_time']
+                field_names = ["available_time", "time_by", "lock_time"]
                 defaults = record.default_get(field_names)
-                record.available_time = defaults.get('available_time', 0.5)
-                record.time_by = defaults.get('time_by', 'test')
-                record.lock_time = defaults.get('lock_time', False)
+                record.available_time = defaults.get("available_time", 0.5)
+                record.time_by = defaults.get("time_by", "test")
+                record.lock_time = defaults.get("lock_time", False)
 
     @api.model
     def _ensure_consistency_in_training(self, values, create=False):
@@ -844,7 +880,7 @@ class AcademyTestsTestTrainingAssignment(models.Model):
         model, id_str = _super._ensure_consistency_in_training(values, create)
 
         if model and MODEL_ALLOW_SECONDARY[model] is False:
-            values['secondary_id'] = None
+            values["secondary_id"] = None
 
         return model, id_str
 
@@ -852,19 +888,19 @@ class AcademyTestsTestTrainingAssignment(models.Model):
     # Overridden Non-CRUD Methods
     # -------------------------------------------------------------------------
 
-    @api.depends('training_ref', 'test_id')
+    @api.depends("training_ref", "test_id")
     def name_get(self):
         result = []
 
-        display = self.env.context.get('name_get', None)
-        pattern = _('Assigning test #{} to {} #{}')
+        display = self.env.context.get("name_get", None)
+        pattern = _("Assigning test #{} to {} #{}")
 
         for record in self:
             if isinstance(record.id, models.NewId):
-                name = _('New assignment')
-            elif display == 'test':
+                name = _("New assignment")
+            elif display == "test":
                 name = record.test_id.display_name
-            elif display == 'training':
+            elif display == "training":
                 name = record.training_ref.display_name
             else:
                 training_type = record.get_training_type_name().lower()
@@ -885,12 +921,12 @@ class AcademyTestsTestTrainingAssignment(models.Model):
 
         if not self.training_ref:
             activity_id = False
-        elif self.training_ref._name == 'academy.training.action.enrolment':
+        elif self.training_ref._name == "academy.training.action.enrolment":
             action_item = self.training_ref.training_action_id
             activity_id = action_item.training_activity_id
-        elif self.training_ref._name == 'academy.training.action':
+        elif self.training_ref._name == "academy.training.action":
             activity_id = self.training_ref.training_activity_id
-        elif self.training_ref._name == 'academy.training.activity':
+        elif self.training_ref._name == "academy.training.activity":
             activity_id = self.training_ref
         else:
             activity_id = False
@@ -904,27 +940,27 @@ class AcademyTestsTestTrainingAssignment(models.Model):
     def view_test_attempts(self):
         self.ensure_one()
 
-        action_xid = 'academy_tests.action_test_attempts_act_window'
+        action_xid = "academy_tests.action_test_attempts_act_window"
         act_wnd = self.env.ref(action_xid)
 
-        name = _('Attempts')
+        name = _("Attempts")
 
         context = self.env.context.copy()
         context.update(safe_eval(act_wnd.context))
-        context.update({'default_assignment_id': self.id})
+        context.update({"default_assignment_id": self.id})
 
-        domain = [('assignment_id', '=', self.id)]
+        domain = [("assignment_id", "=", self.id)]
 
         serialized = {
-            'type': 'ir.actions.act_window',
-            'res_model': act_wnd.res_model,
-            'target': 'current',
-            'name': name,
-            'view_mode': act_wnd.view_mode,
-            'domain': domain,
-            'context': context,
-            'search_view_id': act_wnd.search_view_id.id,
-            'help': act_wnd.help
+            "type": "ir.actions.act_window",
+            "res_model": act_wnd.res_model,
+            "target": "current",
+            "name": name,
+            "view_mode": act_wnd.view_mode,
+            "domain": domain,
+            "context": context,
+            "search_view_id": act_wnd.search_view_id.id,
+            "help": act_wnd.help,
         }
 
         return serialized
@@ -933,48 +969,48 @@ class AcademyTestsTestTrainingAssignment(models.Model):
         self.ensure_one()
 
         return {
-            'model': 'ir.actions.act_window',
-            'type': 'ir.actions.act_window',
-            'name': _('Students'),
-            'res_model': 'academy.student',
-            'target': 'current',
-            'view_mode': 'kanban,tree,form',
-            'domain': [('id', 'in', self.mapped('student_ids.id'))],
-            'context': {}
+            "model": "ir.actions.act_window",
+            "type": "ir.actions.act_window",
+            "name": _("Students"),
+            "res_model": "academy.student",
+            "target": "current",
+            "view_mode": "kanban,tree,form",
+            "domain": [("id", "in", self.mapped("student_ids.id"))],
+            "context": {},
         }
 
     def view_individual_assignments(self):
         self.ensure_one()
 
-        action_xid = 'academy_tests.action_single_assignments_act_window'
+        action_xid = "academy_tests.action_single_assignments_act_window"
         act_wnd = self.env.ref(action_xid)
 
-        name = _('Individual assignments')
+        name = _("Individual assignments")
 
-        rel_mod = 'academy.tests.test.training.assignment.enrolment.rel'
+        rel_mod = "academy.tests.test.training.assignment.enrolment.rel"
         rel_obj = self.env[rel_mod]
-        uperm = rel_obj.check_access_rights('write', raise_exception=False)
-        dperm = rel_obj.check_access_rights('unlink', raise_exception=False)
+        uperm = rel_obj.check_access_rights("write", raise_exception=False)
+        dperm = rel_obj.check_access_rights("unlink", raise_exception=False)
         if uperm and dperm:
             rel_obj.purge_obsolete_records(assignments=self)
             rel_obj.generate_missing_records(assignments=self)
 
         context = self.env.context.copy()
         context.update(safe_eval(act_wnd.context))
-        context.update({'default_assignment_id': self.id})
+        context.update({"default_assignment_id": self.id})
 
-        domain = [('assignment_id', '=', self.id)]
+        domain = [("assignment_id", "=", self.id)]
 
         serialized = {
-            'type': 'ir.actions.act_window',
-            'res_model': act_wnd.res_model,
-            'target': 'current',
-            'name': name,
-            'view_mode': act_wnd.view_mode,
-            'domain': domain,
-            'context': context,
-            'search_view_id': act_wnd.search_view_id.id,
-            'help': act_wnd.help
+            "type": "ir.actions.act_window",
+            "res_model": act_wnd.res_model,
+            "target": "current",
+            "name": name,
+            "view_mode": act_wnd.view_mode,
+            "domain": domain,
+            "context": context,
+            "search_view_id": act_wnd.search_view_id.id,
+            "help": act_wnd.help,
         }
 
         return serialized
@@ -1004,27 +1040,29 @@ class AcademyTestsTestTrainingAssignment(models.Model):
 
         context = self.env.context
         training_ref = self.training_ref
-        training_ref = context.get('default_training_ref', training_ref)
+        training_ref = context.get("default_training_ref", training_ref)
 
         test_id = self.test_id.new_from_template(gui=False)
-        assignment = self.copy({
-            'test_id': test_id.id,
-            'release': release,
-            'expiration': expiration,
-            'owner_id': self.env.context.get('uid', self.owner_id.id),
-            'training_ref': training_ref
-        })
+        assignment = self.copy(
+            {
+                "test_id": test_id.id,
+                "release": release,
+                "expiration": expiration,
+                "owner_id": self.env.context.get("uid", self.owner_id.id),
+                "training_ref": training_ref,
+            }
+        )
 
         if gui:
             return {
-                'model': 'ir.actions.act_window',
-                'type': 'ir.actions.act_window',
-                'name': assignment.name,
-                'res_model': self._name,
-                'target': 'current',
-                'view_mode': 'form',
-                'res_id': assignment.id,
-                'context': {}
+                "model": "ir.actions.act_window",
+                "type": "ir.actions.act_window",
+                "name": assignment.name,
+                "res_model": self._name,
+                "target": "current",
+                "view_mode": "form",
+                "res_id": assignment.id,
+                "context": {},
             }
 
     def download_as_pdf(self):
@@ -1050,7 +1088,7 @@ class AcademyTestsTestTrainingAssignment(models.Model):
         complex SQL query.
         """
 
-        sql_pattern = '''
+        sql_pattern = """
         WITH targets AS (
 
             -- This CTE is used only to limit the records to be considered
@@ -1241,28 +1279,30 @@ class AcademyTestsTestTrainingAssignment(models.Model):
             computed_data AS cd
         WHERE
             cd.assignment_id = ass."id"
-        '''
+        """
 
         try:
-            self.check_access_rights('write')
+            self.check_access_rights("write")
         except AccessError:
-            message = _('You do not have the necessary permissions to update '
-                        'this data.')
+            message = _(
+                "You do not have the necessary permissions to update "
+                "this data."
+            )
             raise UserError(message)
 
         if self:
-            ids_str = ', '.join([str(record.id) for record in self])
+            ids_str = ", ".join([str(record.id) for record in self])
             restriction = f' AND ass."id" IN ({ids_str}) '
         else:
-            restriction = ''
+            restriction = ""
 
         sql = sql_pattern.format(restriction=restriction)
-        self._execute_query(sql, notify=True, action='update_attempt_data')
+        self._execute_query(sql, notify=True, action="update_attempt_data")
 
     @api.model
     def _execute_query(self, sql, selection=False, notify=False, action=None):
         results = []
-        action = action or 'SQL'
+        action = action or "SQL"
 
         for attempt in range(MAX_RETRIES):
             try:
@@ -1276,23 +1316,23 @@ class AcademyTestsTestTrainingAssignment(models.Model):
 
             except SerializationFailure:
                 if attempt < MAX_RETRIES - 1:
-                    message = 'Failed to execute SQL {} / {} tries'
+                    message = "Failed to execute SQL {} / {} tries"
                     _logger.warning(message.format(attempt, MAX_RETRIES))
                     sleep(1)  # Wait before retry
                 else:
                     if notify:
-                        message = _('Failed to execute {} after {} tries')
+                        message = _("Failed to execute {} after {} tries")
                         raise UserError(message.format(action, MAX_RETRIES))
                     else:
-                        message = 'Failed to execute {} after {} tries'
+                        message = "Failed to execute {} after {} tries"
                         _logger.error(message.format(action, MAX_RETRIES))
 
             except Exception as ex:
                 if notify:
-                    message = _('Failed to execute {}. System says: {}')
+                    message = _("Failed to execute {}. System says: {}")
                     raise UserError(message.format(action, ex))
                 else:
-                    message = 'Failed to execute {}. System says: {}'
+                    message = "Failed to execute {}. System says: {}"
                     _logger.error(message.format(action, ex))
 
                 break
@@ -1302,7 +1342,7 @@ class AcademyTestsTestTrainingAssignment(models.Model):
     def reconcile_records(self, full_db=False):
         record_set = self.search(TRUE_DOMAIN) if full_db else self
 
-        ind_model = 'academy.tests.test.training.assignment.enrolment.rel'
+        ind_model = "academy.tests.test.training.assignment.enrolment.rel"
         self.env[ind_model].reconcile_records(assignments=record_set)
 
         record_set.fast_update_attempt_data()
@@ -1310,103 +1350,113 @@ class AcademyTestsTestTrainingAssignment(models.Model):
     @api.model
     def _get_default_attempt_data(self):
         return {
-            'question_count': 0,
-            'max_points': 0.0,
-            'first_attempt_id': None,
-            'last_attempt_id': None,
-            'best_attempt_id': None,
-            'first_attempt': None,
-            'last_attempt': None,
-            'best_attempt': None,
-            'first_student_id': None,
-            'last_student_id': None,
-            'best_student_id': None,
-            'first_points': 0.0,
-            'last_points': 0.0,
-            'best_points': 0.0,
-            'attempt_count': 0,
-            'max_final_points': 0.0,
-            'min_final_points': 0.0,
-            'avg_final_points': 0.0,
-            'avg_right_points': 0.0,
-            'avg_wrong_points': 0.0,
-            'avg_blank_points': 0.0,
-            'avg_answered_count': 0,
-            'avg_right_count': 0,
-            'avg_wrong_count': 0,
-            'avg_blank_count': 0,
-            'passed_count': 0,
-            'failed_count': 0,
+            "question_count": 0,
+            "max_points": 0.0,
+            "first_attempt_id": None,
+            "last_attempt_id": None,
+            "best_attempt_id": None,
+            "first_attempt": None,
+            "last_attempt": None,
+            "best_attempt": None,
+            "first_student_id": None,
+            "last_student_id": None,
+            "best_student_id": None,
+            "first_points": 0.0,
+            "last_points": 0.0,
+            "best_points": 0.0,
+            "attempt_count": 0,
+            "max_final_points": 0.0,
+            "min_final_points": 0.0,
+            "avg_final_points": 0.0,
+            "avg_right_points": 0.0,
+            "avg_wrong_points": 0.0,
+            "avg_blank_points": 0.0,
+            "avg_answered_count": 0,
+            "avg_right_count": 0,
+            "avg_wrong_count": 0,
+            "avg_blank_count": 0,
+            "passed_count": 0,
+            "failed_count": 0,
         }
 
     def _compute_attempt_data(self):
         values = self._get_default_attempt_data()
 
         scale = self.correction_scale_id
-        values['question_count'] = len(self.test_id.question_ids)
-        values['max_points'] = values['question_count'] * scale.right
+        values["question_count"] = len(self.test_id.question_ids)
+        values["max_points"] = values["question_count"] * scale.right
 
         if self.attempt_ids:
             attempt_count = len(self.attempt_ids)
-            values['attempt_count'] = attempt_count
+            values["attempt_count"] = attempt_count
 
             first_attempt = self.attempt_ids.sorted(
-                key=lambda r: r.start, reverse=False)[0]
-            values['first_attempt_id'] = first_attempt.id
-            values['first_attempt'] = first_attempt.end
-            values['first_points'] = first_attempt.final_points
-            values['first_student_id'] = \
-                first_attempt.enrolment_id.student_id.id
+                key=lambda r: r.start, reverse=False
+            )[0]
+            values["first_attempt_id"] = first_attempt.id
+            values["first_attempt"] = first_attempt.end
+            values["first_points"] = first_attempt.final_points
+            values[
+                "first_student_id"
+            ] = first_attempt.enrolment_id.student_id.id
 
             last_attempt = self.attempt_ids.sorted(
-                key=lambda r: r.start, reverse=True)[0]
-            values['last_attempt_id'] = last_attempt.id
-            values['last_attempt'] = last_attempt.end
-            values['last_points'] = last_attempt.final_points
-            values['last_student_id'] = \
-                last_attempt.enrolment_id.student_id.id
+                key=lambda r: r.start, reverse=True
+            )[0]
+            values["last_attempt_id"] = last_attempt.id
+            values["last_attempt"] = last_attempt.end
+            values["last_points"] = last_attempt.final_points
+            values["last_student_id"] = last_attempt.enrolment_id.student_id.id
 
             best_attempt = self.attempt_ids.sorted(
-                key=lambda r: r.final_points, reverse=True)[0]
-            values['best_attempt_id'] = best_attempt.id
-            values['best_attempt'] = best_attempt.end
-            values['best_points'] = best_attempt.final_points
-            values['best_student_id'] = \
-                best_attempt.enrolment_id.student_id.id
+                key=lambda r: r.final_points, reverse=True
+            )[0]
+            values["best_attempt_id"] = best_attempt.id
+            values["best_attempt"] = best_attempt.end
+            values["best_points"] = best_attempt.final_points
+            values["best_student_id"] = best_attempt.enrolment_id.student_id.id
 
-            final_points_list = self.mapped('attempt_ids.final_points')
-            values['max_final_points'] = max(final_points_list)
-            values['min_final_points'] = min(final_points_list)
-            values['avg_final_points'] = \
-                self._safe_division(sum(final_points_list), attempt_count, 0.0)
+            final_points_list = self.mapped("attempt_ids.final_points")
+            values["max_final_points"] = max(final_points_list)
+            values["min_final_points"] = min(final_points_list)
+            values["avg_final_points"] = self._safe_division(
+                sum(final_points_list), attempt_count, 0.0
+            )
 
-            right_points_list = self.mapped('attempt_ids.right_points')
-            wrong_points_list = self.mapped('attempt_ids.wrong_points')
-            blank_points_list = self.mapped('attempt_ids.blank_points')
-            values['avg_right_points'] = \
-                self._safe_division(sum(right_points_list), attempt_count, 0.0)
-            values['avg_wrong_points'] = \
-                self._safe_division(sum(wrong_points_list), attempt_count, 0.0)
-            values['avg_blank_points'] = \
-                self._safe_division(sum(blank_points_list), attempt_count, 0.0)
+            right_points_list = self.mapped("attempt_ids.right_points")
+            wrong_points_list = self.mapped("attempt_ids.wrong_points")
+            blank_points_list = self.mapped("attempt_ids.blank_points")
+            values["avg_right_points"] = self._safe_division(
+                sum(right_points_list), attempt_count, 0.0
+            )
+            values["avg_wrong_points"] = self._safe_division(
+                sum(wrong_points_list), attempt_count, 0.0
+            )
+            values["avg_blank_points"] = self._safe_division(
+                sum(blank_points_list), attempt_count, 0.0
+            )
 
-            right_count_list = self.mapped('attempt_ids.right_count')
-            wrong_count_list = self.mapped('attempt_ids.wrong_count')
-            blank_count_list = self.mapped('attempt_ids.blank_count')
-            values['avg_right_count'] = \
-                self._safe_division(sum(right_count_list), attempt_count, 0)
-            values['avg_wrong_count'] = \
-                self._safe_division(sum(wrong_count_list), attempt_count, 0)
-            values['avg_blank_count'] = \
-                self._safe_division(sum(blank_count_list), attempt_count, 0)
+            right_count_list = self.mapped("attempt_ids.right_count")
+            wrong_count_list = self.mapped("attempt_ids.wrong_count")
+            blank_count_list = self.mapped("attempt_ids.blank_count")
+            values["avg_right_count"] = self._safe_division(
+                sum(right_count_list), attempt_count, 0
+            )
+            values["avg_wrong_count"] = self._safe_division(
+                sum(wrong_count_list), attempt_count, 0
+            )
+            values["avg_blank_count"] = self._safe_division(
+                sum(blank_count_list), attempt_count, 0
+            )
 
-            answered_count_list = self.mapped('attempt_ids.answered_count')
-            values['avg_answered_count'] = \
-                self._safe_division(sum(answered_count_list), attempt_count, 0)
+            answered_count_list = self.mapped("attempt_ids.answered_count")
+            values["avg_answered_count"] = self._safe_division(
+                sum(answered_count_list), attempt_count, 0
+            )
 
             passed_count = len(self.attempt_ids.filtered(lambda r: r.passed))
-            values['passed_count'] = passed_count
-            values['failed_count'] = attempt_count - passed_count
+            values["passed_count"] = passed_count
+            values["failed_count"] = attempt_count - passed_count
 
         return values
 
@@ -1421,13 +1471,17 @@ class AcademyTestsTestTrainingAssignment(models.Model):
             result = dividend / divisor
             result = type(default)(result)
         except ZeroDivisionError:
-            message = (f'Warning: Division by zero. '
-                       f'Returning {default} as the result.')
+            message = (
+                f"Warning: Division by zero. "
+                f"Returning {default} as the result."
+            )
             _logger.warning(message)
             result = default
         except (ValueError, TypeError) as e:
-            message = (f'Warning: Invalid input {e}. '
-                       f'Returning {default} as the result.')
+            message = (
+                f"Warning: Invalid input {e}. "
+                f"Returning {default} as the result."
+            )
             _logger.warning(message)
             result = default
 
@@ -1453,7 +1507,7 @@ class AcademyTestsTestTrainingAssignment(models.Model):
 
         available_time = self.available_time
 
-        if self.time_by == 'question' and self.test_id:
+        if self.time_by == "question" and self.test_id:
             question_count = len(self.test_id.question_ids) or 1
             available_time *= question_count
 

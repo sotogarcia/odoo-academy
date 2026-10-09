@@ -9,91 +9,87 @@ from odoo.tools.translate import _
 from logging import getLogger
 from odoo.exceptions import ValidationError
 
-from odoo.addons.academy_base.models.academy_abstract_training_reference \
-    import MAPPING_TRAINING_REFERENCES
+from odoo.addons.academy_base.models.academy_abstract_training_reference import (
+    MAPPING_TRAINING_REFERENCES,
+)
 
 _logger = getLogger(__name__)
 
 
 class AcademyTestsCopyAssignmentsWizard(models.TransientModel):
-    """ Allow to copy existing assignments to another training action.
+    """Allow to copy existing assignments to another training action."""
 
-    """
+    _name = "academy.tests.copy.assignments.wizard"
+    _description = "Academy tests copy assignments wizard"
 
-    _name = 'academy.tests.copy.assignments.wizard'
-    _description = u'Academy tests copy assignments wizard'
-
-    _rec_name = 'id'
-    _order = 'id DESC'
+    _rec_name = "id"
+    _order = "id DESC"
 
     assignment_ids = fields.Many2many(
-        string='Assignments',
+        string="Assignments",
         required=True,
         readonly=False,
         index=False,
         default=lambda self: self.default_assignment_ids(),
-        help='Chosen assignments',
-        comodel_name='academy.tests.test.training.assignment',
-        relation='academy_tests_copy_assignments_wizard_assignment_rel',
-        column1='wizard_id',
-        column2='assignment_id',
+        help="Chosen assignments",
+        comodel_name="academy.tests.test.training.assignment",
+        relation="academy_tests_copy_assignments_wizard_assignment_rel",
+        column1="wizard_id",
+        column2="assignment_id",
         domain=[],
         context={},
-        limit=None
     )
 
     def default_assignment_ids(self):
-        result_set = self.env['academy.tests.test.training.assignment']
+        result_set = self.env["academy.tests.test.training.assignment"]
 
         context = self.env.context
-        active_model = context.get('active_model', False)
+        active_model = context.get("active_model", False)
 
-        if active_model == 'academy.tests.test.training.assignment':
-
-            active_ids = context.get('active_ids', [])
+        if active_model == "academy.tests.test.training.assignment":
+            active_ids = context.get("active_ids", [])
 
             if not active_ids:
-                active_id = context.get('active_id', None)
+                active_id = context.get("active_id", None)
                 if active_id:
                     active_ids = [active_id]
 
             if active_ids:
-                domain = [('id', 'in', active_ids)]
+                domain = [("id", "in", active_ids)]
                 result_set = result_set.search(domain)
 
         return result_set
 
     training_ref = fields.Reference(
-        string='Training',
+        string="Training",
         required=True,
         readonly=False,
         index=False,
         default=0,
-        help='Target training object',
-        selection=MAPPING_TRAINING_REFERENCES
+        help="Target training object",
+        selection=MAPPING_TRAINING_REFERENCES,
     )
 
-    @api.onchange('training_ref')
+    @api.onchange("training_ref")
     def _onchange_training_ref(self):
         self.training_action_ids = None
-    
 
     training_activity_id = fields.Many2one(
-        string='Training activity',
+        string="Training activity",
         required=False,
         readonly=True,
         index=False,
         default=None,
         help=False,
-        comodel_name='academy.training.activity',
+        comodel_name="academy.training.activity",
         domain=[],
         context={},
-        ondelete='cascade',
+        ondelete="cascade",
         auto_join=False,
-        compute='_compute_training_activity_id'
+        compute="_compute_training_activity_id",
     )
 
-    @api.depends('training_ref')
+    @api.depends("training_ref")
     def _compute_training_activity_id(self):
         # activity_obj = self.env['academy.training.activity']
         # activity_type = type(activity_obj)
@@ -104,45 +100,45 @@ class AcademyTestsCopyAssignmentsWizard(models.TransientModel):
                 record.training_activity_id = record.training_ref
 
     choose_actions = fields.Boolean(
-        string='Choose actions',
+        string="Choose actions",
         required=False,
         readonly=False,
         index=False,
         default=False,
-        help=('Check it to allow select target training actions instead the '
-              'chosen training activity')
+        help=(
+            "Check it to allow select target training actions instead the "
+            "chosen training activity"
+        ),
     )
 
     training_action_ids = fields.Many2many(
-        string='Training actions',
+        string="Training actions",
         required=False,
         readonly=False,
         index=False,
         default=None,
         help=False,
-        comodel_name='academy.training.action',
-        relation='academy_tests_copy_assignments_wizard_training_action_rel',
-        column1='wizard_id',
-        column2='training_action_id',
+        comodel_name="academy.training.action",
+        relation="academy_tests_copy_assignments_wizard_training_action_rel",
+        column1="wizard_id",
+        column2="training_action_id",
         domain=[],
         context={},
-        limit=None
     )
 
     state = fields.Selection(
-        string='State',
+        string="State",
         required=True,
         readonly=True,
         index=False,
-        default='step1',
-        help='Wizard steps',
-        selection=[('step1', 'Source'), ('step2', 'Destination')]
+        default="step1",
+        help="Wizard steps",
+        selection=[("step1", "Source"), ("step2", "Destination")],
     )
 
     @staticmethod
     def _real_id(record_set, single=False):
-        """ Return a list with no NewId's of a single no NewId
-        """
+        """Return a list with no NewId's of a single no NewId"""
 
         result = []
 
@@ -160,25 +156,25 @@ class AcademyTestsCopyAssignmentsWizard(models.TransientModel):
 
         return result
 
-    @api.constrains('assignment_ids')
+    @api.constrains("assignment_ids")
     def _check_assignment_ids(self):
-        message = _('No assignments have been chosen to copy')
+        message = _("No assignments have been chosen to copy")
 
         for record in self:
             if not record.assignment_ids:
                 raise ValidationError(message)
 
-    @api.constrains('training_ref')
+    @api.constrains("training_ref")
     def _check_training_ref(self):
-        message = _('A target training object has not been chosen')
+        message = _("A target training object has not been chosen")
 
         for record in self:
             if not record.training_ref:
                 raise ValidationError(message)
 
-    @api.constrains('training_action_ids')
+    @api.constrains("training_action_ids")
     def _check_training_action_ids(self):
-        message = _('No training actions have been chosen as targets')
+        message = _("No training actions have been chosen as targets")
         # activity_obj = self.env['academy.training.activity']
         # activity_type = type(activity_obj)
 
@@ -195,7 +191,7 @@ class AcademyTestsCopyAssignmentsWizard(models.TransientModel):
     def has_training_action(self):
         self.ensure_one()
 
-        activity_obj = self.env['academy.training.activity']
+        activity_obj = self.env["academy.training.activity"]
         activity_type = type(activity_obj)
 
         return isinstance(self.training_ref, activity_type)
@@ -210,11 +206,11 @@ class AcademyTestsCopyAssignmentsWizard(models.TransientModel):
             model_type = type(model_obj)
 
             if isinstance(training, model_type):
-                return '{},{}'.format(model, training.id)
+                return "{},{}".format(model, training.id)
 
     @api.model
     def _assignment_exists(self, test_id, training_ref):
-        assignment_obj = self.env['academy.tests.test.training.assignment']
+        assignment_obj = self.env["academy.tests.test.training.assignment"]
 
         if isinstance(training_ref, models.Model):
             training_ref = self._compute_reference(training_ref)
@@ -223,8 +219,8 @@ class AcademyTestsCopyAssignmentsWizard(models.TransientModel):
             test_id = test_id.id
 
         domain = [
-            ('test_id', '=', test_id),
-            ('training_ref', '=', training_ref)
+            ("test_id", "=", test_id),
+            ("training_ref", "=", training_ref),
         ]
 
         return assignment_obj.search_count(domain) > 0
@@ -232,9 +228,9 @@ class AcademyTestsCopyAssignmentsWizard(models.TransientModel):
     def perform_action(self):
         self.ensure_one()
 
-        msg = _('The assignment of Test «{}» to training «{}» already exists.')
+        msg = _("The assignment of Test «{}» to training «{}» already exists.")
 
-        assignment_obj = self.env['academy.tests.test.training.assignment']
+        assignment_obj = self.env["academy.tests.test.training.assignment"]
         current_user = self.env.user
 
         if self.has_training_action() and self.choose_actions:
@@ -253,20 +249,20 @@ class AcademyTestsCopyAssignmentsWizard(models.TransientModel):
                     continue
 
                 values = {
-                    'name': assignment.name,
-                    'active': assignment.active,
-                    'test_id': test_id,
-                    'training_ref': training_ref,
-                    'release': assignment.release,
-                    'expiration': assignment.expiration,
-                    'secondary_id': assignment.secondary_id.id,
-                    'correction_scale_id': assignment.correction_scale_id.id,
-                    'lock_time': assignment.lock_time,
-                    'time_by': assignment.time_by,
-                    'validate_test': assignment.validate_test,
-                    'random_template_id': assignment.random_template_id.id,
-                    'owner_id': current_user.id,
-                    'subrogate_id': None,
+                    "name": assignment.name,
+                    "active": assignment.active,
+                    "test_id": test_id,
+                    "training_ref": training_ref,
+                    "release": assignment.release,
+                    "expiration": assignment.expiration,
+                    "secondary_id": assignment.secondary_id.id,
+                    "correction_scale_id": assignment.correction_scale_id.id,
+                    "lock_time": assignment.lock_time,
+                    "time_by": assignment.time_by,
+                    "validate_test": assignment.validate_test,
+                    "random_template_id": assignment.random_template_id.id,
+                    "owner_id": current_user.id,
+                    "subrogate_id": None,
                 }
 
                 assignment_obj.create(values)

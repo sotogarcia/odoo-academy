@@ -43,6 +43,9 @@
     <field name="active" eval="True"/>
     <field name="arch" type="xml">
       <form string="academy_student_signup_form" create="1" delete="1" edit="1">
+        <header>
+          <field name="state" widget="statusbar" statusbar_visible="signed_up,enrolled" readonly="1" options="{'clickable': 0}" />
+        </header>
         <sheet>
           <field name="id" invisible="1"/>
           <div class="oe_button_box" name="button_box" />
@@ -72,6 +75,10 @@
                 <field name="comment" class="oe_field_comment" colspan="2" nolabel="1" widget="html"
                 />
               </group>
+            </page>
+            <page string="Movements" class="oe_page_movements" accesskey="M"
+                invisible="not transition_ids" groups="base.group_no_one">
+              <field name="transition_ids" class="oe_field_transition_ids" />
             </page>
           </notebook>
         </sheet>

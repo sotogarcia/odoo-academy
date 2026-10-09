@@ -10,8 +10,9 @@ from odoo.tools.translate import _
 from odoo.tools import safe_eval
 from odoo.exceptions import AccessError
 from odoo.osv.expression import AND, TRUE_DOMAIN, FALSE_DOMAIN
-from odoo.addons.academy_base.utils.record_utils \
-    import create_domain_for_ids as make_domain
+from odoo.addons.academy_base.utils.record_utils import (
+    create_domain_for_ids as make_domain,
+)
 from odoo.addons.academy_base.utils.sql_helpers import create_index
 
 from logging import getLogger
@@ -25,7 +26,7 @@ _logger = getLogger(__name__)
 
 MAX_RETRIES = 5
 
-_ENROLMENT_AVAILABLE_ASSIGNMENT_REL = '''
+_ENROLMENT_AVAILABLE_ASSIGNMENT_REL = """
 WITH training_enrolments AS (
     SELECT DISTINCT
         tta."id" AS assignment_id,
@@ -138,7 +139,7 @@ SELECT
     training_modules.enrolment_id
 FROM
     training_modules
-'''
+"""
 
 
 # academyTrainingActionEnrolmentAvailableAssignmentRel
@@ -155,376 +156,407 @@ class AcademyTestsTestTrainingAssignmentEnrolmentRel(models.Model):
     or training academy.
     """
 
-    _name = 'academy.tests.test.training.assignment.enrolment.rel'
-    _description = 'Individual test assignment'
+    _name = "academy.tests.test.training.assignment.enrolment.rel"
+    _description = "Individual test assignment"
 
-    _table = 'academy_tests_test_training_assignment_enrolment_rel'
+    _table = "academy_tests_test_training_assignment_enrolment_rel"
 
-    _rec_name = 'id'
-    _order = 'id DESC'
+    _rec_name = "id"
+    _order = "id DESC"
 
     _check_company_auto = True
 
     _max_allowed_errors = 10
 
     assignment_id = fields.Many2one(
-        string='Assignment',
+        string="Assignment",
         required=True,
         readonly=True,
         index=True,
         default=None,
-        help=('This field links to the test-training assignment that this '
-              'enrolment is related to.'),
-        comodel_name='academy.tests.test.training.assignment',
+        help=(
+            "This field links to the test-training assignment that this "
+            "enrolment is related to."
+        ),
+        comodel_name="academy.tests.test.training.assignment",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
     # Updated by fast_update
     question_count = fields.Integer(
-        string='Question count',
+        string="Question count",
         required=True,
         readonly=True,
         index=True,
-        default=0
+        default=0,
     )
 
     # Updated by fast_update
     max_points = fields.Float(
-        string='Max points',
+        string="Max points",
         required=True,
         readonly=True,
         index=False,
         default=0.0,
         digits=(16, 2),
-        help='The maximum points achievable in an attempt'
+        help="The maximum points achievable in an attempt",
     )
 
     # Updated by fast_update
     date_start = fields.Datetime(
-        string='Start date',
+        string="Start date",
         required=False,
         readonly=True,
         index=True,
         default=None,
-        help='Date and time from which the assigned test becomes available',
+        help="Date and time from which the assigned test becomes available",
     )
 
     # Updated by fast_update
     date_stop = fields.Datetime(
-        string='Stop date',
+        string="Stop date",
         required=False,
         readonly=True,
         index=True,
         default=None,
-        help='Date and time at which the assigned test expires',
+        help="Date and time at which the assigned test expires",
     )
 
     enrolment_id = fields.Many2one(
-        string='Enrolment',
+        string="Enrolment",
         required=True,
         readonly=True,
         index=True,
         default=None,
-        help=('This field links to the training action enrolment that is '
-              'associated with a particular assignment.'),
-        comodel_name='academy.training.action.enrolment',
+        help=(
+            "This field links to the training action enrolment that is "
+            "associated with a particular assignment."
+        ),
+        comodel_name="academy.training.action.enrolment",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
     company_id = fields.Many2one(
-        string='Company',
+        string="Company",
         required=False,
         readonly=True,
         index=True,
         default=None,
-        help='Available for company',
-        comodel_name='res.company',
+        help="Available for company",
+        comodel_name="res.company",
         domain=[],
         context={},
-        ondelete='cascade',
+        ondelete="cascade",
         auto_join=False,
-        related='enrolment_id.company_id',
-        store=True
+        related="enrolment_id.company_id",
+        store=True,
     )
 
     # TODO: remove it
     student_id = fields.Many2one(
-        string='Student',
+        string="Student",
         readonly=True,
         index=True,
         store=True,
-        related='enrolment_id.student_id',
-        help='References the student associated with this enrolment.',
-        search='_search_student_id'
+        related="enrolment_id.student_id",
+        help="References the student associated with this enrolment.",
+        search="_search_student_id",
     )
 
     @api.model
     def _search_student_id(self, operator, value):
-        domain = ['student_id', operator, value]
-        enrolment_obj = self.env['academy.training.action.enrolment']
+        domain = ["student_id", operator, value]
+        enrolment_obj = self.env["academy.training.action.enrolment"]
         enrolment_set = enrolment_obj.search(domain)
 
         enrolment_ids = enrolment_set.ids
-        result_domain = [('enrolment_id', 'in', enrolment_ids)]
+        result_domain = [("enrolment_id", "in", enrolment_ids)]
 
         return result_domain if enrolment_ids else FALSE_DOMAIN
 
     first_attempt_id = fields.Many2one(
-        string='First attempt',
+        string="First attempt",
         required=False,
         readonly=True,
         index=True,
         default=None,
-        help=('Reference to the first attempt at the assigned test for this '
-              'enrolment.'),
-        comodel_name='academy.tests.attempt',
+        help=(
+            "Reference to the first attempt at the assigned test for this "
+            "enrolment."
+        ),
+        comodel_name="academy.tests.attempt",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
     last_attempt_id = fields.Many2one(
-        string='Last attempt',
+        string="Last attempt",
         required=False,
         readonly=True,
         index=True,
         default=None,
-        help=('Reference to the most recent attempt at the assigned test for '
-              'this enrolment.'),
-        comodel_name='academy.tests.attempt',
+        help=(
+            "Reference to the most recent attempt at the assigned test for "
+            "this enrolment."
+        ),
+        comodel_name="academy.tests.attempt",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
     best_attempt_id = fields.Many2one(
-        string='Best attempt',
+        string="Best attempt",
         required=False,
         readonly=True,
         index=True,
         default=None,
-        help=('Reference to the highest scoring attempt at the assigned test '
-              'for this enrolment.'),
-        comodel_name='academy.tests.attempt',
+        help=(
+            "Reference to the highest scoring attempt at the assigned test "
+            "for this enrolment."
+        ),
+        comodel_name="academy.tests.attempt",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
     first_attempt = fields.Datetime(
-        string='First attempt datetime',
+        string="First attempt datetime",
         required=False,
         readonly=True,
         index=False,
         default=None,
-        help='Date and time when the first attempt was completed'
+        help="Date and time when the first attempt was completed",
     )
 
     last_attempt = fields.Datetime(
-        string='Last attempt datetime',
+        string="Last attempt datetime",
         required=False,
         readonly=True,
         index=False,
         default=None,
-        help='Date and time when the last attempt was completed'
+        help="Date and time when the last attempt was completed",
     )
 
     best_attempt = fields.Datetime(
-        string='Best attempt datetime',
+        string="Best attempt datetime",
         required=False,
         readonly=True,
         index=False,
         default=None,
-        help='Date and time when the best attempt was completed'
+        help="Date and time when the best attempt was completed",
     )
 
     first_points = fields.Float(
-        string='First points',
+        string="First points",
         required=True,
         readonly=True,
         index=False,
         default=0.0,
         digits=(16, 2),
-        help='Points earned on the first attempt'
+        help="Points earned on the first attempt",
     )
 
     last_points = fields.Float(
-        string='Last points',
+        string="Last points",
         required=True,
         readonly=True,
         index=False,
         default=0.0,
         digits=(16, 2),
-        help='Points earned on the last attempt'
+        help="Points earned on the last attempt",
     )
 
     best_points = fields.Float(
-        string='Best points',
+        string="Best points",
         required=True,
         readonly=True,
         index=False,
         default=0.0,
         digits=(16, 2),
-        help='Points earned on the best attempt'
+        help="Points earned on the best attempt",
     )
 
     attempt_ids = fields.One2many(
-        string='Attempts',
+        string="Attempts",
         required=False,
         readonly=True,
         index=True,
         default=None,
         help=False,
-        comodel_name='academy.tests.attempt',
-        inverse_name='individual_id',
+        comodel_name="academy.tests.attempt",
+        inverse_name="individual_id",
         domain=[],
         context={},
         auto_join=False,
-        limit=None
     )
 
     # Will be filled by fast_update_attempt_data method
     attempt_count = fields.Integer(
-        string='Attempt count',
+        string="Attempt count",
         required=False,
         readonly=True,
         index=False,
         default=0,
-        help=('Total number of attempts related to the current individual'
-              'assignment.')
+        help=(
+            "Total number of attempts related to the current individual"
+            "assignment."
+        ),
     )
 
     max_final_points = fields.Float(
-        string='MAX final points',
+        string="MAX final points",
         required=True,
         readonly=True,
         index=True,
         default=0.0,
         digits=(16, 2),
-        help=('Maximum of points from final answers in the attempts of this '
-              'assignment')
+        help=(
+            "Maximum of points from final answers in the attempts of this "
+            "assignment"
+        ),
     )
 
     min_final_points = fields.Float(
-        string='MIN final points',
+        string="MIN final points",
         required=True,
         readonly=True,
         index=True,
         default=0.0,
         digits=(16, 2),
-        help=('Minimum of points from final answers in the attempts of this '
-              'assignment')
+        help=(
+            "Minimum of points from final answers in the attempts of this "
+            "assignment"
+        ),
     )
 
     avg_final_points = fields.Float(
-        string='AVG final points',
+        string="AVG final points",
         required=True,
         readonly=True,
         index=True,
         default=0.0,
         digits=(16, 2),
-        help=('Average of points from final answers in the attempts of this '
-              'assignment')
+        help=(
+            "Average of points from final answers in the attempts of this "
+            "assignment"
+        ),
     )
 
     avg_right_points = fields.Float(
-        string='AVG right points',
+        string="AVG right points",
         required=True,
         readonly=True,
         index=True,
         default=0.0,
         digits=(16, 2),
-        help=('Average of points from right answers in the attempts of this '
-              'assignment')
+        help=(
+            "Average of points from right answers in the attempts of this "
+            "assignment"
+        ),
     )
 
     avg_wrong_points = fields.Float(
-        string='AVG wrong points',
+        string="AVG wrong points",
         required=True,
         readonly=True,
         index=True,
         default=0.0,
         digits=(16, 2),
-        help=('Average of points from wrong answers in the attempts of this '
-              'assignment')
+        help=(
+            "Average of points from wrong answers in the attempts of this "
+            "assignment"
+        ),
     )
 
     avg_blank_points = fields.Float(
-        string='AVG blank points',
+        string="AVG blank points",
         required=True,
         readonly=True,
         index=True,
         default=0.0,
         digits=(16, 2),
-        help=('Average of points from blank answers in the attempts of this '
-              'assignment')
+        help=(
+            "Average of points from blank answers in the attempts of this "
+            "assignment"
+        ),
     )
 
     avg_answered_count = fields.Integer(
-        string='AVG answered count',
+        string="AVG answered count",
         required=True,
         readonly=True,
         index=True,
         default=0,
-        help=('Average number of answered questions in the attempts of this '
-              'assignment')
+        help=(
+            "Average number of answered questions in the attempts of this "
+            "assignment"
+        ),
     )
 
     avg_right_count = fields.Integer(
-        string='AVG right count',
+        string="AVG right count",
         required=True,
         readonly=True,
         index=True,
         default=0,
-        help=('Average number of right answers in the attempts of this '
-              'assignment')
+        help=(
+            "Average number of right answers in the attempts of this "
+            "assignment"
+        ),
     )
 
     avg_wrong_count = fields.Integer(
-        string='AVG wrong count',
+        string="AVG wrong count",
         required=True,
         readonly=True,
         index=True,
         default=0,
-        help=('Average number of wrong answers in the attempts of this '
-              'assignment')
+        help=(
+            "Average number of wrong answers in the attempts of this "
+            "assignment"
+        ),
     )
 
     avg_blank_count = fields.Integer(
-        string='AVG blank count',
+        string="AVG blank count",
         required=True,
         readonly=True,
         index=True,
         default=0,
-        help=('Average number of blank questions in the attempts of this '
-              'assignment')
+        help=(
+            "Average number of blank questions in the attempts of this "
+            "assignment"
+        ),
     )
 
     passed_count = fields.Integer(
-        string='Passed count',
+        string="Passed count",
         required=True,
         readonly=True,
         index=True,
         default=0,
-        help=('Number of passed attempts')
+        help=("Number of passed attempts"),
     )
 
     failed_count = fields.Integer(
-        string='Failed count',
+        string="Failed count",
         required=True,
         readonly=True,
         index=True,
         default=0,
-        help=('Number of failed attempts')
+        help=("Number of failed attempts"),
     )
 
     # -------------------------------------------------------------------------
@@ -533,9 +565,9 @@ class AcademyTestsTestTrainingAssignmentEnrolmentRel(models.Model):
 
     _sql_constraints = [
         (
-            'assign_enrol_unique',
-            'UNIQUE(assignment_id, enrolment_id)',
-            _('Each assignment-enrolment pair must be unique.')
+            "assign_enrol_unique",
+            "UNIQUE(assignment_id, enrolment_id)",
+            _("Each assignment-enrolment pair must be unique."),
         )
     ]
 
@@ -547,9 +579,9 @@ class AcademyTestsTestTrainingAssignmentEnrolmentRel(models.Model):
         result = []
 
         for record in self:
-            assignment = record.assignment_id.name or _('Unknown')
-            student = record.student_id.name or _('Unknown')
-            name = f'{assignment} - {student}'
+            assignment = record.assignment_id.name or _("Unknown")
+            student = record.student_id.name or _("Unknown")
+            name = f"{assignment} - {student}"
 
             result.append((record.id, name))
 
@@ -560,7 +592,7 @@ class AcademyTestsTestTrainingAssignmentEnrolmentRel(models.Model):
         Ensures the custom index exists in the database.
         """
 
-        fields = ['enrolment_id', 'assignment_id']
+        fields = ["enrolment_id", "assignment_id"]
         create_index(self.env, self._table, fields, unique=False)
 
     # -------------------------------------------------------------------------
@@ -569,10 +601,18 @@ class AcademyTestsTestTrainingAssignmentEnrolmentRel(models.Model):
 
     @staticmethod
     def _prevent_update_attempt_data(vals_list):
-        fields = ['first_attempt_id', 'last_attempt_id', 'best_attempt_id',
-                  'first_attempt', 'last_attempt', 'best_attempt',
-                  'first_points', 'last_points', 'best_points',
-                  'attempt_count']
+        fields = [
+            "first_attempt_id",
+            "last_attempt_id",
+            "best_attempt_id",
+            "first_attempt",
+            "last_attempt",
+            "best_attempt",
+            "first_points",
+            "last_points",
+            "best_points",
+            "attempt_count",
+        ]
 
         if vals_list and isinstance(vals_list, (list, dict)):
             if isinstance(vals_list, (dict)):
@@ -584,8 +624,7 @@ class AcademyTestsTestTrainingAssignmentEnrolmentRel(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
-        """ Overridden method 'create'
-        """
+        """Overridden method 'create'"""
         # If attempts related to them are created, modified, or deleted
         # they will invoke the method fast_update_attempt_data
         # self._prevent_update_attempt_data(vals_list)
@@ -596,8 +635,7 @@ class AcademyTestsTestTrainingAssignmentEnrolmentRel(models.Model):
         return result
 
     def write(self, values):
-        """ Overridden method 'write'
-        """
+        """Overridden method 'write'"""
         # If attempts related to them are created, modified, or deleted
         # they will invoke the method fast_update_attempt_data
         # self._prevent_update_attempt_data(values)
@@ -634,9 +672,9 @@ class AcademyTestsTestTrainingAssignmentEnrolmentRel(models.Model):
         elif isinstance(ids, (tuple, list)):
             pass
         else:
-            raise UserError(f'_join_ids({ids}): invalid type of argument.')
+            raise UserError(f"_join_ids({ids}): invalid type of argument.")
 
-        return ','.join([str(item) for item in ids])
+        return ",".join([str(item) for item in ids])
 
     @api.model
     def _get_max_allowed_errors(self):
@@ -660,7 +698,7 @@ class AcademyTestsTestTrainingAssignmentEnrolmentRel(models.Model):
         return self._max_allowed_errors
 
     @staticmethod
-    def _error_limit_exceeded(errors, allowed, log_method='error'):
+    def _error_limit_exceeded(errors, allowed, log_method="error"):
         """
         Checks if the number of errors exceeds the allowed limit and logs the
         error.
@@ -687,8 +725,10 @@ class AcademyTestsTestTrainingAssignmentEnrolmentRel(models.Model):
                     message = f'Logging method "{log_method}" is not valid.'
                     raise UserError(message)
 
-                message = f'Too many consecutive errors {errors} ' \
-                          f'in the generate_missing_records method'
+                message = (
+                    f"Too many consecutive errors {errors} "
+                    f"in the generate_missing_records method"
+                )
                 method(message)
 
         return result
@@ -696,7 +736,7 @@ class AcademyTestsTestTrainingAssignmentEnrolmentRel(models.Model):
     @api.model
     def _execute_query(self, sql, selection=False, notify=False, action=None):
         results = []
-        action = action or 'SQL'
+        action = action or "SQL"
 
         for attempt in range(MAX_RETRIES):
             try:
@@ -710,23 +750,23 @@ class AcademyTestsTestTrainingAssignmentEnrolmentRel(models.Model):
 
             except SerializationFailure:
                 if attempt < MAX_RETRIES - 1:
-                    message = 'Failed to execute SQL {} / {} tries'
+                    message = "Failed to execute SQL {} / {} tries"
                     _logger.warning(message.format(attempt, MAX_RETRIES))
                     sleep(1)  # Wait before retry
                 else:
                     if notify:
-                        message = _('Failed to execute {} after {} tries')
+                        message = _("Failed to execute {} after {} tries")
                         raise UserError(message.format(action, MAX_RETRIES))
                     else:
-                        message = 'Failed to execute {} after {} tries'
+                        message = "Failed to execute {} after {} tries"
                         _logger.error(message.format(action, MAX_RETRIES))
 
             except Exception as ex:
                 if notify:
-                    message = _('Failed to execute {}. System says: {}')
+                    message = _("Failed to execute {}. System says: {}")
                     raise UserError(message.format(action, ex))
                 else:
-                    message = 'Failed to execute {}. System says: {}'
+                    message = "Failed to execute {}. System says: {}"
                     _logger.error(message.format(action, ex))
 
                 break
@@ -751,11 +791,13 @@ class AcademyTestsTestTrainingAssignmentEnrolmentRel(models.Model):
         """
         pattern = _ENROLMENT_AVAILABLE_ASSIGNMENT_REL
 
-        join = '''
+        join = """
             RIGHT JOIN {table} AS rel
                 ON rel.assignment_id = tta."id"
                 AND rel.enrolment_id = tae."id"
-        '''.format(table=self._table)
+        """.format(
+            table=self._table
+        )
 
         where = 'WHERE rel."id" IS NOT NULL'
 
@@ -795,11 +837,11 @@ class AcademyTestsTestTrainingAssignmentEnrolmentRel(models.Model):
         """
         sql = self._build_obsolete_records_sql(assignments, enrolments)
         results = self._execute_query(
-            sql, selection=True, action='purge_obsolete_records'
+            sql, selection=True, action="purge_obsolete_records"
         )
 
         if results:
-            assignment_ids = [result['assignment_id'] for result in results]
+            assignment_ids = [result["assignment_id"] for result in results]
             assignment_set = self.browse(assignment_ids)
             assignment_set.unlink()
 
@@ -817,8 +859,10 @@ class AcademyTestsTestTrainingAssignmentEnrolmentRel(models.Model):
 
         Logs a warning with details of any exceptions encountered.
         """
-        message = 'Error on create a new %s record with values %s. ' \
-                  'System says: %s'
+        message = (
+            "Error on create a new %s record with values %s. "
+            "System says: %s"
+        )
         try:
             result = self.create(values)
         except Exception as ex:
@@ -846,11 +890,13 @@ class AcademyTestsTestTrainingAssignmentEnrolmentRel(models.Model):
         """
         pattern = _ENROLMENT_AVAILABLE_ASSIGNMENT_REL
 
-        join = '''
+        join = """
             LEFT JOIN {table} AS rel
                 ON rel.assignment_id = tta."id"
                 AND rel.enrolment_id = tae."id"
-        '''.format(table=self._table)
+        """.format(
+            table=self._table
+        )
 
         where = 'WHERE rel."id" IS NULL'
 
@@ -887,14 +933,14 @@ class AcademyTestsTestTrainingAssignmentEnrolmentRel(models.Model):
         """
         sql = self._build_missing_records_sql(assignments, enrolments)
         results = self._execute_query(
-            sql, selection=True, action='generate_missing_records'
+            sql, selection=True, action="generate_missing_records"
         )
         errors = 0
         allowed = self._get_max_allowed_errors()
         for values in results:
             record = self._try_to_create_new(values)
             errors += int(len(record) == 0)
-            if self._error_limit_exceeded(errors, allowed, log_method='error'):
+            if self._error_limit_exceeded(errors, allowed, log_method="error"):
                 break
 
     def _old_fast_update_attempt_data(self):
@@ -911,7 +957,7 @@ class AcademyTestsTestTrainingAssignmentEnrolmentRel(models.Model):
         complex SQL query.
         """
 
-        sql_pattern = '''
+        sql_pattern = """
         WITH targets AS (
             -- This CTE is used only to limit the records to be considered
 
@@ -1081,23 +1127,25 @@ class AcademyTestsTestTrainingAssignmentEnrolmentRel(models.Model):
             computed_data AS cd
         WHERE
             cd.individual_id = rel."id";
-        '''
+        """
 
         try:
-            self.check_access_rights('write')
+            self.check_access_rights("write")
         except AccessError:
-            message = _('You do not have the necessary permissions to update '
-                        'this data.')
+            message = _(
+                "You do not have the necessary permissions to update "
+                "this data."
+            )
             raise UserError(message)
 
         if self:
-            ids_str = ', '.join([str(record.id) for record in self])
+            ids_str = ", ".join([str(record.id) for record in self])
             restriction = f' AND rel."id" IN ({ids_str}) '
         else:
-            restriction = ''
+            restriction = ""
 
         sql = sql_pattern.format(restriction=restriction)
-        self._execute_query(sql, notify=True, action='update_attempt_data')
+        self._execute_query(sql, notify=True, action="update_attempt_data")
 
     @api.model
     def reconcile_records(self, assignments=None, enrolments=None):
@@ -1109,11 +1157,11 @@ class AcademyTestsTestTrainingAssignmentEnrolmentRel(models.Model):
         domains = []
 
         if assignments:
-            assig_domain = make_domain('assignment_id', assignments, False)
+            assig_domain = make_domain("assignment_id", assignments, False)
             domains.append(assig_domain)
 
         if enrolments:
-            enrol_domain = make_domain('enrolment_id', enrolments, False)
+            enrol_domain = make_domain("enrolment_id", enrolments, False)
             domains.append(enrol_domain)
 
         domain = AND(domains) if domains else TRUE_DOMAIN
@@ -1124,35 +1172,35 @@ class AcademyTestsTestTrainingAssignmentEnrolmentRel(models.Model):
     @api.model
     def _get_default_attempt_data(self):
         return {
-            'question_count': 0,
-            'max_points': 0.0,
-            'date_start': None,
-            'date_stop': None,
-            'enrolment_id': None,
-            'company_id': None,
-            'student_id': None,
-            'first_attempt_id': None,
-            'last_attempt_id': None,
-            'best_attempt_id': None,
-            'first_attempt': None,
-            'last_attempt': None,
-            'best_attempt': None,
-            'first_points': 0.0,
-            'last_points': 0.0,
-            'best_points': 0.0,
-            'attempt_count': 0,
-            'max_final_points': 0.0,
-            'min_final_points': 0.0,
-            'avg_final_points': 0.0,
-            'avg_right_points': 0.0,
-            'avg_wrong_points': 0.0,
-            'avg_blank_points': 0.0,
-            'avg_answered_count': 0,
-            'avg_right_count': 0,
-            'avg_wrong_count': 0,
-            'avg_blank_count': 0,
-            'passed_count': 0,
-            'failed_count': 0,
+            "question_count": 0,
+            "max_points": 0.0,
+            "date_start": None,
+            "date_stop": None,
+            "enrolment_id": None,
+            "company_id": None,
+            "student_id": None,
+            "first_attempt_id": None,
+            "last_attempt_id": None,
+            "best_attempt_id": None,
+            "first_attempt": None,
+            "last_attempt": None,
+            "best_attempt": None,
+            "first_points": 0.0,
+            "last_points": 0.0,
+            "best_points": 0.0,
+            "attempt_count": 0,
+            "max_final_points": 0.0,
+            "min_final_points": 0.0,
+            "avg_final_points": 0.0,
+            "avg_right_points": 0.0,
+            "avg_wrong_points": 0.0,
+            "avg_blank_points": 0.0,
+            "avg_answered_count": 0,
+            "avg_right_count": 0,
+            "avg_wrong_count": 0,
+            "avg_blank_count": 0,
+            "passed_count": 0,
+            "failed_count": 0,
         }
 
     def _compute_attempt_data(self):
@@ -1166,69 +1214,80 @@ class AcademyTestsTestTrainingAssignmentEnrolmentRel(models.Model):
         date_stop = date_stop + timedelta(days=1)
         date_stop = datetime.combine(date_stop, time.min)
 
-        values['question_count'] = assignment.question_count
-        values['max_points'] = assignment.max_points
-        values['date_start'] = max(assignment.release, date_start)
-        values['date_stop'] = min(assignment.expiration, date_stop)
-        values['enrolment_id'] = enrolment.id
-        values['company_id'] = enrolment.company_id.id
-        values['student_id'] = enrolment.student_id.id
+        values["question_count"] = assignment.question_count
+        values["max_points"] = assignment.max_points
+        values["date_start"] = max(assignment.release, date_start)
+        values["date_stop"] = min(assignment.expiration, date_stop)
+        values["enrolment_id"] = enrolment.id
+        values["company_id"] = enrolment.company_id.id
+        values["student_id"] = enrolment.student_id.id
 
         if self.attempt_ids:
             attempt_count = len(self.attempt_ids)
-            values['attempt_count'] = attempt_count
+            values["attempt_count"] = attempt_count
 
             first_attempt = self.attempt_ids.sorted(
-                key=lambda r: r.start, reverse=False)[0]
-            values['first_attempt_id'] = first_attempt.id
-            values['first_attempt'] = first_attempt.end
-            values['first_points'] = first_attempt.final_points
+                key=lambda r: r.start, reverse=False
+            )[0]
+            values["first_attempt_id"] = first_attempt.id
+            values["first_attempt"] = first_attempt.end
+            values["first_points"] = first_attempt.final_points
 
             last_attempt = self.attempt_ids.sorted(
-                key=lambda r: r.start, reverse=True)[0]
-            values['last_attempt_id'] = last_attempt.id
-            values['last_attempt'] = last_attempt.end
-            values['last_points'] = last_attempt.final_points
+                key=lambda r: r.start, reverse=True
+            )[0]
+            values["last_attempt_id"] = last_attempt.id
+            values["last_attempt"] = last_attempt.end
+            values["last_points"] = last_attempt.final_points
 
             best_attempt = self.attempt_ids.sorted(
-                key=lambda r: r.final_points, reverse=True)[0]
-            values['best_attempt_id'] = best_attempt.id
-            values['best_attempt'] = best_attempt.end
-            values['best_points'] = best_attempt.final_points
+                key=lambda r: r.final_points, reverse=True
+            )[0]
+            values["best_attempt_id"] = best_attempt.id
+            values["best_attempt"] = best_attempt.end
+            values["best_points"] = best_attempt.final_points
 
-            final_points_list = self.mapped('attempt_ids.final_points')
-            values['max_final_points'] = max(final_points_list)
-            values['min_final_points'] = min(final_points_list)
-            values['avg_final_points'] = \
-                self._safe_division(sum(final_points_list), attempt_count, 0.0)
+            final_points_list = self.mapped("attempt_ids.final_points")
+            values["max_final_points"] = max(final_points_list)
+            values["min_final_points"] = min(final_points_list)
+            values["avg_final_points"] = self._safe_division(
+                sum(final_points_list), attempt_count, 0.0
+            )
 
-            right_points_list = self.mapped('attempt_ids.right_points')
-            wrong_points_list = self.mapped('attempt_ids.wrong_points')
-            blank_points_list = self.mapped('attempt_ids.blank_points')
-            values['avg_right_points'] = \
-                self._safe_division(sum(right_points_list), attempt_count, 0.0)
-            values['avg_wrong_points'] = \
-                self._safe_division(sum(wrong_points_list), attempt_count, 0.0)
-            values['avg_blank_points'] = \
-                self._safe_division(sum(blank_points_list), attempt_count, 0.0)
+            right_points_list = self.mapped("attempt_ids.right_points")
+            wrong_points_list = self.mapped("attempt_ids.wrong_points")
+            blank_points_list = self.mapped("attempt_ids.blank_points")
+            values["avg_right_points"] = self._safe_division(
+                sum(right_points_list), attempt_count, 0.0
+            )
+            values["avg_wrong_points"] = self._safe_division(
+                sum(wrong_points_list), attempt_count, 0.0
+            )
+            values["avg_blank_points"] = self._safe_division(
+                sum(blank_points_list), attempt_count, 0.0
+            )
 
-            right_count_list = self.mapped('attempt_ids.right_count')
-            wrong_count_list = self.mapped('attempt_ids.wrong_count')
-            blank_count_list = self.mapped('attempt_ids.blank_count')
-            values['avg_right_count'] = \
-                self._safe_division(sum(right_count_list), attempt_count, 0)
-            values['avg_wrong_count'] = \
-                self._safe_division(sum(wrong_count_list), attempt_count, 0)
-            values['avg_blank_count'] = \
-                self._safe_division(sum(blank_count_list), attempt_count, 0)
+            right_count_list = self.mapped("attempt_ids.right_count")
+            wrong_count_list = self.mapped("attempt_ids.wrong_count")
+            blank_count_list = self.mapped("attempt_ids.blank_count")
+            values["avg_right_count"] = self._safe_division(
+                sum(right_count_list), attempt_count, 0
+            )
+            values["avg_wrong_count"] = self._safe_division(
+                sum(wrong_count_list), attempt_count, 0
+            )
+            values["avg_blank_count"] = self._safe_division(
+                sum(blank_count_list), attempt_count, 0
+            )
 
-            answered_count_list = self.mapped('attempt_ids.answered_count')
-            values['avg_answered_count'] = \
-                self._safe_division(sum(answered_count_list), attempt_count, 0)
+            answered_count_list = self.mapped("attempt_ids.answered_count")
+            values["avg_answered_count"] = self._safe_division(
+                sum(answered_count_list), attempt_count, 0
+            )
 
             passed_count = len(self.attempt_ids.filtered(lambda r: r.passed))
-            values['passed_count'] = passed_count
-            values['failed_count'] = attempt_count - passed_count
+            values["passed_count"] = passed_count
+            values["failed_count"] = attempt_count - passed_count
 
         return values
 
@@ -1243,13 +1302,17 @@ class AcademyTestsTestTrainingAssignmentEnrolmentRel(models.Model):
             result = dividend / divisor
             result = type(default)(result)
         except ZeroDivisionError:
-            message = (f'Warning: Division by zero. '
-                       f'Returning {default} as the result.')
+            message = (
+                f"Warning: Division by zero. "
+                f"Returning {default} as the result."
+            )
             _logger.warning(message)
             result = default
         except (ValueError, TypeError) as e:
-            message = (f'Warning: Invalid input {e}. '
-                       f'Returning {default} as the result.')
+            message = (
+                f"Warning: Invalid input {e}. "
+                f"Returning {default} as the result."
+            )
             _logger.warning(message)
             result = default
 
@@ -1262,30 +1325,32 @@ class AcademyTestsTestTrainingAssignmentEnrolmentRel(models.Model):
     def view_attempts(self):
         self.ensure_one()
 
-        action_xid = 'academy_tests.action_test_attempts_act_window'
+        action_xid = "academy_tests.action_test_attempts_act_window"
         act_wnd = self.env.ref(action_xid)
 
-        name = _('Attempts')
+        name = _("Attempts")
 
         context = self.env.context.copy()
         context.update(safe_eval(act_wnd.context))
-        context.update({
-            'default_individual_id': self.id,
-            'search_default_best_attempts': 0
-        })
+        context.update(
+            {
+                "default_individual_id": self.id,
+                "search_default_best_attempts": 0,
+            }
+        )
 
-        domain = [('individual_id', '=', self.id)]
+        domain = [("individual_id", "=", self.id)]
 
         serialized = {
-            'type': 'ir.actions.act_window',
-            'res_model': act_wnd.res_model,
-            'target': 'current',
-            'name': name,
-            'view_mode': act_wnd.view_mode,
-            'domain': domain,
-            'context': context,
-            'search_view_id': act_wnd.search_view_id.id,
-            'help': act_wnd.help
+            "type": "ir.actions.act_window",
+            "res_model": act_wnd.res_model,
+            "target": "current",
+            "name": name,
+            "view_mode": act_wnd.view_mode,
+            "domain": domain,
+            "context": context,
+            "search_view_id": act_wnd.search_view_id.id,
+            "help": act_wnd.help,
         }
 
         return serialized

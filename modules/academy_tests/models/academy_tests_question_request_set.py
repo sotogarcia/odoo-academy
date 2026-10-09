@@ -14,126 +14,123 @@ from datetime import date, timedelta
 _logger = getLogger(__name__)
 
 REQUEST_STATES = [
-    ('received', 'Received'),
-    ('urgent', 'Urgent'),
-    ('completed', 'Completed'),
-    ('expired', 'Expired'),
+    ("received", "Received"),
+    ("urgent", "Urgent"),
+    ("completed", "Completed"),
+    ("expired", "Expired"),
 ]
 
 
 class AcademyTestsQuestionRequestSet(models.Model):
-    """ Allow to request a set of questions to an especific user
-    """
+    """Allow to request a set of questions to an especific user"""
 
-    _name = 'academy.tests.question.request.set'
-    _description = u'Academy tests question request'
+    _name = "academy.tests.question.request.set"
+    _description = "Academy tests question request"
 
-    _rec_name = 'name'
-    _order = 'name ASC'
+    _rec_name = "name"
+    _order = "name ASC"
 
-    _inherit = [
-        'ownership.mixin',
-        'mail.thread'
-    ]
+    _inherit = ["ownership.mixin", "mail.thread"]
 
     name = fields.Char(
-        string='Name',
+        string="Name",
         required=True,
         readonly=False,
         index=True,
         default=None,
-        help='Name of the request',
+        help="Name of the request",
         size=1024,
         translate=True,
-        track_visibility='onchange'
+        track_visibility="onchange",
     )
 
     description = fields.Text(
-        string='Description',
+        string="Description",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='Something about this request',
-        translate=True
+        help="Something about this request",
+        translate=True,
     )
 
     active = fields.Boolean(
-        string='Active',
+        string="Active",
         required=False,
         readonly=False,
         index=False,
         default=True,
-        help=('If the active field is set to false, it will allow you to '
-              'hide record without removing it'),
-        track_visibility='onchange'
+        help=(
+            "If the active field is set to false, it will allow you to "
+            "hide record without removing it"
+        ),
+        track_visibility="onchange",
     )
 
     expiration = fields.Date(
-        string='Expiration',
+        string="Expiration",
         required=True,
         readonly=False,
         index=True,
         default=lambda self: self.default_expiration(),
-        track_visibility='onchange',
-        help='Date before which questions must be provided to cover the demand'
+        track_visibility="onchange",
+        help="Date before which questions must be provided to cover the demand",
     )
 
     notified = fields.Date(
-        string='Notified',
+        string="Notified",
         required=False,
         readonly=False,
         index=True,
         default=None,
-        help='Date of last notification'
+        help="Date of last notification",
     )
 
     request_ids = fields.One2many(
-        string='Requests',
+        string="Requests",
         required=False,
         readonly=False,
         index=False,
         default=None,
         help=False,
-        comodel_name='academy.tests.question.request',
-        inverse_name='request_set_id',
+        comodel_name="academy.tests.question.request",
+        inverse_name="request_set_id",
         domain=[],
         context={},
         auto_join=False,
-        limit=None
     )
 
     test_id = fields.Many2one(
-        string='Test',
+        string="Test",
         required=True,
         readonly=False,
         index=False,
         default=None,
         help=False,
-        comodel_name='academy.tests.test',
+        comodel_name="academy.tests.test",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
     state = fields.Selection(
-        string='State',
+        string="State",
         required=False,
         readonly=False,
         index=False,
         default=REQUEST_STATES[0][0],
-        help='Current wizard step',
+        help="Current wizard step",
         selection=REQUEST_STATES,
-        group_expand='_expand_states'
+        group_expand="_expand_states",
     )
 
     def default_expiration(self):
         return self._get_date(days=8)
 
-    @api.constrains('expiration')
+    @api.constrains("expiration")
     def _check_expiration(self):
-        message = _('The expiration date must be after the current date')
+        message = _("The expiration date must be after the current date")
 
         today = date.today()
         for record in self:
@@ -147,9 +144,9 @@ class AcademyTestsQuestionRequestSet(models.Model):
         #     _(u'The expiration date must be after the current instant')
         # ),
         (
-            'unique_by_tests',
-            'UNIQUE(test_id)',
-            _('There is already a request for the same test')
+            "unique_by_tests",
+            "UNIQUE(test_id)",
+            _("There is already a request for the same test"),
         )
     ]
 
@@ -158,8 +155,7 @@ class AcademyTestsQuestionRequestSet(models.Model):
 
     @api.model
     def create(self, values):
-        """ Computes state value
-        """
+        """Computes state value"""
 
         _super = super(AcademyTestsQuestionRequestSet, self)
         result = _super.create(values)
@@ -169,19 +165,18 @@ class AcademyTestsQuestionRequestSet(models.Model):
         return result
 
     def write(self, values):
-        """ Computes state value
-        """
+        """Computes state value"""
 
         _super = super(AcademyTestsQuestionRequestSet, self)
         result = _super.write(values)
 
-        if 'state' not in values.keys():
+        if "state" not in values.keys():
             self.update_state()
 
         return result
 
     def _get_request_states(self):
-        states = self.mapped('request_ids.state')
+        states = self.mapped("request_ids.state")
         return list(dict.fromkeys(states))
 
     @staticmethod
@@ -203,12 +198,11 @@ class AcademyTestsQuestionRequestSet(models.Model):
 
     def remind(self):
         for record in self:
-            if record.state != 'completed':
+            if record.state != "completed":
                 record.request_ids.remember_request()
 
     @api.model
     def cron_actions(self):
-
         domain = []
         active_set = self.env[self._name]
         active_set = active_set.search(domain)
@@ -216,19 +210,18 @@ class AcademyTestsQuestionRequestSet(models.Model):
         active_set.update_state(update_requests_before=True)
 
         if self._cron_is_last_call():
-
-            today = date.today().strftime('%Y-%m-%d')
-            yesterday = self._get_date(days=-1).strftime('%Y-%m-%d')
-            week_ago = self._get_date(days=-7).strftime('%Y-%m-%d')
+            today = date.today().strftime("%Y-%m-%d")
+            yesterday = self._get_date(days=-1).strftime("%Y-%m-%d")
+            week_ago = self._get_date(days=-7).strftime("%Y-%m-%d")
 
             domain = [
-                '|',
-                '|',
-                ('notified', '=', False),
-                ('notified', '<=', week_ago),
-                '&',
-                ('expiration', '>=', yesterday),
-                ('notified', '<', today),
+                "|",
+                "|",
+                ("notified", "=", False),
+                ("notified", "<=", week_ago),
+                "&",
+                ("expiration", ">=", yesterday),
+                ("notified", "<", today),
             ]
             notify_set = self.env[self._name]
             notify_set = notify_set.search(domain)
@@ -246,9 +239,9 @@ class AcademyTestsQuestionRequestSet(models.Model):
             bool: True if next call will be tomorrow or False otherwise
         """
 
-        name = 'ir_cron_academy_tests_question_request_set_cron_actions'
+        name = "ir_cron_academy_tests_question_request_set_cron_actions"
 
-        xid = '{module}.{name}'.format(module='academy_tests', name=name)
+        xid = "{module}.{name}".format(module="academy_tests", name=name)
         cron_act = self.env.ref(xid)
 
         tomorrow = self._get_date(days=1)
@@ -258,12 +251,12 @@ class AcademyTestsQuestionRequestSet(models.Model):
     @staticmethod
     def _request_values(request):
         return {
-            'res_user_id': request.res_user_id.id,
-            'order': request.order,
-            'minimum': request.minimum,
-            'maximum': request.maximum,
-            'topic_id': request.topic_id.id,
-            'state': 'received',
+            "res_user_id": request.res_user_id.id,
+            "order": request.order,
+            "minimum": request.minimum,
+            "maximum": request.maximum,
+            "topic_id": request.topic_id.id,
+            "state": "received",
         }
 
     def _build_request_operations(self):
@@ -277,24 +270,23 @@ class AcademyTestsQuestionRequestSet(models.Model):
         return result
 
     def copy(self, default=None):
-
         if not default:
             default = {}
 
-        if 'name' not in default:
-            default['name'] = _("%s (copy)") % self.name
+        if "name" not in default:
+            default["name"] = _("%s (copy)") % self.name
 
-        if 'test_id' not in default:
+        if "test_id" not in default:
             test_name = _("%s (copy)") % self.test_id.name
-            create_empty_ctx = {'create_empty_test': True}
+            create_empty_ctx = {"create_empty_test": True}
 
             test_set = self.test_id.with_context(create_empty_ctx)
-            new_test = test_set.copy({'name': test_name})
+            new_test = test_set.copy({"name": test_name})
 
-            default['test_id'] = new_test.id
+            default["test_id"] = new_test.id
 
         if self.request_ids:
-            default['request_ids'] = self._build_request_operations()
+            default["request_ids"] = self._build_request_operations()
 
         _super = super(AcademyTestsQuestionRequestSet, self)
         result = _super.copy(default)

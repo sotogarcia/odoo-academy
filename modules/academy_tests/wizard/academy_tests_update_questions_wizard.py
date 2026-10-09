@@ -16,131 +16,121 @@ _logger = getLogger(__name__)
 
 
 class AcademyTestsUpdateQuestionsWizard(models.TransientModel):
-    """ Wizard which can be used to update existing questions using markdown
-    """
+    """Wizard which can be used to update existing questions using markdown"""
 
-    _name = 'academy.tests.update.questions.wizard'
-    _description = u'Academy tests update questions wizard'
+    _name = "academy.tests.update.questions.wizard"
+    _description = "Academy tests update questions wizard"
 
-    _rec_name = 'id'
-    _order = 'id DESC'
+    _rec_name = "id"
+    _order = "id DESC"
 
-    _inherit = ['academy.abstract.import.export']
+    _inherit = ["academy.abstract.import.export"]
 
     state = fields.Selection(
-        string='State',
+        string="State",
         required=False,
         readonly=False,
         index=False,
-        default='step1',
-        help='Current wizard step',
-        selection=[
-            ('step1', 'Text'),
-            ('step2', 'Attachments')
-        ]
+        default="step1",
+        help="Current wizard step",
+        selection=[("step1", "Text"), ("step2", "Attachments")],
     )
 
     question_ids = fields.Many2many(
-        string='Questions',
+        string="Questions",
         required=True,
         readonly=False,
         index=False,
         default=lambda self: self.default_question_ids(),
-        help='Choose the existing questions will be updated',
-        comodel_name='academy.tests.question',
-        relation='academy_tests_update_wizard_question_rel',
-        column1='wizard_id',
-        column2='question_id',
+        help="Choose the existing questions will be updated",
+        comodel_name="academy.tests.question",
+        relation="academy_tests_update_wizard_question_rel",
+        column1="wizard_id",
+        column2="question_id",
         domain=[],
         context={},
-        limit=None
     )
 
     markdown = fields.Text(
-        string='Markdown',
+        string="Markdown",
         required=True,
         readonly=False,
         index=False,
-        default='',
-        help='Markdown text will be used to update the chosen questions',
+        default="",
+        help="Markdown text will be used to update the chosen questions",
         translate=False,
     )
 
     ir_attachment_ids = fields.Many2many(
-        string='Attachments',
+        string="Attachments",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='All the available attachments can be used in chosen questions',
-        comodel_name='ir.attachment',
-        relation='academy_tests_update_wizard_ir_attachment_rel',
-        column1='wizard_id',
-        column2='attachment_id',
-        domain=[
-            ('res_model', '=', False)
-        ],
+        help="All the available attachments can be used in chosen questions",
+        comodel_name="ir.attachment",
+        relation="academy_tests_update_wizard_ir_attachment_rel",
+        column1="wizard_id",
+        column2="attachment_id",
+        domain=[("res_model", "=", False)],
         context={},
-        limit=None,
     )
 
     zip_file = fields.Binary(
-        string='Zip file',
+        string="Zip file",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='Upload a zip file with attachment updates',
-        store=False
+        help="Upload a zip file with attachment updates",
+        store=False,
     )
 
     text_file = fields.Binary(
-        string='Text file',
+        string="Text file",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='Upload a text file with question updates',
-        store=False
+        help="Upload a text file with question updates",
+        store=False,
     )
 
     text_encoding = fields.Selection(
-        string='Encoding',
+        string="Encoding",
         required=True,
         readonly=False,
         index=False,
-        default='auto',
+        default="auto",
         help=False,
         selection=[
-            ('auto', 'Autodetect'),
-            ('cp1252', 'Windows 1252'),
-            ('utf_16_be', 'UTF-16BE'),
-            ('utf_16_le', 'UTF-16LE'),
-            ('utf_8', 'UTF-8'),
-            ('utf_8_sig', 'UTF-8 with BOM'),
-            ('cp850', 'IBM 850')
-        ]
+            ("auto", "Autodetect"),
+            ("cp1252", "Windows 1252"),
+            ("utf_16_be", "UTF-16BE"),
+            ("utf_16_le", "UTF-16LE"),
+            ("utf_8", "UTF-8"),
+            ("utf_8_sig", "UTF-8 with BOM"),
+            ("cp850", "IBM 850"),
+        ],
     )
 
-    @api.onchange('text_file')
+    @api.onchange("text_file")
     def _onchange_text_file(self):
         if self.text_file:
-
             content = self._field_to_string(self.text_file)
             content = self.decode_content(content, self.text_encoding)
 
             self.markdown = self.clear_text(content)
 
-    @api.onchange('text_encoding')
+    @api.onchange("text_encoding")
     def _onchange_text_encoding(self):
         if self.text_file:
-
             content = self._field_to_string(self.text_file)
             content = self.decode_content(content, self.text_encoding)
 
             self.markdown = self.clear_text(content)
 
-    @api.onchange('zip_file')
+    @api.onchange("zip_file")
     def _onchange_zip_file(self):
         if self.zip_file:
             try:
@@ -158,53 +148,53 @@ class AcademyTestsUpdateQuestionsWizard(models.TransientModel):
             except ValidationError as ve:
                 self.zip_file = False
                 return {
-                    'warning': {
-                        'title': _('Validation error'),
-                        'message': ve.name
+                    "warning": {
+                        "title": _("Validation error"),
+                        "message": ve.name,
                     }
                 }
 
     def default_question_ids(self):
-        question_set = self.env['academy.tests.question']
+        question_set = self.env["academy.tests.question"]
 
         context = self.env.context
 
-        active_model = context.get('active_model')
+        active_model = context.get("active_model")
         if not active_model:
             return question_set
 
-        active_id = context.get('active_id', -1)
-        active_ids = context.get('active_ids', [active_id])
-        if not(active_ids and active_ids[0] > 0):
+        active_id = context.get("active_id", -1)
+        active_ids = context.get("active_ids", [active_id])
+        if not (active_ids and active_ids[0] > 0):
             return question_set
 
-        if active_model == 'academy.tests.question':
-            domain = [('id', 'in', active_ids)]
+        if active_model == "academy.tests.question":
+            domain = [("id", "in", active_ids)]
             question_set = question_set.search(domain)
         else:
+            link_set = self.env["academy.tests.test.question.rel"]
 
-            link_set = self.env['academy.tests.test.question.rel']
+            if active_model == "academy.tests.test.question.rel":
+                domain = [("id", "in", active_ids)]
+                link_set = link_set.search(domain, order="sequence ASC")
 
-            if active_model == 'academy.tests.test.question.rel':
-                domain = [('id', 'in', active_ids)]
-                link_set = link_set.search(domain, order='sequence ASC')
-
-            elif active_model == 'academy.tests.test':
-                domain = [('test_id', 'in', active_ids)]
+            elif active_model == "academy.tests.test":
+                domain = [("test_id", "in", active_ids)]
                 link_set = link_set.search(
-                    domain, order='test_id DESC, sequence ASC')
+                    domain, order="test_id DESC, sequence ASC"
+                )
 
-            question_set = link_set.mapped('question_id')
+            question_set = link_set.mapped("question_id")
 
         return question_set
 
-    @api.onchange('question_ids')
+    @api.onchange("question_ids")
     def _onchange_question_ids(self):
         self.ensure_one
 
         question_set = self.question_ids
 
-        attach_ids = question_set.mapped('ir_attachment_ids.id')
+        attach_ids = question_set.mapped("ir_attachment_ids.id")
         m2m_action = [(6, 0, attach_ids) if attach_ids else (5, 0, 0)]
 
         content = question_set.to_string(True)
@@ -212,30 +202,31 @@ class AcademyTestsUpdateQuestionsWizard(models.TransientModel):
         self.ir_attachment_ids = m2m_action
 
     def _search_for_real_questions(self):
-        error_msg = 'Expected questions { }, found questions {}'
+        error_msg = "Expected questions { }, found questions {}"
 
-        question_set = self.mapped('question_ids')
+        question_set = self.mapped("question_ids")
         question_ids = [item._origin.id for item in question_set]
-        question_set = question_set.search([('id', 'in', question_ids)])
+        question_set = question_set.search([("id", "in", question_ids)])
 
-        assert len(question_ids) == len(question_set), \
-            _(error_msg.format(len(question_ids), len(question_set)))
+        assert len(question_ids) == len(question_set), _(
+            error_msg.format(len(question_ids), len(question_set))
+        )
 
         return question_set
 
     @staticmethod
     def _remove_dependent_fields(values):
-        if 'question_ids' in values:
-            for field_name in ['markdown', 'ir_attachment_ids']:
+        if "question_ids" in values:
+            for field_name in ["markdown", "ir_attachment_ids"]:
                 if field_name in values:
                     values.pop(field_name)
 
     @api.model
     def create(self, values):
-        """ Create a new record for a model AcademyTestsUpdateQuestionsWizard
-            @param values: provides a data for new record
+        """Create a new record for a model AcademyTestsUpdateQuestionsWizard
+        @param values: provides a data for new record
 
-            @return: returns a id of new record
+        @return: returns a id of new record
         """
 
         _super = super(AcademyTestsUpdateQuestionsWizard, self)
@@ -244,11 +235,11 @@ class AcademyTestsUpdateQuestionsWizard(models.TransientModel):
         return result
 
     def write(self, values):
-        """ Update records
+        """Update records
 
-            @param values: dict of new values to be set
+        @param values: dict of new values to be set
 
-            @return: True on success, False otherwise
+        @return: True on success, False otherwise
         """
 
         _super = super(AcademyTestsUpdateQuestionsWizard, self)
@@ -257,7 +248,7 @@ class AcademyTestsUpdateQuestionsWizard(models.TransientModel):
         return result
 
     def process_text(self):
-        """ Perform job """
+        """Perform job"""
 
         content = self.clear_text(self.markdown)
         groups = self.split_in_line_groups(content)
@@ -268,12 +259,12 @@ class AcademyTestsUpdateQuestionsWizard(models.TransientModel):
 
     def save_as_zip(self):
         question_ids = self._ensure_ids(self.question_ids)
-        param = ','.join([str(item) for item in question_ids])
+        param = ",".join([str(item) for item in question_ids])
 
         return {
-            'type': 'ir.actions.act_url',
-            'url': '/academy_tests/source?question_ids={}'.format(param),
-            'target': 'blank'
+            "type": "ir.actions.act_url",
+            "url": "/academy_tests/source?question_ids={}".format(param),
+            "target": "blank",
         }
 
     def set_questions(self, question_set):

@@ -19,105 +19,100 @@ _logger = getLogger(__name__)
 
 class AcademyTestsTestQuestionShuffleWizard(models.TransientModel):
     """
-    This wizard allows users to reorder both the blocks and the questions 
+    This wizard allows users to reorder both the blocks and the questions
     within a given test (`academy.tests.test`).
 
-    It supports different shuffle scopes and defines how unassigned 
+    It supports different shuffle scopes and defines how unassigned
     questions (not linked to any block) should be handled.
     """
 
-    _name = 'academy.tests.test.question.shuffle.wizard'
-    _description = u'Academy tests test question shuffle wizard'
+    _name = "academy.tests.test.question.shuffle.wizard"
+    _description = "Academy tests test question shuffle wizard"
 
-    _rec_name = 'id'
-    _order = 'id DESC'
+    _rec_name = "id"
+    _order = "id DESC"
 
     # - Field: question_rel_ids (default + onchange)
     # ------------------------------------------------------------------------
 
     question_rel_ids = fields.Many2many(
-        string='Target links',
+        string="Target links",
         required=False,
         readonly=True,
         index=False,
         default=lambda self: self._default_question_rel_ids(),
         help=False,
-        comodel_name='academy.tests.test.question.rel',
-        relation='academy_tests_test_question_shuffle_wizard_link_rel',
-        column1='wizard_id',
-        column2='link_id',
+        comodel_name="academy.tests.test.question.rel",
+        relation="academy_tests_test_question_shuffle_wizard_link_rel",
+        column1="wizard_id",
+        column2="link_id",
         domain=[],
         context={},
-        limit=None
     )
 
     def _default_question_rel_ids(self):
         """Default getter for question_rel_ids based on context"""
         context = self.env.context
 
-        rel_obj = self.env['academy.tests.test.question.rel']
+        rel_obj = self.env["academy.tests.test.question.rel"]
         rel_set = rel_obj.browse()
 
-        active_model = context.get('active_model', None)
-        active_id = context.get('active_id', None)
-        active_ids = context.get('active_ids', [])
-        default_test_id = context.get('default_test_id', None)
+        active_model = context.get("active_model", None)
+        active_id = context.get("active_id", None)
+        active_ids = context.get("active_ids", [])
+        default_test_id = context.get("default_test_id", None)
 
         if not active_model and default_test_id:
-            test = self.env['academy.tests.test'].browse(default_test_id)
+            test = self.env["academy.tests.test"].browse(default_test_id)
             if test.exists():
                 rel_set = test.question_ids
 
-        elif active_model == 'academy.tests.test' and active_id:
-            test = self.env['academy.tests.test'].browse(active_id)
+        elif active_model == "academy.tests.test" and active_id:
+            test = self.env["academy.tests.test"].browse(active_id)
             if test.exists():
                 rel_set = test.question_ids
 
-        elif active_model == 'academy.tests.test.question.rel' and active_ids:
+        elif active_model == "academy.tests.test.question.rel" and active_ids:
             rel_set = rel_obj.browse(active_ids)
 
         return rel_set
 
-    @api.onchange('question_rel_ids')
+    @api.onchange("question_rel_ids")
     def onchange_question_rel_ids(self):
-        test_block_set = self.question_rel_ids.mapped('test_block_id')
+        test_block_set = self.question_rel_ids.mapped("test_block_id")
 
         o2m_ops = [(5, 0, 0)]
 
         sequence = 1
         for test_block in self._get_question_rel_blocks():
-            values = {'sequence': sequence, 'block_id': test_block._origin.id}
+            values = {"sequence": sequence, "block_id": test_block._origin.id}
             o2m_op = (0, 0, values)
             o2m_ops.append(o2m_op)
 
         self.block_position_ids = o2m_ops
 
-        block_ids = self.question_rel_ids.mapped('test_block_id').ids
+        block_ids = self.question_rel_ids.mapped("test_block_id").ids
         if block_ids:
-            block_domain = [('block_id', 'in', block_ids)]
+            block_domain = [("block_id", "in", block_ids)]
         else:
             block_domain = FALSE_DOMAIN
 
-        return {
-            'domain': {
-                'block_position_ids': block_domain
-            }
-        }
+        return {"domain": {"block_position_ids": block_domain}}
 
     # - Field: question_rel_count (compute)
     # ------------------------------------------------------------------------
 
     question_rel_count = fields.Integer(
-        string='Question rel count',
+        string="Question rel count",
         required=True,
         readonly=True,
         index=False,
         default=0,
-        help='False',
-        compute='_compute_question_rel_count'
+        help="False",
+        compute="_compute_question_rel_count",
     )
 
-    @api.depends('question_rel_ids')
+    @api.depends("question_rel_ids")
     def _compute_question_rel_count(self):
         for record in self:
             record.question_rel_count = len(record.question_rel_ids)
@@ -126,131 +121,129 @@ class AcademyTestsTestQuestionShuffleWizard(models.TransientModel):
     # ------------------------------------------------------------------------
 
     test_id = fields.Many2one(
-        string='Test',
+        string="Test",
         required=False,
         readonly=True,
         index=False,
         default=None,
         help=False,
-        comodel_name='academy.tests.test',
+        comodel_name="academy.tests.test",
         domain=[],
         context={},
-        ondelete='cascade',
+        ondelete="cascade",
         auto_join=False,
-        compute='_compute_test_id'
+        compute="_compute_test_id",
     )
 
-    @api.depends('question_rel_ids')
+    @api.depends("question_rel_ids")
     def _compute_test_id(self):
-        err = _('There are questions from more than one test.')
+        err = _("There are questions from more than one test.")
         for record in self:
-            test_set = record.mapped('question_rel_ids.test_id')
+            test_set = record.mapped("question_rel_ids.test_id")
             if len(test_set) > 1:
                 raise ValidationError(err)
             record.test_id = test_set[0]
- 
+
     # ------------------------------------------------------------------------
-   
+
     block_position_ids = fields.One2many(
-        string='Block positions',
+        string="Block positions",
         required=True,
         readonly=False,
         index=False,
         default=None,
-        help='Temporary list of blocks and their new positions within the test',
-        comodel_name='academy.tests.test.question.block.position',
-        inverse_name='wizard_id',
+        help="Temporary list of blocks and their new positions within the test",
+        comodel_name="academy.tests.test.question.block.position",
+        inverse_name="wizard_id",
         domain=[],
         context={},
         auto_join=False,
-        limit=None
     )
 
     # - Field: available_block_ids (compute)
     # ------------------------------------------------------------------------
 
     available_block_ids = fields.Many2many(
-        string='Available blocks',
+        string="Available blocks",
         required=False,
         readonly=True,
         index=False,
         default=None,
         help=False,
-        comodel_name='academy.tests.test.block',
-        relation='academy_tests_test_question_shuffle_wizard_test_block_rel',
-        column1='wizard_id',
-        column2='block_id',
+        comodel_name="academy.tests.test.block",
+        relation="academy_tests_test_question_shuffle_wizard_test_block_rel",
+        column1="wizard_id",
+        column2="block_id",
         domain=[],
         context={},
-        limit=None,
-        compute='_compute_available_block_ids'
+        compute="_compute_available_block_ids",
     )
 
-    @api.depends('block_position_ids')
+    @api.depends("block_position_ids")
     def _compute_available_block_ids(self):
-        block_path = 'block_position_ids.block_id'
+        block_path = "block_position_ids.block_id"
         for record in self:
             record.available_block_ids = record.mapped(block_path)
- 
+
     # ------------------------------------------------------------------------
-   
+
     shuffle_scope = fields.Selection(
-        string='Shuffle scope',
+        string="Shuffle scope",
         required=True,
-        default='questions',
+        default="questions",
         selection=[
-            ('questions', 'Questions'), 
-            ('blocks', 'Blocks'),
-            ('both', 'Both')
+            ("questions", "Questions"),
+            ("blocks", "Blocks"),
+            ("both", "Both"),
         ],
-        help='Choose whether to shuffle the questions, the blocks, or both'
+        help="Choose whether to shuffle the questions, the blocks, or both",
     )
 
     # - Field: unassigned_question_handling (onchange)
     # ------------------------------------------------------------------------
 
     unassigned_question_handling = fields.Selection(
-        string='Unassigned questions',
+        string="Unassigned questions",
         required=True,
         readonly=False,
         index=False,
-        default='beginning',
-        help='How to handle questions not linked to any block',
+        default="beginning",
+        help="How to handle questions not linked to any block",
         selection=[
-            ('beginning', 'Place at the beginning'), 
-            ('end', 'Place at the end'),
-            ('assign', 'Assign to block')
+            ("beginning", "Place at the beginning"),
+            ("end", "Place at the end"),
+            ("assign", "Assign to block"),
         ],
     )
 
-    @api.onchange('unassigned_question_handling')
+    @api.onchange("unassigned_question_handling")
     def _onchange_unassigned_question_handling(self):
-        if self.unassigned_question_handling != 'assign':
+        if self.unassigned_question_handling != "assign":
             self.assign_to_block_id = None
 
     # ------------------------------------------------------------------------
 
     assign_to_block_id = fields.Many2one(
-        string='Assign to block',
+        string="Assign to block",
         required=False,
         readonly=False,
         index=False,
         default=None,
-        help='Target block for unassigned questions, if applicable',
-        comodel_name='academy.tests.test.block',
+        help="Target block for unassigned questions, if applicable",
+        comodel_name="academy.tests.test.block",
         domain=[],
         context={},
-        ondelete='cascade',
-        auto_join=False
+        ondelete="cascade",
+        auto_join=False,
     )
 
     random_order = fields.Boolean(
-        string='Random order',
+        string="Random order",
         required=False,
         readonly=False,
         index=False,
         default=False,
-        help='If enabled, the questions will be ordered randomly'
+        help="If enabled, the questions will be ordered randomly",
     )
 
     # -------------------------------------------------------------------------
@@ -260,7 +253,7 @@ class AcademyTestsTestQuestionShuffleWizard(models.TransientModel):
     @api.constrains("unassigned_question_handling")
     def _check_unassigned_question_handling(self):
         message = _(
-            'You must select a target block when choosing '
+            "You must select a target block when choosing "
             '"Assign to block" as the handling method for unassigned questions.'
         )
 
@@ -280,7 +273,7 @@ class AcademyTestsTestQuestionShuffleWizard(models.TransientModel):
             record._perform_action()
 
         if reload_on_exit:
-            return {'type': 'ir.actions.client', 'tag': 'reload'}
+            return {"type": "ir.actions.client", "tag": "reload"}
 
         return True
 
@@ -292,19 +285,21 @@ class AcademyTestsTestQuestionShuffleWizard(models.TransientModel):
         - a recordset of academy.tests.test.question.rel links
         """
         if not record_set:
-            message = _('You must provide a non-empty recordset.')
+            message = _("You must provide a non-empty recordset.")
             raise ValidationError(message)
 
         question_rel_set = self._get_question_links(record_set)
         if not question_rel_set:
-            message = _('No question links found to populate the wizard.')
+            message = _("No question links found to populate the wizard.")
             raise ValidationError(message)
 
         context = dict(self.env.context or {})
-        context.update({
-            'active_model': 'academy.tests.test.question.rel',
-            'active_ids': question_rel_set.ids
-        })
+        context.update(
+            {
+                "active_model": "academy.tests.test.question.rel",
+                "active_ids": question_rel_set.ids,
+            }
+        )
 
         wizard = self.with_context(context).new({})
         wizard.onchange_question_rel_ids()
@@ -322,11 +317,11 @@ class AcademyTestsTestQuestionShuffleWizard(models.TransientModel):
         and handles unassigned questions according to user configuration.
         """
         self.ensure_one()
-        
+
         # Retrieve all selected question links. If empty, skip processing
         link_set = self.question_rel_ids
         if not link_set:
-            _logger.info('No question links to reorder in shuffle wizard')
+            _logger.info("No question links to reorder in shuffle wizard")
             return
 
         # Validate that all blocks in use are included in the wizard
@@ -336,7 +331,7 @@ class AcademyTestsTestQuestionShuffleWizard(models.TransientModel):
         if self.random_order:
             self._check_dependencies_for_random_order()
 
-        # Enforce dependency order: 
+        # Enforce dependency order:
         # Dependent questions must follow their prerequisites
         if not self._check_is_topologically_sorted(link_set):
             link_set = self._sort_relations_by_dependency(link_set)
@@ -348,38 +343,38 @@ class AcademyTestsTestQuestionShuffleWizard(models.TransientModel):
         sequence = 1
 
         # Reassign unassigned questions to a specific block if requested
-        if self.unassigned_question_handling == 'assign':
+        if self.unassigned_question_handling == "assign":
             target_block = self.assign_to_block_id
             for link in unassigned_links:
-                link.write({'test_block_id': target_block.id})
+                link.write({"test_block_id": target_block.id})
 
             # Now all are considered assigned
             assigned_links += unassigned_links
-            unassigned_links = self.env['academy.tests.test.question.rel']
+            unassigned_links = self.env["academy.tests.test.question.rel"]
 
         # Place unassigned questions before the rest, if configured
-        if self.unassigned_question_handling == 'beginning':
+        if self.unassigned_question_handling == "beginning":
             sequence = self._write_sequence_ordered(unassigned_links, sequence)
 
         # Reorder the assigned links based on shuffle scope
-        if self.shuffle_scope == 'questions':
+        if self.shuffle_scope == "questions":
             sequence = self._action_sort_questions(assigned_links, sequence)
-        elif self.shuffle_scope == 'blocks':
+        elif self.shuffle_scope == "blocks":
             sequence = self._action_sort_blocks(assigned_links, sequence)
-        elif self.shuffle_scope == 'both':
+        elif self.shuffle_scope == "both":
             sequence = self._action_sort_both(assigned_links, sequence)
 
         # Place unassigned questions after the rest, if configured
-        if self.unassigned_question_handling == 'end':
+        if self.unassigned_question_handling == "end":
             sequence = self._write_sequence_ordered(unassigned_links, sequence)
 
-         # Refresh recordset in memory with new sequence order
-        self.question_rel_ids = self.question_rel_ids.sorted('sequence')
+        # Refresh recordset in memory with new sequence order
+        self.question_rel_ids = self.question_rel_ids.sorted("sequence")
 
     def _action_sort_questions(self, link_set, sequence):
         """
-        Reassign sequence within each block, preserving the block order as 
-        found in the link_set (first appearance). Questions within each block 
+        Reassign sequence within each block, preserving the block order as
+        found in the link_set (first appearance). Questions within each block
         are sorted by their previous sequence, unless random_order is enabled.
         """
         seen = set()
@@ -425,7 +420,7 @@ class AcademyTestsTestQuestionShuffleWizard(models.TransientModel):
     def _action_sort_both(self, link_set, sequence):
         """
         Randomly reorder blocks and questions inside each block if random_order
-        is True. Otherwise, use manual block order and sort questions by 
+        is True. Otherwise, use manual block order and sort questions by
         previous sequence.
         """
         # Get user-defined block order
@@ -464,7 +459,7 @@ class AcademyTestsTestQuestionShuffleWizard(models.TransientModel):
             links.sort(key=lambda l: l.sequence)
 
         for link in links:
-            link.write({'sequence': sequence})
+            link.write({"sequence": sequence})
             sequence += 1
 
         return sequence
@@ -480,20 +475,20 @@ class AcademyTestsTestQuestionShuffleWizard(models.TransientModel):
         """
         self.ensure_one()
 
-        used_block_ids = set(self.question_rel_ids.mapped('test_block_id.id'))
-        defined_block_ids = set(self.block_position_ids.mapped('block_id.id'))
+        used_block_ids = set(self.question_rel_ids.mapped("test_block_id.id"))
+        defined_block_ids = set(self.block_position_ids.mapped("block_id.id"))
 
         missing_block_ids = used_block_ids - defined_block_ids
         if missing_block_ids:
-            block_obj = self.env['academy.tests.test.block']
+            block_obj = self.env["academy.tests.test.block"]
             missing_blocks = block_obj.browse(list(missing_block_ids))
-            block_names = missing_blocks.mapped('display_name')
+            block_names = missing_blocks.mapped("display_name")
 
             message = _(
-                'Some blocks used in the selected question links '
-                'are not represented in the block position list:\n%s'
+                "Some blocks used in the selected question links "
+                "are not represented in the block position list:\n%s"
             )
-            raise ValidationError(message % ', '.join(sorted(block_names)))
+            raise ValidationError(message % ", ".join(sorted(block_names)))
 
     @staticmethod
     def _check_is_topologically_sorted(rel_set):
@@ -550,7 +545,7 @@ class AcademyTestsTestQuestionShuffleWizard(models.TransientModel):
 
         if len(sorted_ids) != len(rel_set):
             raise ValidationError(
-                'Circular dependency detected among questions'
+                "Circular dependency detected among questions"
             )
 
         # Return recordset in the correct order
@@ -558,7 +553,7 @@ class AcademyTestsTestQuestionShuffleWizard(models.TransientModel):
 
     def _check_dependencies_for_random_order(self):
         """
-        Raise an error if random_order is enabled and any question has 
+        Raise an error if random_order is enabled and any question has
         dependencies.
         """
         self.ensure_one()
@@ -569,8 +564,8 @@ class AcademyTestsTestQuestionShuffleWizard(models.TransientModel):
 
         if dep_links:
             message = _(
-                'Random order cannot be used when some questions '
-                'depend on others.'
+                "Random order cannot be used when some questions "
+                "depend on others."
             )
             raise ValidationError(message)
 
@@ -579,7 +574,7 @@ class AcademyTestsTestQuestionShuffleWizard(models.TransientModel):
     # -------------------------------------------------------------------------
 
     def _get_question_rel_blocks(self):
-        block_obj = self.env['academy.tests.test.block']
+        block_obj = self.env["academy.tests.test.block"]
         block_ids = []
 
         for link in self.question_rel_ids:
@@ -591,20 +586,19 @@ class AcademyTestsTestQuestionShuffleWizard(models.TransientModel):
 
     @api.model
     def _get_question_links(self, record_set):
-        rel_model = self.env['academy.tests.test.question.rel']
+        rel_model = self.env["academy.tests.test.question.rel"]
         model_name = record_set._name
 
-        if model_name == 'academy.tests.test':
+        if model_name == "academy.tests.test":
             if len(record_set) != 1:
-                message = _('Only one test can be used to create the wizard.')
+                message = _("Only one test can be used to create the wizard.")
                 raise ValidationError(message)
             return record_set.question_ids
 
-        elif model_name == 'academy.tests.test.question.rel':
+        elif model_name == "academy.tests.test.question.rel":
             return rel_model.browse(record_set.ids)
 
         message = _(
-            'Invalid recordset type: expected test or question links, got %s'
+            "Invalid recordset type: expected test or question links, got %s"
         )
         raise ValidationError(message % model_name)
-

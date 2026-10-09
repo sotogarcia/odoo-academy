@@ -148,6 +148,21 @@ class AcademyTrainingActionEnrolment(models.Model):
         tracking=True,
     )
 
+    state = fields.Selection(
+        string="State",
+        required=True,
+        readonly=False,
+        index=True,
+        default="active",
+        help="Current operational state of the enrolment.",
+        tracking=True,
+        selection=[
+            ("on_hold", "On hold"),
+            ("reserved", "Reserved"),
+            ("active", "Active"),
+        ],
+    )
+
     comment = fields.Html(
         string="Internal notes",
         required=False,
@@ -892,13 +907,26 @@ class AcademyTrainingActionEnrolment(models.Model):
 
         self._prepare_signup_values(values_list)
 
-        return super().create(values_list)
+        enrolments = super().create(values_list)
+
+        enrolments.signup_id.synchronize_state_transitions(enrolments)
+
+        return enrolments
 
     def write(self, values):
-        """Update enrolments and keep full-enrolment lines synchronized."""
+        """Update enrolments and keep related data synchronized."""
 
         fields_to_freeze = ("student_id", "training_action_id", "signup_id")
         prevent_field_changes(self, values, fields_to_freeze)
+
+        transition_fields = {"active", "register", "deregister"}
+        synchronize_transitions = bool(transition_fields.intersection(values))
+
+        signups = self.signup_id
+        transition_scope = self.browse()
+
+        if synchronize_transitions:
+            transition_scope = signups.get_state_transition_scope(self)
 
         sanitize_code(values, "upper")
         self._ensure_parent_action(values)
@@ -914,6 +942,19 @@ class AcademyTrainingActionEnrolment(models.Model):
                 )
                 and result
             )
+
+        if synchronize_transitions:
+            signups.synchronize_state_transitions(transition_scope)
+
+        return result
+
+    def unlink(self):
+        signups = self.signup_id
+        transition_scope = signups.get_state_transition_scope(self)
+
+        result = super().unlink()
+
+        signups.synchronize_state_transitions(transition_scope)
 
         return result
 
