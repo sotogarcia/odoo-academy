@@ -1634,32 +1634,30 @@ class AcademyTrainingAction(models.Model):
     def view_training_action_groups(self):
         self.ensure_one()
 
-        name = self.env._("Groups: {}").format(self.display_name)
-
         action_xid = "academy_base.action_training_action_group_act_window"
-        act_wnd = self.env.ref(action_xid)
+        view_xid = "academy_base.view_academy_training_action_group_embed_tree"
 
-        context = self.env.context.copy()
-        context.update(safe_eval(act_wnd.context))
-        context.update({"default_parent_id": self.id})
-
+        context = {"default_parent_id": self.id}
         domain = [("parent_id", "=", self.id)]
-        views = [(v.view_id.id, v.view_mode) for v in act_wnd.view_ids]
 
-        serialized = {
-            "type": "ir.actions.act_window",
-            "res_model": act_wnd.res_model,
-            "target": "current",
-            "name": name,
-            "view_mode": act_wnd.view_mode,
-            "domain": domain,
-            "context": context,
-            "views": views,
-            "search_view_id": act_wnd.search_view_id.id,
-            "help": act_wnd.help,
-        }
+        action = build_act_window_action(
+            self.env,
+            action_xid,
+            context=context,
+            domain=domain,
+        )
 
-        return serialized
+        view = self.env.ref(view_xid)
+
+        action["name"] = _("Groups: {}").format(self.display_name)
+        action["views"] = [
+            (view.id, view_mode)
+            if view_mode == "list"
+            else (view_id, view_mode)
+            for view_id, view_mode in action["views"]
+        ]
+
+        return action
 
     def view_action_lines(self):
         self.ensure_one()
@@ -1744,6 +1742,10 @@ class AcademyTrainingAction(models.Model):
         self.ensure_one()
 
         act_xid = "academy_base.action_training_action_enrolment_act_window"
+        view_xid = (
+            "academy_base."
+            "view_academy_training_action_enrolment_embed_in_action"
+        )
 
         parent_action_id = self.parent_id.id if self.parent_id else self.id
         context = {
@@ -1754,12 +1756,24 @@ class AcademyTrainingAction(models.Model):
 
         action = build_act_window_action(self.env, act_xid, context, domain)
 
+        view = self.env.ref(view_xid)
+        action["views"] = [
+            (view.id, view_mode)
+            if view_mode == "list"
+            else (view_id, view_mode)
+            for view_id, view_mode in action["views"]
+        ]
+
         return action
 
     def view_rollup_enrolments(self):
         self.ensure_one()
 
         act_xid = "academy_base.action_training_action_enrolment_act_window"
+        view_xid = (
+            "academy_base."
+            "view_academy_training_action_enrolment_embed_in_action"
+        )
 
         parent_action_id = self.parent_id.id if self.parent_id else self.id
         training_action_id = self.id if not self.child_ids else None
@@ -1770,6 +1784,14 @@ class AcademyTrainingAction(models.Model):
         domain = [("parent_action_id", "=", self.id)]
 
         action = build_act_window_action(self.env, act_xid, context, domain)
+
+        view = self.env.ref(view_xid)
+        action["views"] = [
+            (view.id, view_mode)
+            if view_mode == "list"
+            else (view_id, view_mode)
+            for view_id, view_mode in action["views"]
+        ]
 
         return action
 

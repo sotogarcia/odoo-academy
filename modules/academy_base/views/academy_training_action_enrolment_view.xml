@@ -416,4 +416,30 @@
   </record>
 
 
+  <!-- =======================================================================
+     EMBED – ACADEMY: ENROLMENTS
+     Usage: this list view is embedded inside `academy.training.action` and
+     `academy.teacher` forms.
+     ====================================================================== -->
+
+  <record id="view_academy_training_action_enrolment_embed_in_action" model="ir.ui.view">
+    <field name="name">view.academy.training.action.enrolment.tree.embed</field>
+    <field name="model">academy.training.action.enrolment</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="99"/>
+    <field name="active" eval="True"/>
+    <field name="inherit_id" ref="academy_base.view_academy_training_action_enrolment_tree" />
+    <field name="arch" type="xml">
+      <xpath expr="//field[@name='training_program_id']" position="attributes">
+          <attribute name="column_invisible">1</attribute>
+      </xpath>
+      <xpath expr="//field[@name='parent_action_id']" position="attributes">
+          <attribute name="column_invisible">1</attribute>
+      </xpath>
+      <xpath expr="//field[@name='manager_id']" position="attributes">
+          <attribute name="column_invisible">1</attribute>
+      </xpath>
+    </field>
+  </record>
+
 </odoo>

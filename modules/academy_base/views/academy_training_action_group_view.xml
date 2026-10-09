@@ -175,7 +175,7 @@
           column_invisible="1" force_save="1"/>
         <field name="sequence" widget="handle"/>
         <field name="code" readonly="1" class="oe_field_code"/>
-        <field name="name" readonly="1" class="oe_field_name"/>
+        <field name="name" readonly="1" class="oe_field_name" string="Group" />
         <field name="date_start" readonly="1" class="oe_field_date_start"/>
         <field name="date_stop" readonly="1" class="oe_field_date_stop"/>
         <field name="seats" readonly="1" class="oe_field_seats"/>

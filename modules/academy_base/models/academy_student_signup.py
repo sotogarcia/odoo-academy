@@ -287,6 +287,48 @@ class AcademyStudentSignup(models.Model):
         ),
     ]
 
+    @api.constrains("signup_date")
+    def _check_enrolment_register_dates(self):
+        self.validate_enrolment_register_dates()
+
+    def _get_first_enrolment_register_by_signup(self):
+        enrolment_obj = self.env["academy.training.action.enrolment"]
+        enrolment_obj = enrolment_obj.with_context(active_test=False)
+
+        results = enrolment_obj.read_group(
+            domain=[("signup_id", "in", self.ids)],
+            fields=["signup_id", "first_register:min(register)"],
+            groupby=["signup_id"],
+            lazy=False,
+        )
+
+        first_register_by_signup = {
+            result["signup_id"][0]: result["first_register"]
+            for result in results
+        }
+
+        return first_register_by_signup
+
+    def validate_enrolment_register_dates(self):
+        """Ensure sign-up dates do not follow their first enrolment."""
+        first_by_signup = self._get_first_enrolment_register_by_signup()
+
+        for signup in self:
+            first_register = first_by_signup.get(signup.id)
+
+            if first_register and signup.signup_date > first_register:
+                pattern = _(
+                    "The sign-up date (%s) cannot be later than the first "
+                    "enrolment registration date (%s)."
+                )
+                raise ValidationError(
+                    pattern
+                    % (
+                        fields.Datetime.to_string(signup.signup_date),
+                        fields.Datetime.to_string(first_register),
+                    )
+                )
+
     # -- Signup sequence methods
     # -------------------------------------------------------------------------
 

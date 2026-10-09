@@ -861,6 +861,11 @@ class AcademyTrainingActionEnrolment(models.Model):
             if invalid_lines:
                 raise ValidationError(err_msg)
 
+    @api.constrains("signup_id", "register")
+    def _check_signup_date(self):
+        signup_set = self.mapped("signup_id")
+        signup_set.validate_enrolment_register_dates()
+
     # Overridden methods
     # -------------------------------------------------------------------------
 

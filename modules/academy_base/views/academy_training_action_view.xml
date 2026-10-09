@@ -214,9 +214,14 @@
                     options="{'no_quick_create': True, 'no_create': True, 'no_open': False}"/>
                 </group>
               </group>
-              <group id="synchronize" string="Synchronize">
-                <group>
-                  <field name="keep_synchronized" class="oe_field_keep_synchronized"/>
+              <group id="options" string="Options">
+                <group col="2">
+                  <group>
+                    <field name="keep_synchronized" class="oe_field_keep_synchronized"/>
+                  </group>
+                  <group>
+                    <field name="keep_synchronized" class="oe_field_keep_synchronized"/>
+                  </group>
                 </group>
               </group>
             </page>
