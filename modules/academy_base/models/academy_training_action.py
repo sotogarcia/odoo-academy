@@ -674,6 +674,23 @@ class AcademyTrainingAction(models.Model):
             if record.excess and record.excess < record.seats:
                 record.excess = record.seats
 
+    allow_excess = fields.Boolean(
+        string="Allow excess capacity",
+        required=False,
+        readonly=False,
+        index=False,
+        default=False,
+        help="Allow enrolments to exceed seating capacity up to the excess limit.",
+        copy=True,
+        tracking=True,
+    )
+
+    def _get_capacity_limit(self):
+        """Return the effective enrolment capacity limit."""
+        self.ensure_one()
+
+        return self.excess if self.allow_excess else self.seats
+
     # -------------------------------------------------------------------------
 
     enrolment_ids = fields.One2many(
@@ -1350,7 +1367,9 @@ class AcademyTrainingAction(models.Model):
         """Validate seat capacity at a specific point in time."""
         self.ensure_one()
 
-        if occupied > self.seats:
+        capacity = self._get_capacity_limit()
+
+        if occupied > capacity:
             pattern = _(
                 "The training action '%s' exceeds its capacity of %s "
                 "seats at %s, with %s enrolments occupying a seat."
@@ -1365,7 +1384,7 @@ class AcademyTrainingAction(models.Model):
                 )
             )
 
-    @api.constrains("seats")
+    @api.constrains("seats", "excess", "allow_excess")
     def _check_enrolment_capacity(self):
         """Ensure seat capacity is never exceeded by overlapping enrolments."""
 
