@@ -87,7 +87,7 @@
             </button>
             <button name="view_rollup_enrolments" type="object" class="oe_stat_button oe_read_only"
               icon="fa-sign-in" help="View training action enrolments">
-              <field name="rollup_enrolment_count" widget="statinfo" string="Enrolments"/>
+              <field name="rollup_enrolment_count_str" widget="statinfo" string="Enrolments"/>
             </button>
           </div>
 

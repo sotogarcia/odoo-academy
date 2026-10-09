@@ -744,20 +744,71 @@ class AcademyTrainingAction(models.Model):
         index=False,
         default=None,
         help="Show number of enrolments",
-        compute="_compute_rollup_enrolment_count",
+        compute="_compute_rollup_enrolment_counts",
         search="_search_rollup_enrolment_count",
+        copy=False,
+    )
+
+    current_enrolment_count = fields.Integer(
+        string="No. of current enrolments (rollup)",
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help="Number of current enrolments that reserve a seat.",
+        compute="_compute_rollup_enrolment_counts",
+        search="_search_current_enrolment_count",
+        copy=False,
+    )
+
+    rollup_enrolment_count_str = fields.Char(
+        string="Enrolments (summary)",
+        required=False,
+        readonly=True,
+        index=False,
+        default=None,
+        help="Current enrolments that reserve a seat over total enrolments.",
+        compute="_compute_rollup_enrolment_counts",
         copy=False,
     )
 
     @api.depends(
         "rollup_enrolment_ids",
+        "rollup_enrolment_ids.register",
+        "rollup_enrolment_ids.deregister",
         "rollup_enrolment_ids.active",
+        "rollup_enrolment_ids.state",
     )
-    def _compute_rollup_enrolment_count(self):
-        counts = one2many_count(self, "rollup_enrolment_ids")
+    def _compute_rollup_enrolment_counts(self):
+        now = fields.Datetime.now()
+        current_domain = [
+            ("active", "=", True),
+            ("state", "in", ["reserved", "joined"]),
+            ("register", "<=", now),
+            "|",
+            ("deregister", "=", False),
+            ("deregister", ">=", now),
+        ]
+
+        total_counts = one2many_count(
+            self,
+            "rollup_enrolment_ids",
+        )
+        current_counts = one2many_count(
+            self,
+            "rollup_enrolment_ids",
+            current_domain,
+        )
 
         for record in self:
-            record.rollup_enrolment_count = counts.get(record.id, 0)
+            total = total_counts.get(record.id, 0)
+            current = current_counts.get(record.id, 0)
+
+            record.rollup_enrolment_count = total
+            record.current_enrolment_count = current
+
+            count_str = f"{current: >3} / {total: <3}"
+            record.rollup_enrolment_count_str = count_str
 
     @api.model
     def _search_rollup_enrolment_count(self, operator, value):
@@ -768,44 +819,12 @@ class AcademyTrainingAction(models.Model):
             value,
         )
 
-    current_enrolment_count = fields.Integer(
-        string="No. of current enrolments (rollup)",
-        required=False,
-        readonly=True,
-        index=False,
-        default=None,
-        help="Show number of enrolments currently active",
-        compute="_compute_current_enrolment_count",
-        search="_search_current_enrolment_count",
-        copy=False,
-    )
-
-    @api.depends(
-        "rollup_enrolment_ids",
-        "rollup_enrolment_ids.register",
-        "rollup_enrolment_ids.deregister",
-        "rollup_enrolment_ids.active",
-    )
-    def _compute_current_enrolment_count(self):
-        """Compute number of currently active enrolments in the rollup."""
-        now = fields.Datetime.now()
-        domain = [
-            ("active", "=", True),
-            ("register", "<=", now),
-            "|",
-            ("deregister", "=", False),
-            ("deregister", ">=", now),
-        ]
-        counts = one2many_count(self, "rollup_enrolment_ids", domain)
-
-        for record in self:
-            record.current_enrolment_count = counts.get(record.id, 0)
-
     @api.model
     def _search_current_enrolment_count(self, operator, value):
         now = fields.Datetime.now()
         domain = [
             ("active", "=", True),
+            ("state", "in", ["reserved", "joined"]),
             ("register", "<=", now),
             "|",
             ("deregister", "=", False),
@@ -1289,6 +1308,91 @@ class AcademyTrainingAction(models.Model):
                         parent=parent_stop.strftime(DATETIME_FORMAT),
                     )
                 )
+
+    def _get_enrolment_capacity_events(self, enrolment_set):
+        """Build seat-occupancy events grouped by training action.
+
+        Each enrolment contributes a ``+1`` event at ``register`` and, when
+        finite, a ``-1`` event at ``deregister``. Events occurring at the same
+        datetime are accumulated.
+
+        The resulting structure can be traversed chronologically to calculate
+        concurrent seat occupancy. No intermediate instants need to be generated,
+        because occupancy can only change when an enrolment starts or ends.
+
+        Enrolment intervals are treated as half-open intervals
+        ``[register, deregister)``, so an enrolment ending at the exact datetime
+        another one starts does not consume a seat simultaneously.
+
+        Args:
+            enrolment_set (academy.training.action.enrolment): Enrolments whose
+                intervals must be converted into capacity events.
+
+        Returns:
+            dict[int, dict[datetime, int]]: Mapping from each training action ID
+            to its datetime events and their accumulated occupancy deltas.
+        """
+        events_by_action = {action.id: {} for action in self}
+
+        for enrolment in enrolment_set:
+            events = events_by_action[enrolment.training_action_id.id]
+
+            register = enrolment.register
+            events[register] = events.get(register, 0) + 1
+
+            deregister = enrolment.deregister
+            if deregister:
+                events[deregister] = events.get(deregister, 0) - 1
+
+        return events_by_action
+
+    def _validate_enrolment_capacity(self, moment, occupied):
+        """Validate seat capacity at a specific point in time."""
+        self.ensure_one()
+
+        if occupied > self.seats:
+            pattern = _(
+                "The training action '%s' exceeds its capacity of %s "
+                "seats at %s, with %s enrolments occupying a seat."
+            )
+            raise ValidationError(
+                pattern
+                % (
+                    self.display_name,
+                    self.seats,
+                    fields.Datetime.to_string(moment),
+                    occupied,
+                )
+            )
+
+    @api.constrains("seats")
+    def _check_enrolment_capacity(self):
+        """Ensure seat capacity is never exceeded by overlapping enrolments."""
+
+        action_set = self.filtered(lambda action: not action.child_ids)
+        if not action_set:
+            return
+
+        domain = [
+            ("training_action_id", "in", action_set.ids),
+            ("active", "=", True),
+            ("state", "in", ["reserved", "joined"]),
+        ]
+
+        enrolment_obj = self.env["academy.training.action.enrolment"]
+        enrolment_set = enrolment_obj.search(domain)
+
+        events_by_action = action_set._get_enrolment_capacity_events(
+            enrolment_set
+        )
+
+        for action in action_set:
+            events = events_by_action[action.id]
+            occupied = 0
+
+            for moment in sorted(events):
+                occupied += events[moment]
+                action._validate_enrolment_capacity(moment, occupied)
 
     @api.constrains(
         "parent_id",

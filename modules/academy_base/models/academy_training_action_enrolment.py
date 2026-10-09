@@ -159,7 +159,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         selection=[
             ("on_hold", "On hold"),
             ("reserved", "Reserved"),
-            ("active", "Active"),
+            ("joined", "Joined"),
         ],
     )
 

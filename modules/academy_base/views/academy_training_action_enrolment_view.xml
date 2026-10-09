@@ -40,6 +40,11 @@
         <field name="mobile" class="oe_field_mobile" optional="show"/>
         <field name="zip" class="oe_field_zip" optional="hide"/>
         <field name="manager_id" class="oe_field_manager_id" optional="hide"/>
+        <field name="state" class="oe_field_state"
+            widget="badge"
+            decoration-danger="state == 'on_hold'"
+            decoration-warning="state == 'reserved'"
+            decoration-success="state == 'joined'"/>
       </list>
     </field>
   </record>
@@ -56,7 +61,7 @@
       <form string="academy_training_action_enrolment_form" create="1" delete="1" edit="1">
         <header>
           <field name="state" widget="statusbar"
-            statusbar_visible="on_hold,reserved,active"
+            statusbar_visible="on_hold,reserved,joined"
             options="{'clickable': '1'}"/>
         </header>
 
