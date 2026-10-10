@@ -46,11 +46,11 @@ class AcademyStudentSignupStateTransition(models.Model):
 
     enrolment_id = fields.Many2one(
         string="Enrolment",
-        required=False,
+        required=True,
         readonly=True,
         index=True,
         default=None,
-        help="Enrolment responsible for this state transition, when applicable.",
+        help="Enrolment responsible for this state transition.",
         comodel_name="academy.training.action.enrolment",
         domain=[],
         context={},
@@ -71,20 +71,15 @@ class AcademyStudentSignupStateTransition(models.Model):
 
     @api.depends(
         "state",
-        "signup_id.signup_date",
         "enrolment_id.register",
         "enrolment_id.deregister",
     )
     def _compute_timestamp(self):
         for transition in self:
-            enrolment = transition.enrolment_id
-
-            if not enrolment:
-                transition.timestamp = transition.signup_id.signup_date
-            elif transition.state == "enrolled":
-                transition.timestamp = enrolment.register
+            if transition.state == "enrolled":
+                transition.timestamp = transition.enrolment_id.register
             else:
-                transition.timestamp = enrolment.deregister
+                transition.timestamp = transition.enrolment_id.deregister
 
     # -- Constraints ----------------------------------------------------------
 
@@ -95,13 +90,6 @@ class AcademyStudentSignupStateTransition(models.Model):
             "A state transition for this sign-up, state and enrolment already exists.",
         ),
     ]
-
-    @api.constrains("state", "enrolment_id")
-    def _check_enrolment_required(self):
-        for transition in self:
-            if transition.state == "enrolled" and not transition.enrolment_id:
-                err = _("An enrolled state transition requires an enrolment.")
-                raise ValidationError(err)
 
     @api.constrains("signup_id", "enrolment_id")
     def _check_enrolment_signup(self):

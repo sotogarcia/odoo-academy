@@ -220,7 +220,7 @@
                     <field name="keep_synchronized" class="oe_field_keep_synchronized"/>
                   </group>
                   <group>
-                    <field name="keep_synchronized" class="oe_field_keep_synchronized"/>
+                      <field name="allow_excess" class="oe_field_allow_excess"/>
                   </group>
                 </group>
               </group>

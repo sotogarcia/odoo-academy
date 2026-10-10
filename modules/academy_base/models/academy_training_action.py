@@ -804,7 +804,7 @@ class AcademyTrainingAction(models.Model):
             ("register", "<=", now),
             "|",
             ("deregister", "=", False),
-            ("deregister", ">=", now),
+            ("deregister", ">", now),
         ]
 
         total_counts = one2many_count(
@@ -845,7 +845,7 @@ class AcademyTrainingAction(models.Model):
             ("register", "<=", now),
             "|",
             ("deregister", "=", False),
-            ("deregister", ">=", now),
+            ("deregister", ">", now),
         ]
 
         return one2many_count_search_domain(
@@ -1378,7 +1378,7 @@ class AcademyTrainingAction(models.Model):
                 pattern
                 % (
                     self.display_name,
-                    self.seats,
+                    capacity,
                     fields.Datetime.to_string(moment),
                     occupied,
                 )
@@ -1387,7 +1387,9 @@ class AcademyTrainingAction(models.Model):
     @api.constrains("seats", "excess", "allow_excess")
     def _check_enrolment_capacity(self):
         """Ensure seat capacity is never exceeded by overlapping enrolments."""
+        self.validate_enrolment_capacity()
 
+    def validate_enrolment_capacity(self):
         action_set = self.filtered(lambda action: not action.child_ids)
         if not action_set:
             return

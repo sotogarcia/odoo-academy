@@ -153,7 +153,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         required=True,
         readonly=False,
         index=True,
-        default="active",
+        default="joined",
         help="Current operational state of the enrolment.",
         tracking=True,
         selection=[
@@ -515,7 +515,7 @@ class AcademyTrainingActionEnrolment(models.Model):
             domain = [
                 "|",
                 ("deregister", "=", False),
-                ("deregister", ">=", now),
+                ("deregister", ">", now),
             ]
 
         else:
@@ -617,7 +617,7 @@ class AcademyTrainingActionEnrolment(models.Model):
                 ("active", "=", True),
                 ("register", "<=", now),
                 "|",
-                ("deregister", ">=", now),
+                ("deregister", ">", now),
                 ("deregister", "=", False),
             ]
 
@@ -865,6 +865,17 @@ class AcademyTrainingActionEnrolment(models.Model):
     def _check_signup_date(self):
         signup_set = self.mapped("signup_id")
         signup_set.validate_enrolment_register_dates()
+
+    @api.constrains(
+        "training_action_id",
+        "register",
+        "deregister",
+        "active",
+        "state",
+    )
+    def _check_training_action_capacity(self):
+        training_actions = self.mapped("training_action_id")
+        training_actions.validate_enrolment_capacity()
 
     # Overridden methods
     # -------------------------------------------------------------------------
@@ -1687,7 +1698,7 @@ class AcademyTrainingActionEnrolment(models.Model):
             ("active", "=", True),
             "|",
             ("deregister", "=", False),
-            ("deregister", ">=", now),
+            ("deregister", ">", now),
         ]
         enrolment_set = enrolment_obj.search(enrolment_domain)
         if not enrolment_set:
