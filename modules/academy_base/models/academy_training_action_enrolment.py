@@ -925,7 +925,7 @@ class AcademyTrainingActionEnrolment(models.Model):
 
         enrolments = super().create(values_list)
 
-        enrolments.signup_id.synchronize_state_transitions(enrolments)
+        enrolments.signup_id.synchronize_state_transitions()
 
         return enrolments
 
@@ -935,7 +935,9 @@ class AcademyTrainingActionEnrolment(models.Model):
         fields_to_freeze = ("student_id", "training_action_id", "signup_id")
         prevent_field_changes(self, values, fields_to_freeze)
 
-        transition_scope = self._capture_state_transition_scope(values)
+        transition_fields = {"active", "register", "deregister"}
+        synchronize_transitions = bool(transition_fields.intersection(values))
+        signups = self.signup_id
 
         sanitize_code(values, "upper")
         self._ensure_parent_action(values)
@@ -943,18 +945,17 @@ class AcademyTrainingActionEnrolment(models.Model):
         grouped_values = self._prepare_full_enrolment_write(values)
         result = self._write_grouped_enrolments(grouped_values)
 
-        if transition_scope is not None:  # None != Empty recordset
-            self.signup_id.synchronize_state_transitions(transition_scope)
+        if synchronize_transitions:
+            signups.synchronize_state_transitions()
 
         return result
 
     def unlink(self):
         signups = self.signup_id
-        transition_scope = signups.get_state_transition_scope(self)
 
         result = super().unlink()
 
-        signups.synchronize_state_transitions(transition_scope)
+        signups.synchronize_state_transitions()
 
         return result
 
@@ -983,19 +984,6 @@ class AcademyTrainingActionEnrolment(models.Model):
             result = super_set.write(write_values) and result
 
         return result
-
-    def _capture_state_transition_scope(self, values):
-        """Capture the transition scope before writing affected enrolments.
-
-        Return None when synchronization is unnecessary, or a recordset when
-        required. An empty recordset still requires synchronization.
-        """
-        transition_fields = {"active", "register", "deregister"}
-
-        if transition_fields.intersection(values):
-            return self.signup_id.get_state_transition_scope(self)
-
-        return None
 
     # Public methods
     # -------------------------------------------------------------------------

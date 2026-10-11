@@ -26,7 +26,7 @@
         <field name="signup_id" class="oe_field_signup_id" optional="hide"/>
         <field name="timestamp" class="oe_field_timestamp"/>
         <field name="state" class="oe_field_state"/>
-        <field name="enrolment_id" class="oe_field_enrolment_id" optional="show"/>
+        <field name="source_ref" class="oe_field_source_ref" optional="show"/>
       </list>
     </field>
   </record>
@@ -56,8 +56,8 @@
             <group col="2" colspan="2">
               <field name="timestamp" class="oe_field_timestamp"/>
             </group>
-            <group col="2" colspan="4" invisible="not enrolment_id">
-              <field name="enrolment_id" class="oe_field_enrolment_id"/>
+            <group col="2" colspan="4" invisible="not source_ref">
+              <field name="source_ref" class="oe_field_source_ref"/>
             </group>
           </group>
         </sheet>
@@ -78,12 +78,11 @@
         <field name="signup_id"/>
         <field name="timestamp"/>
         <field name="state"/>
-        <field name="enrolment_id"/>
+        <field name="source_ref"/>
 
         <group expand="1" string="Group By">
           <filter name="group_by_state" string="State" context="{'group_by': 'state'}"/>
           <filter name="group_by_signup_id" string="Sign-up" context="{'group_by': 'signup_id'}"/>
-          <filter name="group_by_enrolment_id" string="Enrolment" context="{'group_by': 'enrolment_id'}"/>
         </group>
       </search>
     </field>
