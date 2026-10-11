@@ -4,7 +4,7 @@
 ###############################################################################
 
 from odoo import api, fields, models
-from odoo.exceptions import ValidationError
+from odoo.exceptions import UserError, ValidationError
 from odoo.tools.translate import _
 
 
@@ -16,6 +16,8 @@ class AcademyStudentSignupStateTransition(models.Model):
 
     _rec_name = "id"
     _order = "timestamp, id"
+
+    # -- Fields ----------------------------------------------------------------
 
     signup_id = fields.Many2one(
         string="Sign-up",
@@ -29,6 +31,21 @@ class AcademyStudentSignupStateTransition(models.Model):
         context={},
         ondelete="cascade",
         auto_join=False,
+        copy=False,
+    )
+
+    previous_state = fields.Selection(
+        string="Previous state",
+        required=False,
+        readonly=True,
+        index=True,
+        default=None,
+        help="State of the student sign-up before this transition.",
+        copy=False,
+        selection=[
+            ("signed_up", "Signed up"),
+            ("enrolled", "Enrolled"),
+        ],
     )
 
     state = fields.Selection(
@@ -38,64 +55,53 @@ class AcademyStudentSignupStateTransition(models.Model):
         index=True,
         default=None,
         help="State reached by the student sign-up at this transition.",
+        copy=False,
         selection=[
             ("signed_up", "Signed up"),
             ("enrolled", "Enrolled"),
         ],
     )
 
-    enrolment_id = fields.Many2one(
-        string="Enrolment",
+    timestamp = fields.Datetime(
+        string="Timestamp",
         required=True,
         readonly=True,
         index=True,
-        default=None,
-        help="Enrolment responsible for this state transition.",
-        comodel_name="academy.training.action.enrolment",
-        domain=[],
-        context={},
-        ondelete="cascade",
-        auto_join=False,
+        default=fields.Datetime.now,
+        help="Date and time when the state transition was recorded.",
+        copy=False,
     )
 
-    timestamp = fields.Datetime(
-        string="Timestamp",
+    source_ref = fields.Reference(
+        string="Source document",
         required=False,
         readonly=True,
         index=True,
         default=None,
-        help="Effective date and time of this state transition.",
-        compute="_compute_timestamp",
-        store=True,
+        help="Document responsible for this state transition, when applicable.",
+        copy=False,
+        selection=[
+            ("academy.training.action.enrolment", "Enrolment"),
+        ],
     )
 
-    @api.depends(
-        "state",
-        "enrolment_id.register",
-        "enrolment_id.deregister",
-    )
-    def _compute_timestamp(self):
+    # -- Constraints -----------------------------------------------------------
+
+    @api.constrains("signup_id", "source_ref")
+    def _check_source_signup(self):
         for transition in self:
-            if transition.state == "enrolled":
-                transition.timestamp = transition.enrolment_id.register
-            else:
-                transition.timestamp = transition.enrolment_id.deregister
+            source = transition.source_ref
 
-    # -- Constraints ----------------------------------------------------------
-
-    _sql_constraints = [  # noqa: RUF012
-        (
-            "unique_signup_state_enrolment",
-            "UNIQUE(signup_id, state, enrolment_id)",
-            "A state transition for this sign-up, state and enrolment already exists.",
-        ),
-    ]
-
-    @api.constrains("signup_id", "enrolment_id")
-    def _check_enrolment_signup(self):
-        for transition in self:
-            enrolment = transition.enrolment_id
-
-            if enrolment and enrolment.signup_id != transition.signup_id:
-                err = _("Enrolment must match state transition sign-up.")
+            if source and source.signup_id != transition.signup_id:
+                err = _(
+                    "Source document must belong to the transition sign-up."
+                )
                 raise ValidationError(err)
+
+    # -- CRUD ------------------------------------------------------------------
+
+    def write(self, values):
+        raise UserError(_("State transitions cannot be modified."))
+
+    def unlink(self):
+        raise UserError(_("State transitions cannot be deleted."))

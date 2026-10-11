@@ -16,7 +16,6 @@ from odoo.exceptions import UserError, ValidationError
 from odoo.tools import SQL
 from odoo.tools.translate import _
 
-from ..utils.datetime_utils import DATETIME_POSITIVE_INFINITY as INFINITY
 from ..utils.record_utils import prevent_field_changes
 
 _logger = getLogger(__name__)
@@ -108,114 +107,17 @@ class AcademyStudentSignup(models.Model):
 
     state = fields.Selection(
         string="State",
-        required=False,
+        required=True,
         readonly=True,
-        index=False,
-        default=None,
+        index=True,
+        default="signed_up",
         help="Current state of the student sign-up.",
-        compute="_compute_state",
-        search="_search_state",
-        store=False,
+        copy=False,
         selection=[
             ("signed_up", "Signed up"),
             ("enrolled", "Enrolled"),
         ],
     )
-
-    @api.depends(
-        "transition_ids",
-        "transition_ids.timestamp",
-        "transition_ids.state",
-    )
-    def _compute_state(self):
-        now = fields.Datetime.now()
-
-        transition_obj = self.env["academy.student.signup.state.transition"]
-
-        domain = [("signup_id", "in", self.ids), ("timestamp", "<=", now)]
-        order = "signup_id, timestamp DESC, id DESC"
-        transitions = transition_obj.search(domain, order=order)
-
-        states = {}
-        for transition in transitions:
-            signup_id = transition.signup_id.id
-            states.setdefault(signup_id, transition.state)
-
-        for signup in self:
-            signup.state = states.get(signup.id, "signed_up")
-
-    def _search_state(self, operator, value):
-        now = fields.Datetime.now()
-
-        transition_obj = self.env["academy.student.signup.state.transition"]
-
-        domain = [
-            ("timestamp", "<=", now),
-            ("state", operator, value),
-        ]
-        query = transition_obj._search(domain)
-
-        domain = self._get_current_transition_domain(query, now)
-        domain = self._add_implicit_state_domain(domain, operator, value, now)
-
-        return domain
-
-    def _get_current_transition_domain(self, query, now):
-        """Restrict the query to the latest effective transition per signup."""
-        table = query.table
-        where_sql = SQL(
-            """
-            NOT EXISTS (
-                SELECT 1
-                FROM academy_student_signup_state_transition AS later
-                WHERE later.signup_id = %(signup_id)s
-                  AND later.timestamp <= %(now)s
-                  AND (
-                      later.timestamp > %(timestamp)s
-                      OR (
-                          later.timestamp = %(timestamp)s
-                          AND later.id > %(transition_id)s
-                      )
-                  )
-            )
-            """,
-            signup_id=SQL.identifier(table, "signup_id"),
-            now=now,
-            timestamp=SQL.identifier(table, "timestamp"),
-            transition_id=SQL.identifier(table, "id"),
-        )
-
-        query.add_where(where_sql)
-
-        return [("transition_ids", "in", query)]
-
-    def _add_implicit_state_domain(self, domain, operator, value, now):
-        """Include signups whose implicit signed_up state matches the search."""
-        if operator == "=":
-            implicit_match = value == "signed_up"
-        elif operator == "!=":
-            implicit_match = value != "signed_up"
-        elif operator == "in":
-            implicit_match = "signed_up" in value
-        elif operator == "not in":
-            implicit_match = "signed_up" not in value
-        else:
-            raise NotImplementedError(
-                f"Unsupported state search operator: {operator}"
-            )
-
-        if implicit_match:
-            domain = [
-                "|",
-                *domain,
-                (
-                    "transition_ids",
-                    "not any",
-                    [("timestamp", "<=", now)],
-                ),
-            ]
-
-        return domain
 
     comment = fields.Html(
         string="Internal notes",
