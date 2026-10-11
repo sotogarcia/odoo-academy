@@ -935,32 +935,16 @@ class AcademyTrainingActionEnrolment(models.Model):
         fields_to_freeze = ("student_id", "training_action_id", "signup_id")
         prevent_field_changes(self, values, fields_to_freeze)
 
-        transition_fields = {"active", "register", "deregister"}
-        synchronize_transitions = bool(transition_fields.intersection(values))
-
-        signups = self.signup_id
-        transition_scope = self.browse()
-
-        if synchronize_transitions:
-            transition_scope = signups.get_state_transition_scope(self)
+        transition_scope = self._capture_state_transition_scope(values)
 
         sanitize_code(values, "upper")
         self._ensure_parent_action(values)
 
         grouped_values = self._prepare_full_enrolment_write(values)
+        result = self._write_grouped_enrolments(grouped_values)
 
-        result = True
-
-        for record_set, write_values in grouped_values:
-            result = (
-                super(AcademyTrainingActionEnrolment, record_set).write(
-                    write_values
-                )
-                and result
-            )
-
-        if synchronize_transitions:
-            signups.synchronize_state_transitions(transition_scope)
+        if transition_scope is not None:  # None != Empty recordset
+            self.signup_id.synchronize_state_transitions(transition_scope)
 
         return result
 
@@ -979,9 +963,9 @@ class AcademyTrainingActionEnrolment(models.Model):
         """Copy the enrolment using its definitive structural relations.
 
         ``student_id`` and ``training_action_id`` are immutable once the new
-        enrolment has been created. Any overrides for those fields must therefore
-        be supplied in ``default`` so the copied enrolment is created directly
-        with its final values.
+        enrolment has been created. Any overrides for those fields must
+        therefore be supplied in ``default`` so the copied enrolment is created
+        directly with its final values.
         """
         self.ensure_one()
 
@@ -989,6 +973,29 @@ class AcademyTrainingActionEnrolment(models.Model):
         default["code"] = default_code(self.env, _CODE_SEQUENCE)
 
         return super().copy(default)
+
+    def _write_grouped_enrolments(self, grouped_values):
+        """Write enrolment groups using their prepared values."""
+        result = True
+
+        for record_set, write_values in grouped_values:
+            super_set = super(AcademyTrainingActionEnrolment, record_set)
+            result = super_set.write(write_values) and result
+
+        return result
+
+    def _capture_state_transition_scope(self, values):
+        """Capture the transition scope before writing affected enrolments.
+
+        Return None when synchronization is unnecessary, or a recordset when
+        required. An empty recordset still requires synchronization.
+        """
+        transition_fields = {"active", "register", "deregister"}
+
+        if transition_fields.intersection(values):
+            return self.signup_id.get_state_transition_scope(self)
+
+        return None
 
     # Public methods
     # -------------------------------------------------------------------------

@@ -79,6 +79,7 @@
         <field name="timestamp"/>
         <field name="state"/>
         <field name="enrolment_id"/>
+
         <group expand="1" string="Group By">
           <filter name="group_by_state" string="State" context="{'group_by': 'state'}"/>
           <filter name="group_by_signup_id" string="Sign-up" context="{'group_by': 'signup_id'}"/>

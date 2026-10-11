@@ -8,10 +8,12 @@ from logging import getLogger
 
 from odoo import api, fields, models
 from odoo.addons.academy_base.utils.helpers import (
+    build_act_window_action,
     one2many_count,
     one2many_count_search_domain,
 )
 from odoo.exceptions import UserError, ValidationError
+from odoo.tools import SQL
 from odoo.tools.translate import _
 
 from ..utils.datetime_utils import DATETIME_POSITIVE_INFINITY as INFINITY
@@ -112,6 +114,7 @@ class AcademyStudentSignup(models.Model):
         default=None,
         help="Current state of the student sign-up.",
         compute="_compute_state",
+        search="_search_state",
         store=False,
         selection=[
             ("signed_up", "Signed up"),
@@ -140,6 +143,79 @@ class AcademyStudentSignup(models.Model):
 
         for signup in self:
             signup.state = states.get(signup.id, "signed_up")
+
+    def _search_state(self, operator, value):
+        now = fields.Datetime.now()
+
+        transition_obj = self.env["academy.student.signup.state.transition"]
+
+        domain = [
+            ("timestamp", "<=", now),
+            ("state", operator, value),
+        ]
+        query = transition_obj._search(domain)
+
+        domain = self._get_current_transition_domain(query, now)
+        domain = self._add_implicit_state_domain(domain, operator, value, now)
+
+        return domain
+
+    def _get_current_transition_domain(self, query, now):
+        """Restrict the query to the latest effective transition per signup."""
+        table = query.table
+        where_sql = SQL(
+            """
+            NOT EXISTS (
+                SELECT 1
+                FROM academy_student_signup_state_transition AS later
+                WHERE later.signup_id = %(signup_id)s
+                  AND later.timestamp <= %(now)s
+                  AND (
+                      later.timestamp > %(timestamp)s
+                      OR (
+                          later.timestamp = %(timestamp)s
+                          AND later.id > %(transition_id)s
+                      )
+                  )
+            )
+            """,
+            signup_id=SQL.identifier(table, "signup_id"),
+            now=now,
+            timestamp=SQL.identifier(table, "timestamp"),
+            transition_id=SQL.identifier(table, "id"),
+        )
+
+        query.add_where(where_sql)
+
+        return [("transition_ids", "in", query)]
+
+    def _add_implicit_state_domain(self, domain, operator, value, now):
+        """Include signups whose implicit signed_up state matches the search."""
+        if operator == "=":
+            implicit_match = value == "signed_up"
+        elif operator == "!=":
+            implicit_match = value != "signed_up"
+        elif operator == "in":
+            implicit_match = "signed_up" in value
+        elif operator == "not in":
+            implicit_match = "signed_up" not in value
+        else:
+            raise NotImplementedError(
+                f"Unsupported state search operator: {operator}"
+            )
+
+        if implicit_match:
+            domain = [
+                "|",
+                *domain,
+                (
+                    "transition_ids",
+                    "not any",
+                    [("timestamp", "<=", now)],
+                ),
+            ]
+
+        return domain
 
     comment = fields.Html(
         string="Internal notes",
@@ -881,3 +957,24 @@ class AcademyStudentSignup(models.Model):
             transition_obj.create(values_list)
 
         return True
+
+    # =========================================================================
+    # Navigation
+    # =========================================================================
+
+    # -- Smart buttons --------------------------------------------------------
+
+    def action_view_enrolments(self):
+        self.ensure_one()
+
+        additional_context = {
+            "default_student_id": self.student_id.id,
+            "academy_student_signup_id": self.id,  # para propagación a otros
+        }
+
+        return build_act_window_action(
+            self.env,
+            "academy_base.action_training_action_enrolment_act_window",
+            context=additional_context,
+            domain=[("id", "in", self.enrolment_ids.ids)],
+        )

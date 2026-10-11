@@ -48,7 +48,17 @@
         </header>
         <sheet>
           <field name="id" invisible="1"/>
-          <div class="oe_button_box" name="button_box" />
+          <div class="oe_button_box" name="button_box">
+            <button name="action_view_enrolments"
+                    type="object"
+                    class="oe_stat_button"
+                    icon="fa-graduation-cap"
+                    help="View enrolments associated with this student sign-up.">
+                <field name="enrolment_count_str"
+                       widget="statinfo"
+                       string="Enrolments"/>
+            </button>
+          </div>
 
           <div class="oe_title">
             <label for="display_name" class="oe_edit_only"/>
@@ -102,6 +112,21 @@
         <field name="company_id" class="oe_field_company_id"/>
         <field name="student_id" class="oe_field_student_id"/>
         <field name="signup_date" class="oe_field_signup_date"/>
+
+
+        <separator />
+        <filter string="Enrolled"
+                name="enrolled"
+                domain="[('state', '=', 'enrolled')]"
+                context="{}"
+                help="View only sign-ups with enrolments" />
+
+        <filter string="Not enrolled"
+                name="not_enrolled"
+                domain="[('state', '!=', 'enrolled')]"
+                context="{}"
+                help="View only sign-ups without enrolments" />
+
 
         <group expand="1" string="Group By">
           <filter name="group_by_company_id" string="Company" context="{'group_by': 'company_id'}"/>
