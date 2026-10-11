@@ -61,8 +61,3 @@ class ResConfigSettings(models.TransientModel):
         ],
         config_parameter="academy_base.partner_vat_required",
     )
-
-    include_archived = fields.Boolean(
-        readonly=False,
-        related="company_id.include_archived",
-    )

@@ -9093,20 +9093,6 @@ msgid "ID"
 msgstr "ID"
 
 #. module: academy_base
-#: model:ir.model.fields,field_description:academy_base.field_res_company__include_archived
-#: model:ir.model.fields,field_description:academy_base.field_res_config_settings__include_archived
-#: model_terms:ir.ui.view,arch_db:academy_base.res_config_settings_view_form_academy_base
-msgid "Include archived"
-msgstr "Incluir archivados"
-
-#. module: academy_base
-#: model:ir.model.fields,help:academy_base.field_res_company__include_archived
-#: model:ir.model.fields,help:academy_base.field_res_config_settings__include_archived
-#: model_terms:ir.ui.view,arch_db:academy_base.res_config_settings_view_form_academy_base
-msgid "Include archived records in sign-up calculations."
-msgstr "Incluir los registros archivados en los cálculos de matrículas."
-
-#. module: academy_base
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_action_synchronize_wizard__optional
 #: model:ir.model.fields,field_description:academy_base.field_academy_training_program_synchronize_wizard__optional
 msgid "Include optional"

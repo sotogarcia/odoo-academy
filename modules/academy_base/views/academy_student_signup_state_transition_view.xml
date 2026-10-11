@@ -25,6 +25,7 @@
         create="0" delete="0" edit="0">
         <field name="signup_id" class="oe_field_signup_id" optional="hide"/>
         <field name="timestamp" class="oe_field_timestamp"/>
+        <field name="previous_state" class="oe_field_previous_state"/>
         <field name="state" class="oe_field_state"/>
         <field name="source_ref" class="oe_field_source_ref" optional="show"/>
       </list>

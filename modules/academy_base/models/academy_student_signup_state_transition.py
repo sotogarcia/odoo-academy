@@ -98,10 +98,10 @@ class AcademyStudentSignupStateTransition(models.Model):
                 )
                 raise ValidationError(err)
 
-    # -- CRUD ------------------------------------------------------------------
+    # -- CRUD - quizá más tarde ------------------------------------------------
 
-    def write(self, values):
-        raise UserError(_("State transitions cannot be modified."))
+    # def write(self, values):
+    #     raise UserError(_("State transitions cannot be modified."))
 
-    def unlink(self):
-        raise UserError(_("State transitions cannot be deleted."))
+    # def unlink(self):
+    #     raise UserError(_("State transitions cannot be deleted."))

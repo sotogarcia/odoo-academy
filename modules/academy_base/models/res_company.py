@@ -62,12 +62,3 @@ class ResCompany(models.Model):
         help="Automatically sign up the student upon enrolling in a training "
         "action.",
     )
-
-    include_archived = fields.Boolean(
-        string="Include archived",
-        required=False,
-        readonly=False,
-        index=False,
-        default=True,
-        help="Include archived records in sign-up calculations.",
-    )
