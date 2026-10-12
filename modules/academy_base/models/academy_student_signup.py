@@ -17,7 +17,7 @@ from odoo.osv.expression import AND
 from odoo.tools import SQL
 from odoo.tools.translate import _
 
-from ..utils.record_utils import prevent_field_changes
+from ..utils.record_utils import prevent_field_changes, record_to_reference
 
 _logger = getLogger(__name__)
 
@@ -390,6 +390,8 @@ class AcademyStudentSignup(models.Model):
 
         result = super().create(values_list)
 
+        result.synchronize_state_transitions()
+
         return result
 
     def write(self, values):
@@ -400,7 +402,12 @@ class AcademyStudentSignup(models.Model):
         fields_to_freeze = ("student_id", "company_id")
         prevent_field_changes(self, values, fields_to_freeze)
 
-        return super().write(values)
+        result = super().write(values)
+
+        if "signup_date" in values:
+            self.synchronize_state_transitions()
+
+        return result
 
     def unlink(self):
         self._assert_no_enrolments_before_unlink()
@@ -1000,7 +1007,7 @@ class AcademyStudentSignup(models.Model):
                         "previous_state": previous_state,
                         "state": step["state"],
                         "timestamp": timestamp,
-                        "source_ref": step["source_ref"],
+                        "source_ref": record_to_reference(step["source_ref"]),
                     }
                 )
                 previous_state = step["state"]
@@ -1043,6 +1050,7 @@ class AcademyStudentSignup(models.Model):
         self.invalidate_recordset(["state"])
 
         state_data = self._get_signup_state_data()
+        self._on_prepare_signup_state_resolution(state_data)
         self._resolve_signup_states(state_data)
         self._fill_signup_state_sources(state_data)
 
@@ -1063,6 +1071,17 @@ class AcademyStudentSignup(models.Model):
             self._on_state_transition(transitions)
 
         return transitions
+
+    def _on_prepare_signup_state_resolution(self, state_data):
+        """Prepare sign-ups before resolving their states.
+
+        Hook for dependent modules to perform updates required
+        before state rules are evaluated.
+
+        Args:
+            state_data (dict): State data indexed by sign-up ID.
+        """
+        pass  # noqa: PIE790
 
     def _on_state_transition(self, transitions):
         """Hook executed after sign-up state transitions are persisted.

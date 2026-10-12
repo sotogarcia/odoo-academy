@@ -654,3 +654,12 @@ def prevent_field_changes(records, values, field_names):
                 raise ValidationError(message % {"field": field.string})
 
     return True
+
+
+def record_to_reference(record):
+    if not record:
+        return False
+
+    record.ensure_one()
+
+    return f"{record._name},{record.id}"

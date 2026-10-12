@@ -3,7 +3,11 @@
 #    __manifest__.py file at the root folder of this module.                  #
 ###############################################################################
 
+from datetime import timedelta
+
 from odoo import api, fields, models
+
+from ..utils.datetime_utils import local_midnight_as_utc
 
 
 class ResCompany(models.Model):
@@ -62,3 +66,36 @@ class ResCompany(models.Model):
         help="Automatically sign up the student upon enrolling in a training "
         "action.",
     )
+
+    # -- Local day boundaries ----------------------------------------------------
+
+    def local_day_bounds_to_utc(self):
+        """Return the UTC boundaries of the company's current local day.
+
+        The start is inclusive and the end is exclusive.
+        Both values are naive UTC datetimes, following Odoo conventions.
+
+        Each local midnight is converted independently to handle
+        daylight-saving time changes correctly.
+
+        Returns:
+            tuple[datetime, datetime]: Start and end of the local day in UTC.
+        """
+        self.ensure_one()
+
+        tz_name = self.partner_id.tz or "UTC"
+        company = self.with_context(tz=tz_name)
+
+        today = fields.Date.context_today(company)
+
+        start_utc = local_midnight_as_utc(
+            today,
+            from_tz=tz_name,
+        )
+
+        end_utc = local_midnight_as_utc(
+            today + timedelta(days=1),
+            from_tz=tz_name,
+        )
+
+        return start_utc, end_utc

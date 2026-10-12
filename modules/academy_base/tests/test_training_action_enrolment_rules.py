@@ -1,7 +1,11 @@
+###############################################################################
+#    License, author and contributors information in:                         #
+#    __manifest__.py file at the root folder of this module.                  #
+###############################################################################
+
 from datetime import datetime, timedelta
 
 from lxml import etree
-
 from odoo import fields
 from odoo.exceptions import ValidationError
 from odoo.tests.common import TransactionCase
@@ -404,9 +408,7 @@ class TestTrainingActionEnrolmentRules(TransactionCase):
             active=False,
         )
 
-        self._assert_validation_error(
-            lambda: archived.write({"active": True})
-        )
+        self._assert_validation_error(lambda: archived.write({"active": True}))
 
     def test_touching_intervals_reuse_capacity(self):
         action = self._create_action(seats=1, excess=1)
@@ -594,9 +596,7 @@ class TestTrainingActionEnrolmentRules(TransactionCase):
             state="joined",
         )
 
-        self._assert_validation_error(
-            lambda: action.write({"excess": 2})
-        )
+        self._assert_validation_error(lambda: action.write({"excess": 2}))
 
     def test_reducing_seats_revalidates_when_excess_is_disabled(self):
         action = self._create_action(
@@ -622,9 +622,7 @@ class TestTrainingActionEnrolmentRules(TransactionCase):
             state="joined",
         )
 
-        self._assert_validation_error(
-            lambda: action.write({"seats": 1})
-        )
+        self._assert_validation_error(lambda: action.write({"seats": 1}))
 
     def test_reducing_seats_is_allowed_when_excess_is_enabled(self):
         action = self._create_action(
@@ -697,9 +695,7 @@ class TestTrainingActionEnrolmentRules(TransactionCase):
 
     def test_register_cannot_precede_signup_date(self):
         action = self._create_action(seats=2, excess=2)
-        self.signup_1.write(
-            {"signup_date": datetime(2026, 2, 1, 9, 0)}
-        )
+        self.signup_1.write({"signup_date": datetime(2026, 2, 1, 9, 0)})
 
         self._assert_validation_error(
             lambda: self._create_enrolment(
@@ -713,9 +709,7 @@ class TestTrainingActionEnrolmentRules(TransactionCase):
 
     def test_register_write_cannot_precede_signup_date(self):
         action = self._create_action(seats=2, excess=2)
-        self.signup_1.write(
-            {"signup_date": datetime(2026, 2, 1, 9, 0)}
-        )
+        self.signup_1.write({"signup_date": datetime(2026, 2, 1, 9, 0)})
 
         enrolment = self._create_enrolment(
             self.signup_1,

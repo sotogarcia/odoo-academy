@@ -5,9 +5,9 @@
 
 # ruff: noqa: F401, I001
 
-# ---------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Roles: students and teachers
-# ---------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 from . import res_partner
 from . import academy_student_signup
 from . import academy_student_signup_state_transition
@@ -57,7 +57,7 @@ from . import academy_professional_qualification
 from . import academy_training_methodology
 from . import academy_training_modality
 
-# ---------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Training structure: modules, units, programs and actions
 #
 # Training Framework                  (academy.training.framework)
@@ -65,7 +65,7 @@ from . import academy_training_modality
 #     └── Training Program Line       (academy.training.program.line)
 #         └── Training Module         (academy.training.module)
 #             └── Training Unit/Block (academy.training.module)
-# ---------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 from . import academy_training_framework
 from . import academy_training_module
 from . import academy_training_program
