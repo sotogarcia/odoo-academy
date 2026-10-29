@@ -61,15 +61,15 @@ class AcademySupportStaff(models.Model):
         auto_join=False,
     )
 
-    birthday = fields.Date(
-        string="Date of birth",
-        required=False,
-        readonly=False,
-        index=True,
-        default=None,
-        help="Contact date of birth",
-        tracking=True,
-    )
+    # birthday = fields.Date(
+    #     string="Date of birth",
+    #     required=False,
+    #     readonly=False,
+    #     index=True,
+    #     default=None,
+    #     help="Contact date of birth",
+    #     tracking=True,
+    # )
 
     attainment_id = fields.Many2one(
         string="Educational attainment",

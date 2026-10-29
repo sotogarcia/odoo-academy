@@ -10,9 +10,9 @@ from odoo.tools.safe_eval import safe_eval
 from odoo.tools.translate import _
 
 from ..utils.helpers import (
+    build_act_window_action,
     one2many_count,
     one2many_count_search_domain,
-    build_act_window_action
 )
 from ..utils.record_utils import (
     ARCHIVED_DOMAIN,
@@ -364,16 +364,13 @@ class AcademyStudent(models.Model):
             module="academy_base",
             name="action_training_action_enrolment_act_window",
         )
-        
+
         view_xid = "{module}.{name}".format(
             module="academy_base",
             name="view_academy_training_action_enrolment_edit_by_user_tree",
         )
-        
-        context = {
-            "default_student_id": self.id,
-            "list_view_ref": view_xid
-        }
+
+        context = {"default_student_id": self.id, "list_view_ref": view_xid}
         domain = [("student_id", "=", self.id)]
 
         action = build_act_window_action(self.env, act_xid, context, domain)

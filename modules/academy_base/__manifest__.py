@@ -66,6 +66,7 @@ of reference catalogs and training structures across the platform.
         "record_ownership",
         "base_field_m2m_view",
         "partner_firstname",
+        "partner_contact_birthdate",
         "cefrl",
     ],
     "data": [

@@ -95,7 +95,6 @@
             <group>
               <field name="vat" placeholder="e.g. BE0477472701" readonly="parent_id"
                 required="vat_required"/>
-              <field name="birthday" class="oe_field_birthday"/>
 
               <span class="o_form_label o_td_label o_address_type" name="address_name">
                 <span>Address</span>
@@ -137,12 +136,16 @@
 
           <notebook colspan="4" class="mt-4">
             <page id="page-details" string="Details" class="oe_page_Academics" accesskey="D">
-              <group col="12" class="mt-2" id="page-details-main">
-                <group colspan="6">
+              <group id="page-details-birthdate">
+                <group><field name="birthdate_date" class="oe_field_birthdate_date"/></group>
+                <group><field name="age" class="oe_field_age" /></group>
+              </group>
+              <group class="mt-2" id="page-details-main">
+                <group>
                   <field name="attainment_id" class="oe_field_attainment_id" string="Attainment"
                     options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"/>
                 </group>
-                <group colspan="6" id="page-details-extra">
+                <group id="page-details-extra">
                   <field name="cefrl_ids" class="oe_field_cefrl_ids"
                     options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"
                     widget="many2many_tags" context="{'m2m_tags_display_name': 'code'}"/>
