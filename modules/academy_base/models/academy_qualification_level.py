@@ -8,7 +8,7 @@ from odoo import fields, models
 
 
 class AcademyQualificationLevel(models.Model):
-    """Qualification level is a property of the training program."""
+    """Professional qualification levels used by training programmes and qualifications."""
 
     _name = "academy.qualification.level"
     _description = "Academy qualification level"
@@ -44,7 +44,7 @@ class AcademyQualificationLevel(models.Model):
         readonly=False,
         index=True,
         default=None,
-        help="Official qualification level code",
+        help="Internal professional qualification level code (e.g., FP-1).",
         size=8,
         translate=False,
     )

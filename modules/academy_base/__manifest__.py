@@ -58,7 +58,7 @@ of reference catalogs and training structures across the platform.
     "author": "Jorge Soto Garcia",
     "website": "https://github.com/sotogarcia",
     "category": "Academy",
-    "version": "18.0.1.0.1",
+    "version": "18.0.1.0.2",
     "depends": [
         "base",
         "mail",
