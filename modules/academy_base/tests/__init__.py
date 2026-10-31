@@ -5,3 +5,4 @@
 
 from . import test_training_action_enrolment_rules
 from . import test_student_signup_state_base
+from . import test_qualification_level_catalog

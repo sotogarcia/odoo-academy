@@ -102,7 +102,7 @@ class AcademyProfessionalQualification(models.Model):
         readonly=False,
         index=False,
         default=None,
-        help="Choose related qualification level",
+        help="Professional qualification level, when applicable.",
         comodel_name="academy.qualification.level",
         domain=[],
         context={},
