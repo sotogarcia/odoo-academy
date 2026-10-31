@@ -62,7 +62,7 @@ def migrate(cr, version):
 
         # Preserve edited names and descriptions of noupdate seed records.
         record = record.with_context(lang="en_US")
-        values = {"code": code}
+        values = {"code": code, "sequence": level * 10}
         if record.name == f"Professional Certificate - Level {level}":
             values["name"] = f"Professional qualification - Level {level}"
         if record.description == OLD_DESCRIPTIONS[level]:

@@ -8,8 +8,8 @@
             for participation in school and society, including early childhood educational
             development and pre-primary education</field>
         <field name="code">0</field>
-        <field name="sequence" eval="10"/>    <field name="active" eval="False"/>
-
+        <field name="sequence" eval="10"/>
+        <field name="active" eval="False"/>
     </record>
 
     <record id="academy_qualification_level_level_isced_2011_1" model="academy.qualification.level">
@@ -18,8 +18,8 @@
             skills in reading, writing and mathematics and to establish a solid foundation for
             learning</field>
         <field name="code">1</field>
-        <field name="sequence" eval="20"/>    <field name="active" eval="False"/>
-
+        <field name="sequence" eval="20"/>
+        <field name="active" eval="False"/>
     </record>
 
     <record id="academy_qualification_level_level_isced_2011_2" model="academy.qualification.level">
@@ -27,8 +27,8 @@
         <field name="description">First stage of secondary education building on primary education,
             typically with a more subject-oriented curriculum</field>
         <field name="code">2</field>
-        <field name="sequence" eval="30"/>    <field name="active" eval="False"/>
-
+        <field name="sequence" eval="30"/>
+        <field name="active" eval="False"/>
     </record>
 
     <record id="academy_qualification_level_level_isced_2011_3" model="academy.qualification.level">
@@ -37,8 +37,8 @@
             education and/or providing skills relevant to employment. Usually with an increased
             range of subject options and streams</field>
         <field name="code">3</field>
-        <field name="sequence" eval="40"/>    <field name="active" eval="False"/>
-
+        <field name="sequence" eval="40"/>
+        <field name="active" eval="False"/>
     </record>
 
     <record id="academy_qualification_level_level_isced_2011_4" model="academy.qualification.level">
@@ -47,8 +47,8 @@
             education and prepare for labour market entry and/or tertiary education. The content is
             broader than secondary but not as complex as tertiary education</field>
         <field name="code">4</field>
-        <field name="sequence" eval="50"/>    <field name="active" eval="False"/>
-
+        <field name="sequence" eval="50"/>
+        <field name="active" eval="False"/>
     </record>
 
     <record id="academy_qualification_level_level_isced_2011_5" model="academy.qualification.level">
@@ -57,8 +57,8 @@
             practically-based, occupationally-specific and prepare for labour market entry. These
             programmes may also provide a pathway to other tertiary programmes</field>
         <field name="code">5</field>
-        <field name="sequence" eval="60"/>    <field name="active" eval="False"/>
-
+        <field name="sequence" eval="60"/>
+        <field name="active" eval="False"/>
     </record>
 
     <record id="academy_qualification_level_level_isced_2011_6" model="academy.qualification.level">
@@ -67,8 +67,8 @@
             professional knowledge, skills and competences leading to a first tertiary degree or
             equivalent qualification</field>
         <field name="code">6</field>
-        <field name="sequence" eval="70"/>    <field name="active" eval="False"/>
-
+        <field name="sequence" eval="70"/>
+        <field name="active" eval="False"/>
     </record>
 
     <record id="academy_qualification_level_level_isced_2011_7" model="academy.qualification.level">
@@ -77,8 +77,8 @@
             professional knowledge, skills and competences leading to a second tertiary degree or
             equivalent qualification</field>
         <field name="code">7</field>
-        <field name="sequence" eval="80"/>    <field name="active" eval="False"/>
-
+        <field name="sequence" eval="80"/>
+        <field name="active" eval="False"/>
     </record>
 
     <record id="academy_qualification_level_level_isced_2011_8" model="academy.qualification.level">
@@ -87,8 +87,8 @@
             qualification, usually concluding with the submission and defence of a substantive
             dissertation of publishable quality based on original research</field>
         <field name="code">8</field>
-        <field name="sequence" eval="90"/>    <field name="active" eval="False"/>
-
+        <field name="sequence" eval="90"/>
+        <field name="active" eval="False"/>
     </record>
 
     <record id="academy_qualification_level_level_isced_2011_9" model="academy.qualification.level">
@@ -96,8 +96,8 @@
         <field name="description">Education programmes that cannot be classified elsewhere within
             the ISCED framework</field>
         <field name="code">9</field>
-        <field name="sequence" eval="100"/>    <field name="active" eval="False"/>
-
+        <field name="sequence" eval="100"/>
+        <field name="active" eval="False"/>
     </record>
 
     <record id="academy_qualification_level_es_3B" model="academy.qualification.level">
@@ -105,8 +105,8 @@
         <field name="description">Spanish Official Education Program - Medium grade training
             cycle</field>
         <field name="code">3B</field>
-        <field name="sequence" eval="40"/>    <field name="active" eval="False"/>
-
+        <field name="sequence" eval="40"/>
+        <field name="active" eval="False"/>
     </record>
 
     <record id="academy_qualification_level_es_3C" model="academy.qualification.level">
@@ -114,8 +114,8 @@
         <field name="description">Spanish Official Education Program - Access course to intermediate
             level training cycle</field>
         <field name="code">3C</field>
-        <field name="sequence" eval="40"/>    <field name="active" eval="False"/>
-
+        <field name="sequence" eval="40"/>
+        <field name="active" eval="False"/>
     </record>
 
     <record id="academy_qualification_level_es_3D" model="academy.qualification.level">
@@ -123,32 +123,32 @@
         <field name="description">Spanish Official Education Program - Basic Vocational
             Training</field>
         <field name="code">3D</field>
-        <field name="sequence" eval="40"/>    <field name="active" eval="False"/>
-
+        <field name="sequence" eval="40"/>
+        <field name="active" eval="False"/>
     </record>
 
     <record id="academy_qualification_level_01" model="academy.qualification.level">
         <field name="name">Professional qualification - Level 1</field>
         <field name="description">Professional qualification level 1 in the Spanish Vocational Education and Training System.</field>
         <field name="code">FP-1</field>
-        <field name="sequence" eval="10"/>    <field name="active" eval="True"/>
-
+        <field name="sequence" eval="10"/>
+        <field name="active" eval="True"/>
     </record>
 
     <record id="academy_qualification_level_02" model="academy.qualification.level">
         <field name="name">Professional qualification - Level 2</field>
         <field name="description">Professional qualification level 2 in the Spanish Vocational Education and Training System.</field>
         <field name="code">FP-2</field>
-        <field name="sequence" eval="20"/>    <field name="active" eval="True"/>
-
+        <field name="sequence" eval="20"/>
+        <field name="active" eval="True"/>
     </record>
 
     <record id="academy_qualification_level_03" model="academy.qualification.level">
         <field name="name">Professional qualification - Level 3</field>
         <field name="description">Professional qualification level 3 in the Spanish Vocational Education and Training System.</field>
         <field name="code">FP-3</field>
-        <field name="sequence" eval="30"/>    <field name="active" eval="True"/>
-
+        <field name="sequence" eval="30"/>
+        <field name="active" eval="True"/>
     </record>
 
     <record id="academy_qualification_level_04" model="academy.qualification.level">
@@ -156,8 +156,8 @@
         <field name="description">Factual and theoretical knowledge in broad contexts in a specific
             field of work or study</field>
         <field name="code">453-D</field>
-        <field name="sequence" eval="54"/>    <field name="active" eval="False"/>
-
+        <field name="sequence" eval="54"/>
+        <field name="active" eval="False"/>
     </record>
 
     <record id="academy_qualification_level_05" model="academy.qualification.level">
@@ -165,8 +165,8 @@
         <field name="description">Extensive specialized knowledge, factual and theoretical, in a
             specific field of work or study, being aware of the limits of this knowledge</field>
         <field name="code">453-E</field>
-        <field name="sequence" eval="55"/>    <field name="active" eval="False"/>
-
+        <field name="sequence" eval="55"/>
+        <field name="active" eval="False"/>
     </record>
 
     <record id="academy_qualification_level_06" model="academy.qualification.level">
@@ -174,8 +174,8 @@
         <field name="description">Advanced knowledge in a field of work or study that requires a
             critical understanding of theories and principles</field>
         <field name="code">453-F</field>
-        <field name="sequence" eval="56"/>    <field name="active" eval="False"/>
-
+        <field name="sequence" eval="56"/>
+        <field name="active" eval="False"/>
     </record>
 
     <record id="academy_qualification_level_07" model="academy.qualification.level">
@@ -184,8 +184,8 @@
             field of work or concrete study, which lay the foundations of an original thought or
             investigation</field>
         <field name="code">453-G</field>
-        <field name="sequence" eval="57"/>    <field name="active" eval="False"/>
-
+        <field name="sequence" eval="57"/>
+        <field name="active" eval="False"/>
     </record>
 
     <record id="academy_qualification_level_08" model="academy.qualification.level">
@@ -193,8 +193,8 @@
         <field name="description">Knowledge at the most advanced frontier of a particular work field
             or study and at the point of articulation between different fields</field>
         <field name="code">453-H</field>
-        <field name="sequence" eval="58"/>    <field name="active" eval="False"/>
-
+        <field name="sequence" eval="58"/>
+        <field name="active" eval="False"/>
     </record>
 
 </odoo>

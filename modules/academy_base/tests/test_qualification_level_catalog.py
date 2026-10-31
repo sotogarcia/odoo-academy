@@ -11,6 +11,7 @@ class TestQualificationLevelCatalog(TransactionCase):
             )
             self.assertTrue(record.active)
             self.assertEqual(record.code, f"FP-{level}")
+            self.assertEqual(record.sequence, level * 10)
             self.assertEqual(
                 record.name,
                 f"Professional qualification - Level {level}",
