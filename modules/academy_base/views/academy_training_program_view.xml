@@ -101,31 +101,56 @@
             <page id="details" string="Details" class="oe_page_details" accesskey="D">
 
               <group>
-                <group id="classification" string="Classification">
-                  <field name="professional_family_id" class="oe_field_professional_family_id"
-                    string="Family"
-                    options="{'no_quick_create': True, 'no_create': False, 'no_open': False}"/>
-                  <field name="professional_area_id" class="oe_field_professional_area_id"
-                    string="Area" domain="[('professional_family_id', '=', professional_family_id)]"
-                    options="{'no_quick_create': True, 'no_create': False, 'no_open': False}"/>
-                  <field name="professional_field_id" class="oe_field_professional_field"
-                    string="Field"
-                    options="{'no_quick_create': True, 'no_create': False, 'no_open': False}"/>
-                  <field name="professional_sector_ids"
-                    domain="[('professional_field_id', '=', professional_field_id)]"
-                    class="oe_field_professional_sector_ids" widget="many2many_tags"
-                    string="Sectors"/>
+
+                <group id="education_classification" string="Educational classification">
+                  <field name="attainment_id"
+                         class="oe_field_attainment_id" />
+                  <field name="education_program_id"
+                         class="oe_field_education_program_id"/>
+                  <field name="education_field_id"
+                         class="oe_field_education_field_id"/>
                 </group>
-                <group id="attainment" string="Attainment">
-                  <field name="attainment_id" class="oe_field_attainment_id" string="Required"/>
-                  <field name="hours" class="oe_field_hours" widget="float_time"/>
-                  <field name="qualification_level_id" class="oe_field_qualification_level_id"
-                    string="Granted"/>
-                  <field name="general_competence" class="oe_field_general_competence"
-                    string="Competence" placeholder="Tasks to be carried out in the future"/>
+
+                <group id="attainment" string="Characteristics">
+                  <field name="hours"
+                         class="oe_field_hours"
+                         widget="float_time"/>
+                  <field name="qualification_level_id"
+                         class="oe_field_qualification_level_id"
+                         string="Level / qualification"/>
+                  <field name="general_competence"
+                         class="oe_field_general_competence"
+                         string="General competence"
+                         placeholder="Tasks to be carried out in the future"/>
                 </group>
               </group>
 
+              <group>
+                <group id="classification" string="Professional classification">
+                  <field name="professional_family_id"
+                         class="oe_field_professional_family_id"
+                         string="Family"
+                         options="{'no_quick_create': True, 'no_create': False, 'no_open': False}"/>
+                  <field name="professional_area_id"
+                         class="oe_field_professional_area_id"
+                         string="Area"
+                         domain="[('professional_family_id', '=', professional_family_id)]"
+                         options="{'no_quick_create': True, 'no_create': False, 'no_open': False}"/>
+                </group>
+                <group id="scientific_classification" string="Scientific classification">
+                  <field name="professional_field_id"
+                         class="oe_field_professional_field"
+                         string="Scientific field"
+                         options="{'no_quick_create': True, 'no_create': False, 'no_open': False}"/>
+                  <field name="professional_sector_ids"
+                         class="oe_field_professional_sector_ids"
+                         string="Scientific disciplines"
+                         domain="[('professional_field_id', '=', professional_field_id)]"
+                         widget="many2many_tags"/>
+                </group>
+
+
+              </group>
             </page>
             <page id="setup" string="Setup" class="oe_page_setup" accesskey="S">
               <group string="Ownership" groups="record_ownership.record_ownership_proxy">

@@ -248,15 +248,45 @@ class AcademyTrainingProgram(models.Model):
     )
 
     attainment_id = fields.Many2one(
-        string="Educational attainment",
+        string="Required Educational Level",
         required=False,
         readonly=False,
         index=True,
         default=None,
         help="Minimum educational requirement to access this program",
-        comodel_name="academy.educational.attainment",
-        domain=[],
-        context={},
+        comodel_name="education.classification.item",
+        domain=[("dimension", "=", "a")],
+        context={"search_default_group_by_edition_id": 1},
+        ondelete="set null",
+        auto_join=False,
+        copy=True,
+    )
+
+    education_program_id = fields.Many2one(
+        string="Educational program",
+        required=False,
+        readonly=False,
+        index=True,
+        default=None,
+        help="Classification of the educational program by level and type.",
+        comodel_name="education.classification.item",
+        domain=[("dimension", "=", "p")],
+        context={"search_default_group_by_edition_id": 1},
+        ondelete="set null",
+        auto_join=False,
+        copy=True,
+    )
+
+    education_field_id = fields.Many2one(
+        string="Educational field",
+        required=False,
+        readonly=False,
+        index=True,
+        default=None,
+        help="Classification by the main field of education and training.",
+        comodel_name="education.classification.item",
+        domain=[("dimension", "=", "f")],
+        context={"search_default_group_by_edition_id": 1},
         ondelete="set null",
         auto_join=False,
         copy=True,
