@@ -39,7 +39,7 @@ Key features:
   - Knowledge areas
   - Professional families, fields, sectors and categories
   - Competency units (ECP) and training modules
-  - Qualification levels and educational attainment
+  - Qualification levels
   - Professional qualifications
   - Training frameworks (Grades A, B, C, D, E)
 
@@ -83,7 +83,6 @@ of reference catalogs and training structures across the platform.
         "data/academy_application_scope_data.xml",
         "data/academy_knowledge_area_data.xml",
         "data/academy_qualification_level_data.xml",
-        "data/academy_educational_attainment_data.xml",
         "data/academy_professional_family_data.xml",
         "data/academy_professional_field_data.xml",
         "data/academy_professional_sector_data.xml",
@@ -99,7 +98,6 @@ of reference catalogs and training structures across the platform.
         "views/academy_professional_area_view.xml",
         "views/academy_training_modality_view.xml",
         "views/academy_qualification_level_view.xml",
-        "views/academy_educational_attainment_view.xml",
         "views/academy_professional_category_view.xml",
         "views/academy_professional_family_view.xml",
         "views/academy_professional_qualification_view.xml",

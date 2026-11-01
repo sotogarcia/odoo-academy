@@ -261,20 +261,6 @@
             name="academy_base_partner">
 
             <setting
-              id="academy_educational_attainments"
-              string="Educational attainments"
-              help="Edit partner educational attainment information.">
-
-              <button
-                name="%(academy_base.action_educational_attainment_act_window)d"
-                string="Update educational attainments"
-                type="action"
-                class="oe_link"
-                icon="fa-arrow-right"/>
-
-            </setting>
-
-            <setting
               id="academy_partner_validation"
               string="Validation"
               help="Validate partner input data.">

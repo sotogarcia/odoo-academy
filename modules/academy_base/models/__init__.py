@@ -22,7 +22,6 @@ from . import academy_teacher
 # Applies to the training specialty
 # -----------------------------------------------------------------------------
 from . import academy_qualification_level  # Granted education level
-from . import academy_educational_attainment  # Required education level
 
 # -----------------------------------------------------------------------------
 # Professional classification
