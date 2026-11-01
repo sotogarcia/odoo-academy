@@ -58,7 +58,7 @@ of reference catalogs and training structures across the platform.
     "author": "Jorge Soto Garcia",
     "website": "https://github.com/sotogarcia",
     "category": "Academy",
-    "version": "18.0.1.0.2",
+    "version": "18.0.1.0.1",
     "depends": [
         "base",
         "mail",
@@ -68,6 +68,7 @@ of reference catalogs and training structures across the platform.
         "partner_firstname",
         "partner_contact_birthdate",
         "cefrl",
+        "education_classification",
     ],
     "data": [
         "data/res_partner_category_data.xml",

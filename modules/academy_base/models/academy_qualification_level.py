@@ -34,7 +34,7 @@ class AcademyQualificationLevel(models.Model):
         readonly=False,
         index=False,
         default=None,
-        help="Detailed description of the Qualification Level",
+        help="Detailed description of the qualification Level",
         translate=True,
     )
 
@@ -44,7 +44,7 @@ class AcademyQualificationLevel(models.Model):
         readonly=False,
         index=True,
         default=None,
-        help="Internal professional qualification level code (e.g., FP-1).",
+        help="Professional qualification level code (1 to 5).",
         size=8,
         translate=False,
     )
