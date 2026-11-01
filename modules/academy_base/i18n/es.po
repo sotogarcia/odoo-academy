@@ -5907,18 +5907,18 @@ msgstr "Área profesional"
 
 #. module: academy_base
 #: model:academy.qualification.level,name:academy_base.academy_qualification_level_01
-msgid "Professional qualification - Level 1"
-msgstr "Cualificación profesional - Nivel 1"
+msgid "Professional Certificate - Level 1"
+msgstr "Certificado de profesionalidad - Nivel 1"
 
 #. module: academy_base
 #: model:academy.qualification.level,name:academy_base.academy_qualification_level_02
-msgid "Professional qualification - Level 2"
-msgstr "Cualificación profesional - Nivel 2"
+msgid "Professional Certificate - Level 2"
+msgstr "Certificado de profesionalidad - Nivel 2"
 
 #. module: academy_base
 #: model:academy.qualification.level,name:academy_base.academy_qualification_level_03
-msgid "Professional qualification - Level 3"
-msgstr "Cualificación profesional - Nivel 3"
+msgid "Professional Certificate - Level 3"
+msgstr "Certificado de profesionalidad - Nivel 3"
 
 #. module: academy_base
 #: model:academy.qualification.level,name:academy_base.academy_qualification_level_04

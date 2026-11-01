@@ -117,7 +117,7 @@
                          widget="float_time"/>
                   <field name="qualification_level_id"
                          class="oe_field_qualification_level_id"
-                         string="Qualification level"/>
+                         string="Level / qualification"/>
                   <field name="general_competence"
                          class="oe_field_general_competence"
                          string="General competence"

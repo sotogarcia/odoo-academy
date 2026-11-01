@@ -238,7 +238,7 @@ class AcademyTrainingProgram(models.Model):
         readonly=False,
         index=False,
         default=None,
-        help="Professional qualification level, when applicable to this program.",
+        help="Qualification level to which this training program belongs",
         comodel_name="academy.qualification.level",
         domain=[],
         context={},
