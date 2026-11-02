@@ -64,6 +64,20 @@ class AcademyAcademicTraining(models.Model):
         auto_join=False,
     )
 
+    program_id = fields.Many2one(
+        string="Educational program",
+        required=False,
+        readonly=False,
+        index=True,
+        default=None,
+        help="Educational program or course type associated with this training.",
+        comodel_name="education.classification.item",
+        domain=[("dimension", "=", "p")],
+        context={"search_default_group_by_edition_id": 1},
+        ondelete="set null",
+        auto_join=False,
+    )
+
     edition_id = fields.Many2one(
         string="Edition",
         help="Classification edition to which this category belongs.",
