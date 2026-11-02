@@ -169,6 +169,7 @@ class AcademySupportStaff(models.Model):
     @api.depends(
         "attainment_id",
         "attainment_id.weight",
+        "academic_training_ids",
         "highest_attainment_id",
         "highest_attainment_id.weight",
     )

@@ -11,7 +11,7 @@
     <field name="inherit_id" ref="academy_base.view_academy_support_staff_form" />
     <field name="arch" type="xml">
       <xpath expr="//page[@id='page-details']/group[@id='page-details-birthdate']" position="after">
-        <group col="2" class="mt-2" id="page-details-educational-profile" string="Educational profile">>
+        <group col="2" class="mt-2" id="page-details-educational-profile" string="Educational profile">
           <group>
             <field name="cefrl_ids" class="oe_field_cefrl_ids"
               options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"

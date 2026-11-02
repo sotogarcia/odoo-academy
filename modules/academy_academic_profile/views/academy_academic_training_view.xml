@@ -41,7 +41,8 @@
     <field name="arch" type="xml">
       <form string="academy_academic_training_form" create="1" delete="1" edit="1">
         <sheet>
-          <field name="id" class="oe_field_id" invisible="1" />
+          <field name="id" invisible="1" />
+          <field name="active" invisible="1"/>
 
           <div class="oe_button_box" name="button_box" />
           <widget name="web_ribbon" title="Archived" bg_color="bg-danger" invisible="active == True" />
@@ -92,7 +93,7 @@
               context="{'group_by': 'attainment_id'}"
               help="Group by educational attainment" />
           <filter string="By Field of Study"
-              name="by_attainment"
+              name="by_field"
               domain="[]"
               context="{'group_by': 'field_id'}"
               help="Group by field of study" />
