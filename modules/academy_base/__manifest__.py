@@ -67,8 +67,6 @@ of reference catalogs and training structures across the platform.
         "base_field_m2m_view",
         "partner_firstname",
         "partner_contact_birthdate",
-        "cefrl",
-        "education_classification",
     ],
     "data": [
         "data/res_partner_category_data.xml",

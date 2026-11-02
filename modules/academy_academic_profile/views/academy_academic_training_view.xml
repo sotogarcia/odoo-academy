@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo noupdate="0">
+
+  <!-- VIEWS: "Academic training"
+
+    - Model·········: academy.academic.training
+    - _rec_name·····: name
+    - Domain········: []
+    - Context·······: {}
+    - Parent menu ··: base.menu_custom
+    - View priority·: 16    Sequence····: 10
+    - Action help···: There are not any academic training
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+  <!-- Tree view for "academy.academic.training" -->
+  <record id="view_academy_academic_training_list" model="ir.ui.view">
+    <field name="name">view.academy.academic.training.list</field>
+    <field name="model">academy.academic.training</field>
+    <field name="type">list</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16" />
+    <field name="active" eval="True" />
+    <field name="arch" type="xml">
+      <list string="academy_academic_training_list" create="1" delete="1" edit="1">
+        <field name="name" class="oe_field_name" />
+        <field name="attainment_id" class="oe_field_attainment_id" />
+        <field name="field_id" class="oe_field_field_id" />
+      </list>
+    </field>
+  </record>
+
+  <!-- Form view for "academy.academic.training" -->
+  <record id="view_academy_academic_training_form" model="ir.ui.view">
+    <field name="name">view.academy.academic.training.form</field>
+    <field name="model">academy.academic.training</field>
+    <field name="type">form</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16" />
+    <field name="active" eval="True" />
+    <field name="arch" type="xml">
+      <form string="academy_academic_training_form" create="1" delete="1" edit="1">
+        <sheet>
+          <field name="id" class="oe_field_id" invisible="1" />
+
+          <div class="oe_button_box" name="button_box" />
+          <widget name="web_ribbon" title="Archived" bg_color="bg-danger" invisible="active == True" />
+
+          <div class="oe_title">
+              <label for="name" class="oe_edit_only" />
+              <h1>
+                  <field name="name" class="oe_field_name"
+                      placeholder="Name" />
+              </h1>
+          </div>
+
+          <group col="2">
+            <field name="attainment_id" class="oe_field_attainment_id"
+              options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
+            <field name="field_id" class="oe_field_field_id"
+              options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
+          </group>
+
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <!-- Search view for "academy.academic.training" -->
+  <record id="view_academy_academic_training_search" model="ir.ui.view">
+    <field name="name">view.academy.academic.training.search</field>
+    <field name="model">academy.academic.training</field>
+    <field name="type">search</field>
+    <field name="mode">primary</field>
+    <field name="priority" eval="16" />
+    <field name="active" eval="True" />
+    <field name="arch" type="xml">
+      <search string="academy_academic_training_search">
+        <field name="name" />
+        <field name="attainment_id" />
+        <field name="field_id" />
+
+        <group expand="1">
+          <filter string="By Edition"
+              name="by_edition"
+              domain="[]"
+              context="{'group_by': 'edition_id'}"
+              help="Group by classification edition" />
+          <filter string="By Educational Attainment"
+              name="by_attainment"
+              domain="[]"
+              context="{'group_by': 'attainment_id'}"
+              help="Group by educational attainment" />
+          <filter string="By Field of Study"
+              name="by_attainment"
+              domain="[]"
+              context="{'group_by': 'field_id'}"
+              help="Group by field of study" />
+        </group>
+
+        <separator/>
+        <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
+
+      </search>
+    </field>
+  </record>
+
+  <!-- Main window action for model.name -->
+  <record id="action_academic_training_act_window" model="ir.actions.act_window">
+    <field name="type">ir.actions.act_window</field>
+    <field name="name">Academic training</field>
+    <field name="res_model">academy.academic.training</field>
+    <field name="view_mode">list,form</field>
+    <field name="target">current</field>
+    <field name="domain">[]</field>
+    <field name="context">{}</field>
+    <field name="search_view_id" ref="view_academy_academic_training_search" />
+    <field name="help" type="html">
+      <p class="oe_view_nocontent_create">
+        Click to add new academic training
+      </p><p>
+        There are not any academic training
+      </p>
+    </field>
+  </record>
+
+</odoo>

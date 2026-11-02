@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo noupdate="0">
+
+  <record id="view_academy_support_staff_form" model="ir.ui.view">
+    <field name="name">view.academy.support.staff.form</field>
+    <field name="model">academy.support.staff</field>
+    <field name="type">form</field>
+    <field name="mode">extension</field>
+    <field name="active" eval="True"/>
+    <field name="inherit_id" ref="academy_base.view_academy_support_staff_form" />
+    <field name="arch" type="xml">
+      <xpath expr="//page[@id='page-details']/group[@id='page-details-birthdate']" position="after">
+        <group col="2" class="mt-2" id="page-details-educational-profile" string="Educational profile">>
+          <group>
+            <field name="cefrl_ids" class="oe_field_cefrl_ids"
+              options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"
+              widget="many2many_tags" context="{'m2m_tags_display_name': 'code'}"/>
+          </group>
+          <group>
+            <field name="driving_licence_ids" class="oe_field_driving_licence_ids"
+              options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"
+              widget="many2many_tags" context="{'m2m_tags_display_name': 'code'}"/>
+          </group>
+          <group>
+            <field name="attainment_id" class="oe_field_attainment_id" string="Attainment"
+              options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
+          </group>
+          <group>
+            <field name="attainment_status" class="oe_field_attainment_status" />
+          </group>
+          <group colspan="2">
+            <field name="academic_training_ids" class="oe_field_academic_training_ids"
+              options="{'no_quick_create': True, 'no_create': False, 'no_open': False}"
+              widget="many2many_tags" />
+          </group>
+        </group>
+      </xpath>
+    </field>
+  </record>
+
+</odoo>

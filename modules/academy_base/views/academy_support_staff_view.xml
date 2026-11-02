@@ -57,7 +57,6 @@
           <field name="is_company" invisible="1"/>
           <field name="type" invisible="1"/>
           <field name="form_has_lastname_first" invisible="1"/>
-          <field name="implied_cefrl_ids" invisible="1"/>
           <field name="vat_required" invisible="1"/>
           <field name="email_required" invisible="1"/>
 
@@ -139,17 +138,6 @@
               <group id="page-details-birthdate">
                 <group><field name="birthdate_date" class="oe_field_birthdate_date"/></group>
                 <group><field name="age" class="oe_field_age" /></group>
-              </group>
-              <group class="mt-2" id="page-details-main">
-                <group>
-                  <field name="attainment_id" class="oe_field_attainment_id" string="Attainment"
-                    options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
-                </group>
-                <group id="page-details-extra">
-                  <field name="cefrl_ids" class="oe_field_cefrl_ids"
-                    options="{'no_quick_create': True, 'no_create': True, 'no_open': True}"
-                    widget="many2many_tags" context="{'m2m_tags_display_name': 'code'}"/>
-                </group>
               </group>
             </page>
             <page string="Contacts &amp; Addresses" name="contact_addresses">

@@ -71,7 +71,7 @@
         </page>
       </xpath>
 
-      <xpath expr="//group[@id='page-details-main']" position="after">
+      <xpath expr="//page[@id='page-details']/group[last()]" position="after">
         <group col="3" string="Sign-up details">
           <group>
             <button name="perform_signup" string="Sign up" type="object" invisible="signup_id"/>
