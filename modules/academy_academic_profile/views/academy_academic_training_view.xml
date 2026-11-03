@@ -24,9 +24,9 @@
     <field name="arch" type="xml">
       <list string="academy_academic_training_list" create="1" delete="1" edit="1">
         <field name="name" class="oe_field_name" />
-        <field name="attainment_id" class="oe_field_attainment_id" />
-        <field name="program_id" class="oe_field_program_id" />
-        <field name="field_id" class="oe_field_field_id" />
+        <field name="attainment_id" class="oe_field_attainment_id" optional="hide" string="Attainment" />
+        <field name="program_id" class="oe_field_program_id" optional="hide" string="Program" />
+        <field name="field_id" class="oe_field_field_id" optional="hide" string="Field" />
       </list>
     </field>
   </record>
@@ -57,11 +57,11 @@
           </div>
 
           <group col="2">
-            <field name="attainment_id" class="oe_field_attainment_id"
+            <field name="attainment_id" class="oe_field_attainment_id" sting="Attainment"
               options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
-            <field name="program_id" class="oe_field_program_id"
+            <field name="program_id" class="oe_field_program_id" sting="Program"
               options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
-            <field name="field_id" class="oe_field_field_id"
+            <field name="field_id" class="oe_field_field_id" sting="Field"
               options="{'no_quick_create': True, 'no_create': True, 'no_open': True}" />
           </group>
 

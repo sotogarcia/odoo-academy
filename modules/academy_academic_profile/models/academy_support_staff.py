@@ -170,8 +170,9 @@ class AcademySupportStaff(models.Model):
         "attainment_id",
         "attainment_id.weight",
         "academic_training_ids",
+        "academic_training_ids.attainment_id",
+        "academic_training_ids.attainment_id.weight",
         "highest_attainment_id",
-        "highest_attainment_id.weight",
     )
     def _compute_attainment_status(self):
         for record in self:
@@ -192,3 +193,45 @@ class AcademySupportStaff(models.Model):
 
             else:
                 record.attainment_status = "different"
+
+    # -- CRUD -----------------------------------------------------------------
+
+    def _filter_by_attainment(self, training=False):
+        training_operator = "!=" if training else "="
+        domain = [
+            ("attainment_id", "=", False),
+            ("academic_training_ids", training_operator, False),
+        ]
+        return self.filtered_domain(domain)
+
+    def _resolve_attainment(self):
+        for record in self:
+            if not record.attainment_id:
+                highest = record.highest_attainment_id
+                if highest:
+                    record.attainment_id = highest
+
+    @staticmethod
+    def _need_attainment_resolution(values):
+        return "academic_training_ids" in values and not values.get(
+            "attainment_id"
+        )
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        records = super().create(vals_list)
+
+        pending_attainment = records._filter_by_attainment(training=True)
+        pending_attainment._resolve_attainment()
+
+        return records
+
+    def write(self, values):
+        pending_attainment = self._filter_by_attainment(training=False)
+
+        result = super().write(values)
+
+        if self._need_attainment_resolution(values):
+            pending_attainment._resolve_attainment()
+
+        return result
