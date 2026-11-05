@@ -1,0 +1,123 @@
+- [x] .\__init__.py
+- [x] .\__manifest__.py
+- [x] .\controllers\publish.py
+- [x] .\controllers\__init__.py
+- [x] .\data\academy_application_scope_data.xml
+- [x] .\data\academy_educational_attainment_data.xml
+- [x] .\data\academy_knowledge_area_data.xml
+- [x] .\data\academy_maintenance_task.xml
+- [x] .\data\academy_professional_area_data.xml
+- [x] .\data\academy_professional_category_data.xml
+- [x] .\data\academy_professional_family_data.xml
+- [x] .\data\academy_professional_field_data.xml
+- [x] .\data\academy_professional_sector_data.xml
+- [x] .\data\academy_qualification_level_data.xml
+- [x] .\data\academy_student_data.xml
+- [x] .\data\academy_training_framework_data.xml
+- [x] .\data\academy_training_methodology_data.xml
+- [x] .\data\academy_training_modality_data.xml
+- [x] .\data\ir_actions_server_data.xml
+- [x] .\data\ir_cron_data.xml
+- [x] .\data\ir_sequence_data.xml
+- [x] .\data\res_groups_data.xml
+- [x] .\data\res_partner_category_data.xml
+- [x] .\data\res_partner_data.xml
+- [x] .\models\academy_application_scope.py
+- [x] .\models\academy_competency_unit.py
+- [x] .\models\academy_educational_attainment.py
+- [x] .\models\academy_knowledge_area.py
+- [x] .\models\academy_maintenance_task.py
+- [x] .\models\academy_professional_area.py
+- [x] .\models\academy_professional_category.py
+- [x] .\models\academy_professional_family.py
+- [x] .\models\academy_professional_field.py
+- [x] .\models\academy_professional_qualification.py
+- [x] .\models\academy_professional_sector.py
+- [x] .\models\academy_qualification_level.py
+- [x] .\models\academy_student.py
+- [x] .\models\academy_student_signup.py
+- [x] .\models\academy_support_staff.py
+- [x] .\models\academy_teacher.py
+- [x] .\models\academy_technical_staff.py
+- [x] .\models\academy_training_action.py
+- [x] .\models\academy_training_action_enrolment.py
+- [x] .\models\academy_training_action_line.py
+- [x] .\models\academy_training_framework.py
+- [x] .\models\academy_training_methodology.py
+- [x] .\models\academy_training_modality.py
+- [x] .\models\academy_training_module.py
+- [x] .\models\academy_training_program.py
+- [x] .\models\academy_training_program_line.py
+- [x] .\models\academy_training_teacher_assignment.py
+- [x] .\models\res_company.py
+- [x] .\models\res_config_settings.py
+- [x] .\models\res_partner.py
+- [x] .\models\__init__.py
+- [x] .\security\academy_base.xml
+- [x] .\security\academy_student.xml
+- [x] .\utils\datetime_utils.py
+- [x] .\utils\helpers.py
+- [x] .\utils\record_utils.py
+- [x] .\utils\res_config.py
+- [x] .\utils\sql_helpers.py
+- [x] .\utils\__init__.py
+- [x] .\views\academy_application_scope_view.xml
+- [x] .\views\academy_base.xml
+- [x] .\views\academy_competency_unit_view.xml
+- [x] .\views\academy_educational_attainment_view.xml
+- [x] .\views\academy_knowledge_area_view.xml
+- [x] .\views\academy_maintenance_task_view.xml
+- [x] .\views\academy_professional_area_view.xml
+- [x] .\views\academy_professional_category_view.xml
+- [x] .\views\academy_professional_family_view.xml
+- [x] .\views\academy_professional_field_view.xml
+- [x] .\views\academy_professional_qualification_view.xml
+- [x] .\views\academy_professional_sector_view.xml
+- [x] .\views\academy_qualification_level_view.xml
+- [x] .\views\academy_student_signup_view.xml
+- [x] .\views\academy_student_view.xml
+- [x] .\views\academy_support_staff_view.xml
+- [x] .\views\academy_teacher_view.xml
+- [x] .\views\academy_technical_staff.xml
+- [x] .\views\academy_training_action_enrolment_view.xml
+- [x] .\views\academy_training_action_group_view.xml
+- [x] .\views\academy_training_action_line_view.xml
+- [x] .\views\academy_training_action_view.xml
+- [x] .\views\academy_training_framework_view.xml
+- [x] .\views\academy_training_methodology_view.xml
+- [x] .\views\academy_training_modality_view.xml
+- [x] .\views\academy_training_module_view.xml
+- [x] .\views\academy_training_program_line_view.xml
+- [x] .\views\academy_training_program_view.xml
+- [x] .\views\academy_training_support_program_view.xml
+- [x] .\views\academy_training_support_service_view.xml
+- [x] .\views\academy_training_teacher_assignment_view.xml
+- [x] .\views\res_company_view.xml
+- [x] .\views\res_config_settings_view.xml
+- [x] .\views\res_partner_view.xml
+
+- [x] .\wizard\academy_change_training_action_wizard.py
+- [x] .\wizard\academy_change_training_action_wizard_view.xml
+- [x] .\wizard\academy_training_action_synchronize_wizard.py
+- [x] .\wizard\academy_training_action_synchronize_wizard_view.xml
+- [x] .\wizard\academy_training_program_synchronize_wizard.py
+- [x] .\wizard\academy_training_program_synchronize_wizard_view.xml
+- [x] .\wizard\record_ownership_wizard_view.xml
+- [x] .\wizard\__init__.py
+
+- [ ] .\demo\academy_professional_area.xml
+- [ ] .\demo\academy_professional_category.xml
+- [ ] .\demo\academy_professional_qualification.xml
+- [ ] .\demo\academy_student_demo.xml
+- [ ] .\demo\academy_teacher_demo.xml
+- [ ] .\demo\academy_training_action.xml
+- [ ] .\demo\academy_training_action_enrolment_demo.xml
+- [ ] .\demo\academy_training_action_group.xml
+- [ ] .\demo\academy_training_action_line.xml
+- [ ] .\demo\academy_training_framework.xml
+- [ ] .\demo\academy_training_module.xml
+- [ ] .\demo\academy_training_program.xml
+- [ ] .\demo\academy_training_program_line.xml
+- [ ] .\demo\res_company_demo.xml
+- [ ] .\demo\res_partner.xml
+- [ ] .\demo\res_users.xml
