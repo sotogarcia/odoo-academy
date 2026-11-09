@@ -307,6 +307,6 @@ def ensure_recordset(env, targets, model):
     return target_set
 
 
-def generate_guid():
+def generate_unique_code():
     """Generate a new UUID4 hexadecimal identifier."""
     return uuid4().hex.upper()
