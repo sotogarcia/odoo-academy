@@ -120,7 +120,7 @@ class AcademyTrainingProgram(models.Model):
         index=True,
         default=lambda self: default_code(self.env, CODE_SEQUENCE),
         help="Public code or short identifier for the program",
-        size=30,
+        size=64,
         translate=False,
         copy=False,
         tracking=True,

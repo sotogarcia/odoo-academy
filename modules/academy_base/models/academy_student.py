@@ -203,7 +203,7 @@ class AcademyStudent(models.Model):
         index=False,
         default=None,
         help="Unique code assigned when the student signs up at the centre.",
-        size=50,
+        size=64,
         translate=False,
         compute="_compute_signup_company_values",
         inverse="_inverse_signup_company_values",

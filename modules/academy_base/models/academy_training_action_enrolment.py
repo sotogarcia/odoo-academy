@@ -123,7 +123,7 @@ class AcademyTrainingActionEnrolment(models.Model):
         index=True,
         default=lambda self: default_code(self.env, _CODE_SEQUENCE),
         help="Unique code automatically assigned to this enrolment",
-        size=30,
+        size=64,
         translate=False,
         tracking=True,
     )

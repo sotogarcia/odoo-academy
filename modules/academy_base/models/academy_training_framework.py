@@ -77,6 +77,7 @@ class AcademyTrainingFramework(models.Model):
         index=True,
         default=lambda self: default_code(self.env, CODE_SEQUENCE),
         help="Short, roughly unique code used in URLs/filters",
+        size=64,
         translate=False,
         copy=False,
         tracking=True,

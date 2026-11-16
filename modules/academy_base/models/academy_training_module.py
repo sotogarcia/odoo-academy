@@ -133,7 +133,7 @@ class AcademyTrainingModule(models.Model):
         index=False,
         default=lambda self: self.default_code(),
         help="Enter module code",
-        size=30,
+        size=64,
         translate=False,
         copy=False,
         tracking=True,

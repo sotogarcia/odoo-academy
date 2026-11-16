@@ -107,7 +107,7 @@ class AcademyTeacherOperationalShift(models.Model):
         readonly=False,
         index=False,
         default=0.0,
-        digits=(16, 2),
+        digits=(16, 6),
         help=(
             "Specifies the duration of the operational shift in hours. "
             "This field represents the total time length for the shift, "

@@ -273,7 +273,7 @@ class AcademyTestsQuestion(models.Model):
         index=True,
         default=None,
         help="Question checksum",
-        size=32,
+        size=64,
         translate=False,
     )
 

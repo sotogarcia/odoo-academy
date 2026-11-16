@@ -93,7 +93,7 @@ class AcademyTrainingProgramLine(models.Model):
         index=False,
         default=None,
         help="Official or internal code for this program line",
-        size=30,
+        size=64,
         translate=False,
         copy=False,
         tracking=True,

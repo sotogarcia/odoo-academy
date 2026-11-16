@@ -566,7 +566,7 @@ class AcademyTrainingSession(models.Model):
         readonly=False,
         index=False,
         default=0.0,
-        digits=(16, 2),
+        digits=(16, 6),
         help="Time length of the training session",
         store=True,
         compute="_compute_date_delay",

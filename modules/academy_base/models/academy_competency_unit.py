@@ -58,7 +58,7 @@ class AcademyCompetencyUnit(models.Model):
         index=False,
         default=None,
         help="Official code of the standard (e.g., ECP1720_3)",
-        size=30,
+        size=64,
         translate=False,
     )
 

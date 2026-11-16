@@ -91,7 +91,7 @@ class AcademyTestsTest(models.Model):
         index=True,
         default=None,
         help="Internal code",
-        size=20,
+        size=64,
         translate=False,
     )
 

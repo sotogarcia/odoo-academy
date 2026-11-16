@@ -74,7 +74,7 @@ class AcademyStudentSignup(models.Model):
         index=True,
         default=lambda self: _("New"),
         help="Unique code assigned when the student signs up at the centre.",
-        size=50,
+        size=64,
         translate=False,
         tracking=True,
         copy=False,
