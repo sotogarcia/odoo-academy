@@ -489,11 +489,13 @@ class AcademyTrainingActionEnrolment(models.Model):
         search="_search_finalized",
     )
 
-    @api.depends("register", "deregister")
+    @api.depends("available_until")
     def _compute_finalized(self):
         now = fields.Datetime.now()
         for record in self:
-            record.finalized = record.deregister and (record.deregister < now)
+            record.finalized = bool(
+                record.available_until and record.available_until < now
+            )
 
     def _search_finalized(self, operator, value):
         pattern = self.env._(
